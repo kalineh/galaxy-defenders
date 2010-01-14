@@ -18,3 +18,8 @@ Vertical scrolling and shooting game-play. Progression system providing money/xp
  * Multiple weapon types.
  * Power levels per weapon.
  * Customizable weapon perks/tweaks applicable to all types.
+
+==Progression==
+ * Killing enemies gains cash.
+ * Cash item drops from well-executed play.
+ * Total cash earned adds one-use perks.
