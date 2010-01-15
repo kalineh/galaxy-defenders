@@ -99,6 +99,12 @@
     <Compile Include="Galaxy.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Ship.cs" />
+    <Compile Include="Stage.cs" />
+    <Compile Include="StageDefinition.cs" />
+    <Compile Include="StageDefinitions\Stage1.cs" />
+    <Compile Include="Stage\Elements\AsteroidSpawner.cs" />
+    <Compile Include="Stage\Elements\EnemySpawner.cs" />
+    <Compile Include="Stage\Elements\StageElement.cs" />
     <Compile Include="Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
