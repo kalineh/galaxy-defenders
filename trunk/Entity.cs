@@ -87,5 +87,14 @@ namespace galaxy
 
             return Collision.Intersects(box);
         }
+
+        protected bool IsOffScreenBottom()
+        {
+            if (Physics.PositionPhysics.Position.Y > World.Game.GraphicsDevice.Viewport.Height + 200)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

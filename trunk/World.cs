@@ -22,6 +22,7 @@ namespace galaxy
         private CStars StarsLower { get; set; }
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
+        public float AsteroidSpawn { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -30,6 +31,7 @@ namespace galaxy
             Entities = new List<CEntity>();
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
+            AsteroidSpawn = 0.05f;
         }
 
         // TODO: stage definition param
@@ -179,9 +181,15 @@ namespace galaxy
 
         private void UpdateAsteroidSpawn()
         {
-            if (Random.NextFloat() < 0.05f)
+            AsteroidSpawn += 0.00005f;
+            if (Random.NextFloat() < AsteroidSpawn)
             {
                 CAsteroid.Spawn(this);
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.C))
+            {
+                CEnemy.Spawn(this, new Vector2(100, 100));
             }
         }
     }

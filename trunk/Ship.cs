@@ -1,5 +1,5 @@
 ﻿//
-// ship.cs
+// Ship.cs
 //
 
 using System;
