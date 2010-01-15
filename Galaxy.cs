@@ -26,6 +26,7 @@ namespace galaxy
         public CDebug Debug { get; private set; }
         public Texture2D PixelTexture { get; private set; }
         public CMusic Music { get; private set; }
+        public int GameFrame { get; private set; }
         //public AudioEngine AudioEngine { get; private set; }
         //public SoundBank SoundBank { get; private set; }
         //public WaveBank WaveBank { get; private set; }
@@ -38,6 +39,8 @@ namespace galaxy
             World = new CWorld(this);
             Debug = new CDebug(this);
             Music = new CMusic(this);
+
+            GameFrame = 0;
         }
 
         /// <summary>
@@ -95,6 +98,8 @@ namespace galaxy
             Music.Update();
 
             base.Update(game_time);
+
+            GameFrame += 1;
         }
 
         /// <summary>

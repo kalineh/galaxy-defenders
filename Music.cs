@@ -79,6 +79,9 @@ namespace galaxy
 
         public void Play(string song_name)
         {
+            // TODO: enable when issue 1 is fixed
+            return;
+
             Song = Galaxy.Content.Load<Song>(song_name);
 
             if (Fader != null)
