@@ -13,6 +13,8 @@ namespace galaxy
     public class CEnemy
         : CEntity
     {
+        public float Health { get; protected set; }
+
         public CEnemy(CWorld world, String name)
             : base(world, name)
         {
@@ -45,9 +47,29 @@ namespace galaxy
             circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
         }
 
+        public void TakeDamage(float damage)
+        {
+            Health -= damage;
+            if (Health <= 0.0f)
+                Die();
+        }
+
         public void OnCollide(CShip ship)
         {
             ship.Die();
+        }
+
+        // TODO: replace with generic CWeapon collider
+        public void OnCollide(CLaser laser)
+        {
+            TakeDamage(laser.Damage);
+            laser.Die();
+        }
+        
+        protected override void OnDie()
+        {
+            CExplosion.Spawn(World, Physics.PositionPhysics.Position);
+            base.OnDie();
         }
     }
 }

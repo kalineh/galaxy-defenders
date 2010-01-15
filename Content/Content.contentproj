@@ -101,13 +101,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enemy.png">
-      <Name>Enemy</Name>
+    <Compile Include="SinBall.png">
+      <Name>SinBall</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
     <Compile Include="Ship2.png">
       <Name>Ship2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PewPew.png">
+      <Name>PewPew</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EnemyLaser.png">
+      <Name>EnemyLaser</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

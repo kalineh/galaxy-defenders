@@ -17,15 +17,16 @@ namespace galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Enemy"), Color.White);
+            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Visual = new CVisual(world.Game.Content.Load<Texture2D>("SinBall"), Color.White);
+            Health = 5.0f;
         }
 
         public override void UpdateAI()
         {
             float t = World.Game.GameFrame * 0.05f;
-            float x = (float)Math.Cos(t) * 4.0f;
-            float y = 2.0f;
+            float x = (float)Math.Cos(t) * 2.0f;
+            float y = 1.0f;
             Physics.PositionPhysics.Velocity = new Vector2(x, y);
         }
 
@@ -44,7 +45,6 @@ namespace galaxy
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.PositionPhysics.Position;
-            circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
         }
     }
 }

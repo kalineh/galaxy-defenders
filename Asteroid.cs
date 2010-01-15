@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace galaxy
 {
-    class CAsteroid
+    public class CAsteroid
         : CEntity
     {
         private float _HealthMax;
@@ -26,7 +26,7 @@ namespace galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Asteroid"), Color.White);
             Cracks = new CVisual(world.Game.Content.Load<Texture2D>("Cracks"), Color.White);
             Cracks.Alpha = 0.0f;

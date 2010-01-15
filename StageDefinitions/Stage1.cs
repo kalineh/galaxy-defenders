@@ -18,11 +18,18 @@ namespace galaxy
                     SpawnCount = 100,
                 });
 
-                stage.AddElement(1.0f, new CStageEnemySpawner {
+                stage.AddElement(0.0f, new CStageEnemySpawner {
                     Type = typeof(CSinBall),
                     Frequency = Units.PercentToRatio(5),
                     IncreaseRate = 0.0f,
                     SpawnCount = 10,
+                });
+
+                stage.AddElement(0.0f, new CStageEnemySpawner {
+                    Type = typeof(CPewPew),
+                    Frequency = Units.PercentToRatio(100),
+                    IncreaseRate = 0.0f,
+                    SpawnCount = 1,
                 });
 
                 return stage;
