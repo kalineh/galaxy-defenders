@@ -111,12 +111,16 @@ namespace galaxy
 
         public List<CWeapon> Weapons { get; private set; }
 
-        public CShip(CWorld world, string name, Texture2D texture)
-            : base(world, name, texture)
+        public CShip(CWorld world, Vector2 position)
+            : base(world, "Ship")
         {
-            Visual.Scale = new Vector2(SSettings.VisualScale);
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
             Physics.PositionPhysics.Friction = SSettings.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
+            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
+            Visual.Scale = new Vector2(SSettings.VisualScale);
 
             Weapons = new List<CWeapon>(2);
             Vector2 texture_size = Visual.GetScaledTextureSize() * 0.5f;

@@ -41,11 +41,8 @@ namespace galaxy
             StarsLower = new CStars(this, star_texture, 1.2f, 6.0f);
             StarsUpper = new CStars(this, star_texture, 0.8f, 9.0f);
 
-            Texture2D ship_texture = Game.Content.Load<Texture2D>("Ship");
-
             Entities = new List<CEntity>();
-            CShip ship = new CShip(this, "Ship", ship_texture);
-            ship.Physics.PositionPhysics.Position = new Vector2(300.0f, 400.0f);
+            CShip ship = new CShip(this, new Vector2(300.0f, 400.0f));
             Entities.Add(ship);
 
             Game.Music.Play("Stage1");
@@ -115,8 +112,12 @@ namespace galaxy
                         continue;
                     }
 
-                    if (inner.Collision.Enabled == false ||
-                        outer.Collision.Enabled == false)
+                    if (inner.Collision == null || outer.Collision == null)
+                    {
+                        continue;
+                    }
+
+                    if (inner.Collision.Enabled == false || outer.Collision.Enabled == false)
                     {
                         continue;
                     }

@@ -6,7 +6,6 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using galaxy;
 
 namespace galaxy
 {
@@ -15,8 +14,7 @@ namespace galaxy
     {
         public static CLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            Texture2D texture = world.Game.Content.Load<Texture2D>("Laser");
-            CLaser laser = new CLaser(world, "Laser", texture, damage);
+            CLaser laser = new CLaser(world, damage);
 
             laser.Physics.AnglePhysics.Rotation = rotation;
             laser.Physics.PositionPhysics.Position = position;
@@ -29,9 +27,12 @@ namespace galaxy
 
         public float Damage { get; private set; }
 
-        public CLaser(CWorld world, String name, Texture2D texture, float damage)
-            : base(world, name, texture)
+        public CLaser(CWorld world, float damage)
+            : base(world, "Laser")
         {
+            Physics = new CPhysics();
+            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Laser"), Color.White);
+            Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }
 
@@ -46,9 +47,8 @@ namespace galaxy
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these
-            CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
-            circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
+            CollisionAABB box = Collision as CollisionAABB;
+            box.Position = Physics.PositionPhysics.Position;
         }
 
         public void OnCollide(CAsteroid asteroid)

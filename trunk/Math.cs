@@ -73,4 +73,17 @@ namespace galaxy
             return self.NextDouble() < 0.5 ? -1.0f : 1.0f;
         }
     }
+
+    public static class Units
+    {
+        public static float PercentToRatio(float percent)
+        {
+            return percent / 100.0f;
+        }
+
+        public static float PercentToRatio(int percent)
+        {
+            return (float)percent / 100.0f;
+        }
+    }
 }

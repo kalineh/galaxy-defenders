@@ -40,7 +40,7 @@ namespace galaxy
             {
                 if (vs.GetType() == typeof(CollisionCircle))
                 {
-                    return CircleCircle((CollisionCircle)this, (CollisionCircle)vs);
+                    return BoxCircle((CollisionAABB)this, (CollisionCircle)vs);
                 }
                 if (vs.GetType() == typeof(CollisionAABB))
                 {
