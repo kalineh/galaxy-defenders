@@ -22,7 +22,7 @@ namespace galaxy
         private CStars StarsLower { get; set; }
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
-        public float AsteroidSpawn { get; set; }
+        private CStage Stage { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -31,7 +31,6 @@ namespace galaxy
             Entities = new List<CEntity>();
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
-            AsteroidSpawn = 0.05f;
         }
 
         // TODO: stage definition param
@@ -50,11 +49,14 @@ namespace galaxy
             Entities.Add(ship);
 
             Game.Music.Play("Stage1");
+
+            CStageDefinition stage_definition = Stages.Stage1.GenerateDefinition();
+            Stage = new CStage(this, stage_definition);
         }
 
         public void Update()
         {
-            UpdateAsteroidSpawn();
+            Stage.Update();
 
             StarsLower.Update();
             StarsUpper.Update();
@@ -177,20 +179,6 @@ namespace galaxy
                 Entities.Remove(entity);
             }
             EntitiesToDelete.Clear();
-        }
-
-        private void UpdateAsteroidSpawn()
-        {
-            AsteroidSpawn += 0.00005f;
-            if (Random.NextFloat() < AsteroidSpawn)
-            {
-                CAsteroid.Spawn(this);
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.C))
-            {
-                CEnemy.Spawn(this, new Vector2(100, 100));
-            }
         }
     }
 }

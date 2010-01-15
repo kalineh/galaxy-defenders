@@ -82,6 +82,7 @@ namespace galaxy
             // TODO: enable when issue 1 is fixed
             return;
 
+            /*
             Song = Galaxy.Content.Load<Song>(song_name);
 
             if (Fader != null)
@@ -92,6 +93,7 @@ namespace galaxy
             Fader = new Thread(new ParameterizedThreadStart(CFader.FadeInFromZero));
             Fader.Name = "MusicFadeThread";
             Fader.Start(Song);
+            */
         }
 
         public void Stop()

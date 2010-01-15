@@ -10,7 +10,7 @@ using galaxy;
 
 namespace galaxy
 {
-    class CEnemy
+    public class CEnemy
         : CEntity
     {
         public static CEnemy Spawn(CWorld world, Vector2 position)

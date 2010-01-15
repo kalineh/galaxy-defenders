@@ -23,9 +23,10 @@ namespace galaxy
             Game.SpriteBatch.DrawString(Game.DefaultFont, text, position, Color.White); 
         }
 
-        public void DrawDisk(Vector2 position, float scale)
+        public void DrawDisk(Vector2 position, float radius)
         {
-            Vector2 center = position - new Vector2(scale / 2.0f);
+            Vector2 center = position - new Vector2(radius);
+            Vector2 scale = new Vector2(radius * 2.0f);
             Game.SpriteBatch.Draw(Game.PixelTexture, center, null, Color.White, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 0.0f);
         }
 
