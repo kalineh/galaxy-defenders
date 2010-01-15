@@ -3,31 +3,20 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using galaxy;
 
 namespace galaxy
 {
     public class CEnemy
         : CEntity
     {
-        public static CEnemy Spawn(CWorld world, Vector2 position)
+        public CEnemy(CWorld world, String name)
+            : base(world, name)
         {
-            Texture2D texture = world.Game.Content.Load<Texture2D>("Enemy");
-            CEnemy enemy = new CEnemy(world, "Enemy", texture);
-
-            enemy.Physics.PositionPhysics.Position = position;
-
-            world.EntityAdd(enemy);
-
-            return enemy;
-        }
-
-        public CEnemy(CWorld world, String name, Texture2D texture)
-            : base(world, name, texture)
-        {
+            Physics = new CPhysics();
         }
 
         public virtual void UpdateAI()

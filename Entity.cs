@@ -16,22 +16,32 @@ namespace galaxy
         public CVisual Visual { get; set; }
         public Collision Collision { get; set; }
 
-        public CEntity(CWorld world, String name, Texture2D texture)
+        public CEntity(CWorld world, String name)
         {
             World = world;
             Name = name;
-            Physics = new CPhysics();
-            Visual = new CVisual(texture, Color.White);
-            Collision = new CollisionCircle(Vector2.Zero, 0.0f);
-            UpdateCollision();
+            Physics = null;
+            Visual = null;
+            Collision = null;
         }
 
         public virtual void Update()
         {
-            Physics.PositionPhysics.Solve();
-            Physics.AnglePhysics.Solve();
-            UpdateCollision();
-            Visual.Update();
+            if (Physics != null)
+            {
+                Physics.PositionPhysics.Solve();
+                Physics.AnglePhysics.Solve();
+            }
+
+            if (Collision != null)
+            {
+                UpdateCollision();
+            }
+
+            if (Visual != null)
+            {
+                Visual.Update();
+            }
         }
 
         public virtual void UpdateCollision()
