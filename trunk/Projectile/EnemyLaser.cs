@@ -1,5 +1,5 @@
 ﻿//
-// Laser.cs
+// EnemyLaser.cs
 //
 
 using System;
@@ -9,12 +9,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace galaxy
 {
-    class CLaser
+    public class CEnemyLaser
         : CEntity
     {
-        public static CLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CEnemyLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CLaser laser = new CLaser(world, damage);
+            CEnemyLaser laser = new CEnemyLaser(world, damage);
 
             laser.Physics.AnglePhysics.Rotation = rotation;
             laser.Physics.PositionPhysics.Position = position;
@@ -27,11 +27,11 @@ namespace galaxy
 
         public float Damage { get; private set; }
 
-        public CLaser(CWorld world, float damage)
-            : base(world, "Laser")
+        public CEnemyLaser(CWorld world, float damage)
+            : base(world, "EnemyLaser")
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Laser"), Color.White);
+            Visual = new CVisual(world.Game.Content.Load<Texture2D>("EnemyLaser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }
@@ -54,6 +54,11 @@ namespace galaxy
         public void OnCollide(CAsteroid asteroid)
         {
             Die();
+        }
+
+        public void OnCollide(CShip ship)
+        {
+            ship.Die();
         }
     }
 }

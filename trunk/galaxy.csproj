@@ -87,11 +87,13 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Debug.cs" />
+    <Compile Include="Enemy\PewPew.cs" />
     <Compile Include="Enemy\SinBall.cs" />
     <Compile Include="Enemy\Enemy.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Explosion.cs" />
-    <Compile Include="Laser.cs" />
+    <Compile Include="Projectile\EnemyLaser.cs" />
+    <Compile Include="Projectile\Laser.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Music.cs" />
     <Compile Include="Physics.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\Weapon.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
