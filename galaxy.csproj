@@ -101,6 +101,7 @@
     <Compile Include="Mover\SinMover.cs" />
     <Compile Include="Mover\Mover.cs" />
     <Compile Include="OneShotAnimation.cs" />
+    <Compile Include="Projectile\Missile.cs" />
     <Compile Include="Projectile\EnemyLaser.cs" />
     <Compile Include="Projectile\Laser.cs" />
     <Compile Include="Math.cs" />
@@ -122,6 +123,10 @@
     <Compile Include="Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\WeaponDefinitions.cs" />
+    <Compile Include="Weapon\WeaponLaser.cs" />
+    <Compile Include="Weapon\WeaponTest.cs" />
+    <Compile Include="Weapon\WeaponMissile.cs" />
     <Compile Include="Weapon\Weapon.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>

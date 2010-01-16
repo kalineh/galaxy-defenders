@@ -1,0 +1,3 @@
+﻿//
+// WeaponDefinitions.cs
+//

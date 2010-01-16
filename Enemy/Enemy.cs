@@ -69,6 +69,12 @@ namespace Galaxy
             laser.Die();
         }
         
+        public void OnCollide(CMissile missile)
+        {
+            TakeDamage(missile.Damage);
+            missile.Die();
+        }
+        
         protected override void OnDie()
         {
             CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);

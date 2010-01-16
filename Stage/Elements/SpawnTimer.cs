@@ -51,7 +51,7 @@ namespace Galaxy
 
         public override int Update(CWorld world)
         {
-            Cooldown -= Time.ToSeconds(1);
+            Cooldown -= Time.SingleFrame;
             if (Cooldown <= 0.0f)
             {
                 Cooldown = Delay;
