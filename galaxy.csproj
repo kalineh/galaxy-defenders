@@ -109,8 +109,9 @@
     <Compile Include="StageDefinition.cs" />
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="Stage\Elements\AsteroidRandomSpawner.cs" />
+    <Compile Include="Stage\Elements\SpawnTimer.cs" />
     <Compile Include="Stage\Elements\SpawnPosition.cs" />
-    <Compile Include="Stage\Elements\EnemyRandomSpawner.cs" />
+    <Compile Include="Stage\Elements\EntitySpawner.cs" />
     <Compile Include="Stage\Elements\StageElement.cs" />
     <Compile Include="Stars.cs" />
     <Compile Include="Time.cs" />

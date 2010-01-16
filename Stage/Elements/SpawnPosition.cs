@@ -12,7 +12,7 @@ namespace Galaxy
         public abstract Vector2 GetSpawnPosition(CWorld world);
     };
 
-    public class CRandomSpawnPosition
+    public class CSpawnPositionRandom
         : CSpawnPosition
     {
         public override Vector2 GetSpawnPosition(CWorld world)
@@ -24,7 +24,7 @@ namespace Galaxy
         }
     };
 
-    public class CFixedSpawnPosition
+    public class CSpawnPositionFixed
         : CSpawnPosition
     {
         public Vector2 Position { get; set; }
