@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace galaxy
+namespace Galaxy
 {
     public class CSinBall
         : CEnemy
@@ -20,14 +20,11 @@ namespace galaxy
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("SinBall"), Color.White);
             Health = 5.0f;
+            Mover = new CSinMover() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }
 
         public override void UpdateAI()
         {
-            float t = World.Game.GameFrame * 0.05f;
-            float x = (float)Math.Cos(t) * 2.0f;
-            float y = 1.0f;
-            Physics.PositionPhysics.Velocity = new Vector2(x, y);
         }
 
         public override void Update()

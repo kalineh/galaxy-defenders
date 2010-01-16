@@ -1,5 +1,5 @@
 ﻿//
-// AsteroidSpawner.cs
+// AsteroidRandomSpawner.cs
 //
 
 using System;
@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace galaxy
+namespace Galaxy
 {
-    public class CStageAsteroidSpawner
+    public class CStageAsteroidRandomSpawner
         : CStageElement
     {
         public float Frequency { get; set; }

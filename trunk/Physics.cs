@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 // TODO: mass
 // TODO: max speed
 
-namespace galaxy
+namespace Galaxy
 {
     public class CSimplePositionPhysics
     {

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 // TODO: collision results retrieval
 // TODO: !!! cache bounding objects
 
-namespace galaxy
+namespace Galaxy
 {
     public class Collision
     {

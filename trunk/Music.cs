@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Storage;
 
-namespace galaxy
+namespace Galaxy
 {
     public class CFader
     {
@@ -57,11 +57,6 @@ namespace galaxy
         {
             FadeOut(obj);
             FadeIn(obj);
-        }
-
-        public static void TestFu(object obj)
-        {
-            Console.WriteLine(obj.ToString());
         }
     }
 

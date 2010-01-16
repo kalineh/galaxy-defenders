@@ -1,5 +1,5 @@
 ﻿//
-// EnemySpawner.cs
+// EnemyRandomSpawner.cs
 //
 
 using System;
@@ -8,15 +8,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace galaxy
+namespace Galaxy
 {
-    public class CStageEnemySpawner
+    public class CStageEnemyRandomSpawner
         : CStageElement
     {
         public System.Type Type { get; set; }
         public float Frequency { get; set; }
         public float IncreaseRate { get; set; }
         public int SpawnCount { get; set; }
+        public CSpawnPosition SpawnPosition { get; set; }
+        public CMover CustomMover { get; set; }
 
         public override void Update(CWorld world)
         {
@@ -24,8 +26,14 @@ namespace galaxy
 
             if (SpawnCount > 0 && world.Random.NextFloat() < Frequency)
             {
-                Vector2 spawn_position = GetRandomSpawnPosition(world);
+                Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
                 CEnemy enemy = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEnemy;
+
+                if (CustomMover != null)
+                {
+                    enemy.Mover = CustomMover;
+                }
+
                 world.EntityAdd(enemy);
                 SpawnCount -= 1;
             }
