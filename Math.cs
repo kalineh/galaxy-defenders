@@ -72,6 +72,16 @@ namespace Galaxy
         {
             return self.NextDouble() < 0.5 ? -1.0f : 1.0f;
         }
+
+        public static Vector2 NextVector2(this Random self)
+        {
+            return Vector2.UnitX.Rotate(self.NextFloat() * MathHelper.TwoPi);
+        }
+
+        public static Vector2 NextVector2(this Random self, float magnitude)
+        {
+            return Vector2.UnitX.Rotate(self.NextFloat() * MathHelper.TwoPi) * magnitude;
+        }
     }
 
     public static class Units
