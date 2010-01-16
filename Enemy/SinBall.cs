@@ -17,7 +17,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("SinBall"), Color.White);
             Health = 5.0f;
             Mover = new CSinMover() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };

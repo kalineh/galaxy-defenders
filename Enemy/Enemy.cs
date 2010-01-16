@@ -13,7 +13,7 @@ namespace Galaxy
     public class CEnemy
         : CEntity
     {
-        public float Health { get; protected set; }
+        public float Health { get; set; }
 
         public CEnemy(CWorld world, String name)
             : base(world, name)
@@ -51,7 +51,10 @@ namespace Galaxy
         {
             Health -= damage;
             if (Health <= 0.0f)
+            {
+                World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
                 Die();
+            }
         }
 
         public void OnCollide(CShip ship)
