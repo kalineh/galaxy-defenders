@@ -71,7 +71,7 @@ namespace Galaxy
         
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position);
+            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
             base.OnDie();
         }
     }

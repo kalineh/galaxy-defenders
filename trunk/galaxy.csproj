@@ -14,7 +14,12 @@
     <XnaCrossPlatformGroupID>85badecf-3032-4508-8713-f13a2766521b</XnaCrossPlatformGroupID>
     <ApplicationIcon>Galaxy.ico</ApplicationIcon>
     <Thumbnail>GalaxyThumbnail.png</Thumbnail>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ManifestCertificateThumbprint>E75D717ABD4C4CD9BC057EC4D602A93916DA964D</ManifestCertificateThumbprint>
+    <ManifestKeyFile>galaxy_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>true</SignManifests>
+    <PublishUrl>E:\Dev\galaxy-publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,9 +29,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -96,6 +100,7 @@
     <Compile Include="Mover\FixedVelocityMover.cs" />
     <Compile Include="Mover\SinMover.cs" />
     <Compile Include="Mover\Mover.cs" />
+    <Compile Include="OneShotAnimation.cs" />
     <Compile Include="Projectile\EnemyLaser.cs" />
     <Compile Include="Projectile\Laser.cs" />
     <Compile Include="Math.cs" />
@@ -112,7 +117,7 @@
     <Compile Include="Stage\Elements\AsteroidSpawner.cs" />
     <Compile Include="Stage\Elements\SpawnTimer.cs" />
     <Compile Include="Stage\Elements\SpawnPosition.cs" />
-    <Compile Include="Stage\Elements\EntitySpawner.cs" />
+    <Compile Include="Stage\Elements\SpawnerEntity.cs" />
     <Compile Include="Stage\Elements\StageElement.cs" />
     <Compile Include="Stars.cs" />
     <Compile Include="Time.cs" />
@@ -156,6 +161,9 @@
       <ProductName>Microsoft XNA Framework Redistributable 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="galaxy_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
