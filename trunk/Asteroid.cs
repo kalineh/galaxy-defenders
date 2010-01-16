@@ -64,6 +64,16 @@ namespace Galaxy
             }
         }
 
+        public void OnCollide(CMissile missile)
+        {
+            Health -= missile.Damage;
+            Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
+            Cracks.Alpha = 1.0f - Health / HealthMax;
+            if (Health < 0.0f)
+            {
+                Die();
+            }
+        }
 
         protected override void OnDie()
         {
