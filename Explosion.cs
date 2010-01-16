@@ -10,38 +10,24 @@ using Microsoft.Xna.Framework.Input;
 namespace Galaxy
 {
     class CExplosion
-        : CEntity
     {
-        public static CExplosion Spawn(CWorld world, Vector2 position)
+        public static CEntity Spawn(CWorld world, Vector2 position, float scale)
         {
-            CExplosion explosion = new CExplosion(world, 1.0f);
+            COneShotAnimation animation = new COneShotAnimation(world,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = world.Random.NextAngle(),
+                    TextureName = "Explosion",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 0.5f,
+                    Scale = scale,
+                }
+            );
 
-            explosion.Physics.PositionPhysics.Position = position;
-            explosion.Physics.AnglePhysics.Rotation = world.Random.NextAngle();
-
-            world.EntityAdd(explosion);
-
-            return explosion;
-        }
-
-        public CExplosion(CWorld world, float scale)
-            : base(world, "Explosion")
-        {
-            Texture2D texture = world.Game.Content.Load<Texture2D>("Explosion");
-            Physics = new CPhysics();
-            Visual = new CVisual(texture, Color.White);
-            Visual.TileX = 4;
-            Visual.TileY = 4;
-            Visual.AnimationSpeed = 0.5f;
-            Visual.Scale = new Vector2(scale);
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            if (Visual.Frame >= Visual.TileX * Visual.TileY)
-                Die();
+            world.EntityAdd(animation);
+            return animation;
         }
     }
 }

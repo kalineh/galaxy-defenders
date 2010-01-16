@@ -79,6 +79,7 @@ namespace Galaxy
             }
 
             sprite_batch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
+            sprite_batch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
             sprite_batch.End();
         }
@@ -147,7 +148,14 @@ namespace Galaxy
                             if (param != inner_type)
                                 continue;
 
-                            method.Invoke(outer, new object[] { inner });
+                            try
+                            {
+                                method.Invoke(outer, new object[] { inner });
+                            }
+                            catch (Exception exception)
+                            {
+                                throw exception.InnerException;
+                            }
                         }
 
                         //var method = from m in methods where m.Name == "OnCollide" && m.GetParameters()[0].GetType() == inner_type select m;

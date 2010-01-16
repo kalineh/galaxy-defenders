@@ -32,6 +32,7 @@ namespace Galaxy
         // TODO: game object sprite def?
 
         public List<CWeapon> Weapons { get; private set; }
+        public List<CWeapon> WeaponsAlternate { get; private set; }
 
         public CShip(CWorld world, Vector2 position)
             : base(world, "Ship")
@@ -44,12 +45,12 @@ namespace Galaxy
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
-            Weapons = new List<CWeapon>(2);
-            Vector2 texture_size = Visual.GetScaledTextureSize() * 0.5f;
-            //Weapons.Add(new CWeapon(this, new Vector2(-texture_size.X, texture_size.Y)));
-            //Weapons.Add(new CWeapon(this, new Vector2(texture_size.X, texture_size.Y)));
-            Weapons.Add(new CWeapon(this, new Vector2(0.0f, 10.0f)));
-            Weapons.Add(new CWeapon(this, new Vector2(0.0f, -10.0f)));
+            Weapons = new List<CWeapon>(1);
+            Weapons.Add(new CWeapon(this, new Vector2(0.0f, 0.0f)));
+
+            WeaponsAlternate = new List<CWeapon>(2);
+            WeaponsAlternate.Add(new CWeapon(this, new Vector2(0.0f, 10.0f)));
+            WeaponsAlternate.Add(new CWeapon(this, new Vector2(0.0f, -10.0f)));
         }
 
         public override void Update()
@@ -78,7 +79,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position);
+            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
         }
 
         private void UpdateInput()
@@ -97,32 +98,31 @@ namespace Galaxy
             if (dpad.Left == ButtonState.Pressed || kb.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
             if (dpad.Right == ButtonState.Pressed || kb.IsKeyDown(Keys.Right) ) { force.X += Speed; }
 
-            // directional
-            //Physics.PositionPhysics.Velocity += force.Rotate(MathHelper.PiOver2).Rotate(Physics.AnglePhysics.Rotation);
-            // direct
             Physics.PositionPhysics.Velocity += force;
 
-            if (kb.IsKeyDown(Keys.A)) { Physics.AnglePhysics.Rotation -= 0.1f; }
-            if (kb.IsKeyDown(Keys.D)) { Physics.AnglePhysics.Rotation += 0.1f; }
+            if (kb.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
+            if (kb.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || kb.IsKeyDown(Keys.S))
             {
-                Fire();
+                Fire(Weapons);
+            }
+            if (buttons.X == ButtonState.Pressed || kb.IsKeyDown(Keys.D))
+            {
+                Fire(WeaponsAlternate);
             }
         }
 
         private void UpdateWeapons()
         {
-            foreach (CWeapon weapon in Weapons)
-            {
-                weapon.Update();
-            }
+            Weapons.ForEach(weapon => weapon.Update());
+            WeaponsAlternate.ForEach(weapon => weapon.Update());
         }
 
-        private void Fire()
+        private void Fire(List<CWeapon> weapons)
         {
-            foreach (CWeapon weapon in Weapons)
+            foreach (CWeapon weapon in weapons)
             {
                 bool fired = weapon.TryFire();
                 if (fired)

@@ -74,10 +74,6 @@ namespace Galaxy
 
         public void Play(string song_name)
         {
-            // TODO: enable when issue 1 is fixed
-            return;
-
-            /*
             Song = Galaxy.Content.Load<Song>(song_name);
 
             if (Fader != null)
@@ -87,8 +83,8 @@ namespace Galaxy
 
             Fader = new Thread(new ParameterizedThreadStart(CFader.FadeInFromZero));
             Fader.Name = "MusicFadeThread";
-            Fader.Start(Song);
-            */
+            // TODO: fix music system
+            //Fader.Start(Song);
         }
 
         public void Stop()
@@ -99,7 +95,8 @@ namespace Galaxy
             }
 
             Fader = new Thread(new ParameterizedThreadStart(CFader.FadeOut));
-            Fader.Start(Song);
+            // TODO: fix music system
+            //Fader.Start(Song);
         }
 
         public void Update()

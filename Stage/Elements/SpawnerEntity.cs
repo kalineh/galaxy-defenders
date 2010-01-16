@@ -1,5 +1,5 @@
 ﻿//
-// EnemySpawner.cs
+// SpawnerEntity.cs
 //
 
 using System;
@@ -37,15 +37,23 @@ namespace Galaxy
         private void Spawn(CWorld world)
         {
             Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
-            CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
 
-            if (CustomElement != null)
+            try
             {
-                CustomElement.Customize(entity);
-            }
+                CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
 
-            world.EntityAdd(entity);
-            SpawnCount -= 1;
+                if (CustomElement != null)
+                {
+                    CustomElement.Customize(entity);
+                }
+
+                world.EntityAdd(entity);
+                SpawnCount -= 1;
+            }
+            catch (Exception exception)
+            {
+                throw exception.InnerException;
+            }
         }
     }
 

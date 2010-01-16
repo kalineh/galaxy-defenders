@@ -16,7 +16,8 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Physics.PositionPhysics.Velocity = Vector2.UnitY * 0.2f;
+            Physics.PositionPhysics.Velocity = Vector2.UnitY * 1.5f;
+            Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Bonus"), Color.White);
         }

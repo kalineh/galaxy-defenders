@@ -90,7 +90,7 @@ namespace Galaxy
                 this.Exit();
 
             // World update.
-            if (!Keyboard.GetState().IsKeyDown(Keys.X))
+            if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 World.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);

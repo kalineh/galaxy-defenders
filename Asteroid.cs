@@ -67,7 +67,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position);
+            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
             World.Score += 100;
             base.OnDie();
         }
