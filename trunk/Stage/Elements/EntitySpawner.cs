@@ -54,6 +54,19 @@ namespace Galaxy
         public abstract void Customize(CEntity entity);
     }
 
+    public class CSpawnerCustomCode
+        : CSpawnerCustomElement
+    {
+        public delegate void CustomizeFunction(CEntity entity);
+
+        public CustomizeFunction Code { get; set; }
+
+        public override void Customize(CEntity entity)
+        {
+            Code.Invoke(entity);
+        }
+    }
+
     public class CSpawnerCustomMover
         : CSpawnerCustomElement
     {
