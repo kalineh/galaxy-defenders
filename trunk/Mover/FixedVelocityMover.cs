@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CFixedVelocityMover
+    public class CMoverFixedVelocity
         : CMover
     {
         public Vector2 Velocity { get; set; }

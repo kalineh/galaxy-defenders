@@ -64,6 +64,7 @@ namespace Galaxy
             }
         }
 
+
         protected override void OnDie()
         {
             CExplosion.Spawn(World, Physics.PositionPhysics.Position);
