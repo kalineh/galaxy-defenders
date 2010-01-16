@@ -70,9 +70,6 @@ namespace Galaxy
             UpdateAI();
 
             base.Update();
-
-            if (IsOffScreenBottom())
-                Die();
         }
 
         public override void UpdateCollision()

@@ -73,6 +73,11 @@ namespace Galaxy
         {
             OnDie();
             World.EntityDelete(this);
+
+            Physics = null;
+            Visual = null;
+            Collision = null;
+            Mover = null;
         }
 
         protected virtual void OnDie()

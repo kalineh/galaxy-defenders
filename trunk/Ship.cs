@@ -23,8 +23,8 @@ namespace Galaxy
 
         static CShip()
         {
-            SSettings.VisualScale = 0.2f;
-            SSettings.MovementSpeed = 2.0f;
+            SSettings.VisualScale = 0.25f;
+            SSettings.MovementSpeed = 1.0f;
             SSettings.Friction = 0.8f;
         }
 
@@ -46,12 +46,14 @@ namespace Galaxy
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
             Weapons = new List<CWeapon>(2);
+
             Weapons.Add(new CWeaponLaser(this, new Vector2(0.0f, -10.0f)) {
                 Damage = 1.0f,
                 ReloadTime = 0.2f,
                 Speed = 8.0f,
                 KickbackForce = 0.0f,
                 });
+
             Weapons.Add(new CWeaponLaser(this, new Vector2(0.0f, 10.0f)) {
                 Damage = 1.0f,
                 ReloadTime = 0.2f,
@@ -60,10 +62,11 @@ namespace Galaxy
                 });
 
             WeaponsAlternate = new List<CWeapon>(1);
+
             WeaponsAlternate.Add(new CWeaponMissile(this, new Vector2(0.0f, 0.0f)) {
-                Damage = 3.0f,
-                ReloadTime = 1.0f,
-                Speed = 2.0f,
+                Damage = 4.0f,
+                ReloadTime = 2.0f,
+                Speed = 6.0f,
                 KickbackForce = 9.0f,
                 });
         }
@@ -71,7 +74,6 @@ namespace Galaxy
         public override void Update()
         {
             UpdateInput();
-
             UpdateWeapons();
 
             base.Update();

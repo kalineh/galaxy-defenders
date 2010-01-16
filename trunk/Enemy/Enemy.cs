@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,11 +15,13 @@ namespace Galaxy
         : CEntity
     {
         public float Health { get; set; }
+        public int BonusDrop { get; set; }
 
         public CEnemy(CWorld world, String name)
             : base(world, name)
         {
             Physics = new CPhysics();
+            BonusDrop = 3;
         }
 
         public virtual void UpdateAI()
@@ -52,7 +55,11 @@ namespace Galaxy
             Health -= damage;
             if (Health <= 0.0f)
             {
-                World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
+                foreach (int i in Enumerable.Range(0, BonusDrop))
+                {
+                    World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
+                }
+
                 Die();
             }
         }

@@ -51,6 +51,13 @@ namespace Galaxy
             Stage = new CStage(this, stage_definition);
         }
 
+        public void Stop()
+        {
+            Entities.Clear();
+            EntitiesToAdd.Clear();
+            EntitiesToDelete.Clear();
+        }
+
         public void Update()
         {
             Stage.Update();
@@ -92,6 +99,11 @@ namespace Galaxy
         public void EntityDelete(CEntity entity)
         {
             EntitiesToDelete.Add(entity);
+        }
+
+        public IEnumerable<CEntity> GetEntitiesOfType(Type type)
+        {
+            return Entities.Where(entity => entity.GetType() == type);
         }
 
         private void ProcessEntityUpdates()
