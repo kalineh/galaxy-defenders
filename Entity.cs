@@ -6,7 +6,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace galaxy
+namespace Galaxy
 {
     public class CEntity
     {
@@ -15,6 +15,7 @@ namespace galaxy
         public CPhysics Physics { get; set; }
         public CVisual Visual { get; set; }
         public Collision Collision { get; set; }
+        public CMover Mover { get; set; }
 
         public CEntity(CWorld world, String name)
         {
@@ -23,10 +24,16 @@ namespace galaxy
             Physics = null;
             Visual = null;
             Collision = null;
+            Mover = null;
         }
 
         public virtual void Update()
         {
+            if (Mover != null)
+            {
+                Mover.Move(this);
+            }
+
             if (Physics != null)
             {
                 Physics.PositionPhysics.Solve();

@@ -6,7 +6,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace galaxy
+namespace Galaxy
 {
     public class CDebug
     {

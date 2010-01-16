@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
-namespace galaxy
+namespace Galaxy
 {
     /// <summary>
     /// This is the main type for your game
