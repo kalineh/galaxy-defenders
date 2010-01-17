@@ -21,20 +21,18 @@ namespace Galaxy
                 StageTime += 2.0f;
                 stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CAsteroid),
-                    SpawnCount = 10,
+                    SpawnCount = 20,
                     SpawnPosition = new CSpawnPositionRandom(),
-                    SpawnTimer = new CSpawnTimerRandom() { Frequency = 0.11f, IncreaseRate = 0.01f },
+                    SpawnTimer = new CSpawnTimerRandom() { Frequency = 0.07f, IncreaseRate = 0.0f },
                     CustomElement = new CSpawnerCustomAsteroid(),
                 });
 
-
                 // Turret wave
                 StageTime += 6.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity
-                {
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
-                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
+                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(350.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
                     CustomElement = new CSpawnerCustomMover() {
                         Mover = new CMoverSequence() {
@@ -58,7 +56,7 @@ namespace Galaxy
                 {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
-                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(500.0f, -100.0f) },
+                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(450.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
                     CustomElement = new CSpawnerCustomMover() {
                         Mover = new CMoverSequence() {
@@ -168,7 +166,18 @@ namespace Galaxy
                 boss.Health *= 15.0f;
                 boss.BonusDrop = 30;
                 boss.Visual.Scale *= 2.5f;
-                boss.Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 0.3f) };
+                boss.Mover = new CMoverSequence()
+                {
+                    Velocity = new List<Vector2>() {
+                        new Vector2(0.0f, 1.0f),
+                        new Vector2(0.0f, 0.0f),
+                    },
+                    Duration = new List<float>() {
+                        3.5f,
+                        0.0f,
+                    },
+                    VelocityLerpRate = 0.02f,
+                };
                 CollisionCircle collision = boss.Collision as CollisionCircle;
                 collision.Radius *= 2.5f;
             }

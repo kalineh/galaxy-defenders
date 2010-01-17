@@ -22,7 +22,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 32.0f);
+            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Turret"), Color.White);
             Health = 3.0f;
 

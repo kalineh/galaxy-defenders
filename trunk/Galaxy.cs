@@ -22,21 +22,17 @@ namespace Galaxy
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
-        public CWorld World { get; private set; }
         public CDebug Debug { get; private set; }
         public Texture2D PixelTexture { get; private set; }
         public CMusic Music { get; private set; }
         public int GameFrame { get; private set; }
-        //public AudioEngine AudioEngine { get; private set; }
-        //public SoundBank SoundBank { get; private set; }
-        //public WaveBank WaveBank { get; private set; }
+        public CState State { get; set; }
 
         public CGalaxy()
         {
             Content.RootDirectory = "Content";
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            World = new CWorld(this);
             Debug = new CDebug(this);
             Music = new CMusic(this);
 
@@ -65,8 +61,8 @@ namespace Galaxy
             DefaultFont = Content.Load<SpriteFont>("DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Pixel");
 
-            // Create default world state.
-            World.Start();
+            // Enter our default state now that assets are ready.
+            State = new CStateMainMenu(this);
         }
 
         /// <summary>
@@ -89,9 +85,9 @@ namespace Galaxy
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // World update.
+            // State update.
             if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift))
-                World.Update();
+                State.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);
 
@@ -108,8 +104,7 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime game_time)
         {
-            World.Draw(SpriteBatch);
-
+            State.Draw(SpriteBatch);
             base.Draw(game_time);
         }
     }
