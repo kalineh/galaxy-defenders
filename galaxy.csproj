@@ -91,6 +91,11 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Bonus.cs" />
+    <Compile Include="Fader.cs" />
+    <Compile Include="State\StateFadeTo.cs" />
+    <Compile Include="State\StateGame.cs" />
+    <Compile Include="State\State.cs" />
+    <Compile Include="State\StateMainMenu.cs" />
     <Compile Include="Powerup.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Enemy\Turret.cs" />

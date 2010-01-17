@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 
 namespace Galaxy
 {
-    public class CFader
+    public class CCrossFader
     {
         public static void FadeIn(object obj)
         {
@@ -64,39 +64,39 @@ namespace Galaxy
     {
         public CGalaxy Galaxy { get; private set; }
         public Song Song { get; private set; }
-        private Thread Fader { get; set; }
+        private Thread CrossFader { get; set; }
 
         public CMusic(CGalaxy galaxy)
         {
             Galaxy = galaxy;
-            Fader = null;
+            CrossFader = null;
         }
 
         public void Play(string song_name)
         {
             Song = Galaxy.Content.Load<Song>(song_name);
 
-            if (Fader != null)
+            if (CrossFader != null)
             {
-                Fader.Abort();
+                CrossFader.Abort();
             }
 
-            Fader = new Thread(new ParameterizedThreadStart(CFader.FadeInFromZero));
-            Fader.Name = "MusicFadeThread";
+            CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
+            CrossFader.Name = "MusicFadeThread";
             // TODO: fix music system
-            //Fader.Start(Song);
+            //CrossFader.Start(Song);
         }
 
         public void Stop()
         {
-            if (Fader != null)
+            if (CrossFader != null)
             {
-                Fader.Abort();
+                CrossFader.Abort();
             }
 
-            Fader = new Thread(new ParameterizedThreadStart(CFader.FadeOut));
+            CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeOut));
             // TODO: fix music system
-            //Fader.Start(Song);
+            //CrossFader.Start(Song);
         }
 
         public void Update()
