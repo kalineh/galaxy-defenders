@@ -79,6 +79,12 @@ namespace Galaxy
         {
             CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
             World.Score += 100;
+
+            if (World.Random.NextFloat() < 0.05f)
+            {
+                World.EntityAdd(new CPowerup(World, Physics.PositionPhysics.Position));
+            }
+
             base.OnDie();
         }
 

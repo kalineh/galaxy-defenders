@@ -91,6 +91,7 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Bonus.cs" />
+    <Compile Include="Powerup.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Enemy\Turret.cs" />
     <Compile Include="Enemy\PewPew.cs" />
