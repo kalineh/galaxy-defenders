@@ -13,7 +13,7 @@ namespace Galaxy
     public class CSpawnerEntity
         : CStageElement
     {
-        public System.Type Type { get; set; }
+        public Type Type { get; set; }
         public int SpawnCount { get; set; }
         public CSpawnTimer SpawnTimer { get; set; }
         public CSpawnPosition SpawnPosition { get; set; }

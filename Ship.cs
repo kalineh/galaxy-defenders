@@ -45,6 +45,10 @@ namespace Galaxy
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
+            Weapons = CWeaponFactory.GenerateWeapon(this, typeof(CWeaponLaser), 0);
+            WeaponsAlternate = new List<CWeapon>();
+
+            /*
             Weapons = new List<CWeapon>(2);
 
             Weapons.Add(new CWeaponLaser(this, new Vector2(0.0f, -10.0f)) {
@@ -69,6 +73,7 @@ namespace Galaxy
                 Speed = 6.0f,
                 KickbackForce = 9.0f,
                 });
+             */
         }
 
         public override void Update()
@@ -119,6 +124,12 @@ namespace Galaxy
 
             if (kb.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
             if (kb.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
+
+            // TEST: weapon upgrade
+            if (kb.IsKeyDown(Keys.C))
+            {
+                Weapons = CWeaponFactory.GenerateWeapon(this, typeof(CWeaponLaser), 1);
+            }
 
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || kb.IsKeyDown(Keys.S))
