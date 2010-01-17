@@ -20,5 +20,4 @@ namespace Galaxy
             CLaser laser = CLaser.Spawn(world, position, rotation, Speed, Damage);
         }
     };
-
 }

@@ -30,6 +30,17 @@ namespace Galaxy
             Cooldown = Math.Max(Cooldown, 0.0f);
         }
 
+        public void ApplyWeaponData(CWeaponFactory.WeaponData data)
+        {
+            Offset = data.Offset;
+            ReloadTime = data.ReloadTime;
+            Speed = data.Speed;
+            Damage = data.Damage;
+            KickbackForce = data.KickbackForce;
+
+            Cooldown = Math.Min(Cooldown, ReloadTime);
+        }
+
         public bool CanFire()
         {
             return Cooldown <= 0.0f;
