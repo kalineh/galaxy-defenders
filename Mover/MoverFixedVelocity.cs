@@ -1,5 +1,5 @@
 ﻿//
-// SinMover.cs
+// MoverFixedVelocity.cs
 //
 
 using System;

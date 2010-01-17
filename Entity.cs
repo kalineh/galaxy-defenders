@@ -16,6 +16,7 @@ namespace Galaxy
         public CVisual Visual { get; set; }
         public Collision Collision { get; set; }
         public CMover Mover { get; set; }
+        public float AliveTime { get; private set; }
 
         public CEntity(CWorld world, String name)
         {
@@ -25,6 +26,7 @@ namespace Galaxy
             Visual = null;
             Collision = null;
             Mover = null;
+            AliveTime = 0.0f;
         }
 
         public virtual void Update()
@@ -49,6 +51,8 @@ namespace Galaxy
             {
                 Visual.Update();
             }
+
+            AliveTime += Time.SingleFrame;
         }
 
         public virtual void UpdateCollision()

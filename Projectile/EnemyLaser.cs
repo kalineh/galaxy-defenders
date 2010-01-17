@@ -51,11 +51,6 @@ namespace Galaxy
             box.Position = Physics.PositionPhysics.Position;
         }
 
-        public void OnCollide(CAsteroid asteroid)
-        {
-            Die();
-        }
-
         public void OnCollide(CShip ship)
         {
             ship.Die();

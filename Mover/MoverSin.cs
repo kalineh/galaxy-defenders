@@ -1,5 +1,5 @@
 ﻿//
-// SinMover.cs
+// MoverSin.cs
 //
 
 using System;
@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CSinMover
+    public class CMoverSin
         : CMover
     {
         public float Frequency { get; set; }

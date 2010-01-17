@@ -2,6 +2,7 @@
 // Stage1.cs
 //
 
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Galaxy
@@ -21,6 +22,53 @@ namespace Galaxy
                     SpawnPosition = new CSpawnPositionRandom(),
                     SpawnTimer = new CSpawnTimerRandom(),
                     CustomElement = new CSpawnerCustomAsteroid(),
+                });
+
+                // TEST
+                stage.AddElement(0.0f, new CSpawnerEntity
+                {
+                    Type = typeof(CTurret),
+                    SpawnCount = 3,
+                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
+                    SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
+                    CustomElement = new CSpawnerCustomMover() {
+                        Mover = new CMoverSequence() {
+                            Velocity = new List<Vector2>() {
+                                new Vector2(0.0f, 2.0f),
+                                new Vector2(-2.0f, 0.0f),
+                                new Vector2(0.0f, 2.0f)
+                            },
+                            Duration = new List<float>() {
+                                1.5f,
+                                1.0f,
+                                0.0f
+                            },
+                            VelocityLerpRate = 0.05f,
+                        },
+                    }
+                });
+
+                stage.AddElement(0.0f, new CSpawnerEntity
+                {
+                    Type = typeof(CTurret),
+                    SpawnCount = 3,
+                    SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(500.0f, -100.0f) },
+                    SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
+                    CustomElement = new CSpawnerCustomMover() {
+                        Mover = new CMoverSequence() {
+                            Velocity = new List<Vector2>() {
+                                new Vector2(0.0f, 2.0f),
+                                new Vector2(2.0f, 0.0f),
+                                new Vector2(0.0f, 2.0f)
+                            },
+                            Duration = new List<float>() {
+                                1.5f,
+                                1.0f,
+                                0.0f
+                            },
+                            VelocityLerpRate = 0.05f,
+                        },
+                    }
                 });
 
                 // wave 1

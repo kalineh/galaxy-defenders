@@ -5,6 +5,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Galaxy
 {
@@ -61,6 +62,8 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Score += 100;
+            SoundEffect sound = World.Game.Content.Load<SoundEffect>("BonusGet");
+            sound.Play(0.1f, 0.0f, 0.0f);
             Die();
         }
     }
