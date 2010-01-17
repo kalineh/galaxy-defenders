@@ -41,7 +41,7 @@ namespace Galaxy
             base.Update();
 
             if (!IsInScreen())
-                Die();
+                Delete();
         }
 
         public override void UpdateCollision()

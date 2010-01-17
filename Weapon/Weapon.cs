@@ -15,13 +15,15 @@ namespace Galaxy
         public float Damage { get; set; }
         public float KickbackForce { get; set; }
         public Vector2 Offset { get; private set; }
+        public float Rotation { get; private set; }
         private float Cooldown { get; set; }
 
-        public CWeapon(CEntity owner, Vector2 offset)
+        public CWeapon(CEntity owner)
         {
             Owner = owner;
-            Offset = offset;
+            Offset = Vector2.Zero;
             Cooldown = 0.0f;
+            Rotation = 0.0f;
         }
 
         public void Update()
@@ -32,11 +34,12 @@ namespace Galaxy
 
         public void ApplyWeaponData(CWeaponFactory.WeaponData data)
         {
-            Offset = data.Offset;
             ReloadTime = data.ReloadTime;
             Speed = data.Speed;
             Damage = data.Damage;
             KickbackForce = data.KickbackForce;
+            Offset = data.Offset;
+            Rotation = data.Rotation;
 
             Cooldown = Math.Min(Cooldown, ReloadTime);
         }
@@ -67,7 +70,8 @@ namespace Galaxy
             // TODO: this math is weird and broken
             // TODO: replace with matrices
             Vector2 position = Owner.Physics.PositionPhysics.Position;
-            float rotation = Owner.Physics.AnglePhysics.Rotation;
+            float base_rotation = Owner.Physics.AnglePhysics.Rotation;
+            float rotation = base_rotation + Rotation;
             Vector2 dir = Owner.Physics.AnglePhysics.GetDir();
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;

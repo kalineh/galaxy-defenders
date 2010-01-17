@@ -12,8 +12,8 @@ namespace Galaxy
     public class CWeaponMissile
         : CWeapon
     {
-        public CWeaponMissile(CEntity owner, Vector2 offset)
-            : base(owner, offset)
+        public CWeaponMissile(CEntity owner)
+            : base(owner)
         {
         }
 

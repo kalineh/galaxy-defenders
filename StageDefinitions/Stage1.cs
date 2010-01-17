@@ -15,17 +15,22 @@ namespace Galaxy
             {
                 CStageDefinition stage = new CStageDefinition("Stage1");
 
+                float StageTime = 0.0f;
+
                 // asteroids
-                stage.AddElement(0.0f, new CSpawnerEntity {
+                StageTime += 2.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CAsteroid),
-                    SpawnCount = 30,
+                    SpawnCount = 10,
                     SpawnPosition = new CSpawnPositionRandom(),
-                    SpawnTimer = new CSpawnTimerRandom(),
+                    SpawnTimer = new CSpawnTimerRandom() { Frequency = 0.11f, IncreaseRate = 0.01f },
                     CustomElement = new CSpawnerCustomAsteroid(),
                 });
 
-                // TEST
-                stage.AddElement(0.0f, new CSpawnerEntity
+
+                // Turret wave
+                StageTime += 6.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity
                 {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
@@ -48,7 +53,8 @@ namespace Galaxy
                     }
                 });
 
-                stage.AddElement(0.0f, new CSpawnerEntity
+                StageTime += 6.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity
                 {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
@@ -72,7 +78,8 @@ namespace Galaxy
                 });
 
                 // wave 1
-                stage.AddElement(0.0f, new CSpawnerEntity {
+                StageTime += 8.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
@@ -80,7 +87,8 @@ namespace Galaxy
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
                 });
 
-                stage.AddElement(3.0f, new CSpawnerEntity {
+                StageTime += 4.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
@@ -88,7 +96,8 @@ namespace Galaxy
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
                 });
 
-                stage.AddElement(6.0f, new CSpawnerEntity {
+                StageTime += 4.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
@@ -97,7 +106,8 @@ namespace Galaxy
                 });
 
                 // heavy asteroids
-                stage.AddElement(10.0f, new CSpawnerEntity {
+                StageTime += 6.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CAsteroid),
                     SpawnCount = 30,
                     SpawnPosition = new CSpawnPositionRandom(),
@@ -106,7 +116,8 @@ namespace Galaxy
                 });
 
                 // wave 2
-                stage.AddElement(20.0f, new CSpawnerEntity {
+                StageTime += 8.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
@@ -114,7 +125,8 @@ namespace Galaxy
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(1.5f, 1.5f) } },
                 });
 
-                stage.AddElement(28.0f, new CSpawnerEntity {
+                StageTime += 4.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
@@ -123,7 +135,8 @@ namespace Galaxy
                 });
 
                 // heavy asteroids
-                stage.AddElement(32.0f, new CSpawnerEntity {
+                StageTime += 8.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CAsteroid),
                     SpawnCount = 30,
                     SpawnPosition = new CSpawnPositionRandom(),
@@ -132,7 +145,8 @@ namespace Galaxy
                 });
 
                 // boss
-                stage.AddElement(38.0f, new CSpawnerEntity {
+                StageTime += 8.0f;
+                stage.AddElement(StageTime, new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 1,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
@@ -141,7 +155,8 @@ namespace Galaxy
                 });
 
                 // stage end
-                stage.AddElement(60.0f, new CStageFinish());
+                StageTime += 12.0f;
+                stage.AddElement(StageTime, new CStageFinish());
 
                 return stage;
             }

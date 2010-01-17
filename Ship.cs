@@ -31,8 +31,13 @@ namespace Galaxy
         // TODO: spawn point (Window.ClientBounds)
         // TODO: game object sprite def?
 
-        public List<CWeapon> Weapons { get; private set; }
-        public List<CWeapon> WeaponsAlternate { get; private set; }
+        public List<CWeapon> WeaponPrimary { get; private set; }
+        public List<CWeapon> WeaponSecondary { get; private set; }
+
+        private Type WeaponPrimaryType { get; set; }
+        private int WeaponPrimaryLevel { get; set; }
+        private Type WeaponSecondaryType { get; set; }
+        private int WeaponSecondaryLevel { get; set; }
 
         public CShip(CWorld world, Vector2 position)
             : base(world, "Ship")
@@ -45,35 +50,13 @@ namespace Galaxy
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
-            Weapons = CWeaponFactory.GenerateWeapon(this, typeof(CWeaponLaser), 0);
-            WeaponsAlternate = new List<CWeapon>();
+            WeaponPrimaryType = typeof(CWeaponLaser);
+            WeaponPrimaryLevel = 0;
+            WeaponPrimary = CWeaponFactory.GenerateWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
 
-            /*
-            Weapons = new List<CWeapon>(2);
-
-            Weapons.Add(new CWeaponLaser(this, new Vector2(0.0f, -10.0f)) {
-                Damage = 1.0f,
-                ReloadTime = 0.2f,
-                Speed = 8.0f,
-                KickbackForce = 0.0f,
-                });
-
-            Weapons.Add(new CWeaponLaser(this, new Vector2(0.0f, 10.0f)) {
-                Damage = 1.0f,
-                ReloadTime = 0.2f,
-                Speed = 8.0f,
-                KickbackForce = 0.0f,
-                });
-
-            WeaponsAlternate = new List<CWeapon>(1);
-
-            WeaponsAlternate.Add(new CWeaponMissile(this, new Vector2(0.0f, 0.0f)) {
-                Damage = 4.0f,
-                ReloadTime = 2.0f,
-                Speed = 6.0f,
-                KickbackForce = 9.0f,
-                });
-             */
+            WeaponSecondaryType = typeof(CWeaponMissile);
+            WeaponSecondaryLevel = 0;
+            WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
         }
 
         public override void Update()
@@ -97,6 +80,15 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             base.Draw(sprite_batch);
+        }
+
+        public void UpgradePrimaryWeapon()
+        {
+            if (CWeaponFactory.CanUpgrade(WeaponPrimaryType, WeaponPrimaryLevel))
+            {
+                WeaponPrimaryLevel += 1;
+                WeaponPrimary = CWeaponFactory.GenerateWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
+            }
         }
 
         protected override void OnDie()
@@ -128,24 +120,24 @@ namespace Galaxy
             // TEST: weapon upgrade
             if (kb.IsKeyDown(Keys.C))
             {
-                Weapons = CWeaponFactory.GenerateWeapon(this, typeof(CWeaponLaser), 1);
+                UpgradePrimaryWeapon();
             }
 
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || kb.IsKeyDown(Keys.S))
             {
-                Fire(Weapons);
+                Fire(WeaponPrimary);
             }
             if (buttons.X == ButtonState.Pressed || kb.IsKeyDown(Keys.D))
             {
-                Fire(WeaponsAlternate);
+                Fire(WeaponSecondary);
             }
         }
 
         private void UpdateWeapons()
         {
-            Weapons.ForEach(weapon => weapon.Update());
-            WeaponsAlternate.ForEach(weapon => weapon.Update());
+            WeaponPrimary.ForEach(weapon => weapon.Update());
+            WeaponSecondary.ForEach(weapon => weapon.Update());
         }
 
         private void Fire(List<CWeapon> weapons)
