@@ -1,5 +1,5 @@
 ﻿//
-// Laser.cs
+// Shot.cs
 //
 
 using System;
@@ -10,32 +10,32 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Galaxy
 {
-    public class CLaser
+    public class CEnemyShot
         : CEntity
     {
-        public static CLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CEnemyShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CLaser laser = new CLaser(world, damage);
+            CEnemyShot shot = new CEnemyShot(world, damage);
 
-            laser.Physics.AnglePhysics.Rotation = rotation;
-            laser.Physics.PositionPhysics.Position = position;
-            laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            shot.Physics.AnglePhysics.Rotation = rotation;
+            shot.Physics.PositionPhysics.Position = position;
+            shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
-            world.EntityAdd(laser);
+            world.EntityAdd(shot);
 
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("LaserShoot");
-            sound.Play(0.1f, 0.0f, 0.0f);
+            //SoundEffect sound = world.Game.Content.Load<SoundEffect>("Shot");
+            //sound.Play(0.1f, 0.0f, 0.0f);
 
-            return laser;
+            return shot;
         }
 
         public float Damage { get; private set; }
 
-        public CLaser(CWorld world, float damage)
-            : base(world, "Laser")
+        public CEnemyShot(CWorld world, float damage)
+            : base(world, "EnemyShot")
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Laser"), Color.White);
+            Visual = new CVisual(world.Game.Content.Load<Texture2D>("EnemyShot"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }
@@ -55,9 +55,9 @@ namespace Galaxy
             box.Position = Physics.PositionPhysics.Position;
         }
 
-        public void OnCollide(CAsteroid asteroid)
+        public void OnCollide(CShip ship)
         {
-            Die();
+            ship.Die();
         }
     }
 }

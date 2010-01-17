@@ -106,6 +106,27 @@ namespace Galaxy
             return Entities.Where(entity => entity.GetType() == type);
         }
 
+        public CShip GetNearestShip(Vector2 position)
+        {
+            CShip result = null;
+            float nearest = float.MaxValue;
+            foreach (CEntity entity in GetEntitiesOfType(typeof(CShip)))
+            {
+                CShip ship = entity as CShip;
+                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 offset = ship_position - position;
+                float length = offset.Length();
+
+                if (length < nearest)
+                {
+                    result = ship;
+                    nearest = length;
+                }
+            }
+
+            return result;
+        }
+
         private void ProcessEntityUpdates()
         {
             foreach (CEntity entity in Entities)
@@ -145,6 +166,10 @@ namespace Galaxy
 
                     if (outer.Collision.Intersects(inner.Collision))
                     {
+                        // TODO: we can't use method overloads here because we can't override with a different param
+                        // TODO: make something that overrides for all types? and allow  
+                        //outer.OnCollision(inner);
+
                         // TODO: something proper
                         outer.Collision.Intersects(inner.Collision);
                         System.Type inner_type = inner.GetType();

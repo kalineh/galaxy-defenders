@@ -6,6 +6,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Galaxy
 {
@@ -25,6 +26,9 @@ namespace Galaxy
                     Scale = scale,
                 }
             );
+
+            SoundEffect sound = world.Game.Content.Load<SoundEffect>("ExplosionSound");
+            sound.Play(0.2f, 0.0f, 0.0f);
 
             world.EntityAdd(animation);
             return animation;
