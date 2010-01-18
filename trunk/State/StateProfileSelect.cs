@@ -1,5 +1,5 @@
 ﻿//
-// StateMainMenu.cs
+// StateProfileSelect.cs
 //
 
 using System;
@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CStateMainMenu
+    public class CStateProfileSelect
         : CState
     {
         public CGalaxy Game { get; set; }
@@ -19,7 +19,7 @@ namespace Galaxy
         private CStars Stars { get; set; }
         public CMenu Menu { get; set; }
 
-        public CStateMainMenu(CGalaxy game)
+        public CStateProfileSelect(CGalaxy game)
         {
             Game = game;
             TitleTexture = Game.Content.Load<Texture2D>("Title");
@@ -30,11 +30,16 @@ namespace Galaxy
                 Position = new Vector2(300.0f, 300.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Function = StartGame },
-                    new CMenu.MenuOption() { Text = "Select Profile", Function = SelectProfile },
-                    new CMenu.MenuOption() { Text = "Quit", Function = Quit },
+                    new CMenu.MenuOption() { Text = "* New Profile", Function = NewProfile },
                 }
             };
+
+            foreach (SProfile profile in CSaveData.SaveData.Profiles)
+            {
+                Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Function = () => SelectProfile(), Data = profile } );
+            }
+
+            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Function = Back } );
         }
 
         public override void Update()
@@ -56,19 +61,24 @@ namespace Galaxy
             sprite_batch.End();
         }
 
-        private void StartGame()
+        public void NewProfile()
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            CSaveData.AddNewProfile("New User");
+            CSaveData.SetCurrentProfile("New User");
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
-        private void SelectProfile()
+        public void SelectProfile()
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
+            SProfile profile = (SProfile)Menu.MenuOptions[ Menu.Cursor ].Data;
+            CSaveData.SetCurrentProfile(profile.Name);
+            CSaveData.Save();
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
-        private void Quit()
+        public void Back()
         {
-            Game.Exit();
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
     }
 }

@@ -26,8 +26,10 @@ namespace Galaxy
         {
             World.Update();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Game.Input.IsKeyPressed(Keys.Escape))
             {
+                // TODO: is this a good place?
+                CSaveData.Save();
                 Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
             }
         }

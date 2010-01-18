@@ -49,6 +49,38 @@ namespace Galaxy
             return WeaponDefinitions[typename].Count > level + 1;
         }
 
+        public static bool CanDowngrade(string typename, int level)
+        {
+            return level > 0;
+        }
+
+        public static string GetNextWeaponInCycle(string current)
+        {
+            // TODO: can we do this cleaner?
+            bool is_next = false;
+            foreach (KeyValuePair<string, List<List<WeaponData>>> kv in WeaponDefinitions)
+            {
+                if (kv.Key == current)
+                {
+                    is_next = true;
+                    continue;
+                }
+
+                if (is_next)
+                {
+                    return kv.Key;
+                }
+            }
+            
+            // TODO: find cleaner way to do this too!
+            foreach (KeyValuePair<string, List<List<WeaponData>>> kv in WeaponDefinitions)
+            {
+                return kv.Key;
+            }
+
+            return current;
+        }
+
         public static Dictionary<string, List<List<WeaponData>>> WeaponDefinitions = new Dictionary<string, List<List<WeaponData>>>()
         {
             { "Laser", new List<List<WeaponData>>() {

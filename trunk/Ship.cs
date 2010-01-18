@@ -123,13 +123,13 @@ namespace Galaxy
 
             Physics.PositionPhysics.Velocity += force;
 
-            if (kb.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
-            if (kb.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
+            if (World.Game.Input.IsKeyPressed(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
+            if (World.Game.Input.IsKeyPressed(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
-            if (kb.IsKeyDown(Keys.C))
+            if (World.Game.Input.IsKeyPressed(Keys.C))
                 UpgradePrimaryWeapon();
-            if (kb.IsKeyDown(Keys.V))
+            if (World.Game.Input.IsKeyPressed(Keys.V))
                 UpgradeSecondaryWeapon();
 
             // TODO: bind to functions?
@@ -143,7 +143,7 @@ namespace Galaxy
             }
         }
 
-        private void UpdateWeapons()
+        public void UpdateWeapons()
         {
             WeaponPrimary.ForEach(weapon => weapon.Update());
             WeaponSecondary.ForEach(weapon => weapon.Update());
@@ -152,6 +152,12 @@ namespace Galaxy
         private void Fire(List<CWeapon> weapons)
         {
             weapons.ForEach(weapon => weapon.TryFire());
+        }
+
+        public void FireAllWeapons()
+        {
+            Fire(WeaponPrimary);
+            Fire(WeaponSecondary);
         }
     };
 }
