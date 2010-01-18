@@ -34,12 +34,12 @@ namespace Galaxy
         public List<CWeapon> WeaponPrimary { get; private set; }
         public List<CWeapon> WeaponSecondary { get; private set; }
 
-        private Type WeaponPrimaryType { get; set; }
+        private string WeaponPrimaryType { get; set; }
         private int WeaponPrimaryLevel { get; set; }
-        private Type WeaponSecondaryType { get; set; }
+        private string WeaponSecondaryType { get; set; }
         private int WeaponSecondaryLevel { get; set; }
 
-        public CShip(CWorld world, Vector2 position)
+        public CShip(CWorld world, SProfile profile, Vector2 position)
             : base(world, "Ship")
         {
             Physics = new CPhysics();
@@ -50,12 +50,12 @@ namespace Galaxy
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
-            WeaponPrimaryType = typeof(CWeaponLaser);
-            WeaponPrimaryLevel = 0;
+            WeaponPrimaryType = profile.WeaponPrimaryType;
+            WeaponPrimaryLevel = profile.WeaponPrimaryLevel;
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
 
-            WeaponSecondaryType = typeof(CWeaponMissile);
-            WeaponSecondaryLevel = 0;
+            WeaponSecondaryType = profile.WeaponSecondaryType;
+            WeaponSecondaryLevel = profile.WeaponSecondaryLevel;
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
         }
 
@@ -91,6 +91,15 @@ namespace Galaxy
             }
         }
 
+        public void UpgradeSecondaryWeapon()
+        {
+            if (CWeaponFactory.CanUpgrade(WeaponSecondaryType, WeaponSecondaryLevel))
+            {
+                WeaponSecondaryLevel += 1;
+                WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
+            }
+        }
+
         protected override void OnDie()
         {
             CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
@@ -119,9 +128,9 @@ namespace Galaxy
 
             // TEST: weapon upgrade
             if (kb.IsKeyDown(Keys.C))
-            {
                 UpgradePrimaryWeapon();
-            }
+            if (kb.IsKeyDown(Keys.V))
+                UpgradeSecondaryWeapon();
 
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || kb.IsKeyDown(Keys.S))

@@ -20,13 +20,19 @@ namespace Galaxy
             public float Rotation { get; set; }
         }
 
-        public static List<CWeapon> GenerateWeapon(CEntity owner, Type type, int level)
+        public static List<CWeapon> GenerateWeapon(CEntity owner, string typename, int level)
         {
-            List<WeaponData> weapon_data = WeaponDefinitions[type][level];
+            if (!WeaponDefinitions.ContainsKey(typename))
+            {
+                return new List<CWeapon>();
+            }
+
+            List<WeaponData> weapon_data = WeaponDefinitions[typename][level];
             List<CWeapon> weapons = new List<CWeapon>();
 
             foreach (WeaponData data in weapon_data)
             {
+                Type type = Type.GetType("Galaxy.CWeapon" + typename);
                 CWeapon weapon = Activator.CreateInstance(type, new object[] { owner }) as CWeapon;
                 weapon.ApplyWeaponData(data);
                 weapons.Add(weapon);
@@ -35,14 +41,17 @@ namespace Galaxy
             return weapons;
         }
 
-        public static bool CanUpgrade(Type type, int level)
+        public static bool CanUpgrade(string typename, int level)
         {
-            return WeaponDefinitions[type].Count > level + 1;
+            if (!WeaponDefinitions.ContainsKey(typename))
+                return false;
+
+            return WeaponDefinitions[typename].Count > level + 1;
         }
 
-        public static Dictionary<Type, List<List<WeaponData>>> WeaponDefinitions = new Dictionary<Type, List<List<WeaponData>>>()
+        public static Dictionary<string, List<List<WeaponData>>> WeaponDefinitions = new Dictionary<string, List<List<WeaponData>>>()
         {
-            { typeof(CWeaponLaser), new List<List<WeaponData>>() {
+            { "Laser", new List<List<WeaponData>>() {
                     // level 1
                     new List<WeaponData>() {
                         new WeaponData() {
@@ -111,35 +120,35 @@ namespace Galaxy
                 }
             },
 
-            { typeof(CWeaponMissile), new List<List<WeaponData>>() {
+            { "Missile", new List<List<WeaponData>>() {
                     // level 1
                     new List<WeaponData>() {
                         new WeaponData() {
-                            ReloadTime = 3.0f,
-                            Speed = 8.0f,
-                            Damage = 6.0f,
+                            ReloadTime = 1.0f,
+                            Speed = 6.0f,
+                            Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = Vector2.Zero,
-                            Rotation = 0.0f,
+                            Rotation = MathHelper.ToRadians(180.0f),
                         },
                     },
                     // level 2
                     new List<WeaponData>() {
                         new WeaponData() {
-                            ReloadTime = 3.0f,
-                            Speed = 8.0f,
-                            Damage = 6.0f,
+                            ReloadTime = 1.0f,
+                            Speed = 6.0f,
+                            Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, -10.0f),
-                            Rotation = 0.0f,
+                            Rotation = MathHelper.ToRadians(195.0f),
                         },
                         new WeaponData() {
-                            ReloadTime = 3.0f,
-                            Speed = 8.0f,
-                            Damage = 6.0f,
+                            ReloadTime = 1.0f,
+                            Speed = 6.0f,
+                            Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, 10.0f),
-                            Rotation = 0.0f,
+                            Rotation = MathHelper.ToRadians(165.0f),
                         },
                     },
                 }

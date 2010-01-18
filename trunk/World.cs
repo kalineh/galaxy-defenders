@@ -42,7 +42,9 @@ namespace Galaxy
             StarsUpper = new CStars(this, star_texture, 0.8f, 9.0f);
 
             Entities = new List<CEntity>();
-            CShip ship = new CShip(this, new Vector2(300.0f, 400.0f));
+            // TODO: load ship from profile
+            SProfile profile = CSaveData.GetCurrentProfile();
+            CShip ship = new CShip(this, profile, new Vector2(300.0f, 400.0f));
             Entities.Add(ship);
 
             Game.Music.Play("Stage1");
