@@ -61,8 +61,15 @@ namespace Galaxy
         // TODO: think of a better name for this (CreateProfilesXMLIfItDoesntExistAlready)
         public static void VerifyProfilesExist()
         {
-            Load();
-            Save();
+            string fullpath = Path.Combine(StorageContainer.TitleLocation, "profiles.xml");
+
+            bool exists = File.Exists(fullpath);
+            if (!exists)
+            {
+                // save default data
+                Save();
+            }
+
             Load();
         }
 
