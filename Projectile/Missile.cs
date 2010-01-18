@@ -12,13 +12,17 @@ namespace Galaxy
     public class CMissile
         : CEntity
     {
+        public float Speed { get; set; }
+
         public static CMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
             CMissile missile = new CMissile(world, damage);
 
-            missile.Physics.AnglePhysics.Rotation = rotation;
+            missile.Speed = speed;
+
+            missile.Physics.AnglePhysics.Rotation = MathHelper.ToRadians(-90.0f);
             missile.Physics.PositionPhysics.Position = position;
-            missile.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            missile.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * 6.0f;
 
             world.EntityAdd(missile);
 
@@ -38,6 +42,8 @@ namespace Galaxy
 
         public override void Update()
         {
+            Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -Vector2.UnitY * Speed, 0.05f);
+
             base.Update();
 
             if (!IsInScreen())

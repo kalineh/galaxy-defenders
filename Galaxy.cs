@@ -61,6 +61,10 @@ namespace Galaxy
             DefaultFont = Content.Load<SpriteFont>("DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Pixel");
 
+            // Import profiles.
+            CSaveData.CreateDefaultProfileIfNecessary();
+            CSaveData.Load();
+
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
         }

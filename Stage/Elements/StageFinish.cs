@@ -11,7 +11,7 @@ namespace Galaxy
     {
         public override void Update(CWorld world)
         {
-            world.Stop();
+            world.Game.State = new CStateFadeTo(world.Game, world.Game.State, new CStateMainMenu(world.Game));
         }
 
         public override bool IsExpired()
