@@ -23,6 +23,7 @@ namespace Galaxy
         public SpriteBatch SpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
         public CDebug Debug { get; private set; }
+        public CInput Input { get; private set; }
         public Texture2D PixelTexture { get; private set; }
         public CMusic Music { get; private set; }
         public int GameFrame { get; private set; }
@@ -34,6 +35,7 @@ namespace Galaxy
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
             Debug = new CDebug(this);
+            Input = new CInput(this);
             Music = new CMusic(this);
 
             GameFrame = 0;
@@ -62,7 +64,7 @@ namespace Galaxy
             PixelTexture = Content.Load<Texture2D>("Pixel");
 
             // Import profiles.
-            CSaveData.CreateDefaultProfileIfNecessary();
+            CSaveData.VerifyProfilesExist();
             CSaveData.Load();
 
             // Enter our default state now that assets are ready.
@@ -95,6 +97,7 @@ namespace Galaxy
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);
 
+            Input.Update();
             Music.Update();
 
             base.Update(game_time);

@@ -42,14 +42,7 @@ namespace Galaxy
             DefaultSaveData = new SSaveData() {
                 CurrentProfile = "User",
                 Profiles = new List<SProfile>() {
-                    new SProfile() {
-                        Name = "User",
-                        Ship = "Default",
-                        WeaponPrimaryType = "Laser",
-                        WeaponPrimaryLevel = 0,
-                        WeaponSecondaryType = "Empty",
-                        WeaponSecondaryLevel = 0,
-                    },
+                    CreateDefaultProfile(),
                 }
             };
             SaveData = DefaultSaveData;
@@ -65,21 +58,57 @@ namespace Galaxy
             CSaveData.Export(SaveData, "profiles.xml");
         }
 
-        public static void CreateDefaultProfileIfNecessary()
+        // TODO: think of a better name for this (CreateProfilesXMLIfItDoesntExistAlready)
+        public static void VerifyProfilesExist()
         {
             Load();
             Save();
             Load();
         }
 
-        public static SProfile GetProfile(string user)
+        public static SProfile CreateDefaultProfile()
         {
-            return SaveData.Profiles.Where(profile => profile.Name == user).First();
+            return new SProfile()
+            {
+                Name = "User",
+                Ship = "Default",
+                WeaponPrimaryType = "Laser",
+                WeaponPrimaryLevel = 0,
+                WeaponSecondaryType = "Empty",
+                WeaponSecondaryLevel = 0,
+            };
+        }
+
+        public static SProfile GetProfile(string name)
+        {
+            return SaveData.Profiles.Where(profile => profile.Name == name).First();
         }
 
         public static SProfile GetCurrentProfile()
         {
             return SaveData.Profiles.Where(profile => profile.Name == SaveData.CurrentProfile).First();
+        }
+
+        public static void AddNewProfile(string name)
+        {
+            SProfile profile = CreateDefaultProfile();
+            profile.Name = name;
+            SaveData.Profiles.RemoveAll(existing => existing.Name == name);
+            SaveData.Profiles.Add(profile);
+        }
+
+        public static void SetCurrentProfile(string name)
+        {
+            SaveData.CurrentProfile = name;
+        }
+
+        public static void SetCurrentProfileData(SProfile replacement)
+        {
+            int index = SaveData.Profiles.FindIndex(profile => profile.Name == replacement.Name);
+            if (index != -1)
+            {
+                SaveData.Profiles[index] = replacement;
+            }
         }
 
         private static void Import(out SSaveData data, string filename)

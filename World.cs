@@ -63,10 +63,14 @@ namespace Galaxy
         public void Update()
         {
             Stage.Update();
-
             StarsLower.Update();
             StarsUpper.Update();
 
+            UpdateEntities();
+        }
+
+        public void UpdateEntities()
+        {
             ProcessEntityAdd();
             ProcessEntityUpdates();
             ProcessEntityCollisions();
@@ -79,18 +83,22 @@ namespace Galaxy
 
             sprite_batch.Begin();
 
+            // TODO: split to scenery/bg system
             StarsLower.Draw(sprite_batch);
             StarsUpper.Draw(sprite_batch);
 
-            foreach (CEntity entity in Entities)
-            {
-                entity.Draw(sprite_batch);
-            }
+            DrawEntities(sprite_batch);
 
+            // TODO: split to HUD system
             sprite_batch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
             sprite_batch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
             sprite_batch.End();
+        }
+
+        public void DrawEntities(SpriteBatch sprite_batch)
+        {
+            Entities.ForEach(entity => entity.Draw(sprite_batch));
         }
 
         public void EntityAdd(CEntity entity)
