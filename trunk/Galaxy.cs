@@ -20,12 +20,14 @@ namespace Galaxy
         : Microsoft.Xna.Framework.Game
     {
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
+        public CGameViewport GameViewport { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
         public CDebug Debug { get; private set; }
         public CInput Input { get; private set; }
         public Texture2D PixelTexture { get; private set; }
         public CMusic Music { get; private set; }
+        public CFrameRateDisplay FrameRateDisplay { get; private set; }
         public int GameFrame { get; private set; }
         public CState State { get; set; }
 
@@ -34,10 +36,18 @@ namespace Galaxy
             Content.RootDirectory = "Content";
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
+
+            // TODO: 1080p!
+            // TODO: render to backbuffer and just scale down before display if necessary
+            //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
+            //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
+            //GraphicsDeviceManager.ToggleFullScreen();
+
             Debug = new CDebug(this);
             Input = new CInput(this);
             Music = new CMusic(this);
 
+            FrameRateDisplay = new CFrameRateDisplay(this);
             GameFrame = 0;
         }
 
@@ -49,6 +59,7 @@ namespace Galaxy
         /// </summary>
         protected override void Initialize()
         {
+            GameViewport = new CGameViewport(this);
             base.Initialize();
         }
 
@@ -99,6 +110,7 @@ namespace Galaxy
 
             Input.Update();
             Music.Update();
+            FrameRateDisplay.Update(game_time);
 
             base.Update(game_time);
 
@@ -112,6 +124,7 @@ namespace Galaxy
         protected override void Draw(GameTime game_time)
         {
             State.Draw(SpriteBatch);
+            FrameRateDisplay.Draw(SpriteBatch);
             base.Draw(game_time);
         }
     }

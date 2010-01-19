@@ -67,7 +67,7 @@ namespace Galaxy
             base.Update();
 
             // post-physics update
-            ClampPositionToScreen();
+            Physics.PositionPhysics.Position = World.Game.GameViewport.ClampInside(Physics.PositionPhysics.Position, 12.0f);
         }
 
         public override void UpdateCollision()

@@ -68,6 +68,30 @@ namespace Galaxy
             Visual.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
         }
 
+        public void ClampInsideScreen()
+        {
+            Physics.PositionPhysics.Position = World.Game.GameViewport.ClampInside(Physics.PositionPhysics.Position, GetRadius());
+        }
+
+        public bool IsInScreen()
+        {
+            return World.Game.GameViewport.IsInside(Physics.PositionPhysics.Position, GetRadius());
+        }
+
+        public bool IsOffScreenBottom()
+        {
+            return World.Game.GameViewport.IsOffBottom(Physics.PositionPhysics.Position, GetRadius());
+        }
+
+        public float GetRadius()
+        {
+            if (Visual == null)
+                return 0.0f;
+            float texture = Math.Max(Visual.Texture.Width, Visual.Texture.Height);
+            float scale = Math.Max(Visual.Scale.X, Visual.Scale.Y);
+            return texture * scale;
+        }
+
         public virtual void Delete()
         {
             World.EntityDelete(this);
@@ -87,40 +111,6 @@ namespace Galaxy
         protected virtual void OnDie()
         {
             // nothing
-        }
-
-        protected void ClampPositionToScreen()
-        {
-            Vector2 size = Visual.GetScaledTextureSize() / 2.0f;
-            Viewport viewport = World.Game.GraphicsDevice.Viewport;
-            Vector2 clamped = Physics.PositionPhysics.Position;
-
-            clamped.X = Math.Max(viewport.X + size.X, clamped.X);
-            clamped.Y = Math.Max(viewport.Y + size.Y, clamped.Y);
-            clamped.X = Math.Min(viewport.X + viewport.Width - size.X, clamped.X);
-            clamped.Y = Math.Min(viewport.Y + viewport.Height - size.Y, clamped.Y);
-
-            Physics.PositionPhysics.Position = clamped;
-        }
-
-        protected bool IsInScreen()
-        {
-            Viewport viewport = World.Game.GraphicsDevice.Viewport;
-            CollisionAABB box = new CollisionAABB(
-                new Vector2(viewport.X, viewport.Y),
-                new Vector2(viewport.Width, viewport.Height)
-            );
-
-            return Collision.Intersects(box);
-        }
-
-        protected bool IsOffScreenBottom()
-        {
-            if (Physics.PositionPhysics.Position.Y > World.Game.GraphicsDevice.Viewport.Height + 200)
-            {
-                return true;
-            }
-            return false;
         }
     }
 }
