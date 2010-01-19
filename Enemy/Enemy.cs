@@ -38,7 +38,7 @@ namespace Galaxy
 
             base.Update();
 
-            if (IsOffScreenBottom())
+            if (IsInDieRegion())
                 Die();
         }
 
@@ -50,7 +50,7 @@ namespace Galaxy
             circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
         }
 
-        public void TakeDamage(float damage)
+        public virtual void TakeDamage(float damage)
         {
             Health -= damage;
             if (Health <= 0.0f)
@@ -66,7 +66,8 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            ship.Die();
+            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
+            TakeDamage(1.0f);
         }
 
         // TODO: replace with generic CWeapon collider

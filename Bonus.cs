@@ -44,7 +44,7 @@ namespace Galaxy
         {
             foreach (CEntity entity in World.GetEntitiesOfType(typeof(CShip)))
             {
-                Vector2 target = entity.Physics.PositionPhysics.Position + entity.Physics.PositionPhysics.Velocity * 10.0f;
+                Vector2 target = entity.Physics.PositionPhysics.Position + entity.Physics.PositionPhysics.Velocity * 4.0f;
                 Vector2 offset = target - Physics.PositionPhysics.Position;
                 Vector2 dir = offset.Normal();
                 float length = offset.Length();

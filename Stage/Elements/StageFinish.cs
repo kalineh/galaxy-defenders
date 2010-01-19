@@ -16,7 +16,7 @@ namespace Galaxy
 
         public override bool IsExpired()
         {
-            return false;
+            return true;
         }
     }
 }

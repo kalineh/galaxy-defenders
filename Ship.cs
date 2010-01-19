@@ -18,14 +18,18 @@ namespace Galaxy
             public float VisualScale;
             public float MovementSpeed;
             public float Friction;
+            public float Shield;
+            public float Armor;
         };
         static Settings SSettings;
 
         static CShip()
         {
             SSettings.VisualScale = 0.25f;
-            SSettings.MovementSpeed = 1.0f;
+            SSettings.MovementSpeed = 1.75f;
             SSettings.Friction = 0.8f;
+            SSettings.Shield = 5.0f;
+            SSettings.Armor = 10.0f;
         }
 
         // TODO: spawn point (Window.ClientBounds)
@@ -38,6 +42,8 @@ namespace Galaxy
         private int WeaponPrimaryLevel { get; set; }
         private string WeaponSecondaryType { get; set; }
         private int WeaponSecondaryLevel { get; set; }
+        public float Shield { get; private set; }
+        public float Armor { get; private set; }
 
         public CShip(CWorld world, SProfile profile, Vector2 position)
             : base(world, "Ship")
@@ -57,12 +63,16 @@ namespace Galaxy
             WeaponSecondaryType = profile.WeaponSecondaryType;
             WeaponSecondaryLevel = profile.WeaponSecondaryLevel;
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
+
+            Shield = SSettings.Shield;
+            Armor = SSettings.Armor;
         }
 
         public override void Update()
         {
             UpdateInput();
             UpdateWeapons();
+            UpdateShields();
 
             base.Update();
 
@@ -149,6 +159,12 @@ namespace Galaxy
             WeaponSecondary.ForEach(weapon => weapon.Update());
         }
 
+        public void UpdateShields()
+        {
+            Shield += 0.01f;
+            Shield = Math.Min(Shield, SSettings.Shield);
+        }
+
         private void Fire(List<CWeapon> weapons)
         {
             weapons.ForEach(weapon => weapon.TryFire());
@@ -158,6 +174,38 @@ namespace Galaxy
         {
             Fire(WeaponPrimary);
             Fire(WeaponSecondary);
+        }
+
+        public void TakeDamage(float damage)
+        {
+            ApplyDamage(damage);
+        }
+
+        public void TakeCollideDamage(Vector2 source, float damage)
+        {
+            Vector2 offset = Physics.PositionPhysics.Position - source;
+            Vector2 dir = offset.Normal();
+            Physics.PositionPhysics.Velocity += dir * 7.0f;
+            ApplyDamage(damage);
+        }
+
+        private void ApplyDamage(float damage)
+        {
+            if (Shield > 0.0f)
+            {
+                Shield -= damage;
+                if (Shield > 0.0f)
+                    return;
+
+                damage = Math.Abs(Shield);
+                Shield = 0.0f;
+            }
+
+            Armor -= damage;
+            if (Armor <= 0.0f)
+            {
+                Die();
+            }
         }
     };
 }

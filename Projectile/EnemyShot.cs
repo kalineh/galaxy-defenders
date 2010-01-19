@@ -57,7 +57,8 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            ship.Die();
+            ship.TakeDamage(Damage);
+            Die();
         }
     }
 }

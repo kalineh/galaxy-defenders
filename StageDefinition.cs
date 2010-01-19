@@ -13,6 +13,7 @@ namespace Galaxy
     public class CStageDefinition
     {
         public string Name { get; private set; }
+        public float ScrollSpeed { get; set; }
         public Dictionary<int, List<CStageElement>> Elements { get; private set; }
         public List<CStageElement> ActiveElements { get; private set; }
 
@@ -20,6 +21,7 @@ namespace Galaxy
         {
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
+            ScrollSpeed = 1.0f;
         }
 
         public void AddElement(float time, CStageElement element)

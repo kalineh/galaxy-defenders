@@ -93,6 +93,14 @@ namespace Galaxy
             sprite_batch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
             sprite_batch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
+            // TODO: HUD system
+            CShip ship = GetNearestShip(Vector2.Zero);
+            if (ship != null)
+            {
+                sprite_batch.DrawString(Game.DefaultFont, String.Format("Shield: {0:0.0}", ship.Shield), new Vector2(10, 50), Color.White);
+                sprite_batch.DrawString(Game.DefaultFont, String.Format("Armor: {0:0.0}", ship.Armor), new Vector2(10, 70), Color.White);
+            }
+
             sprite_batch.End();
         }
 

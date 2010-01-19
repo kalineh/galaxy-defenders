@@ -50,42 +50,37 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            ship.Die();
+            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
+            Health -= 1.0f;
         }
 
         public void OnCollide(CLaser laser)
         {
-            Health -= laser.Damage;
             Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
-            Cracks.Alpha = 1.0f - Health / HealthMax;
-            if (Health < 0.0f)
-            {
-                Die();
-            }
+            TakeDamage(laser.Damage);
         }
 
         public void OnCollide(CMissile missile)
         {
-            Health -= missile.Damage;
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
-            Cracks.Alpha = 1.0f - Health / HealthMax;
-            if (Health < 0.0f)
-            {
-                Die();
-            }
+            TakeDamage(missile.Damage);
         }
 
         protected override void OnDie()
         {
             CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
             World.Score += 100;
-
-            if (World.Random.NextFloat() < 0.05f)
-            {
-                World.EntityAdd(new CPowerup(World, Physics.PositionPhysics.Position));
-            }
-
             base.OnDie();
+        }
+
+        private void TakeDamage(float damage)
+        {
+            Health -= damage;
+            Cracks.Alpha = 1.0f - Health / HealthMax;
+            if (Health < 0.0f)
+            {
+                Die();
+            }
         }
 
     }

@@ -19,7 +19,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("SinBall"), Color.White);
-            Health = 5.0f;
+            Health = 3.0f;
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }
 
