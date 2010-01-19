@@ -1,0 +1,23 @@
+space-military style
+ * plane type enemies
+ * strong buildings
+ * siren buildings
+ * lots of straight/sideways movement
+
+asteroids
+ * mid-length asteroid waves (big asteroids, danger)
+ * constant small asteroid clutter
+ * side shooting enemies
+
+mines
+ * lots of mines (fly to player, explode on contact)
+ * lots of money-targets (cant spend much time to shoot them)
+
+alien style
+ * damaging scenery portions
+ * circular motion ships
+
+bonus stage
+ * lots of coins
+ * lots of stronger coin-boxes
+ * mostly static turrets/etc
