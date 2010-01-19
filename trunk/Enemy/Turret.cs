@@ -24,12 +24,12 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 28.0f);
             Visual = new CVisual(world.Game.Content.Load<Texture2D>("Turret"), Color.White);
-            Health = 3.0f;
+            Health = 2.0f;
 
-            FireDelay = 4.0f;
+            FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay);
             FireDamage = 1.0f;
-            FireSpeed = 3.0f;
+            FireSpeed = 6.0f;
         }
 
         public override void UpdateAI()
@@ -48,31 +48,12 @@ namespace Galaxy
 
         private void Fire()
         {
-            // TODO: this math is weird and broken
-            // TODO: replace with matrices
             Vector2 position = Physics.PositionPhysics.Position;
-            float rotation = Vector2.UnitY.ToAngle();
+            Vector2 dir = GetDirToShip();
+            float rotation = dir.ToAngle();
 
-            CShip ship = World.GetNearestShip(position);
-            if (ship != null)
-            {
-                Vector2 offset = ship.Physics.PositionPhysics.Position - position;
-                rotation = offset.ToAngle();
-            }
-
-            Vector2 dir = Physics.AnglePhysics.GetDir();
-            Vector2 fire_offset = dir * 2.0f + dir.Perp() * 16.0f;
-            Vector2 fire_position = position + fire_offset;
-
-            CEnemyShot shot = CEnemyShot.Spawn(World, fire_position, rotation, FireSpeed, FireDamage);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
             FireCooldown = Time.ToFrames(FireDelay);
-        }
-
-        public override void Update()
-        {
-            UpdateAI();
-
-            base.Update();
         }
 
         public override void UpdateCollision()

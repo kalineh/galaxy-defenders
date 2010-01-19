@@ -41,6 +41,12 @@ namespace Galaxy
         {
             Stars.Update();
             Menu.Update();
+
+            // TODO: organize debug somewhere?
+            if (Game.Input.IsKeyPressed(Keys.F2))
+            {
+                Game.State = new CStateGame(Game);
+            }
         }
 
         public override void Draw(SpriteBatch sprite_batch)

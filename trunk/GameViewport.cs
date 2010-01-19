@@ -24,7 +24,7 @@ namespace Galaxy
             Viewport viewport = Game.GraphicsDevice.Viewport;
             Rectangle title_safe = viewport.TitleSafeArea;
 
-            int edge = 16;
+            int edge = 0;
             title_safe.Offset(edge, edge);
             GameRectangle = new Rectangle(
                 title_safe.X + edge,
@@ -45,28 +45,29 @@ namespace Galaxy
 
             clamped.X = Math.Max(GameRectangle.X + buffer, clamped.X);
             clamped.Y = Math.Max(GameRectangle.Y + buffer, clamped.Y);
-            clamped.X = Math.Min(GameRectangle.X + GameRectangle.Width - buffer, clamped.X);
-            clamped.Y = Math.Min(GameRectangle.Y + GameRectangle.Height - buffer, clamped.Y);
+            clamped.X = Math.Min(GameRectangle.X + GameRectangle.Width - buffer * 2, clamped.X);
+            clamped.Y = Math.Min(GameRectangle.Y + GameRectangle.Height - buffer * 2, clamped.Y);
 
             return clamped;
         }
 
         public bool IsInside(Vector2 position, float buffer)
         {
-            if (GameRectangle.X + buffer < GameRectangle.X ||
-                GameRectangle.Y + buffer < GameRectangle.Y ||
-                GameRectangle.X - buffer > GameRectangle.X + GameRectangle.Width ||
-                GameRectangle.Y - buffer > GameRectangle.Y + GameRectangle.Height)
-            {
+            if (position.X + buffer < GameRectangle.X)
                 return false;
-            }
+            if (position.X - buffer > GameRectangle.X + GameRectangle.Width)
+                return false;
+            if (position.Y + buffer < GameRectangle.Y)
+                return false;
+            if (position.Y - buffer > GameRectangle.Y + GameRectangle.Height)
+                return false;
 
             return true;
         }
 
         public bool IsOffBottom(Vector2 position, float buffer)
         {
-            return position.Y > GameRectangle.Y + GameRectangle.Height - buffer;
+            return position.Y > GameRectangle.Y + GameRectangle.Height + buffer;
         }
     }
 }

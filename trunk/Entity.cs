@@ -78,10 +78,37 @@ namespace Galaxy
             return World.Game.GameViewport.IsInside(Physics.PositionPhysics.Position, GetRadius());
         }
 
+        public bool IsInDieRegion()
+        {
+            if (Physics.PositionPhysics.Position.Y < 0.0f)
+            {
+                return false;
+            }
+
+            // TODO: proper region top check
+            return !IsInScreen();
+        }
+
         public bool IsOffScreenBottom()
         {
             return World.Game.GameViewport.IsOffBottom(Physics.PositionPhysics.Position, GetRadius());
         }
+
+        public Vector2 GetDirToShip()
+        {
+            Vector2 position = Physics.PositionPhysics.Position;
+            CShip ship = World.GetNearestShip(position);
+            if (ship == null)
+            {
+                return Vector2.UnitY;
+            }
+
+            Vector2 offset = ship.Physics.PositionPhysics.Position - position;
+            Vector2 dir = offset.Normal();
+
+            return dir;
+        }
+
 
         public float GetRadius()
         {
