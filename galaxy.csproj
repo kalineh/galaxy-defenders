@@ -91,6 +91,8 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Bonus.cs" />
+    <Compile Include="GameViewport.cs" />
+    <Compile Include="FrameRate.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Fader.cs" />
     <Compile Include="Menu\Menu.cs" />

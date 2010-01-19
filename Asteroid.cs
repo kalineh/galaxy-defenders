@@ -38,7 +38,7 @@ namespace Galaxy
 
             Cracks.Update();
 
-            if (!IsInScreen() && Physics.PositionPhysics.Position.Y > 0.0f)
+            if (IsOffScreenBottom())
                 Delete();
         }
 
