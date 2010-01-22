@@ -22,6 +22,7 @@ namespace Galaxy
 
             float bigness = GetRandomSpawnBigness(entity.World);
             asteroid.Visual.Scale = new Vector2(bigness);
+            asteroid.Cracks.Scale = new Vector2(bigness);
             asteroid.HealthMax = 1.0f * bigness;
         }
 
@@ -53,6 +54,22 @@ namespace Galaxy
             float bigness_random = 0.15f * world.Random.NextFloat();
 
             return bigness_base + bigness_random * world.Random.RandomSign();
+        }
+    }
+
+    public class CSpawnerCustomBigAsteroid
+        : CSpawnerCustomAsteroid
+    {
+        public override void Customize(CEntity entity)
+        {
+            CAsteroid asteroid = entity as CAsteroid;
+            base.Customize(entity);
+
+            float bigger = 3.0f + 0.2f * entity.World.Random.NextFloat();
+            asteroid.Physics.AnglePhysics.AngularVelocity *= 0.2f;
+            asteroid.Visual.Scale *= bigger;
+            asteroid.Cracks.Scale *= bigger;
+            asteroid.HealthMax *= bigger * 3.0f;
         }
     }
 }

@@ -65,7 +65,10 @@ namespace Galaxy
 
         public virtual void Draw(SpriteBatch sprite_batch)
         {
-            Visual.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
+            if (Visual != null)
+            {
+                Visual.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
+            }
         }
 
         public void ClampInsideScreen()
@@ -116,7 +119,7 @@ namespace Galaxy
                 return 0.0f;
             float texture = Math.Max(Visual.Texture.Width, Visual.Texture.Height);
             float scale = Math.Max(Visual.Scale.X, Visual.Scale.Y);
-            return texture * scale;
+            return texture * scale * 0.5f;
         }
 
         public virtual void Delete()
