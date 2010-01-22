@@ -93,7 +93,7 @@ namespace Galaxy
                     },
                     Duration = new List<float>()
                     {
-                        5.0f,
+                        1.0f * speed,
                         0.0f,
                     },
                 };
@@ -110,7 +110,7 @@ namespace Galaxy
                     },
                     Duration = new List<float>()
                     {
-                        5.0f,
+                        1.0f * speed,
                         0.0f,
                     },
 
@@ -169,8 +169,8 @@ namespace Galaxy
                     },
                     Duration = new List<float>()
                     {
-                        1.5f,
-                        0.0f,
+                        0.3f * speed,
+                        0.0f * speed,
                     },
 
                     VelocityLerpRate = 0.03f,
@@ -188,8 +188,8 @@ namespace Galaxy
                     },
                     Duration = new List<float>()
                     {
-                        1.5f,
-                        0.0f,
+                        0.3f * speed,
+                        0.0f * speed,
                     },
 
                     VelocityLerpRate = 0.03f,
@@ -209,6 +209,56 @@ namespace Galaxy
                 return new CMoverFixedVelocity()
                 {
                     Velocity = new Vector2(speed * 0.5f, speed),
+                };
+            }
+
+            public static CMover MoveDownLoopRightUp(float speed)
+            {
+                return new CMoverSequence()
+                {
+                    Velocity = new List<Vector2>()
+                    {
+                        new Vector2(0.0f, speed),
+                        new Vector2(speed, 0.0f),
+                        new Vector2(0.0f, -speed),
+                        new Vector2(-speed, 0.0f),
+                        new Vector2(0.0f, speed),
+                    },
+                    Duration = new List<float>()
+                    {
+                        0.2f * speed,
+                        0.2f * speed,
+                        0.1f * speed,
+                        0.2f * speed,
+                        0.2f * speed,
+                    },
+
+                    VelocityLerpRate = 0.03f,
+                };
+            }
+
+            public static CMover MoveDownLoopLeftUp(float speed)
+            {
+                return new CMoverSequence()
+                {
+                    Velocity = new List<Vector2>()
+                    {
+                        new Vector2(0.0f, speed),
+                        new Vector2(-speed, 0.0f),
+                        new Vector2(0.0f, -speed),
+                        new Vector2(speed, 0.0f),
+                        new Vector2(0.0f, speed),
+                    },
+                    Duration = new List<float>()
+                    {
+                        0.2f * speed,
+                        0.2f * speed,
+                        0.1f * speed,
+                        0.2f * speed,
+                        0.2f * speed,
+                    },
+
+                    VelocityLerpRate = 0.03f,
                 };
             }
 

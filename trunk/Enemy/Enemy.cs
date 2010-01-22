@@ -39,7 +39,7 @@ namespace Galaxy
             base.Update();
 
             if (IsInDieRegion())
-                Die();
+                Delete();
         }
 
         public override void UpdateCollision()

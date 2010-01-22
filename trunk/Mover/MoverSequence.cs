@@ -14,16 +14,27 @@ namespace Galaxy
         public List<Vector2> Velocity { get; set; }
         public List<float> Duration { get; set; }
         public float VelocityLerpRate { get; set; }
+        public bool AlwaysMaxSpeed { get; set; }
 
         public CMoverSequence()
         {
             VelocityLerpRate = 1.0f;
+            AlwaysMaxSpeed = true;
         }
 
         public override void Move(CEntity entity)
         {
             Vector2 velocity = GetVelocity(entity);
-            entity.Physics.PositionPhysics.Velocity = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
+
+            if (entity.AliveTime == 0.0f)
+            {
+                entity.Physics.PositionPhysics.Velocity = velocity;
+                return;
+            }
+
+            float speed = velocity.Length();
+            Vector2 target = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
+            entity.Physics.PositionPhysics.Velocity = target.Normal() * speed;
         }
 
         private Vector2 GetVelocity(CEntity entity)

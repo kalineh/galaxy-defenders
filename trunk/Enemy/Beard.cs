@@ -22,7 +22,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             TextureBase = world.Game.Content.Load<Texture2D>("Beard");
-            TextureExposed = world.Game.Content.Load<Texture2D>("Beard");
+            TextureExposed = world.Game.Content.Load<Texture2D>("BeardExposed");
             Visual = new CVisual(TextureBase, Color.White);
             Health = 8.0f;
         }
@@ -49,7 +49,7 @@ namespace Galaxy
             if (Visual.Texture == TextureBase)
             {
                 Visual.Texture = TextureExposed;
-                Mover = new CMoverFixedVelocity() { Velocity = Vector2.UnitY * 5.0f, };
+                Mover = new CMoverFixedVelocity() { Velocity = Vector2.UnitY * 10.0f, };
                 CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
             }
             base.TakeDamage(damage);
