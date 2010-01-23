@@ -37,7 +37,7 @@ namespace Galaxy
         public void Start()
         {
             // TODO: use this.Content to load your game content here
-            Texture2D star_texture = Game.Content.Load<Texture2D>("Star");
+            Texture2D star_texture = CContent.LoadTexture2D(Game, "Textures/Background/Star");
             StarsLower = new CStars(this, star_texture, 1.2f, 6.0f);
             StarsUpper = new CStars(this, star_texture, 0.8f, 9.0f);
 
@@ -47,7 +47,7 @@ namespace Galaxy
             CShip ship = new CShip(this, profile, new Vector2(300.0f, 400.0f));
             Entities.Add(ship);
 
-            Game.Music.Play("Stage1");
+            Game.Music.Play("Music/Stage1");
 
             CStageDefinition stage_definition = Stages.Stage1.GenerateDefinition();
             Stage = new CStage(this, stage_definition);
@@ -81,7 +81,7 @@ namespace Galaxy
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            sprite_batch.Begin();
+            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
 
             // TODO: split to scenery/bg system
             StarsLower.Draw(sprite_batch);

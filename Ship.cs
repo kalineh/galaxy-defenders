@@ -53,7 +53,7 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = SSettings.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = new CollisionCircle(Vector2.Zero, 12.0f);
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Ship"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Player/Ship"), Color.White);
             Visual.Scale = new Vector2(SSettings.VisualScale);
 
             WeaponPrimaryType = profile.WeaponPrimaryType;

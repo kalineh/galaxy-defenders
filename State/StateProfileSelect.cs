@@ -22,9 +22,9 @@ namespace Galaxy
         public CStateProfileSelect(CGalaxy game)
         {
             Game = game;
-            TitleTexture = Game.Content.Load<Texture2D>("Title");
+            TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
             EmptyWorld = new CWorld(game);
-            Stars = new CStars(EmptyWorld, Game.Content.Load<Texture2D>("Star"), 1.0f, 3.0f);
+            Stars = new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(300.0f, 300.0f),

@@ -23,7 +23,7 @@ namespace Galaxy
 
             world.EntityAdd(laser);
 
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("LaserShoot");
+            SoundEffect sound = world.Game.Content.Load<SoundEffect>("SE/LaserShoot");
             sound.Play(0.1f, 0.0f, 0.0f);
 
             return laser;
@@ -35,7 +35,7 @@ namespace Galaxy
             : base(world, "Laser")
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Laser"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }

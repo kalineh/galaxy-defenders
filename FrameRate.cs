@@ -1,5 +1,5 @@
 ﻿//
-// Bonus.cs
+// FrameRate.cs
 //
 
 using System;

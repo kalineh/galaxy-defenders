@@ -71,8 +71,8 @@ namespace Galaxy
         {
             // Graphics device does not exist during Initialize().
             SpriteBatch = new SpriteBatch(GraphicsDeviceManager.GraphicsDevice);
-            DefaultFont = Content.Load<SpriteFont>("DefaultFont");
-            PixelTexture = Content.Load<Texture2D>("Pixel");
+            DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
+            PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
             // Import profiles.
             CSaveData.VerifyProfilesExist();

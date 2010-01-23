@@ -19,7 +19,7 @@ namespace Galaxy
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
-                    TextureName = "Explosion",
+                    TextureName = "Textures/Effects/Explosion",
                     TileX = 4,
                     TileY = 4,
                     AnimationSpeed = 0.5f,
@@ -27,7 +27,7 @@ namespace Galaxy
                 }
             );
 
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("ExplosionSound");
+            SoundEffect sound = world.Game.Content.Load<SoundEffect>("SE/ExplosionSound");
             sound.Play(0.2f, 0.0f, 0.0f);
 
             world.EntityAdd(animation);

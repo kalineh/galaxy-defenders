@@ -21,8 +21,8 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
-            TextureBase = world.Game.Content.Load<Texture2D>("Beard");
-            TextureExposed = world.Game.Content.Load<Texture2D>("BeardExposed");
+            TextureBase = CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beard");
+            TextureExposed = CContent.LoadTexture2D(world.Game, "Textures/Enemy/BeardExposed");
             Visual = new CVisual(TextureBase, Color.White);
             Health = 8.0f;
         }

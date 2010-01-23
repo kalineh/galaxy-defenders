@@ -31,7 +31,7 @@ namespace Galaxy
             Texture = texture;
             Color = color;
             Alpha = 1.0f;
-            Depth = 1.0f;
+            Depth = CLayers.CalculateDepth(Texture);
         }
 
         public void Update()
