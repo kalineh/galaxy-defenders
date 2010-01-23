@@ -35,7 +35,7 @@ namespace Galaxy
             : base(world, "Missile")
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Missile"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }

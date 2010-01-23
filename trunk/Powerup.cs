@@ -21,7 +21,7 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Powerup"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Entity/Powerup"), Color.White);
         }
 
         public override void Update()

@@ -16,7 +16,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("SpacePlatform"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Decoration/SpacePlatform"), Color.White);
         }
 
         public override void Update()

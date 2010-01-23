@@ -27,8 +27,8 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Asteroid"), Color.White);
-            Cracks = new CVisual(world.Game.Content.Load<Texture2D>("Cracks"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/Asteroid"), Color.White);
+            Cracks = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/Cracks"), Color.White);
             Cracks.Alpha = 0.0f;
         }
 

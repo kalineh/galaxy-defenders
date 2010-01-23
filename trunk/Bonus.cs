@@ -21,7 +21,7 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            Visual = new CVisual(world.Game.Content.Load<Texture2D>("Bonus"), Color.White);
+            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
         }
 
         public override void Update()
@@ -62,7 +62,7 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Score += 100;
-            SoundEffect sound = World.Game.Content.Load<SoundEffect>("BonusGet");
+            SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/BonusGet");
             sound.Play(0.1f, 0.0f, 0.0f);
             Die();
         }

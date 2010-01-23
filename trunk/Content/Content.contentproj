@@ -38,185 +38,189 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ship.png">
+    <Compile Include="Textures\Player\Ship.png">
       <Name>Ship</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Laser.png">
+    <Compile Include="Textures\Weapons\Laser.png">
       <Name>Laser</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DefaultFont.spritefont">
+    <Compile Include="Fonts\DefaultFont.spritefont">
       <Name>DefaultFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pixel.png">
+    <Compile Include="Textures\Top\Pixel.png">
       <Name>Pixel</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Asteroid.png">
+    <Compile Include="Textures\Entity\Asteroid.png">
       <Name>Asteroid</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Explosion.png">
+    <Compile Include="Textures\Effects\Explosion.png">
       <Name>Explosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Star.png">
+    <Compile Include="Textures\Background\Star.png">
       <Name>Star</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cracks.png">
+    <Compile Include="Textures\Entity\Cracks.png">
       <Name>Cracks</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Stage1.mp3">
+    <Compile Include="Music\Stage1.mp3">
       <Name>Stage1</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SinBall.png">
+    <Compile Include="Textures\Enemy\SinBall.png">
       <Name>SinBall</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Ship2.png">
+    <Compile Include="Textures\Player\Ship2.png">
       <Name>Ship2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PewPew.png">
+    <Compile Include="Textures\Enemy\PewPew.png">
       <Name>PewPew</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnemyLaser.png">
+    <Compile Include="Textures\Weapons\EnemyLaser.png">
       <Name>EnemyLaser</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bonus.png">
+    <Compile Include="Textures\Entity\Bonus.png">
       <Name>Bonus</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Missile.png">
+    <Compile Include="Textures\Weapons\Missile.png">
       <Name>Missile</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BonusGet.wav">
+    <Compile Include="SE\BonusGet.wav">
       <Name>BonusGet</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
-    <Compile Include="LaserShoot.wav">
+    <Compile Include="SE\LaserShoot.wav">
       <Name>LaserShoot</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExplosionSound.wav">
+    <Compile Include="SE\ExplosionSound.wav">
       <Name>ExplosionSound</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnemyShot.png">
+    <Compile Include="Textures\Weapons\EnemyShot.png">
       <Name>EnemyShot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Turret.png">
+    <Compile Include="Textures\Enemy\Turret.png">
       <Name>Turret</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Powerup.png">
+    <Compile Include="Textures\Entity\Powerup.png">
       <Name>Powerup</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Title.png">
+    <Compile Include="Textures\UI\Title.png">
       <Name>Title</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Beard.png">
+    <Compile Include="Textures\Enemy\Beard.png">
       <Name>Beard</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="BeardExposed.png">
+    <Compile Include="Textures\Enemy\BeardExposed.png">
       <Name>BeardExposed</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Building.png">
+    <Compile Include="Textures\Static\Building.png">
       <Name>Building</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="SpacePlatform.png">
+    <Compile Include="Textures\Decoration\SpacePlatform.png">
       <Name>SpacePlatform</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildingDestroyed.png">
+    <Compile Include="Textures\Static\BuildingDestroyed.png">
       <Name>BuildingDestroyed</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\Bottom\" />
+    <Folder Include="Textures\FullScreen\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,7 +21,7 @@ namespace Galaxy
         public CFader(CGalaxy game)
         {
             Game = game;
-            Texture = Game.Content.Load<Texture2D>("Pixel");
+            Texture = CContent.LoadTexture2D(Game, "Textures/Top/Pixel");
             TransitionTime = 0.75f;
             CurrentTime = 0.0f;
             CurrentAlpha = -1.0f;
