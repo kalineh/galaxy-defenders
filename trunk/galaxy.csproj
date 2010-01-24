@@ -75,6 +75,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -89,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Editor\Editor.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="StageDefinitions\StagePresetPositions.cs" />
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
+    <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />
     <Compile Include="State\StateShop.cs" />
     <Compile Include="State\StateFadeTo.cs" />

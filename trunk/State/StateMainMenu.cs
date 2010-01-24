@@ -47,6 +47,12 @@ namespace Galaxy
             {
                 Game.State = new CStateGame(Game);
             }
+
+            // TODO: organize debug somewhere?
+            if (Game.Input.IsKeyPressed(Keys.F3))
+            {
+                Game.State = new CStateEditor(Game);
+            }
         }
 
         public override void Draw(SpriteBatch sprite_batch)
