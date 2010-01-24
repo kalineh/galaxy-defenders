@@ -111,11 +111,40 @@ namespace Galaxy
                 return stage_time;
             }
 
+            private static float WaveTurretBriefVertical(float stage_time, CStageDefinition stage)
+            {
+                stage_time += 0.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CTurret), 1,
+                    CStagePresets.PositionTopCenter(),
+                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.MoveDownUp(5.0f)
+                ));
+                stage.AddElement(stage_time + 0.5f, CStagePresets.MakeWave(
+                    typeof(CTurret), 1,
+                    CStagePresets.PositionTopLeftCenter(),
+                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.MoveDownUp(5.0f)
+                ));
+                stage.AddElement(stage_time + 0.5f, CStagePresets.MakeWave(
+                    typeof(CTurret), 1,
+                    CStagePresets.PositionTopRightCenter(),
+                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.MoveDownUp(5.0f)
+                ));
+
+                return stage_time;
+            }
+
             public static CStageDefinition GenerateDefinition()
             {
                 CStageDefinition stage = new CStageDefinition("Stage1");
 
+                float scroll_speed = 1.0f;
+
                 float stage_time = 0.0f;
+
+                WaveTurretBriefVertical(stage_time, stage);
 
                 stage_time += 2.0f;
                 stage.AddElement(stage_time, CStagePresets.MakeWave(
@@ -125,7 +154,7 @@ namespace Galaxy
                     CStagePresets.MoveDownLoopRightUp(5.0f)
                 ));
 
-                stage_time += 2.0f;
+                stage_time += 1.0f;
                 stage.AddElement(stage_time, CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopRightCenter(),
@@ -137,16 +166,66 @@ namespace Galaxy
                     typeof(CSpacePlatform), 1,
                     CStagePresets.PositionTopRightCenter(),
                     CStagePresets.TimerDelay(0.0f),
-                    CStagePresets.MoveDown(1.0f)
+                    CStagePresets.MoveDown(scroll_speed)
                 ));
-
 
                 stage.AddElement(stage_time, CStagePresets.MakeWave(
                     typeof(CBuilding), 1,
                     CStagePresets.PositionTopRightCenter(),
                     CStagePresets.TimerDelay(0.0f),
-                    CStagePresets.MoveDown(1.0f)
+                    CStagePresets.MoveDown(scroll_speed)
                 ));
+
+                stage_time += 2.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CTurret), 3,
+                    CStagePresets.PositionTopLeftCenter(),
+                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.MoveDownLoopRightUp(5.0f)
+                ));
+
+                stage_time += 1.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CTurret), 3,
+                    CStagePresets.PositionTopRightCenter(),
+                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.MoveDownLoopLeftUp(5.0f)
+                ));
+
+                stage_time += 3.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CBigSpacePlatform), 1,
+                    CStagePresets.PositionTopLeftCenter(),
+                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.MoveDown(scroll_speed)
+                ));
+
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CBuilding), 1,
+                    CStagePresets.PositionTopLeftCenter(),
+                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.MoveDown(scroll_speed)
+                ));
+
+                WaveTurretBriefVertical(stage_time, stage);
+
+                stage_time += 3.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CTurret), 3,
+                    CStagePresets.PositionTopRightCenter(),
+                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.MoveDownLerpLeft(5.0f)
+                ));
+
+                stage_time += 0.0f;
+                stage.AddElement(stage_time, CStagePresets.MakeWave(
+                    typeof(CTurret), 3,
+                    CStagePresets.PositionTopLeftCenter(),
+                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.MoveDownLerpRight(5.0f)
+                ));
+
+                WaveTurretBriefVertical(stage_time, stage);
 
                 stage_time += 30.0f;
                 stage.AddElement(stage_time, new CStageFinish());

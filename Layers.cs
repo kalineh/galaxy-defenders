@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
+    // TODO: sprite batch per layer
+    // TODO: shader/effect definition per layer?
+    // TODO: sort sprites by texture in sub-layer render (for non-sublayer render?)
     public class CLayers
     {
         public static float LayerIncrement = 0.05f;

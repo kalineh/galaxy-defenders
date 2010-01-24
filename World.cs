@@ -87,6 +87,7 @@ namespace Galaxy
             StarsLower.Draw(sprite_batch);
             StarsUpper.Draw(sprite_batch);
 
+            // TODO: proper batch begin/end
             DrawEntities(sprite_batch);
 
             // TODO: split to HUD system

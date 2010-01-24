@@ -32,9 +32,17 @@ namespace Galaxy
                 return;
             }
 
-            float speed = velocity.Length();
-            Vector2 target = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
-            entity.Physics.PositionPhysics.Velocity = target.Normal() * speed;
+            if (AlwaysMaxSpeed)
+            {
+                float speed = velocity.Length();
+                Vector2 target = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
+                entity.Physics.PositionPhysics.Velocity = target.Normal() * speed;
+            }
+            else
+            {
+                entity.Physics.PositionPhysics.Velocity = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
+
+            }
         }
 
         private Vector2 GetVelocity(CEntity entity)
