@@ -23,6 +23,8 @@ namespace Galaxy
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
         private CStage Stage { get; set; }
+        public CCamera Camera { get; set; }
+        private Effect Effect { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -31,6 +33,7 @@ namespace Galaxy
             Entities = new List<CEntity>();
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
+            Camera = new CCamera(game);
         }
 
         // TODO: stage definition param
@@ -51,6 +54,8 @@ namespace Galaxy
 
             CStageDefinition stage_definition = Stages.Stage1.GenerateDefinition();
             Stage = new CStage(this, stage_definition);
+
+            Effect = Game.Content.Load<Effect>("Effects/SpriteBatch");
         }
 
         public void Stop()
@@ -81,7 +86,20 @@ namespace Galaxy
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
+            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+
+            Effect.Parameters["ViewportSize"].SetValue(new Vector2(800.0f, 600.0f));
+            //float2   ViewportSize    : register(c0);
+            //float2   TextureSize     : register(c1);
+            //float4x4 MatrixTransform : register(c2);
+            //sampler  TextureSampler  : register(s0);
+
+            //Effect.Projection = Camera.ProjectionMatrix;
+            //Effect.View = Camera.ViewMatrix;
+            //Effect.World = Matrix.Identity;
+
+            Effect.Begin();
+            Effect.CurrentTechnique.Passes[0].Begin();
 
             // TODO: split to scenery/bg system
             StarsLower.Draw(sprite_batch);
@@ -103,6 +121,9 @@ namespace Galaxy
             }
 
             sprite_batch.End();
+
+            Effect.CurrentTechnique.Passes[0].End();
+            Effect.End();
         }
 
         public void DrawEntities(SpriteBatch sprite_batch)

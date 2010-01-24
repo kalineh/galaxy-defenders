@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Threading;
 using System.IO;
 using System.Xml;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace Galaxy
     {
         private static SSaveData DefaultSaveData;
         public static SSaveData SaveData;
+        public static Mutex AccessMutex;
 
         static CSaveData()
         {
@@ -46,6 +48,7 @@ namespace Galaxy
                 }
             };
             SaveData = DefaultSaveData;
+            AccessMutex = new Mutex(false, "CSaveData.AccessMutex");
         }
 
         public static void Load()
@@ -120,6 +123,8 @@ namespace Galaxy
 
         private static void Import(out SSaveData data, string filename)
         {
+            AccessMutex.WaitOne();
+
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
             FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Read);
             try
@@ -136,6 +141,8 @@ namespace Galaxy
             {
                 stream.Close();
             }
+
+            AccessMutex.ReleaseMutex();
         }
 
         private static void Export(SSaveData data, string filename)

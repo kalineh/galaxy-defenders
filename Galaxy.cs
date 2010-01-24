@@ -20,6 +20,7 @@ namespace Galaxy
         : Microsoft.Xna.Framework.Game
     {
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
+        public new GraphicsDevice GraphicsDevice { get; private set; }
         public CGameViewport GameViewport { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
@@ -41,7 +42,9 @@ namespace Galaxy
             // TODO: render to backbuffer and just scale down before display if necessary
             //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
             //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             //GraphicsDeviceManager.ToggleFullScreen();
+            GraphicsDeviceManager.ApplyChanges();
 
             Debug = new CDebug(this);
             Input = new CInput(this);
@@ -49,6 +52,17 @@ namespace Galaxy
 
             FrameRateDisplay = new CFrameRateDisplay(this);
             GameFrame = 0;
+
+            // default
+            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
+        }
+
+        public void SwitchGraphicsDevice(GraphicsDevice graphics_device)
+        {
+            GraphicsDevice.Dispose();
+            GraphicsDevice = graphics_device;
+            LoadContent();
+            //Initialize();
         }
 
         /// <summary>
@@ -59,7 +73,15 @@ namespace Galaxy
         /// </summary>
         protected override void Initialize()
         {
+            //GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
+            //GraphicsDevice.PresentationParameters.BackBufferCount = 3;
+            //GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.None;
+            //GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+            //GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
+            GraphicsDeviceManager.ApplyChanges();
+
             GameViewport = new CGameViewport(this);
+
             base.Initialize();
         }
 
@@ -70,7 +92,7 @@ namespace Galaxy
         protected override void LoadContent()
         {
             // Graphics device does not exist during Initialize().
-            SpriteBatch = new SpriteBatch(GraphicsDeviceManager.GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
@@ -123,9 +145,9 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime game_time)
         {
+            base.Draw(game_time);
             State.Draw(SpriteBatch);
             FrameRateDisplay.Draw(SpriteBatch);
-            base.Draw(game_time);
         }
     }
 }
