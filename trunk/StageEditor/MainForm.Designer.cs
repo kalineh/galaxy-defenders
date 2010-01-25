@@ -28,20 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Game = new StageEditor.GameControl();
             this.RestartGameButton = new System.Windows.Forms.Button();
+            this.InputCatcher = new System.Windows.Forms.TextBox();
+            this.Game = new StageEditor.GameControl();
             this.SuspendLayout();
-            // 
-            // Game
-            // 
-            // TODO: Code generation for 'this.Game.CachedHandle' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.Game.Game = null;
-            this.Game.GameThread = null;
-            this.Game.Location = new System.Drawing.Point(12, 12);
-            this.Game.Name = "Game";
-            this.Game.Size = new System.Drawing.Size(800, 600);
-            this.Game.TabIndex = 2;
-            this.Game.Text = "Game";
             // 
             // RestartGameButton
             // 
@@ -53,25 +43,44 @@
             this.RestartGameButton.UseVisualStyleBackColor = true;
             this.RestartGameButton.Click += new System.EventHandler(this.RestartGameButton_Click);
             // 
+            // InputCatcher
+            // 
+            this.InputCatcher.Location = new System.Drawing.Point(12, 592);
+            this.InputCatcher.Name = "InputCatcher";
+            this.InputCatcher.Size = new System.Drawing.Size(10, 20);
+            this.InputCatcher.TabIndex = 4;
+            // 
+            // Game
+            // 
+            this.Game.CachedHandle = null;
+            this.Game.Game = null;
+            this.Game.GameThread = null;
+            this.Game.Location = new System.Drawing.Point(12, 12);
+            this.Game.Name = "Game";
+            this.Game.Size = new System.Drawing.Size(800, 600);
+            this.Game.TabIndex = 5;
+            this.Game.Text = "Game";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1011, 622);
+            this.Controls.Add(this.InputCatcher);
             this.Controls.Add(this.RestartGameButton);
             this.Controls.Add(this.Game);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private StageEditor.GameControl Game;
         private System.Windows.Forms.Button RestartGameButton;
-
-
+        private System.Windows.Forms.TextBox InputCatcher;
+        private GameControl Game;
     }
 }
 

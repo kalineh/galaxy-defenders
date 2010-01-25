@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StageEditor
 {
+    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
+    using WinKeys = System.Windows.Forms.Keys;
+
     /// <summary>
     /// Example control inherits from GraphicsDeviceControl, which allows it to
     /// render using a GraphicsDevice. This control shows how to use ContentManager
@@ -19,7 +24,7 @@ namespace StageEditor
     {
         public Galaxy.EditorGame Game { get; set; }
         public Thread GameThread { get; set; }
-        public IntPtr CachedHandle { get; set; }
+        public object CachedHandle { get; set; }
 
 
         /// <summary>
@@ -29,7 +34,7 @@ namespace StageEditor
         protected override void Initialize()
         {
             GameThread = new Thread(new ThreadStart(RunGameThread));
-            CachedHandle = Handle;
+            CachedHandle = (object)this.Handle;
             HandleDestroyed += (sender, event_args) => Dispose();
         }
 
@@ -66,7 +71,7 @@ namespace StageEditor
 
                 Game.Update(game_time);
                 Game.Draw(game_time);
-                Game.GraphicsDevice.Present(CachedHandle);
+                Game.GraphicsDevice.Present((IntPtr)CachedHandle);
                 Thread.Sleep(TimeSpan.FromSeconds(FrameTimeInSeconds));
             }
         }
@@ -80,6 +85,29 @@ namespace StageEditor
             {
                 GameThread.Start();
             }
+        }
+
+        public new void OnKeyUp(KeyEventArgs e)
+        {
+            List<XnaKeys> keys = Game.Input.KeysOverride.ToList();
+            keys.RemoveAll(k => k == (XnaKeys)e.KeyCode);
+            XnaKeys[] override_keys = keys.ToArray();
+
+            Game.Input.KeysOverride = override_keys;
+
+            e.Handled = true;
+        }
+
+        public new void OnKeyDown(KeyEventArgs e)
+        {
+            List<XnaKeys> keys = Game.Input.KeysOverride.ToList();
+            keys.RemoveAll(k => k == (XnaKeys)e.KeyCode);
+            keys.Add((XnaKeys)e.KeyCode);
+            XnaKeys[] override_keys = keys.ToArray();
+
+            Game.Input.KeysOverride = override_keys;
+
+            e.Handled = true;
         }
     }
 }

@@ -79,6 +79,7 @@ namespace Galaxy
             //GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
             //GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
             GraphicsDeviceManager.ApplyChanges();
+            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             GameViewport = new CGameViewport(this);
 
