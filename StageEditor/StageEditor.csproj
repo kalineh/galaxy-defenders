@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventInput.cs" />
     <Compile Include="EditorGame.cs" />
     <Compile Include="GameControl.cs">
       <SubType>Component</SubType>

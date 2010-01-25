@@ -121,15 +121,14 @@ namespace Galaxy
             GamePadState state = GamePad.GetState(PlayerIndex.One);
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
-            KeyboardState kb = Keyboard.GetState();
 
             float Speed = SSettings.MovementSpeed;
             Vector2 force = new Vector2(0.0f, 0.0f);
  
-            if (dpad.Up == ButtonState.Pressed || kb.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
-            if (dpad.Down == ButtonState.Pressed || kb.IsKeyDown(Keys.Down) ) { force.Y += Speed; }
-            if (dpad.Left == ButtonState.Pressed || kb.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
-            if (dpad.Right == ButtonState.Pressed || kb.IsKeyDown(Keys.Right) ) { force.X += Speed; }
+            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
+            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Down) ) { force.Y += Speed; }
+            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
+            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right) ) { force.X += Speed; }
 
             Physics.PositionPhysics.Velocity += force;
 
@@ -143,11 +142,11 @@ namespace Galaxy
                 UpgradeSecondaryWeapon();
 
             // TODO: bind to functions?
-            if (buttons.B == ButtonState.Pressed || kb.IsKeyDown(Keys.S))
+            if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
             {
                 Fire(WeaponPrimary);
             }
-            if (buttons.X == ButtonState.Pressed || kb.IsKeyDown(Keys.D))
+            if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
             {
                 Fire(WeaponSecondary);
             }
