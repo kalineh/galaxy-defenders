@@ -64,5 +64,12 @@ namespace StageEditor
             }
             input_catcher.Visible = true;
         }
+
+        private void EditorModeButton_Click(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            game_control.Game.State = new Galaxy.CStateEditor(game);
+        }
     }
 }
