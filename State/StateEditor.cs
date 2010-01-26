@@ -32,8 +32,10 @@ namespace Galaxy
             Game = game;
             Editor = new CEditor(game);
             World = new CWorld(game);
-            Graphics = Graphics.FromHwnd(Game.Window.Handle);
-            DefaultPen = new Pen(Brushes.White, 3.0f);
+            // TODO: .Handle will try and get the handle from the control which was created on another thread, and therefore fail
+            // TODO: if it is a control, check InvokeRequired and call a delegate
+            //Graphics = Graphics.FromHwnd(game.Window.Handle);
+            //DefaultPen = new Pen(Brushes.White, 3.0f);
         }
 
         public override void Update()

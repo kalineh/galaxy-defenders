@@ -31,15 +31,16 @@
             this.RestartGameButton = new System.Windows.Forms.Button();
             this.InputCatcher = new System.Windows.Forms.TextBox();
             this.Game = new StageEditor.GameControl();
+            this.EditorModeButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // RestartGameButton
             // 
-            this.RestartGameButton.Location = new System.Drawing.Point(818, 589);
+            this.RestartGameButton.Location = new System.Drawing.Point(12, 618);
             this.RestartGameButton.Name = "RestartGameButton";
-            this.RestartGameButton.Size = new System.Drawing.Size(181, 23);
+            this.RestartGameButton.Size = new System.Drawing.Size(108, 22);
             this.RestartGameButton.TabIndex = 3;
-            this.RestartGameButton.Text = "Restart Game";
+            this.RestartGameButton.Text = "Restart &Game";
             this.RestartGameButton.UseVisualStyleBackColor = true;
             this.RestartGameButton.Click += new System.EventHandler(this.RestartGameButton_Click);
             // 
@@ -61,11 +62,22 @@
             this.Game.TabIndex = 5;
             this.Game.Text = "Game";
             // 
+            // EditorModeButton
+            // 
+            this.EditorModeButton.Location = new System.Drawing.Point(12, 646);
+            this.EditorModeButton.Name = "EditorModeButton";
+            this.EditorModeButton.Size = new System.Drawing.Size(108, 22);
+            this.EditorModeButton.TabIndex = 6;
+            this.EditorModeButton.Text = "&Editor Mode";
+            this.EditorModeButton.UseVisualStyleBackColor = true;
+            this.EditorModeButton.Click += new System.EventHandler(this.EditorModeButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1011, 622);
+            this.ClientSize = new System.Drawing.Size(1035, 673);
+            this.Controls.Add(this.EditorModeButton);
             this.Controls.Add(this.InputCatcher);
             this.Controls.Add(this.RestartGameButton);
             this.Controls.Add(this.Game);
@@ -81,6 +93,7 @@
         private System.Windows.Forms.Button RestartGameButton;
         private System.Windows.Forms.TextBox InputCatcher;
         private GameControl Game;
+        private System.Windows.Forms.Button EditorModeButton;
     }
 }
 

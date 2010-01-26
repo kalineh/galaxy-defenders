@@ -23,7 +23,7 @@ namespace Galaxy
         public new void Initialize()
         {
             base.Initialize();
-            State = new CStateShop(this);
+            State = new CStateEditor(this);
         }
 
         /// <summary>
