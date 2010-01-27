@@ -28,14 +28,9 @@ namespace Galaxy
             World.Update(); 
         }
 
-        public void Draw(SpriteBatch sprite_batch)
+        public void Draw()
         {
-            Game.GraphicsDevice.Clear(ClearOptions.Target, Color.Black, 0.0f, 0);
-
-            World.Draw(sprite_batch); 
-
-            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
-            sprite_batch.End();
+            World.Draw(); 
         }
     }
 }

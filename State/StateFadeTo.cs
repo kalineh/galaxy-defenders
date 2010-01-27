@@ -40,21 +40,21 @@ namespace Galaxy
             }
         }
 
-        public override void Draw(SpriteBatch sprite_batch)
+        public override void Draw()
         {
             if (Fader.IsFadeIn())
             {
-                Source.Draw(sprite_batch);
+                Source.Draw();
             }
 
             if (Fader.IsFadeOut())
             {
-                Target.Draw(sprite_batch);
+                Target.Draw();
             }
 
-            sprite_batch.Begin();
-            Fader.Draw(sprite_batch);
-            sprite_batch.End();
+            Game.DefaultSpriteBatch.Begin();
+            Fader.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
         }
     }
 }

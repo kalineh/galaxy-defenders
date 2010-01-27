@@ -46,13 +46,13 @@ namespace Galaxy
             }
         }
 
-        public override void Draw(SpriteBatch sprite_batch)
+        public override void Draw()
         {
             Game.GraphicsDevice.Clear(Microsoft.Xna.Framework.Graphics.Color.Black);
 
-            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
 
-            sprite_batch.End();
+            Game.DefaultSpriteBatch.End();
 
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Brushes.White, 5.0f);
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Game.Window.Handle);

@@ -13,8 +13,10 @@ namespace Galaxy
         public CGalaxy Game { get; private set; }
         public Vector3 Position { get; set; }
         public Vector3 LookAt { get; set; }
-        public Matrix ViewMatrix { get; set; }
-        public Matrix ProjectionMatrix { get; set; }
+
+        public Matrix ViewMatrix { get; private set; }
+        public Matrix ProjectionMatrix { get; private set; }
+        public Matrix WorldMatrix { get; private set; }
 
         public CCamera(CGalaxy game)
         {
@@ -38,6 +40,7 @@ namespace Galaxy
         public void Update()
         {
             ViewMatrix = Matrix.CreateLookAt(Position, LookAt, Vector3.Up);
+            WorldMatrix = Matrix.CreateTranslation(Position);
         }
     }
 }
