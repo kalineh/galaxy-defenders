@@ -48,17 +48,17 @@ namespace Galaxy
             Menu.Update();
         }
 
-        public override void Draw(SpriteBatch sprite_batch)
+        public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            sprite_batch.Begin();
+            Game.DefaultSpriteBatch.Begin();
 
-            Stars.Draw(sprite_batch);
-            sprite_batch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
-            Menu.Draw(sprite_batch);
+            Stars.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
+            Menu.Draw(Game.DefaultSpriteBatch);
 
-            sprite_batch.End();
+            Game.DefaultSpriteBatch.End();
         }
 
         public void NewProfile()

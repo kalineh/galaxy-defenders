@@ -61,7 +61,7 @@ namespace Galaxy
         public new void Draw(GameTime game_time)
         {
             //base.Draw(game_time);
-            base.State.Draw(SpriteBatch);
+            base.State.Draw();
             //GraphicsDevice.Present();
         }
     }

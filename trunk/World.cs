@@ -23,8 +23,7 @@ namespace Galaxy
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
         private CStage Stage { get; set; }
-        public CCamera Camera { get; set; }
-        private Effect Effect { get; set; }
+        public CCamera GameCamera { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -33,7 +32,7 @@ namespace Galaxy
             Entities = new List<CEntity>();
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
-            Camera = new CCamera(game);
+            GameCamera = new CCamera(game);
         }
 
         // TODO: stage definition param
@@ -54,8 +53,6 @@ namespace Galaxy
 
             CStageDefinition stage_definition = Stages.Stage1.GenerateDefinition();
             Stage = new CStage(this, stage_definition);
-
-            Effect = Game.Content.Load<Effect>("Effects/SpriteBatch");
         }
 
         public void Stop()
@@ -71,6 +68,7 @@ namespace Galaxy
             StarsLower.Update();
             StarsUpper.Update();
 
+            GameCamera.Update();
             UpdateEntities();
         }
 
@@ -82,53 +80,52 @@ namespace Galaxy
             ProcessEntityDelete();
         }
 
-        public void Draw(SpriteBatch sprite_batch)
+        public void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+            DrawBackground(GameCamera);
+            DrawEntities(GameCamera);
+            DrawHUD(GameCamera);
+        }
 
-            Effect.Parameters["ViewportSize"].SetValue(new Vector2(800.0f, 600.0f));
-            //float2   ViewportSize    : register(c0);
-            //float2   TextureSize     : register(c1);
-            //float4x4 MatrixTransform : register(c2);
-            //sampler  TextureSampler  : register(s0);
-
-            //Effect.Projection = Camera.ProjectionMatrix;
-            //Effect.View = Camera.ViewMatrix;
-            //Effect.World = Matrix.Identity;
-
-            Effect.Begin();
-            Effect.CurrentTechnique.Passes[0].Begin();
+        public void DrawBackground(CCamera camera)
+        {
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None, camera.WorldMatrix);
 
             // TODO: split to scenery/bg system
-            StarsLower.Draw(sprite_batch);
-            StarsUpper.Draw(sprite_batch);
+            StarsLower.Draw(Game.DefaultSpriteBatch);
+            StarsUpper.Draw(Game.DefaultSpriteBatch);
 
-            // TODO: proper batch begin/end
-            DrawEntities(sprite_batch);
+            Game.DefaultSpriteBatch.End();
+        }
+
+        public void DrawEntities(CCamera camera)
+        {
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
+
+            Entities.ForEach(entity => entity.Draw(Game.DefaultSpriteBatch));
+
+            Game.DefaultSpriteBatch.End();
+        }
+
+        public void DrawHUD(CCamera camera)
+        {
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None, Matrix.Identity);
 
             // TODO: split to HUD system
-            sprite_batch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
-            sprite_batch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
             // TODO: HUD system
             CShip ship = GetNearestShip(Vector2.Zero);
             if (ship != null)
             {
-                sprite_batch.DrawString(Game.DefaultFont, String.Format("Shield: {0:0.0}", ship.Shield), new Vector2(10, 50), Color.White);
-                sprite_batch.DrawString(Game.DefaultFont, String.Format("Armor: {0:0.0}", ship.Armor), new Vector2(10, 70), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Shield: {0:0.0}", ship.Shield), new Vector2(10, 50), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Armor: {0:0.0}", ship.Armor), new Vector2(10, 70), Color.White);
             }
 
-            sprite_batch.End();
-
-            Effect.CurrentTechnique.Passes[0].End();
-            Effect.End();
-        }
-
-        public void DrawEntities(SpriteBatch sprite_batch)
-        {
-            Entities.ForEach(entity => entity.Draw(sprite_batch));
+            Game.DefaultSpriteBatch.End();
         }
 
         public void EntityAdd(CEntity entity)

@@ -20,7 +20,7 @@ namespace Galaxy
         private CMenu MenuBase { get; set; }
         private CMenu MenuPrimaryWeapon { get; set; }
         private CMenu MenuSecondaryWeapon { get; set; }
-        private delegate void DrawMenuErrataFunction(SpriteBatch sprite_batch);
+        private delegate void DrawMenuErrataFunction();
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
@@ -79,19 +79,23 @@ namespace Galaxy
             SampleShip.UpdateWeapons();
         }
 
-        public override void Draw(SpriteBatch sprite_batch)
+        public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            sprite_batch.Begin();
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None);
+            Stars.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
 
-            Stars.Draw(sprite_batch);
-            Menu.Draw(sprite_batch);
-            DrawMenuErrata(sprite_batch);
-            EmptyWorld.DrawEntities(sprite_batch);
-            SampleShip.Draw(sprite_batch);
+            EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
-            sprite_batch.End();
+            Game.DefaultSpriteBatch.Begin();
+            Menu.Draw(Game.DefaultSpriteBatch);
+            DrawMenuErrata();
+
+            SampleShip.Draw(Game.DefaultSpriteBatch);
+
+            Game.DefaultSpriteBatch.End();
         }
 
         private void RefreshSampleDisplay()
@@ -100,15 +104,15 @@ namespace Galaxy
             SampleShip = new CShip(EmptyWorld, WorkingProfile, new Vector2(200.0f, 400.0f));
         }
 
-        private void DrawMenuBaseErrata(SpriteBatch sprite_batch)
+        private void DrawMenuBaseErrata()
         {
         }
 
-        private void DrawMenuPrimaryErrata(SpriteBatch sprite_batch)
+        private void DrawMenuPrimaryErrata()
         {
         }
 
-        private void DrawMenuSecondaryErrata(SpriteBatch sprite_batch)
+        private void DrawMenuSecondaryErrata()
         {
         }
 

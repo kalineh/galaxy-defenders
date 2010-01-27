@@ -22,7 +22,7 @@ namespace Galaxy
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public new GraphicsDevice GraphicsDevice { get; private set; }
         public CGameViewport GameViewport { get; private set; }
-        public SpriteBatch SpriteBatch { get; private set; }
+        public SpriteBatch DefaultSpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
         public CDebug Debug { get; private set; }
         public CInput Input { get; private set; }
@@ -93,7 +93,7 @@ namespace Galaxy
         protected override void LoadContent()
         {
             // Graphics device does not exist during Initialize().
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
             DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
@@ -147,8 +147,8 @@ namespace Galaxy
         protected override void Draw(GameTime game_time)
         {
             base.Draw(game_time);
-            State.Draw(SpriteBatch);
-            FrameRateDisplay.Draw(SpriteBatch);
+            State.Draw();
+            FrameRateDisplay.Draw(DefaultSpriteBatch);
         }
     }
 }

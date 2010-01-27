@@ -34,9 +34,9 @@ namespace Galaxy
             }
         }
 
-        public override void Draw(SpriteBatch sprite_batch)
+        public override void Draw()
         {
-            World.Draw(sprite_batch);
+            World.Draw();
         }
     }
 }
