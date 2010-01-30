@@ -233,6 +233,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\Sprite.fx">
+      <Name>Sprite</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>

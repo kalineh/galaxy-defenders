@@ -21,26 +21,9 @@ namespace StageEditor
         {
             InitializeComponent();
 
-            //EventInput.EventInput.Initialize(this.Handle);
-            //EventInput.EventInput.KeyUp += KeyUpHandler;
-            //EventInput.EventInput.KeyDown += KeyDownHandler;
-
             this.InputCatcher.KeyDown += KeyDownHandler;
             this.InputCatcher.KeyUp += KeyUpHandler;
-    //public delegate void KeyEventHandler(object sender, KeyEventArgs e);
         }
-
-        //protected void KeyUpHandler(object sender, EventInput.KeyEventArgs e)
-        //{
-            //GameControl game_control = this.Game;
-            //Galaxy.CGalaxy game = game_control.Game;
-        //}
-
-        //protected void KeyDownHandler(object sender, EventInput.KeyEventArgs e)
-        //{
-            //GameControl game_control = this.Game;
-            //Galaxy.CGalaxy game = game_control.Game;
-        //}
 
         protected void KeyDownHandler(object sender, KeyEventArgs e)
         {
@@ -70,6 +53,7 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             game_control.Game.State = new Galaxy.CStateEditor(game);
+            game_control.UpdateEditorPosition();
         }
     }
 }
