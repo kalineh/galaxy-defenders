@@ -54,6 +54,11 @@ namespace Galaxy
 
         public static Vector3 xy0(this Vector2 vector) { return new Vector3(vector.X, vector.Y, 0.0f); }
         public static Vector3 xy1(this Vector2 vector) { return new Vector3(vector.X, vector.Y, 1.0f); }
+
+        public static Vector2 ToVector2(this Vector3 vector)
+        {
+            return new Vector2(vector.X, vector.Y);
+        }
     }
 
     public static class EnhanceRandom

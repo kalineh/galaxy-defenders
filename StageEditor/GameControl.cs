@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace StageEditor
 {
     using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
     using WinKeys = System.Windows.Forms.Keys;
+    using WinPoint = System.Drawing.Point;
 
     /// <summary>
     /// Example control inherits from GraphicsDeviceControl, which allows it to
@@ -26,7 +28,6 @@ namespace StageEditor
         public Thread GameThread { get; set; }
         public object CachedHandle { get; set; }
 
-
         /// <summary>
         /// Initializes the control, creating the ContentManager
         /// and using it to load a SpriteFont.
@@ -37,7 +38,6 @@ namespace StageEditor
             CachedHandle = (object)this.Handle;
             HandleDestroyed += (sender, event_args) => Dispose();
         }
-
 
         /// <summary>
         /// Disposes the control, unloading the ContentManager.
@@ -53,10 +53,27 @@ namespace StageEditor
             base.Dispose(disposing);
         }
 
+        public void UpdateEditorPosition()
+        {
+            Galaxy.CStateEditor editor = Game.State as Galaxy.CStateEditor;
+            WinPoint local = new WinPoint(ClientRectangle.Left, ClientRectangle.Top);
+            WinPoint screen = PointToScreen(local);
+            // HACK: the mouse coords we get in form mode are from -560, -310 to 1359, 889, so lets tell the form it's at a different position.
+            // NOTE: this is only when in form mode; in game mode the mouse position starts at 0,0 for the viewport top-left.
+            screen.X = 560 - screen.X;
+            screen.Y = 310 - screen.Y;
+            editor.FormTopLeft = screen;
+        }
+
+        public delegate void PositionDelegate();
+
         private void RunGameThread()
         {
             Game = new Galaxy.EditorGame();
             Game.Initialize();
+            Galaxy.CStateEditor editor = Game.State as Galaxy.CStateEditor;
+            PositionDelegate callback = UpdateEditorPosition;
+            this.Invoke(callback);
 
             const double FrameTimeInSeconds = 1.0 / 60.0;
             while (true)
