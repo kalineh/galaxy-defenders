@@ -25,6 +25,23 @@ namespace StageEditor
             this.InputCatcher.KeyUp += KeyUpHandler;
         }
 
+        protected void UpdateEditorPosition()
+        {
+            this.Game.UpdateEditorPosition();
+        }
+
+        protected override void OnClientSizeChanged(EventArgs e)
+        {
+            UpdateEditorPosition();
+            base.OnClientSizeChanged(e);
+        }
+
+        protected override void OnMove(EventArgs e)
+        {
+            UpdateEditorPosition();
+            base.OnMove(e);
+        }
+
         protected void KeyDownHandler(object sender, KeyEventArgs e)
         {
             this.Game.OnKeyDown(e);

@@ -55,6 +55,9 @@ namespace StageEditor
 
         public void UpdateEditorPosition()
         {
+            if (Game == null)
+                return;
+
             Galaxy.CStateEditor editor = Game.State as Galaxy.CStateEditor;
             WinPoint local = new WinPoint(ClientRectangle.Left, ClientRectangle.Top);
             WinPoint screen = PointToScreen(local);
