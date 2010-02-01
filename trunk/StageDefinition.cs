@@ -24,6 +24,11 @@ namespace Galaxy
             ScrollSpeed = 1.0f;
         }
 
+        public void AddElement(int time, CStageElement element, object ignored_parameter_for_editor)
+        {
+            AddElement(time, element);
+        }
+
         public void AddElement(int time, CStageElement element)
         {
             List<CStageElement> elements = GetElementsAtTime(time);
