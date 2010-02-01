@@ -22,7 +22,9 @@ namespace Galaxy
         private CStars StarsLower { get; set; }
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
-        private CStage Stage { get; set; }
+        public CStageDefinition StageDefinition { get; set; }
+        public string StageName { get; set; }
+        public CStage Stage { get; set; }
         public CCamera GameCamera { get; set; }
 
         public CWorld(CGalaxy game)
@@ -49,10 +51,14 @@ namespace Galaxy
             CShip ship = new CShip(this, profile, new Vector2(300.0f, 400.0f));
             Entities.Add(ship);
 
+
             Game.Music.Play("Music/Stage1");
 
-            CStageDefinition stage_definition = Stages.Stage1.GenerateDefinition();
-            Stage = new CStage(this, stage_definition);
+            StageName = "Stage1";
+            Type stage_type = Type.GetType(String.Format("Galaxy.Stages.{0}", StageName));
+            MethodInfo generate_method = stage_type.GetMethod("GenerateDefinition");
+            StageDefinition = generate_method.Invoke(null, null) as CStageDefinition;
+            Stage = new CStage(this, StageDefinition);
         }
 
         public void Stop()
@@ -141,6 +147,23 @@ namespace Galaxy
         public IEnumerable<CEntity> GetEntitiesOfType(Type type)
         {
             return Entities.Where(entity => entity.GetType() == type);
+        }
+
+        public CEntity GetEntityAtPosition(Vector2 position)
+        {
+            Collision find = new CollisionCircle(position, 1.0f);
+
+            foreach (CEntity entity in Entities)
+            {
+                if (entity.Physics == null)
+                    continue;
+
+                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, 1.0f);
+                if (find.Intersects(collision))
+                    return entity;
+            }
+
+            return null;
         }
 
         public CShip GetNearestShip(Vector2 position)

@@ -42,7 +42,7 @@ namespace Galaxy
             // TODO: render to backbuffer and just scale down before display if necessary
             //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
             //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
-            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             //GraphicsDeviceManager.ToggleFullScreen();
             GraphicsDeviceManager.ApplyChanges();
 

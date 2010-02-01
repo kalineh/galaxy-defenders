@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -16,8 +17,11 @@ namespace Galaxy
     public class EditorGame
         : Galaxy.CGalaxy
     {
-        public EditorGame()
+        public StageEditor.GameControl GameControl { get; set; }
+
+        public EditorGame(StageEditor.GameControl game_control)
         {
+            GameControl = game_control;
         }
 
         public new void Initialize()
@@ -52,6 +56,24 @@ namespace Galaxy
         public new void Update(GameTime game_time)
         {
             base.Update(game_time);
+            UpdateEditor();
+        }
+
+        public void UpdateEditor()
+        {
+            CStateEditor editor = State as CStateEditor;
+            if (editor == null)
+                return;
+
+            StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
+            PropertyGrid grid = form.GetEntityPropertyGrid();
+            CEntity selected = editor.SelectedEntity;
+            //if (selected == null)
+                //return;
+
+            //grid.SelectedObject = selected;
+            grid.Invoke((Action)(() => grid.SelectedObject = selected));
+            
         }
 
         /// <summary>

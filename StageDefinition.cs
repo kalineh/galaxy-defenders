@@ -24,10 +24,9 @@ namespace Galaxy
             ScrollSpeed = 1.0f;
         }
 
-        public void AddElement(float time, CStageElement element)
+        public void AddElement(int time, CStageElement element)
         {
-            int frame = Time.ToFrames(time);
-            List<CStageElement> elements = GetElementsAtTime(frame);
+            List<CStageElement> elements = GetElementsAtTime(time);
             elements.Add(element);
         }
 

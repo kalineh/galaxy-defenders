@@ -3,7 +3,12 @@
 //
 
 using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -21,35 +26,42 @@ namespace Galaxy
     // TODO: edit entity
     // TODO: load stage definition
 
+
+    public enum EditorInteractionState
+    {
+        None,
+        Dragging,
+    }
+
     public class CStateEditor
         : CState
     {
         public CGalaxy Game { get; private set; }
         public CWorld World { get; private set; }
-        public CEditor Editor { get; private set; }
-        private Graphics Graphics { get; set; }
-        private Pen DefaultPen { get; set; }
         private Vector2 LastMouseInput { get; set; }
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
         private CStars Stars { get; set; }
         public WinPoint FormTopLeft { get; set; }
+        public IntPtr Hwnd { get; set; }
+        public CEntity SelectedEntity { get; set; }
+        public CEntity HoverEntity { get; set; }
+        public EditorInteractionState InteractionState { get; set; }
+        public CVisual SelectionBox { get; set; }
+        public CVisual HoverBox { get; set; }
+        public string StageFilename { get; set; }
+        public CStageDefinition CurrentStageDefinition { get; set; }
 
         public CStateEditor(CGalaxy game)
         {
             Game = game;
-            Editor = new CEditor(game);
-            World = new CWorld(game);
-            WorkingProfile = CSaveData.GetCurrentProfile();
-            SampleShip = new CShip(World, WorkingProfile, new Vector2(100.0f, 100.0f));
-            World.EntityAdd(SampleShip);
-            // TODO: .Handle will try and get the handle from the control which was created on another thread, and therefore fail
-            // TODO: if it is a control, check InvokeRequired and call a delegate
-            // TODO: control.Invoke( delegate ) // can use delegate return value!
-            //Graphics = Graphics.FromHwnd(game.Window.Handle);
-            //DefaultPen = new Pen(Brushes.White, 3.0f);
+            string cwd = Directory.GetCurrentDirectory();
+            string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
+            StageFilename = base_ + "StageDefinitions\\EditorStage.cs";
+            ClearStage();
 
-            Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
+            // TODO: temp save testing
+            CurrentStageDefinition = Galaxy.Stages.Stage1.GenerateDefinition();
         }
 
         public override void Update()
@@ -72,11 +84,41 @@ namespace Galaxy
             Vector2 current = new Vector2(state.X, state.Y);
             Vector2 delta = current - LastMouseInput;
             Vector2 mouse = current + new Vector2(FormTopLeft.X, FormTopLeft.Y);
+            Vector2 world = World.GameCamera.ScreenToWorld(mouse);
+
+            switch (InteractionState)
+            {
+                case EditorInteractionState.None:
+                    UpdateInteractionNone(mouse, delta, world);
+                    break;
+
+                case EditorInteractionState.Dragging:
+                    UpdateInteractionDragging(mouse, delta, world);
+                    break;
+            }
+
+            LastMouseInput = current;
+        }
+        
+        public void UpdateInteractionNone(Vector2 mouse, Vector2 delta, Vector2 world)
+        {
+            MouseState state = Mouse.GetState();
+
+            if (!IsInGameViewport(mouse))
+            {
+                HoverEntity = null;
+                return;
+            }
+
+            HoverEntity = World.GetEntityAtPosition(world);
 
             if (state.LeftButton == ButtonState.Pressed)
             {
-                Vector2 world = World.GameCamera.ScreenToWorld(mouse);
-                SampleShip.Physics.PositionPhysics.Position = world;
+                CEntity entity = World.GetEntityAtPosition(world);
+                SelectedEntity = entity;
+
+                if (SelectedEntity != null)
+                    InteractionState = EditorInteractionState.Dragging;
             }
 
             if (state.MiddleButton == ButtonState.Pressed)
@@ -88,8 +130,44 @@ namespace Galaxy
             {
                 World.GameCamera.Zoom += delta.Y * 0.01f;
             }
+        }
+        
+        public void UpdateInteractionDragging(Vector2 mouse, Vector2 delta, Vector2 world)
+        {
+            MouseState state = Mouse.GetState();
 
-            LastMouseInput = current;
+            HoverEntity = null;
+
+            if (!IsInGameViewport(mouse))
+                return;
+
+            if (SelectedEntity == null)
+            {
+                InteractionState = EditorInteractionState.None;
+                return;
+            }
+
+            if (state.LeftButton == ButtonState.Released)
+            {
+                InteractionState = EditorInteractionState.None;
+                return;
+            }
+
+            SelectedEntity.Physics.PositionPhysics.Position = world;
+        }
+
+        public bool IsInGameViewport(Vector2 mouse)
+        {
+            Viewport viewport = World.Game.GraphicsDevice.Viewport;
+            if (mouse.X < viewport.X)
+                return false;
+            if (mouse.Y < viewport.Y)
+                return false;
+            if (mouse.X > viewport.X + viewport.Width)
+                return false;
+            if (mouse.Y > viewport.Y + viewport.Height)
+                return false;
+            return true;
         }
 
         public override void Draw()
@@ -100,24 +178,47 @@ namespace Galaxy
             Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
+            if (SelectedEntity != null)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                SelectionBox.Scale = new Vector2(SelectedEntity.GetRadius() * 2.0f);
+                SelectionBox.Draw(Game.DefaultSpriteBatch, SelectedEntity.Physics.PositionPhysics.Position, 0.0f);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            if (HoverEntity != null && HoverEntity != SelectedEntity)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                HoverBox.Scale = new Vector2(HoverEntity.GetRadius() * 2.0f);
+                HoverBox.Draw(Game.DefaultSpriteBatch, HoverEntity.Physics.PositionPhysics.Position, 0.0f);
+                Game.DefaultSpriteBatch.End();
+            }
+
+
             World.DrawEntities(World.GameCamera);
 
-            MouseState state = Mouse.GetState();
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
-            String text = String.Format("Mouse X: {0:0.00}, Y: {1:0.00}", (float)state.X, (float)state.Y);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, Vector2.Zero, XnaColor.White);
-            Vector2 world = World.GameCamera.ScreenToWorld(new Vector2(state.X, state.Y));
-            text = String.Format("World X: {0:0.00}, Y: {1:0.00}", world.X, world.Y);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, Vector2.UnitY * 20.0f, XnaColor.White);
-            Vector2 player = SampleShip.Physics.PositionPhysics.Position;
-            text = String.Format(" Ship X: {0:0.00}, Y: {1:0.00}", FormTopLeft.X, FormTopLeft.Y);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, Vector2.UnitY * 40.0f, XnaColor.White);
-            Game.DefaultSpriteBatch.End();
-
-            //System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Brushes.White, 5.0f);
-            //System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Game.Window.Handle);
+            // TODO: flickering occurs rendering GDI on top of d3d
+            //System.Drawing.Bitmap bitmap = new Bitmap(320, 200);
+            //System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5.0f);
+            //System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Hwnd);
             //graphics.DrawLine(pen, new System.Drawing.PointF(10.0f, 10.0f), new System.Drawing.PointF(200.0f, 200.0f));
-            //System.Drawing.Graphics.FromHwnd(Game.Window.Handle);
+            //graphics.DrawLine(pen, new System.Drawing.PointF(10.0f, 10.0f), new System.Drawing.PointF(200.0f, 200.0f));
+            //graphics.DrawRectangle(pen, 0.0f, 0.0f, 100.0f, 100.0f);
+        }
+
+        public void ClearStage()
+        {
+            World = new CWorld(Game);
+            WorkingProfile = CSaveData.GetCurrentProfile();
+            SampleShip = new CShip(World, WorkingProfile, new Vector2(100.0f, 100.0f));
+            World.EntityAdd(SampleShip);
+            Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
+            SelectionBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Red);
+            SelectionBox.Alpha = 0.2f;
+            HoverBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.White);
+            HoverBox.Alpha = 0.2f;
+            SelectedEntity = null;
+            HoverEntity = null;
         }
     }
 }

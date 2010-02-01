@@ -19,7 +19,7 @@ namespace Galaxy
 
                 // asteroids
                 StageTime += 2.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CAsteroid),
                     SpawnCount = 20,
                     SpawnPosition = new CSpawnPositionRandom(),
@@ -29,7 +29,7 @@ namespace Galaxy
 
                 // Turret wave
                 StageTime += 6.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(350.0f, -100.0f) },
@@ -52,7 +52,7 @@ namespace Galaxy
                 });
 
                 StageTime += 6.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity
                 {
                     Type = typeof(CTurret),
                     SpawnCount = 3,
@@ -77,7 +77,7 @@ namespace Galaxy
 
                 // wave 1
                 StageTime += 8.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
@@ -86,7 +86,7 @@ namespace Galaxy
                 });
 
                 StageTime += 4.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
@@ -95,7 +95,7 @@ namespace Galaxy
                 });
 
                 StageTime += 4.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
@@ -105,7 +105,7 @@ namespace Galaxy
 
                 // heavy asteroids
                 StageTime += 6.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CAsteroid),
                     SpawnCount = 30,
                     SpawnPosition = new CSpawnPositionRandom(),
@@ -115,7 +115,7 @@ namespace Galaxy
 
                 // wave 2
                 StageTime += 8.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
@@ -124,7 +124,7 @@ namespace Galaxy
                 });
 
                 StageTime += 4.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
@@ -134,7 +134,7 @@ namespace Galaxy
 
                 // heavy asteroids
                 StageTime += 8.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CAsteroid),
                     SpawnCount = 30,
                     SpawnPosition = new CSpawnPositionRandom(),
@@ -144,7 +144,7 @@ namespace Galaxy
 
                 // boss
                 StageTime += 8.0f;
-                stage.AddElement(StageTime, new CSpawnerEntity {
+                stage.AddElement(Time.ToFrames(StageTime), new CSpawnerEntity {
                     Type = typeof(CSinBall),
                     SpawnCount = 1,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
@@ -154,7 +154,7 @@ namespace Galaxy
 
                 // stage end
                 StageTime += 12.0f;
-                stage.AddElement(StageTime, new CStageFinish());
+                stage.AddElement(Time.ToFrames(StageTime), new CStageFinish());
 
                 return stage;
             }

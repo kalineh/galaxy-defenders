@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -71,6 +72,52 @@ namespace StageEditor
             Galaxy.CGalaxy game = game_control.Game;
             game_control.Game.State = new Galaxy.CStateEditor(game);
             game_control.UpdateEditorPosition();
+        }
+
+        public PropertyGrid GetEntityPropertyGrid()
+        {
+            return EntityPropertyGrid;
+        }
+
+        private void QuitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void NewStageButton_Click(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.ClearStage();
+        }
+
+        private void SaveAsButton_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.Filter = "Stage|*.cs";
+            save.Title = "Save Stage";
+            string cwd = Directory.GetCurrentDirectory();
+            string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
+            save.InitialDirectory = base_ + "StageDefinitions";
+            save.ShowDialog();
+            string filename = save.FileName;
+            if (filename == null)
+                return;
+
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.StageFilename = filename;
+            Galaxy.CStageWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            Galaxy.CStageWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
         }
     }
 }

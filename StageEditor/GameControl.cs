@@ -21,7 +21,7 @@ namespace StageEditor
     /// ContentManager, then uses a SpriteBatch to draw text. The control is not
     /// animated, so it only redraws itself in response to WinForms paint messages.
     /// </summary>
-    class GameControl
+    public class GameControl
         : GraphicsDeviceControl
     {
         public Galaxy.EditorGame Game { get; set; }
@@ -66,13 +66,14 @@ namespace StageEditor
             screen.X = 560 - screen.X;
             screen.Y = 310 - screen.Y;
             editor.FormTopLeft = screen;
+            editor.Hwnd = this.Handle;
         }
 
         public delegate void PositionDelegate();
 
         private void RunGameThread()
         {
-            Game = new Galaxy.EditorGame();
+            Game = new Galaxy.EditorGame(this);
             Game.Initialize();
             Galaxy.CStateEditor editor = Game.State as Galaxy.CStateEditor;
             PositionDelegate callback = UpdateEditorPosition;

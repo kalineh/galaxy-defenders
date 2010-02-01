@@ -8,8 +8,8 @@
     <ProjectGuid>{990A3F52-89DE-40E8-8F51-C658A4A7C396}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StageEditor2</RootNamespace>
-    <AssemblyName>StageEditor2</AssemblyName>
+    <RootNamespace>StageEditor</RootNamespace>
+    <AssemblyName>StageEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -82,6 +82,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

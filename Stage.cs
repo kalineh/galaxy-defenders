@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    class CStage
+    public class CStage
     {
         public CWorld World { get; private set; }
         public CStageDefinition Definition { get; private set; }
