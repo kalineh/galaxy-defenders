@@ -110,6 +110,7 @@
     <Compile Include="StageDefinitions\StagePresetPositions.cs" />
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
+    <Compile Include="Editor\StageWriter.cs" />
     <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />
     <Compile Include="State\StateShop.cs" />
