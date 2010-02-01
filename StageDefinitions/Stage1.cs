@@ -145,6 +145,7 @@ namespace Galaxy
                 float stage_time = 0.0f;
 
                 WaveTurretBriefVertical(stage_time, stage);
+                WaveBigAsteroids(stage_time, stage);            
 
                 stage_time += 2.0f;
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
