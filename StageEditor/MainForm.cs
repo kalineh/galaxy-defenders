@@ -79,6 +79,11 @@ namespace StageEditor
             return EntityPropertyGrid;
         }
 
+        public TreeView GetEntityTreeView()
+        {
+            return EntityTree;
+        }
+
         private void QuitButton_Click(object sender, EventArgs e)
         {
             this.Close();

@@ -158,7 +158,7 @@ namespace Galaxy
                 if (entity.Physics == null)
                     continue;
 
-                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, 1.0f);
+                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
                 if (find.Intersects(collision))
                     return entity;
             }

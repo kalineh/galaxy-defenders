@@ -58,12 +58,17 @@ namespace Galaxy
         public Vector2 ScreenToWorld(Vector2 screen)
         {
             Vector2 transformed_screen = screen;
+            
+            // TODO: why is this necessary!?
+            transformed_screen.Y *= 1.0375f;
+
             WinRectangle virtual_screen = System.Windows.Forms.SystemInformation.VirtualScreen;
             Viewport viewport = Game.GraphicsDevice.Viewport;
             Matrix translation = Matrix.CreateTranslation(Position);
             Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1.0f);
+            Matrix inverse_translation = Matrix.Invert(translation);
             Matrix inverse_scale = Matrix.Invert(scale);
-            return Vector2.Transform(transformed_screen, inverse_scale * translation);
+            return Vector2.Transform(transformed_screen, inverse_scale * inverse_translation);
         }
     }
 }
