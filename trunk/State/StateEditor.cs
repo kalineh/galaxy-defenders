@@ -3,6 +3,8 @@
 //
 
 using System;
+using System.Globalization;
+using System.ComponentModel;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,30 +28,6 @@ namespace Galaxy
     // TODO: place entity
     // TODO: edit entity
     // TODO: load stage definition
-
-
-    public class CEditorEntity
-        : CEntity
-    {
-        public CStageElement StageElement { get; set; }
-
-        public CEditorEntity(CWorld world, CStageElement stage_element)
-            : base(world, "EditorEntity")
-        {
-            Physics = new CPhysics();
-            StageElement = stage_element;
-        }
-
-        public override void Update()
-        {
-            base.Update();
-        }
-
-        public override float GetRadius()
-        {
-            return 15.0f;
-        }
-    }
 
     public enum EditorInteractionState
     {
@@ -243,11 +221,20 @@ namespace Galaxy
             {
                 foreach (CStageElement element in time_element.Value)
                 {
-                    CEditorEntity entity = new CEditorEntity(World, element);
-                    entity.Physics.PositionPhysics.Position = new Vector2(400.0f, time_element.Key * -1.0f);
-                    entity.Visual = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Green);
-                    entity.Visual.Scale = new Vector2(20.0f);
-                    World.EntityAdd(entity);
+                    if (element.GetType() == typeof(CSpawnerEntity))
+                    {
+                        Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(World, element as CSpawnerEntity);
+                        entity.Physics.PositionPhysics.Position = new Vector2(200.0f, time_element.Key * -1.0f);
+                        World.EntityAdd(entity);
+                    }
+                    else
+                    {
+                        Editor.CUnknown entity = new Editor.CUnknown(World, element);
+                        entity.Physics.PositionPhysics.Position = new Vector2(400.0f, time_element.Key * -1.0f);
+                        entity.Visual = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Green);
+                        entity.Visual.Scale = new Vector2(20.0f);
+                        World.EntityAdd(entity);
+                    }
                 }
             }
         }

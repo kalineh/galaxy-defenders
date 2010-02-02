@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -68,11 +69,10 @@ namespace Galaxy
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
             CEntity selected = editor.SelectedEntity;
-            //if (selected == null)
-                //return;
-
-            //grid.SelectedObject = selected;
-            grid.Invoke((Action)(() => grid.SelectedObject = selected));
+            if (selected != grid.SelectedObject)
+            {
+                grid.Invoke((Action)(() => grid.SelectedObject = selected));
+            }
         }
 
         /// <summary>

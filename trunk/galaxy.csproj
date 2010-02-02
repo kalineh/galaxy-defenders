@@ -94,6 +94,9 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Editor\StageSerializer.cs" />
     <Compile Include="Editor\Editor.cs" />
+    <Compile Include="Editor\EditorElements.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />
