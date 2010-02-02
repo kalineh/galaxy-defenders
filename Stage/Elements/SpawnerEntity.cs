@@ -3,6 +3,8 @@
 //
 
 using System;
+using System.Drawing.Design;
+using System.ComponentModel;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,10 +15,15 @@ namespace Galaxy
     public class CSpawnerEntity
         : CStageElement
     {
+        [EditorAttribute(typeof(Editor.CEntityTypeSelector), typeof(UITypeEditor))]        
+        //[TypeConverter(typeof(Editor.CEntityTypeConverter))]
         public Type Type { get; set; }
         public int SpawnCount { get; set; }
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnTimer SpawnTimer { get; set; }
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnPosition SpawnPosition { get; set; }
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnerCustomElement CustomElement { get; set; }
 
         public override void Update(CWorld world)
