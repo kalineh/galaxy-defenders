@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Galaxy
 {
     using WinPoint = System.Drawing.Point;
+    using XnaPoint = Microsoft.Xna.Framework.Point;
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
 
     // TODO: camera zoom
@@ -26,6 +27,29 @@ namespace Galaxy
     // TODO: edit entity
     // TODO: load stage definition
 
+
+    public class CEditorEntity
+        : CEntity
+    {
+        public CStageElement StageElement { get; set; }
+
+        public CEditorEntity(CWorld world, CStageElement stage_element)
+            : base(world, "EditorEntity")
+        {
+            Physics = new CPhysics();
+            StageElement = stage_element;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+        }
+
+        public override float GetRadius()
+        {
+            return 15.0f;
+        }
+    }
 
     public enum EditorInteractionState
     {
@@ -44,6 +68,7 @@ namespace Galaxy
         private CStars Stars { get; set; }
         public WinPoint FormTopLeft { get; set; }
         public IntPtr Hwnd { get; set; }
+        public Vector2 SelectionDragOffset { get; set; }
         public CEntity SelectedEntity { get; set; }
         public CEntity HoverEntity { get; set; }
         public EditorInteractionState InteractionState { get; set; }
@@ -58,10 +83,11 @@ namespace Galaxy
             string cwd = Directory.GetCurrentDirectory();
             string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
             StageFilename = base_ + "StageDefinitions\\EditorStage.cs";
-            ClearStage();
 
             // TODO: temp save testing
             CurrentStageDefinition = Galaxy.Stages.Stage1.GenerateDefinition();
+
+            ClearStage();
         }
 
         public override void Update()
@@ -118,7 +144,10 @@ namespace Galaxy
                 SelectedEntity = entity;
 
                 if (SelectedEntity != null)
+                {
                     InteractionState = EditorInteractionState.Dragging;
+                    SelectionDragOffset = entity.Physics.PositionPhysics.Position - world;
+                }
             }
 
             if (state.MiddleButton == ButtonState.Pressed)
@@ -153,7 +182,7 @@ namespace Galaxy
                 return;
             }
 
-            SelectedEntity.Physics.PositionPhysics.Position = world;
+            SelectedEntity.Physics.PositionPhysics.Position = world + SelectionDragOffset;
         }
 
         public bool IsInGameViewport(Vector2 mouse)
@@ -194,7 +223,6 @@ namespace Galaxy
                 Game.DefaultSpriteBatch.End();
             }
 
-
             World.DrawEntities(World.GameCamera);
 
             // TODO: flickering occurs rendering GDI on top of d3d
@@ -206,12 +234,29 @@ namespace Galaxy
             //graphics.DrawRectangle(pen, 0.0f, 0.0f, 100.0f, 100.0f);
         }
 
+        private void GenerateEntities()
+        {
+            SampleShip = new CShip(World, WorkingProfile, new Vector2(100.0f, 100.0f));
+            World.EntityAdd(SampleShip);
+
+            foreach (KeyValuePair<int, List<CStageElement>> time_element in CurrentStageDefinition.Elements)
+            {
+                foreach (CStageElement element in time_element.Value)
+                {
+                    CEditorEntity entity = new CEditorEntity(World, element);
+                    entity.Physics.PositionPhysics.Position = new Vector2(400.0f, time_element.Key * -1.0f);
+                    entity.Visual = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Green);
+                    entity.Visual.Scale = new Vector2(20.0f);
+                    World.EntityAdd(entity);
+                }
+            }
+        }
+
         public void ClearStage()
         {
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
-            SampleShip = new CShip(World, WorkingProfile, new Vector2(100.0f, 100.0f));
-            World.EntityAdd(SampleShip);
+            GenerateEntities();
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             SelectionBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Red);
             SelectionBox.Alpha = 0.2f;

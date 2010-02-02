@@ -73,7 +73,6 @@ namespace Galaxy
 
             //grid.SelectedObject = selected;
             grid.Invoke((Action)(() => grid.SelectedObject = selected));
-            
         }
 
         /// <summary>

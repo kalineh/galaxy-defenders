@@ -113,7 +113,7 @@ namespace Galaxy
         }
 
 
-        public float GetRadius()
+        public virtual float GetRadius()
         {
             if (Visual == null)
                 return 0.0f;

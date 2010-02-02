@@ -108,9 +108,6 @@
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
-    <Compile Include="StageDefinitions\EditorStage.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="StageDefinitions\StagePresetPositions.cs" />
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
