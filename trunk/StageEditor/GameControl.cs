@@ -21,6 +21,7 @@ namespace StageEditor
     /// ContentManager, then uses a SpriteBatch to draw text. The control is not
     /// animated, so it only redraws itself in response to WinForms paint messages.
     /// </summary>
+    [System.ComponentModel.DesignerCategory("Code")]
     public class GameControl
         : GraphicsDeviceControl
     {

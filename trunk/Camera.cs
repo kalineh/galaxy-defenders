@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Galaxy
 {
     using WinRectangle = System.Drawing.Rectangle;
+
     public class CCamera
     {
         public CGalaxy Game { get; private set; }

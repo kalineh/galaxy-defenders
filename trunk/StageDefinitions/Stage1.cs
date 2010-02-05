@@ -33,7 +33,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 4,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDown(5.0f)
                 ));
 
@@ -41,7 +41,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 4,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDown(5.0f)
                 ));
 
@@ -49,7 +49,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 4,
                     CStagePresets.PositionTopCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDown(5.0f)
                 ));
 
@@ -62,7 +62,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLerpRight(5.0f)
                 ));
 
@@ -70,7 +70,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLerpLeft(5.0f)
                 ));
 
@@ -83,7 +83,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionHighLeft(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveRight(5.0f)
                 ));
 
@@ -91,7 +91,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionHighRight(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveLeft(5.0f)
                 ));
 
@@ -104,7 +104,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLoopRightUp(5.0f)
                 ));
 
@@ -117,19 +117,19 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 1,
                     CStagePresets.PositionTopCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDownUp(5.0f)
                 ));
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 1,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDownUp(5.0f)
                 ));
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 1,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDownUp(5.0f)
                 ));
 
@@ -151,7 +151,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLoopRightUp(5.0f)
                 ));
 
@@ -159,21 +159,21 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLoopLeftUp(5.0f)
                 ));
 
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CSpacePlatform), 1,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDown(scroll_speed)
                 ));
 
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CBuilding), 1,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDown(scroll_speed)
                 ));
 
@@ -181,7 +181,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLoopRightUp(5.0f)
                 ));
 
@@ -189,7 +189,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLoopLeftUp(5.0f)
                 ));
 
@@ -197,14 +197,14 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CBigSpacePlatform), 1,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDown(scroll_speed)
                 ));
 
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CBuilding), 1,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.0f),
+                    CStagePresets.TimerInterval(0.0f),
                     CStagePresets.MoveDown(scroll_speed)
                 ));
 
@@ -214,7 +214,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopRightCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLerpLeft(5.0f)
                 ));
 
@@ -222,7 +222,7 @@ namespace Galaxy
                 stage.AddElement(Time.ToFrames(stage_time), CStagePresets.MakeWave(
                     typeof(CTurret), 3,
                     CStagePresets.PositionTopLeftCenter(),
-                    CStagePresets.TimerDelay(0.2f),
+                    CStagePresets.TimerInterval(0.2f),
                     CStagePresets.MoveDownLerpRight(5.0f)
                 ));
 

@@ -273,7 +273,6 @@ namespace Galaxy
             // definition opening
             sb.AppendLine("public static CStageDefinition GenerateDefinition() {");
             sb.AppendLine(String.Format("CStageDefinition stage = new CStageDefinition(\"{0}\");", stage));
-            sb.AppendLine("float StageTime = 0.0f;");
 
             // stage data
             foreach (KeyValuePair<int, List<CStageElement>> time_element in stage_definition.Elements)

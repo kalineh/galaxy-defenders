@@ -54,7 +54,7 @@ namespace Galaxy
 
             Game.Music.Play("Music/Stage1");
 
-            StageName = "Stage1";
+            StageName = "EditorStage";
             Type stage_type = Type.GetType(String.Format("Galaxy.Stages.{0}", StageName));
             MethodInfo generate_method = stage_type.GetMethod("GenerateDefinition");
             StageDefinition = generate_method.Invoke(null, null) as CStageDefinition;
@@ -142,6 +142,11 @@ namespace Galaxy
         public void EntityDelete(CEntity entity)
         {
             EntitiesToDelete.Add(entity);
+        }
+
+        public IEnumerable<CEntity> GetEntities()
+        {
+            return Entities;
         }
 
         public IEnumerable<CEntity> GetEntitiesOfType(Type type)

@@ -16,7 +16,9 @@ namespace StageEditor
     /// a Windows Form. Derived classes can override the Initialize and Draw
     /// methods to add their own drawing code.
     /// </summary>
-    public class GraphicsDeviceControl : Control
+    [System.ComponentModel.DesignerCategory("Code")]
+    public class GraphicsDeviceControl
+        : Control
     {
         // However many GraphicsDeviceControl instances you have, they all share
         // the same underlying GraphicsDevice, managed by this helper service.

@@ -21,20 +21,16 @@ namespace Galaxy
     using XnaPoint = Microsoft.Xna.Framework.Point;
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
 
-    // TODO: camera zoom
-    // TODO: drag-scroll
-    // TODO: add entity
-    // TODO: generate stage to text
-    // TODO: place entity
-    // TODO: edit entity
-    // TODO: load stage definition
-
     public enum EditorInteractionState
     {
         None,
         Dragging,
+        Zooming,
     }
 
+
+    // TODO: move the functionality of the world/editor state into Editor.cs
+    // TODO: this should just be the framework/flow handling for the editor state itself
     public class CStateEditor
         : CState
     {
@@ -63,7 +59,7 @@ namespace Galaxy
             StageFilename = base_ + "StageDefinitions\\EditorStage.cs";
 
             // TODO: temp save testing
-            CurrentStageDefinition = Galaxy.Stages.Stage1.GenerateDefinition();
+            CurrentStageDefinition = Galaxy.Stages.EditorStage.GenerateDefinition();
 
             ClearStage();
         }
@@ -98,6 +94,10 @@ namespace Galaxy
 
                 case EditorInteractionState.Dragging:
                     UpdateInteractionDragging(mouse, delta, world);
+                    break;
+
+                case EditorInteractionState.Zooming:
+                    UpdateInteractionZooming(mouse, delta, world);
                     break;
             }
 
@@ -135,7 +135,8 @@ namespace Galaxy
 
             if (state.RightButton == ButtonState.Pressed)
             {
-                World.GameCamera.Zoom += delta.Y * 0.01f;
+                InteractionState = EditorInteractionState.Zooming;
+                System.Windows.Forms.Cursor.Hide();
             }
         }
         
@@ -161,6 +162,29 @@ namespace Galaxy
             }
 
             SelectedEntity.Physics.PositionPhysics.Position = world + SelectionDragOffset;
+        }
+
+        public void UpdateInteractionZooming(Vector2 mouse, Vector2 delta, Vector2 world)
+        {
+            MouseState state = Mouse.GetState();
+            if (state.RightButton == ButtonState.Released)
+            {
+                InteractionState = EditorInteractionState.None;
+                System.Windows.Forms.Cursor.Show();
+                return;
+            }
+
+            float apply = delta.Y * 0.005f;
+            Vector3 detransform = world.ToVector3() / World.GameCamera.Zoom;
+            Vector3 pre = detransform * World.GameCamera.Zoom;
+            World.GameCamera.Zoom += apply;
+            Vector3 post = detransform * World.GameCamera.Zoom;
+
+            // close, but curves inward weird, need something else
+            //Vector3 offset = world.ToVector3() - World.GameCamera.Position;
+            //Vector3 offset = World.GameCamera.Position - world.ToVector3();
+            Vector3 offset = post - pre;
+            World.GameCamera.Position -= offset;
         }
 
         public bool IsInGameViewport(Vector2 mouse)
@@ -221,9 +245,11 @@ namespace Galaxy
             {
                 foreach (CStageElement element in time_element.Value)
                 {
+                    // TODO: some nice generation of editor entity types for stage elements?
                     if (element.GetType() == typeof(CSpawnerEntity))
                     {
                         Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(World, element as CSpawnerEntity);
+                        entity.StartTime = time_element.Key;
                         entity.Physics.PositionPhysics.Position = new Vector2(200.0f, time_element.Key * -1.0f);
                         World.EntityAdd(entity);
                     }
@@ -251,6 +277,20 @@ namespace Galaxy
             HoverBox.Alpha = 0.2f;
             SelectedEntity = null;
             HoverEntity = null;
+        }
+
+        public void UpdateStageDefinition()
+        {
+            CStageDefinition result = new CStageDefinition(StageFilename);
+
+            // TODO: is-subclass-of?
+            foreach (CEntity entity in World.GetEntitiesOfType(typeof(Editor.CSpawnerEntity)))
+            {
+                Editor.CSpawnerEntity spawner = entity as Editor.CSpawnerEntity;
+                result.AddElement(spawner.StartTime, spawner.StageElement);
+            }
+
+            CurrentStageDefinition = result;
         }
     }
 }
