@@ -33,7 +33,7 @@ namespace Galaxy
                     Type = typeof(CTurret),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(350.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 1.0f },
                     CustomElement = new CSpawnerCustomMover() {
                         Mover = new CMoverSequence() {
                             Velocity = new List<Vector2>() {
@@ -57,7 +57,7 @@ namespace Galaxy
                     Type = typeof(CTurret),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(450.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 1.0f },
                     CustomElement = new CSpawnerCustomMover() {
                         Mover = new CMoverSequence() {
                             Velocity = new List<Vector2>() {
@@ -81,7 +81,7 @@ namespace Galaxy
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 0.6f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
                 });
 
@@ -90,7 +90,7 @@ namespace Galaxy
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 0.6f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
                 });
 
@@ -99,7 +99,7 @@ namespace Galaxy
                     Type = typeof(CSinBall),
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 0.6f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
                 });
 
@@ -119,7 +119,7 @@ namespace Galaxy
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 0.8f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 0.8f },
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(1.5f, 1.5f) } },
                 });
 
@@ -128,7 +128,7 @@ namespace Galaxy
                     Type = typeof(CPewPew),
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 0.8f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 0.8f },
                     CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(-1.5f, 1.5f) } },
                 });
 
@@ -148,7 +148,7 @@ namespace Galaxy
                     Type = typeof(CSinBall),
                     SpawnCount = 1,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
-                    SpawnTimer = new CSpawnTimerInterval() { Delay = 1.0f },
+                    SpawnTimer = new CSpawnTimerInterval() { Interval = 1.0f },
                     CustomElement = new CSpawnerCustomCode() { Code = SinBallBoss },
                 });
 

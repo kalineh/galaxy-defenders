@@ -92,11 +92,13 @@
   <ItemGroup>
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Editor\EditorEntityConverters.cs" />
+    <Compile Include="Editor\EditorElementUI.cs" />
     <Compile Include="Editor\StageSerializer.cs" />
     <Compile Include="Editor\Editor.cs" />
-    <Compile Include="Editor\EditorElements.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Editor\EditorEntities.cs">
     </Compile>
+    <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />
@@ -111,6 +113,9 @@
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
+    <Compile Include="StageDefinitions\EditorStage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="StageDefinitions\StagePresetPositions.cs" />
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />

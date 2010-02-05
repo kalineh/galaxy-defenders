@@ -114,6 +114,7 @@ namespace StageEditor
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             editor.StageFilename = filename;
+            editor.UpdateStageDefinition();
             Galaxy.CStageCodeWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
         }
 
@@ -122,6 +123,7 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.UpdateStageDefinition();
             Galaxy.CStageCodeWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
         }
     }

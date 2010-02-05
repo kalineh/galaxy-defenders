@@ -54,12 +54,10 @@
     <Compile Include="EventInput.cs" />
     <Compile Include="EditorGame.cs" />
     <Compile Include="GameControl.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="GraphicsDeviceService.cs">
     </Compile>
     <Compile Include="GraphicsDeviceControl.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="MainForm.cs">

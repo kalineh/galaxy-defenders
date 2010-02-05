@@ -40,12 +40,12 @@ namespace Galaxy
     public class CSpawnTimerInterval
         : CSpawnTimer
     {
-        public float Delay { get; set; }
+        public float Interval { get; set; }
         private float Cooldown { get; set; }
 
         public CSpawnTimerInterval()
         {
-            Delay = 1.0f;
+            Interval = 1.0f;
             Cooldown = 0.0f;
         }
 
@@ -54,7 +54,7 @@ namespace Galaxy
             Cooldown -= Time.SingleFrame;
             if (Cooldown <= 0.0f)
             {
-                Cooldown = Delay;
+                Cooldown = Interval;
                 return 1;
             }
 

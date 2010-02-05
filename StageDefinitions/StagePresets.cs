@@ -282,11 +282,11 @@ namespace Galaxy
                 };
             }
 
-            public static CSpawnTimerInterval TimerDelay(float delay)
+            public static CSpawnTimerInterval TimerInterval(float delay)
             {
                 return new CSpawnTimerInterval()
                 {
-                    Delay = delay,
+                    Interval = delay,
                 };
             }
         }
