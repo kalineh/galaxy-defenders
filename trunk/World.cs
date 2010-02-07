@@ -69,6 +69,7 @@ namespace Galaxy
             StarsLower.Update();
             StarsUpper.Update();
 
+            GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
             UpdateEntities();
         }

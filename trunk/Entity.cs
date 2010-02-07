@@ -73,12 +73,12 @@ namespace Galaxy
 
         public void ClampInsideScreen()
         {
-            Physics.PositionPhysics.Position = World.Game.GameViewport.ClampInside(Physics.PositionPhysics.Position, GetRadius());
+            Physics.PositionPhysics.Position = World.GameCamera.ClampInside(Physics.PositionPhysics.Position, GetRadius());
         }
 
         public bool IsInScreen()
         {
-            return World.Game.GameViewport.IsInside(Physics.PositionPhysics.Position, GetRadius());
+            return World.GameCamera.IsInside(Physics.PositionPhysics.Position, GetRadius());
         }
 
         public bool IsInDieRegion()
@@ -94,7 +94,7 @@ namespace Galaxy
 
         public bool IsOffScreenBottom()
         {
-            return World.Game.GameViewport.IsOffBottom(Physics.PositionPhysics.Position, GetRadius());
+            return World.GameCamera.IsOffBottom(Physics.PositionPhysics.Position, GetRadius());
         }
 
         public Vector2 GetDirToShip()

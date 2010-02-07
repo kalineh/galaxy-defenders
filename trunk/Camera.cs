@@ -51,35 +51,83 @@ namespace Galaxy
             Viewport viewport = Game.GraphicsDevice.Viewport;
             Vector3 viewport_ = new Vector3(viewport.Width, viewport.Height, 0.0f);
             WorldMatrix =
-                Matrix.CreateTranslation(Position) *
+                Matrix.Identity *
+                Matrix.CreateTranslation(-Position) *
+                Matrix.CreateScale(Zoom, Zoom, 1.0f) *
                 Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateScale(Zoom, Zoom, 1.0f);
+                Matrix.CreateTranslation(viewport_ / 2.0f);
         }
 
         public Vector2 ScreenToWorld(Vector2 screen)
         {
-            Vector2 transformed_screen = screen;
-            
-            // TODO: why is this necessary!?
-            transformed_screen.Y *= 1.0375f;
-
-            WinRectangle virtual_screen = System.Windows.Forms.SystemInformation.VirtualScreen;
             Viewport viewport = Game.GraphicsDevice.Viewport;
+            Vector2 viewport_size = new Vector2(viewport.Width * 0.5f, viewport.Height * 0.5f);
+
             Matrix translation = Matrix.CreateTranslation(Position);
             Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1.0f);
-            Matrix inverse_translation = Matrix.Invert(translation);
             Matrix inverse_scale = Matrix.Invert(scale);
-            return Vector2.Transform(transformed_screen, inverse_scale * inverse_translation);
+
+            Vector2 transformed_screen = screen - viewport_size;
+            Vector2 result = Vector2.Transform(transformed_screen, inverse_scale * translation);
+            //Console.WriteLine(String.Format("{0} -> {1}", screen.ToString(), result.ToString()));
+            return result;
         }
 
         public Vector3 GetCenter()
         {
-            // TODO: do this in a way that is correct, rather than incorrect
+            return Position;
+        }
+
+        public Vector2 GetTopLeft()
+        {
             Viewport viewport = Game.GraphicsDevice.Viewport;
-            Vector3 viewport_ = new Vector3(viewport.Width, viewport.Height, 0.0f);
-            //Vector3 center = Position + viewport_ * 0.5f;
-            Vector3 center = Position;
-            return center;
+            Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            return (Position - viewport_size).ToVector2();
+        }
+
+        public Vector2 GetBottomRight()
+        {
+            Viewport viewport = Game.GraphicsDevice.Viewport;
+            Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            return (Position + viewport_size).ToVector2();
+        }
+
+        public Vector2 ClampInside(Vector2 position, float buffer)
+        {
+            Vector2 clamped = position;
+            Vector2 tl = GetTopLeft();
+            Vector2 br = GetBottomRight();
+
+            clamped.X = Math.Max(tl.X + buffer, clamped.X);
+            clamped.Y = Math.Max(tl.Y + buffer, clamped.Y);
+            clamped.X = Math.Min(br.X - buffer, clamped.X);
+            clamped.Y = Math.Min(br.Y - buffer, clamped.Y);
+
+            return clamped;
+        }
+
+        public bool IsInside(Vector2 position, float buffer)
+        {
+            Vector2 tl = GetTopLeft();
+            Vector2 br = GetBottomRight();
+
+            if (position.X + buffer < tl.X)
+                return false;
+            if (position.X - buffer > br.X)
+                return false;
+            if (position.Y + buffer < tl.Y)
+                return false;
+            if (position.Y - buffer > br.Y)
+                return false;
+
+            return true;
+        }
+
+        public bool IsOffBottom(Vector2 position, float buffer)
+        {
+            Vector2 br = GetBottomRight();
+
+            return position.Y > br.Y + buffer;
         }
     }
 }

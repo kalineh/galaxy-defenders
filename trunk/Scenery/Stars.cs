@@ -27,7 +27,6 @@ namespace Galaxy
         public float Scale { get; set; }
         public Vector2 Speed { get; set; }
         private List<Star> Stars { get; set; }
-        private CollisionAABB ScreenAABB { get; set; }
 
         public CStars(CWorld world, Texture2D texture, float scale, float speed)
         {
@@ -35,13 +34,6 @@ namespace Galaxy
             Visual = new CVisual(texture, Color.White);
             Scale = scale;
             Speed = Vector2.UnitY * speed;
-
-            Viewport viewport = world.Game.GraphicsDevice.Viewport;
-            CollisionAABB box = new CollisionAABB(
-                new Vector2(viewport.X, viewport.Y),
-                new Vector2(viewport.Width, viewport.Height)
-            );
-            ScreenAABB = box;
 
             Stars = new List<Star>();
             for (int i = 0; i < 16; ++i)
@@ -57,7 +49,7 @@ namespace Galaxy
 
             foreach (Star star in Stars)
             {
-                if (!ScreenAABB.Contains(star.Position))
+                if (World.GameCamera.IsOffBottom(star.Position, 1.0f))
                 {
                     star.Position = RandomRespawnPosition();
                 }
@@ -76,18 +68,18 @@ namespace Galaxy
 
         private Vector2 RandomScreenPosition()
         {
-            return new Vector2(
-                World.Random.NextFloat() * ScreenAABB.Size.X,
-                World.Random.NextFloat() * ScreenAABB.Size.Y
-            );
+            Vector2 tl = World.GameCamera.GetTopLeft();
+            Vector2 br = World.GameCamera.GetBottomRight();
+            Vector2 range = br - tl;
+            return tl + new Vector2(World.Random.NextFloat() * range.X, World.Random.NextFloat() * range.Y);
         }
 
         private Vector2 RandomRespawnPosition()
         {
-            return new Vector2(
-                World.Random.NextFloat() * ScreenAABB.Size.X,
-                World.Random.NextFloat() * -100.0f
-            );
+            Vector2 tl = World.GameCamera.GetTopLeft();
+            Vector2 br = World.GameCamera.GetBottomRight();
+            Vector2 range = br - tl;
+            return tl + new Vector2(World.Random.NextFloat() * range.X, -100.0f);
         }
     }
 }

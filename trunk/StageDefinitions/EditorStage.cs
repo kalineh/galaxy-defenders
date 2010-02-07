@@ -9,7 +9,7 @@ CStageDefinition stage = new CStageDefinition("EditorStage");
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
 Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 1,
+SpawnCount = -1,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
@@ -47,32 +47,32 @@ Y = 109.98f,
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
 Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 1,
+SpawnCount = -1,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = 83.61f,
+X = 655.0f,
+Y = 73.61f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
 Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
+X = -1.0f,
+Y = 0.0f,
 },
 },
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = 83.61f,
+X = 655.0f,
+Y = 73.61f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
 Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 1,
+SpawnCount = -1,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
@@ -97,7 +97,7 @@ Y = 73.24f,
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
 Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 1,
+SpawnCount = -1,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
