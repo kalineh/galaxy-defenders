@@ -41,18 +41,30 @@ namespace Galaxy
 
             TreeNode entity_spawner = new TreeNode("EntitySpawner");
 
-            entity_spawner.Nodes.Add("CAsteroid");
-            entity_spawner.Nodes.Add("CBeard");
-            entity_spawner.Nodes.Add("CPewPew");
-            entity_spawner.Nodes.Add("CSinBall");
-            entity_spawner.Nodes.Add("CTurret");
+            // TODO: refactor to general area (with entity dropdown stuff)
+            foreach (string name in Editor.CEditorEntityTypes.ToNames())
+            {
+                entity_spawner.Nodes.Add(name);
+            }
 
             tree.Nodes.Add(entity_spawner);
 
             entity_spawner.Expand();
 
+            tree.NodeMouseClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseClick);
             tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);
 
+        }
+
+        void EntityTreeNodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            CStateEditor editor = State as CStateEditor;
+            if (editor == null)
+                return;
+
+            string typename = "Galaxy." + e.Node.Text;
+            Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(typename);
+            editor.SpawnEntityType = type;
         }
 
         void EntityTreeNodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -73,7 +85,7 @@ namespace Galaxy
                 CustomMover = CMoverPresets.MoveDown(1.0f),
                 SpawnCount = 1,
                 SpawnTimer = new CSpawnTimerInterval(),
-                SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(300.0f, 300.0f) },
+                SpawnPosition = new CSpawnPositionFixed() { Position = position.ToVector2() },
             };
 
             Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(editor.World, element);

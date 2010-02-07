@@ -95,6 +95,7 @@
     <Compile Include="Editor\Converters\EditorConverters.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
     <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorEntityTypes.cs" />
     <Compile Include="Editor\Entities\EditorPreviewEntity.cs" />
     <Compile Include="Editor\Entities\EditorUnknownEntity.cs" />
     <Compile Include="Editor\StageSerializer.cs" />

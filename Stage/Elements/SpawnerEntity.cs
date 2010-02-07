@@ -53,7 +53,7 @@ namespace Galaxy
 
                 if (CustomMover != null)
                 {
-                    CustomMover.Move(entity);
+                    entity.Mover = CustomMover;
                 }
 
                 if (CustomElement != null)
