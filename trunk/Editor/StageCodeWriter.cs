@@ -144,8 +144,13 @@ namespace Galaxy
 
         public static void WriteObjectGraph(StringBuilder sb, object instance)
         {
-            Type type = instance.GetType();
+            if (instance == null)
+            {
+                sb.AppendLine("null,");
+                return;
+            }
 
+            Type type = instance.GetType();
             if (instance is System.Type)
             {
                 WriteType(sb, instance);

@@ -1,5 +1,5 @@
 ﻿//
-// EditorEntityConverters.cs
+// EditorConverters.cs
 //
 
 using System;
@@ -52,8 +52,7 @@ namespace Galaxy
             public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
             {
                 return CConverter.GetPropertyDescriptors(value,
-                    "Name",
-                    "Foo"
+                    "Name"
                 );
             }
 
@@ -69,8 +68,13 @@ namespace Galaxy
             public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
             {
                 return CConverter.GetPropertyDescriptors(value,
-                    "Name",
-                    "StageElement"
+                    //"StageElement",
+                    "Type",
+                    "Position",
+                    "Mover",
+                    "MoveSpeed",
+                    "SpawnCount",
+                    "SpawnInterval"
                 );
             }
 

@@ -20,9 +20,8 @@ namespace Galaxy
                     SpawnCount = count,
                     SpawnPosition = position,
                     SpawnTimer = timer,
-                    CustomElement = new CSpawnerCustomMover() {
-                        Mover = mover,
-                    },
+                    CustomMover = mover,
+                    CustomElement = null,
                 };
             }
 

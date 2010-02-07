@@ -92,11 +92,13 @@
   <ItemGroup>
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
-    <Compile Include="Editor\EditorEntityConverters.cs" />
-    <Compile Include="Editor\EditorElementUI.cs" />
+    <Compile Include="Editor\Converters\EditorConverters.cs" />
+    <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
+    <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorUnknownEntity.cs" />
     <Compile Include="Editor\StageSerializer.cs" />
     <Compile Include="Editor\Editor.cs" />
-    <Compile Include="Editor\EditorEntities.cs">
+    <Compile Include="Editor\Entities\EditorSpawnerEntity.cs">
     </Compile>
     <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
     <Compile Include="Layers.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Input.cs" />
     <Compile Include="Fader.cs" />
     <Compile Include="Menu\Menu.cs" />
+    <Compile Include="Mover\MoverPresets.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
     <Compile Include="StageDefinitions\EditorStage.cs">
@@ -120,6 +123,7 @@
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\StageCompiler.cs" />
     <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />
     <Compile Include="State\StateShop.cs" />

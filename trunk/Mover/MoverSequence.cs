@@ -15,11 +15,13 @@ namespace Galaxy
         public List<float> Duration { get; set; }
         public float VelocityLerpRate { get; set; }
         public bool AlwaysMaxSpeed { get; set; }
+        public float SpeedMultiplier { get; set; }
 
         public CMoverSequence()
         {
             VelocityLerpRate = 1.0f;
             AlwaysMaxSpeed = true;
+            SpeedMultiplier = 1.0f;
         }
 
         public override void Move(CEntity entity)
@@ -36,7 +38,7 @@ namespace Galaxy
             {
                 float speed = velocity.Length();
                 Vector2 target = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
-                entity.Physics.PositionPhysics.Velocity = target.Normal() * speed;
+                entity.Physics.PositionPhysics.Velocity = target.Normal() * speed * SpeedMultiplier;
             }
             else
             {

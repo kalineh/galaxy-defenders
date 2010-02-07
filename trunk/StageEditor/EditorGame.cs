@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -25,10 +26,62 @@ namespace Galaxy
             GameControl = game_control;
         }
 
+        /// <summary>
+        /// Initialize world and enter EditorState immediately.
+        /// </summary>
         public new void Initialize()
         {
             base.Initialize();
             State = new CStateEditor(this);
+
+            // Add editor entity types to entity tree.
+
+            StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
+            TreeView tree = form.GetEntityTreeView();
+
+            TreeNode entity_spawner = new TreeNode("EntitySpawner");
+
+            entity_spawner.Nodes.Add("CAsteroid");
+            entity_spawner.Nodes.Add("CBeard");
+            entity_spawner.Nodes.Add("CPewPew");
+            entity_spawner.Nodes.Add("CSinBall");
+            entity_spawner.Nodes.Add("CTurret");
+
+            tree.Nodes.Add(entity_spawner);
+
+            tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);
+
+        }
+
+        void EntityTreeNodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            CStateEditor editor = State as CStateEditor;
+            if (editor == null)
+                return;
+
+            string typename = "Galaxy." + e.Node.Text;
+            Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(typename);
+
+            CSpawnerEntity element = new CSpawnerEntity()
+            {
+                Type = type,
+                Position = new Vector2(300.0f, 300.0f),
+                CustomMover = CMoverPresets.MoveDown(1.0f),
+                SpawnCount = 1,
+                SpawnTimer = new CSpawnTimerInterval(),
+                SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(300.0f, 300.0f) },
+            };
+
+            Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(editor.World, element);
+
+            // actual entity gen
+            //CEntity entity = Activator.CreateInstance(type, new object[] { editor.World, new Vector2(300.0f, 300.0f) }) as CEntity;
+
+            editor.World.EntityAdd(entity);
+
+            StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
+            PropertyGrid grid = form.GetEntityPropertyGrid();
+            editor.SelectedEntity = entity;
         }
 
         /// <summary>
@@ -60,12 +113,16 @@ namespace Galaxy
             UpdateEditor();
         }
 
+        /// <summary>
+        /// Update editor! I'm a bad comment! (but it won't look neat if every function doesn't have a summary comment)
+        /// </summary>
         public void UpdateEditor()
         {
             CStateEditor editor = State as CStateEditor;
             if (editor == null)
                 return;
 
+            // Update selection.
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
             CEntity selected = editor.SelectedEntity;
@@ -81,9 +138,7 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public new void Draw(GameTime game_time)
         {
-            //base.Draw(game_time);
             base.State.Draw();
-            //GraphicsDevice.Present();
         }
     }
 }

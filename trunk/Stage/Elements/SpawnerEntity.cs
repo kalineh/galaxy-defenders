@@ -24,6 +24,8 @@ namespace Galaxy
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnPosition SpawnPosition { get; set; }
         [TypeConverter(typeof(ExpandableObjectConverter))]
+        public CMover CustomMover { get; set; }
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnerCustomElement CustomElement { get; set; }
 
         public override void Update(CWorld world)
@@ -48,6 +50,11 @@ namespace Galaxy
             try
             {
                 CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
+
+                if (CustomMover != null)
+                {
+                    CustomMover.Move(entity);
+                }
 
                 if (CustomElement != null)
                 {
@@ -82,6 +89,7 @@ namespace Galaxy
         }
     }
 
+    /*
     public class CSpawnerCustomMover
         : CSpawnerCustomElement
     {
@@ -92,6 +100,7 @@ namespace Galaxy
             entity.Mover = Mover;
         }
     }
+    */
 }
 
 
