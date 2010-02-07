@@ -15,8 +15,9 @@ namespace Galaxy
     public class CSpawnerEntity
         : CStageElement
     {
+        public static Dictionary<CSpawnerEntity, CSpawnerEntity> InitializationHack = new Dictionary<CSpawnerEntity, CSpawnerEntity>();
+
         [EditorAttribute(typeof(Editor.CEntityTypeSelector), typeof(UITypeEditor))]        
-        //[TypeConverter(typeof(Editor.CEntityTypeConverter))]
         public Type Type { get; set; }
         public int SpawnCount { get; set; }
         [TypeConverter(typeof(ExpandableObjectConverter))]
@@ -27,11 +28,19 @@ namespace Galaxy
         public CMover CustomMover { get; set; }
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnerCustomElement CustomElement { get; set; }
+        public int SpawnRemaining { get; set; }
 
         public override void Update(CWorld world)
         {
-            int create = SpawnTimer.Update(world);
+            // TODO: how can we make these not stateful with the editor? :(
+            // TODO: we hack it, thats what
+            if (!InitializationHack.ContainsKey(this))
+            {
+                InitializationHack[this] = this;
+                SpawnRemaining = SpawnCount;
+            }
 
+            int create = SpawnTimer.Update(world);
             while (create-- > 0)
             {
                 Spawn(world);
@@ -40,7 +49,7 @@ namespace Galaxy
 
         public override bool IsExpired()
         {
-            return SpawnCount <= 0;
+            return SpawnRemaining <= 0;
         }
 
         private void Spawn(CWorld world)
@@ -62,7 +71,7 @@ namespace Galaxy
                 }
 
                 world.EntityAdd(entity);
-                SpawnCount -= 1;
+                SpawnRemaining -= 1;
             }
             catch (Exception exception)
             {
