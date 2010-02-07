@@ -49,6 +49,8 @@ namespace Galaxy
 
             tree.Nodes.Add(entity_spawner);
 
+            entity_spawner.Expand();
+
             tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);
 
         }
@@ -62,10 +64,12 @@ namespace Galaxy
             string typename = "Galaxy." + e.Node.Text;
             Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(typename);
 
+            Vector3 position = editor.World.GameCamera.GetCenter();
+
             CSpawnerEntity element = new CSpawnerEntity()
             {
                 Type = type,
-                Position = new Vector2(300.0f, 300.0f),
+                Position = position.ToVector2(),
                 CustomMover = CMoverPresets.MoveDown(1.0f),
                 SpawnCount = 1,
                 SpawnTimer = new CSpawnTimerInterval(),

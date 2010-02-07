@@ -41,6 +41,7 @@
             this.EntityPropertyTab = new System.Windows.Forms.TabPage();
             this.EntityTreeTab = new System.Windows.Forms.TabPage();
             this.Game = new StageEditor.GameControl();
+            this.EntityDeleteButton = new System.Windows.Forms.Button();
             this.EntityTabs.SuspendLayout();
             this.EntityPropertyTab.SuspendLayout();
             this.EntityTreeTab.SuspendLayout();
@@ -98,7 +99,6 @@
             this.SaveAsButton.TabIndex = 9;
             this.SaveAsButton.Text = "Save &As";
             this.SaveAsButton.UseVisualStyleBackColor = true;
-            this.SaveAsButton.Click += new System.EventHandler(this.SaveAsButton_Click);
             // 
             // NewStageButton
             // 
@@ -170,11 +170,22 @@
             this.Game.TabIndex = 15;
             this.Game.Text = "Game";
             // 
+            // EntityDeleteButton
+            // 
+            this.EntityDeleteButton.Location = new System.Drawing.Point(1097, 618);
+            this.EntityDeleteButton.Name = "EntityDeleteButton";
+            this.EntityDeleteButton.Size = new System.Drawing.Size(75, 23);
+            this.EntityDeleteButton.TabIndex = 16;
+            this.EntityDeleteButton.Text = "De&lete Entity";
+            this.EntityDeleteButton.UseVisualStyleBackColor = true;
+            this.EntityDeleteButton.Click += new System.EventHandler(this.EntityDeleteButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 673);
+            this.Controls.Add(this.EntityDeleteButton);
             this.Controls.Add(this.Game);
             this.Controls.Add(this.EntityTabs);
             this.Controls.Add(this.QuitButton);
@@ -184,6 +195,7 @@
             this.Controls.Add(this.EditorModeButton);
             this.Controls.Add(this.InputCatcher);
             this.Controls.Add(this.RestartGameButton);
+            this.KeyPreview = true;
             this.Name = "MainForm";
             this.Text = "Form1";
             this.EntityTabs.ResumeLayout(false);
@@ -209,6 +221,7 @@
         private System.Windows.Forms.TabPage EntityPropertyTab;
         private System.Windows.Forms.TabPage EntityTreeTab;
         private GameControl Game;
+        private System.Windows.Forms.Button EntityDeleteButton;
     }
 }
 

@@ -58,11 +58,19 @@ namespace Galaxy
             // TODO: replace me and use positional system in-game
             public int StartTime { get; set; }
 
+            public CEntity PreviewEntity { get; set; }
+
             public CSpawnerEntity(CWorld world, Galaxy.CSpawnerEntity element)
                 : base(world, "Editor.CSpawnerEntityStatic")
             {
                 Physics = new CPhysics();
-                Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/Turret"), XnaColor.White);
+
+                // TODO: how to get enemy texture from typename? :|
+                // TODO: not this? 
+
+                Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(element.Type.FullName);
+                CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
+                Visual = new CVisual(CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
 
                 // TODO: only supports CSpawnPositionFixed, CSpawnTimerInterval, CMoverSequence
                 Type = element.Type;

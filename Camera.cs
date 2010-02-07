@@ -71,5 +71,14 @@ namespace Galaxy
             Matrix inverse_scale = Matrix.Invert(scale);
             return Vector2.Transform(transformed_screen, inverse_scale * inverse_translation);
         }
+
+        public Vector3 GetCenter()
+        {
+            // TODO: do this in a way that is correct, rather than incorrect
+            Viewport viewport = Game.GraphicsDevice.Viewport;
+            Vector3 viewport_ = new Vector3(viewport.Width, viewport.Height, 0.0f);
+            Vector3 center = Position + viewport_ * 0.5f;
+            return center;
+        }
     }
 }

@@ -55,9 +55,9 @@ namespace Galaxy
                 }
             }
 
-            public static CStageDefinition GenerateDefinitionFromStageEntities(CWorld world, string stage_filename)
+            public static CStageDefinition GenerateDefinitionFromStageEntities(CWorld world, string name)
             {
-                CStageDefinition result = new CStageDefinition(stage_filename);
+                CStageDefinition result = new CStageDefinition(name);
 
                 // TODO: how can we handle all editor entity types well?
                 foreach (CEntity entity in world.GetEntitiesOfType(typeof(Editor.CSpawnerEntity)))

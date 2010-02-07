@@ -259,11 +259,11 @@ namespace Galaxy
             sb.AppendLine("},");
         }
 
-        public static void Save(string filepath, CStageDefinition stage_definition)
+        public static void Save(CStageDefinition stage_definition)
         {
             StringBuilder sb = new StringBuilder(50 * 1024 * 1024);
-            string stage_filename = filepath.Substring(filepath.LastIndexOf("\\") + 1);
-            string stage = stage_filename.Substring(0, stage_filename.Length - 3);
+            string stage = stage_definition.Name;
+            string stage_filename = stage_definition.ToFilename();
 
             // header
             sb.AppendLine("//");
@@ -303,7 +303,7 @@ namespace Galaxy
             sb.AppendLine("} // namespace Galaxy");
 
             // write file
-            TextWriter tw = new StreamWriter(filepath);
+            TextWriter tw = new StreamWriter(stage_filename);
             tw.Write(sb.ToString());
             tw.Close();
         }
