@@ -29,14 +29,6 @@ namespace Galaxy
         public class CEntityTypeSelectorControl 
             : ListBox
         {
-            public static List<Type> EntityTypeList = new List<Type>() {
-                typeof(CAsteroid),
-                typeof(CBeard),
-                typeof(CPewPew),
-                typeof(CSinBall),
-                typeof(CTurret),
-            };
-
             public Type Result = typeof(CEntity);
 
             public CEntityTypeSelectorControl()
@@ -48,7 +40,7 @@ namespace Galaxy
 
             private void InitializeComponent()
             {
-                foreach (Type type in EntityTypeList)
+                foreach (Type type in CEditorEntityTypes.EntityTypeList)
                 {
                     string typename = type.ToString().Substring("Galaxy.".Length);
                     this.Items.Add(typename);

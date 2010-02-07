@@ -46,7 +46,10 @@ namespace Galaxy
 
         private void ActivateElements()
         {
-            foreach (CStageElement element in Definition.GetElementsAtTime(Frame))
+            if (!Definition.HasElementsAtTime(Frame))
+                return;
+
+            foreach (CStageElement element in Definition.GetOrCreateElementsAtTime(Frame))
             {
                 ActiveElements.Add(element);
             }

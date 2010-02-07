@@ -77,7 +77,8 @@ namespace Galaxy
             // TODO: do this in a way that is correct, rather than incorrect
             Viewport viewport = Game.GraphicsDevice.Viewport;
             Vector3 viewport_ = new Vector3(viewport.Width, viewport.Height, 0.0f);
-            Vector3 center = Position + viewport_ * 0.5f;
+            //Vector3 center = Position + viewport_ * 0.5f;
+            Vector3 center = Position;
             return center;
         }
     }

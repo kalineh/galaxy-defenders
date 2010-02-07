@@ -42,11 +42,16 @@ namespace Galaxy
 
         public void AddElement(int time, CStageElement element)
         {
-            List<CStageElement> elements = GetElementsAtTime(time);
+            List<CStageElement> elements = GetOrCreateElementsAtTime(time);
             elements.Add(element);
         }
 
-        public List<CStageElement> GetElementsAtTime(int time)
+        public bool HasElementsAtTime(int time)
+        {
+            return Elements.ContainsKey(time);
+        }
+
+        public List<CStageElement> GetOrCreateElementsAtTime(int time)
         {
             if (!Elements.ContainsKey(time))
             {

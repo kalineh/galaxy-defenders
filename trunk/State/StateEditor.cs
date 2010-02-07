@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,7 +27,6 @@ namespace Galaxy
         Dragging,
         Zooming,
     }
-
 
     // TODO: move the functionality of the world/editor state into Editor.cs
     // TODO: this should just be the framework/flow handling for the editor state itself
@@ -49,6 +49,8 @@ namespace Galaxy
         public EditorInteractionState InteractionState { get; set; }
         public CVisual SelectionBox { get; set; }
         public CVisual HoverBox { get; set; }
+        public Type SpawnEntityType { get; set; }
+        private bool NoSpawnTillRelease { get; set; }
 
         public CStateEditor(CGalaxy game)
         {
@@ -56,6 +58,11 @@ namespace Galaxy
             ClearStage();
             Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
         }
+
+        // TODO: find a nicer system for key input ;|
+        [DllImport("user32.dll")]
+        static extern int GetKeyState(int nVirtKey);
+        //static extern int GetKeyState(VirtualKeyStates nVirtKey);
 
         public override void Update()
         {
@@ -106,6 +113,10 @@ namespace Galaxy
         
         public void UpdateInteractionNone(Vector2 mouse, Vector2 delta, Vector2 world)
         {
+            // TODO: not a hack
+            int left_alt_keystate = GetKeyState((int)Keys.LeftAlt);
+            bool left_alt_down = (left_alt_keystate & 0x8000) != 0;
+
             MouseState state = Mouse.GetState();
 
             if (!IsInGameViewport(mouse))
@@ -115,8 +126,40 @@ namespace Galaxy
             }
 
             HoverEntity = World.GetEntityAtPosition(world);
+            
+            // TODO: cleanup to statefulness, and keybinding system (modifier + key)
+            if (SpawnEntityType != null)
+            {
+                if (state.LeftButton == ButtonState.Pressed)
+                {
+                    if (!NoSpawnTillRelease)
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) || left_alt_down)
+                        {
+                            CSpawnerEntity element = new CSpawnerEntity()
+                            {
+                                Type = SpawnEntityType,
+                                Position = world,
+                                CustomMover = CMoverPresets.MoveDown(1.0f),
+                                SpawnCount = 1,
+                                SpawnTimer = new CSpawnTimerInterval(),
+                                SpawnPosition = new CSpawnPositionFixed() { Position = world },
+                            };
 
-            if (state.LeftButton == ButtonState.Pressed)
+                            Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(World, element);
+                            World.EntityAdd(entity);
+                            NoSpawnTillRelease = true;
+                        }
+                    }
+                }
+
+                if (state.LeftButton == ButtonState.Released)
+                {
+                    NoSpawnTillRelease = false;
+                }
+            }
+
+            if (state.LeftButton == ButtonState.Pressed && !left_alt_down)
             {
                 CEntity entity = World.GetEntityAtPosition(world);
                 SelectedEntity = entity;
