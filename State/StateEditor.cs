@@ -37,6 +37,7 @@ namespace Galaxy
         public CGalaxy Game { get; private set; }
         public CWorld World { get; private set; }
         private Vector2 LastMouseInput { get; set; }
+        // TODO: remove me! shouldnt need a sample ship in the editor world
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
         private CStars Stars { get; set; }
@@ -54,11 +55,13 @@ namespace Galaxy
         public CStateEditor(CGalaxy game)
         {
             Game = game;
+
             string cwd = Directory.GetCurrentDirectory();
             string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
             StageFilename = base_ + "StageDefinitions\\EditorStage.cs";
 
             // TODO: temp save testing
+            //CurrentStageDefinition = Galaxy.CStageCompiler.LoadStage("EditorStage");
             CurrentStageDefinition = Galaxy.Stages.EditorStage.GenerateDefinition();
 
             ClearStage();
@@ -236,40 +239,11 @@ namespace Galaxy
             //graphics.DrawRectangle(pen, 0.0f, 0.0f, 100.0f, 100.0f);
         }
 
-        private void GenerateEntities()
-        {
-            SampleShip = new CShip(World, WorkingProfile, new Vector2(100.0f, 100.0f));
-            World.EntityAdd(SampleShip);
-
-            foreach (KeyValuePair<int, List<CStageElement>> time_element in CurrentStageDefinition.Elements)
-            {
-                foreach (CStageElement element in time_element.Value)
-                {
-                    // TODO: some nice generation of editor entity types for stage elements?
-                    if (element.GetType() == typeof(CSpawnerEntity))
-                    {
-                        Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(World, element as CSpawnerEntity);
-                        entity.StartTime = time_element.Key;
-                        entity.Physics.PositionPhysics.Position = new Vector2(200.0f, time_element.Key * -1.0f);
-                        World.EntityAdd(entity);
-                    }
-                    else
-                    {
-                        Editor.CUnknown entity = new Editor.CUnknown(World, element);
-                        entity.Physics.PositionPhysics.Position = new Vector2(400.0f, time_element.Key * -1.0f);
-                        entity.Visual = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Green);
-                        entity.Visual.Scale = new Vector2(20.0f);
-                        World.EntityAdd(entity);
-                    }
-                }
-            }
-        }
-
         public void ClearStage()
         {
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
-            GenerateEntities();
+            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, CurrentStageDefinition);
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             SelectionBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Red);
             SelectionBox.Alpha = 0.2f;
@@ -281,16 +255,8 @@ namespace Galaxy
 
         public void UpdateStageDefinition()
         {
-            CStageDefinition result = new CStageDefinition(StageFilename);
-
-            // TODO: is-subclass-of?
-            foreach (CEntity entity in World.GetEntitiesOfType(typeof(Editor.CSpawnerEntity)))
-            {
-                Editor.CSpawnerEntity spawner = entity as Editor.CSpawnerEntity;
-                result.AddElement(spawner.StartTime, spawner.StageElement);
-            }
-
-            CurrentStageDefinition = result;
+            CurrentStageDefinition = Editor.CStageGenerate.GenerateDefinitionFromStageEntities(World, StageFilename);
+            World.StageDefinition = CurrentStageDefinition;
         }
     }
 }

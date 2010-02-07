@@ -1,5 +1,5 @@
 ﻿//
-// EditorElementUI.cs
+// EntityTypeSeletor.cs
 //
 
 using System;

@@ -1,5 +1,5 @@
 ﻿//
-// EditorEntities.cs
+// EditorUnknownEntity.cs
 //
 
 using System;
@@ -31,35 +31,14 @@ namespace Galaxy
         public class CUnknown
             : CEntity
         {
+            [CategoryAttribute("Internal")]
+            [TypeConverter(typeof(ExpandableObjectConverter))]
+            public CStageElement StageElement { get; set; }
+
             public CUnknown(CWorld world, CStageElement stage_element)
                 : base(world, "EditorEntity")
             {
                 Physics = new CPhysics();
-            }
-
-            public override float GetRadius()
-            {
-                return 15.0f;
-            }
-        }
-
-        /// <summary>
-        /// Editor entity for CSpawnerEntity.
-        /// </summary>
-        [TypeConverter(typeof(CSpawnerEntityConverter))]
-        public class CSpawnerEntity
-            : CEntity
-        {
-            [TypeConverter(typeof(ExpandableObjectConverter))]
-            public CStageElement StageElement { get; set; }
-            public int StartTime { get; set; }
-
-            public CSpawnerEntity(CWorld world, Galaxy.CSpawnerEntity element)
-                : base(world, "EditorEntitySpawnEntity")
-            {
-                StageElement = element;
-                Physics = new CPhysics();
-                Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/Turret"), XnaColor.White);
             }
 
             public override float GetRadius()

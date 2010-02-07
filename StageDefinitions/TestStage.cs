@@ -34,21 +34,19 @@ namespace Galaxy
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(350.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 1.0f },
-                    CustomElement = new CSpawnerCustomMover() {
-                        Mover = new CMoverSequence() {
-                            Velocity = new List<Vector2>() {
-                                new Vector2(0.0f, 2.0f),
-                                new Vector2(-2.0f, 0.0f),
-                                new Vector2(0.0f, 2.0f)
-                            },
-                            Duration = new List<float>() {
-                                1.5f,
-                                1.0f,
-                                0.0f
-                            },
-                            VelocityLerpRate = 0.05f,
+                    CustomMover = new CMoverSequence() {
+                        Velocity = new List<Vector2>() {
+                            new Vector2(0.0f, 2.0f),
+                            new Vector2(-2.0f, 0.0f),
+                            new Vector2(0.0f, 2.0f)
                         },
-                    }
+                        Duration = new List<float>() {
+                            1.5f,
+                            1.0f,
+                            0.0f
+                        },
+                        VelocityLerpRate = 0.05f,
+                    },
                 });
 
                 StageTime += 6.0f;
@@ -58,21 +56,19 @@ namespace Galaxy
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(450.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 1.0f },
-                    CustomElement = new CSpawnerCustomMover() {
-                        Mover = new CMoverSequence() {
-                            Velocity = new List<Vector2>() {
-                                new Vector2(0.0f, 2.0f),
-                                new Vector2(2.0f, 0.0f),
-                                new Vector2(0.0f, 2.0f)
-                            },
-                            Duration = new List<float>() {
-                                1.5f,
-                                1.0f,
-                                0.0f
-                            },
-                            VelocityLerpRate = 0.05f,
+                    CustomMover = new CMoverSequence() {
+                        Velocity = new List<Vector2>() {
+                            new Vector2(0.0f, 2.0f),
+                            new Vector2(2.0f, 0.0f),
+                            new Vector2(0.0f, 2.0f)
                         },
-                    }
+                        Duration = new List<float>() {
+                            1.5f,
+                            1.0f,
+                            0.0f
+                        },
+                        VelocityLerpRate = 0.05f,
+                    },
                 });
 
                 // wave 1
@@ -82,7 +78,7 @@ namespace Galaxy
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
-                    CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
+                    CustomMover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) },
                 });
 
                 StageTime += 4.0f;
@@ -91,7 +87,7 @@ namespace Galaxy
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(400.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
-                    CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
+                    CustomMover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) },
                 });
 
                 StageTime += 4.0f;
@@ -100,7 +96,7 @@ namespace Galaxy
                     SpawnCount = 3,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 0.6f },
-                    CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) } },
+                    CustomMover = new CMoverFixedVelocity() { Velocity = new Vector2(0.0f, 2.5f) },
                 });
 
                 // heavy asteroids
@@ -120,7 +116,7 @@ namespace Galaxy
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(200.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 0.8f },
-                    CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(1.5f, 1.5f) } },
+                    CustomMover = new CMoverFixedVelocity() { Velocity = new Vector2(1.5f, 1.5f) },
                 });
 
                 StageTime += 4.0f;
@@ -129,7 +125,7 @@ namespace Galaxy
                     SpawnCount = 4,
                     SpawnPosition = new CSpawnPositionFixed() { Position = new Vector2(600.0f, -100.0f) },
                     SpawnTimer = new CSpawnTimerInterval() { Interval = 0.8f },
-                    CustomElement = new CSpawnerCustomMover() { Mover = new CMoverFixedVelocity() { Velocity = new Vector2(-1.5f, 1.5f) } },
+                    CustomMover = new CMoverFixedVelocity() { Velocity = new Vector2(-1.5f, 1.5f) },
                 });
 
                 // heavy asteroids

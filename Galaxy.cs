@@ -44,6 +44,7 @@ namespace Galaxy
             //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
             //GraphicsDeviceManager.ToggleFullScreen();
+            // TODO: fix crash here sometimes happening (device startup timing not friendly with editor)
             GraphicsDeviceManager.ApplyChanges();
 
             Debug = new CDebug(this);
