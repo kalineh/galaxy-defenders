@@ -95,6 +95,7 @@
     <Compile Include="Editor\Converters\EditorConverters.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
     <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorPreviewEntity.cs" />
     <Compile Include="Editor\Entities\EditorUnknownEntity.cs" />
     <Compile Include="Editor\StageSerializer.cs" />
     <Compile Include="Editor\Editor.cs" />
@@ -157,7 +158,7 @@
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Entities\Ship.cs" />
     <Compile Include="Stage.cs" />
-    <Compile Include="StageDefinition.cs" />
+    <Compile Include="StageDefinitions\StageDefinition.cs" />
     <Compile Include="StageDefinitions\TestStage.cs" />
     <Compile Include="Stage\Elements\SpawnerAsteroid.cs" />
     <Compile Include="Stage\Elements\StageFinish.cs" />

@@ -9,6 +9,7 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq.Expressions;
 
 namespace Galaxy
 {
@@ -22,7 +23,6 @@ namespace Galaxy
         private CStars StarsLower { get; set; }
         private CStars StarsUpper { get; set; }
         public int Score { get; set; }
-        public CStageDefinition StageDefinition { get; set; }
         public string StageName { get; set; }
         public CStage Stage { get; set; }
         public CCamera GameCamera { get; set; }
@@ -53,12 +53,7 @@ namespace Galaxy
 
 
             Game.Music.Play("Music/Stage1");
-
-            StageName = "EditorStage";
-            Type stage_type = Type.GetType(String.Format("Galaxy.Stages.{0}", StageName));
-            MethodInfo generate_method = stage_type.GetMethod("GenerateDefinition");
-            StageDefinition = generate_method.Invoke(null, null) as CStageDefinition;
-            Stage = new CStage(this, StageDefinition);
+            Stage = new CStage(this, Game.StageDefinition);
         }
 
         public void Stop()
@@ -160,6 +155,10 @@ namespace Galaxy
 
             foreach (CEntity entity in Entities)
             {
+                // TODO: not this hack :|
+                if (entity.GetType() == typeof(Editor.CEditorPreviewEntity))
+                    continue;
+
                 if (entity.Physics == null)
                     continue;
 

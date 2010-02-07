@@ -16,7 +16,7 @@ namespace Galaxy
         public CVisual Visual { get; set; }
         public Collision Collision { get; set; }
         public CMover Mover { get; set; }
-        public float AliveTime { get; private set; }
+        public float AliveTime { get; protected set; }
 
         public CEntity(CWorld world, String name)
         {

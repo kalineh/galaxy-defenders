@@ -1,5 +1,4 @@
-﻿//
-// StateEditor.cs
+﻿// // StateEditor.cs
 //
 
 using System;
@@ -45,33 +44,31 @@ namespace Galaxy
         public IntPtr Hwnd { get; set; }
         public Vector2 SelectionDragOffset { get; set; }
         public CEntity SelectedEntity { get; set; }
+        public CEntity SelectedEntityPreview { get; set; }
         public CEntity HoverEntity { get; set; }
         public EditorInteractionState InteractionState { get; set; }
         public CVisual SelectionBox { get; set; }
         public CVisual HoverBox { get; set; }
-        public string StageFilename { get; set; }
-        public CStageDefinition CurrentStageDefinition { get; set; }
 
         public CStateEditor(CGalaxy game)
         {
             Game = game;
-
-            string cwd = Directory.GetCurrentDirectory();
-            string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
-            StageFilename = base_ + "StageDefinitions\\EditorStage.cs";
-
-            // TODO: temp save testing
-            //CurrentStageDefinition = Galaxy.CStageCompiler.LoadStage("EditorStage");
-            CurrentStageDefinition = Galaxy.Stages.EditorStage.GenerateDefinition();
-
             ClearStage();
+            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
         }
 
         public override void Update()
         {
+            Game.Input.Update();
+
             if (Game.Input.IsKeyPressed(Keys.Escape))
             {
                 Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+            }
+
+            if (Game.Input.IsKeyPressed(Keys.Delete))
+            {
+                World.EntityDelete(SelectedEntity);
             }
 
             UpdateMouse();
@@ -126,6 +123,14 @@ namespace Galaxy
 
                 if (SelectedEntity != null)
                 {
+                    // TODO: type fail :(
+                    Editor.CSpawnerEntity spawner = SelectedEntity as Editor.CSpawnerEntity;
+                    if (spawner != null)
+                    {
+                        SelectedEntityPreview = new Editor.CEditorPreviewEntity(World, spawner, spawner.Mover);
+                        World.EntityAdd(SelectedEntityPreview);
+                    }
+
                     InteractionState = EditorInteractionState.Dragging;
                     SelectionDragOffset = entity.Physics.PositionPhysics.Position - world;
                 }
@@ -243,20 +248,38 @@ namespace Galaxy
         {
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
-            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, CurrentStageDefinition);
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             SelectionBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Red);
             SelectionBox.Alpha = 0.2f;
             HoverBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.White);
             HoverBox.Alpha = 0.2f;
             SelectedEntity = null;
+            SelectedEntityPreview = null;
             HoverEntity = null;
+        }
+
+        public void DeleteSelectedEntity()
+        {
+            World.EntityDelete(SelectedEntity);
+            World.EntityDelete(SelectedEntityPreview);
+            SelectedEntity = null;
+            SelectedEntityPreview = null;
+        }
+
+        // TODO: should this functionality be on the editor even? maybe in game?
+        // TODO: make a stage definition handling system? (load/save/static currentdef)
+        public void ReplaceStageDefinition(CStageDefinition definition)
+        {
+            ClearStage();
+            Game.StageDefinition = definition;
+            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }
 
         public void UpdateStageDefinition()
         {
-            CurrentStageDefinition = Editor.CStageGenerate.GenerateDefinitionFromStageEntities(World, StageFilename);
-            World.StageDefinition = CurrentStageDefinition;
+            Game.StageDefinition = Editor.CStageGenerate.GenerateDefinitionFromStageEntities(World, "EditorStage");
+            ClearStage();
+            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }
     }
 }

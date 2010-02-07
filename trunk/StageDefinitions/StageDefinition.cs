@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,6 +23,16 @@ namespace Galaxy
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
             ScrollSpeed = 1.0f;
+        }
+
+        public string ToFilename()
+        {
+            string cwd = Directory.GetCurrentDirectory();
+            string base_ = cwd.Substring(0, cwd.LastIndexOf("\\bin\\"));
+            if (cwd.Contains("StageEditor"))
+                base_ = cwd.Substring(0, cwd.LastIndexOf("\\StageEditor\\bin\\"));
+            string stage_filename = base_ + "\\StageDefinitions\\" + Name + ".cs";
+            return stage_filename;
         }
 
         public void AddElement(int time, CStageElement element, object ignored_parameter_for_editor)

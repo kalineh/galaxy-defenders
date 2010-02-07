@@ -70,6 +70,8 @@ namespace StageEditor
         {
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CState state = game_control.Game.State;
+
             game_control.Game.State = new Galaxy.CStateEditor(game);
             game_control.UpdateEditorPosition();
         }
@@ -97,34 +99,23 @@ namespace StageEditor
             editor.ClearStage();
         }
 
-        private void SaveAsButton_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog save = new SaveFileDialog();
-            save.Filter = "Stage|*.cs";
-            save.Title = "Save Stage";
-            string cwd = Directory.GetCurrentDirectory();
-            string base_ = cwd.Substring(0, cwd.LastIndexOf("StageEditor"));
-            save.InitialDirectory = base_ + "StageDefinitions";
-            save.ShowDialog();
-            string filename = save.FileName;
-            if (filename == null)
-                return;
-
-            GameControl game_control = this.Game;
-            Galaxy.CGalaxy game = game_control.Game;
-            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
-            editor.StageFilename = filename;
-            editor.UpdateStageDefinition();
-            Galaxy.CStageCodeWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
-        }
-
         private void SaveButton_Click(object sender, EventArgs e)
         {
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             editor.UpdateStageDefinition();
-            Galaxy.CStageCodeWriter.Save(editor.StageFilename, editor.CurrentStageDefinition);
+            editor.ReplaceStageDefinition(game.StageDefinition);
+            Galaxy.CStageCodeWriter.Save(game.StageDefinition);
+        }
+
+        private void EntityDeleteButton_Click(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.World.EntityDelete(editor.SelectedEntity);
+            editor.DeleteSelectedEntity();
         }
     }
 }

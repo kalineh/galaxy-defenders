@@ -31,6 +31,7 @@ namespace Galaxy
         public CFrameRateDisplay FrameRateDisplay { get; private set; }
         public int GameFrame { get; private set; }
         public CState State { get; set; }
+        public CStageDefinition StageDefinition { get; set; }
 
         public CGalaxy()
         {
@@ -53,6 +54,8 @@ namespace Galaxy
 
             FrameRateDisplay = new CFrameRateDisplay(this);
             GameFrame = 0;
+
+            StageDefinition = Stages.EditorStage.GenerateDefinition();
 
             // default
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
