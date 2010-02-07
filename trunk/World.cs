@@ -51,6 +51,8 @@ namespace Galaxy
             CShip ship = new CShip(this, profile, new Vector2(300.0f, 400.0f));
             Entities.Add(ship);
 
+            // TODO: cleanup this horrible hack
+            CSpawnerEntity.InitializationHack.Clear();
 
             Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);

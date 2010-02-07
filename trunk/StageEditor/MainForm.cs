@@ -57,7 +57,8 @@ namespace StageEditor
         {
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
-            game_control.Game.State = new Galaxy.CStateGame(game);
+            game.GameFrame = 0;
+            game.State = new Galaxy.CStateGame(game);
 
             TextBox input_catcher = this.InputCatcher;
             while (!input_catcher.Focus())

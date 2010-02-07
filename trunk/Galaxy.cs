@@ -28,7 +28,7 @@ namespace Galaxy
         public Texture2D PixelTexture { get; private set; }
         public CMusic Music { get; private set; }
         public CFrameRateDisplay FrameRateDisplay { get; private set; }
-        public int GameFrame { get; private set; }
+        public int GameFrame { get; set; }
         public CState State { get; set; }
         public CStageDefinition StageDefinition { get; set; }
 
@@ -127,7 +127,7 @@ namespace Galaxy
                 this.Exit();
 
             // State update.
-            if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+            if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) || State.GetType() != typeof(CStateGame))
                 State.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);

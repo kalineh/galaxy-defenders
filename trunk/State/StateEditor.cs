@@ -235,7 +235,7 @@ namespace Galaxy
             //Vector3 offset = world.ToVector3() - World.GameCamera.Position;
             //Vector3 offset = World.GameCamera.Position - world.ToVector3();
             Vector3 offset = post - pre;
-            World.GameCamera.Position -= offset;
+            World.GameCamera.Position += offset;
         }
 
         public bool IsInGameViewport(Vector2 mouse)
