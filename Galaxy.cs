@@ -21,7 +21,6 @@ namespace Galaxy
     {
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public new GraphicsDevice GraphicsDevice { get; private set; }
-        public CGameViewport GameViewport { get; private set; }
         public SpriteBatch DefaultSpriteBatch { get; private set; }
         public SpriteFont DefaultFont { get; private set; }
         public CDebug Debug { get; private set; }
@@ -84,8 +83,6 @@ namespace Galaxy
             //GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
             GraphicsDeviceManager.ApplyChanges();
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
-
-            GameViewport = new CGameViewport(this);
 
             base.Initialize();
         }

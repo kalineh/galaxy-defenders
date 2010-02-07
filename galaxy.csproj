@@ -110,7 +110,6 @@
     <Compile Include="Enemy\Beard.cs" />
     <Compile Include="Entities\Building.cs" />
     <Compile Include="Entities\SpacePlatform.cs" />
-    <Compile Include="GameViewport.cs" />
     <Compile Include="FrameRate.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Fader.cs" />

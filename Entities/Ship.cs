@@ -74,10 +74,13 @@ namespace Galaxy
             UpdateWeapons();
             UpdateShields();
 
+            // anti-camera
+            Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+
             base.Update();
 
             // post-physics update
-            Physics.PositionPhysics.Position = World.Game.GameViewport.ClampInside(Physics.PositionPhysics.Position, 12.0f);
+            ClampInsideScreen();
         }
 
         public override void UpdateCollision()

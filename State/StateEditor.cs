@@ -181,7 +181,7 @@ namespace Galaxy
 
             if (state.MiddleButton == ButtonState.Pressed)
             {
-                World.GameCamera.Position += new Vector3(delta, 0.0f) * 1.0f / World.GameCamera.Zoom;
+                World.GameCamera.Position -= new Vector3(delta, 0.0f) * 1.0f / World.GameCamera.Zoom;
             }
 
             if (state.RightButton == ButtonState.Pressed)
