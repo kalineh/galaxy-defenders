@@ -195,7 +195,7 @@ namespace Galaxy
         {
             MouseState state = Mouse.GetState();
 
-            HoverEntity = SelectedEntity;
+            HoverEntity = null;
 
             if (!IsInGameViewport(mouse))
                 return;
@@ -292,12 +292,20 @@ namespace Galaxy
 
         public void ClearStage()
         {
+            CWorld old_world = World;
+
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             SelectedEntity = null;
             SelectedEntityPreview = null;
             HoverEntity = null;
+
+            if (old_world != null)
+            {
+                World.GameCamera.Position = old_world.GameCamera.Position;
+                World.GameCamera.Zoom = old_world.GameCamera.Zoom;
+            }
         }
 
         public void DeleteSelectedEntity()

@@ -52,10 +52,10 @@ namespace Galaxy
                 }
 
                 // update 5x for faster editor preview
-                foreach (int i in Enumerable.Range(0, 5))
-                {
+                //foreach (int i in Enumerable.Range(0, 5))
+                //{
                     base.Update();
-                }
+                //}
 
                 // temporary bunger
                 if (AliveTime > 10.0f)

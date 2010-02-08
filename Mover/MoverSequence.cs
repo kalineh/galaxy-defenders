@@ -56,7 +56,7 @@ namespace Galaxy
             {
                 float duration = Duration[i];
 
-                if (remaining <= duration)
+                if (remaining <= duration * SpeedMultiplier)
                 {
                     velocity = Velocity[i];
                     break;

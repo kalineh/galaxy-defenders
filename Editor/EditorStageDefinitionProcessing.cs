@@ -82,6 +82,20 @@ namespace Galaxy
 
                         // TODO: replace timing with positional access
                         result.AddElement(spawner.StartTime, e);
+
+                        // TODO: here is where we need to set the speed multiplier on the SpawnerEntity from the mover
+                        if (spawner.Mover.GetType() == typeof(CMoverSequence))
+                        {
+                            CMoverSequence mover = e.CustomMover as CMoverSequence;
+                            mover.SpeedMultiplier = spawner.MoveSpeed;
+                        }
+
+                        // TODO: here is where we need to set the speed multiplier on the SpawnerEntity from the mover
+                        if (spawner.Mover.GetType() == typeof(CMoverFixedVelocity))
+                        {
+                            CMoverFixedVelocity mover = e.CustomMover as CMoverFixedVelocity;
+                            mover.SpeedMultiplier = spawner.MoveSpeed;
+                        }
                     }
 
                     // TODO: other types!

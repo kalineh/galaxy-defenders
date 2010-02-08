@@ -84,7 +84,11 @@ namespace Galaxy
             base.Update();
 
             // post-physics update
-            ClampInsideScreen();
+            // TODO: camera scroll management (scenery system?)
+            if (World.Game.State.GetType() == typeof(CStateGame))
+            {
+                ClampInsideScreen();
+            }
         }
 
         public override void UpdateCollision()

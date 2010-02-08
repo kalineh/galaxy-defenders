@@ -85,11 +85,19 @@ namespace Galaxy
                 {
                     MoveSpeed = ((Galaxy.CMoverSequence)Mover).SpeedMultiplier;
                 }
+                if (Mover as Galaxy.CMoverFixedVelocity != null)
+                {
+                    MoveSpeed = ((Galaxy.CMoverFixedVelocity)Mover).SpeedMultiplier;
+                }
             }
 
             public override float GetRadius()
             {
-                return 15.0f;
+                if (Visual == null)
+                    return 15.0f;
+                float texture = Math.Max(Visual.Texture.Width, Visual.Texture.Height);
+                float scale = Math.Max(Visual.Scale.X, Visual.Scale.Y);
+                return texture * scale * 0.5f;
             }
 
             public void Refresh()
