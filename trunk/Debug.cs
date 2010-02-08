@@ -12,6 +12,13 @@ namespace Galaxy
 {
     public abstract class CDebugRenderElement
     {
+        private static PrimitivesSample.PrimitiveBatch PrimitiveBatch;
+        public static PrimitivesSample.PrimitiveBatch GetPrimitiveBatch(GraphicsDevice device)
+        {
+            PrimitiveBatch = PrimitiveBatch ?? new PrimitivesSample.PrimitiveBatch(device);
+            return PrimitiveBatch;
+        }
+
         public Matrix Transform { get; set; }
         public Vector2 Position { get; set; }
         public Color Color { get; set; }
@@ -43,7 +50,7 @@ namespace Galaxy
             Vector2 perp = Vector.Normal().Perp();
             Vector2 half = perp * Width * 0.5f;
 
-            PrimitivesSample.PrimitiveBatch batch = new PrimitivesSample.PrimitiveBatch(game.GraphicsDevice);
+            PrimitivesSample.PrimitiveBatch batch = GetPrimitiveBatch(game.GraphicsDevice);
             batch.Begin(PrimitiveType.TriangleList);
 
             batch.AddVertex(Vector2.Transform(Position - half, Transform), Color);

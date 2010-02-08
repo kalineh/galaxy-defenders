@@ -47,8 +47,6 @@ namespace Galaxy
         public CEntity SelectedEntityPreview { get; set; }
         public CEntity HoverEntity { get; set; }
         public EditorInteractionState InteractionState { get; set; }
-        public CVisual SelectionBox { get; set; }
-        public CVisual HoverBox { get; set; }
         public Type SpawnEntityType { get; set; }
         private bool NoSpawnTillRelease { get; set; }
 
@@ -127,6 +125,7 @@ namespace Galaxy
             }
 
             HoverEntity = World.GetEntityAtPosition(world);
+            CDebugRender.Box(World.GameCamera.WorldMatrix, world, Vector2.One * 5.0f, 2.5f, XnaColor.White);
             
             // TODO: cleanup to statefulness, and keybinding system (modifier + key)
             if (SpawnEntityType != null)
@@ -196,7 +195,7 @@ namespace Galaxy
         {
             MouseState state = Mouse.GetState();
 
-            HoverEntity = null;
+            HoverEntity = SelectedEntity;
 
             if (!IsInGameViewport(mouse))
                 return;
@@ -261,20 +260,18 @@ namespace Galaxy
             Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
+            if (HoverEntity != null)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                Game.DefaultSpriteBatch.End();
+                CDebugRender.Box(World.GameCamera.WorldMatrix, HoverEntity.Physics.PositionPhysics.Position, Vector2.One * HoverEntity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
+            }
+
             if (SelectedEntity != null)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
-                SelectionBox.Scale = new Vector2(SelectedEntity.GetRadius() * 2.0f);
-                SelectionBox.Draw(Game.DefaultSpriteBatch, SelectedEntity.Physics.PositionPhysics.Position, 0.0f);
                 Game.DefaultSpriteBatch.End();
-            }
-
-            if (HoverEntity != null && HoverEntity != SelectedEntity)
-            {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
-                HoverBox.Scale = new Vector2(HoverEntity.GetRadius() * 2.0f);
-                HoverBox.Draw(Game.DefaultSpriteBatch, HoverEntity.Physics.PositionPhysics.Position, 0.0f);
-                Game.DefaultSpriteBatch.End();
+                CDebugRender.Box(World.GameCamera.WorldMatrix, SelectedEntity.Physics.PositionPhysics.Position, Vector2.One * SelectedEntity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
             }
 
             World.DrawEntities(World.GameCamera);
@@ -298,10 +295,6 @@ namespace Galaxy
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
-            SelectionBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.Red);
-            SelectionBox.Alpha = 0.2f;
-            HoverBox = new CVisual(CContent.LoadTexture2D(Game, "Textures/Top/Pixel"), XnaColor.White);
-            HoverBox.Alpha = 0.2f;
             SelectedEntity = null;
             SelectedEntityPreview = null;
             HoverEntity = null;
