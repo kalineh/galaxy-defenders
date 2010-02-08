@@ -57,6 +57,7 @@ namespace Galaxy
             Game = game;
             ClearStage();
             Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
+            SampleShip = World.GetNearestShip(Vector2.Zero);
         }
 
         // TODO: find a nicer system for key input ;|
@@ -278,13 +279,18 @@ namespace Galaxy
 
             World.DrawEntities(World.GameCamera);
 
-            // TODO: flickering occurs rendering GDI on top of d3d
-            //System.Drawing.Bitmap bitmap = new Bitmap(320, 200);
-            //System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5.0f);
-            //System.Drawing.Graphics graphics = System.Drawing.Graphics.FromHwnd(Hwnd);
-            //graphics.DrawLine(pen, new System.Drawing.PointF(10.0f, 10.0f), new System.Drawing.PointF(200.0f, 200.0f));
-            //graphics.DrawLine(pen, new System.Drawing.PointF(10.0f, 10.0f), new System.Drawing.PointF(200.0f, 200.0f));
-            //graphics.DrawRectangle(pen, 0.0f, 0.0f, 100.0f, 100.0f);
+            // Debug render.
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-400.0f, 300.0f), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(400.0f, 300.0f), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-400.0f, 300.0f), Vector2.UnitX * 800.0f, 0.5f, XnaColor.Blue);
+            SampleShip = World.GetNearestShip(Vector2.Zero);
+            if (SampleShip != null)
+            {
+                CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.PositionPhysics.Position, new Vector2(800.0f, 600.0f), 2.0f, XnaColor.Red);
+            }
+
+            // render debug
+            CDebugRender.Render(Game);
         }
 
         public void ClearStage()
