@@ -123,6 +123,12 @@ namespace Galaxy
             return true;
         }
 
+        public bool IsAboveActiveRegion(Vector2 position)
+        {
+            Vector2 tl = GetTopLeft();
+            return position.Y < tl.Y - 100.0f;
+        }
+
         public bool IsOffBottom(Vector2 position, float buffer)
         {
             Vector2 br = GetBottomRight();

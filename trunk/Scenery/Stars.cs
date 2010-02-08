@@ -27,6 +27,7 @@ namespace Galaxy
         public float Scale { get; set; }
         public Vector2 Speed { get; set; }
         private List<Star> Stars { get; set; }
+        private int Count { get; set; }
 
         public CStars(CWorld world, Texture2D texture, float scale, float speed)
         {
@@ -34,9 +35,14 @@ namespace Galaxy
             Visual = new CVisual(texture, Color.White);
             Scale = scale;
             Speed = Vector2.UnitY * speed;
-
             Stars = new List<Star>();
-            for (int i = 0; i < 16; ++i)
+            UpdateStarCount();
+        }
+
+        public void UpdateStarCount()
+        {
+            Count = (int)(16.0f * 1.0f / World.GameCamera.Zoom);
+            for (int i = 0; i < Count - Stars.Count; ++i)
             {
                 Star star = new Star(RandomScreenPosition());
                 Stars.Add(star);
@@ -46,6 +52,8 @@ namespace Galaxy
         public void Update()
         {
             //Speed *= new Vector2(0.9f, 1.0f);
+
+            UpdateStarCount();
 
             foreach (Star star in Stars)
             {

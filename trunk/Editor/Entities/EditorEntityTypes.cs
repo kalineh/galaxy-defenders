@@ -31,6 +31,9 @@ namespace Galaxy
                 typeof(CPewPew),
                 typeof(CSinBall),
                 typeof(CTurret),
+                typeof(CSpacePlatform),
+                typeof(CBigSpacePlatform),
+                typeof(CBuilding),
             };
 
             public static List<string> ToNames()

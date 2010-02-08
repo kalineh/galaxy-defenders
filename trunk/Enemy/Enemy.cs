@@ -34,6 +34,10 @@ namespace Galaxy
 
         public override void Update()
         {
+            // TODO: hack till we get proper generation of StageElements based on camera
+            if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
+                return;
+
             UpdateAI();
 
             base.Update();
