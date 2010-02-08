@@ -75,7 +75,11 @@ namespace Galaxy
             UpdateShields();
 
             // anti-camera
-            Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+            // TODO: camera scroll management (scenery system?)
+            if (World.Game.State.GetType() == typeof(CStateGame))
+            {
+                Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+            }
 
             base.Update();
 

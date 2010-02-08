@@ -115,6 +115,7 @@
     <Compile Include="Fader.cs" />
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Mover\MoverPresets.cs" />
+    <Compile Include="PrimitiveBatch.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
     <Compile Include="StageDefinitions\EditorStage.cs">

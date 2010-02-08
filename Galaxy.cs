@@ -150,6 +150,7 @@ namespace Galaxy
             base.Draw(game_time);
             State.Draw();
             FrameRateDisplay.Draw(DefaultSpriteBatch);
+            CDebugRender.Render(this);
         }
     }
 }
