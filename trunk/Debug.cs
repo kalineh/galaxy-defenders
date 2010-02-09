@@ -47,8 +47,14 @@ namespace Galaxy
 
         public override void Draw(CGalaxy game)
         {
+            Vector3 scale;
+            Quaternion rotation_unused;
+            Vector3 translation_unused;
+            Transform.Decompose(out scale, out rotation_unused, out translation_unused);
+
+            float width = Width * 1.0f / scale.X;
             Vector2 perp = Vector.Normal().Perp();
-            Vector2 half = perp * Width * 0.5f;
+            Vector2 half = perp * width * 0.5f;
 
             PrimitivesSample.PrimitiveBatch batch = GetPrimitiveBatch(game.GraphicsDevice);
             batch.Begin(PrimitiveType.TriangleList);

@@ -16,6 +16,7 @@ namespace Galaxy
         public CStageDefinition Definition { get; private set; }
         public List<CStageElement> ActiveElements { get; private set; }
         private int Frame { get; set; }
+        public float ScrollSpeed { get; set; }
 
         public CStage(CWorld world, CStageDefinition definition)
         {
