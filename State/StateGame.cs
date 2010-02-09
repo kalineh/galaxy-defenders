@@ -18,6 +18,7 @@ namespace Galaxy
         public CStateGame(CGalaxy game)
         {
             Game = game;
+            Game.GameFrame = 0;
             World = new CWorld(game);
             World.Start();
         }

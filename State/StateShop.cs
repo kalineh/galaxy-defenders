@@ -66,6 +66,8 @@ namespace Galaxy
             Menu = MenuBase;
             DrawMenuErrata = DrawMenuBaseErrata;
 
+            EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
+
             WorkingProfile = CSaveData.GetCurrentProfile();
             RefreshSampleDisplay();
         }

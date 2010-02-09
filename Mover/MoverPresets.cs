@@ -66,6 +66,14 @@ namespace Galaxy
             };
         }
 
+        public static CMover MoveUp(float speed)
+        {
+            return new CMoverFixedVelocity()
+            {
+                Velocity = new Vector2(0.0f, -speed),
+            };
+        }
+
         public static CMover MoveDown(float speed)
         {
             return new CMoverFixedVelocity()
