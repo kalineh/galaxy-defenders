@@ -48,7 +48,7 @@ namespace Galaxy
             Entities = new List<CEntity>();
             // TODO: load ship from profile
             SProfile profile = CSaveData.GetCurrentProfile();
-            CShip ship = new CShip(this, profile, new Vector2(300.0f, 400.0f));
+            CShip ship = new CShip(this, profile, new Vector2(0.0f, 400.0f));
             Entities.Add(ship);
 
             // TODO: cleanup this horrible hack

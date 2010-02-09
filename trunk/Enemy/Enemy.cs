@@ -36,7 +36,11 @@ namespace Galaxy
         {
             // TODO: hack till we get proper generation of StageElements based on camera
             if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
+            {
+                // TODO: we need to do this or all collision bounds will be at 0,0
+                UpdateCollision();
                 return;
+            }
 
             UpdateAI();
 
