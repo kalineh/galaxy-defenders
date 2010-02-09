@@ -88,7 +88,7 @@ namespace Galaxy
                     new List<WeaponData>() {
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = Vector2.Zero,
@@ -99,7 +99,7 @@ namespace Galaxy
                     new List<WeaponData>() {
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, -10.0f),
@@ -107,7 +107,7 @@ namespace Galaxy
                         },
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, 10.0f),
@@ -118,7 +118,7 @@ namespace Galaxy
                     new List<WeaponData>() {
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, -12.0f),
@@ -126,7 +126,7 @@ namespace Galaxy
                         },
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, -8.0f),
@@ -134,7 +134,7 @@ namespace Galaxy
                         },
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, 8.0f),
@@ -142,7 +142,7 @@ namespace Galaxy
                         },
                         new WeaponData() {
                             ReloadTime = 0.2f,
-                            Speed = 8.0f,
+                            Speed = 15.0f,
                             Damage = 1.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, 12.0f),
@@ -157,7 +157,7 @@ namespace Galaxy
                     new List<WeaponData>() {
                         new WeaponData() {
                             ReloadTime = 1.0f,
-                            Speed = 6.0f,
+                            Speed = 11.0f,
                             Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = Vector2.Zero,
@@ -168,7 +168,7 @@ namespace Galaxy
                     new List<WeaponData>() {
                         new WeaponData() {
                             ReloadTime = 1.0f,
-                            Speed = 6.0f,
+                            Speed = 11.0f,
                             Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, -10.0f),
@@ -176,7 +176,7 @@ namespace Galaxy
                         },
                         new WeaponData() {
                             ReloadTime = 1.0f,
-                            Speed = 6.0f,
+                            Speed = 11.0f,
                             Damage = 2.0f,
                             KickbackForce = 0.0f,
                             Offset = new Vector2(0.0f, 10.0f),

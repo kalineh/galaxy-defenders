@@ -124,7 +124,7 @@ namespace Galaxy
                 return;
             }
 
-            HoverEntity = World.GetEntityAtPosition(world);
+            HoverEntity = World.GetHighestEntityAtPosition(world);
             CDebugRender.Box(World.GameCamera.WorldMatrix, world, Vector2.One * 5.0f, 2.5f, XnaColor.White);
             
             // TODO: cleanup to statefulness, and keybinding system (modifier + key)
@@ -161,7 +161,7 @@ namespace Galaxy
 
             if (state.LeftButton == ButtonState.Pressed && !left_alt_down)
             {
-                CEntity entity = World.GetEntityAtPosition(world);
+                CEntity entity = World.GetHighestEntityAtPosition(world);
                 SelectedEntity = entity;
 
                 if (SelectedEntity != null)

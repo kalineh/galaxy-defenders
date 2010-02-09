@@ -76,9 +76,14 @@ namespace Galaxy
             Physics.PositionPhysics.Position = World.GameCamera.ClampInside(Physics.PositionPhysics.Position, GetRadius());
         }
 
+        public bool IsInScreen(float buffer)
+        {
+            return World.GameCamera.IsInside(Physics.PositionPhysics.Position, GetRadius() + buffer);
+        }
+
         public bool IsInScreen()
         {
-            return World.GameCamera.IsInside(Physics.PositionPhysics.Position, GetRadius());
+            return IsInScreen(0.0f);
         }
 
         public bool IsInDieRegion()
@@ -89,7 +94,8 @@ namespace Galaxy
             }
 
             // TODO: proper region top check
-            return !IsInScreen();
+            // TODO: proper edge buffer system
+            return !IsInScreen(150.0f);
         }
 
         public bool IsOffScreenBottom()

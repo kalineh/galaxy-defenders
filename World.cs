@@ -173,6 +173,44 @@ namespace Galaxy
             return null;
         }
 
+        public CEntity GetHighestEntityAtPosition(Vector2 position)
+        {
+            Collision find = new CollisionCircle(position, 1.0f);
+
+            CEntity result = null;
+            float highest = -1.0f;
+            foreach (CEntity entity in Entities)
+            {
+                // TODO: not this hack :|
+                if (entity.GetType() == typeof(Editor.CEditorPreviewEntity))
+                    continue;
+
+                if (entity.Physics == null)
+                    continue;
+
+                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                if (!find.Intersects(collision))
+                    continue;
+
+                if (highest <= 0.0f)
+                {
+                    result = entity;
+                    highest = 0.0f;
+                }
+
+                if (entity.Visual == null)
+                    continue;
+
+                if (entity.Visual.Depth >= highest)
+                {
+                    result = entity;
+                    highest = entity.Visual.Depth;
+                }
+            }
+
+            return result;
+        }
+
         public CShip GetNearestShip(Vector2 position)
         {
             CShip result = null;

@@ -80,7 +80,7 @@ namespace Galaxy
                 Mover = element.CustomMover;
 
                 // TODO: not this hack
-                MoveSpeed = 1.0f;
+                MoveSpeed = world.Game.StageDefinition.ScrollSpeed;
                 if (Mover as Galaxy.CMoverSequence != null)
                 {
                     MoveSpeed = ((Galaxy.CMoverSequence)Mover).SpeedMultiplier;

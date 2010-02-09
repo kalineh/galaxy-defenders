@@ -23,10 +23,6 @@ namespace Galaxy
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }
 
-        public override void UpdateAI()
-        {
-        }
-
         public override void Update()
         {
             UpdateAI();

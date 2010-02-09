@@ -84,7 +84,7 @@ namespace Galaxy
             CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
             CrossFader.Name = "MusicFadeThread";
             // TODO: fix music system
-            //CrossFader.Start(Song);
+            CrossFader.Start(Song);
         }
 
         public void Stop()
