@@ -2,14 +2,6 @@
 //
 
 using System;
-using System.Globalization;
-using System.ComponentModel;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 namespace Galaxy
 {
     using WinPoint = System.Drawing.Point;
-    using XnaPoint = Microsoft.Xna.Framework.Point;
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
 
     public enum EditorInteractionState
@@ -146,7 +137,7 @@ namespace Galaxy
                                 SpawnPosition = new CSpawnPositionFixed() { Position = world },
                             };
 
-                            Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(World, element);
+                            CEditorSpawnerEntity entity = new CEditorSpawnerEntity(World, element);
                             World.EntityAdd(entity);
                             NoSpawnTillRelease = true;
                         }
@@ -167,7 +158,7 @@ namespace Galaxy
                 if (SelectedEntity != null)
                 {
                     // TODO: type fail :(
-                    Editor.CSpawnerEntity spawner = SelectedEntity as Editor.CSpawnerEntity;
+                    CEditorSpawnerEntity spawner = SelectedEntity as CEditorSpawnerEntity;
                     if (spawner != null)
                     {
                         SelectedEntityPreview = new Editor.CEditorPreviewEntity(World, spawner, spawner.Mover);

@@ -3,18 +3,12 @@
 //
 
 using System;
-using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Reflection;
 using Microsoft.CSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {

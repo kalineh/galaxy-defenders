@@ -2,7 +2,6 @@
 // Input.cs
 //
 
-using System;
 using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy

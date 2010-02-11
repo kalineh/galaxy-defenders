@@ -4,12 +4,9 @@
 // TODO: MediaPlayer.Volume access causes a big delay -- replace with Audio stuff.
 //
 
-using System;
 using System.Threading;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Storage;
 
 namespace Galaxy
 {

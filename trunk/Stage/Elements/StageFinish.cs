@@ -2,7 +2,6 @@
 // StageFinish.cs
 //
 
-using System;
 
 namespace Galaxy
 {

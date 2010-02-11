@@ -3,15 +3,11 @@
 //
 
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    using WinRectangle = System.Drawing.Rectangle;
 
     public class CCamera
     {

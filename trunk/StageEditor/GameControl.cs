@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections.Generic;
-using System.Threading;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StageEditor
 {
-    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
-    using WinKeys = System.Windows.Forms.Keys;
     using WinPoint = System.Drawing.Point;
+    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
 
     /// <summary>
     /// Example control inherits from GraphicsDeviceControl, which allows it to

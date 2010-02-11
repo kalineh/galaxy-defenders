@@ -2,13 +2,6 @@
 // Editor.cs
 //
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
 
 //
 // TODO: put functionality in here! move functionality from CStateEditor

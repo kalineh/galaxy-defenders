@@ -3,21 +3,12 @@
 //
 
 using System;
-using System.Drawing.Design;
-using System.Globalization;
-using System.ComponentModel;
-using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+using System.ComponentModel;
+using System.Drawing.Design;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {

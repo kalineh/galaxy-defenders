@@ -1,20 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace StageEditor
 {
-    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
-    using WinKeys = System.Windows.Forms.Keys;
 
     public partial class MainForm : Form
     {
