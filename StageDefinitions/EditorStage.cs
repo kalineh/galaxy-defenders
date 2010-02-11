@@ -20,7 +20,7 @@ Y = -494.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
+SpeedMultiplier = 2.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
@@ -2519,19 +2519,19 @@ Y = -5480.91f,
 });
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSinBall),
-SpawnCount = 1,
+Type = typeof(Galaxy.CAsteroid),
+SpawnCount = 2,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -42.12f,
-Y = -356.99f,
+X = -39.12f,
+Y = -355.99f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
+SpeedMultiplier = 3.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
@@ -2540,20 +2540,20 @@ Y = 1.0f,
 CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -42.12f,
-Y = -356.99f,
+X = -39.12f,
+Y = -355.99f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSinBall),
-SpawnCount = 1,
+Type = typeof(Galaxy.CAsteroid),
+SpawnCount = 2,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -184.26f,
+X = -183.26f,
 Y = -352.96f,
 },
 },
@@ -2574,19 +2574,19 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 },
 VelocityLerpRate = 0.03f,
 AlwaysMaxSpeed = true,
-SpeedMultiplier = 2.0f,
+SpeedMultiplier = 3.0f,
 },
 CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -184.26f,
+X = -183.26f,
 Y = -352.96f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CBeard),
-SpawnCount = 1,
+Type = typeof(Galaxy.CAsteroid),
+SpawnCount = 2,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
 Interval = 1.0f,
 },
@@ -2597,7 +2597,7 @@ Y = -360.28f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
+SpeedMultiplier = 3.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,

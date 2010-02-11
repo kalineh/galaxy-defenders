@@ -2,6 +2,8 @@
 //
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +17,9 @@ namespace Galaxy
     public enum EditorInteractionState
     {
         None,
-        Dragging,
-        Zooming,
+        DragSelect,
+        DragEntity,
+        ZoomCamera,
     }
 
     // TODO: move the functionality of the world/editor state into Editor.cs
@@ -33,10 +36,12 @@ namespace Galaxy
         private CStars Stars { get; set; }
         public WinPoint FormTopLeft { get; set; }
         public IntPtr Hwnd { get; set; }
-        public Vector2 SelectionDragOffset { get; set; }
-        public CEntity SelectedEntity { get; set; }
-        public CEntity SelectedEntityPreview { get; set; }
-        public CEntity HoverEntity { get; set; }
+        public Vector2 DragSelectStart { get; set; }
+        public Vector2 DragEntityStart { get; set; }
+        public List<CEntity> SelectedEntities { get; set; }
+        public List<CEntity> SelectedEntitiesPreview { get; set; }
+        public Dictionary<CEntity, Vector2> SelectedEntitiesOffset { get; set; }
+        public List<CEntity> HoverEntities { get; set; }
         public EditorInteractionState InteractionState { get; set; }
         public Type SpawnEntityType { get; set; }
         private bool NoSpawnTillRelease { get; set; }
@@ -47,6 +52,10 @@ namespace Galaxy
             ClearStage();
             Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
             SampleShip = World.GetNearestShip(Vector2.Zero);
+            SelectedEntities = new List<CEntity>();
+            SelectedEntitiesPreview = new List<CEntity>();
+            SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();
+            HoverEntities = new List<CEntity>();
         }
 
         // TODO: find a nicer system for key input ;|
@@ -65,7 +74,7 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.Delete))
             {
-                World.EntityDelete(SelectedEntity);
+                SelectedEntities.ForEach(entity => World.EntityDelete(entity));
             }
 
             UpdateMouse();
@@ -89,12 +98,16 @@ namespace Galaxy
                     UpdateInteractionNone(mouse, delta, world);
                     break;
 
-                case EditorInteractionState.Dragging:
-                    UpdateInteractionDragging(mouse, delta, world);
+                case EditorInteractionState.DragSelect:
+                    UpdateInteractionDragSelect(mouse, delta, world);
                     break;
 
-                case EditorInteractionState.Zooming:
-                    UpdateInteractionZooming(mouse, delta, world);
+                case EditorInteractionState.DragEntity:
+                    UpdateInteractionDragEntity(mouse, delta, world);
+                    break;
+
+                case EditorInteractionState.ZoomCamera:
+                    UpdateInteractionZoomCamera(mouse, delta, world);
                     break;
             }
 
@@ -111,11 +124,17 @@ namespace Galaxy
 
             if (!IsInGameViewport(mouse))
             {
-                HoverEntity = null;
+                HoverEntities.Clear();
                 return;
             }
 
-            HoverEntity = World.GetHighestEntityAtPosition(world);
+            // TODO: function me (update hover)
+            HoverEntities.Clear();
+            CEntity hover = World.GetHighestEntityAtPosition(world);
+            if (hover != null)
+                HoverEntities.Add(hover);
+
+            // TODO: function me (selection cursor)
             CDebugRender.Box(World.GameCamera.WorldMatrix, world, Vector2.One * 5.0f, 2.5f, XnaColor.White);
             
             // TODO: cleanup to statefulness, and keybinding system (modifier + key)
@@ -144,24 +163,46 @@ namespace Galaxy
             if (state.LeftButton == ButtonState.Pressed && !left_alt_down)
             {
                 CEntity entity = World.GetHighestEntityAtPosition(world);
-                SelectedEntity = entity;
 
-                if (SelectedEntity != null)
+                if (entity == null)
                 {
-                    CEditorEntityBase editor_entity = SelectedEntity as CEditorEntityBase;
-
-                    // TODO: no support for non-editor entities?
-                    if (editor_entity != null)
+                    SelectedEntities.Clear();
+                    InteractionState = EditorInteractionState.DragSelect;
+                    DragSelectStart = mouse;
+                }
+                else
+                {
+                    if (SelectedEntities.Contains(entity))
                     {
-                        CEntity preview = editor_entity.GeneratePreviewEntity();
-                        if (preview != null)
+                        InteractionState = EditorInteractionState.DragEntity;
+                        foreach (CEntity selected in SelectedEntities)
                         {
-                            World.EntityAdd(preview);
+                            SelectedEntitiesOffset[selected] = selected.Physics.PositionPhysics.Position - world;
                         }
+                        DragEntityStart = mouse;
                     }
+                    else
+                    {
+                        SelectedEntities.Clear();
+                        SelectedEntities.Add(entity);
 
-                    InteractionState = EditorInteractionState.Dragging;
-                    SelectionDragOffset = entity.Physics.PositionPhysics.Position - world;
+                        CEditorEntityBase editor_entity = entity as CEditorEntityBase;
+
+                        // TODO: no support for non-editor entities?
+                        if (editor_entity != null)
+                        {
+                            CEntity preview = editor_entity.GeneratePreviewEntity();
+                            if (preview != null)
+                            {
+                                World.EntityAdd(preview);
+                            }
+                        }
+
+                        InteractionState = EditorInteractionState.DragEntity;
+                        SelectedEntitiesOffset.Clear();
+                        SelectedEntitiesOffset[entity] = entity.Physics.PositionPhysics.Position - world;
+                        DragEntityStart = mouse;
+                    }
                 }
             }
 
@@ -172,8 +213,38 @@ namespace Galaxy
 
             if (state.RightButton == ButtonState.Pressed)
             {
-                InteractionState = EditorInteractionState.Zooming;
+                InteractionState = EditorInteractionState.ZoomCamera;
                 System.Windows.Forms.Cursor.Hide();
+            }
+        }
+
+        public void UpdateInteractionDragSelect(Vector2 mouse, Vector2 delta, Vector2 world)
+        {
+            // TODO: make this type restriction?
+            int left_alt_keystate = GetKeyState((int)Keys.LeftAlt);
+            bool left_alt_down = (left_alt_keystate & 0x8000) != 0;
+
+            Vector2 drag_start = World.GameCamera.ScreenToWorld(DragSelectStart);
+            Vector2 drag_end = world;
+            Vector2 offset = drag_end - drag_start;
+            Vector2 drag_center = drag_start + offset * 0.5f;
+
+            Vector2 tl = Vector2.Min(drag_start, drag_end);
+            Vector2 br = Vector2.Max(drag_start, drag_end);
+            Vector2 size = new Vector2(Math.Abs(offset.X), Math.Abs(offset.Y));
+            CollisionAABB box = new CollisionAABB(tl, size);
+
+            HoverEntities.Clear();
+            HoverEntities = World.GetEntitiesInBox(box).Where(e => e is CEditorEntityBase).ToList();
+
+            // TODO: box interface should be topleft/bottomright? this is wrong anyway
+            CDebugRender.Box(World.GameCamera.WorldMatrix, drag_center, offset, 2.0f, XnaColor.Green);
+
+            MouseState state = Mouse.GetState();
+            if (state.LeftButton == ButtonState.Released)
+            {
+                InteractionState = EditorInteractionState.None;
+                SelectedEntities = World.GetEntitiesInBox(box).Where(e => e is CEditorEntityBase).ToList();
             }
         }
 
@@ -182,37 +253,18 @@ namespace Galaxy
             CEditorEntityBase editor_entity = Activator.CreateInstance(SpawnEntityType, new object[] { World, position }) as CEditorEntityBase;
             editor_entity.Physics.PositionPhysics.Position = position;
             return editor_entity;
-
-
-            // special stuff
-
-            // TODO: proper spawning
-            //CSpawnerEntity element = new CSpawnerEntity()
-            //{
-                //Type = SpawnEntityType,
-                //Position = position,
-                //CustomMover = CMoverPresets.MoveDown(1.0f),
-                //SpawnCount = 1,
-                //SpawnTimer = new CSpawnTimerInterval(),
-                //SpawnPosition = new CSpawnPositionFixed() { Position = position },
-            //};
-
-            //CEditorSpawnerEntity entity = new CEditorSpawnerEntity(World, element);
-            //World.EntityAdd(entity);
-            //NoSpawnTillRelease = true;
-            //return entity;
         }
         
-        public void UpdateInteractionDragging(Vector2 mouse, Vector2 delta, Vector2 world)
+        public void UpdateInteractionDragEntity(Vector2 mouse, Vector2 delta, Vector2 world)
         {
             MouseState state = Mouse.GetState();
 
-            HoverEntity = null;
+            HoverEntities.Clear();
 
             if (!IsInGameViewport(mouse))
                 return;
 
-            if (SelectedEntity == null)
+            if (SelectedEntities.Count <= 0)
             {
                 InteractionState = EditorInteractionState.None;
                 return;
@@ -221,17 +273,35 @@ namespace Galaxy
             if (state.LeftButton == ButtonState.Released)
             {
                 InteractionState = EditorInteractionState.None;
+
+                Vector2 offset = mouse - DragEntityStart;
+                if (offset.Length() < 2.0f)
+                {
+                    SelectedEntities.Clear();
+                    HoverEntities.Clear();
+                    CEntity hover = World.GetHighestEntityAtPosition(world);
+                    if (hover != null)
+                    {
+                        SelectedEntities.Add(hover);
+                        HoverEntities.Add(hover);
+                    }
+                }
+
                 return;
             }
 
-            SelectedEntity.Physics.PositionPhysics.Position = world + SelectionDragOffset;
+            // TODO: each entity needs a selection offset
+            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = world + SelectedEntitiesOffset[entity]);
 
             // TODO: is this a bad hack?
-            if (SelectedEntity is CEditorEntityBase)
-                ((CEditorEntityBase)SelectedEntity).EditorDirty = true;
+            foreach (CEntity entity in SelectedEntities)
+            {
+                if (entity is CEditorEntityBase)
+                    ((CEditorEntityBase)entity).EditorDirty = true;
+            }
         }
 
-        public void UpdateInteractionZooming(Vector2 mouse, Vector2 delta, Vector2 world)
+        public void UpdateInteractionZoomCamera(Vector2 mouse, Vector2 delta, Vector2 world)
         {
             MouseState state = Mouse.GetState();
             if (state.RightButton == ButtonState.Released)
@@ -276,18 +346,18 @@ namespace Galaxy
             Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
-            if (HoverEntity != null)
+            foreach (CEntity entity in HoverEntities)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
-                CDebugRender.Box(World.GameCamera.WorldMatrix, HoverEntity.Physics.PositionPhysics.Position, Vector2.One * HoverEntity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
             }
 
-            if (SelectedEntity != null)
+            foreach (CEntity entity in SelectedEntities)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
-                CDebugRender.Box(World.GameCamera.WorldMatrix, SelectedEntity.Physics.PositionPhysics.Position, Vector2.One * SelectedEntity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
             }
 
             World.DrawEntities(World.GameCamera);
@@ -313,9 +383,9 @@ namespace Galaxy
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
             Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
-            SelectedEntity = null;
-            SelectedEntityPreview = null;
-            HoverEntity = null;
+            SelectedEntities = new List<CEntity>();
+            SelectedEntitiesPreview = new List<CEntity>();
+            HoverEntities = new List<CEntity>();
 
             if (old_world != null)
             {
@@ -324,12 +394,16 @@ namespace Galaxy
             }
         }
 
-        public void DeleteSelectedEntity()
+        public void DeleteSelectedEntities()
         {
-            World.EntityDelete(SelectedEntity);
-            World.EntityDelete(SelectedEntityPreview);
-            SelectedEntity = null;
-            SelectedEntityPreview = null;
+            foreach (CEntity entity in SelectedEntities)
+            {
+                World.EntityDelete(entity);
+                // TODO: delete previews? (for all world entities, if is preview and parent is entity)
+                var previews = from e in World.GetEntities() where e is CEditorEntityPreview && ((CEditorEntityPreview)e).Parent == entity select e;
+                foreach (CEntity preview in previews)
+                    World.EntityDelete(entity);
+            }
         }
 
         // TODO: should this functionality be on the editor even? maybe in game?

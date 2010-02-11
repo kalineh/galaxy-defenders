@@ -17,17 +17,15 @@ namespace Galaxy
     public class CEditorEntityStageFinish
         : CEditorEntityBase
     {
-        [CategoryAttribute("Core")]
-        public Vector2 Position
+        public CEditorEntityStageFinish(CWorld world, Vector2 position)
+            : base(world, position)
         {
-            get { return Physics.PositionPhysics.Position; }
-            set { Physics.PositionPhysics.Position = value; }
+            Physics = new CPhysics();
         }
 
         public CEditorEntityStageFinish(CWorld world, CStageElement element)
-            : base(world, element)
+            : this(world, element.Position)
         {
-            Physics = new CPhysics();
         }
     }
 }
