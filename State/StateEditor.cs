@@ -154,7 +154,10 @@ namespace Galaxy
                     if (editor_entity != null)
                     {
                         CEntity preview = editor_entity.GeneratePreviewEntity();
-                        World.EntityAdd(preview);
+                        if (preview != null)
+                        {
+                            World.EntityAdd(preview);
+                        }
                     }
 
                     InteractionState = EditorInteractionState.Dragging;
@@ -222,6 +225,10 @@ namespace Galaxy
             }
 
             SelectedEntity.Physics.PositionPhysics.Position = world + SelectionDragOffset;
+
+            // TODO: is this a bad hack?
+            if (SelectedEntity is CEditorEntityBase)
+                ((CEditorEntityBase)SelectedEntity).EditorDirty = true;
         }
 
         public void UpdateInteractionZooming(Vector2 mouse, Vector2 delta, Vector2 world)

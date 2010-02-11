@@ -34,21 +34,25 @@ namespace Galaxy
     /// </summary>
     [TypeConverter(typeof(CEditorEntityConverterUnknown))]
     public class CEditorEntityUnknown
-        : CEntity
+        : CEditorEntityBase
     {
         [CategoryAttribute("Internal")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public CStageElement StageElement { get; set; }
 
-        public CEditorEntityUnknown(CWorld world, CStageElement element)
-            : base(world, "EditorEntityUnknown")
+        public CEditorEntityUnknown(CWorld world, Vector2 position)
+            : base(world, position)
         {
-            StageElement = element;
-
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = element.Position;
+            Physics.PositionPhysics.Position = position;
             Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), Color.Red);
             Visual.Scale = new Vector2(15.0f);
+        }
+
+        public CEditorEntityUnknown(CWorld world, CStageElement element)
+            : this(world, element.Position)
+        {
+            StageElement = element;
         }
     }
 }

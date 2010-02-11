@@ -23,6 +23,8 @@ namespace Galaxy
             set { Physics.PositionPhysics.Position = value; }
         }
 
+        public bool EditorDirty { get; set; }
+
         /// <summary>
         /// Generate default editor entity from just position.
         /// </summary>
@@ -41,12 +43,19 @@ namespace Galaxy
 
         public virtual CEditorEntityPreview GeneratePreviewEntity()
         {
-            return new CEditorEntityPreview(World, this);
+            return null;
         }
 
         public virtual CStageElement GenerateStageElement()
         {
             throw new NotImplementedException();
+        }
+
+        public bool IsEditorDirty()
+        {
+            bool result = EditorDirty;
+            EditorDirty = false;
+            return result;
         }
     }
 }
