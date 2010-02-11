@@ -38,6 +38,7 @@ namespace Galaxy
         public IntPtr Hwnd { get; set; }
         public Vector2 DragSelectStart { get; set; }
         public Vector2 DragEntityStart { get; set; }
+        public List<CEntity> CopyEntities { get; set; }
         public List<CEntity> SelectedEntities { get; set; }
         public List<CEntity> SelectedEntitiesPreview { get; set; }
         public Dictionary<CEntity, Vector2> SelectedEntitiesOffset { get; set; }
@@ -61,6 +62,8 @@ namespace Galaxy
         // TODO: find a nicer system for key input ;|
         [DllImport("user32.dll")]
         static extern int GetKeyState(int nVirtKey);
+        [DllImport("user32.dll")]
+        static extern int GetAsyncKeyState(int nVirtKey);
         //static extern int GetKeyState(VirtualKeyStates nVirtKey);
 
         public override void Update()
@@ -109,6 +112,46 @@ namespace Galaxy
                 case EditorInteractionState.ZoomCamera:
                     UpdateInteractionZoomCamera(mouse, delta, world);
                     break;
+            }
+
+            // TODO: not a hack
+            // TODO: function me (updatecopypaste)
+            // TODO: proper key release state
+            int left_ctrl_keystate = GetKeyState((int)Keys.LeftControl);
+            bool left_ctrl_down = (left_ctrl_keystate & 0x8000) != 0;
+            int c_keystate = GetAsyncKeyState((int)Keys.C);
+            bool c_down = ((c_keystate & 0x8000) != 0) && ((c_keystate & 0x0001) != 0);
+            int v_keystate = GetAsyncKeyState((int)Keys.V);
+            bool v_down = ((v_keystate & 0x8000) != 0) && ((v_keystate & 0x0001) != 0);
+
+            // copy
+            if (c_down)
+            {
+                CopyEntities = new List<CEntity>(SelectedEntities);
+            }
+
+            // paste
+            if (v_down)
+            {
+                Vector2 total = Vector2.Zero;
+                foreach (CEntity entity in CopyEntities)
+                {
+                    total += entity.Physics.PositionPhysics.Position;
+                }
+                Vector2 average = total / CopyEntities.Count;
+                Vector2 offset = world - average;
+
+                foreach (CEntity entity in CopyEntities)
+                {
+                    // TODO: move me somewhere
+                    CEditorEntityBase editor_entity = entity as CEditorEntityBase;
+                    Type type = editor_entity.GetType();
+                    Vector2 position = editor_entity.Physics.PositionPhysics.Position;
+                    CStageElement element = editor_entity.GenerateStageElement();
+                    CEditorEntityBase new_entity = Activator.CreateInstance(type, new object[] { World, element }) as CEditorEntityBase;
+                    new_entity.Position += offset;
+                    World.EntityAdd(new_entity);
+                }
             }
 
             LastMouseInput = current;
