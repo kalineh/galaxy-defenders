@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -46,6 +45,7 @@ namespace Galaxy
         public EditorInteractionState InteractionState { get; set; }
         public Type SpawnEntityType { get; set; }
         private bool NoSpawnTillRelease { get; set; }
+        private bool NoSelectTillRelease { get; set; }
 
         public CStateEditor(CGalaxy game)
         {
@@ -58,13 +58,6 @@ namespace Galaxy
             SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();
             HoverEntities = new List<CEntity>();
         }
-
-        // TODO: find a nicer system for key input ;|
-        [DllImport("user32.dll")]
-        static extern int GetKeyState(int nVirtKey);
-        [DllImport("user32.dll")]
-        static extern int GetAsyncKeyState(int nVirtKey);
-        //static extern int GetKeyState(VirtualKeyStates nVirtKey);
 
         public override void Update()
         {
@@ -114,24 +107,26 @@ namespace Galaxy
                     break;
             }
 
-            // TODO: not a hack
-            // TODO: function me (updatecopypaste)
-            // TODO: proper key release state
-            int left_ctrl_keystate = GetKeyState((int)Keys.LeftControl);
-            bool left_ctrl_down = (left_ctrl_keystate & 0x8000) != 0;
-            int c_keystate = GetAsyncKeyState((int)Keys.C);
-            bool c_down = ((c_keystate & 0x8000) != 0) && ((c_keystate & 0x0001) != 0);
-            int v_keystate = GetAsyncKeyState((int)Keys.V);
-            bool v_down = ((v_keystate & 0x8000) != 0) && ((v_keystate & 0x0001) != 0);
+            UpdateCopyPaste(world);
 
-            // copy
-            if (c_down)
+            LastMouseInput = current;
+        }
+
+        private void UpdateCopyPaste(Vector2 world)
+        {
+            bool ctrl = CInput.IsRawKeyDown(Keys.LeftControl);
+            bool copy = CInput.IsRawKeyPressed(Keys.C);
+            bool paste = CInput.IsRawKeyPressed(Keys.V);
+
+            if (!ctrl)
+                return;
+
+            if (copy)
             {
                 CopyEntities = new List<CEntity>(SelectedEntities);
             }
 
-            // paste
-            if (v_down)
+            if (paste)
             {
                 Vector2 total = Vector2.Zero;
                 foreach (CEntity entity in CopyEntities)
@@ -143,7 +138,7 @@ namespace Galaxy
 
                 foreach (CEntity entity in CopyEntities)
                 {
-                    // TODO: move me somewhere
+                    // TODO: move this somewhere gooderer
                     CEditorEntityBase editor_entity = entity as CEditorEntityBase;
                     Type type = editor_entity.GetType();
                     Vector2 position = editor_entity.Physics.PositionPhysics.Position;
@@ -153,15 +148,11 @@ namespace Galaxy
                     World.EntityAdd(new_entity);
                 }
             }
-
-            LastMouseInput = current;
         }
         
         public void UpdateInteractionNone(Vector2 mouse, Vector2 delta, Vector2 world)
         {
-            // TODO: not a hack
-            int left_alt_keystate = GetKeyState((int)Keys.LeftAlt);
-            bool left_alt_down = (left_alt_keystate & 0x8000) != 0;
+            bool left_alt_down = CInput.IsRawKeyDown(Keys.LeftAlt);
 
             MouseState state = Mouse.GetState();
 
@@ -171,16 +162,17 @@ namespace Galaxy
                 return;
             }
 
-            // TODO: function me (update hover)
+            // TODO: UpdateHover();
             HoverEntities.Clear();
             CEntity hover = World.GetHighestEntityAtPosition(world);
             if (hover != null)
                 HoverEntities.Add(hover);
 
-            // TODO: function me (selection cursor)
+            // TODO: DrawCursor()
             CDebugRender.Box(World.GameCamera.WorldMatrix, world, Vector2.One * 5.0f, 2.5f, XnaColor.White);
             
             // TODO: cleanup to statefulness, and keybinding system (modifier + key)
+            // TODO: if (TrySpawnEntity(...))
             if (SpawnEntityType != null)
             {
                 if (state.LeftButton == ButtonState.Pressed)
@@ -200,7 +192,14 @@ namespace Galaxy
                 if (state.LeftButton == ButtonState.Released)
                 {
                     NoSpawnTillRelease = false;
+                    NoSelectTillRelease = false;
                 }
+            }
+
+            // TODO: if (TrySelectEntity())
+            if (state.LeftButton == ButtonState.Released)
+            {
+                NoSelectTillRelease = false;
             }
 
             if (state.LeftButton == ButtonState.Pressed && !left_alt_down)
@@ -212,39 +211,54 @@ namespace Galaxy
                     SelectedEntities.Clear();
                     InteractionState = EditorInteractionState.DragSelect;
                     DragSelectStart = mouse;
+                    // TODO: return when functioned
                 }
                 else
                 {
-                    if (SelectedEntities.Contains(entity))
+                    if (CInput.IsRawKeyDown(Keys.LeftShift))
                     {
-                        InteractionState = EditorInteractionState.DragEntity;
-                        foreach (CEntity selected in SelectedEntities)
+                        if (!NoSelectTillRelease)
                         {
-                            SelectedEntitiesOffset[selected] = selected.Physics.PositionPhysics.Position - world;
+                            if (SelectedEntities.Contains(hover))
+                                SelectedEntities.Remove(hover);
+                            else
+                                SelectedEntities.Add(hover);
+                            NoSelectTillRelease = true;
                         }
-                        DragEntityStart = mouse;
                     }
                     else
                     {
-                        SelectedEntities.Clear();
-                        SelectedEntities.Add(entity);
-
-                        CEditorEntityBase editor_entity = entity as CEditorEntityBase;
-
-                        // TODO: no support for non-editor entities?
-                        if (editor_entity != null)
+                        if (SelectedEntities.Contains(entity))
                         {
-                            CEntity preview = editor_entity.GeneratePreviewEntity();
-                            if (preview != null)
+                            InteractionState = EditorInteractionState.DragEntity;
+                            foreach (CEntity selected in SelectedEntities)
                             {
-                                World.EntityAdd(preview);
+                                SelectedEntitiesOffset[selected] = selected.Physics.PositionPhysics.Position - world;
                             }
+                            DragEntityStart = mouse;
                         }
+                        else
+                        {
+                            SelectedEntities.Clear();
+                            SelectedEntities.Add(entity);
 
-                        InteractionState = EditorInteractionState.DragEntity;
-                        SelectedEntitiesOffset.Clear();
-                        SelectedEntitiesOffset[entity] = entity.Physics.PositionPhysics.Position - world;
-                        DragEntityStart = mouse;
+                            CEditorEntityBase editor_entity = entity as CEditorEntityBase;
+
+                            // TODO: no support for non-editor entities?
+                            if (editor_entity != null)
+                            {
+                                CEntity preview = editor_entity.GeneratePreviewEntity();
+                                if (preview != null)
+                                {
+                                    World.EntityAdd(preview);
+                                }
+                            }
+
+                            InteractionState = EditorInteractionState.DragEntity;
+                            SelectedEntitiesOffset.Clear();
+                            SelectedEntitiesOffset[entity] = entity.Physics.PositionPhysics.Position - world;
+                            DragEntityStart = mouse;
+                        }
                     }
                 }
             }
@@ -263,9 +277,7 @@ namespace Galaxy
 
         public void UpdateInteractionDragSelect(Vector2 mouse, Vector2 delta, Vector2 world)
         {
-            // TODO: make this type restriction?
-            int left_alt_keystate = GetKeyState((int)Keys.LeftAlt);
-            bool left_alt_down = (left_alt_keystate & 0x8000) != 0;
+            bool left_alt_down = CInput.IsRawKeyDown(Keys.LeftAlt);
 
             Vector2 drag_start = World.GameCamera.ScreenToWorld(DragSelectStart);
             Vector2 drag_end = world;
@@ -447,6 +459,9 @@ namespace Galaxy
                 foreach (CEntity preview in previews)
                     World.EntityDelete(entity);
             }
+
+            SelectedEntities.Clear();
+            HoverEntities.Clear();
         }
 
         // TODO: should this functionality be on the editor even? maybe in game?

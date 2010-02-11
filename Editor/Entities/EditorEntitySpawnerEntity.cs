@@ -106,6 +106,12 @@ namespace Galaxy
 
         public override CEditorEntityPreview GeneratePreviewEntity()
         {
+            if (MoveSpeed == 0.0f)
+                return null;
+
+            if (Mover == null)
+                return null;
+
             return new CEditorEntityPreview(World, this) { Mover = Mover };
         }
 
