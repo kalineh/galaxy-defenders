@@ -33,44 +33,6 @@ namespace Galaxy
         }
     }
 
-    public class CEditorEntityConverter
-        : TypeConverter
-    {
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
-        {
-            return CEditorConverter.GetPropertyDescriptors(value,
-                "Name"
-            );
-        }
-
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-    }
-
-    public class CEditorSpawnerEntityConverter
-        : ExpandableObjectConverter
-    {
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
-        {
-            return CEditorConverter.GetPropertyDescriptors(value,
-                //"StageElement",
-                "Type",
-                "Position",
-                "Mover",
-                "MoveSpeed",
-                "SpawnCount",
-                "SpawnInterval"
-            );
-        }
-
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-    }
-
     /* TODO: delete me, for reference only
      
     public class CEntityTypeConverter

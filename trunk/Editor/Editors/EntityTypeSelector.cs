@@ -31,27 +31,10 @@ namespace Galaxy
 
             private void InitializeComponent()
             {
-                foreach (Type type in CEditorEntityTypes.EntityTypeList)
+                foreach (Type type in CEditorEntityTypes.Types)
                 {
                     string typename = type.ToString().Substring("Galaxy.".Length);
                     this.Items.Add(typename);
-                }
-            }
-
-            /// <summary>
-            /// Generate from all assembly types.
-            /// Not currently used.
-            /// </summary>
-            private void AutoGenerateList()
-            {
-                Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
-                foreach (Type type in assembly.GetTypes())
-                {
-                    if (type.IsSubclassOf(typeof(CEntity)))
-                    {
-                        string typename = type.ToString().Substring("Galaxy.".Length);
-                        this.Items.Add(typename);
-                    }
                 }
             }
         }

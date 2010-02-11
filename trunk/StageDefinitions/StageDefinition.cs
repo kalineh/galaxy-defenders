@@ -2,6 +2,7 @@
 // StageDefinition.cs
 //
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -31,11 +32,13 @@ namespace Galaxy
             return stage_filename;
         }
 
+        //[Obsolete("replace time spawning with positional")]
         public void AddElement(int time, CStageElement element, object ignored_parameter_for_editor)
         {
             AddElement(time, element);
         }
 
+        //[Obsolete("replace time spawning with positional")]
         public void AddElement(int time, CStageElement element)
         {
             List<CStageElement> elements = GetOrCreateElementsAtTime(time);

@@ -25,8 +25,6 @@ namespace Galaxy
             Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/Turret"), Color.White);
             Health = 2.0f;
 
-            Console.WriteLine("CTurret():" + position.ToString());
-
             FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay);
             FireDamage = 1.0f;

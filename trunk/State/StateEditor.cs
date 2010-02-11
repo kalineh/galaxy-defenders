@@ -127,17 +127,8 @@ namespace Galaxy
                     {
                         if (Keyboard.GetState().IsKeyDown(Keys.LeftAlt) || left_alt_down)
                         {
-                            CSpawnerEntity element = new CSpawnerEntity()
-                            {
-                                Type = SpawnEntityType,
-                                Position = world,
-                                CustomMover = CMoverPresets.MoveDown(1.0f),
-                                SpawnCount = 1,
-                                SpawnTimer = new CSpawnTimerInterval(),
-                                SpawnPosition = new CSpawnPositionFixed() { Position = world },
-                            };
-
-                            CEditorSpawnerEntity entity = new CEditorSpawnerEntity(World, element);
+                            // TODO: function me: SpawnEntity()
+                            CEntity entity = SpawnEntity(world);
                             World.EntityAdd(entity);
                             NoSpawnTillRelease = true;
                         }
@@ -157,12 +148,13 @@ namespace Galaxy
 
                 if (SelectedEntity != null)
                 {
-                    // TODO: type fail :(
-                    CEditorSpawnerEntity spawner = SelectedEntity as CEditorSpawnerEntity;
-                    if (spawner != null)
+                    CEditorEntityBase editor_entity = SelectedEntity as CEditorEntityBase;
+
+                    // TODO: no support for non-editor entities?
+                    if (editor_entity != null)
                     {
-                        SelectedEntityPreview = new Editor.CEditorPreviewEntity(World, spawner, spawner.Mover);
-                        World.EntityAdd(SelectedEntityPreview);
+                        CEntity preview = editor_entity.GeneratePreviewEntity();
+                        World.EntityAdd(preview);
                     }
 
                     InteractionState = EditorInteractionState.Dragging;
@@ -180,6 +172,32 @@ namespace Galaxy
                 InteractionState = EditorInteractionState.Zooming;
                 System.Windows.Forms.Cursor.Hide();
             }
+        }
+
+        private CEntity SpawnEntity(Vector2 position)
+        {
+            CEditorEntityBase editor_entity = Activator.CreateInstance(SpawnEntityType, new object[] { World, position }) as CEditorEntityBase;
+            editor_entity.Physics.PositionPhysics.Position = position;
+            return editor_entity;
+
+
+            // special stuff
+
+            // TODO: proper spawning
+            //CSpawnerEntity element = new CSpawnerEntity()
+            //{
+                //Type = SpawnEntityType,
+                //Position = position,
+                //CustomMover = CMoverPresets.MoveDown(1.0f),
+                //SpawnCount = 1,
+                //SpawnTimer = new CSpawnTimerInterval(),
+                //SpawnPosition = new CSpawnPositionFixed() { Position = position },
+            //};
+
+            //CEditorSpawnerEntity entity = new CEditorSpawnerEntity(World, element);
+            //World.EntityAdd(entity);
+            //NoSpawnTillRelease = true;
+            //return entity;
         }
         
         public void UpdateInteractionDragging(Vector2 mouse, Vector2 delta, Vector2 world)
