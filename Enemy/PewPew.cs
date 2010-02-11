@@ -21,7 +21,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Enemy/PewPew"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/PewPew"), Color.White);
             Health = 8.0f;
 
             FireDelay = 3.0f;

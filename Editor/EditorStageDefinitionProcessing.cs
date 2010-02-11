@@ -13,83 +13,62 @@ namespace Galaxy
 {
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
 
-    namespace Editor
+    public class CStageGenerate
     {
-        public class CStageGenerate
+        public static void GenerateStageEntitiesFromDefinition(CWorld world, CStageDefinition definition)
         {
-            public static Dictionary<Type, Type> ElementToEditorEntityMapping = new Dictionary<Type, Type>()
-            {
-                { typeof(CStageElement), typeof(CEditorEntityUnknown) },
-                { typeof(CSpawnerEntity), typeof(CEditorEntitySpawnerEntity) },
-                // more
-            };
+            // TODO: there shouldnt be a ship really (replace with player spawn? (should always be center-bottom though really))
+            CShip ship = new CShip(world, CSaveData.GetCurrentProfile(), Vector2.Zero);
+            world.EntityAdd(ship);
 
-            public static Dictionary<Type, Type> EditorEntityToElementMapping = null;
-
-            static CStageGenerate()
+            foreach (KeyValuePair<int, List<CStageElement>> time_element in definition.Elements)
             {
-                EditorEntityToElementMapping = new Dictionary<Type, Type>();
-                foreach (KeyValuePair<Type, Type> kv in ElementToEditorEntityMapping)
+                foreach (CStageElement element in time_element.Value)
                 {
-                    EditorEntityToElementMapping.Add(kv.Value, kv.Key); 
+                    CEntity entity = GenerateEntity(world, time_element.Key, element);
+                    world.EntityAdd(entity);
                 }
             }
+        }
 
-            public static void GenerateStageEntitiesFromDefinition(CWorld world, CStageDefinition definition)
+        private static CEntity GenerateEntity(CWorld world, int time, CStageElement element)
+        {
+            Type src = element.GetType();
+            Type dst = CEditorEntityTypes.ElementToEditorEntityMapping[src]; 
+
+            if (dst == null)
             {
-                // TODO: there shouldnt be a ship really (replace with player spawn? (should always be center-bottom though really))
-                CShip ship = new CShip(world, CSaveData.GetCurrentProfile(), Vector2.Zero);
-                world.EntityAdd(ship);
-
-                foreach (KeyValuePair<int, List<CStageElement>> time_element in definition.Elements)
-                {
-                    foreach (CStageElement element in time_element.Value)
-                    {
-                        CEntity entity = GenerateEntity(world, time_element.Key, element);
-                        world.EntityAdd(entity);
-                    }
-                }
+                Console.WriteLine(String.Format("CStageGenerate.GenerateEntity(): Unhandled element type: {0}", src.Name));
+                return null;
             }
 
-            private static CEntity GenerateEntity(CWorld world, int time, CStageElement element)
+            CEditorEntityBase entity = Activator.CreateInstance(dst, new object[] { world, element }) as CEditorEntityBase;
+            return entity;
+        }
+
+        public static CStageDefinition GenerateDefinitionFromStageEntities(CWorld world, string name)
+        {
+            CStageDefinition result = new CStageDefinition(name);
+
+            // from EDITOR ENTITY to STAGE ELEMENT
+
+            var entities = from e in world.GetEntities() where e is CEditorEntityBase select e;
+            foreach (CEditorEntityBase entity in entities)
             {
-                Type src = element.GetType();
-                Type dst = ElementToEditorEntityMapping[src]; 
+                Type src = entity.GetType();
+                Type dst = CEditorEntityTypes.EditorEntityToElementMapping[src];
 
                 if (dst == null)
                 {
-                    Console.WriteLine(String.Format("CStageGenerate.GenerateEntity(): Unhandled element type: {0}", src.Name));
-                    return null;
+                    Console.WriteLine(String.Format("CStageGenerate.GenerateDefinitionsFromStageEntities(): Unhandled entity type: {0}", src.Name));
+                    continue;
                 }
 
-                CEditorEntityBase entity = Activator.CreateInstance(dst, new object[] { world, element }) as CEditorEntityBase;
-                return entity;
+                CStageElement element = entity.GenerateStageElement();
+                result.AddElement(0, element);
             }
 
-            public static CStageDefinition GenerateDefinitionFromStageEntities(CWorld world, string name)
-            {
-                CStageDefinition result = new CStageDefinition(name);
-
-                // from EDITOR ENTITY to STAGE ELEMENT
-
-                var entities = from e in world.GetEntities() where e is CEditorEntityBase select e;
-                foreach (CEditorEntityBase entity in entities)
-                {
-                    Type src = entity.GetType();
-                    Type dst = EditorEntityToElementMapping[src];
-
-                    if (dst == null)
-                    {
-                        Console.WriteLine(String.Format("CStageGenerate.GenerateDefinitionsFromStageEntities(): Unhandled entity type: {0}", src.Name));
-                        continue;
-                    }
-
-                    CStageElement element = entity.GenerateStageElement();
-                    result.AddElement(0, element);
-                }
-
-                return result;
-            }
+            return result;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = settings.Position;
             Physics.AnglePhysics.Rotation = settings.Rotation;
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, settings.TextureName), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, settings.TextureName), Color.White);
             Visual.TileX = settings.TileX;
             Visual.TileY = settings.TileY;
             Visual.AnimationSpeed = settings.AnimationSpeed;

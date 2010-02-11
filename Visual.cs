@@ -4,11 +4,29 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace Galaxy
 {
     public class CVisual
     {
+        public static CVisual MakeLabel(CWorld world, string text, Color color)
+        {
+            CVisual result = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color);
+            Vector2 size = result.GetDebugFont().MeasureString(text);
+            result.Scale = size + Vector2.One * 4.0f; ;
+            result.DebugText = text;
+            return result;
+        }
+
+        public static CVisual MakeLabel(CWorld world, Vector2 size, Color color)
+        {
+            return new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color) { Scale = size };
+        }
+
+        private static SpriteFont DebugFont { get; set; }
+
+        public CWorld World { get; set; }
         public int TileX { get; set; }
         public int TileY { get; set; }
         public int Frame { get { return (int)FrameCounter; } set { FrameCounter = (float)value; } }
@@ -19,9 +37,11 @@ namespace Galaxy
         public Color Color { get; set; }
         public float Alpha { get; set; }
         public float Depth { get; set; }
+        public string DebugText { get; set; }
 
-        public CVisual(Texture2D texture, Color color)
+        public CVisual(CWorld world, Texture2D texture, Color color)
         {
+            World = world;
             TileX = 1;
             TileY = 1;
             FrameCounter = 0.0f;
@@ -55,6 +75,32 @@ namespace Galaxy
             Color color = Color;
             color.A = (byte)(Alpha * 255.0f);
             sprite_batch.Draw(Texture, position, source, color, rotation, origin, Scale, SpriteEffects.None, Depth);
+
+            if (DebugText != null)
+            {
+                Vector2 size = GetDebugFont().MeasureString(DebugText);
+                Vector2 center = position - new Vector2(source.Center.X, source.Center.Y) * 0.5f - size * 0.5f;
+                Color text_color = Color.White;
+
+                // TODO: dont waste time on stuff like this (also endianness bad)
+                if (color.R > 200 && color.G > 200 && color.B > 200)
+                {
+                    uint packed = color.PackedValue;
+                    uint invert = ~packed;
+                    byte r = (byte)((packed & 0xFF000000) >> 24);
+                    byte g = (byte)((packed & 0x00FF0000) >> 16);
+                    byte b = (byte)((packed & 0x0000FF00) >>  8);
+                    text_color = new Color(r, g, b);
+                }
+
+                sprite_batch.DrawString(GetDebugFont(), DebugText, center, text_color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+            }
+        }
+
+        public SpriteFont GetDebugFont()
+        {
+            DebugFont = DebugFont ?? World.Game.Content.Load<SpriteFont>("Fonts/DefaultFont");
+            return DebugFont;
         }
 
         private void UpdateAnimation()

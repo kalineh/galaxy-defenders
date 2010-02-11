@@ -15,12 +15,12 @@ Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -248.0f,
-Y = -494.0f,
+X = -245.67f,
+Y = -496.33f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
+SpeedMultiplier = 0.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
@@ -29,8 +29,8 @@ Y = 1.0f,
 CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -248.0f,
-Y = -494.0f,
+X = -245.67f,
+Y = -496.33f,
 },
 });
 stage.AddElement(0, 
@@ -2608,6 +2608,29 @@ SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 102.36f,
 Y = -360.28f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CAsteroidField() {
+Type = typeof(Galaxy.CAsteroid),
+SpawnCount = 100,
+SpawnTimer = new Galaxy.CSpawnTimerRandom() {
+Frequency = 0.5f,
+IncreaseRate = 0.0f,
+},
+SpawnPosition = new Galaxy.CSpawnPositionRandom() {
+BasePosition = new Microsoft.Xna.Framework.Vector2() {
+X = 29.03f,
+Y = -1069.04f,
+},
+},
+CustomMover = null,
+CustomElement = new Galaxy.CSpawnerCustomAsteroid() {
+},
+SpawnRemaining = 0,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 29.03f,
+Y = -1069.04f,
 },
 });
 

@@ -15,6 +15,7 @@ namespace Galaxy
     {
         public static Dictionary<CSpawnerEntity, CSpawnerEntity> InitializationHack = new Dictionary<CSpawnerEntity, CSpawnerEntity>();
 
+        // TODO: we can remove these?
         [EditorAttribute(typeof(Editor.CEntityTypeSelector), typeof(UITypeEditor))]        
         public Type Type { get; set; }
         public int SpawnCount { get; set; }

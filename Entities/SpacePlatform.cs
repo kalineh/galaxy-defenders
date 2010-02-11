@@ -15,7 +15,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Decoration/SpacePlatform"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/SpacePlatform"), Color.White);
         }
 
         public override void Update()
@@ -34,7 +34,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Decoration/BigSpacePlatform"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/BigSpacePlatform"), Color.White);
         }
 
         public override void Update()
