@@ -119,6 +119,15 @@ namespace Galaxy
             {
                 grid.Invoke((Action)(() => grid.SelectedObject = selected));
             }
+
+            CEditorEntityBase editor_entity = selected as CEditorEntityBase;
+            if (editor_entity != null)
+            {
+                if (editor_entity.IsEditorDirty())
+                {
+                    grid.Invoke((Action)(() => grid.Refresh()));
+                }
+            }
         }
 
         /// <summary>

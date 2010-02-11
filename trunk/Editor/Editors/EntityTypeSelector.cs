@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
@@ -20,6 +21,21 @@ namespace Galaxy
         public class CEntityTypeSelectorControl 
             : ListBox
         {
+            // TODO: should we put this in the spawner entity?
+            public static List<Type> SpawnableEntityTypes = new List<Type>()
+            {
+                typeof(CAsteroid),
+                typeof(CBeard),
+                typeof(CPewPew),
+                typeof(CLaser),
+                typeof(CSinBall),
+                typeof(CTurret),
+                typeof(CBonus),
+                typeof(CBuilding),
+                typeof(CSpacePlatform),
+                typeof(CBigSpacePlatform),
+            };
+
             public Type Result = typeof(CEntity);
 
             public CEntityTypeSelectorControl()
@@ -31,7 +47,7 @@ namespace Galaxy
 
             private void InitializeComponent()
             {
-                foreach (Type type in CEditorEntityTypes.Types)
+                foreach (Type type in SpawnableEntityTypes)
                 {
                     string typename = type.ToString().Substring("Galaxy.".Length);
                     this.Items.Add(typename);
