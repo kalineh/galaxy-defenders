@@ -65,12 +65,9 @@ namespace Galaxy
         public CEditorEntitySpawnerEntity(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
-            Physics = new CPhysics();
             Type = type;
             CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
-            Type = type;
-            Position = position;
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
             SpawnCount = 1;
             SpawnInterval = 1.0f;
             Mover = CMoverPresets.MoveDown(1.0f);
@@ -87,7 +84,6 @@ namespace Galaxy
         {
             CSpawnerEntity spawner = element as CSpawnerEntity;
 
-            Type = Assembly.GetAssembly(typeof(CEntity)).GetType(spawner.Type.FullName);
             SpawnCount = spawner.SpawnCount;
             SpawnInterval = ((Galaxy.CSpawnTimerInterval)spawner.SpawnTimer).Interval;
 

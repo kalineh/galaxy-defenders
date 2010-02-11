@@ -33,7 +33,7 @@ namespace Galaxy
             : base(world, "Laser")
         {
             Physics = new CPhysics();
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
         }

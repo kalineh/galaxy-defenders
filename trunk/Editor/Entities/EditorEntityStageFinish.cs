@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
@@ -20,12 +21,17 @@ namespace Galaxy
         public CEditorEntityStageFinish(CWorld world, Vector2 position)
             : base(world, position)
         {
-            Physics = new CPhysics();
+            Visual = CVisual.MakeLabel(world, "Stage Finish", Color.Blue);
         }
 
         public CEditorEntityStageFinish(CWorld world, CStageElement element)
             : this(world, element.Position)
         {
+        }
+
+        public override CStageElement GenerateStageElement()
+        {
+            return new CStageFinish() { Position = Position };
         }
     }
 }

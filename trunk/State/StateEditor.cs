@@ -51,7 +51,7 @@ namespace Galaxy
         {
             Game = game;
             ClearStage();
-            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
+            CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
             SampleShip = World.GetNearestShip(Vector2.Zero);
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
@@ -208,10 +208,14 @@ namespace Galaxy
 
                 if (entity == null)
                 {
-                    SelectedEntities.Clear();
-                    InteractionState = EditorInteractionState.DragSelect;
-                    DragSelectStart = mouse;
-                    // TODO: return when functioned
+                    // TODO: add to selection (just ignore to avoid misclicks for now)
+                    if (!CInput.IsRawKeyDown(Keys.LeftShift))
+                    {
+                        SelectedEntities.Clear();
+                        InteractionState = EditorInteractionState.DragSelect;
+                        DragSelectStart = mouse;
+                        // TODO: return when functioned
+                    }
                 }
                 else
                 {
@@ -242,17 +246,7 @@ namespace Galaxy
                             SelectedEntities.Clear();
                             SelectedEntities.Add(entity);
 
-                            CEditorEntityBase editor_entity = entity as CEditorEntityBase;
-
-                            // TODO: no support for non-editor entities?
-                            if (editor_entity != null)
-                            {
-                                CEntity preview = editor_entity.GeneratePreviewEntity();
-                                if (preview != null)
-                                {
-                                    World.EntityAdd(preview);
-                                }
-                            }
+                            PreviewEntity(entity);
 
                             InteractionState = EditorInteractionState.DragEntity;
                             SelectedEntitiesOffset.Clear();
@@ -299,7 +293,34 @@ namespace Galaxy
             if (state.LeftButton == ButtonState.Released)
             {
                 InteractionState = EditorInteractionState.None;
+
                 SelectedEntities = World.GetEntitiesInBox(box).Where(e => e is CEditorEntityBase).ToList();
+                foreach (CEntity entity in SelectedEntities)
+                {
+                    PreviewEntity(entity);
+                }
+            }
+        }
+
+        public void PreviewAllEntities()
+        {
+            foreach (CEntity entity in World.GetEntities())
+            {
+                PreviewEntity(entity);
+            }
+        }
+
+        public void PreviewEntity(CEntity entity)
+        {
+            CEditorEntityBase editor_entity = entity as CEditorEntityBase;
+
+            if (editor_entity != null)
+            {
+                CEntity preview = editor_entity.GeneratePreviewEntity();
+                if (preview != null)
+                {
+                    World.EntityAdd(preview);
+                }
             }
         }
 
@@ -470,14 +491,14 @@ namespace Galaxy
         {
             ClearStage();
             Game.StageDefinition = definition;
-            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+            CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }
 
         public void UpdateStageDefinition()
         {
-            Game.StageDefinition = Editor.CStageGenerate.GenerateDefinitionFromStageEntities(World, "EditorStage");
+            Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, "EditorStage");
             ClearStage();
-            Editor.CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+            CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }
     }
 }

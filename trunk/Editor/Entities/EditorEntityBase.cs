@@ -31,6 +31,8 @@ namespace Galaxy
         public CEditorEntityBase(CWorld world, Vector2 position)
             : base(world, "EditorEntityBaseDynamic")
         {
+            Physics = new CPhysics();
+            Position = position;
         }
 
         /// <summary>

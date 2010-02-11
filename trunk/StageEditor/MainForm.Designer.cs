@@ -42,6 +42,7 @@
             this.EntityTreeTab = new System.Windows.Forms.TabPage();
             this.Game = new StageEditor.GameControl();
             this.EntityDeleteButton = new System.Windows.Forms.Button();
+            this.PreviewEntitiesButton = new System.Windows.Forms.Button();
             this.EntityTabs.SuspendLayout();
             this.EntityPropertyTab.SuspendLayout();
             this.EntityTreeTab.SuspendLayout();
@@ -180,11 +181,22 @@
             this.EntityDeleteButton.UseVisualStyleBackColor = true;
             this.EntityDeleteButton.Click += new System.EventHandler(this.EntityDeleteButton_Click);
             // 
+            // PreviewEntitiesButton
+            // 
+            this.PreviewEntitiesButton.Location = new System.Drawing.Point(1016, 617);
+            this.PreviewEntitiesButton.Name = "PreviewEntitiesButton";
+            this.PreviewEntitiesButton.Size = new System.Drawing.Size(75, 23);
+            this.PreviewEntitiesButton.TabIndex = 17;
+            this.PreviewEntitiesButton.Text = "&Preview All";
+            this.PreviewEntitiesButton.UseVisualStyleBackColor = true;
+            this.PreviewEntitiesButton.Click += new System.EventHandler(this.PreviewEntitiesButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 673);
+            this.Controls.Add(this.PreviewEntitiesButton);
             this.Controls.Add(this.EntityDeleteButton);
             this.Controls.Add(this.Game);
             this.Controls.Add(this.EntityTabs);
@@ -222,6 +234,7 @@
         private System.Windows.Forms.TabPage EntityTreeTab;
         private GameControl Game;
         private System.Windows.Forms.Button EntityDeleteButton;
+        private System.Windows.Forms.Button PreviewEntitiesButton;
     }
 }
 

@@ -21,7 +21,7 @@ namespace Galaxy
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             TextureBase = CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beard");
             TextureExposed = CContent.LoadTexture2D(world.Game, "Textures/Enemy/BeardExposed");
-            Visual = new CVisual(TextureBase, Color.White);
+            Visual = new CVisual(world, TextureBase, Color.White);
             Health = 8.0f;
         }
 

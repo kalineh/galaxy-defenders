@@ -105,5 +105,13 @@ namespace StageEditor
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             editor.DeleteSelectedEntities();
         }
+
+        private void PreviewEntitiesButton_Click(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.PreviewAllEntities();
+        }
     }
 }

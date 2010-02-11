@@ -12,11 +12,11 @@ namespace Galaxy
     {
         public StageEditor.GameControl GameControl { get; set; }
         public List<CEntity> PreviousSelectedEntities { get; set; }
-        public int PreviousSelectedEntitiesCount { get; set; }
 
         public EditorGame(StageEditor.GameControl game_control)
         {
             GameControl = game_control;
+            PreviousSelectedEntities = new List<CEntity>();
         }
 
         /// <summary>
@@ -120,11 +120,11 @@ namespace Galaxy
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
             List<CEntity> selected = editor.SelectedEntities;
-            if (selected != PreviousSelectedEntities || selected.Count != PreviousSelectedEntitiesCount)
+            int difference = selected.Except(PreviousSelectedEntities).Count();
+            if (difference > 0 || selected.Count != PreviousSelectedEntities.Count)
             {
                 grid.Invoke((Action)(() => grid.SelectedObjects = selected.ToArray()));
-                PreviousSelectedEntities = selected;
-                PreviousSelectedEntitiesCount = selected.Count;
+                PreviousSelectedEntities = selected.ToList();
             }
 
             /*

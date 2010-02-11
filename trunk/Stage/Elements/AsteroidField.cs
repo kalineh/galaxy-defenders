@@ -3,6 +3,7 @@
 //
 
 using Microsoft.Xna.Framework;
+using System.ComponentModel;
 
 namespace Galaxy
 {
@@ -66,6 +67,23 @@ namespace Galaxy
             asteroid.Visual.Scale *= bigger;
             asteroid.Cracks.Scale *= bigger;
             asteroid.HealthMax *= bigger * 3.0f;
+        }
+    }
+
+    public class CAsteroidField
+        : CSpawnerEntity
+    {
+        public CAsteroidField()
+        {
+            Type = typeof(CAsteroid);
+            SpawnPosition = new CSpawnPositionRandom();
+            SpawnTimer = new CSpawnTimerRandom() { Frequency = 0.001f, IncreaseRate = 0.0f };
+            CustomElement = new CSpawnerCustomAsteroid();
+        }
+
+        public override void Update(CWorld world)
+        {
+            base.Update(world);
         }
     }
 }

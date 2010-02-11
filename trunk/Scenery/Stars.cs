@@ -30,7 +30,7 @@ namespace Galaxy
         public CStars(CWorld world, Texture2D texture, float scale, float speed)
         {
             World = world;
-            Visual = new CVisual(texture, Color.White);
+            Visual = new CVisual(world, texture, Color.White);
             Scale = scale;
             Speed = Vector2.UnitY * speed;
             Stars = new List<Star>();

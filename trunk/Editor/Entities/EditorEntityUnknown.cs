@@ -45,7 +45,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), Color.Red);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), Color.Red);
             Visual.Scale = new Vector2(15.0f);
         }
 
