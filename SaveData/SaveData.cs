@@ -3,14 +3,11 @@
 //
 
 using System;
-using System.Threading;
-using System.IO;
-using System.Xml;
-using System.Linq;
-using System.Xml.Serialization;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework.Storage;
 
 namespace Galaxy

@@ -4,9 +4,7 @@
 
 using System;
 using System.IO;
-using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Storage;
 
 namespace Galaxy

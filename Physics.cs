@@ -2,7 +2,6 @@
 // Physics.cs
 //
 
-using System;
 using Microsoft.Xna.Framework;
 
 // TODO: infinitismal float handling

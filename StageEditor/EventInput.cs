@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace EventInput
 {
-    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
-    using WinKeys = System.Windows.Forms.Keys;
     using WinPoint = System.Drawing.Point;
-    using XnaPoint = Microsoft.Xna.Framework.Point;
+    using XnaKeys = Microsoft.Xna.Framework.Input.Keys;
 
     public class CharacterEventArgs : EventArgs
     {

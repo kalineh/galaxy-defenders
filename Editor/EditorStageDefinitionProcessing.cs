@@ -4,23 +4,11 @@
 
 // TODO: think of a better name for this file
 
-using System;
-using System.Globalization;
-using System.ComponentModel;
-using System.IO;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Reflection;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    using WinPoint = System.Drawing.Point;
-    using XnaPoint = Microsoft.Xna.Framework.Point;
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
 
     namespace Editor
@@ -40,7 +28,7 @@ namespace Galaxy
                         // TODO: some nice generation of editor entity types for stage elements?
                         if (element.GetType() == typeof(Galaxy.CSpawnerEntity))
                         {
-                            Editor.CSpawnerEntity entity = new Editor.CSpawnerEntity(world, element as Galaxy.CSpawnerEntity);
+                            CEditorSpawnerEntity entity = new CEditorSpawnerEntity(world, element as Galaxy.CSpawnerEntity);
                             world.EntityAdd(entity);
                         }
                         else
@@ -60,9 +48,9 @@ namespace Galaxy
                 CStageDefinition result = new CStageDefinition(name);
 
                 // TODO: how can we handle all editor entity types well?
-                foreach (CEntity entity in world.GetEntitiesOfType(typeof(Editor.CSpawnerEntity)))
+                foreach (CEntity entity in world.GetEntitiesOfType(typeof(CEditorSpawnerEntity)))
                 {
-                    Editor.CSpawnerEntity spawner = entity as Editor.CSpawnerEntity;
+                    CEditorSpawnerEntity spawner = entity as CEditorSpawnerEntity;
 
                     if (spawner != null)
                     {

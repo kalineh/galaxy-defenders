@@ -2,7 +2,6 @@
 // MoverFixedVelocity.cs
 //
 
-using System;
 using Microsoft.Xna.Framework;
 
 namespace Galaxy
