@@ -12,11 +12,13 @@ namespace Galaxy
     public class CEditorEntityPreview
         : CEntity
     {
+        public CEntity Parent { get; set; }
         private Vector2 BasePosition { get; set; }
 
         public CEditorEntityPreview(CWorld world, CEntity parent)
             : base(world, "EditorEntityPreview")
         {
+            Parent = parent;
             Physics = new CPhysics();
             BasePosition = parent.Physics.PositionPhysics.Position;
             Physics.PositionPhysics.Position = BasePosition;

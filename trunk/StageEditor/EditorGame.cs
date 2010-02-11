@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
@@ -9,6 +11,8 @@ namespace Galaxy
         : Galaxy.CGalaxy
     {
         public StageEditor.GameControl GameControl { get; set; }
+        public List<CEntity> PreviousSelectedEntities { get; set; }
+        public int PreviousSelectedEntitiesCount { get; set; }
 
         public EditorGame(StageEditor.GameControl game_control)
         {
@@ -66,7 +70,8 @@ namespace Galaxy
             Type type = e.Node.Tag as Type;
             CEditorEntityBase entity = Activator.CreateInstance(type, new object[] { editor.World, position }) as CEditorEntityBase;
             editor.World.EntityAdd(entity);
-            editor.SelectedEntity = entity;
+            editor.SelectedEntities.Clear();
+            editor.SelectedEntities.Add(entity);
 
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
@@ -114,13 +119,16 @@ namespace Galaxy
             // Update selection.
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
-            CEntity selected = editor.SelectedEntity;
-            if (selected != grid.SelectedObject)
+            List<CEntity> selected = editor.SelectedEntities;
+            if (selected != PreviousSelectedEntities || selected.Count != PreviousSelectedEntitiesCount)
             {
-                grid.Invoke((Action)(() => grid.SelectedObject = selected));
+                grid.Invoke((Action)(() => grid.SelectedObjects = selected.ToArray()));
+                PreviousSelectedEntities = selected;
+                PreviousSelectedEntitiesCount = selected.Count;
             }
 
-            CEditorEntityBase editor_entity = selected as CEditorEntityBase;
+            /*
+             * CEditorEntityBase editor_entity = selected as CEditorEntityBase;
             if (editor_entity != null)
             {
                 if (editor_entity.IsEditorDirty())
@@ -128,6 +136,7 @@ namespace Galaxy
                     grid.Invoke((Action)(() => grid.Refresh()));
                 }
             }
+             */
         }
 
         /// <summary>

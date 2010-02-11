@@ -150,6 +150,21 @@ namespace Galaxy
             return Entities.Where(entity => entity.GetType() == type);
         }
 
+        public IEnumerable<CEntity> GetEntitiesInBox(CollisionAABB box)
+        {
+            List<CEntity> results = new List<CEntity>();
+
+            foreach (CEntity entity in Entities)
+            {
+                // TODO: dont create so many objects
+                CollisionCircle collide = new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                if (collide.Intersects(box))
+                    results.Add(entity);
+            }
+
+            return results;
+        }
+
         public CEntity GetEntityAtPosition(Vector2 position)
         {
             Collision find = new CollisionCircle(position, 1.0f);

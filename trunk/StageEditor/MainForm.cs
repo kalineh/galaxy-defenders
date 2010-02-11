@@ -103,8 +103,7 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
-            editor.World.EntityDelete(editor.SelectedEntity);
-            editor.DeleteSelectedEntity();
+            editor.DeleteSelectedEntities();
         }
     }
 }
