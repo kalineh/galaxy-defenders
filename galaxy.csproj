@@ -95,12 +95,15 @@
     <Compile Include="Editor\Converters\EditorConverters.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
     <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorStageElementGeneration.cs" />
+    <Compile Include="Editor\Entities\EditorEntityBase.cs" />
+    <Compile Include="Editor\Entities\EditorEntityStageFinish.cs" />
     <Compile Include="Editor\Entities\EditorEntityTypes.cs" />
-    <Compile Include="Editor\Entities\EditorPreviewEntity.cs" />
-    <Compile Include="Editor\Entities\EditorUnknownEntity.cs" />
+    <Compile Include="Editor\Entities\EditorEntityPreview.cs" />
+    <Compile Include="Editor\Entities\EditorEntityUnknown.cs" />
     <Compile Include="Editor\StageSerializer.cs" />
     <Compile Include="Editor\Editor.cs" />
-    <Compile Include="Editor\Entities\EditorSpawnerEntity.cs">
+    <Compile Include="Editor\Entities\EditorEntitySpawnerEntity.cs">
     </Compile>
     <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
     <Compile Include="Layers.cs" />
@@ -215,6 +218,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="galaxy_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

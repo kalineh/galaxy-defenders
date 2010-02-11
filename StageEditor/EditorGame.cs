@@ -28,17 +28,19 @@ namespace Galaxy
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             TreeView tree = form.GetEntityTreeView();
 
-            TreeNode entity_spawner = new TreeNode("EntitySpawner");
+            //
+            // Entities
+            //
+            TreeNode entities = new TreeNode("Elements");
 
             // TODO: refactor to general area (with entity dropdown stuff)
-            foreach (string name in Editor.CEditorEntityTypes.ToNames())
+            foreach (Type type in CEditorEntityTypes.Types)
             {
-                entity_spawner.Nodes.Add(name);
+                entities.Nodes.Add(new TreeNode() { Text = type.Name, Tag = type });
             }
 
-            tree.Nodes.Add(entity_spawner);
-
-            entity_spawner.Expand();
+            tree.Nodes.Add(entities);
+            entities.Expand();
 
             tree.NodeMouseClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseClick);
             tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);
@@ -51,9 +53,7 @@ namespace Galaxy
             if (editor == null)
                 return;
 
-            string typename = "Galaxy." + e.Node.Text;
-            Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(typename);
-            editor.SpawnEntityType = type;
+            editor.SpawnEntityType = e.Node.Tag as Type;
         }
 
         void EntityTreeNodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -62,31 +62,15 @@ namespace Galaxy
             if (editor == null)
                 return;
 
-            string typename = "Galaxy." + e.Node.Text;
-            Type type = Assembly.GetAssembly(typeof(CEntity)).GetType(typename);
-
             Vector3 position = editor.World.GameCamera.GetCenter();
-
-            CSpawnerEntity element = new CSpawnerEntity()
-            {
-                Type = type,
-                Position = position.ToVector2(),
-                CustomMover = CMoverPresets.MoveDown(1.0f),
-                SpawnCount = 1,
-                SpawnTimer = new CSpawnTimerInterval(),
-                SpawnPosition = new CSpawnPositionFixed() { Position = position.ToVector2() },
-            };
-
-            CEditorSpawnerEntity entity = new CEditorSpawnerEntity(editor.World, element);
-
-            // actual entity gen
-            //CEntity entity = Activator.CreateInstance(type, new object[] { editor.World, new Vector2(300.0f, 300.0f) }) as CEntity;
-
+            Type type = e.Node.Tag as Type;
+            CEditorEntityBase entity = Activator.CreateInstance(type, new object[] { editor.World, position }) as CEditorEntityBase;
             editor.World.EntityAdd(entity);
+            editor.SelectedEntity = entity;
 
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
             PropertyGrid grid = form.GetEntityPropertyGrid();
-            editor.SelectedEntity = entity;
+            grid.SelectedObject = entity;
         }
 
         /// <summary>

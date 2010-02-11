@@ -157,7 +157,7 @@ namespace Galaxy
             foreach (CEntity entity in Entities)
             {
                 // TODO: not this hack :|
-                if (entity.GetType() == typeof(Editor.CEditorPreviewEntity))
+                if (entity.GetType() == typeof(CEditorEntityPreview))
                     continue;
 
                 if (entity.Physics == null)
@@ -180,7 +180,7 @@ namespace Galaxy
             foreach (CEntity entity in Entities)
             {
                 // TODO: not this hack :|
-                if (entity.GetType() == typeof(Editor.CEditorPreviewEntity))
+                if (entity.GetType() == typeof(CEditorEntityPreview))
                     continue;
 
                 if (entity.Physics == null)
