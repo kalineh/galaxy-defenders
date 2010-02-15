@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
@@ -45,9 +46,32 @@ namespace Galaxy
             elements.Add(element);
         }
 
+        //[Obsolete("replace time spawning with positional")]
         public bool HasElementsAtTime(int time)
         {
             return Elements.ContainsKey(time);
+        }
+
+        private bool ShouldActivateElement(Vector2 previous, Vector2 current, CStageElement element)
+        {
+            return element.Position.Y < previous.Y && element.Position.Y > current.Y;
+        }
+
+        public List<CStageElement> GetNewElements(Vector2 previous, Vector2 current)
+        {
+            // TODO: sort elements based on y?
+            // TODO: not create a list every frame
+            List<CStageElement> results = new List<CStageElement>();
+            foreach (KeyValuePair<int, List<CStageElement>> element in Elements)
+            {
+                foreach (CStageElement item in element.Value)
+                {
+                    if (ShouldActivateElement(previous, current, item))
+                        results.Add(item);
+                }
+            }
+
+            return results;
         }
 
         public List<CStageElement> GetOrCreateElementsAtTime(int time)
@@ -59,7 +83,6 @@ namespace Galaxy
 
             return Elements[time];
         }
-
     }
 }
 

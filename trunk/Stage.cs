@@ -3,6 +3,7 @@
 //
 
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
@@ -11,24 +12,24 @@ namespace Galaxy
         public CWorld World { get; private set; }
         public CStageDefinition Definition { get; private set; }
         public List<CStageElement> ActiveElements { get; private set; }
-        private int Frame { get; set; }
         public float ScrollSpeed { get; set; }
+        public Vector2 PreviousCameraPosition { get; set; }
 
         public CStage(CWorld world, CStageDefinition definition)
         {
             World = world;
             Definition = definition;
             ActiveElements = new List<CStageElement>();
-            Frame = 0;
         }
 
         public void Start()
         {
-            Frame = 0;
+            PreviousCameraPosition = Vector2.Zero;
         }
 
         public void Finish()
         {
+            ActiveElements.Clear();
         }
 
         public void Update()
@@ -38,15 +39,15 @@ namespace Galaxy
             ActiveElements.ForEach(element => element.Update(World));
             ActiveElements.RemoveAll(element => element.IsExpired());
 
-            Frame += 1;
+            PreviousCameraPosition = World.GameCamera.GetSpawnBorderLine();
         }
 
         private void ActivateElements()
         {
-            if (!Definition.HasElementsAtTime(Frame))
-                return;
+            Vector2 current = World.GameCamera.GetSpawnBorderLine();
+            Vector2 previous = PreviousCameraPosition;
 
-            foreach (CStageElement element in Definition.GetOrCreateElementsAtTime(Frame))
+            foreach (CStageElement element in Definition.GetNewElements(previous, current))
             {
                 ActiveElements.Add(element);
             }

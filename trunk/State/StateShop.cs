@@ -101,7 +101,7 @@ namespace Galaxy
         private void RefreshSampleDisplay()
         {
             EmptyWorld.Stop();
-            SampleShip = new CShip(EmptyWorld, WorkingProfile, new Vector2(200.0f, 400.0f));
+            SampleShip = new CShip(EmptyWorld, WorkingProfile, Game.PlayerSpawnPosition);
         }
 
         private void DrawMenuBaseErrata()

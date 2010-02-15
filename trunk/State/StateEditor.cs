@@ -75,6 +75,10 @@ namespace Galaxy
 
             UpdateMouse();
 
+            CShip player = World.GetNearestShip(Vector2.Zero);
+            if (player != null)
+                Game.PlayerSpawnPosition = player.Physics.PositionPhysics.Position;
+
             World.GameCamera.Update();
             Stars.Update();
             World.UpdateEntities();
@@ -388,16 +392,15 @@ namespace Galaxy
             }
 
             float apply = delta.Y * 0.005f;
-            Vector3 detransform = world.ToVector3() / World.GameCamera.Zoom;
-            Vector3 pre = detransform * World.GameCamera.Zoom;
+            //Vector3 detransform = world.ToVector3() / World.GameCamera.Zoom;
+            //Vector3 pre = detransform * World.GameCamera.Zoom;
             World.GameCamera.Zoom += apply;
-            Vector3 post = detransform * World.GameCamera.Zoom;
+            World.GameCamera.Zoom = MathHelper.Clamp(World.GameCamera.Zoom, 0.5f, 1.75f);
+            //Vector3 post = detransform * World.GameCamera.Zoom;
 
             // close, but curves inward weird, need something else
-            //Vector3 offset = world.ToVector3() - World.GameCamera.Position;
-            //Vector3 offset = World.GameCamera.Position - world.ToVector3();
-            Vector3 offset = post - pre;
-            World.GameCamera.Position += offset;
+            //Vector3 offset = post - pre;
+            //World.GameCamera.Position += offset;
         }
 
         public bool IsInGameViewport(Vector2 mouse)

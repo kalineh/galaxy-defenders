@@ -8,141 +8,6 @@ public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("EditorStage");
 stage.AddElement(0, 
 new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSpacePlatform),
-SpawnCount = 1,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -245.67f,
-Y = -496.33f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -245.67f,
-Y = -496.33f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CTurret),
-SpawnCount = 1,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -245.0f,
-Y = -493.0f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -245.0f,
-Y = -493.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSpacePlatform),
-SpawnCount = 1,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -360.0f,
-Y = -487.0f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -360.0f,
-Y = -487.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSpacePlatform),
-SpawnCount = 1,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -358.0f,
-Y = -594.0f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -358.0f,
-Y = -594.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CSpacePlatform),
-SpawnCount = 1,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -248.0f,
-Y = -601.0f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 0.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -248.0f,
-Y = -601.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
 Type = typeof(Galaxy.CBigSpacePlatform),
 SpawnCount = 1,
 SpawnTimer = new Galaxy.CSpawnTimerInterval() {
@@ -2121,12 +1986,12 @@ Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -125.69f,
-Y = -5420.53f,
+X = -123.69f,
+Y = -5418.53f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
+SpeedMultiplier = 1.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = -1.0f,
@@ -2135,8 +2000,8 @@ Y = -1.0f,
 CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -125.69f,
-Y = -5420.53f,
+X = -123.69f,
+Y = -5418.53f,
 },
 });
 stage.AddElement(0, 
@@ -2149,7 +2014,7 @@ Interval = 1.0f,
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 159.22f,
-Y = -5424.31f,
+Y = -5422.31f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
@@ -2163,7 +2028,7 @@ CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 159.22f,
-Y = -5424.31f,
+Y = -5422.31f,
 },
 });
 stage.AddElement(0, 
@@ -2283,8 +2148,8 @@ Interval = 1.0f,
 },
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 98.84f,
-Y = -5428.08f,
+X = 100.84f,
+Y = -5426.08f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
@@ -2297,8 +2162,8 @@ Y = -1.0f,
 CustomElement = null,
 SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 98.84f,
-Y = -5428.08f,
+X = 100.84f,
+Y = -5426.08f,
 },
 });
 stage.AddElement(0, 
@@ -2515,122 +2380,6 @@ SpawnRemaining = 0,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 46.01f,
 Y = -5480.91f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 2,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -39.12f,
-Y = -355.99f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 3.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -39.12f,
-Y = -355.99f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 2,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -183.26f,
-Y = -352.96f,
-},
-},
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.3f,
-0.0f,
-},
-VelocityLerpRate = 0.03f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -183.26f,
-Y = -352.96f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CSpawnerEntity() {
-Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 2,
-SpawnTimer = new Galaxy.CSpawnTimerInterval() {
-Interval = 1.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 102.36f,
-Y = -360.28f,
-},
-},
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 3.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-},
-CustomElement = null,
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 102.36f,
-Y = -360.28f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CAsteroidField() {
-Type = typeof(Galaxy.CAsteroid),
-SpawnCount = 100,
-SpawnTimer = new Galaxy.CSpawnTimerRandom() {
-Frequency = 0.5f,
-IncreaseRate = 0.0f,
-},
-SpawnPosition = new Galaxy.CSpawnPositionRandom() {
-BasePosition = new Microsoft.Xna.Framework.Vector2() {
-X = 29.03f,
-Y = -1069.04f,
-},
-},
-CustomMover = null,
-CustomElement = new Galaxy.CSpawnerCustomAsteroid() {
-},
-SpawnRemaining = 0,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 29.03f,
-Y = -1069.04f,
 },
 });
 
