@@ -22,6 +22,7 @@ namespace Galaxy
         public int GameFrame { get; set; }
         public CState State { get; set; }
         public CStageDefinition StageDefinition { get; set; }
+        public Vector2 PlayerSpawnPosition { get; set; }
 
         public CGalaxy()
         {
@@ -49,6 +50,9 @@ namespace Galaxy
 
             // default
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
+
+            // TODO: resolution
+            PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
         }
 
         public void SwitchGraphicsDevice(GraphicsDevice graphics_device)

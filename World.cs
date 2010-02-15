@@ -33,6 +33,7 @@ namespace Galaxy
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
             GameCamera = new CCamera(game);
+            GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
         }
 
         // TODO: stage definition param
@@ -46,7 +47,7 @@ namespace Galaxy
             Entities = new List<CEntity>();
             // TODO: load ship from profile
             SProfile profile = CSaveData.GetCurrentProfile();
-            CShip ship = new CShip(this, profile, new Vector2(0.0f, 400.0f));
+            CShip ship = new CShip(this, profile, Game.PlayerSpawnPosition);
             Entities.Add(ship);
 
             // TODO: cleanup this horrible hack

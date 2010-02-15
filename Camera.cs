@@ -16,6 +16,7 @@ namespace Galaxy
         public Vector3 LookAt { get; set; }
         public float Rotation { get; set; }
         public float Zoom { get; set; }
+        public float Border { get; set; }
 
         public Matrix ViewMatrix { get; private set; }
         public Matrix ProjectionMatrix { get; private set; }
@@ -28,6 +29,7 @@ namespace Galaxy
             Position = Vector3.Zero;
             LookAt = Vector3.UnitZ * -1.0f;
             Zoom = 1.0f;
+            Border = 150.0f;
 
             float aspect_ratio = (float)game.GraphicsDevice.Viewport.Width / (float)game.GraphicsDevice.Viewport.Height;
 
@@ -130,6 +132,12 @@ namespace Galaxy
             Vector2 br = GetBottomRight();
 
             return position.Y > br.Y + buffer;
+        }
+
+        public Vector2 GetSpawnBorderLine()
+        {
+            // TODO: resolution
+            return Position.ToVector2() + new Vector2(0.0f, -300.0f + -Border);
         }
     }
 }
