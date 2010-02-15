@@ -141,6 +141,11 @@ namespace Galaxy
             if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
             if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right) ) { force.X += Speed; }
 
+            force += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
+
+            if (force.Length() > 0.0f)
+                force = force.Normal() * Math.Min(force.Length(), Speed);
+
             Physics.PositionPhysics.Velocity += force;
 
             if (World.Game.Input.IsKeyPressed(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
