@@ -6,86 +6,52 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Linq;
 
 namespace Galaxy
 {
-    public static class CEditorConverter
+    public class CEditorConverterGenerated
+        : ExpandableObjectConverter
     {
-        public static PropertyDescriptorCollection GetPropertyDescriptors(object value, params string[] names)
+        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
         {
-            // TODO: there -MUST- be an easier way to do this :|
-            // TODO: just get property descriptors from a named list
-            List<string> namelist = new List<string>(names);
-            PropertyDescriptorCollection descriptors = TypeDescriptor.GetProperties(value);
-            PropertyDescriptor[] array = new PropertyDescriptor[descriptors.Count];
-            descriptors.CopyTo(array, 0);
-            IEnumerable<PropertyDescriptor> enumerable = array.AsEnumerable<PropertyDescriptor>();
-            List<PropertyDescriptor> properties = new List<PropertyDescriptor>(enumerable);
+            List<string> names = new List<string>();
+            Type type = value.GetType();
+            PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo property in properties)
+            {
+                object[] attribs = property.GetCustomAttributes(typeof(CategoryAttribute), true);
+                if (attribs.Count() == 0)
+                    continue;
+                names.Add(property.Name);
+            }
 
-            PropertyDescriptorCollection results = new PropertyDescriptorCollection(
-                properties.Where(p => 
-                    namelist.Exists(i => i == p.Name)
-                ).ToArray()
-            );
-
-            return results;
-        }
-    }
-
-    /* TODO: delete me, for reference only
-     
-    public class CEntityTypeConverter
-        : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            if (sourceType == typeof(String))
-                return true;
-
-            return base.CanConvertFrom(context, sourceType);
+            return CEditorConverter.GetPropertyDescriptors(value, names.ToArray());
         }
 
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            return base.ConvertFrom(context, culture, value);
-        }
-
-        public new PropertyDescriptorCollection GetProperties(object value)
-        {
-            return new PropertyDescriptorCollection(new PropertyDescriptor[] { });
-        }
-
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return base.CanConvertTo(context, destinationType);
-        }
-
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
-        public new ICollection GetStandardValues()
-        {
-            return new List<string>() { "one", "two", "three" };
-        }
     }
 
-    [TypeConverter(typeof(CSpawnerEntity))]
-    public class CEditorSpawnerEntityConverter
-        : TypeConverter
+    public static class CEditorConverter
     {
-        public override bool CanConvertFrom(ITypeDescriptorContext context,
-           Type sourceType)
+        // TODO: move me somewhere goodly
+        public static IEnumerable<T> MakeEnumerable<T>(IEnumerable collection)
         {
-            Console.WriteLine(String.Format("CanConvert(): {0}", sourceType.ToString()));
-            return base.CanConvertFrom(context, sourceType);
+            foreach (object x in collection)
+                if (x is T)
+                    yield return (T)x;
         }
 
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        public static PropertyDescriptorCollection GetPropertyDescriptors(object value, params string[] names)
         {
-            return base.ConvertTo(context, culture, value, destinationType);
+            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(value);
+            IEnumerable<PropertyDescriptor> enumerator = MakeEnumerable<PropertyDescriptor>(properties);
+            var filtered = from p in enumerator where names.Contains(p.Name) select p;
+            return new PropertyDescriptorCollection( filtered.ToArray() );
         }
     }
-    */
 }

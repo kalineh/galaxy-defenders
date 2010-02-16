@@ -20,9 +20,10 @@ namespace Galaxy
         public static Dictionary<Type, Type> ElementToEditorEntityMapping = new Dictionary<Type, Type>()
         {
             { typeof(CStageElement), typeof(CEditorEntityUnknown) },
-            { typeof(CSpawnerEntity), typeof(CEditorEntitySpawnerEntity) },
-            { typeof(CStageFinish), typeof(CEditorEntityStageFinish) },
-            { typeof(CAsteroidField), typeof(CEditorEntityAsteroidField) },
+            { typeof(CStageElementSpawnerEntity), typeof(CEditorEntitySpawnerEntity) },
+            { typeof(CStageElementSpawnerEnemy), typeof(CEditorEntitySpawnerEnemy) },
+            { typeof(CStageElementStageFinish), typeof(CEditorEntityStageFinish) },
+            { typeof(CStageElementAsteroidField), typeof(CEditorEntityAsteroidField) },
             // more
         };
 

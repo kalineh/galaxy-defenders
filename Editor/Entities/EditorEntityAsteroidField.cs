@@ -1,5 +1,5 @@
 ﻿//
-// EditorEntitySpawnerEntity.cs
+// EditorEntityAsteroidField.cs
 //
 
 using System;
@@ -13,9 +13,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Galaxy
 {
     /// <summary>
-    /// Editor entity for CSpawnerEntity.
+    /// Editor entity for CEditorEntityAsteroidField
     /// </summary>
-    //[TypeConverter(typeof(CEditorSpawnerEntityConverter))]
+    [TypeConverter(typeof(CEditorConverterGenerated))]
     public class CEditorEntityAsteroidField
         : CEditorEntityBase
     {
@@ -44,10 +44,10 @@ namespace Galaxy
         }
 
         public CEditorEntityAsteroidField(CWorld world, CStageElement element)
-            : this(world, ((CAsteroidField)element).Type, element.Position)
+            : this(world, ((CStageElementAsteroidField)element).Type, element.Position)
         {
             // load from element data
-            CAsteroidField field = element as CAsteroidField;
+            CStageElementAsteroidField field = element as CStageElementAsteroidField;
 
             SpawnCount = field.SpawnCount;
             Frequency = ((CSpawnTimerRandom)field.SpawnTimer).Frequency;
@@ -56,7 +56,7 @@ namespace Galaxy
 
         public override CStageElement GenerateStageElement()
         {
-            CAsteroidField result = new CAsteroidField()
+            CStageElementAsteroidField result = new CStageElementAsteroidField()
             {
                 Type = typeof(CAsteroid),
                 Position = Position,

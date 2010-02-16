@@ -29,9 +29,10 @@ namespace Galaxy
 
         public override Vector2 GetSpawnPosition(CWorld world)
         {
-            Viewport viewport = world.Game.GraphicsDevice.Viewport;
-            Vector2 spawn_base = new Vector2(viewport.X, viewport.Y - 50.0f);
-            Vector2 spawn_random = new Vector2(world.Random.NextFloat() * viewport.Width - viewport.Width * 0.5f, world.Random.NextFloat() * -50.0f);
+            Vector2 camera = world.GameCamera.Position.ToVector2();
+            Vector2 size = world.GameCamera.GetBottomRight() - world.GameCamera.GetTopLeft();
+            Vector2 spawn_base = new Vector2(camera.X, camera.Y - size.Y - 50.0f);
+            Vector2 spawn_random = new Vector2(world.Random.NextFloat() * size.X - size.X * 0.5f, world.Random.NextFloat() * -50.0f);
             return BasePosition + spawn_base + spawn_random;
         }
     };
