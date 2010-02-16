@@ -12,33 +12,9 @@ using Microsoft.Xna.Framework;
 namespace Galaxy
 {
     /// <summary>
-    /// Converter for CEditorSpawnerEntity
+    /// Editor entity for CStageElementSpawnerEntity.
     /// </summary>
-    public class CEditorSpawnerEntityConverter
-        : ExpandableObjectConverter
-    {
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
-        {
-            return CEditorConverter.GetPropertyDescriptors(value,
-                "Type",
-                "Position",
-                "Mover",
-                "MoveSpeed",
-                "SpawnCount",
-                "SpawnInterval"
-            );
-        }
-
-        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// Editor entity for CSpawnerEntity.
-    /// </summary>
-    [TypeConverter(typeof(CEditorSpawnerEntityConverter))]
+    [TypeConverter(typeof(CEditorConverterGenerated))]
     public class CEditorEntitySpawnerEntity
         : CEditorEntityBase
     {
@@ -53,12 +29,6 @@ namespace Galaxy
         [CategoryAttribute("Mover")]
         public float MoveSpeed { get; set; }
 
-        [CategoryAttribute("Spawn")]
-        public int SpawnCount { get; set; }
-
-        [CategoryAttribute("Spawn")]
-        public float SpawnInterval { get; set; }
-
         // TODO: replace me and use positional system in-game
         public int StartTime { get; set; }
 
@@ -68,8 +38,6 @@ namespace Galaxy
             Type = type;
             CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
-            SpawnCount = 1;
-            SpawnInterval = 1.0f;
             Mover = CMoverPresets.MoveDown(1.0f);
             MoveSpeed = 1.0f;
         }
@@ -80,12 +48,9 @@ namespace Galaxy
         }
 
         public CEditorEntitySpawnerEntity(CWorld world, CStageElement element)
-            : this(world, ((CSpawnerEntity)element).Type, element.Position)
+            : this(world, ((CStageElementSpawnerEntity)element).Type, element.Position)
         {
-            CSpawnerEntity spawner = element as CSpawnerEntity;
-
-            SpawnCount = spawner.SpawnCount;
-            SpawnInterval = ((Galaxy.CSpawnTimerInterval)spawner.SpawnTimer).Interval;
+            CStageElementSpawnerEntity spawner = element as CStageElementSpawnerEntity;
 
             // TODO: not this hack
             Mover = spawner.CustomMover;
@@ -113,13 +78,11 @@ namespace Galaxy
 
         public override CStageElement GenerateStageElement()
         {
-            Galaxy.CSpawnerEntity result = new Galaxy.CSpawnerEntity()
+            Galaxy.CStageElementSpawnerEntity result = new CStageElementSpawnerEntity()
             {
                 Type = Type,
                 Position = Position,
                 SpawnPosition = new CSpawnPositionFixed() { Position = Position },
-                SpawnCount = SpawnCount,
-                SpawnTimer = new CSpawnTimerInterval() { Interval = SpawnInterval },
                 CustomMover = Mover,
                 CustomElement = null,
             };

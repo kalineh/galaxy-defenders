@@ -13,6 +13,7 @@ namespace Galaxy
     /// <summary>
     /// Editor entity base class.
     /// </summary>
+    [TypeConverter(typeof(CEditorConverterGenerated))]
     public class CEditorEntityBase
         : CEntity
     {

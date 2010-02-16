@@ -1,11 +1,11 @@
 ﻿//
-// StageFinish.cs
+// StageElementStageFinish.cs
 //
 
 
 namespace Galaxy
 {
-    public class CStageFinish
+    public class CStageElementStageFinish
         : CStageElement
     {
         public override void Update(CWorld world)

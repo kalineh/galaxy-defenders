@@ -12,19 +12,6 @@ namespace Galaxy
     {
         public class CStagePresets
         {
-            public static CSpawnerEntity MakeWave(Type type, int count, CSpawnPosition position, CSpawnTimer timer, CMover mover)
-            {
-                return new CSpawnerEntity()
-                {
-                    Type = type,
-                    SpawnCount = count,
-                    SpawnPosition = position,
-                    SpawnTimer = timer,
-                    CustomMover = mover,
-                    CustomElement = null,
-                };
-            }
-
             public static CSpawnPositionFixed PositionTopCenter()
             {
                 return new CSpawnPositionFixed()

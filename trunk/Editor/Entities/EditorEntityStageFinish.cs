@@ -14,7 +14,7 @@ namespace Galaxy
     /// <summary>
     /// Editor entity for CStageFinish
     /// </summary>
-    [TypeConverter(typeof(CEditorSpawnerEntityConverter))]
+    [TypeConverter(typeof(CEditorConverterGenerated))]
     public class CEditorEntityStageFinish
         : CEditorEntityBase
     {
@@ -31,7 +31,7 @@ namespace Galaxy
 
         public override CStageElement GenerateStageElement()
         {
-            return new CStageFinish() { Position = Position };
+            return new CStageElementStageFinish() { Position = Position };
         }
     }
 }

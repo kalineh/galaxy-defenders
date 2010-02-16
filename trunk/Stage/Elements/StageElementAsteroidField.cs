@@ -4,6 +4,8 @@
 
 using Microsoft.Xna.Framework;
 using System.ComponentModel;
+using System;
+using System.Linq;
 
 namespace Galaxy
 {
@@ -70,10 +72,14 @@ namespace Galaxy
         }
     }
 
-    public class CAsteroidField
-        : CSpawnerEntity
+    public class CStageElementAsteroidField
+        : CStageElementSpawnerEntity
     {
-        public CAsteroidField()
+        public int SpawnCount { get; set; }
+        public CSpawnTimer SpawnTimer { get; set; }
+        private int SpawnedCount { get; set; }
+
+        public CStageElementAsteroidField()
         {
             Type = typeof(CAsteroid);
             SpawnPosition = new CSpawnPositionRandom();
@@ -83,7 +89,19 @@ namespace Galaxy
 
         public override void Update(CWorld world)
         {
-            base.Update(world);
+            int spawn = SpawnTimer.Update(world);
+            foreach (int i in Enumerable.Range(0, spawn))
+            {
+                Spawn(world);
+                SpawnedCount += 1;
+                if (IsExpired())
+                    break;
+            }
+        }
+
+        public override bool IsExpired()
+        {
+            return SpawnedCount >= SpawnCount;
         }
     }
 }

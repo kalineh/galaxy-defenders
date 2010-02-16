@@ -1,5 +1,5 @@
 ﻿//
-// SpawnerEntity.cs
+// StageElementSpawnerEntity.cs
 //
 
 using System;
@@ -10,48 +10,25 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CSpawnerEntity
+    public class CStageElementSpawnerEntity
         : CStageElement
     {
-        public static Dictionary<CSpawnerEntity, CSpawnerEntity> InitializationHack = new Dictionary<CSpawnerEntity, CSpawnerEntity>();
-
-        // TODO: we can remove these?
-        [EditorAttribute(typeof(Editor.CEntityTypeSelector), typeof(UITypeEditor))]        
         public Type Type { get; set; }
-        public int SpawnCount { get; set; }
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CSpawnTimer SpawnTimer { get; set; }
-        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnPosition SpawnPosition { get; set; }
-        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CMover CustomMover { get; set; }
-        [TypeConverter(typeof(ExpandableObjectConverter))]
         public CSpawnerCustomElement CustomElement { get; set; }
-        public int SpawnRemaining { get; set; }
 
         public override void Update(CWorld world)
         {
-            // TODO: how can we make these not stateful with the editor? :(
-            // TODO: we hack it, thats what
-            if (!InitializationHack.ContainsKey(this))
-            {
-                InitializationHack[this] = this;
-                SpawnRemaining = SpawnCount;
-            }
-
-            int create = SpawnTimer.Update(world);
-            while (create-- > 0)
-            {
-                Spawn(world);
-            }
+            Spawn(world);
         }
 
         public override bool IsExpired()
         {
-            return SpawnRemaining <= 0;
+            return true;
         }
 
-        private void Spawn(CWorld world)
+        protected void Spawn(CWorld world)
         {
             Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
 
@@ -70,7 +47,6 @@ namespace Galaxy
                 }
 
                 world.EntityAdd(entity);
-                SpawnRemaining -= 1;
             }
             catch (Exception exception)
             {
@@ -96,19 +72,6 @@ namespace Galaxy
             Code.Invoke(entity);
         }
     }
-
-    /*
-    public class CSpawnerCustomMover
-        : CSpawnerCustomElement
-    {
-        public CMover Mover { get; set; }
-
-        public override void Customize(CEntity entity)
-        {
-            entity.Mover = Mover;
-        }
-    }
-    */
 }
 
 
