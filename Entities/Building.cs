@@ -27,8 +27,8 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            VisualNormal = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/Building"), Color.White);
-            VisualDestroyed = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/BuildingDestroyed"), Color.White);
+            VisualNormal = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/BuildingSquare"), Color.White);
+            VisualDestroyed = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/BuildingSquareDestroyed"), Color.White);
             Visual = VisualNormal;
             Health = 20.0f;
         }

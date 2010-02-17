@@ -82,7 +82,7 @@ namespace Galaxy
 
         public void Draw()
         {
-            Game.GraphicsDevice.Clear(Color.Black);
+            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
 
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);

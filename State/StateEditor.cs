@@ -419,7 +419,7 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(Microsoft.Xna.Framework.Graphics.Color.Black);
+            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
             Stars.Draw(Game.DefaultSpriteBatch);
