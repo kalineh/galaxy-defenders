@@ -2,8 +2,19 @@
 // MoverPresets.cs
 //
 
+using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+                       
+/*
+System.Diagnostics.StackFrame stackframe = 
+                new System.Diagnostics.StackFrame(1, true);
+            
+            return stackframe.GetMethod().ReflectedType.Name 
+                + "."
+                + stackframe.GetMethod().Name ;
+        }
+ * */
 
 namespace Galaxy
 {
@@ -13,6 +24,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
@@ -30,10 +42,11 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
-                    new Vector2(speed, speed),
+                    new Vector2(-speed, speed),
                 },
                 Duration = new List<float>()
                 {
@@ -49,6 +62,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
@@ -69,6 +83,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(0.0f, -speed),
             };
         }
@@ -77,6 +92,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(0.0f, speed),
             };
         }
@@ -85,6 +101,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(-speed, 0.0f),
             };
         }
@@ -93,6 +110,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(speed, 0.0f),
             };
         }
@@ -101,6 +119,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(-speed, speed),
             };
         }
@@ -109,6 +128,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(speed, speed),
             };
         }
@@ -117,6 +137,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
@@ -136,6 +157,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
@@ -155,6 +177,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(speed * -0.5f, speed),
             };
         }
@@ -163,6 +186,7 @@ namespace Galaxy
         {
             return new CMoverFixedVelocity()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new Vector2(speed * 0.5f, speed),
             };
         }
@@ -171,6 +195,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),
@@ -196,6 +221,7 @@ namespace Galaxy
         {
             return new CMoverSequence()
             {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, speed),

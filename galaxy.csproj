@@ -93,8 +93,10 @@
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Editor\Converters\EditorConverters.cs" />
+    <Compile Include="Editor\Converters\EntityMoverTypeConverter.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
     <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorEntityDecoration.cs" />
     <Compile Include="Editor\Entities\EditorEntitySpawnerEnemy.cs" />
     <Compile Include="Editor\Entities\EditorEntityAsteroidField.cs" />
     <Compile Include="Editor\Entities\EditorStageElementGeneration.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Editor\Entities\EditorEntitySpawnerEntity.cs">
     </Compile>
     <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
+    <Compile Include="Entities\CDecoration.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />

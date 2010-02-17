@@ -9,109 +9,106 @@ using System.Drawing.Design;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using System.Globalization;
 
 namespace Galaxy
 {
-    namespace Editor
+    // TODO: put this elsewhere?
+    public delegate CMover MoverPresetFunction(float speed);
+
+    /// <summary>
+    /// Entity type selector control. Allows selection from preset entity list.
+    /// </summary>
+    [System.ComponentModel.DesignerCategory("Code")]
+    public class CEntityMoverPresetSelectorControl 
+        : ListBox
     {
-        // TODO: put this elsewhere?
-        public delegate CMover MoverPresetFunction(float speed);
+        public static Dictionary<string, MoverPresetFunction> MoverPresets;
 
-        /// <summary>
-        /// Entity type selector control. Allows selection from preset entity list.
-        /// </summary>
-        [System.ComponentModel.DesignerCategory("Code")]
-        public class CEntityMoverPresetSelectorControl 
-            : ListBox
+        static CEntityMoverPresetSelectorControl()
         {
-            public static Dictionary<string, MoverPresetFunction> MoverPresets;
+            MoverPresets = new Dictionary<string, MoverPresetFunction>();
 
-            static CEntityMoverPresetSelectorControl()
+            MethodInfo[] methods = typeof(CMoverPresets).GetMethods(BindingFlags.Public | BindingFlags.Static);
+            foreach (MethodInfo method in methods)
             {
-                MoverPresets = new Dictionary<string, MoverPresetFunction>();
-
-                MethodInfo[] methods = typeof(CMoverPresets).GetMethods(BindingFlags.Public | BindingFlags.Static);
-                foreach (MethodInfo method in methods)
-                {
-                    Delegate delegate_ = Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
-                    MoverPresetFunction function = (MoverPresetFunction)delegate_;
-                    string name = method.ToString();
-                    char[] seperators = { ' ', '(' };
-                    string stripped = name.Split(seperators)[1];
-                    MoverPresets[stripped] = function;
-                }
-            }
-
-            public CMover Result = null;
-
-            public CEntityMoverPresetSelectorControl()
-            {
-                InitializeComponent();
-                this.BorderStyle = BorderStyle.None;
-                Result = CMoverPresets.MoveDown(1.0f);
-            }
-
-            private void InitializeComponent()
-            {
-                foreach (KeyValuePair<string, MoverPresetFunction> items in MoverPresets)
-                {
-                    string text = items.Key;
-                    //string typename = type.ToString().Substring("Galaxy.".Length);
-                    this.Items.Add(items.Key);
-                }
+                Delegate delegate_ = Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
+                MoverPresetFunction function = (MoverPresetFunction)delegate_;
+                string name = method.ToString();
+                char[] seperators = { ' ', '(' };
+                string stripped = name.Split(seperators)[1];
+                MoverPresets[stripped] = function;
             }
         }
 
+        public CMover Result = null;
 
-        /// <summary>
-        /// Select from preset mover list.
-        /// </summary>
-        public class CEntityMoverPresetSelector
-            : UITypeEditor
+        public CEntityMoverPresetSelectorControl()
         {
-            private CEntityMoverPresetSelectorControl MoverPresetSelector;
-            private IWindowsFormsEditorService EditorService;
+            InitializeComponent();
+            this.BorderStyle = BorderStyle.None;
+            Result = CMoverPresets.MoveDown(1.0f);
+        }
 
-            public CEntityMoverPresetSelector()
+        private void InitializeComponent()
+        {
+            foreach (KeyValuePair<string, MoverPresetFunction> items in MoverPresets)
             {
-                MoverPresetSelector = new CEntityMoverPresetSelectorControl();
+                string text = items.Key;
+                this.Items.Add(items.Key);
             }
+        }
+    }
 
-            public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-            {
-                return UITypeEditorEditStyle.DropDown;
-            }
 
-            public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
-            {
-                if (provider == null)
-                    return base.EditValue(context, provider, value);
+    /// <summary>
+    /// Select from preset mover list.
+    /// </summary>
+    public class CEntityMoverPresetSelector
+        : UITypeEditor
+    {
+        private CEntityMoverPresetSelectorControl MoverPresetSelector;
+        private IWindowsFormsEditorService EditorService;
 
-                IWindowsFormsEditorService editor_service = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
-                if (editor_service == null)
-                    return base.EditValue(context, provider, value);
+        public CEntityMoverPresetSelector()
+        {
+            MoverPresetSelector = new CEntityMoverPresetSelectorControl();
+        }
 
-                EditorService = editor_service;
-                MoverPresetSelector.SelectedIndexChanged += new EventHandler(MoverPresetSelector_SelectedIndexChanged);
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.DropDown;
+        }
 
-                editor_service.DropDownControl(MoverPresetSelector);
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            if (provider == null)
+                return base.EditValue(context, provider, value);
 
-                MoverPresetSelector.SelectedIndexChanged -= MoverPresetSelector_SelectedIndexChanged;
-                EditorService = null;
+            IWindowsFormsEditorService editor_service = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
+            if (editor_service == null)
+                return base.EditValue(context, provider, value);
 
-                return MoverPresetSelector.Result;
-            }
+            EditorService = editor_service;
+            MoverPresetSelector.SelectedIndexChanged += new EventHandler(MoverPresetSelector_SelectedIndexChanged);
 
-            void MoverPresetSelector_SelectedIndexChanged(object sender, EventArgs e)
-            {
-                CEntityMoverPresetSelectorControl selector = sender as CEntityMoverPresetSelectorControl;
-                string method_name = (string)selector.SelectedItem;
-                MethodInfo method = typeof(CMoverPresets).GetMethod(method_name);
-                MoverPresetFunction function = (MoverPresetFunction)Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
-                CMover result = function(1.0f);
-                selector.Result = result;
-                EditorService.CloseDropDown();
-            }
+            editor_service.DropDownControl(MoverPresetSelector);
+
+            MoverPresetSelector.SelectedIndexChanged -= MoverPresetSelector_SelectedIndexChanged;
+            EditorService = null;
+
+            return MoverPresetSelector.Result;
+        }
+
+        void MoverPresetSelector_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CEntityMoverPresetSelectorControl selector = sender as CEntityMoverPresetSelectorControl;
+            string method_name = (string)selector.SelectedItem;
+            MethodInfo method = typeof(CMoverPresets).GetMethod(method_name);
+            MoverPresetFunction function = (MoverPresetFunction)Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
+            CMover result = function(1.0f);
+            selector.Result = result;
+            EditorService.CloseDropDown();
         }
     }
 }

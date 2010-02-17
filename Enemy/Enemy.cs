@@ -43,6 +43,11 @@ namespace Galaxy
 
             base.Update();
 
+            if (World.Game.State.GetType() == typeof(CStateGame))
+            {
+                Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+            }
+
             if (IsInDieRegion())
                 Delete();
         }
