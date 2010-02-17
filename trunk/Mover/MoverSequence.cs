@@ -54,7 +54,6 @@ namespace Galaxy
             for (int i = 0; i < Duration.Count; ++i)
             {
                 float duration = Duration[i];
-
                 if (remaining <= duration * SpeedMultiplier)
                 {
                     velocity = Velocity[i];

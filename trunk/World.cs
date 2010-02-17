@@ -258,68 +258,38 @@ namespace Galaxy
                 foreach (CEntity inner in Entities)
                 {
                     if (inner == outer)
-                    {
                         continue;
-                    }
 
                     if (inner.Collision == null || outer.Collision == null)
-                    {
                         continue;
-                    }
 
                     if (inner.Collision.Enabled == false || outer.Collision.Enabled == false)
-                    {
                         continue;
-                    }
 
                     if (outer.GetType() == inner.GetType())
                     {
                         if (outer.Collision.IgnoreSelfType && inner.Collision.IgnoreSelfType)
-                        {
                             continue;
-                        }
                     }
 
                     if (outer.Collision.Intersects(inner.Collision))
                     {
-                        // TODO: we can't use method overloads here because we can't override with a different param
-                        // TODO: make something that overrides for all types? and allow  
-                        //outer.OnCollision(inner);
-
                         // TODO: something proper
-                        outer.Collision.Intersects(inner.Collision);
                         System.Type inner_type = inner.GetType();
                         System.Type outer_type = outer.GetType();
-                        MethodInfo[] methods = outer_type.GetMethods();
-                        foreach (MethodInfo method in methods)
+                        MethodInfo method = outer_type.GetMethod("OnCollide", new Type[]{ inner_type });
+
+                        if (method == null)
+                            continue;
+
+                        try
                         {
-                            if (method.Name != "OnCollide")
-                                continue;
-
-                            ParameterInfo param_info = method.GetParameters()[0];
-                            System.Type param = param_info.ParameterType;
-                            if (param != inner_type)
-                                continue;
-
-                            try
-                            {
-                                method.Invoke(outer, new object[] { inner });
-                            }
-                            catch (Exception exception)
-                            {
-                                throw exception.InnerException;
-                            }
+                            method.Invoke(outer, new object[] { inner });
                         }
-
-                        //var method = from m in methods where m.Name == "OnCollide" && m.GetParameters()[0].GetType() == inner_type select m;
-
-                        //if (method.Count() < 1)
-                        //{
-                            //Console.WriteLine("{0}: no collide function for: {1}", outer.GetType().ToString(), inner.GetType().ToString());
-                            //continue;
-                        //}
-
-                        //method.Single().Invoke(outer, new object[] { inner });
+                        catch (Exception exception)
+                        {
+                            throw exception.InnerException;
+                        }
                     }
                 }
             }

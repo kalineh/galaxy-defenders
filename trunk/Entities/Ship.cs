@@ -88,7 +88,15 @@ namespace Galaxy
             if (World.Game.State.GetType() == typeof(CStateGame))
             {
                 ClampInsideScreen();
+
+                // camera X position is bound to player
+                World.GameCamera.Position = new Vector3(
+                    Physics.PositionPhysics.Position.X * 0.1f,
+                    World.GameCamera.Position.Y,
+                    World.GameCamera.Position.Z
+                );
             }
+
         }
 
         public override void UpdateCollision()

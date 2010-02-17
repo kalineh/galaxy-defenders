@@ -151,6 +151,10 @@ namespace Galaxy
             {
                 WriteType(sb, instance);
             }
+            else if (instance is String)
+            {
+                WriteString(sb, instance);
+            }
             else if (type.IsPrimitive)
             {
                 WritePrimitive(sb, instance);
@@ -180,6 +184,11 @@ namespace Galaxy
         public static void WriteType(StringBuilder sb, object instance)
         {
             sb.AppendLine(String.Format("typeof({0}),", instance.ToString()));
+        }
+
+        public static void WriteString(StringBuilder sb, object instance)
+        {
+            sb.AppendLine(String.Format("\"{0}\",", instance.ToString()));
         }
 
         public static void WriteClassGraph(StringBuilder sb, object instance)

@@ -1,5 +1,5 @@
 ﻿//
-// EditorEntitySpawnerEntity.cs
+// EditorEntityDecoration.cs
 //
 
 using System;
@@ -12,28 +12,16 @@ using Microsoft.Xna.Framework;
 namespace Galaxy
 {
     /// <summary>
-    /// Editor entity for CStageElementSpawnerEntity.
+    /// Editor entity for CEditorEntityDecoration.
     /// </summary>
     [TypeConverter(typeof(CEditorConverterGenerated))]
-    public class CEditorEntitySpawnerEntity
-        : CEditorEntityBase
+    public class CEditorEntityDecoration
+        : CEditorEntitySpawnerEntity
     {
-        [CategoryAttribute("Core")]
-        [EditorAttribute(typeof(CEntityTypeSelector), typeof(UITypeEditor))]
-        public Type Type { get; set; }
+        [CategoryAttribute("Texture")]
+        public string Texture { get; set; }
 
-        [CategoryAttribute("Mover")]
-        [EditorAttribute(typeof(CEntityMoverPresetSelector), typeof(UITypeEditor))]
-        [TypeConverter(typeof(CEntityMoverTypeConverter))]
-        public new CMover Mover { get; set; }
-
-        [CategoryAttribute("Mover")]
-        public float MoveSpeed { get; set; }
-
-        // TODO: replace me and use positional system in-game
-        public int StartTime { get; set; }
-
-        public CEditorEntitySpawnerEntity(CWorld world, Type type, Vector2 position)
+        public CEditorEntityDecoration(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
             Type = type;
@@ -43,13 +31,13 @@ namespace Galaxy
             MoveSpeed = 1.0f;
         }
 
-        public CEditorEntitySpawnerEntity(CWorld world, Vector2 position)
-            : this(world, typeof(CAsteroid), position)
+        public CEditorEntityDecoration(CWorld world, Vector2 position)
+            : this(world, typeof(CDecoration), position)
         {
         }
 
-        public CEditorEntitySpawnerEntity(CWorld world, CStageElement element)
-            : this(world, ((CStageElementSpawnerEntity)element).Type, element.Position)
+        public CEditorEntityDecoration(CWorld world, CStageElement element)
+            : this(world, typeof(CDecoration), element.Position)
         {
             CStageElementSpawnerEntity spawner = element as CStageElementSpawnerEntity;
 
