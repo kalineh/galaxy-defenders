@@ -20,7 +20,7 @@ namespace Galaxy
         {
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
-            ScrollSpeed = 2.5f;
+            ScrollSpeed = 4.0f;
         }
 
         public string ToFilename()

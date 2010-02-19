@@ -16,26 +16,18 @@ namespace Galaxy
     /// Entity type selector control. Allows selection from preset entity list.
     /// </summary>
     [System.ComponentModel.DesignerCategory("Code")]
-    public class CEntityTypeSelectorControl 
+    public class CTypeSelectorControl
         : ListBox
     {
-        // TODO: should we put this in the spawner entity?
-        public static List<Type> SpawnableEntityTypes = new List<Type>()
-        {
-            typeof(CAsteroid),
-            typeof(CBeard),
-            typeof(CPewPew),
-            typeof(CLaser),
-            typeof(CSinBall),
-            typeof(CTurret),
-            typeof(CBonus),
-        };
+        public List<Type> SpawnableEntityTypes;
 
         public Type Result = typeof(CEntity);
 
-        public CEntityTypeSelectorControl()
+        public CTypeSelectorControl(List<Type> types)
         {
+            SpawnableEntityTypes = types;
             InitializeComponent();
+            this.SpawnableEntityTypes = types;
             this.BorderStyle = BorderStyle.None;
             Result = typeof(CEntity);
         }
@@ -50,18 +42,41 @@ namespace Galaxy
         }
     }
 
+    public class CEntityTypes
+    {
+        public static List<Type> SpawnableEntityTypes = new List<Type>()
+        {
+            typeof(CBonus),
+            typeof(CPowerup),
+        };
+    }
+
+    public class CEnemyTypes
+    {
+        public static List<Type> SpawnableEntityTypes = new List<Type>()
+        {
+            typeof(CBall),
+            typeof(CBeamer),
+            typeof(CIsosceles),
+            typeof(CSpike),
+            typeof(CTurret),
+        };
+    }
+
     /// <summary>
     /// Type editor which allows using custom type listbox on entity Type properties.
     /// </summary>
-    public class CEntityTypeSelector
+    public class CTypeSelector<Types>
         : UITypeEditor
     {
-        private CEntityTypeSelectorControl TypeSelector;
+        private CTypeSelectorControl TypeSelector;
         private IWindowsFormsEditorService EditorService;
 
-        public CEntityTypeSelector()
+        public CTypeSelector()
         {
-            TypeSelector = new CEntityTypeSelectorControl();
+            FieldInfo field = typeof(Types).GetField("SpawnableEntityTypes", BindingFlags.Static | BindingFlags.Public);
+            List<Type> types = (List<Type>)field.GetValue(null);
+            TypeSelector = new CTypeSelectorControl(types);
         }
 
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
@@ -91,7 +106,7 @@ namespace Galaxy
 
         void TypeSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CEntityTypeSelectorControl selector = sender as CEntityTypeSelectorControl;
+            CTypeSelectorControl selector = sender as CTypeSelectorControl;
             selector.Result = Type.GetType("Galaxy." + selector.SelectedItem);
             EditorService.CloseDropDown();
         }

@@ -111,12 +111,13 @@
     <Compile Include="Editor\Entities\EditorEntitySpawnerEntity.cs">
     </Compile>
     <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
+    <Compile Include="Enemy\Spike.cs" />
     <Compile Include="Entities\Decoration.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Entities\Bonus.cs" />
-    <Compile Include="Enemy\Beard.cs" />
+    <Compile Include="Enemy\Isosceles.cs" />
     <Compile Include="Entities\Building.cs" />
     <Compile Include="Entities\SpacePlatform.cs" />
     <Compile Include="FrameRate.cs" />
@@ -148,8 +149,8 @@
     <Compile Include="Entities\Powerup.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Enemy\Turret.cs" />
-    <Compile Include="Enemy\PewPew.cs" />
-    <Compile Include="Enemy\SinBall.cs" />
+    <Compile Include="Enemy\Beamer.cs" />
+    <Compile Include="Enemy\Ball.cs" />
     <Compile Include="Enemy\Enemy.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Effects\Explosion.cs" />
