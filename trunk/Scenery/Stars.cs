@@ -2,6 +2,7 @@
 // Stars.cs
 //
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,7 +40,7 @@ namespace Galaxy
 
         public void UpdateStarCount()
         {
-            Count = (int)(16.0f * 1.0f / World.GameCamera.Zoom);
+            Count = (int)(10.0f * 1.0f / World.GameCamera.Zoom);
             for (int i = 0; i < Count - Stars.Count; ++i)
             {
                 Star star = new Star(RandomScreenPosition());
@@ -60,7 +61,8 @@ namespace Galaxy
                     star.Position = RandomRespawnPosition();
                 }
 
-                star.Position += Speed;
+                float speed_scale = 1.0f - Math.Abs(star.Position.X) * 0.001f;
+                star.Position += Speed * speed_scale;
             }
         }
 

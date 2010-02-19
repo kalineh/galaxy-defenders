@@ -13,7 +13,8 @@ namespace Galaxy
     public class CStageElementSpawnerEnemy
         : CStageElementSpawnerEntity
     {
-        // TODO: on-kill bonus
+        public int Coins { get; set; }
+        public bool Powerup { get; set; }
     }
 }
 

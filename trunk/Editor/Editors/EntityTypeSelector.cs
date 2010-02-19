@@ -29,9 +29,6 @@ namespace Galaxy
             typeof(CSinBall),
             typeof(CTurret),
             typeof(CBonus),
-            typeof(CBuilding),
-            typeof(CSpacePlatform),
-            typeof(CBigSpacePlatform),
         };
 
         public Type Result = typeof(CEntity);

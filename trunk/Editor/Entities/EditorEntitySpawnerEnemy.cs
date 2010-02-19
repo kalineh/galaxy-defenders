@@ -18,6 +18,12 @@ namespace Galaxy
     public class CEditorEntitySpawnerEnemy
         : CEditorEntitySpawnerEntity
     {
+        [CategoryAttribute("Bonus")]
+        public int Coins { get; set; }
+
+        [CategoryAttribute("Bonus")]
+        public bool Powerup { get; set; }
+
         public CEditorEntitySpawnerEnemy(CWorld world, Type type, Vector2 position)
             : base(world, type, position)
         {
@@ -31,6 +37,9 @@ namespace Galaxy
         public CEditorEntitySpawnerEnemy(CWorld world, CStageElement element)
             : base(world, element)
         {
+            CStageElementSpawnerEnemy enemy = element as CStageElementSpawnerEnemy;
+            Coins = enemy.Coins;
+            Powerup = enemy.Powerup;
         }
 
     }

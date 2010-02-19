@@ -52,10 +52,13 @@ namespace Galaxy
 
             Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);
+            Stage.Start();
         }
 
         public void Stop()
         {
+            Game.Music.StopImmediate();
+            Stage.Finish();
             Entities.Clear();
             EntitiesToAdd.Clear();
             EntitiesToDelete.Clear();

@@ -46,6 +46,14 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             game.GameFrame = 0;
+
+            // TODO: generalize cleanup?
+            Galaxy.CStateGame state_game = game.State as Galaxy.CStateGame;
+            if (state_game != null)
+            {
+                state_game.World.Stop();
+            }
+
             game.State = new Galaxy.CStateGame(game);
 
             TextBox input_catcher = this.InputCatcher;
@@ -60,6 +68,13 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CState state = game_control.Game.State;
+
+            // TODO: generalize cleanup?
+            Galaxy.CStateGame state_game = game.State as Galaxy.CStateGame;
+            if (state_game != null)
+            {
+                state_game.World.Stop();
+            }
 
             game_control.Game.State = new Galaxy.CStateEditor(game);
             game_control.UpdateEditorPosition();

@@ -52,7 +52,7 @@ namespace Galaxy
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             // TODO: resolution
-            PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
+            PlayerSpawnPosition = new Vector2(0.0f, 300.0f);
         }
 
         public void SwitchGraphicsDevice(GraphicsDevice graphics_device)
