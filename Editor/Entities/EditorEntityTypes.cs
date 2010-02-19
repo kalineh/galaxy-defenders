@@ -25,6 +25,7 @@ namespace Galaxy
             { typeof(CStageElementStageFinish), typeof(CEditorEntityStageFinish) },
             { typeof(CStageElementAsteroidField), typeof(CEditorEntityAsteroidField) },
             { typeof(CStageElementDecoration), typeof(CEditorEntityDecoration) },
+            { typeof(CStageElementBuilding), typeof(CEditorEntityBuilding) },
             // more
         };
 

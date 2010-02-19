@@ -20,6 +20,8 @@ namespace Galaxy
                 TextureName = TextureName
             };
 
+            //decoration.UpdateTexture();
+
             world.EntityAdd(decoration);
         }
     }

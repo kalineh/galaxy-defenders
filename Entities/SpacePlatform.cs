@@ -2,11 +2,13 @@
 // SpacePlatform.cs
 //
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
+    [Obsolete("replaced with CDecoration")]
     public class CSpacePlatform
         : CEntity
     {
@@ -15,7 +17,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/SpacePlatform"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
         }
 
         public override void Update()
@@ -26,6 +28,7 @@ namespace Galaxy
         }
     }
 
+    [Obsolete("replaced with CDecoration")]
     public class CBigSpacePlatform
         : CEntity
     {
@@ -34,7 +37,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/BigSpacePlatform"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
         }
 
         public override void Update()

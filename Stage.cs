@@ -24,7 +24,7 @@ namespace Galaxy
 
         public void Start()
         {
-            PreviousCameraPosition = Vector2.Zero;
+            PreviousCameraPosition = new Vector2(0.0f, 100000.0f);
         }
 
         public void Finish()

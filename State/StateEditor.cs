@@ -442,13 +442,16 @@ namespace Galaxy
             World.DrawEntities(World.GameCamera);
 
             // Debug render.
-            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-400.0f, 300.0f), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
-            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(400.0f, 300.0f), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
-            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-400.0f, 300.0f), Vector2.UnitX * 800.0f, 0.5f, XnaColor.Blue);
+            float game_width = World.GameCamera.GetGameWidth();
+            float half_game_width = game_width / 2.0f;
+            float game_height = World.GameCamera.ScreenSize.Y;
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(half_game_width, game_height), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitX * World.GameCamera.GetGameWidth(), 2.0f, XnaColor.Blue);
             SampleShip = World.GetNearestShip(Vector2.Zero);
             if (SampleShip != null)
             {
-                CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.PositionPhysics.Position, new Vector2(800.0f, 600.0f), 2.0f, XnaColor.Red);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.PositionPhysics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);
             }
 
             // render debug

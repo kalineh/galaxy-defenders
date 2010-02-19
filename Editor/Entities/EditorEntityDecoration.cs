@@ -19,7 +19,7 @@ namespace Galaxy
     public class CEditorEntityDecoration
         : CEditorEntityBase
     {
-        private string _TextureName = "SpacePlatform";
+        private string _TextureName = "Platform1";
 
         [CategoryAttribute("Texture")]
         public string TextureName
@@ -31,7 +31,7 @@ namespace Galaxy
         public CEditorEntityDecoration(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
-            TextureName = "SpacePlatform";
+            TextureName = "Platform1";
             UpdateTexture();
         }
 
@@ -43,6 +43,7 @@ namespace Galaxy
         public CEditorEntityDecoration(CWorld world, CStageElement element)
             : this(world, typeof(CDecoration), element.Position)
         {
+            TextureName = ((CStageElementDecoration)element).TextureName;
         }
 
         public override CStageElement GenerateStageElement()

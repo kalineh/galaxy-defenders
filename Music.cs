@@ -96,6 +96,11 @@ namespace Galaxy
             //CrossFader.Start(Song);
         }
 
+        public void StopImmediate()
+        {
+            MediaPlayer.Stop();
+        }
+
         public void Update()
         {
         }

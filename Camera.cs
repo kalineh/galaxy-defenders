@@ -17,6 +17,8 @@ namespace Galaxy
         public float Rotation { get; set; }
         public float Zoom { get; set; }
         public float Border { get; set; }
+        public float PanLimit { get; set; }
+        public Vector2 ScreenSize { get; set; }
 
         public Matrix ViewMatrix { get; private set; }
         public Matrix ProjectionMatrix { get; private set; }
@@ -30,6 +32,8 @@ namespace Galaxy
             LookAt = Vector3.UnitZ * -1.0f;
             Zoom = 1.0f;
             Border = 150.0f;
+            PanLimit = 100.0f;
+            ScreenSize = new Vector2(800.0f, 600.0f);
 
             float aspect_ratio = (float)game.GraphicsDevice.Viewport.Width / (float)game.GraphicsDevice.Viewport.Height;
 
@@ -102,6 +106,16 @@ namespace Galaxy
             clamped.Y = Math.Min(br.Y - buffer, clamped.Y);
 
             return clamped;
+        }
+
+        public float GetVisibleWidth()
+        {
+            return (GetBottomRight() - GetTopLeft()).X;
+        }
+
+        public float GetGameWidth()
+        {
+            return ScreenSize.X + PanLimit;
         }
 
         public bool IsInside(Vector2 position, float buffer)

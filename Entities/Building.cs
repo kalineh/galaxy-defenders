@@ -2,6 +2,8 @@
 // Building.cs
 //
 
+using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +20,18 @@ namespace Galaxy
         }
 
         public float Health { get; private set; }
+
+
+        public int Coins { get; set; }
+        public bool Powerup { get; set; }
+
+        private string _TextureName = "Building1";
+        public string TextureName
+        {
+            get { return _TextureName; }
+            set { _TextureName = value; UpdateTexture(); }
+        }
+
         public CVisual VisualNormal { get; private set; }
         public CVisual VisualDestroyed { get; private set; }
 
@@ -27,10 +41,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            VisualNormal = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/BuildingSquare"), Color.White);
-            VisualDestroyed = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Static/BuildingSquareDestroyed"), Color.White);
             Visual = VisualNormal;
-            Health = 20.0f;
         }
 
         public override void Update()
@@ -40,16 +51,24 @@ namespace Galaxy
                 Delete();
         }
 
+        private void UpdateTexture()
+        {
+            VisualNormal = CVisual.MakeSprite(World, "Textures/Static/" + TextureName);
+            VisualDestroyed = CVisual.MakeSprite(World, "Textures/Static/" + TextureName + "Destroyed");
+            VisualNormal = VisualNormal ?? CVisual.MakeLabel(World, TextureName);
+            VisualDestroyed = VisualDestroyed ?? CVisual.MakeLabel(World, TextureName + "Destroyed");
+            Visual = VisualNormal;
+        }
+
+        // TODO: CWeapon OnCollide?
         public void OnCollide(CLaser laser)
         {
-            Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
             TakeDamage(laser.Damage);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
-            Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
             TakeDamage(missile.Damage);
             missile.Die();
         }
@@ -60,6 +79,16 @@ namespace Galaxy
             World.Score += 100;
             Visual = VisualDestroyed;
             Collision = null;
+
+            foreach (int i in Enumerable.Range(0, Coins))
+            {
+                World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
+            }
+
+            if (Powerup)
+            {
+                World.EntityAdd(new CPowerup(World, Physics.PositionPhysics.Position));
+            }
         }
 
         private void TakeDamage(float damage)

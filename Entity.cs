@@ -60,7 +60,7 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.PositionPhysics.Position;
-            circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
+            circle.Radius = GetRadius() * 0.75f;
         }
 
         public virtual void Draw(SpriteBatch sprite_batch)

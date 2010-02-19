@@ -89,9 +89,15 @@ namespace Galaxy
             {
                 ClampInsideScreen();
 
+                float ship_x = Physics.PositionPhysics.Position.X;
+                float pan = World.GameCamera.PanLimit / 2.0f;
+                float width = World.GameCamera.GetVisibleWidth() / 2.0f;
+                float x = ship_x / width * pan;
+
+
                 // camera X position is bound to player
                 World.GameCamera.Position = new Vector3(
-                    Physics.PositionPhysics.Position.X * 0.1f,
+                    x,
                     World.GameCamera.Position.Y,
                     World.GameCamera.Position.Z
                 );

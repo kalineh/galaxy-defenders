@@ -23,7 +23,7 @@ namespace Galaxy
                 CSinBall boss = entity as CSinBall;
 
                 boss.Health *= 15.0f;
-                boss.BonusDrop = 30;
+                boss.Coins = 30;
                 boss.Visual.Scale *= 2.5f;
                 boss.Mover = new CMoverSequence()
                 {
