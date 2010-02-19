@@ -11,7 +11,11 @@ namespace Galaxy
         public Vector2 Position { get; set; }
 
         public abstract void Update(CWorld world);
-        public abstract bool IsExpired();
+
+        public virtual bool IsExpired()
+        {
+            return true;
+        }
     };
 }
 

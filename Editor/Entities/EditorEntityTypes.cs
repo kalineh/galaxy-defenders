@@ -24,6 +24,7 @@ namespace Galaxy
             { typeof(CStageElementSpawnerEnemy), typeof(CEditorEntitySpawnerEnemy) },
             { typeof(CStageElementStageFinish), typeof(CEditorEntityStageFinish) },
             { typeof(CStageElementAsteroidField), typeof(CEditorEntityAsteroidField) },
+            { typeof(CStageElementDecoration), typeof(CEditorEntityDecoration) },
             // more
         };
 

@@ -10,6 +10,16 @@ namespace Galaxy
 {
     public class CVisual
     {
+        public static CVisual MakeLabel(CWorld world, string text)
+        {
+            return MakeLabel(world, text, Color.Blue);
+        }
+
+        public static CVisual MakeLabel(CWorld world, Vector2 size, Color color)
+        {
+            return new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color) { Scale = size };
+        }
+
         public static CVisual MakeLabel(CWorld world, string text, Color color)
         {
             CVisual result = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color);
@@ -19,9 +29,21 @@ namespace Galaxy
             return result;
         }
 
-        public static CVisual MakeLabel(CWorld world, Vector2 size, Color color)
+        public static CVisual MakeSprite(CWorld world, string texture_name)
         {
-            return new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color) { Scale = size };
+            return MakeSprite(world, texture_name, Vector2.One, Color.White);
+        }
+
+        public static CVisual MakeSprite(CWorld world, string texture_name, Vector2 size, Color color)
+        {
+            try
+            {
+                return new CVisual(world, CContent.LoadTexture2D(world.Game, texture_name), color) { Scale = size };
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static SpriteFont DebugFont { get; set; }
