@@ -395,7 +395,7 @@ namespace Galaxy
             //Vector3 detransform = world.ToVector3() / World.GameCamera.Zoom;
             //Vector3 pre = detransform * World.GameCamera.Zoom;
             World.GameCamera.Zoom += apply;
-            World.GameCamera.Zoom = MathHelper.Clamp(World.GameCamera.Zoom, 0.5f, 1.75f);
+            World.GameCamera.Zoom = MathHelper.Clamp(World.GameCamera.Zoom, 0.05f, 1.75f);
             //Vector3 post = detransform * World.GameCamera.Zoom;
 
             // close, but curves inward weird, need something else
@@ -445,8 +445,8 @@ namespace Galaxy
             float game_width = World.GameCamera.GetGameWidth();
             float half_game_width = game_width / 2.0f;
             float game_height = World.GameCamera.ScreenSize.Y;
-            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
-            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(half_game_width, game_height), Vector2.UnitY * -5000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitY * -25000.0f, 2.0f, XnaColor.Blue);
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(half_game_width, game_height), Vector2.UnitY * -25000.0f, 2.0f, XnaColor.Blue);
             CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitX * World.GameCamera.GetGameWidth(), 2.0f, XnaColor.Blue);
             SampleShip = World.GetNearestShip(Vector2.Zero);
             if (SampleShip != null)

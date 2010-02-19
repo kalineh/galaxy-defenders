@@ -1,5 +1,5 @@
 ﻿//
-// SinBall.cs
+// Ball.cs
 //
 
 using Microsoft.Xna.Framework;
@@ -7,16 +7,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CSinBall
+    public class CBall
         : CEnemy
     {
-        public CSinBall(CWorld world, Vector2 position)
-            : base(world, "SinBall")
+        public CBall(CWorld world, Vector2 position)
+            : base(world, "Ball")
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/SinBall"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Ball"), Color.White);
             Health = 1.0f;
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }

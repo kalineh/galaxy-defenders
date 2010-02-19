@@ -1,5 +1,5 @@
 ﻿//
-// PewPew.cs
+// Beamer.cs
 //
 
 using Microsoft.Xna.Framework;
@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CPewPew
+    public class CBeamer
         : CEnemy
     {
         public float FireDelay { get; private set; }
@@ -15,14 +15,14 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public CPewPew(CWorld world, Vector2 position)
-            : base(world, "PewPew")
+        public CBeamer(CWorld world, Vector2 position)
+            : base(world, "Beamer")
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/PewPew"), Color.White);
-            Health = 8.0f;
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
+            Health = 1.0f;
 
             FireDelay = 3.0f;
             FireCooldown = Time.ToFrames(FireDelay);

@@ -28,7 +28,7 @@ namespace Galaxy
             return true;
         }
 
-        protected void Spawn(CWorld world)
+        protected CEntity Spawn(CWorld world)
         {
             Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
 
@@ -47,6 +47,8 @@ namespace Galaxy
                 }
 
                 world.EntityAdd(entity);
+
+                return entity;
             }
             catch (Exception exception)
             {

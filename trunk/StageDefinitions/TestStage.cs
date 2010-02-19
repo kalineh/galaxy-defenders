@@ -20,7 +20,7 @@ namespace Galaxy
 
             public static void SinBallBoss(CEntity entity)
             {
-                CSinBall boss = entity as CSinBall;
+                CBall boss = entity as CBall;
 
                 boss.Health *= 15.0f;
                 boss.Coins = 30;

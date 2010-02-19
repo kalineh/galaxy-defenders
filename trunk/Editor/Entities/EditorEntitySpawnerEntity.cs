@@ -19,7 +19,7 @@ namespace Galaxy
         : CEditorEntityBase
     {
         [CategoryAttribute("Core")]
-        [EditorAttribute(typeof(CEntityTypeSelector), typeof(UITypeEditor))]
+        [EditorAttribute(typeof(CTypeSelector<CEntityTypes>), typeof(UITypeEditor))]
         public Type Type { get; set; }
 
         [CategoryAttribute("Mover")]
@@ -39,12 +39,11 @@ namespace Galaxy
             Type = type;
             CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
-            Mover = CMoverPresets.MoveDown(1.0f);
-            MoveSpeed = 1.0f;
+            Mover = CMoverPresets.MoveDown(0.0f);
         }
 
         public CEditorEntitySpawnerEntity(CWorld world, Vector2 position)
-            : this(world, typeof(CAsteroid), position)
+            : this(world, typeof(CBonus), position)
         {
         }
 
@@ -64,17 +63,6 @@ namespace Galaxy
             {
                 MoveSpeed = ((Galaxy.CMoverFixedVelocity)Mover).SpeedMultiplier;
             }
-        }
-
-        public override CEditorEntityPreview GeneratePreviewEntity()
-        {
-            if (MoveSpeed == 0.0f)
-                return null;
-
-            if (Mover == null)
-                return null;
-
-            return new CEditorEntityPreview(World, this) { Mover = Mover };
         }
 
         public override CStageElement GenerateStageElement()
