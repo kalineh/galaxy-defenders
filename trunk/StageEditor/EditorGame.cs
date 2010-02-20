@@ -43,8 +43,8 @@ namespace Galaxy
                 entities.Nodes.Add(new TreeNode() { Text = type.Name, Tag = type });
             }
 
-            tree.Nodes.Add(entities);
-            entities.Expand();
+            tree.Invoke((Action)(() => tree.Nodes.Add(entities)));
+            tree.Invoke((Action)(() => entities.Expand()));
 
             tree.NodeMouseClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseClick);
             tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);

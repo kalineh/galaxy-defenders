@@ -33,7 +33,7 @@ namespace Galaxy
             Zoom = 1.0f;
             Border = 150.0f;
             PanLimit = 100.0f;
-            ScreenSize = new Vector2(800.0f, 600.0f);
+            ScreenSize = new Vector2(800.0f, 800.0f);
 
             float aspect_ratio = (float)game.GraphicsDevice.Viewport.Width / (float)game.GraphicsDevice.Viewport.Height;
 
@@ -72,6 +72,10 @@ namespace Galaxy
             Vector2 transformed_screen = screen - viewport_size;
             Vector2 result = Vector2.Transform(transformed_screen, inverse_scale * translation);
             //Console.WriteLine(String.Format("{0} -> {1}", screen.ToString(), result.ToString()));
+
+            // TODO: fixme! math power!
+            result -= new Vector2(0.0f, 100.0f * 1.0f / Zoom);
+
             return result;
         }
 
@@ -150,8 +154,8 @@ namespace Galaxy
 
         public Vector2 GetSpawnBorderLine()
         {
-            // TODO: resolution
-            return Position.ToVector2() + new Vector2(0.0f, -300.0f + -Border);
+            float half_screen = ScreenSize.Y / 2.0f;
+            return Position.ToVector2() + new Vector2(0.0f, -half_screen + -Border);
         }
     }
 }

@@ -32,9 +32,9 @@ namespace Galaxy
 
             // TODO: 1080p!
             // TODO: render to backbuffer and just scale down before display if necessary
-            //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
-            //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
-            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            GraphicsDeviceManager.PreferredBackBufferWidth = 800;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 800;
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             //GraphicsDeviceManager.ToggleFullScreen();
             // TODO: fix crash here sometimes happening (device startup timing not friendly with editor)
             GraphicsDeviceManager.ApplyChanges();
@@ -52,7 +52,7 @@ namespace Galaxy
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             // TODO: resolution
-            PlayerSpawnPosition = new Vector2(0.0f, 300.0f);
+            PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
         }
 
         public void SwitchGraphicsDevice(GraphicsDevice graphics_device)

@@ -26,7 +26,7 @@ namespace Galaxy
             Health = 4.0f;
 
             FireDelay = 1.5f;
-            FireCooldown = Time.ToFrames(FireDelay);
+            FireCooldown = Time.ToFrames(FireDelay) / 2;
             FireDamage = 1.0f;
             FireSpeed = 6.0f;
         }

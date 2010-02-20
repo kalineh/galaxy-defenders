@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace StageEditor
 {
@@ -12,6 +15,16 @@ namespace StageEditor
 
             this.InputCatcher.KeyDown += KeyDownHandler;
             this.InputCatcher.KeyUp += KeyUpHandler;
+
+            // put all stages into dropdown
+            Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
+            IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages", StringComparison.Ordinal));
+            foreach (Type type in types)
+            {
+                StageSelectDropdown.Items.Add(type.Name);
+            }
+            StageSelectDropdown.Text = "EditorStage";
+            StageSelectDropdown.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         protected void UpdateEditorPosition()
@@ -127,6 +140,20 @@ namespace StageEditor
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             editor.PreviewAllEntities();
+        }
+
+        private void StageSelectDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GameControl game_control = this.Game;
+            Galaxy.CGalaxy game = game_control.Game;
+            if (game == null)
+                return;
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
+            Type type = assembly.GetType("Galaxy.Stages." + StageSelectDropdown.Text);
+            MethodInfo generate_method = type.GetMethod("GenerateDefinition");
+            Galaxy.CStageDefinition result = generate_method.Invoke(null, null) as Galaxy.CStageDefinition;
+            editor.ReplaceStageDefinition(result);
         }
     }
 }
