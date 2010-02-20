@@ -502,7 +502,7 @@ namespace Galaxy
 
         public void UpdateStageDefinition()
         {
-            Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, "EditorStage");
+            Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, Game.StageDefinition.Name);
             ClearStage();
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }

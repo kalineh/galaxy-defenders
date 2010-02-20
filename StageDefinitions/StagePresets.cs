@@ -8,273 +8,214 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    namespace Stages
+    public class CStagePresets
     {
-        public class CStagePresets
+        public static CMover MoveDownToDownRight(float speed)
         {
-            public static CSpawnPositionFixed PositionTopCenter()
+            return new CMoverSequence()
             {
-                return new CSpawnPositionFixed()
+                Velocity = new List<Vector2>()
                 {
-                    Position = new Vector2(400.0f, -128.0f),
-                };
-            }
+                    new Vector2(0.0f, speed),
+                    new Vector2(speed, speed),
+                },
+                Duration = new List<float>()
+                {
+                    1.0f * speed,
+                    0.0f,
+                },
+            };
+        }
 
-            public static CSpawnPositionFixed PositionTopLeft()
+        public static CMover MoveDownToDownLeft(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CSpawnPositionFixed()
+                Velocity = new List<Vector2>()
                 {
-                    Position = new Vector2(0.0f, -128.0f),
-                };
-            }
+                    new Vector2(0.0f, speed),
+                    new Vector2(speed, speed),
+                },
+                Duration = new List<float>()
+                {
+                    1.0f * speed,
+                    0.0f,
+                },
 
-            public static CSpawnPositionFixed PositionTopRight()
+                VelocityLerpRate = 0.1f,
+            };
+        }
+
+        public static CMover MoveDownUp(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CSpawnPositionFixed()
+                Velocity = new List<Vector2>()
                 {
-                    Position = new Vector2(800.0f, -128.0f),
-                };
-            }
-            
-            public static CSpawnPositionFixed PositionTopLeftCenter()
+                    new Vector2(0.0f, speed),
+                    new Vector2(0.0f, -speed),
+                },
+                Duration = new List<float>()
+                {
+                    0.2f * speed,
+                    0.0f,
+                },
+
+                VelocityLerpRate = 0.02f,
+                AlwaysMaxSpeed = false,
+            };
+        }
+
+        public static CMover MoveDown(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CSpawnPositionFixed()
-                {
-                    Position = new Vector2(200.0f, -128.0f),
-                };
-            }
-            
-            public static CSpawnPositionFixed PositionTopRightCenter()
+                Velocity = new Vector2(0.0f, speed),
+            };
+        }
+
+        public static CMover MoveLeft(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CSpawnPositionFixed()
-                {
-                    Position = new Vector2(600.0f, -128.0f),
-                };
-            }
+                Velocity = new Vector2(-speed, 0.0f),
+            };
+        }
 
-            public static CSpawnPositionFixed PositionHighLeft()
+        public static CMover MoveRight(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CSpawnPositionFixed()
-                {
-                    Position = new Vector2(-128.0f, 200.0f),
-                };
-            }
+                Velocity = new Vector2(speed, 0.0f),
+            };
+        }
 
-            public static CSpawnPositionFixed PositionHighRight()
+        public static CMover MoveDownLeft(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CSpawnPositionFixed()
-                {
-                    Position = new Vector2(928.0f, 200.0f),
-                };
-            }
+                Velocity = new Vector2(-speed, speed),
+            };
+        }
 
-            public static CMover MoveDownToDownRight(float speed)
+        public static CMover MoveDownRight(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CMoverSequence()
-                {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(speed, speed),
-                    },
-                    Duration = new List<float>()
-                    {
-                        1.0f * speed,
-                        0.0f,
-                    },
-                };
-            }
+                Velocity = new Vector2(speed, speed),
+            };
+        }
 
-            public static CMover MoveDownToDownLeft(float speed)
+        public static CMover MoveDownLerpLeft(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CMoverSequence()
+                Velocity = new List<Vector2>()
                 {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(speed, speed),
-                    },
-                    Duration = new List<float>()
-                    {
-                        1.0f * speed,
-                        0.0f,
-                    },
+                    new Vector2(0.0f, speed),
+                    new Vector2(-speed, 0.0f),
+                },
+                Duration = new List<float>()
+                {
+                    0.3f * speed,
+                    0.0f * speed,
+                },
 
-                    VelocityLerpRate = 0.1f,
-                };
-            }
+                VelocityLerpRate = 0.03f,
+            };
+        }
 
-            public static CMover MoveDownUp(float speed)
+        public static CMover MoveDownLerpRight(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CMoverSequence()
+                Velocity = new List<Vector2>()
                 {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(0.0f, -speed),
-                    },
-                    Duration = new List<float>()
-                    {
-                        0.2f * speed,
-                        0.0f,
-                    },
+                    new Vector2(0.0f, speed),
+                    new Vector2(speed, 0.0f),
+                },
+                Duration = new List<float>()
+                {
+                    0.3f * speed,
+                    0.0f * speed,
+                },
 
-                    VelocityLerpRate = 0.02f,
-                    AlwaysMaxSpeed = false,
-                };
-            }
+                VelocityLerpRate = 0.03f,
+            };
+        }
 
-            public static CMover MoveDown(float speed)
+        public static CMover MoveDownDownLeft(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CMoverFixedVelocity()
-                {
-                    Velocity = new Vector2(0.0f, speed),
-                };
-            }
+                Velocity = new Vector2(speed * -0.5f, speed),
+            };
+        }
 
-            public static CMover MoveLeft(float speed)
+        public static CMover MoveDownDownRight(float speed)
+        {
+            return new CMoverFixedVelocity()
             {
-                return new CMoverFixedVelocity()
-                {
-                    Velocity = new Vector2(-speed, 0.0f),
-                };
-            }
+                Velocity = new Vector2(speed * 0.5f, speed),
+            };
+        }
 
-            public static CMover MoveRight(float speed)
+        public static CMover MoveDownLoopRightUp(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CMoverFixedVelocity()
+                Velocity = new List<Vector2>()
                 {
-                    Velocity = new Vector2(speed, 0.0f),
-                };
-            }
+                    new Vector2(0.0f, speed),
+                    new Vector2(speed, 0.0f),
+                    new Vector2(0.0f, -speed),
+                    new Vector2(-speed, 0.0f),
+                    new Vector2(0.0f, speed),
+                },
+                Duration = new List<float>()
+                {
+                    0.2f * speed,
+                    0.2f * speed,
+                    0.1f * speed,
+                    0.2f * speed,
+                    0.2f * speed,
+                },
 
-            public static CMover MoveDownLeft(float speed)
+                VelocityLerpRate = 0.03f,
+            };
+        }
+
+        public static CMover MoveDownLoopLeftUp(float speed)
+        {
+            return new CMoverSequence()
             {
-                return new CMoverFixedVelocity()
+                Velocity = new List<Vector2>()
                 {
-                    Velocity = new Vector2(-speed, speed),
-                };
-            }
+                    new Vector2(0.0f, speed),
+                    new Vector2(-speed, 0.0f),
+                    new Vector2(0.0f, -speed),
+                    new Vector2(speed, 0.0f),
+                    new Vector2(0.0f, speed),
+                },
+                Duration = new List<float>()
+                {
+                    0.2f * speed,
+                    0.2f * speed,
+                    0.1f * speed,
+                    0.2f * speed,
+                    0.2f * speed,
+                },
 
-            public static CMover MoveDownRight(float speed)
+                VelocityLerpRate = 0.03f,
+            };
+        }
+
+        public static CSpawnTimerInterval TimerInterval(float delay)
+        {
+            return new CSpawnTimerInterval()
             {
-                return new CMoverFixedVelocity()
-                {
-                    Velocity = new Vector2(speed, speed),
-                };
-            }
-
-            public static CMover MoveDownLerpLeft(float speed)
-            {
-                return new CMoverSequence()
-                {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(-speed, 0.0f),
-                    },
-                    Duration = new List<float>()
-                    {
-                        0.3f * speed,
-                        0.0f * speed,
-                    },
-
-                    VelocityLerpRate = 0.03f,
-                };
-            }
-
-            public static CMover MoveDownLerpRight(float speed)
-            {
-                return new CMoverSequence()
-                {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(speed, 0.0f),
-                    },
-                    Duration = new List<float>()
-                    {
-                        0.3f * speed,
-                        0.0f * speed,
-                    },
-
-                    VelocityLerpRate = 0.03f,
-                };
-            }
-
-            public static CMover MoveDownDownLeft(float speed)
-            {
-                return new CMoverFixedVelocity()
-                {
-                    Velocity = new Vector2(speed * -0.5f, speed),
-                };
-            }
-
-            public static CMover MoveDownDownRight(float speed)
-            {
-                return new CMoverFixedVelocity()
-                {
-                    Velocity = new Vector2(speed * 0.5f, speed),
-                };
-            }
-
-            public static CMover MoveDownLoopRightUp(float speed)
-            {
-                return new CMoverSequence()
-                {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(speed, 0.0f),
-                        new Vector2(0.0f, -speed),
-                        new Vector2(-speed, 0.0f),
-                        new Vector2(0.0f, speed),
-                    },
-                    Duration = new List<float>()
-                    {
-                        0.2f * speed,
-                        0.2f * speed,
-                        0.1f * speed,
-                        0.2f * speed,
-                        0.2f * speed,
-                    },
-
-                    VelocityLerpRate = 0.03f,
-                };
-            }
-
-            public static CMover MoveDownLoopLeftUp(float speed)
-            {
-                return new CMoverSequence()
-                {
-                    Velocity = new List<Vector2>()
-                    {
-                        new Vector2(0.0f, speed),
-                        new Vector2(-speed, 0.0f),
-                        new Vector2(0.0f, -speed),
-                        new Vector2(speed, 0.0f),
-                        new Vector2(0.0f, speed),
-                    },
-                    Duration = new List<float>()
-                    {
-                        0.2f * speed,
-                        0.2f * speed,
-                        0.1f * speed,
-                        0.2f * speed,
-                        0.2f * speed,
-                    },
-
-                    VelocityLerpRate = 0.03f,
-                };
-            }
-
-            public static CSpawnTimerInterval TimerInterval(float delay)
-            {
-                return new CSpawnTimerInterval()
-                {
-                    Interval = delay,
-                };
-            }
+                Interval = delay,
+            };
         }
     }
 }
