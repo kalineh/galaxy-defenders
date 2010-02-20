@@ -123,7 +123,8 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None, Matrix.Identity);
 
             // TODO: split to HUD system
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Score: " + Score.ToString(), new Vector2(10, 10), Color.White);
+            int money = CSaveData.GetCurrentProfile().Money + Score; ;
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Money: " + money.ToString(), new Vector2(10, 10), Color.White);
             Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
             // TODO: HUD system
