@@ -90,7 +90,8 @@ namespace Galaxy
         
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
+            // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
+            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.5f);
 
             foreach (int i in Enumerable.Range(0, Coins))
             {

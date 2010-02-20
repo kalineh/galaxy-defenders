@@ -85,7 +85,7 @@ namespace Galaxy
         {
             Game.GraphicsDevice.Clear(new Color(133, 145, 181));
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
@@ -180,24 +180,24 @@ namespace Galaxy
             }
         }
 
-        private void StartGame()
+        private void StartGame(object tag)
         {
             CSaveData.SetCurrentProfileData(WorkingProfile);
             CSaveData.Save();
-            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
         }
 
-        private void EditPrimaryWeapon()
+        private void EditPrimaryWeapon(object tag)
         {
             Menu = MenuPrimaryWeapon;
         }
 
-        private void EditSecondaryWeapon()
+        private void EditSecondaryWeapon(object tag)
         {
             Menu = MenuSecondaryWeapon;
         }
 
-        private void Back()
+        private void Back(object tag)
         {
             CSaveData.SetCurrentProfileData(WorkingProfile);
             CSaveData.Save();
@@ -206,7 +206,7 @@ namespace Galaxy
 
         // TODO: replace with selection
         // TODO: money reimburse shouldnt be automagic (will go negative)
-        private void PrimarySwapType()
+        private void PrimarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponPrimaryType;
             string replace = CWeaponFactory.GetNextWeaponInCycle(current);
@@ -219,7 +219,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void PrimaryPowerUp()
+        private void PrimaryPowerUp(object tag)
         {
             int current = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
             int next = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
@@ -236,7 +236,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void PrimaryPowerDown()
+        private void PrimaryPowerDown(object tag)
         {
             if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel))
                 return;
@@ -249,7 +249,7 @@ namespace Galaxy
 
         // TODO: replace with selection
         // TODO: money reimburse shouldnt be automagic (will go negative)
-        private void SecondarySwapType()
+        private void SecondarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponSecondaryType;
             string replace = CWeaponFactory.GetNextWeaponInCycle(current);
@@ -267,7 +267,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void SecondaryRemove()
+        private void SecondaryRemove(object tag)
         {
             string current = WorkingProfile.WeaponSecondaryType;
             string replace = CWeaponFactory.GetNextWeaponInCycle(current);
@@ -278,7 +278,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void SecondaryPowerUp()
+        private void SecondaryPowerUp(object tag)
         {
             int current = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
             int next = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
@@ -295,7 +295,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void SecondaryPowerDown()
+        private void SecondaryPowerDown(object tag)
         {
             if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel))
                 return;
@@ -306,7 +306,7 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void ReturnToBaseMenu()
+        private void ReturnToBaseMenu(object tag)
         {
             Menu = MenuBase;
         }

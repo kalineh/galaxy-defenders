@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -15,6 +16,15 @@ namespace Galaxy
         public float ScrollSpeed { get; set; }
         public Dictionary<int, List<CStageElement>> Elements { get; private set; }
         public List<CStageElement> ActiveElements { get; private set; }
+
+        public static CStageDefinition GetStageDefinitionByName(string name)
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(CEntity));
+            Type type = assembly.GetType("Galaxy.Stages." + name);
+            MethodInfo generate_method = type.GetMethod("GenerateDefinition");
+            CStageDefinition result = generate_method.Invoke(null, null) as CStageDefinition;
+            return result;
+        }
 
         public CStageDefinition(string name)
         {

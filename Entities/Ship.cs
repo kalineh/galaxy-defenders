@@ -27,7 +27,7 @@ namespace Galaxy
         static CShip()
         {
             SSettings.VisualScale = 0.25f;
-            SSettings.MovementSpeed = 1.75f;
+            SSettings.MovementSpeed = 2.25f;
             SSettings.Friction = 0.8f;
             SSettings.Shield = 5.0f;
             SSettings.Armor = 10.0f;
@@ -39,10 +39,10 @@ namespace Galaxy
         public List<CWeapon> WeaponPrimary { get; private set; }
         public List<CWeapon> WeaponSecondary { get; private set; }
 
-        private string WeaponPrimaryType { get; set; }
-        private int WeaponPrimaryLevel { get; set; }
-        private string WeaponSecondaryType { get; set; }
-        private int WeaponSecondaryLevel { get; set; }
+        public string WeaponPrimaryType { get; set; }
+        public int WeaponPrimaryLevel { get; set; }
+        public string WeaponSecondaryType { get; set; }
+        public int WeaponSecondaryLevel { get; set; }
         public float Shield { get; private set; }
         public float Armor { get; private set; }
 
@@ -138,7 +138,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
         }
 
         private void UpdateInput()
@@ -206,7 +206,7 @@ namespace Galaxy
             if (fired)
             {
                 SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/LaserShoot");
-                sound.Play(0.1f, 0.0f, 0.0f);
+                sound.Play(0.05f, 0.0f, 0.0f);
             }
         }
 

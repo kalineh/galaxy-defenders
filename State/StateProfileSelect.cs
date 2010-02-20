@@ -34,7 +34,7 @@ namespace Galaxy
 
             foreach (SProfile profile in CSaveData.SaveData.Profiles)
             {
-                Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Function = () => SelectProfile(), Data = profile } );
+                Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Function = SelectProfile, Data = profile } );
             }
 
             Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Function = Back } );
@@ -59,14 +59,14 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        public void NewProfile()
+        public void NewProfile(object tag)
         {
             CSaveData.AddNewProfile("New User");
             CSaveData.SetCurrentProfile("New User");
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
-        public void SelectProfile()
+        public void SelectProfile(object tag)
         {
             SProfile profile = (SProfile)Menu.MenuOptions[ Menu.Cursor ].Data;
             CSaveData.SetCurrentProfile(profile.Name);
@@ -74,7 +74,7 @@ namespace Galaxy
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
-        public void Back()
+        public void Back(object tag)
         {
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }

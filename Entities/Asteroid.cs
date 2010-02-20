@@ -57,17 +57,19 @@ namespace Galaxy
         {
             Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
             TakeDamage(laser.Damage);
+            laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
             TakeDamage(missile.Damage);
+            missile.Die();
         }
 
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
             World.Score += 100;
             base.OnDie();
         }

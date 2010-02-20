@@ -149,11 +149,9 @@ namespace StageEditor
             Galaxy.CGalaxy game = game_control.Game;
             if (game == null)
                 return;
+
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
-            Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
-            Type type = assembly.GetType("Galaxy.Stages." + StageSelectDropdown.Text);
-            MethodInfo generate_method = type.GetMethod("GenerateDefinition");
-            Galaxy.CStageDefinition result = generate_method.Invoke(null, null) as Galaxy.CStageDefinition;
+            Galaxy.CStageDefinition result = Galaxy.CStageDefinition.GetStageDefinitionByName(StageSelectDropdown.Text);
             editor.ReplaceStageDefinition(result);
         }
     }

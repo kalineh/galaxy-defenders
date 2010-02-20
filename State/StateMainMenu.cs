@@ -17,6 +17,7 @@ namespace Galaxy
         private CWorld EmptyWorld { get; set; }
         private CStars Stars { get; set; }
         public CMenu Menu { get; set; }
+        public CShip SampleShip { get; set; }
 
         public CStateMainMenu(CGalaxy game)
         {
@@ -26,7 +27,7 @@ namespace Galaxy
             Stars = new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(300.0f, 300.0f),
+                Position = new Vector2(500.0f, 300.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Start Game", Function = StartGame },
@@ -34,6 +35,7 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Quit", Function = Quit },
                 }
             };
+            SampleShip = new CShip(EmptyWorld, CSaveData.GetCurrentProfile(), new Vector2(-200.0f, 0.0f));
         }
 
         public override void Update()
@@ -52,32 +54,54 @@ namespace Galaxy
             {
                 Game.State = new CStateEditor(Game);
             }
+
+            // sample display
+            SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
+            SampleShip.Physics.AnglePhysics.AngularVelocity = 0.025f;
+            SampleShip.Physics.AnglePhysics.Solve();
+            SampleShip.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(SampleShip.Physics.AnglePhysics.Rotation) * 1.5f;
+            SampleShip.Physics.PositionPhysics.Solve();
+            SampleShip.Visual.Update();
+
+            if (EmptyWorld.Random.NextFloat() < 0.09f)
+                SampleShip.FireAllWeapons();
+            SampleShip.UpdateWeapons();
+
+            EmptyWorld.UpdateEntities();
+            EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
         }
 
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(new Color(133, 145, 181));
 
-            Game.DefaultSpriteBatch.Begin();
-
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             Stars.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            SampleShip.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
+            EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
+
+            Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
-
             Game.DefaultSpriteBatch.End();
         }
 
-        private void StartGame()
+        private void StartGame(object tag)
         {
             Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
         }
 
-        private void SelectProfile()
+        private void SelectProfile(object tag)
         {
             Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
         }
 
-        private void Quit()
+        private void Quit(object tag)
         {
             Game.Exit();
         }

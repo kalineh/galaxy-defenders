@@ -146,6 +146,8 @@ namespace Galaxy
 
         private static void Export(SSaveData data, string filename)
         {
+            AccessMutex.WaitOne();
+
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
             FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Write);
             try
@@ -161,6 +163,8 @@ namespace Galaxy
             {
                 stream.Close();
             }
+
+            AccessMutex.ReleaseMutex();
         }
     }
 }

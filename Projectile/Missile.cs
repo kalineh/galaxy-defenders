@@ -55,14 +55,9 @@ namespace Galaxy
             box.Position = Physics.PositionPhysics.Position;
         }
 
-        public void OnCollide(CAsteroid asteroid)
-        {
-            Die();
-        }
-
         protected override void OnDie()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 2.5f);
+            CEffect.Explosion(World, Physics.PositionPhysics.Position, 2.5f);
             base.OnDie();
         }
     }
