@@ -21,6 +21,7 @@ namespace Galaxy
         public int WeaponPrimaryLevel;
         public string WeaponSecondaryType;
         public int WeaponSecondaryLevel;
+        public int Money;
     }
 
     [Serializable]
@@ -81,8 +82,9 @@ namespace Galaxy
                 Ship = "Default",
                 WeaponPrimaryType = "Laser",
                 WeaponPrimaryLevel = 0,
-                WeaponSecondaryType = "Empty",
+                WeaponSecondaryType = "",
                 WeaponSecondaryLevel = 0,
+                Money = 1500,
             };
         }
 

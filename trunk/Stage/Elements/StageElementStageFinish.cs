@@ -12,7 +12,14 @@ namespace Galaxy
     {
         public override void Update(CWorld world)
         {
-            world.Game.State = new CStateFadeTo(world.Game, world.Game.State, new CStateMainMenu(world.Game));
+            // TODO: is this a good place to add score to money?
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Money += world.Score;
+            CSaveData.SetCurrentProfileData(profile);
+            CSaveData.Save();
+
+            // TODO: lobby state
+            world.Game.State = new CStateFadeTo(world.Game, world.Game.State, new CStateShop(world.Game));
         }
 
         public override bool IsExpired()

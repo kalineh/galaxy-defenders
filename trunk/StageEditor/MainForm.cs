@@ -23,6 +23,7 @@ namespace StageEditor
             {
                 StageSelectDropdown.Items.Add(type.Name);
             }
+            // TODO: last selected stage
             StageSelectDropdown.Text = "EditorStage";
             StageSelectDropdown.DropDownStyle = ComboBoxStyle.DropDownList;
         }
