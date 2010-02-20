@@ -29,7 +29,8 @@ namespace Galaxy
             {
                 // TODO: is this a good place?
                 CSaveData.Save();
-                Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+                Game.Music.StopImmediate();
+                Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
             }
         }
 

@@ -289,6 +289,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Effects\LaserHit.png">
+      <Name>LaserHit</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SE\LaserHit.wav">
+      <Name>LaserHit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>

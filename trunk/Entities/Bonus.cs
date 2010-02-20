@@ -26,6 +26,12 @@ namespace Galaxy
         public override void Update()
         {
             base.Update();
+            
+            // TODO: anti-camera
+            if (World.Game.State.GetType() == typeof(CStateGame))
+            {
+                Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+            }
 
             LerpGravity();
             LerpToPlayers();

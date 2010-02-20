@@ -138,6 +138,7 @@
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
     <Compile Include="Stage\StageCompiler.cs" />
+    <Compile Include="State\StateStageSelect.cs" />
     <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />
     <Compile Include="State\StateShop.cs" />
@@ -152,7 +153,7 @@
     <Compile Include="Enemy\Ball.cs" />
     <Compile Include="Enemy\Enemy.cs" />
     <Compile Include="Entity.cs" />
-    <Compile Include="Effects\Explosion.cs" />
+    <Compile Include="Effects\Effect.cs" />
     <Compile Include="Mover\MoverSequence.cs" />
     <Compile Include="Mover\MoverFixedVelocity.cs" />
     <Compile Include="Mover\MoverSin.cs" />

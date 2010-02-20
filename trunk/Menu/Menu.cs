@@ -13,7 +13,7 @@ namespace Galaxy
     public class CMenu
     {
         public CGalaxy Game { get; set; }
-        public delegate void MenuFunction();
+        public delegate void MenuFunction(object tag);
         public struct MenuOption
         {
             public string Text;
@@ -43,7 +43,7 @@ namespace Galaxy
             if (Game.Input.IsKeyPressed(Keys.Enter))
             {
                 MenuOption option = MenuOptions[Cursor];
-                option.Function();
+                option.Function( option.Data );
             }
         }
 

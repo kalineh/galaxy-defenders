@@ -75,7 +75,7 @@ namespace Galaxy
 
         private void OnDestroyed()
         {
-            CExplosion.Spawn(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
             World.Score += 100;
             Visual = VisualDestroyed;
             Collision = null;
