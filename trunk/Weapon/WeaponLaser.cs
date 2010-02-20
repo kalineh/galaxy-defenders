@@ -10,7 +10,7 @@ namespace Galaxy
         : CWeapon
     {
         public CWeaponLaser(CEntity owner)
-            : base(owner)
+            : base(owner, "Laser")
         {
         }
 

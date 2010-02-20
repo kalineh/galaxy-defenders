@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Galaxy
 {
@@ -196,7 +197,17 @@ namespace Galaxy
 
         private void Fire(List<CWeapon> weapons)
         {
-            weapons.ForEach(weapon => weapon.TryFire());
+            bool fired = false;
+            foreach (CWeapon weapon in weapons)
+            {
+                fired |= weapon.TryFire();
+            }
+
+            if (fired)
+            {
+                SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/LaserShoot");
+                sound.Play(0.1f, 0.0f, 0.0f);
+            }
         }
 
         public void FireAllWeapons()
