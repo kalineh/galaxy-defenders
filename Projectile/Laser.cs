@@ -3,7 +3,6 @@
 //
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
@@ -20,9 +19,6 @@ namespace Galaxy
             laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             world.EntityAdd(laser);
-
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("SE/LaserShoot");
-            sound.Play(0.1f, 0.0f, 0.0f);
 
             return laser;
         }
