@@ -58,7 +58,13 @@ namespace Galaxy
         public void Stop()
         {
             Game.Music.StopImmediate();
-            Stage.Finish();
+
+            // TODO: clean up
+            if (Stage != null)
+            {
+                Stage.Finish();
+            }
+
             Entities.Clear();
             EntitiesToAdd.Clear();
             EntitiesToDelete.Clear();

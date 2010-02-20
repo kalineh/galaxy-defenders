@@ -63,6 +63,7 @@ namespace Galaxy
             CStageElementBuilding result = new CStageElementBuilding()
             {
                 Position = Position,
+                HealthMax = HealthMax,
                 Coins = Coins,
                 Powerup = Powerup,
                 TextureName = TextureName,
