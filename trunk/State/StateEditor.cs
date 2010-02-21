@@ -46,6 +46,8 @@ namespace Galaxy
         public Type SpawnEntityType { get; set; }
         private bool NoSpawnTillRelease { get; set; }
         private bool NoSelectTillRelease { get; set; }
+        public bool SnapToGrid { get; set; }
+        public float GridSize { get; set; }
 
         public CStateEditor(CGalaxy game)
         {
@@ -57,6 +59,8 @@ namespace Galaxy
             SelectedEntitiesPreview = new List<CEntity>();
             SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();
             HoverEntities = new List<CEntity>();
+            SnapToGrid = false;
+            GridSize = 8.0f;
         }
 
         public override void Update()
@@ -370,8 +374,25 @@ namespace Galaxy
                 return;
             }
 
+            // snap to grid
+            if (CInput.IsRawKeyDown(Keys.LeftControl) && CInput.IsRawKeyPressed(Keys.G))
+                SnapToGrid = !SnapToGrid;
+
+            Vector2 snapped = world;
+            if (SnapToGrid)
+            {
+                snapped = new Vector2(world.X - world.X % GridSize, world.Y - world.Y % GridSize);
+
+                // TODO: can we do this without so much redundancy?
+                Dictionary<CEntity, Vector2> copy = new Dictionary<CEntity,Vector2>(SelectedEntitiesOffset);
+                foreach (KeyValuePair<CEntity, Vector2> pair in copy)
+                {
+                    SelectedEntitiesOffset[pair.Key] = new Vector2(pair.Value.X - pair.Value.X % GridSize, pair.Value.Y - pair.Value.Y % GridSize);
+                }
+            }
+
             // TODO: each entity needs a selection offset
-            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = world + SelectedEntitiesOffset[entity]);
+            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = snapped + SelectedEntitiesOffset[entity]);
 
             // TODO: is this a bad hack?
             foreach (CEntity entity in SelectedEntities)
