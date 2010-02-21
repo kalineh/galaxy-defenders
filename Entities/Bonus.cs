@@ -75,7 +75,7 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            World.Score += 100;
+            World.Score += 50;
             SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/BonusGet");
             sound.Play(0.1f, 0.0f, 0.0f);
             Die();

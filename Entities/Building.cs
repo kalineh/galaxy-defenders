@@ -54,9 +54,9 @@ namespace Galaxy
         private void UpdateTexture()
         {
             VisualNormal = CVisual.MakeSprite(World, "Textures/Static/" + TextureName);
-            VisualDestroyed = CVisual.MakeSprite(World, "Textures/Static/" + TextureName + "Destroyed");
+            VisualDestroyed = CVisual.MakeSprite(World, "Textures/Static/Destroyed/" + TextureName);
             VisualNormal = VisualNormal ?? CVisual.MakeLabel(World, TextureName);
-            VisualDestroyed = VisualDestroyed ?? CVisual.MakeLabel(World, TextureName + "Destroyed");
+            VisualDestroyed = VisualDestroyed ?? CVisual.MakeLabel(World, "Destroyed/" + TextureName);
             Visual = VisualNormal;
         }
 
@@ -73,10 +73,16 @@ namespace Galaxy
             missile.Die();
         }
 
+        private int CalculateScoreFromHealth()
+        {
+            int base_ = (int)HealthMax * 5;
+            return base_ - base_ % 10;
+        }
+
         private void OnDestroyed()
         {
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
-            World.Score += 100;
+            World.Score += CalculateScoreFromHealth();
             Visual = VisualDestroyed;
             Collision = null;
 

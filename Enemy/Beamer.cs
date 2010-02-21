@@ -22,7 +22,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
-            Health = 1.0f;
+            HealthMax = 2.0f;
 
             FireDelay = 3.0f;
             FireCooldown = Time.ToFrames(FireDelay);

@@ -23,7 +23,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Turret");
-            Health = 4.0f;
+            HealthMax = 4.0f;
 
             FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;

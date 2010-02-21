@@ -22,7 +22,7 @@ namespace Galaxy
             {
                 CBall boss = entity as CBall;
 
-                boss.Health *= 15.0f;
+                boss.HealthMax *= 15.0f;
                 boss.Coins = 30;
                 boss.Visual.Scale *= 2.5f;
                 boss.Mover = new CMoverSequence()

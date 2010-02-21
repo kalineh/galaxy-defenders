@@ -11,14 +11,23 @@ namespace Galaxy
     public class CEnemy
         : CEntity
     {
-        public float Health { get; set; }
+        private float _HealthMax;
+        public float HealthMax
+        {
+            get { return _HealthMax; }
+            set { _HealthMax = value; Health = value; }
+        }
+
+        public float Health { get; private set; }
         public int Coins { get; set; }
         public bool Powerup { get; set; }
+        private int BaseScore { get; set; }
 
         public CEnemy(CWorld world)
             : base(world)
         {
             Physics = new CPhysics();
+            BaseScore = 10;
         }
 
         public virtual void UpdateAI()
@@ -87,11 +96,19 @@ namespace Galaxy
             TakeDamage(missile.Damage);
             missile.Die();
         }
+
+        private int CalculateScoreFromHealth()
+        {
+            int base_ = BaseScore * (int)HealthMax;
+            return base_ - base_ % 10;
+        }
         
         protected override void OnDie()
         {
             // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.5f);
+
+            World.Score += CalculateScoreFromHealth();
 
             foreach (int i in Enumerable.Range(0, Coins))
             {

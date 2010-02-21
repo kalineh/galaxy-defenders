@@ -203,8 +203,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Static\Building1Destroyed.png">
-      <Name>Building1Destroyed</Name>
+    <Compile Include="Textures\Static\Destroyed\Building1.png">
+      <Name>Building1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -213,8 +213,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Static\Building2Destroyed.png">
-      <Name>Building2Destroyed</Name>
+    <Compile Include="Textures\Static\Destroyed\Building2.png">
+      <Name>Building2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -223,8 +223,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Static\Building3Destroyed.png">
-      <Name>Building3Destroyed</Name>
+    <Compile Include="Textures\Static\Destroyed\Building3.png">
+      <Name>Building3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -233,8 +233,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Static\Building4Destroyed.png">
-      <Name>Building4Destroyed</Name>
+    <Compile Include="Textures\Static\Destroyed\Building4.png">
+      <Name>Building4</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -243,8 +243,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Static\Building5Destroyed.png">
-      <Name>Building5Destroyed</Name>
+    <Compile Include="Textures\Static\Destroyed\Building5.png">
+      <Name>Building5</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
