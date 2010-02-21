@@ -12,7 +12,7 @@ namespace Galaxy
         : CEntity
     {
         public CBonus(CWorld world, Vector2 position)
-            : base(world, "Bonus")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
@@ -21,18 +21,13 @@ namespace Galaxy
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
+            IgnoreCameraScroll = true;
         }
 
         public override void Update()
         {
             base.Update();
             
-            // TODO: anti-camera
-            if (World.Game.State.GetType() == typeof(CStateGame))
-            {
-                Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
-            }
-
             LerpGravity();
             LerpToPlayers();
 
@@ -49,12 +44,12 @@ namespace Galaxy
         {
             foreach (CEntity entity in World.GetEntitiesOfType(typeof(CShip)))
             {
-                Vector2 target = entity.Physics.PositionPhysics.Position + entity.Physics.PositionPhysics.Velocity * 4.0f;
+                Vector2 target = entity.Physics.PositionPhysics.Position + entity.Physics.PositionPhysics.Velocity * 8.0f;
                 Vector2 offset = target - Physics.PositionPhysics.Position;
                 Vector2 dir = offset.Normal();
                 float length = offset.Length();
 
-                const float MaxLength = 60.0f;
+                const float MaxLength = 120.0f;
                 if (length < MaxLength)
                 {
                     float power = MaxLength - length;

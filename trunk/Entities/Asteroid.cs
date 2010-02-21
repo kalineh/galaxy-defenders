@@ -21,7 +21,7 @@ namespace Galaxy
         public CVisual Cracks { get; set; }
 
         public CAsteroid(CWorld world, Vector2 position)
-            : base(world, "Asteroid")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

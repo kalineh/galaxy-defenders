@@ -11,7 +11,7 @@ namespace Galaxy
         : CEnemy
     {
         public CBall(CWorld world, Vector2 position)
-            : base(world, "Ball")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

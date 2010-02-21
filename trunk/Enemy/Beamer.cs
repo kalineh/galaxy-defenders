@@ -16,7 +16,7 @@ namespace Galaxy
         public float FireSpeed { get; private set; }
 
         public CBeamer(CWorld world, Vector2 position)
-            : base(world, "Beamer")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

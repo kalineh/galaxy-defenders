@@ -15,8 +15,8 @@ namespace Galaxy
         public int Coins { get; set; }
         public bool Powerup { get; set; }
 
-        public CEnemy(CWorld world, String name)
-            : base(world, name)
+        public CEnemy(CWorld world)
+            : base(world)
         {
             Physics = new CPhysics();
         }

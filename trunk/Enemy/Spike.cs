@@ -11,7 +11,7 @@ namespace Galaxy
         : CEnemy
     {
         public CSpike(CWorld world, Vector2 position)
-            : base(world, "Spike")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

@@ -47,7 +47,7 @@ namespace Galaxy
         public float Armor { get; private set; }
 
         public CShip(CWorld world, SProfile profile, Vector2 position)
-            : base(world, "Ship")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
@@ -67,6 +67,8 @@ namespace Galaxy
 
             Shield = SSettings.Shield;
             Armor = SSettings.Armor;
+
+            IgnoreCameraScroll = true;
         }
 
         public override void Update()
@@ -74,13 +76,6 @@ namespace Galaxy
             UpdateInput();
             UpdateWeapons();
             UpdateShields();
-
-            // anti-camera
-            // TODO: camera scroll management (scenery system?)
-            if (World.Game.State.GetType() == typeof(CStateGame))
-            {
-                Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
-            }
 
             base.Update();
 
@@ -163,8 +158,8 @@ namespace Galaxy
 
             Physics.PositionPhysics.Velocity += force;
 
-            if (World.Game.Input.IsKeyPressed(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
-            if (World.Game.Input.IsKeyPressed(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
+            if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
+            if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
             if (World.Game.Input.IsKeyPressed(Keys.C))
@@ -206,7 +201,7 @@ namespace Galaxy
             if (fired)
             {
                 SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/LaserShoot");
-                sound.Play(0.05f, 0.0f, 0.0f);
+                sound.Play(0.1f, 0.0f, 0.0f);
             }
         }
 

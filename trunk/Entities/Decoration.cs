@@ -13,7 +13,7 @@ namespace Galaxy
         public string TextureName { get; set; }
 
         public CDecoration(CWorld world, Vector2 position)
-            : base(world, "Decoration")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

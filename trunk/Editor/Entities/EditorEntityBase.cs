@@ -30,7 +30,7 @@ namespace Galaxy
         /// Generate default editor entity from just position.
         /// </summary>
         public CEditorEntityBase(CWorld world, Vector2 position)
-            : base(world, "EditorEntityBaseDynamic")
+            : base(world)
         {
             Physics = new CPhysics();
             Position = position;
@@ -40,7 +40,7 @@ namespace Galaxy
         /// Generate editor entity from stage element.
         /// </summary>
         public CEditorEntityBase(CWorld world, CStageElement element)
-            : base(world, "EditorEntityBaseStatic")
+            : base(world)
         {
         }
 

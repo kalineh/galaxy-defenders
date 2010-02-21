@@ -17,7 +17,7 @@ namespace Galaxy
         public float FireSpeed { get; private set; }
 
         public CTurret(CWorld world, Vector2 position)
-            : base(world, "Turret")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
