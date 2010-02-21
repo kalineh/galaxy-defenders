@@ -59,11 +59,11 @@ namespace Galaxy
 
             WeaponPrimaryType = profile.WeaponPrimaryType;
             WeaponPrimaryLevel = profile.WeaponPrimaryLevel;
-            WeaponPrimary = CWeaponFactory.GenerateWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
+            WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
 
             WeaponSecondaryType = profile.WeaponSecondaryType;
             WeaponSecondaryLevel = profile.WeaponSecondaryLevel;
-            WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
+            WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
 
             Shield = SSettings.Shield;
             Armor = SSettings.Armor;
@@ -118,7 +118,7 @@ namespace Galaxy
             if (CWeaponFactory.CanUpgrade(WeaponPrimaryType, WeaponPrimaryLevel))
             {
                 WeaponPrimaryLevel += 1;
-                WeaponPrimary = CWeaponFactory.GenerateWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
+                WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Galaxy
             if (CWeaponFactory.CanUpgrade(WeaponSecondaryType, WeaponSecondaryLevel))
             {
                 WeaponSecondaryLevel += 1;
-                WeaponSecondary = CWeaponFactory.GenerateWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
+                WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
             }
         }
 
@@ -240,6 +240,15 @@ namespace Galaxy
             if (Armor <= 0.0f)
             {
                 Die();
+            }
+
+            if (Shield <= 0.0f)
+            {
+                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 0.5f);
+            }
+            else
+            {
+                CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 0.5f);
             }
         }
     };

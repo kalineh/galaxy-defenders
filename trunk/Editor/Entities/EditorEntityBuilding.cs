@@ -19,7 +19,8 @@ namespace Galaxy
     public class CEditorEntityBuilding
         : CEditorEntityBase
     {
-        [CategoryAttribute("Core")]
+        // TODO: generating automatically for now
+        //[CategoryAttribute("Core")]
         public float HealthMax { get; set; }
 
         [CategoryAttribute("Bonus")]
@@ -72,10 +73,29 @@ namespace Galaxy
             return result;
         }
 
+        private void SetDefaultHealth()
+        {
+            // TODO: do this in a way that doesnt suck
+            // TODO: all use default health
+            //if (HealthMax > 0.0f)
+                //return;
+
+            switch (TextureName)
+            {
+                case "Building1": HealthMax = 7.0f; return;
+                case "Building2": HealthMax = 3.0f; return;
+                case "Building3": HealthMax = 7.0f; return;
+                case "Building4": HealthMax = 11.0f; return;
+                case "Building5": HealthMax = 11.0f; return;
+            }
+        }
+
         private void UpdateTexture()
         {
             Visual = CVisual.MakeSprite(World, "Textures/Static/" + TextureName);
             Visual = Visual ?? CVisual.MakeLabel(World, TextureName);
+
+            SetDefaultHealth();
         }
     }
 }

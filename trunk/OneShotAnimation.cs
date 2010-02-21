@@ -21,6 +21,9 @@ namespace Galaxy
             public int TileY { get; set; }
         }
 
+        // TODO: scene graph :(
+        public CEntity AttachToEntity { get; set; }
+
         public COneShotAnimation(CWorld world, Settings settings)
             : base(world)
         {
@@ -32,11 +35,15 @@ namespace Galaxy
             Visual.TileY = settings.TileY;
             Visual.AnimationSpeed = settings.AnimationSpeed;
             Visual.Scale = new Vector2(settings.Scale);
+            IgnoreCameraScroll = true;
         }
 
         public override void Update()
         {
             base.Update();
+
+            if (AttachToEntity != null)
+                Physics.PositionPhysics.Position = AttachToEntity.Physics.PositionPhysics.Position;
 
             if (Visual.Frame >= Visual.TileX * Visual.TileY)
                 Die();
