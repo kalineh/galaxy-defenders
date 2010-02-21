@@ -16,7 +16,7 @@ namespace Galaxy
         private Vector2 BasePosition { get; set; }
 
         public CEditorEntityPreview(CWorld world, CEntity parent)
-            : base(world, "EditorEntityPreview")
+            : base(world)
         {
             Parent = parent;
             Physics = new CPhysics();

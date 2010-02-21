@@ -36,7 +36,7 @@ namespace Galaxy
         public CVisual VisualDestroyed { get; private set; }
 
         public CBuilding(CWorld world, Vector2 position)
-            : base(world, "Building")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

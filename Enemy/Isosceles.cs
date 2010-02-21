@@ -11,7 +11,7 @@ namespace Galaxy
         : CEnemy
     {
         public CIsosceles(CWorld world, Vector2 position)
-            : base(world, "Isosceles")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

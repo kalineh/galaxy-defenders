@@ -13,7 +13,7 @@ namespace Galaxy
         : CEntity
     {
         public CSpacePlatform(CWorld world, Vector2 position)
-            : base(world, "SpacePlatform")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
@@ -33,7 +33,7 @@ namespace Galaxy
         : CEntity
     {
         public CBigSpacePlatform(CWorld world, Vector2 position)
-            : base(world, "BigSpacePlatform")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;

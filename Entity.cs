@@ -11,17 +11,16 @@ namespace Galaxy
     public class CEntity
     {
         public CWorld World { get; set; }
-        public String Name { get; set; }
         public CPhysics Physics { get; set; }
         public CVisual Visual { get; set; }
         public Collision Collision { get; set; }
         public CMover Mover { get; set; }
         public float AliveTime { get; protected set; }
+        public bool IgnoreCameraScroll { get; set; }
 
-        public CEntity(CWorld world, String name)
+        public CEntity(CWorld world)
         {
             World = world;
-            Name = name;
             Physics = null;
             Visual = null;
             Collision = null;
@@ -40,6 +39,14 @@ namespace Galaxy
             {
                 Physics.PositionPhysics.Solve();
                 Physics.AnglePhysics.Solve();
+
+                if (IgnoreCameraScroll)
+                {
+                    if (World.Game.State.GetType() == typeof(CStateGame))
+                    {
+                        Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+                    }
+                }
             }
 
             if (Collision != null)

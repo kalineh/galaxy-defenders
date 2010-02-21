@@ -10,6 +10,7 @@ namespace Galaxy
     public class CMissile
         : CEntity
     {
+        public Vector2 FireVector { get; set; }
         public float Speed { get; set; }
 
         public static CMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
@@ -18,9 +19,11 @@ namespace Galaxy
 
             missile.Speed = speed;
 
-            missile.Physics.AnglePhysics.Rotation = MathHelper.ToRadians(-90.0f);
+            missile.Physics.AnglePhysics.Rotation = rotation - MathHelper.Pi;
+            missile.FireVector = Vector2.UnitX.Rotate(rotation);
+
             missile.Physics.PositionPhysics.Position = position;
-            missile.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * 6.0f;
+            missile.Physics.PositionPhysics.Velocity = missile.FireVector * 6.0f;
 
             world.EntityAdd(missile);
 
@@ -30,17 +33,18 @@ namespace Galaxy
         public float Damage { get; private set; }
 
         public CMissile(CWorld world, float damage)
-            : base(world, "Missile")
+            : base(world)
         {
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
+            IgnoreCameraScroll = true;
         }
 
         public override void Update()
         {
-            Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -Vector2.UnitY * Speed, 0.05f);
+            Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -FireVector * Speed, 0.05f);
 
             base.Update();
 

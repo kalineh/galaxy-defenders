@@ -29,7 +29,7 @@ namespace Galaxy
         public float Damage { get; private set; }
 
         public CEnemyShot(CWorld world, float damage)
-            : base(world, "EnemyShot")
+            : base(world)
         {
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyShot"), Color.White);

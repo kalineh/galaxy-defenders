@@ -22,7 +22,7 @@ namespace Galaxy
         }
 
         public COneShotAnimation(CWorld world, Settings settings)
-            : base(world, "OneShotAnimation")
+            : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = settings.Position;
