@@ -23,6 +23,7 @@ namespace Galaxy
             { typeof(CStageElementSpawnerEntity), typeof(CEditorEntitySpawnerEntity) },
             { typeof(CStageElementSpawnerEnemy), typeof(CEditorEntitySpawnerEnemy) },
             { typeof(CStageElementStageFinish), typeof(CEditorEntityStageFinish) },
+            { typeof(CStageElementCameraStop), typeof(CEditorEntityCameraStop) },
             { typeof(CStageElementAsteroidField), typeof(CEditorEntityAsteroidField) },
             { typeof(CStageElementDecoration), typeof(CEditorEntityDecoration) },
             { typeof(CStageElementBuilding), typeof(CEditorEntityBuilding) },

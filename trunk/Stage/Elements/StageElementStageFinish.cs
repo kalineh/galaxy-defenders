@@ -11,8 +11,16 @@ namespace Galaxy
     public class CStageElementStageFinish
         : CStageElement
     {
+        public CWorld World { get; set; }
+
         public override void Update(CWorld world)
         {
+            World = world;
+
+            // TODO: not repeat this check!
+            if (IsExpired() == false)
+                return;
+
             // TODO: is this a good place to add score to money?
             // TODO: 2p
             SProfile profile = CSaveData.GetCurrentProfile();
@@ -36,7 +44,9 @@ namespace Galaxy
 
         public override bool IsExpired()
         {
-            return true;
+            int enemies = World.GetEntities().Where(e => e.GetType().IsSubclassOf(typeof(CEnemy))).Count();
+            // TODO: sleep
+            return enemies <= 0;
         }
     }
 }

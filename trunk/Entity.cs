@@ -95,7 +95,7 @@ namespace Galaxy
 
         public bool IsInDieRegion()
         {
-            if (Physics.PositionPhysics.Position.Y < 0.0f)
+            if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
             {
                 return false;
             }

@@ -96,6 +96,7 @@
     <Compile Include="Editor\Converters\EntityMoverTypeConverter.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
     <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorEntityCameraStop.cs" />
     <Compile Include="Editor\Entities\EditorEntityBuilding.cs" />
     <Compile Include="Editor\Entities\EditorEntityDecoration.cs" />
     <Compile Include="Editor\Entities\EditorEntitySpawnerEnemy.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\Elements\StageElementCameraStop.cs" />
     <Compile Include="Stage\Elements\StageElementBuilding.cs" />
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
