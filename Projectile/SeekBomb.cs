@@ -39,7 +39,7 @@ namespace Galaxy
             Collision = new CollisionCircle(Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
-            SeekFramesRemaining = 60;
+            SeekFramesRemaining = 90;
         }
 
         public override void Update()
@@ -53,19 +53,29 @@ namespace Galaxy
             {
                 if (Target.Physics == null ||
                     Target.Collision == null ||
-                    Target.Health <= 0.0f)
+                    Target.Health <= 0.0f ||
+                    Target.IsInScreen() == false)
                 {
                     Target = null;
                 }
             }
 
-            SeekFramesRemaining = Math.Max(0, SeekFramesRemaining - 1);
-            if (Target != null && SeekFramesRemaining > 0)
+            Vector2 target_position = Physics.PositionPhysics.Position + Vector2.UnitY * -100.0f;
+            if (Target != null)
             {
-                Vector2 target_position = Target.Physics.PositionPhysics.Position;
+                target_position = Target.Physics.PositionPhysics.Position;
+            }
+
+            SeekFramesRemaining = Math.Max(0, SeekFramesRemaining - 1);
+            if (SeekFramesRemaining > 0)
+            {
                 Vector2 offset = target_position - Physics.PositionPhysics.Position;
                 Vector2 dir = offset.Normal();
-                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, dir * Speed, 0.02f);
+                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, dir * Speed, 0.05f);
+            }
+            else
+            {
+                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, Physics.PositionPhysics.Velocity.Normal() * Speed, 0.05f);
             }
 
             Physics.AnglePhysics.Rotation += 0.1f;
