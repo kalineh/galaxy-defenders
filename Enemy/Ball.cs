@@ -21,12 +21,6 @@ namespace Galaxy
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }
 
-        public override void Update()
-        {
-            UpdateAI();
-            base.Update();
-        }
-
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these

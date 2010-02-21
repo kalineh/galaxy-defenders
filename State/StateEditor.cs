@@ -161,6 +161,7 @@ namespace Galaxy
         public void UpdateInteractionNone(Vector2 mouse, Vector2 delta, Vector2 world)
         {
             bool left_alt_down = CInput.IsRawKeyDown(Keys.LeftAlt);
+            bool left_ctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
 
             MouseState state = Mouse.GetState();
 
@@ -263,6 +264,11 @@ namespace Galaxy
                         }
                     }
                 }
+            }
+
+            if (state.LeftButton == ButtonState.Pressed && left_ctrl_down)
+            {
+                SampleShip.Physics.PositionPhysics.Position = world;
             }
 
             if (state.MiddleButton == ButtonState.Pressed)
