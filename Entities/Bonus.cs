@@ -5,12 +5,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Galaxy
 {
     public class CBonus
         : CEntity
     {
+        private bool GotoPlayer { get; set; }
+        private float GotoForce { get; set; }
+
         public CBonus(CWorld world, Vector2 position)
             : base(world)
         {
@@ -42,20 +46,30 @@ namespace Galaxy
 
         private void LerpToPlayers()
         {
-            foreach (CEntity entity in World.GetEntitiesOfType(typeof(CShip)))
+            CShip ship = World.GetNearestShip(Physics.PositionPhysics.Position);
+            if (ship == null)
             {
-                Vector2 target = entity.Physics.PositionPhysics.Position + entity.Physics.PositionPhysics.Velocity * 8.0f;
-                Vector2 offset = target - Physics.PositionPhysics.Position;
-                Vector2 dir = offset.Normal();
-                float length = offset.Length();
+                GotoPlayer = false;
+                return;
+            }
 
-                const float MaxLength = 120.0f;
-                if (length < MaxLength)
-                {
-                    float power = MaxLength - length;
-                    float power_multiplier = 0.02f;
-                    Physics.PositionPhysics.Velocity += dir * power * power_multiplier;
-                }
+            Vector2 target = ship.Physics.PositionPhysics.Position;
+            Vector2 offset = target - Physics.PositionPhysics.Position;
+            Vector2 dir = offset.Normal();
+            float length = offset.Length();
+
+            const float MaxLength = 120.0f;
+            if (length < MaxLength)
+            {
+                GotoPlayer = true;
+            }
+
+            if (GotoPlayer)
+            {
+                GotoForce += 2.5f;
+                float power = Math.Max(GotoForce, MaxLength - length);
+                float power_multiplier = 0.02f;
+                Physics.PositionPhysics.Velocity += dir * power * power_multiplier;
             }
         }
 
