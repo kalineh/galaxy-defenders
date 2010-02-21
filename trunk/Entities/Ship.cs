@@ -200,6 +200,7 @@ namespace Galaxy
 
             if (fired)
             {
+                // TODO: weapon type fire
                 SoundEffect sound = World.Game.Content.Load<SoundEffect>("SE/LaserShoot");
                 sound.Play(0.1f, 0.0f, 0.0f);
             }
