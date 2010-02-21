@@ -11,6 +11,7 @@ namespace Galaxy
         : CEntity
     {
         public string TextureName { get; set; }
+        public int DepthOffset { get; set; }
 
         public CDecoration(CWorld world, Vector2 position)
             : base(world)

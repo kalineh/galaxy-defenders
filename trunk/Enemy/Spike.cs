@@ -16,7 +16,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Spike.cs");
-            Health = 4.0f;
+            HealthMax = 5.0f;
         }
     }
 }

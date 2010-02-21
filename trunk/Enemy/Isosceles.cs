@@ -16,7 +16,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Isosceles.cs");
-            Health = 1.0f;
+            HealthMax = 1.0f;
         }
     }
 }

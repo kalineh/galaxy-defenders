@@ -93,6 +93,39 @@ X = -869.01f,
 Y = -658.12f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building2",
+HealthMax = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 16.0f,
+Y = 96.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building2",
+HealthMax = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 112.0f,
+Y = 96.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building2",
+HealthMax = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 64.0f,
+Y = 96.0f,
+},
+});
 
 return stage;
 }
