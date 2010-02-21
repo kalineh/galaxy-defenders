@@ -126,6 +126,7 @@
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Mover\MoverPresets.cs" />
     <Compile Include="PrimitiveBatch.cs" />
+    <Compile Include="Projectile\SeekBomb.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
     <Compile Include="StageDefinitions\EditorStage.cs">
@@ -183,6 +184,7 @@
     <Compile Include="Scenery\Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\WeaponSeekBomb.cs" />
     <Compile Include="Weapon\WeaponDefinitions.cs" />
     <Compile Include="Weapon\WeaponLaser.cs" />
     <Compile Include="Weapon\WeaponTest.cs" />

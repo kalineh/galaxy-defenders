@@ -84,6 +84,7 @@ namespace Galaxy
             TakeDamage(1.0f);
         }
 
+        // TODO: need to handle IsSubClassOf in the collision system
         // TODO: replace with generic CWeapon collider
         public void OnCollide(CLaser laser)
         {
@@ -95,6 +96,12 @@ namespace Galaxy
         {
             TakeDamage(missile.Damage);
             missile.Die();
+        }
+
+        public void OnCollide(CSeekBomb seek_bomb)
+        {
+            TakeDamage(seek_bomb.Damage);
+            seek_bomb.Die();
         }
 
         private int CalculateScoreFromHealth()

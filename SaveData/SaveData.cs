@@ -80,7 +80,7 @@ namespace Galaxy
             {
                 Name = "User",
                 Ship = "Default",
-                WeaponPrimaryType = "Laser",
+                WeaponPrimaryType = "FrontLaser",
                 WeaponPrimaryLevel = 0,
                 WeaponSecondaryType = "",
                 WeaponSecondaryLevel = 0,

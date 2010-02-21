@@ -10,7 +10,6 @@ namespace Galaxy
     public abstract class CWeapon
     {
         public CEntity Owner { get; private set; }
-        public string Type { get; set; }
         public float ReloadTime { get; set; }
         public float Speed { get; set; }
         public float Damage { get; set; }
@@ -19,10 +18,9 @@ namespace Galaxy
         public float Rotation { get; private set; }
         private float Cooldown { get; set; }
 
-        public CWeapon(CEntity owner, string type)
+        public CWeapon(CEntity owner)
         {
             Owner = owner;
-            Type = type;
             Offset = Vector2.Zero;
             Cooldown = 0.0f;
             Rotation = 0.0f;

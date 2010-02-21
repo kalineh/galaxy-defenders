@@ -6,11 +6,25 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CWeaponLaser
+    public class CWeaponFrontLaser
         : CWeapon
     {
-        public CWeaponLaser(CEntity owner)
-            : base(owner, "Laser")
+        public CWeaponFrontLaser(CEntity owner)
+            : base(owner)
+        {
+        }
+
+        protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        {
+            CLaser laser = CLaser.Spawn(world, position, rotation, Speed, Damage);
+        }
+    };
+
+    public class CWeaponSpreadLaser
+        : CWeapon
+    {
+        public CWeaponSpreadLaser(CEntity owner)
+            : base(owner)
         {
         }
 

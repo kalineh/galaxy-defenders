@@ -253,6 +253,31 @@ namespace Galaxy
             return result;
         }
 
+        // TODO: generic implementation
+        public CEnemy GetNearestEnemy(Vector2 position)
+        {
+            CEnemy result = null;
+            float nearest = float.MaxValue;
+            foreach (CEntity entity in Entities)
+            {
+                if (entity.GetType().IsSubclassOf(typeof(CEnemy)) == false)
+                    continue;
+
+                CEnemy enemy = entity as CEnemy;
+                Vector2 enemy_position = enemy.Physics.PositionPhysics.Position;
+                Vector2 offset = enemy_position - position;
+                float length = offset.Length();
+
+                if (length < nearest)
+                {
+                    result = enemy;
+                    nearest = length;
+                }
+            }
+
+            return result;
+        }
+
         private void ProcessEntityUpdates()
         {
             foreach (CEntity entity in Entities)

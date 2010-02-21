@@ -41,7 +41,6 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
-            Visual = VisualNormal;
         }
 
         public override void Update()
@@ -75,7 +74,7 @@ namespace Galaxy
 
         private int CalculateScoreFromHealth()
         {
-            int base_ = (int)HealthMax * 5;
+            int base_ = (int)HealthMax * 10;
             return base_ - base_ % 10;
         }
 

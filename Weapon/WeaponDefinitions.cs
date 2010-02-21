@@ -21,14 +21,24 @@ namespace Galaxy
             public float Rotation { get; set; }
         }
 
-        public static List<CWeapon> GenerateWeapon(CEntity owner, string typename, int level)
+        public static List<CWeapon> GeneratePrimaryWeapon(CEntity owner, string typename, int level)
         {
-            if (!WeaponDefinitions.ContainsKey(typename))
+            return GenerateWeapon(owner, typename, level, PrimaryWeaponDefinitions);
+        }
+
+        public static List<CWeapon> GenerateSecondaryWeapon(CEntity owner, string typename, int level)
+        {
+            return GenerateWeapon(owner, typename, level, SecondaryWeaponDefinitions);
+        }
+
+        public static List<CWeapon> GenerateWeapon(CEntity owner, string typename, int level, Dictionary<string, SWeaponDefinition> definitions)
+        {
+            if (!definitions.ContainsKey(typename))
             {
                 return new List<CWeapon>();
             }
 
-            List<WeaponData> weapon_data = WeaponDefinitions[typename].Data[level];
+            List<WeaponData> weapon_data = definitions[typename].Data[level];
             List<CWeapon> weapons = new List<CWeapon>();
 
             foreach (WeaponData data in weapon_data)
@@ -44,10 +54,11 @@ namespace Galaxy
 
         public static bool CanUpgrade(string typename, int level)
         {
-            if (!WeaponDefinitions.ContainsKey(typename))
-                return false;
-
-            return WeaponDefinitions[typename].Data.Count > level + 1;
+            if (PrimaryWeaponDefinitions.ContainsKey(typename))
+                return PrimaryWeaponDefinitions[typename].Data.Count > level + 1;
+            if (SecondaryWeaponDefinitions.ContainsKey(typename))
+                return SecondaryWeaponDefinitions[typename].Data.Count > level + 1;
+            return false;
         }
 
         public static bool CanDowngrade(string typename, int level)
@@ -57,9 +68,13 @@ namespace Galaxy
 
         public static string GetNextWeaponInCycle(string current)
         {
+            // TODO: not this badness
+            Dictionary<string, SWeaponDefinition> definitions =
+                PrimaryWeaponDefinitions.ContainsKey(current) ? PrimaryWeaponDefinitions : SecondaryWeaponDefinitions;
+
             // TODO: can we do this cleaner?
             bool is_next = false;
-            foreach (KeyValuePair<string, SWeaponDefinition> kv in WeaponDefinitions)
+            foreach (KeyValuePair<string, SWeaponDefinition> kv in definitions)
             {
                 if (kv.Key == current)
                 {
@@ -74,7 +89,7 @@ namespace Galaxy
             }
             
             // TODO: find cleaner way to do this too!
-            foreach (KeyValuePair<string, SWeaponDefinition> kv in WeaponDefinitions)
+            foreach (KeyValuePair<string, SWeaponDefinition> kv in definitions)
             {
                 return kv.Key;
             }
@@ -84,12 +99,16 @@ namespace Galaxy
 
         public static int GetPriceForLevel(string typename, int level)
         {
+            // TODO: not this badness
+            Dictionary<string, SWeaponDefinition> definitions =
+                PrimaryWeaponDefinitions.ContainsKey(typename) ? PrimaryWeaponDefinitions : SecondaryWeaponDefinitions;
+
             if (typename == "")
                 return 0;
 
             // TODO: where can we put a per-weapon price? (not per-level)
             int calculable_level = level;
-            int base_ = WeaponDefinitions[typename].BasePrice;
+            int base_ = definitions[typename].BasePrice;
             int total = base_ + base_ * calculable_level * calculable_level;
             int rounded = total + total % 50;
             return rounded;
@@ -113,9 +132,9 @@ namespace Galaxy
         }
 
 
-        public static Dictionary<string, SWeaponDefinition> WeaponDefinitions = new Dictionary<string, SWeaponDefinition>()
+        public static Dictionary<string, SWeaponDefinition> PrimaryWeaponDefinitions = new Dictionary<string, SWeaponDefinition>()
         {
-            { "Laser", new SWeaponDefinition()
+            { "FrontLaser", new SWeaponDefinition()
                 {
                     BasePrice = 750,
                     Sound = "SE/LaserShoot",
@@ -157,8 +176,8 @@ namespace Galaxy
                                 Speed = 15.0f,
                                 Damage = 1.0f,
                                 KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -12.0f),
-                                Rotation = MathHelper.ToRadians(-15.0f),
+                                Offset = new Vector2(0.0f, -16.0f),
+                                Rotation = 0.0f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.2f,
@@ -181,14 +200,91 @@ namespace Galaxy
                                 Speed = 15.0f,
                                 Damage = 1.0f,
                                 KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 12.0f),
-                                Rotation = MathHelper.ToRadians(15.0f),
+                                Offset = new Vector2(0.0f, 16.0f),
+                                Rotation = 0.0f,
                             },
                         },
                     },
                 }
             },
 
+            { "SpreadLaser", new SWeaponDefinition()
+                {
+                    BasePrice = 750,
+                    Sound = "SE/LaserShoot",
+                    Data = new List<List<WeaponData>>() {
+                        // level 1
+                        new List<WeaponData>() {
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = Vector2.Zero,
+                                Rotation = 0.0f,
+                            },
+                        },
+                        // level 2
+                        new List<WeaponData>() {
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(-3.0f),
+                            },
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(3.0f),
+                            },
+                        },
+                        // level 3
+                        new List<WeaponData>() {
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(-7.0f),
+                            },
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(-3.0f),
+                            },
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(3.0f),
+                            },
+                            new WeaponData() {
+                                ReloadTime = 0.2f,
+                                Speed = 15.0f,
+                                Damage = 1.0f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 0.0f),
+                                Rotation = MathHelper.ToRadians(7.0f),
+                            },
+                        },
+                    },
+                }
+            },
+        };
+
+        public static Dictionary<string, SWeaponDefinition> SecondaryWeaponDefinitions = new Dictionary<string, SWeaponDefinition>()
+        {
             { "Missile", 
                 new SWeaponDefinition() {
                     BasePrice = 1000,
@@ -222,6 +318,45 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(165.0f),
+                            },
+                        },
+                    },
+                }
+            },
+
+            { "SeekBomb", 
+                new SWeaponDefinition() {
+                    BasePrice = 1750,
+                    Sound = null,
+                    Data = new List<List<WeaponData>>() {
+                        // level 1
+                        new List<WeaponData>() {
+                            new WeaponData() {
+                                ReloadTime = 1.0f,
+                                Speed = 5.0f,
+                                Damage = 0.5f,
+                                KickbackForce = 0.0f,
+                                Offset = Vector2.Zero,
+                                Rotation = MathHelper.ToRadians(0.0f),
+                            },
+                        },
+                        // level 2
+                        new List<WeaponData>() {
+                            new WeaponData() {
+                                ReloadTime = 1.0f,
+                                Speed = 5.0f,
+                                Damage = 0.5f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, -10.0f),
+                                Rotation = MathHelper.ToRadians(-15.0f),
+                            },
+                            new WeaponData() {
+                                ReloadTime = 1.0f,
+                                Speed = 5.0f,
+                                Damage = 0.5f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 10.0f),
+                                Rotation = MathHelper.ToRadians(15.0f),
                             },
                         },
                     },
