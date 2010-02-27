@@ -18,7 +18,7 @@ namespace Galaxy
            
             // TODO: not hack into the stage definition!
             if (enemies > 0)
-                world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 0.0f, 0.01f);
+                world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 0.0f, 0.05f);
             else
                 world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 100.0f, 0.005f);
         }
@@ -29,5 +29,3 @@ namespace Galaxy
         }
     }
 }
-
-

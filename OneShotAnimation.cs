@@ -42,7 +42,7 @@ namespace Galaxy
         {
             base.Update();
 
-            if (AttachToEntity != null)
+            if (AttachToEntity != null && AttachToEntity.Physics != null)
                 Physics.PositionPhysics.Position = AttachToEntity.Physics.PositionPhysics.Position;
 
             if (Visual.Frame >= Visual.TileX * Visual.TileY)

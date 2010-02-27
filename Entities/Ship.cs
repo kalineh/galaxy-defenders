@@ -131,6 +131,24 @@ namespace Galaxy
             }
         }
 
+        public void DowngradePrimaryWeapon()
+        {
+            if (CWeaponFactory.CanDowngrade(WeaponPrimaryType, WeaponPrimaryLevel))
+            {
+                WeaponPrimaryLevel -= 1;
+                WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
+            }
+        }
+
+        public void DowngradeSecondaryWeapon()
+        {
+            if (CWeaponFactory.CanDowngrade(WeaponSecondaryType, WeaponSecondaryLevel))
+            {
+                WeaponSecondaryLevel -= 1;
+                WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
+            }
+        }
+
         protected override void OnDie()
         {
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
@@ -162,17 +180,28 @@ namespace Galaxy
             if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
-            if (World.Game.Input.IsKeyPressed(Keys.C))
-                UpgradePrimaryWeapon();
-            if (World.Game.Input.IsKeyPressed(Keys.V))
-                UpgradeSecondaryWeapon();
+            bool lshift_down = CInput.IsRawKeyDown(Keys.LeftShift);
+            if (lshift_down)
+            {
+                if (CInput.IsRawKeyPressed(Keys.C))
+                    DowngradePrimaryWeapon();
+                if (CInput.IsRawKeyPressed(Keys.V))
+                    DowngradeSecondaryWeapon();
+            }
+            else
+            {
+                if (CInput.IsRawKeyPressed(Keys.C))
+                    UpgradePrimaryWeapon();
+                if (CInput.IsRawKeyPressed(Keys.V))
+                    UpgradeSecondaryWeapon();
+            }
 
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
             {
                 Fire(WeaponPrimary);
             }
-            if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
+            if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
             {
                 Fire(WeaponSecondary);
             }
@@ -241,6 +270,7 @@ namespace Galaxy
             if (Armor <= 0.0f)
             {
                 Die();
+                return;
             }
 
             if (Shield <= 0.0f)
