@@ -130,6 +130,8 @@
     <Compile Include="Projectile\SeekBomb.cs" />
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
+    <Compile Include="StageDefinitions\FriendlyStage01.cs" />
+    <Compile Include="StageDefinitions\Stage2.cs" />
     <Compile Include="StageDefinitions\EditorStage.cs">
       <SubType>Code</SubType>
     </Compile>

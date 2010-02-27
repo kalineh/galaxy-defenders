@@ -79,6 +79,29 @@ namespace Galaxy
             };
         }
 
+        public static CMover MoveDownStopDown(float speed)
+        {
+            return new CMoverSequence()
+            {
+                Name = (new System.Diagnostics.StackFrame(0, false)).GetMethod().Name,
+                Velocity = new List<Vector2>()
+                {
+                    new Vector2(0.0f, speed),
+                    new Vector2(0.0f, -speed * 2.0f),
+                    new Vector2(0.0f, speed),
+                },
+                Duration = new List<float>()
+                {
+                    0.2f * speed,
+                    1.3f * speed,
+                    0.0f,
+                },
+
+                VelocityLerpRate = 0.04f,
+                AlwaysMaxSpeed = false,
+            };
+        }
+
         public static CMover MoveUp(float speed)
         {
             return new CMoverFixedVelocity()
@@ -145,11 +168,11 @@ namespace Galaxy
                 },
                 Duration = new List<float>()
                 {
-                    0.3f * speed,
+                    0.1f * speed,
                     0.0f * speed,
                 },
 
-                VelocityLerpRate = 0.03f,
+                VelocityLerpRate = 0.13f,
             };
         }
 
@@ -165,11 +188,11 @@ namespace Galaxy
                 },
                 Duration = new List<float>()
                 {
-                    0.3f * speed,
+                    0.1f * speed,
                     0.0f * speed,
                 },
 
-                VelocityLerpRate = 0.03f,
+                VelocityLerpRate = 0.13f,
             };
         }
 

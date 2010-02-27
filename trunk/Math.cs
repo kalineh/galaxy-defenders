@@ -112,4 +112,14 @@ namespace Galaxy
             return (float)percent / 100.0f;
         }
     }
+
+    public static class Interpolation
+    {
+        public static float LerpAngle(float from, float to, float amount)
+        {
+            Quaternion a = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, from);
+            Quaternion b = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, to);
+            return Quaternion.Lerp(a, b, amount).Z;
+        }
+    }
 }

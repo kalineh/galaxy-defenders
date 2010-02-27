@@ -59,7 +59,7 @@ namespace Galaxy
             SelectedEntitiesPreview = new List<CEntity>();
             SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();
             HoverEntities = new List<CEntity>();
-            SnapToGrid = false;
+            SnapToGrid = true;
             GridSize = 8.0f;
         }
 

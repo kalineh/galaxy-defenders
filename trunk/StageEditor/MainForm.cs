@@ -122,8 +122,19 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.CGalaxy game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
-            editor.UpdateStageDefinition();
-            editor.ReplaceStageDefinition(game.StageDefinition);
+
+            // NOTE: save on this thread before we touch the game thread in case it breaks
+            try
+            {
+                editor.UpdateStageDefinition();
+                editor.ReplaceStageDefinition(game.StageDefinition);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("SaveButton.Click(): {0}", exception.ToString());
+                return;
+            }
+
             Galaxy.CStageCodeWriter.Save(game.StageDefinition);
         }
 
