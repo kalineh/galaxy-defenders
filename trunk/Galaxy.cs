@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Threading;
+using System;
 
 namespace Galaxy
 {
@@ -29,15 +31,6 @@ namespace Galaxy
             Content.RootDirectory = "Content";
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
-
-            // TODO: 1080p!
-            // TODO: render to backbuffer and just scale down before display if necessary
-            GraphicsDeviceManager.PreferredBackBufferWidth = 800;
-            GraphicsDeviceManager.PreferredBackBufferHeight = 800;
-            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
-            //GraphicsDeviceManager.ToggleFullScreen();
-            // TODO: fix crash here sometimes happening (device startup timing not friendly with editor)
-            GraphicsDeviceManager.ApplyChanges();
 
             Debug = new CDebug(this);
             Input = new CInput(this);
@@ -71,12 +64,40 @@ namespace Galaxy
         /// </summary>
         protected override void Initialize()
         {
-            //GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
-            //GraphicsDevice.PresentationParameters.BackBufferCount = 3;
-            //GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.None;
-            //GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
-            //GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
+            // Presentation Parameters
+            //public DepthFormat AutoDepthStencilFormat { get; set; }
+            //public int BackBufferCount { get; set; }
+            //public SurfaceFormat BackBufferFormat { get; set; }
+            //public int BackBufferHeight { get; set; }
+            //public int BackBufferWidth { get; set; }
+            //public bool EnableAutoDepthStencil { get; set; }
+            //public int FullScreenRefreshRateInHz { get; set; }
+            //public bool IsFullScreen { get; set; }
+            //public int MultiSampleQuality { get; set; }
+            //public MultiSampleType MultiSampleType { get; set; }
+            //public PresentInterval PresentationInterval { get; set; }
+            //public PresentOptions PresentOptions { get; set; }
+            //public RenderTargetUsage RenderTargetUsage { get; set; }
+            //public SwapEffect SwapEffect { get; set; }
+
+            GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
+            GraphicsDevice.PresentationParameters.BackBufferCount = 1;
+            GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
+            GraphicsDevice.PresentationParameters.BackBufferHeight = 800;
+            GraphicsDevice.PresentationParameters.BackBufferWidth = 600;
+            GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
+            GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
+            GraphicsDevice.PresentationParameters.IsFullScreen = false;
+            GraphicsDevice.PresentationParameters.MultiSampleQuality = 1;
+            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.NonMaskable;
+            GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.One;
+            GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.DiscardDepthStencil;
+            GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+            GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
+
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             GraphicsDeviceManager.ApplyChanges();
+
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             base.Initialize();
@@ -142,10 +163,18 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime game_time)
         {
+            // TODO: use for custom frame timing
+            // wait till vsync
+            //while (!GraphicsDevice.RasterStatus.InVerticalBlank)
+                //Thread.Sleep(0);
+
             base.Draw(game_time);
             State.Draw();
             FrameRateDisplay.Draw(DefaultSpriteBatch);
             CDebugRender.Render(this);
+
+            //while (GraphicsDevice.RasterStatus.InVerticalBlank)
+                //Thread.Sleep(0);
         }
     }
 }
