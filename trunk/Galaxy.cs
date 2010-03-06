@@ -32,6 +32,11 @@ namespace Galaxy
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
 
+            // TODO: this needs to be done so we have a valid device by the time we get to Initialize()
+            GraphicsDeviceManager.PreferredBackBufferHeight = 800;
+            GraphicsDeviceManager.PreferredBackBufferWidth = 800;
+            GraphicsDeviceManager.ApplyChanges();
+
             Debug = new CDebug(this);
             Input = new CInput(this);
             Music = new CMusic(this);
@@ -80,6 +85,8 @@ namespace Galaxy
             //public RenderTargetUsage RenderTargetUsage { get; set; }
             //public SwapEffect SwapEffect { get; set; }
 
+            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
+
             GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
             GraphicsDevice.PresentationParameters.BackBufferCount = 1;
             GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
@@ -97,8 +104,6 @@ namespace Galaxy
 
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             GraphicsDeviceManager.ApplyChanges();
-
-            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             base.Initialize();
         }

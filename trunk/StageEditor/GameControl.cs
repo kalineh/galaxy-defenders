@@ -104,28 +104,5 @@ namespace StageEditor
                 GameThread.Start();
             }
         }
-
-        public new void OnKeyUp(KeyEventArgs e)
-        {
-            List<XnaKeys> keys = Game.Input.KeysOverride.ToList();
-            keys.RemoveAll(k => k == (XnaKeys)e.KeyCode);
-            XnaKeys[] override_keys = keys.ToArray();
-
-            Game.Input.KeysOverride = override_keys;
-
-            e.Handled = true;
-        }
-
-        public new void OnKeyDown(KeyEventArgs e)
-        {
-            List<XnaKeys> keys = Game.Input.KeysOverride.ToList();
-            keys.RemoveAll(k => k == (XnaKeys)e.KeyCode);
-            keys.Add((XnaKeys)e.KeyCode);
-            XnaKeys[] override_keys = keys.ToArray();
-
-            Game.Input.KeysOverride = override_keys;
-
-            e.Handled = true;
-        }
     }
 }

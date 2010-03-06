@@ -71,19 +71,16 @@ namespace Galaxy
             {
                 Vector2 offset = target_position - Physics.PositionPhysics.Position;
                 Vector2 dir = offset.Normal();
-                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, dir * Speed, 0.05f);
+                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, dir * Speed, 0.15f);
             }
             else
             {
-                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, Physics.PositionPhysics.Velocity.Normal() * Speed, 0.05f);
+                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, Physics.PositionPhysics.Velocity.Normal() * Speed, 0.15f);
             }
 
             Physics.AnglePhysics.Rotation += 0.1f;
 
             base.Update();
-
-            if (!IsInScreen())
-                Delete();
         }
 
         protected override void OnDie()
