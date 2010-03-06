@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 
@@ -12,11 +13,13 @@ namespace Galaxy
     {
         public StageEditor.GameControl GameControl { get; set; }
         public List<CEntity> PreviousSelectedEntities { get; set; }
+        public Mutex AccessMutex;
 
         public EditorGame(StageEditor.GameControl game_control)
         {
             GameControl = game_control;
             PreviousSelectedEntities = new List<CEntity>();
+            AccessMutex = new Mutex(false, "EditorGame.AccessMutex");
         }
 
         /// <summary>
@@ -103,8 +106,12 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public new void Update(GameTime game_time)
         {
+            AccessMutex.WaitOne();
+
             base.Update(game_time);
             UpdateEditor();
+
+            AccessMutex.ReleaseMutex();
         }
 
         /// <summary>
@@ -145,7 +152,9 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public new void Draw(GameTime game_time)
         {
+            AccessMutex.WaitOne();
             base.State.Draw();
+            AccessMutex.ReleaseMutex();
         }
     }
 }

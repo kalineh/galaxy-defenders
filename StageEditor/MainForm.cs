@@ -107,50 +107,52 @@ namespace StageEditor
         private void SaveButton_Click(object sender, EventArgs e)
         {
             GameControl game_control = this.Game;
-            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.EditorGame game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
 
-            // NOTE: save on this thread before we touch the game thread in case it breaks
-            try
-            {
-                editor.UpdateStageDefinition();
-                editor.ReplaceStageDefinition(game.StageDefinition);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine("SaveButton.Click(): {0}", exception.ToString());
-                return;
-            }
+            game.AccessMutex.WaitOne();
 
+            // NOTE: save on this thread before we touch the game thread in case it breaks
+            editor.RefreshStageDefinition();
             Galaxy.CStageCodeWriter.Save(game.StageDefinition);
+
+            game.AccessMutex.ReleaseMutex();
         }
 
         private void EntityDeleteButton_Click(object sender, EventArgs e)
         {
             GameControl game_control = this.Game;
-            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.EditorGame game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+
+            game.AccessMutex.WaitOne();
             editor.DeleteSelectedEntities();
+            game.AccessMutex.ReleaseMutex();
         }
 
         private void PreviewEntitiesButton_Click(object sender, EventArgs e)
         {
             GameControl game_control = this.Game;
-            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.EditorGame game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+
+            game.AccessMutex.WaitOne();
             editor.PreviewAllEntities();
+            game.AccessMutex.ReleaseMutex();
         }
 
         private void StageSelectDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             GameControl game_control = this.Game;
-            Galaxy.CGalaxy game = game_control.Game;
+            Galaxy.EditorGame game = game_control.Game;
             if (game == null)
                 return;
 
+            game.AccessMutex.WaitOne();
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             Galaxy.CStageDefinition result = Galaxy.CStageDefinition.GetStageDefinitionByName(StageSelectDropdown.Text);
             editor.ReplaceStageDefinition(result);
+            game.AccessMutex.ReleaseMutex();
         }
     }
 }

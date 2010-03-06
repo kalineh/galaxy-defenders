@@ -330,7 +330,7 @@ namespace Galaxy
             }
         }
 
-        private void ProcessEntityAdd()
+        public void ProcessEntityAdd()
         {
             foreach (CEntity entity in EntitiesToAdd)
             {
