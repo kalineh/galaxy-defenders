@@ -37,6 +37,9 @@ namespace Galaxy
             Cursor += Game.Input.IsKeyPressed(Keys.Down) ? 1 : 0;
             Cursor -= Game.Input.IsKeyPressed(Keys.Up) ? 1 : 0;
 
+            Cursor += Game.Input.IsKeyPressed(Keys.Down) ? 1 : 0;
+            Cursor -= Game.Input.IsKeyPressed(Keys.Up) ? 1 : 0;
+
             Cursor = Math.Max(Cursor, 0);
             Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
 

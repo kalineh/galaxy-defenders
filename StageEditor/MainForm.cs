@@ -13,9 +13,6 @@ namespace StageEditor
         {
             InitializeComponent();
 
-            this.InputCatcher.KeyDown += KeyDownHandler;
-            this.InputCatcher.KeyUp += KeyUpHandler;
-
             // put all stages into dropdown
             Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
             IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages", StringComparison.Ordinal));
@@ -43,16 +40,6 @@ namespace StageEditor
         {
             UpdateEditorPosition();
             base.OnMove(e);
-        }
-
-        protected void KeyDownHandler(object sender, KeyEventArgs e)
-        {
-            this.Game.OnKeyDown(e);
-        }
-
-        protected void KeyUpHandler(object sender, KeyEventArgs e)
-        {
-            this.Game.OnKeyUp(e);
         }
 
         private void RestartGameButton_Click(object sender, EventArgs e)
