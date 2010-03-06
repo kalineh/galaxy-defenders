@@ -527,8 +527,12 @@ namespace Galaxy
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
         }
 
-        public void UpdateStageDefinition()
+        // TODO: rename me, move out of state editor too?
+        public void RefreshStageDefinition()
         {
+            // TODO: if we have queued entities to add, we should add them now so they get serialized
+            World.ProcessEntityAdd();
+
             Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, Game.StageDefinition.Name);
             ClearStage();
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
