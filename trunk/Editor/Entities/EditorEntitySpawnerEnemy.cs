@@ -45,6 +45,9 @@ namespace Galaxy
             Type = type;
             CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
+            Visual.TileX = visual_get.Visual.TileX;
+            Visual.TileY = visual_get.Visual.TileY;
+            Visual.AnimationSpeed = visual_get.Visual.AnimationSpeed;
             Mover = CMoverPresets.MoveDown(0.0f);
         }
 

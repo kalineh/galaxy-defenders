@@ -22,12 +22,12 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
-            HealthMax = 2.0f;
+            HealthMax = 4.0f;
 
-            FireDelay = 3.0f;
-            FireCooldown = Time.ToFrames(FireDelay);
-            FireDamage = 1.0f;
-            FireSpeed = 4.0f;
+            FireDelay = 1.0f;
+            FireCooldown = Time.ToFrames(FireDelay) / 2;
+            FireDamage = 1.5f;
+            FireSpeed = 17.0f;
         }
 
         public override void UpdateAI()

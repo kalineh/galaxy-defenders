@@ -15,20 +15,30 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
+            Physics.PositionPhysics.Friction = 0.98f;
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Spike");
-            HealthMax = 22.0f;
-            IgnoreCameraScroll = true;
-            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Visual.TileX = 2;
+            Visual.AnimationSpeed = 0.05f;
+            HealthMax = 11.0f;
+            IgnoreCameraScroll = false;
+            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
         }
 
         public override void UpdateAI()
         {
+            Mover = null;
             CShip ship = World.GetNearestShip(Physics.PositionPhysics.Position);
             if (ship != null)
             {
                 Vector2 offset = ship.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
-                Vector2 force = offset.Normal() * 2.0f;
-                Physics.PositionPhysics.Position += force;
+                float length = offset.Length();
+                const float limit = 750.0f;
+                if (offset.Length() < limit)
+                {
+                    float t = 1.0f - length / limit;
+                    Vector2 force = offset.Normal() * t * t * 0.05f;
+                    Physics.PositionPhysics.Velocity += force;
+                }
             }
         }
 
