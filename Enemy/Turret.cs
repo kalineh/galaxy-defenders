@@ -25,10 +25,10 @@ namespace Galaxy
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Turret");
             HealthMax = 4.0f;
 
-            FireDelay = 1.5f;
-            FireCooldown = Time.ToFrames(FireDelay) / 2;
+            FireDelay = 0.75f;
+            FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 1.0f;
-            FireSpeed = 6.0f;
+            FireSpeed = 14.0f;
         }
 
         public override void UpdateAI()
@@ -50,6 +50,8 @@ namespace Galaxy
             Vector2 position = Physics.PositionPhysics.Position;
             Vector2 dir = GetDirToShip();
             float rotation = dir.ToAngle();
+
+            rotation += World.Random.NextAngle() * 0.015f;
 
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
             FireCooldown = Time.ToFrames(FireDelay);
