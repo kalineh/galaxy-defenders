@@ -14,21 +14,23 @@ namespace Galaxy
     public class CShip
         : CEntity
     {
-        struct Settings
+        public struct Settings
         {
             public float VisualScale;
             public float MovementSpeed;
             public float Friction;
+            public float Energy;
             public float Shield;
             public float Armor;
         };
-        static Settings SSettings;
+        public static Settings SSettings;
 
         static CShip()
         {
             SSettings.VisualScale = 0.25f;
             SSettings.MovementSpeed = 2.25f;
             SSettings.Friction = 0.8f;
+            SSettings.Energy = 10.0f;
             SSettings.Shield = 5.0f;
             SSettings.Armor = 10.0f;
         }
@@ -43,6 +45,7 @@ namespace Galaxy
         public int WeaponPrimaryLevel { get; set; }
         public string WeaponSecondaryType { get; set; }
         public int WeaponSecondaryLevel { get; set; }
+        public float Energy { get; private set; }
         public float Shield { get; private set; }
         public float Armor { get; private set; }
 
@@ -74,6 +77,7 @@ namespace Galaxy
         public override void Update()
         {
             UpdateInput();
+            UpdateGenerator();
             UpdateWeapons();
             UpdateShields();
 
@@ -207,6 +211,11 @@ namespace Galaxy
             }
         }
 
+        public void UpdateGenerator()
+        {
+            Energy = Math.Min(Energy + 0.05f, SSettings.Energy);
+        }
+
         public void UpdateWeapons()
         {
             WeaponPrimary.ForEach(weapon => weapon.Update());
@@ -215,12 +224,27 @@ namespace Galaxy
 
         public void UpdateShields()
         {
-            Shield += 0.01f;
-            Shield = Math.Min(Shield, SSettings.Shield);
+            float used_energy = Math.Min(Energy, 0.01f);
+            used_energy = Math.Min(used_energy, SSettings.Shield - Shield);
+            Shield += used_energy;
+            Energy -= used_energy;
         }
 
         private void Fire(List<CWeapon> weapons)
         {
+            float required_energy = 0.0f;
+            foreach (CWeapon weapon in weapons)
+            {
+                if (weapon.CanFire())
+                    required_energy += weapon.Energy;
+            }
+
+            if (Energy < required_energy)
+                return;
+
+            Energy -= required_energy;
+
+            // TODO: logic mismatch with above
             bool fired = false;
             foreach (CWeapon weapon in weapons)
             {

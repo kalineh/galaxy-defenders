@@ -16,6 +16,7 @@ namespace Galaxy
         public float KickbackForce { get; set; }
         public Vector2 Offset { get; private set; }
         public float Rotation { get; private set; }
+        public float Energy { get; private set; }
         private float Cooldown { get; set; }
 
         public CWeapon(CEntity owner)
@@ -40,6 +41,7 @@ namespace Galaxy
             KickbackForce = data.KickbackForce;
             Offset = data.Offset;
             Rotation = data.Rotation;
+            Energy = data.Energy;
 
             Cooldown = Math.Min(Cooldown, ReloadTime);
         }

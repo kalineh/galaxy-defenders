@@ -24,6 +24,7 @@ namespace Galaxy
         public string StageName { get; set; }
         public CStage Stage { get; set; }
         public CCamera GameCamera { get; set; }
+        public CHud Hud { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -43,6 +44,8 @@ namespace Galaxy
             Texture2D star_texture = CContent.LoadTexture2D(Game, "Textures/Background/Star");
             StarsLower = new CStars(this, star_texture, 1.2f, 6.0f);
             StarsUpper = new CStars(this, star_texture, 0.8f, 9.0f);
+
+            Hud = new CHud(this);
 
             Entities = new List<CEntity>();
             // TODO: load ship from profile
@@ -79,6 +82,7 @@ namespace Galaxy
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
             UpdateEntities();
+            UpdateHud();
         }
 
         public void UpdateEntities()
@@ -89,18 +93,38 @@ namespace Galaxy
             ProcessEntityDelete();
         }
 
+        public void UpdateHud()
+        {
+            // TODO: hud
+            float energy = 0.0f;
+            float shield = 0.0f;
+            float armor = 0.0f;
+            CShip ship = GetNearestShip(Vector2.Zero);
+            if (ship != null)
+            {
+                energy = ship.Energy / CShip.SSettings.Energy;
+                shield = ship.Shield / CShip.SSettings.Shield;
+                armor = ship.Armor / CShip.SSettings.Armor;
+            }
+
+            Hud.Energy = energy;
+            Hud.Shield = shield;
+            Hud.Armor = armor;
+            Hud.Update();
+        }
+
         public void Draw()
         {
             Game.GraphicsDevice.Clear(new Color(133, 145, 181));
 
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
-            DrawHUD(GameCamera);
+            DrawHud(GameCamera);
         }
 
         public void DrawBackground(CCamera camera)
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None, camera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
 
             // TODO: split to scenery/bg system
             StarsLower.Draw(Game.DefaultSpriteBatch);
@@ -118,22 +142,24 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        public void DrawHUD(CCamera camera)
+        public void DrawHud(CCamera camera)
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None, Matrix.Identity);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
-            // TODO: split to HUD system
+            // TODO: split to Hud system
             int money = CSaveData.GetCurrentProfile().Money + Score; ;
             Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Money: " + money.ToString(), new Vector2(10, 10), Color.White);
             Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
 
-            // TODO: HUD system
             CShip ship = GetNearestShip(Vector2.Zero);
             if (ship != null)
             {
                 Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Shield: {0:0.0}", ship.Shield), new Vector2(10, 50), Color.White);
                 Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Armor: {0:0.0}", ship.Armor), new Vector2(10, 70), Color.White);
             }
+
+            // HUD
+            Hud.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
         }

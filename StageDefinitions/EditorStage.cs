@@ -104,6 +104,106 @@ X = -772.21f,
 Y = -126.42f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 0,
+Powerup = false,
+Type = typeof(Galaxy.CBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 144.0f,
+Y = -336.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 0.0f,
+},
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 144.0f,
+Y = -336.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 0,
+Powerup = false,
+Type = typeof(Galaxy.CBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -368.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 0.0f,
+},
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -368.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 0,
+Powerup = false,
+Type = typeof(Galaxy.CBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -88.0f,
+Y = -432.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 0.0f,
+},
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -88.0f,
+Y = -432.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 0,
+Powerup = false,
+Type = typeof(Galaxy.CBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -216.0f,
+Y = -472.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 0.0f,
+},
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -216.0f,
+Y = -472.0f,
+},
+});
 
 return stage;
 }

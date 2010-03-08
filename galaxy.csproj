@@ -112,8 +112,10 @@
     <Compile Include="Editor\Entities\EditorEntitySpawnerEntity.cs">
     </Compile>
     <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
+    <Compile Include="Enemy\ShootBall.cs" />
     <Compile Include="Enemy\Spike.cs" />
     <Compile Include="Entities\Decoration.cs" />
+    <Compile Include="Hud\Hud.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Collision.cs" />

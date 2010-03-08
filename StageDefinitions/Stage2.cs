@@ -163,7 +163,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
@@ -188,7 +188,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
@@ -196,7 +196,7 @@ Y = -2384.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
+SpeedMultiplier = 6.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 1.0f,
 Y = 0.0f,
@@ -213,7 +213,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 480.0f,
@@ -238,7 +238,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 480.0f,
@@ -246,7 +246,7 @@ Y = -2592.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
+SpeedMultiplier = 6.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = -1.0f,
 Y = 0.0f,
@@ -954,7 +954,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 480.0f,
@@ -962,7 +962,7 @@ Y = -2648.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 5.0f,
+SpeedMultiplier = 6.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = -1.0f,
 Y = 0.0f,
@@ -979,7 +979,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CShootBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
@@ -987,7 +987,7 @@ Y = -2440.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 5.0f,
+SpeedMultiplier = 6.0f,
 Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 1.0f,
 Y = 0.0f,
