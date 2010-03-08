@@ -19,6 +19,7 @@ namespace Galaxy
             public float KickbackForce { get; set; }
             public Vector2 Offset { get; set; }
             public float Rotation { get; set; }
+            public float Energy { get; set; }
         }
 
         public static List<CWeapon> GeneratePrimaryWeapon(CEntity owner, string typename, int level)
@@ -148,6 +149,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                         // level 2
@@ -159,6 +161,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -167,6 +170,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                         // level 3
@@ -178,6 +182,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -186,6 +191,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -194,6 +200,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -202,6 +209,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                         // level 4
@@ -213,6 +221,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -20.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -221,6 +230,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -229,6 +239,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -237,6 +248,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -245,6 +257,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -253,6 +266,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 20.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                         // level 5
@@ -264,6 +278,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -28.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -272,6 +287,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -20.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -280,6 +296,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -288,6 +305,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -296,6 +314,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -304,6 +323,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -312,6 +332,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 20.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -320,6 +341,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 28.0f),
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                     },
@@ -340,6 +362,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = 0.0f,
+                                Energy = 0.1f,
                             },
                         },
                         // level 2
@@ -351,6 +374,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -359,6 +383,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(1.0f),
+                                Energy = 0.1f,
                             },
                         },
                         // level 3
@@ -370,6 +395,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-3.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -378,6 +404,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -386,6 +413,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -394,6 +422,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(3.0f),
+                                Energy = 0.1f,
                             },
                         },
                         // level 4
@@ -405,6 +434,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-5.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -413,6 +443,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-3.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -421,6 +452,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -429,6 +461,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -437,6 +470,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(3.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -445,6 +479,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(5.0f),
+                                Energy = 0.1f,
                             },
                         },
                         // level 5
@@ -456,6 +491,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-7.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -464,6 +500,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-5.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -472,6 +509,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-3.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -480,6 +518,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(-1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -488,6 +527,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(1.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -496,6 +536,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(3.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -504,6 +545,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(5.0f),
+                                Energy = 0.1f,
                             },
                             new WeaponData() {
                                 ReloadTime = 0.1f,
@@ -512,6 +554,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(7.0f),
+                                Energy = 0.1f,
                             },
                         },
                     },

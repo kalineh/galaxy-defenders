@@ -60,6 +60,8 @@ namespace Galaxy
         public float Alpha { get; set; }
         public float Depth { get; set; }
         public string DebugText { get; set; }
+        public SpriteEffects SpriteEffects { get; set; }
+        public Vector2? NormalizedOrigin { get; set; }
 
         public CVisual(CWorld world, Texture2D texture, Color color)
         {
@@ -73,6 +75,7 @@ namespace Galaxy
             Color = color;
             Alpha = 1.0f;
             Depth = CLayers.CalculateDepth(Texture);
+            SpriteEffects = SpriteEffects.None;
         }
 
         public void Update()
@@ -93,10 +96,12 @@ namespace Galaxy
             float tx = Texture.Width * Scale.X;
             float ty = Texture.Height * Scale.Y;
             Rectangle source = GetFrameSourceRect(Frame);
-            Vector2 origin = new Vector2(source.Width / 2.0f, source.Height / 2.0f);
+            Vector2 origin = NormalizedOrigin != null
+                ? (Vector2)NormalizedOrigin * new Vector2(source.Width, source.Height) 
+                : new Vector2(source.Width / 2.0f, source.Height / 2.0f);
             Color color = Color;
             color.A = (byte)(Alpha * 255.0f);
-            sprite_batch.Draw(Texture, position, source, color, rotation, origin, Scale, SpriteEffects.None, Depth);
+            sprite_batch.Draw(Texture, position, source, color, rotation, origin, Scale, SpriteEffects, Depth);
 
             if (DebugText != null)
             {

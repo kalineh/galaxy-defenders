@@ -91,7 +91,7 @@ namespace Galaxy
             GraphicsDevice.PresentationParameters.BackBufferCount = 1;
             GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
             GraphicsDevice.PresentationParameters.BackBufferHeight = 800;
-            GraphicsDevice.PresentationParameters.BackBufferWidth = 600;
+            GraphicsDevice.PresentationParameters.BackBufferWidth = 800;
             GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
             GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
             GraphicsDevice.PresentationParameters.IsFullScreen = false;
