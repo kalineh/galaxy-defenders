@@ -334,8 +334,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\HudPanel.png">
-      <Name>HudPanel</Name>
+    <Compile Include="Textures\UI\MainPanel.png">
+      <Name>MainPanel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\MoneyPanel.png">
+      <Name>MoneyPanel</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

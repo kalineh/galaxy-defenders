@@ -146,19 +146,6 @@ namespace Galaxy
         {
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
-            // TODO: split to Hud system
-            int money = CSaveData.GetCurrentProfile().Money + Score; ;
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Money: " + money.ToString(), new Vector2(10, 10), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Lives: No", new Vector2(10, 30), Color.White);
-
-            CShip ship = GetNearestShip(Vector2.Zero);
-            if (ship != null)
-            {
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Shield: {0:0.0}", ship.Shield), new Vector2(10, 50), Color.White);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("Armor: {0:0.0}", ship.Armor), new Vector2(10, 70), Color.White);
-            }
-
-            // HUD
             Hud.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
