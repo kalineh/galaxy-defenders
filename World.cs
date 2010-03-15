@@ -36,6 +36,7 @@ namespace Galaxy
             EntitiesToDelete = new List<CEntity>();
             GameCamera = new CCamera(game);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
+            Sound = new CSound(this);
         }
 
         // TODO: stage definition param
@@ -54,7 +55,6 @@ namespace Galaxy
             CShip ship = new CShip(this, profile, Game.PlayerSpawnPosition);
             Entities.Add(ship);
 
-            Sound = new CSound(this);
             Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);
             Stage.Start();
