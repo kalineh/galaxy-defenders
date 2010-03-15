@@ -122,6 +122,14 @@ namespace Galaxy
 
         private static void Import(out SSaveData data, string filename)
         {
+            lock (AccessMutex)
+            {
+                ImportImpl(out data, filename);
+            }
+        }
+
+        private static void ImportImpl(out SSaveData data, string filename)
+        {
             AccessMutex.WaitOne();
 
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
@@ -146,10 +154,16 @@ namespace Galaxy
 
         private static void Export(SSaveData data, string filename)
         {
-            AccessMutex.WaitOne();
+            lock (AccessMutex)
+            {
+                ExportImpl(data, filename);
+            }
+        }
 
+        private static void ExportImpl(SSaveData data, string filename)
+        {
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
-            FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Write);
+            FileStream stream = File.Open(fullpath, FileMode.Create, FileAccess.Write);
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
@@ -163,8 +177,6 @@ namespace Galaxy
             {
                 stream.Close();
             }
-
-            AccessMutex.ReleaseMutex();
         }
     }
 }

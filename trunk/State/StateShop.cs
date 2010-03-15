@@ -95,6 +95,8 @@ namespace Galaxy
             Menu.Draw(Game.DefaultSpriteBatch);
             DrawMenuErrata();
             Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Money: " + WorkingProfile.Money, new Vector2(10.0f, 10.0f), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Primary: " + WorkingProfile.WeaponPrimaryType + ", level " + WorkingProfile.WeaponPrimaryLevel, new Vector2(10.0f, 50.0f), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Secondary: " + (WorkingProfile.WeaponSecondaryType ?? "None") + ", level " + WorkingProfile.WeaponSecondaryLevel, new Vector2(10.0f, 70.0f), Color.White);
             Game.DefaultSpriteBatch.End();
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);

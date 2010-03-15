@@ -20,9 +20,11 @@ namespace Galaxy
         public class CEntry 
         {
             public List<SoundEffectInstance> Instances = new List<SoundEffectInstance>();
-            public int Limit = 4;
+            public int MaxConcurrent = 4;
+            public int MinSpacing = 1;
         }
         public Dictionary<string, CEntry> Registry { get; set; }
+        public Dictionary<string, bool> PlayLock { get; set; }
 
         public CFiberManager Fibers { get; set; }
 
@@ -30,10 +32,10 @@ namespace Galaxy
         {
             World = world;
             Registry = new Dictionary<string, CEntry>() {
-                { "sample-limit-1", new CEntry() { Limit = 2 } },
-                { "sample-limit-2", new CEntry() { Limit = 2 } },
+                { "sample-limit-1", new CEntry() { MaxConcurrent = 2, MinSpacing = 0 } },
+                { "sample-limit-2", new CEntry() { MaxConcurrent = 2, MinSpacing = 0 } },
             };
-
+            PlayLock = new Dictionary<string, bool>();
             Fibers = new CFiberManager();
         }
 
@@ -54,7 +56,10 @@ namespace Galaxy
                 Registry.Add(sound, new CEntry());
 
             CEntry entry = Registry[sound];
-            if (entry.Instances.Count >= entry.Limit)
+            if (entry.Instances.Count >= entry.MaxConcurrent)
+                return;
+
+            if (PlayLock.ContainsKey(sound))
                 return;
 
             SoundEffect effect = World.Game.Content.Load<SoundEffect>("SE/" + sound);
@@ -65,7 +70,11 @@ namespace Galaxy
             instance.Play();
             entry.Instances.Add(instance);
 
-            Fibers.Fork( () => _RemoveWhenDone(sound, effect.Duration) );
+            Fibers.Fork(() => _RemoveWhenDone(sound, effect.Duration));
+
+            // NOTE: take lock in current frame so lock processing is correct for subsequent sounds this frame
+            PlayLock.Add(sound, true);
+            Fibers.Fork(() => _LockSoundPlayability(sound, entry.MinSpacing));
         }
 
         public void Update()
@@ -81,6 +90,13 @@ namespace Galaxy
 
             List<SoundEffectInstance> instances = Registry[name].Instances;
             instances.RemoveAt(0);
+        }
+
+        public IEnumerable _LockSoundPlayability(string name, int frames)
+        {
+            while (frames-- > 0)
+                yield return frames;
+            PlayLock.Remove(name);
         }
     }
 }
