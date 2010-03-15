@@ -24,9 +24,7 @@ namespace Galaxy
                 }
             );
 
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("SE/ExplosionSound");
-            sound.Play(0.1f, 0.0f, 0.0f);
-
+            world.Sound.Play("ExplosionSound", 0.1f);
             world.EntityAdd(animation);
             return animation;
         }
@@ -48,9 +46,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            SoundEffect sound = ship.World.Game.Content.Load<SoundEffect>("SE/ExplosionSound");
-            sound.Play(0.125f, 0.0f, 0.0f);
-
+            ship.World.Sound.Play("ExplosionSound", 0.125f);
             ship.World.EntityAdd(animation);
             return animation;
         }
@@ -72,9 +68,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            SoundEffect sound = ship.World.Game.Content.Load<SoundEffect>("SE/LaserHit");
-            sound.Play(0.2f, 0.0f, 0.0f);
-
+            ship.World.Sound.Play("ExplosionSound", 0.2f);
             ship.World.EntityAdd(animation);
             return animation;
         }
@@ -95,10 +89,7 @@ namespace Galaxy
                 }
             );
 
-            // sfx? too urusai?
-            SoundEffect sound = world.Game.Content.Load<SoundEffect>("SE/LaserHit");
-            sound.Play(0.5f, 0.0f, 0.0f);
-
+            world.Sound.Play("LaserHit", 0.4f);
             world.EntityAdd(animation);
             return animation;
         }

@@ -92,6 +92,8 @@
   <ItemGroup>
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Fibers.cs" />
+    <Compile Include="Sound.cs" />
     <Compile Include="Editor\Converters\EditorConverters.cs" />
     <Compile Include="Editor\Converters\EntityMoverTypeConverter.cs" />
     <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />

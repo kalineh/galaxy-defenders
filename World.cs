@@ -25,6 +25,7 @@ namespace Galaxy
         public CStage Stage { get; set; }
         public CCamera GameCamera { get; set; }
         public CHud Hud { get; set; }
+        public CSound Sound { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -53,6 +54,7 @@ namespace Galaxy
             CShip ship = new CShip(this, profile, Game.PlayerSpawnPosition);
             Entities.Add(ship);
 
+            Sound = new CSound(this);
             Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);
             Stage.Start();
@@ -83,6 +85,8 @@ namespace Galaxy
             GameCamera.Update();
             UpdateEntities();
             UpdateHud();
+
+            Sound.Update();
         }
 
         public void UpdateEntities()
