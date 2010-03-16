@@ -14,7 +14,6 @@ namespace Galaxy
     {
         public CGalaxy Game { get; set; }
         private CWorld EmptyWorld { get; set; }
-        private CStars Stars { get; set; }
         public CMenu Menu { get; set; }
         private CMenu MenuBase { get; set; }
         private CMenu MenuPrimaryWeapon { get; set; }
@@ -28,7 +27,6 @@ namespace Galaxy
         {
             Game = game;
             EmptyWorld = new CWorld(game);
-            Stars = new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             MenuBase = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
@@ -74,7 +72,6 @@ namespace Galaxy
 
         public override void Update()
         {
-            Stars.Update();
             Menu.Update();
             EmptyWorld.UpdateEntities();
             SampleShip.FireAllWeapons();
@@ -83,10 +80,9 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
+            Game.GraphicsDevice.Clear(Color.Black);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);

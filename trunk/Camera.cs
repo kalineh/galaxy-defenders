@@ -104,6 +104,9 @@ namespace Galaxy
             Vector2 tl = GetTopLeft();
             Vector2 br = GetBottomRight();
 
+            // HACK: bottom y limit is increased a bit because of the UI
+            br += new Vector2(0.0f, -32.0f);
+
             clamped.X = Math.Max(tl.X + buffer, clamped.X);
             clamped.Y = Math.Max(tl.Y + buffer, clamped.Y);
             clamped.X = Math.Min(br.X - buffer, clamped.X);

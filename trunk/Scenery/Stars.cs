@@ -9,7 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    class CStars
+    public class CStars
+        : CScenery
     {
         private class Star
         {
@@ -21,7 +22,6 @@ namespace Galaxy
             public Vector2 Position { get; set; }
         }
 
-        public CWorld World { get; set; }
         public CVisual Visual { get; set; }
         public float Scale { get; set; }
         public Vector2 Speed { get; set; }
@@ -29,8 +29,8 @@ namespace Galaxy
         private int Count { get; set; }
 
         public CStars(CWorld world, Texture2D texture, float scale, float speed)
+            : base(world)
         {
-            World = world;
             Visual = new CVisual(world, texture, Color.White);
             Scale = scale;
             Speed = Vector2.UnitY * speed;
@@ -48,7 +48,7 @@ namespace Galaxy
             }
         }
 
-        public void Update()
+        public override void Update()
         {
             //Speed *= new Vector2(0.9f, 1.0f);
 
@@ -66,7 +66,7 @@ namespace Galaxy
             }
         }
 
-        public void Draw(SpriteBatch sprite_batch)
+        public override void Draw(SpriteBatch sprite_batch)
         {
             foreach (Star star in Stars)
             {
