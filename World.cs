@@ -18,11 +18,10 @@ namespace Galaxy
         private List<CEntity> Entities { get; set; }
         private List<CEntity> EntitiesToAdd { get; set; }
         private List<CEntity> EntitiesToDelete { get; set; }
-        private CStars StarsLower { get; set; }
-        private CStars StarsUpper { get; set; }
         public int Score { get; set; }
         public string StageName { get; set; }
         public CStage Stage { get; set; }
+        public CScenery Scenery { get; set; }
         public CCamera GameCamera { get; set; }
         public CHud Hud { get; set; }
         public CSound Sound { get; set; }
@@ -44,8 +43,6 @@ namespace Galaxy
         {
             // TODO: use this.Content to load your game content here
             Texture2D star_texture = CContent.LoadTexture2D(Game, "Textures/Background/Star");
-            StarsLower = new CStars(this, star_texture, 1.2f, 6.0f);
-            StarsUpper = new CStars(this, star_texture, 0.8f, 9.0f);
 
             Hud = new CHud(this);
 
@@ -58,6 +55,13 @@ namespace Galaxy
             Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);
             Stage.Start();
+
+            // TODO: load from stage settings
+            Scenery = new CSceneryChain(this,
+                new CBackground(this, new Color(133, 145, 181)),
+                new CStars(this, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.2f, 6.0f),
+                new CStars(this, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.8f, 9.0f)
+            );
         }
 
         public void Stop()
@@ -78,8 +82,7 @@ namespace Galaxy
         public void Update()
         {
             Stage.Update();
-            StarsLower.Update();
-            StarsUpper.Update();
+            Scenery.Update();
 
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
@@ -119,7 +122,7 @@ namespace Galaxy
 
         public void Draw()
         {
-            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
+            Game.GraphicsDevice.Clear(Color.Black);
 
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
@@ -129,11 +132,7 @@ namespace Galaxy
         public void DrawBackground(CCamera camera)
         {
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
-
-            // TODO: split to scenery/bg system
-            StarsLower.Draw(Game.DefaultSpriteBatch);
-            StarsUpper.Draw(Game.DefaultSpriteBatch);
-
+            Scenery.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
         }
 

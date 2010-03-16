@@ -15,7 +15,6 @@ namespace Galaxy
         public CGalaxy Game { get; set; }
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
-        private CStars Stars { get; set; }
         public CMenu Menu { get; set; }
         public CShip SampleShip { get; set; }
 
@@ -24,7 +23,6 @@ namespace Galaxy
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
             EmptyWorld = new CWorld(game);
-            Stars = new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
@@ -36,11 +34,15 @@ namespace Galaxy
                 }
             };
             SampleShip = new CShip(EmptyWorld, CSaveData.GetCurrentProfile(), new Vector2(-200.0f, 0.0f));
+
+            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+                new CBackground(EmptyWorld, new Color(133, 145, 181)),
+                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
+            );
         }
 
         public override void Update()
         {
-            Stars.Update();
             Menu.Update();
 
             // TODO: organize debug somewhere?
@@ -68,16 +70,14 @@ namespace Galaxy
             SampleShip.UpdateWeapons();
 
             EmptyWorld.UpdateEntities();
+            EmptyWorld.Scenery.Update();
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
         }
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
-
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            Stars.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
+            Game.GraphicsDevice.Clear(Color.Black);
+            EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             SampleShip.Draw(Game.DefaultSpriteBatch);

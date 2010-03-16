@@ -14,7 +14,6 @@ namespace Galaxy
         public CGalaxy Game { get; set; }
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
-        private CStars Stars { get; set; }
         public CMenu Menu { get; set; }
 
         public CStateProfileSelect(CGalaxy game)
@@ -22,7 +21,6 @@ namespace Galaxy
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
             EmptyWorld = new CWorld(game);
-            Stars = new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(300.0f, 300.0f),
@@ -42,17 +40,15 @@ namespace Galaxy
 
         public override void Update()
         {
-            Stars.Update();
             Menu.Update();
         }
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
+            Game.GraphicsDevice.Clear(Color.Black);
 
             Game.DefaultSpriteBatch.Begin();
 
-            Stars.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
 

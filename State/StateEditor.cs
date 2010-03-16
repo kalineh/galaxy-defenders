@@ -32,7 +32,7 @@ namespace Galaxy
         // TODO: remove me! shouldnt need a sample ship in the editor world
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
-        private CStars Stars { get; set; }
+        private CScenery Stars { get; set; }
         public WinPoint FormTopLeft { get; set; }
         public IntPtr Hwnd { get; set; }
         public Vector2 DragSelectStart { get; set; }
@@ -446,7 +446,7 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(new Color(133, 145, 181));
+            Game.GraphicsDevice.Clear(Color.Black);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
             Stars.Draw(Game.DefaultSpriteBatch);
@@ -491,7 +491,6 @@ namespace Galaxy
 
             World = new CWorld(Game);
             WorkingProfile = CSaveData.GetCurrentProfile();
-            Stars = new CStars(World, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.0f, 3.0f);
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
             HoverEntities = new List<CEntity>();
