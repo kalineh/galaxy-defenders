@@ -4,6 +4,7 @@
 
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
@@ -120,6 +121,23 @@ namespace Galaxy
             Quaternion a = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, from);
             Quaternion b = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, to);
             return Quaternion.Lerp(a, b, amount).Z;
+        }
+    }
+
+    public static class ColorExtensions
+    {
+        public static Color Smoothstep(Color a, Color b, float t)
+        {
+            float x = (t * t) * (3.0f - 2.0f * t);
+
+            Color result = new Color(
+                (byte)(a.R + (b.R - a.R) * x),
+                (byte)(a.G + (b.G - a.G) * x),
+                (byte)(a.B + (b.B - a.B) * x),
+                (byte)(a.A + (b.A - a.A) * x)
+            );
+
+            return result;
         }
     }
 }

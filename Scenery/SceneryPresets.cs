@@ -19,7 +19,12 @@ namespace Galaxy
         public static CScenery BlueSky(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBackground(world, new Color(133, 145, 181)),
+                new CGradientBackground(world,
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181)
+                ),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
             );
@@ -37,9 +42,43 @@ namespace Galaxy
         public static CScenery Snowfall(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBackground(world, new Color(0, 0, 0)),
+                new CBackground(world, new Color(62, 140, 35)),
                 new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 1.2f, 4.0f),
                 new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, 6.0f)
+            );
+        }
+
+        public static CScenery Gradient(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CGradientBackground(world,
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181)
+                )
+            );
+        }
+
+        public static CScenery Blend(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CBlendingGradientBackground(world, 4.0f,
+                    new List<Color[]>() {
+                        new Color[] {
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181)
+                        },
+                        new Color[] {
+                            new Color(102, 125, 161),
+                            new Color(102, 125, 161),
+                            new Color(102, 125, 161),
+                            new Color(102, 125, 161)
+                        },
+                    }
+                )
             );
         }
     }
