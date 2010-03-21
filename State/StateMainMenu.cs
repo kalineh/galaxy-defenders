@@ -33,7 +33,8 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Quit", Function = Quit },
                 }
             };
-            SampleShip = new CShip(EmptyWorld, CSaveData.GetCurrentProfile(), new Vector2(-200.0f, 0.0f));
+            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile());
+            SampleShip.Physics.PositionPhysics.Position = new Vector2(-200.0f, 0.0f);
 
             EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
                 new CBackground(EmptyWorld, new Color(133, 145, 181)),

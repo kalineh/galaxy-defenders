@@ -25,14 +25,20 @@ namespace Galaxy
             // TODO: 2p
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Money += world.Score;
-            // TODO: not this, but save somehow
+
+            // TODO: not this, but save current ship upgrades to profile
             CShip ship = world.GetNearestShip(Vector2.Zero);
             if (ship != null)
             {
-                profile.WeaponPrimaryType = ship.WeaponPrimaryType;
-                profile.WeaponPrimaryLevel = ship.WeaponPrimaryLevel;
-                profile.WeaponSecondaryType = ship.WeaponSecondaryType;
-                profile.WeaponSecondaryLevel = ship.WeaponSecondaryLevel;
+                profile.WeaponPrimaryType = ship.PrimaryWeapon.Type;
+                profile.WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
+                profile.WeaponSecondaryType = ship.SecondaryWeapon.Type;
+                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.WeaponSidekickLeftType = ship.SidekickLeft.Type;
+                profile.WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
+                profile.WeaponSidekickRightType = ship.SidekickRight.Type;
+                profile.WeaponSidekickRightLevel = ship.SidekickRight.Level;
+                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
             }
 
             CSaveData.SetCurrentProfileData(profile);

@@ -33,7 +33,7 @@ namespace Galaxy
             Cooldown = Math.Max(Cooldown, 0.0f);
         }
 
-        public void ApplyWeaponData(CWeaponFactory.WeaponData data)
+        public void ApplyWeaponData(WeaponDefinitions.SWeaponData data)
         {
             ReloadTime = data.ReloadTime;
             Speed = data.Speed;

@@ -57,9 +57,9 @@ namespace Galaxy
 
         public void Update(CShip ship)
         {
-            Energy = ship == null ? 0.0f : ship.Energy / CShip.SSettings.Energy;
-            Shield = ship == null ? 0.0f : ship.Shield / CShip.SSettings.Shield;
-            Armor = ship == null ? 0.0f : ship.Armor / CShip.SSettings.Armor;
+            Energy = ship == null ? 0.0f : ship.CurrentEnergy / ship.Generator.Energy;
+            Shield = ship == null ? 0.0f : ship.CurrentShield / ship.Shield.Shield;
+            Armor = ship == null ? 0.0f : ship.CurrentArmor / ship.Chassis.Armor;
 
             EnergyVisual.Scale = new Vector2(Energy, Energy);
             ShieldVisual.Scale = new Vector2(Shield, 1.0f);

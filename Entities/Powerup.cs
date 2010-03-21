@@ -18,7 +18,7 @@ namespace Galaxy
 
         public new void OnCollide(CShip ship)
         {
-            ship.UpgradePrimaryWeapon();
+            ship.WeaponPrimary = ship.UpgradeWeapon(ship.PrimaryWeapon);
             Die();
         }
     }
