@@ -6,6 +6,9 @@ namespace Stages {
 public class EditorStage {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("EditorStage");
+stage.ScrollSpeed = 16;
+stage.SceneryName = "SimpleSpace";
+stage.MusicName = "Music/Stage1";
 stage.AddElement(0, 
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
@@ -208,11 +211,11 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 0,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 133.88f,
-Y = -205.8f,
+X = 264.0f,
+Y = -128.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
@@ -225,8 +228,8 @@ Name = "MoveDown",
 },
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 133.88f,
-Y = -205.8f,
+X = 264.0f,
+Y = -128.0f,
 },
 });
 stage.AddElement(0, 
@@ -311,8 +314,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 130.14f,
-Y = -269.36f,
+X = 120.0f,
+Y = -256.0f,
 },
 },
 CustomMover = new Galaxy.CMoverFixedVelocity() {
@@ -325,8 +328,8 @@ Name = "MoveDown",
 },
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 130.14f,
-Y = -269.36f,
+X = 120.0f,
+Y = -256.0f,
 },
 });
 stage.AddElement(0, 

@@ -55,8 +55,12 @@ namespace Galaxy
             MoneyPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
         }
 
-        public void Update()
+        public void Update(CShip ship)
         {
+            Energy = ship == null ? 0.0f : ship.Energy / CShip.SSettings.Energy;
+            Shield = ship == null ? 0.0f : ship.Shield / CShip.SSettings.Shield;
+            Armor = ship == null ? 0.0f : ship.Armor / CShip.SSettings.Armor;
+
             EnergyVisual.Scale = new Vector2(Energy, Energy);
             ShieldVisual.Scale = new Vector2(Shield, 1.0f);
             ArmorVisual.Scale = new Vector2(Armor, 1.0f);

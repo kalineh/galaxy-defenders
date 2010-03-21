@@ -7,14 +7,20 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
+using System.ComponentModel;
 
 namespace Galaxy
 {
     public class CStageDefinition
     {
+        [Browsable(false)]
         public string Name { get; private set; }
         public float ScrollSpeed { get; set; }
+        public string SceneryName { get; set; }
+        public string MusicName { get; set; }
+        [Browsable(false)]
         public Dictionary<int, List<CStageElement>> Elements { get; private set; }
+        [Browsable(false)]
         public List<CStageElement> ActiveElements { get; private set; }
 
         public static CStageDefinition GetStageDefinitionByName(string name)
@@ -31,6 +37,8 @@ namespace Galaxy
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
             ScrollSpeed = 4.0f;
+            SceneryName = "Black";
+            MusicName = "Music/Stage1";
         }
 
         public string ToFilename()

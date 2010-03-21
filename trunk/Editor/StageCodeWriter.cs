@@ -284,6 +284,11 @@ namespace Galaxy
             sb.AppendLine("public static CStageDefinition GenerateDefinition() {");
             sb.AppendLine(String.Format("CStageDefinition stage = new CStageDefinition(\"{0}\");", stage));
 
+            // properties
+            sb.AppendLine(String.Format("stage.ScrollSpeed = {0};", stage_definition.ScrollSpeed));
+            sb.AppendLine(String.Format("stage.SceneryName = \"{0}\";", stage_definition.SceneryName));
+            sb.AppendLine(String.Format("stage.MusicName = \"{0}\";", stage_definition.MusicName));
+
             // stage data
             foreach (KeyValuePair<int, List<CStageElement>> time_element in stage_definition.Elements)
             {

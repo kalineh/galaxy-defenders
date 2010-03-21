@@ -51,7 +51,6 @@ namespace Galaxy
 
             tree.NodeMouseClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseClick);
             tree.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(EntityTreeNodeMouseDoubleClick);
-
         }
 
         void EntityTreeNodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -125,13 +124,20 @@ namespace Galaxy
 
             // Update selection.
             StageEditor.MainForm form = GameControl.FindForm() as StageEditor.MainForm;
-            PropertyGrid grid = form.GetEntityPropertyGrid();
+            PropertyGrid entity_grid = form.GetEntityPropertyGrid();
             List<CEntity> selected = editor.SelectedEntities;
             int difference = selected.Except(PreviousSelectedEntities).Count();
             if (difference > 0 || selected.Count != PreviousSelectedEntities.Count)
             {
-                grid.Invoke((Action)(() => grid.SelectedObjects = selected.ToArray()));
+                entity_grid.Invoke((Action)(() => entity_grid.SelectedObjects = selected.ToArray()));
                 PreviousSelectedEntities = selected.ToList();
+            }
+
+            PropertyGrid stage_grid = form.GetStagePropertyGrid();
+            if (stage_grid.SelectedObject == null || stage_grid.SelectedObject != editor.Game.StageDefinition)
+            {
+                stage_grid.Invoke((Action)(() => stage_grid.SelectedObject = editor.Game.StageDefinition));
+                stage_grid.Invoke((Action)(() => stage_grid.Refresh()));
             }
 
             /*

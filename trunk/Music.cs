@@ -104,5 +104,10 @@ namespace Galaxy
         public void Update()
         {
         }
+
+        public void SetVolume(float volume)
+        {
+            MediaPlayer.Volume = volume;
+        }
     }
 }
