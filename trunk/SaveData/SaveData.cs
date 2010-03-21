@@ -16,12 +16,18 @@ namespace Galaxy
     public struct SProfile
     {
         public string Name;
-        public string Ship;
+        public int Money;
+        public string ChassisType;
+        public string GeneratorType;
+        public string ShieldType;
         public string WeaponPrimaryType;
         public int WeaponPrimaryLevel;
         public string WeaponSecondaryType;
         public int WeaponSecondaryLevel;
-        public int Money;
+        public string WeaponSidekickLeftType;
+        public int WeaponSidekickLeftLevel;
+        public string WeaponSidekickRightType;
+        public int WeaponSidekickRightLevel;
     }
 
     [Serializable]
@@ -79,12 +85,18 @@ namespace Galaxy
             return new SProfile()
             {
                 Name = "User",
-                Ship = "Default",
+                Money = 1500,
+                ChassisType = "BasicShip",
+                GeneratorType = "BasicGenerator",
+                ShieldType = "BasicShield",
                 WeaponPrimaryType = "FrontLaser",
                 WeaponPrimaryLevel = 0,
                 WeaponSecondaryType = "",
                 WeaponSecondaryLevel = 0,
-                Money = 1500,
+                WeaponSidekickLeftType = "",
+                WeaponSidekickLeftLevel = 0,
+                WeaponSidekickRightType = "",
+                WeaponSidekickRightLevel = 0
             };
         }
 

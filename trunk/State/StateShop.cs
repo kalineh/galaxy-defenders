@@ -55,7 +55,6 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Change Type", Function = SecondarySwapType },
-                    new CMenu.MenuOption() { Text = "Remove", Function = SecondaryRemove },
                     new CMenu.MenuOption() { Text = "Power Up", Function = SecondaryPowerUp },
                     new CMenu.MenuOption() { Text = "Power Down", Function = SecondaryPowerDown },
                     new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
@@ -103,7 +102,8 @@ namespace Galaxy
         private void RefreshSampleDisplay()
         {
             EmptyWorld.Stop();
-            SampleShip = new CShip(EmptyWorld, WorkingProfile, new Vector2(-100.0f, 150.0f));
+            SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile);
+            SampleShip.Physics.PositionPhysics.Position = new Vector2(-100.0f, 150.0f);
         }
 
         private void DrawMenuBaseErrata()
@@ -118,7 +118,7 @@ namespace Galaxy
                 {
                     case 1:
                     {
-                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel))
+                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
                         {
                             int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
                             Color color = WorkingProfile.Money > price ? Color.White : Color.Red;
@@ -129,7 +129,7 @@ namespace Galaxy
 
                     case 2:
                     {
-                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel))
+                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
                         {
                             int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
                             Color color = Color.Green;
@@ -154,7 +154,7 @@ namespace Galaxy
 
                     case 2:
                     {
-                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel))
+                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
                         {
                             int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
                             Color color = WorkingProfile.Money > price ? Color.White : Color.Red;
@@ -165,7 +165,7 @@ namespace Galaxy
 
                     case 3:
                     {
-                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel))
+                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
                         {
                             int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                             Color color = Color.Green;
@@ -207,7 +207,7 @@ namespace Galaxy
         private void PrimarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponPrimaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.PrimaryWeaponTypes);
             int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
             WorkingProfile.Money += total;
             WorkingProfile.WeaponPrimaryType = replace;
@@ -225,7 +225,7 @@ namespace Galaxy
             if (WorkingProfile.Money < next)
                 return;
 
-            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel))
+            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
                 return;
 
             WorkingProfile.Money -= next;
@@ -236,7 +236,7 @@ namespace Galaxy
 
         private void PrimaryPowerDown(object tag)
         {
-            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel))
+            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
                 return;
 
             WorkingProfile.Money += CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
@@ -250,7 +250,7 @@ namespace Galaxy
         private void SecondarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponSecondaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SecondaryWeaponTypes);
             if (current != "")
             {
                 int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
@@ -265,17 +265,6 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void SecondaryRemove(object tag)
-        {
-            string current = WorkingProfile.WeaponSecondaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current);
-            int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-            WorkingProfile.Money += total;
-            WorkingProfile.WeaponSecondaryType = "";
-            WorkingProfile.WeaponSecondaryLevel = 0;
-            RefreshSampleDisplay();
-        }
-
         private void SecondaryPowerUp(object tag)
         {
             int current = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
@@ -284,7 +273,7 @@ namespace Galaxy
             if (WorkingProfile.Money < next)
                 return;
 
-            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel))
+            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
                 return;
 
             WorkingProfile.Money -= next;
@@ -295,7 +284,7 @@ namespace Galaxy
 
         private void SecondaryPowerDown(object tag)
         {
-            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel))
+            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
                 return;
 
             WorkingProfile.Money += CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);

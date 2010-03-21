@@ -14,62 +14,60 @@ namespace Galaxy
     public class CShip
         : CEntity
     {
-        public struct Settings
-        {
-            public float VisualScale;
-            public float MovementSpeed;
-            public float Friction;
-            public float Energy;
-            public float Shield;
-            public float Armor;
-        };
-        public static Settings SSettings;
-
-        static CShip()
-        {
-            SSettings.VisualScale = 0.25f;
-            SSettings.MovementSpeed = 2.25f;
-            SSettings.Friction = 0.8f;
-            SSettings.Energy = 10.0f;
-            SSettings.Shield = 5.0f;
-            SSettings.Armor = 10.0f;
-        }
-
         // TODO: spawn point (Window.ClientBounds)
         // TODO: game object sprite def?
 
-        public List<CWeapon> WeaponPrimary { get; private set; }
-        public List<CWeapon> WeaponSecondary { get; private set; }
+        public CChassisPart Chassis { get; set; }
+        public CGeneratorPart Generator { get; set; }
+        public CShieldPart Shield { get; set; }
+        public CWeaponPart PrimaryWeapon { get; set; }
+        public CWeaponPart SecondaryWeapon { get; set; }
+        public CWeaponPart SidekickLeft { get; set; }
+        public CWeaponPart SidekickRight { get; set; }
 
-        public string WeaponPrimaryType { get; set; }
-        public int WeaponPrimaryLevel { get; set; }
-        public string WeaponSecondaryType { get; set; }
-        public int WeaponSecondaryLevel { get; set; }
-        public float Energy { get; private set; }
-        public float Shield { get; private set; }
-        public float Armor { get; private set; }
+        public float CurrentArmor { get; set; }
+        public float CurrentShield { get; set; }
+        public float CurrentEnergy { get; set; }
 
-        public CShip(CWorld world, SProfile profile, Vector2 position)
+        public List<CWeapon> WeaponPrimary { get; set; }
+        public List<CWeapon> WeaponSecondary { get; set; }
+        public List<CWeapon> WeaponSidekickLeft { get; set; }
+        public List<CWeapon> WeaponSidekickRight { get; set; }
+
+        public CShip(
+            CWorld world,
+            CChassisPart chassis,
+            CGeneratorPart generator,
+            CShieldPart shield,
+            CWeaponPart primary,
+            CWeaponPart secondary,
+            CWeaponPart sidekick_left,
+            CWeaponPart sidekick_right)
             : base(world)
         {
+            Chassis = chassis;
+            Generator = generator;
+            Shield = shield;
+            PrimaryWeapon = primary;
+            SecondaryWeapon = secondary;
+            SidekickLeft = sidekick_left;
+            SidekickRight = sidekick_right;
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Physics.PositionPhysics.Friction = SSettings.Friction;
+            Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = new CollisionCircle(Vector2.Zero, 12.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Player/Ship"), Color.White);
-            Visual.Scale = new Vector2(SSettings.VisualScale);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, chassis.Texture), Color.White);
+            Visual.Scale = new Vector2(chassis.VisualScale);
 
-            WeaponPrimaryType = profile.WeaponPrimaryType;
-            WeaponPrimaryLevel = profile.WeaponPrimaryLevel;
-            WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
+            WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
+            WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
+            WeaponSidekickLeft = CWeaponFactory.GenerateWeapon(this, SidekickLeft);
+            WeaponSidekickRight = CWeaponFactory.GenerateWeapon(this, SidekickRight);
 
-            WeaponSecondaryType = profile.WeaponSecondaryType;
-            WeaponSecondaryLevel = profile.WeaponSecondaryLevel;
-            WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
-
-            Shield = SSettings.Shield;
-            Armor = SSettings.Armor;
+            CurrentArmor = chassis.Armor;
+            CurrentShield = shield.Shield;
+            CurrentEnergy = generator.Energy;
 
             IgnoreCameraScroll = true;
         }
@@ -117,40 +115,24 @@ namespace Galaxy
             base.Draw(sprite_batch);
         }
 
-        public void UpgradePrimaryWeapon()
+        public List<CWeapon> UpgradeWeapon(CWeaponPart weapon_part)
         {
-            if (CWeaponFactory.CanUpgrade(WeaponPrimaryType, WeaponPrimaryLevel))
-            {
-                WeaponPrimaryLevel += 1;
-                WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
-            }
+            if (!CWeaponFactory.CanUpgrade(weapon_part, 1))
+                return CWeaponFactory.GenerateWeapon(this, weapon_part);
+
+            weapon_part.Level += 1;
+            List<CWeapon> weapon = CWeaponFactory.GenerateWeapon(this, weapon_part);
+            return weapon;
         }
 
-        public void UpgradeSecondaryWeapon()
+        public List<CWeapon> DowngradeWeapon(CWeaponPart weapon_part)
         {
-            if (CWeaponFactory.CanUpgrade(WeaponSecondaryType, WeaponSecondaryLevel))
-            {
-                WeaponSecondaryLevel += 1;
-                WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
-            }
-        }
+            if (!CWeaponFactory.CanDowngrade(weapon_part, 1))
+                return CWeaponFactory.GenerateWeapon(this, weapon_part);
 
-        public void DowngradePrimaryWeapon()
-        {
-            if (CWeaponFactory.CanDowngrade(WeaponPrimaryType, WeaponPrimaryLevel))
-            {
-                WeaponPrimaryLevel -= 1;
-                WeaponPrimary = CWeaponFactory.GeneratePrimaryWeapon(this, WeaponPrimaryType, WeaponPrimaryLevel);
-            }
-        }
-
-        public void DowngradeSecondaryWeapon()
-        {
-            if (CWeaponFactory.CanDowngrade(WeaponSecondaryType, WeaponSecondaryLevel))
-            {
-                WeaponSecondaryLevel -= 1;
-                WeaponSecondary = CWeaponFactory.GenerateSecondaryWeapon(this, WeaponSecondaryType, WeaponSecondaryLevel);
-            }
+            weapon_part.Level -= 1;
+            List<CWeapon> weapon = CWeaponFactory.GenerateWeapon(this, weapon_part);
+            return weapon;
         }
 
         protected override void OnDie()
@@ -165,7 +147,7 @@ namespace Galaxy
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
-            float Speed = SSettings.MovementSpeed;
+            float Speed = Chassis.Speed;
             Vector2 force = new Vector2(0.0f, 0.0f);
  
             if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
@@ -180,6 +162,7 @@ namespace Galaxy
 
             Physics.PositionPhysics.Velocity += force;
 
+            // TODO: remove eventually
             if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
             if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
@@ -188,16 +171,16 @@ namespace Galaxy
             if (lshift_down)
             {
                 if (CInput.IsRawKeyPressed(Keys.C))
-                    DowngradePrimaryWeapon();
+                    WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
                 if (CInput.IsRawKeyPressed(Keys.V))
-                    DowngradeSecondaryWeapon();
+                    WeaponSecondary = DowngradeWeapon(SecondaryWeapon);
             }
             else
             {
                 if (CInput.IsRawKeyPressed(Keys.C))
-                    UpgradePrimaryWeapon();
+                    WeaponPrimary = UpgradeWeapon(PrimaryWeapon);
                 if (CInput.IsRawKeyPressed(Keys.V))
-                    UpgradeSecondaryWeapon();
+                    WeaponSecondary = UpgradeWeapon(SecondaryWeapon);
             }
 
             // TODO: bind to functions?
@@ -209,25 +192,35 @@ namespace Galaxy
             {
                 Fire(WeaponSecondary);
             }
+            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
+            {
+                Fire(WeaponSidekickLeft);
+            }
+            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.F))
+            {
+                Fire(WeaponSidekickRight);
+            }
         }
 
         public void UpdateGenerator()
         {
-            Energy = Math.Min(Energy + 0.05f, SSettings.Energy);
+            CurrentEnergy = Math.Min(CurrentEnergy + Generator.Regen, Generator.Energy);
         }
 
         public void UpdateWeapons()
         {
             WeaponPrimary.ForEach(weapon => weapon.Update());
             WeaponSecondary.ForEach(weapon => weapon.Update());
+            WeaponSidekickLeft.ForEach(weapon => weapon.Update());
+            WeaponSidekickRight.ForEach(weapon => weapon.Update());
         }
 
         public void UpdateShields()
         {
-            float used_energy = Math.Min(Energy, 0.01f);
-            used_energy = Math.Min(used_energy, SSettings.Shield - Shield);
-            Shield += used_energy;
-            Energy -= used_energy;
+            float used_energy = Math.Min(CurrentEnergy, Shield.Regen);
+            used_energy = Math.Min(used_energy, Shield.Shield - CurrentShield);
+            CurrentShield += used_energy;
+            CurrentEnergy -= used_energy;
         }
 
         private void Fire(List<CWeapon> weapons)
@@ -239,22 +232,14 @@ namespace Galaxy
                     required_energy += weapon.Energy;
             }
 
-            if (Energy < required_energy)
+            if (CurrentEnergy < required_energy)
                 return;
 
-            Energy -= required_energy;
+            CurrentEnergy -= required_energy;
 
-            // TODO: logic mismatch with above
-            bool fired = false;
             foreach (CWeapon weapon in weapons)
             {
-                fired |= weapon.TryFire();
-            }
-
-            if (fired)
-            {
-                // TODO: weapon type fire
-                World.Sound.Play("LaserShoot", 0.1f);
+                weapon.TryFire();
             }
         }
 
@@ -262,6 +247,8 @@ namespace Galaxy
         {
             Fire(WeaponPrimary);
             Fire(WeaponSecondary);
+            Fire(WeaponSidekickLeft);
+            Fire(WeaponSidekickRight);
         }
 
         public void TakeDamage(float damage)
@@ -279,24 +266,24 @@ namespace Galaxy
 
         private void ApplyDamage(float damage)
         {
-            if (Shield > 0.0f)
+            if (CurrentShield > 0.0f)
             {
-                Shield -= damage;
-                if (Shield > 0.0f)
+                CurrentShield -= damage;
+                if (CurrentShield > 0.0f)
                     return;
 
-                damage = Math.Abs(Shield);
-                Shield = 0.0f;
+                damage = Math.Abs(CurrentShield);
+                CurrentShield = 0.0f;
             }
 
-            Armor -= damage;
-            if (Armor <= 0.0f)
+            CurrentArmor -= damage;
+            if (CurrentArmor <= 0.0f)
             {
                 Die();
                 return;
             }
 
-            if (Shield <= 0.0f)
+            if (CurrentShield <= 0.0f)
             {
                 CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 0.5f);
             }

@@ -11,38 +11,20 @@ namespace Galaxy
 {
     public class CWeaponFactory
     {
-        public struct WeaponData
+        public static List<CWeapon> GenerateWeapon(CEntity owner, CWeaponPart weapon_part)
         {
-            public float ReloadTime { get; set; }
-            public float Speed { get; set; }
-            public float Damage { get; set; }
-            public float KickbackForce { get; set; }
-            public Vector2 Offset { get; set; }
-            public float Rotation { get; set; }
-            public float Energy { get; set; }
-        }
+            string typename = weapon_part.Type;
+            int level = weapon_part.Level;
 
-        public static List<CWeapon> GeneratePrimaryWeapon(CEntity owner, string typename, int level)
-        {
-            return GenerateWeapon(owner, typename, level, PrimaryWeaponDefinitions);
-        }
-
-        public static List<CWeapon> GenerateSecondaryWeapon(CEntity owner, string typename, int level)
-        {
-            return GenerateWeapon(owner, typename, level, SecondaryWeaponDefinitions);
-        }
-
-        public static List<CWeapon> GenerateWeapon(CEntity owner, string typename, int level, Dictionary<string, SWeaponDefinition> definitions)
-        {
-            if (!definitions.ContainsKey(typename))
+            if (!WeaponDefinitions.Items.ContainsKey(typename))
             {
                 return new List<CWeapon>();
             }
 
-            List<WeaponData> weapon_data = definitions[typename].Data[level];
+            List<WeaponDefinitions.SWeaponData> weapon_data = WeaponDefinitions.Items[typename].Data[level];
             List<CWeapon> weapons = new List<CWeapon>();
 
-            foreach (WeaponData data in weapon_data)
+            foreach (WeaponDefinitions.SWeaponData data in weapon_data)
             {
                 Type type = Type.GetType("Galaxy.CWeapon" + typename);
                 CWeapon weapon = Activator.CreateInstance(type, new object[] { owner }) as CWeapon;
@@ -53,63 +35,63 @@ namespace Galaxy
             return weapons;
         }
 
-        public static bool CanUpgrade(string typename, int level)
+        public static bool CanUpgrade(string typename, int level, int steps)
         {
-            if (PrimaryWeaponDefinitions.ContainsKey(typename))
-                return PrimaryWeaponDefinitions[typename].Data.Count > level + 1;
-            if (SecondaryWeaponDefinitions.ContainsKey(typename))
-                return SecondaryWeaponDefinitions[typename].Data.Count > level + 1;
-            return false;
+            if (!WeaponDefinitions.Items.ContainsKey(typename))
+                return false;
+
+            return WeaponDefinitions.Items[typename].Data.Count > level + steps;
         }
 
-        public static bool CanDowngrade(string typename, int level)
+        public static bool CanUpgrade(CWeaponPart weapon_part, int steps)
         {
-            return level > 0;
+            return CanUpgrade(weapon_part.Type, weapon_part.Level, steps);
         }
 
-        public static string GetNextWeaponInCycle(string current)
+        public static bool CanDowngrade(string typename, int level, int steps)
         {
-            // TODO: not this badness
-            Dictionary<string, SWeaponDefinition> definitions =
-                PrimaryWeaponDefinitions.ContainsKey(current) ? PrimaryWeaponDefinitions : SecondaryWeaponDefinitions;
+            return level >= steps;
+        }
 
-            // TODO: can we do this cleaner?
-            bool is_next = false;
-            foreach (KeyValuePair<string, SWeaponDefinition> kv in definitions)
-            {
-                if (kv.Key == current)
-                {
-                    is_next = true;
-                    continue;
-                }
+        public static bool CanDowngrade(CWeaponPart weapon_part, int steps)
+        {
+            return CanDowngrade(weapon_part.Type, weapon_part.Level, steps);
+        }
 
-                if (is_next)
-                {
-                    return kv.Key;
-                }
-            }
-            
-            // TODO: find cleaner way to do this too!
-            foreach (KeyValuePair<string, SWeaponDefinition> kv in definitions)
-            {
-                return kv.Key;
-            }
+        public static List<string> PrimaryWeaponTypes = new List<string>
+        {
+            "FrontLaser",
+            "SpreadLaser",
+        };
 
-            return current;
+        public static List<string> SecondaryWeaponTypes = new List<string>
+        {
+            "",
+            "SeekBomb",
+            "Missile",
+        };
+
+        public static List<string> SidekickWeaponTypes = new List<string>
+        {
+            "SeekBomb",
+        };
+
+        public static string GetNextWeaponInCycle(string current, List<string> types)
+        {
+            int index = types.FindIndex(s => s == current);
+            int next = index + 1;
+            return types[next % types.Count];
         }
 
         public static int GetPriceForLevel(string typename, int level)
         {
             // TODO: not this badness
-            Dictionary<string, SWeaponDefinition> definitions =
-                PrimaryWeaponDefinitions.ContainsKey(typename) ? PrimaryWeaponDefinitions : SecondaryWeaponDefinitions;
-
             if (typename == "")
                 return 0;
 
-            // TODO: where can we put a per-weapon price? (not per-level)
+            // TODO: is this price calculation ok?
             int calculable_level = level;
-            int base_ = definitions[typename].BasePrice;
+            int base_ = WeaponDefinitions.Items[typename].BasePrice;
             int total = base_ + base_ * calculable_level * calculable_level;
             int rounded = total + total % 50;
             return rounded;
@@ -124,25 +106,48 @@ namespace Galaxy
             }
             return total;
         }
+    }
+
+    public class WeaponDefinitions
+    {
+        public struct SWeaponData
+        {
+            public float ReloadTime { get; set; }
+            public float Speed { get; set; }
+            public float Damage { get; set; }
+            public float KickbackForce { get; set; }
+            public Vector2 Offset { get; set; }
+            public float Rotation { get; set; }
+            public float Energy { get; set; }
+        }
 
         public struct SWeaponDefinition
         {
             public int BasePrice;
             public string Sound;
-            public List<List<WeaponData>> Data;
+            public List<List<SWeaponData>> Data;
         }
 
-
-        public static Dictionary<string, SWeaponDefinition> PrimaryWeaponDefinitions = new Dictionary<string, SWeaponDefinition>()
+        public static CWeaponPart GetPart(string typename, int level)
         {
-            { "FrontLaser", new SWeaponDefinition()
+            return new CWeaponPart()
+            {
+                Type = typename,
+                Level = level,
+            };
+        }
+
+        public static Dictionary<string, SWeaponDefinition> Items = new Dictionary<string, SWeaponDefinition>()
+        {
+            { "FrontLaser",
+                new SWeaponDefinition()
                 {
                     BasePrice = 750,
                     Sound = "SE/LaserShoot",
-                    Data = new List<List<WeaponData>>() {
+                    Data = new List<List<SWeaponData>>() {
                         // level 1
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -153,8 +158,8 @@ namespace Galaxy
                             },
                         },
                         // level 2
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -163,7 +168,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -174,8 +179,8 @@ namespace Galaxy
                             },
                         },
                         // level 3
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -184,7 +189,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -193,7 +198,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -202,7 +207,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -213,8 +218,8 @@ namespace Galaxy
                             },
                         },
                         // level 4
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -223,7 +228,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -232,7 +237,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -241,7 +246,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -250,7 +255,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -259,7 +264,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -270,8 +275,8 @@ namespace Galaxy
                             },
                         },
                         // level 5
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -280,7 +285,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -289,7 +294,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -298,7 +303,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -307,7 +312,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -316,7 +321,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -325,7 +330,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -334,7 +339,7 @@ namespace Galaxy
                                 Rotation = 0.0f,
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -348,14 +353,15 @@ namespace Galaxy
                 }
             },
 
-            { "SpreadLaser", new SWeaponDefinition()
+            { "SpreadLaser",
+                new SWeaponDefinition()
                 {
                     BasePrice = 750,
                     Sound = "SE/LaserShoot",
-                    Data = new List<List<WeaponData>>() {
+                    Data = new List<List<SWeaponData>>() {
                         // level 1
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -366,8 +372,8 @@ namespace Galaxy
                             },
                         },
                         // level 2
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -376,7 +382,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -387,8 +393,8 @@ namespace Galaxy
                             },
                         },
                         // level 3
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -397,7 +403,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-3.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -406,7 +412,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -415,7 +421,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -426,8 +432,8 @@ namespace Galaxy
                             },
                         },
                         // level 4
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -436,7 +442,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-5.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -445,7 +451,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-3.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -454,7 +460,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -463,7 +469,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -472,7 +478,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(3.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -483,8 +489,8 @@ namespace Galaxy
                             },
                         },
                         // level 5
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -493,7 +499,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-7.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -502,7 +508,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-5.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -511,7 +517,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-3.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -520,7 +526,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(-1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -529,7 +535,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(1.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -538,7 +544,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(3.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -547,7 +553,7 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(5.0f),
                                 Energy = 0.1f,
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.1f,
                                 Speed = 20.0f,
                                 Damage = 0.2f,
@@ -560,18 +566,14 @@ namespace Galaxy
                     },
                 }
             },
-        };
-
-        public static Dictionary<string, SWeaponDefinition> SecondaryWeaponDefinitions = new Dictionary<string, SWeaponDefinition>()
-        {
             { "Missile", 
                 new SWeaponDefinition() {
                     BasePrice = 1000,
                     Sound = null,
-                    Data = new List<List<WeaponData>>() {
+                    Data = new List<List<SWeaponData>>() {
                         // level 1
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -581,8 +583,8 @@ namespace Galaxy
                             },
                         },
                         // level 2
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -590,7 +592,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -600,8 +602,8 @@ namespace Galaxy
                             },
                         },
                         // level 3
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -609,7 +611,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, 16.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -617,7 +619,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
                                 Damage = 2.0f,
@@ -634,10 +636,10 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     BasePrice = 1750,
                     Sound = null,
-                    Data = new List<List<WeaponData>>() {
+                    Data = new List<List<SWeaponData>>() {
                         // level 1
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,
@@ -647,8 +649,8 @@ namespace Galaxy
                             },
                         },
                         // level 2
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,
@@ -656,7 +658,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(195.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,
@@ -666,8 +668,8 @@ namespace Galaxy
                             },
                         },
                         // level 3
-                        new List<WeaponData>() {
-                            new WeaponData() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,
@@ -675,7 +677,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(195.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,
@@ -683,7 +685,7 @@ namespace Galaxy
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
                             },
-                            new WeaponData() {
+                            new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
                                 Damage = 0.8f,

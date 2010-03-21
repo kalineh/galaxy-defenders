@@ -47,7 +47,8 @@ namespace Galaxy
 
             // TODO: load ship from profile
             SProfile profile = CSaveData.GetCurrentProfile();
-            CShip ship = new CShip(this, profile, Game.PlayerSpawnPosition);
+            CShip ship = CShipFactory.GenerateShip(this, profile);
+            ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
             Entities.Add(ship);
 
             Stage = new CStage(this, Game.StageDefinition);
