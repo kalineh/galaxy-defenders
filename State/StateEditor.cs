@@ -12,6 +12,7 @@ namespace Galaxy
 {
     using WinPoint = System.Drawing.Point;
     using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
+    using System.Reflection;
 
     public enum EditorInteractionState
     {
@@ -32,7 +33,7 @@ namespace Galaxy
         // TODO: remove me! shouldnt need a sample ship in the editor world
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
-        private CScenery Stars { get; set; }
+        private CScenery Scenery { get; set; }
         public WinPoint FormTopLeft { get; set; }
         public IntPtr Hwnd { get; set; }
         public Vector2 DragSelectStart { get; set; }
@@ -61,6 +62,11 @@ namespace Galaxy
             HoverEntities = new List<CEntity>();
             SnapToGrid = true;
             GridSize = 8.0f;
+
+            Game.Music.Play(game.StageDefinition.MusicName);
+            Game.Music.SetVolume(0.1f);
+            MethodInfo method = typeof(SceneryPresets).GetMethod(game.StageDefinition.SceneryName);
+            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
 
         public override void Update()
@@ -84,7 +90,7 @@ namespace Galaxy
                 Game.PlayerSpawnPosition = player.Physics.PositionPhysics.Position;
 
             World.GameCamera.Update();
-            Stars.Update();
+            Scenery.Update();
             World.UpdateEntities();
         }
 
@@ -449,7 +455,7 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
-            Stars.Draw(Game.DefaultSpriteBatch);
+            Scenery.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
             foreach (CEntity entity in HoverEntities)
@@ -535,6 +541,10 @@ namespace Galaxy
             Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, Game.StageDefinition.Name);
             ClearStage();
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+
+            Game.Music.Play(Game.StageDefinition.MusicName);
+            MethodInfo method = typeof(SceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
+            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
     }
 }

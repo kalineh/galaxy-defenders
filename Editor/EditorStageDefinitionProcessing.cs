@@ -50,6 +50,11 @@ namespace Galaxy
         {
             CStageDefinition result = new CStageDefinition(name);
 
+            // rollover existing stage properties
+            result.ScrollSpeed = world.Game.StageDefinition.ScrollSpeed;
+            result.SceneryName = world.Game.StageDefinition.SceneryName;
+            result.MusicName = world.Game.StageDefinition.MusicName;
+
             // from EDITOR ENTITY to STAGE ELEMENT
 
             var entities = from e in world.GetEntities() where e is CEditorEntityBase select e;

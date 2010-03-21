@@ -41,27 +41,22 @@ namespace Galaxy
         // TODO: stage definition param
         public void Start()
         {
-            // TODO: use this.Content to load your game content here
-            Texture2D star_texture = CContent.LoadTexture2D(Game, "Textures/Background/Star");
-
             Hud = new CHud(this);
 
             Entities = new List<CEntity>();
+
             // TODO: load ship from profile
             SProfile profile = CSaveData.GetCurrentProfile();
             CShip ship = new CShip(this, profile, Game.PlayerSpawnPosition);
             Entities.Add(ship);
 
-            Game.Music.Play("Music/Stage1");
             Stage = new CStage(this, Game.StageDefinition);
             Stage.Start();
 
-            // TODO: load from stage settings
-            Scenery = new CSceneryChain(this,
-                new CBackground(this, new Color(133, 145, 181)),
-                new CStars(this, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 1.2f, 6.0f),
-                new CStars(this, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.8f, 9.0f)
-            );
+            // TODO: should this be in the stage?
+            Game.Music.Play(Stage.Definition.MusicName);
+            MethodInfo method = typeof(SceneryPresets).GetMethod(Stage.Definition.SceneryName);
+            Scenery = method.Invoke(null, new object[] { this }) as CScenery;
         }
 
         public void Stop()
@@ -102,22 +97,8 @@ namespace Galaxy
 
         public void UpdateHud()
         {
-            // TODO: hud
-            float energy = 0.0f;
-            float shield = 0.0f;
-            float armor = 0.0f;
             CShip ship = GetNearestShip(Vector2.Zero);
-            if (ship != null)
-            {
-                energy = ship.Energy / CShip.SSettings.Energy;
-                shield = ship.Shield / CShip.SSettings.Shield;
-                armor = ship.Armor / CShip.SSettings.Armor;
-            }
-
-            Hud.Energy = energy;
-            Hud.Shield = shield;
-            Hud.Armor = armor;
-            Hud.Update();
+            Hud.Update(ship);
         }
 
         public void Draw()

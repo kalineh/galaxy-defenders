@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Media;
 
 namespace StageEditor
 {
@@ -23,6 +24,8 @@ namespace StageEditor
             // TODO: last selected stage
             StageSelectDropdown.Text = "EditorStage";
             StageSelectDropdown.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            StagePropertyGrid.PropertyValueChanged += new PropertyValueChangedEventHandler(StagePropertyGrid_PropertyValueChanged);
         }
 
         protected void UpdateEditorPosition()
@@ -91,6 +94,39 @@ namespace StageEditor
             return EntityTree;
         }
 
+        public PropertyGrid GetStagePropertyGrid()
+        {
+            return StagePropertyGrid;
+        }
+
+        void StagePropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            // TODO: validate this elsewhere?
+            // TODO: this is crap, dont do text and validation, make some easier dropdown selectors (types, types in namespace, functions in class, etc)
+            Galaxy.CStageDefinition definition = StagePropertyGrid.SelectedObject as Galaxy.CStageDefinition;
+
+            try
+            {
+                Game.Game.Content.Load<Song>(definition.MusicName);
+                if (typeof(Galaxy.SceneryPresets).GetMethod(definition.SceneryName) == null)
+                    throw new Exception();
+            }
+            catch
+            {
+                e.ChangedItem.PropertyDescriptor.SetValue(StagePropertyGrid.SelectedObject, e.OldValue);
+                NotifyIcon notify = new NotifyIcon();
+                notify.BalloonTipText = "invalid";
+                return;
+            }
+
+            GameControl game_control = this.Game;
+            Galaxy.EditorGame game = game_control.Game;
+            game.AccessMutex.WaitOne();
+            Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            editor.RefreshStageDefinition();
+            game.AccessMutex.ReleaseMutex();
+        }
+
         private void QuitButton_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -115,6 +151,7 @@ namespace StageEditor
             // NOTE: save on this thread before we touch the game thread in case it breaks
             editor.RefreshStageDefinition();
             Galaxy.CStageCodeWriter.Save(game.StageDefinition);
+            StagePropertyGrid.SelectedObject = game.StageDefinition;
 
             game.AccessMutex.ReleaseMutex();
         }
@@ -152,6 +189,7 @@ namespace StageEditor
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
             Galaxy.CStageDefinition result = Galaxy.CStageDefinition.GetStageDefinitionByName(StageSelectDropdown.Text);
             editor.ReplaceStageDefinition(result);
+            StagePropertyGrid.SelectedObject = result;
             game.AccessMutex.ReleaseMutex();
         }
     }

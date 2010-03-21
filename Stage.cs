@@ -12,7 +12,6 @@ namespace Galaxy
         public CWorld World { get; private set; }
         public CStageDefinition Definition { get; private set; }
         public List<CStageElement> ActiveElements { get; private set; }
-        public float ScrollSpeed { get; set; }
         public Vector2 PreviousCameraPosition { get; set; }
 
         public CStage(CWorld world, CStageDefinition definition)

@@ -19,22 +19,22 @@ namespace Galaxy
     public class CTypeSelectorControl
         : ListBox
     {
-        public List<Type> SpawnableEntityTypes;
+        public List<Type> Types;
 
         public Type Result = typeof(CEntity);
 
         public CTypeSelectorControl(List<Type> types)
         {
-            SpawnableEntityTypes = types;
+            Types = types;
             InitializeComponent();
-            this.SpawnableEntityTypes = types;
+            this.Types = types;
             this.BorderStyle = BorderStyle.None;
             Result = typeof(CEntity);
         }
 
         private void InitializeComponent()
         {
-            foreach (Type type in SpawnableEntityTypes)
+            foreach (Type type in Types)
             {
                 string typename = type.ToString().Substring("Galaxy.".Length);
                 this.Items.Add(typename);
@@ -44,7 +44,7 @@ namespace Galaxy
 
     public class CEntityTypes
     {
-        public static List<Type> SpawnableEntityTypes = new List<Type>()
+        public static List<Type> Types = new List<Type>()
         {
             typeof(CBonus),
             typeof(CPowerup),
@@ -53,7 +53,7 @@ namespace Galaxy
 
     public class CEnemyTypes
     {
-        public static List<Type> SpawnableEntityTypes = new List<Type>()
+        public static List<Type> Types = new List<Type>()
         {
             typeof(CBall),
             typeof(CBeamer),
@@ -75,7 +75,7 @@ namespace Galaxy
 
         public CTypeSelector()
         {
-            FieldInfo field = typeof(Types).GetField("SpawnableEntityTypes", BindingFlags.Static | BindingFlags.Public);
+            FieldInfo field = typeof(Types).GetField("Types", BindingFlags.Static | BindingFlags.Public);
             List<Type> types = (List<Type>)field.GetValue(null);
             TypeSelector = new CTypeSelectorControl(types);
         }

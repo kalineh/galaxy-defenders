@@ -17,7 +17,7 @@ namespace Galaxy
         public CBackground(CWorld world, Color color)
             : base(world)
         {
-            Visual = CVisual.MakeSprite(world, "Textures/Top/Pixel", World.GameCamera.ScreenSize, new Color(133, 145, 181));
+            Visual = CVisual.MakeSprite(world, "Textures/Top/Pixel", World.GameCamera.ScreenSize, color);
         }
 
         public override void Update()

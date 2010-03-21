@@ -225,7 +225,7 @@ namespace StageEditor
         /// </summary>
         protected virtual void PaintUsingSystemDrawing(Graphics graphics, string text)
         {
-            graphics.Clear(Color.CornflowerBlue);
+            graphics.Clear(Color.Black);
 
             using (Brush brush = new SolidBrush(Color.Black))
             {
