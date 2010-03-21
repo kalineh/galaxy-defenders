@@ -6,8 +6,8 @@ namespace Stages {
 public class EditorStage {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("EditorStage");
-stage.ScrollSpeed = 16;
-stage.SceneryName = "SimpleSpace";
+stage.ScrollSpeed = 4;
+stage.SceneryName = "Blend";
 stage.MusicName = "Music/Stage1";
 stage.AddElement(0, 
 new Galaxy.CStageElementBuilding() {

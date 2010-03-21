@@ -66,6 +66,19 @@ namespace Galaxy
             batch.AddVertex(Vector2.Transform(Position - half + Vector, Transform), Color);
             batch.AddVertex(Vector2.Transform(Position + half + Vector, Transform), Color);
 
+            float _width = game.GraphicsDevice.Viewport.Width;
+            float _height = game.GraphicsDevice.Viewport.Height;
+            Vector2 _half_x = Vector2.UnitX * _width * 0.5f * 2.0f;
+            Vector2 _half_y = Vector2.UnitY * _height * 0.5f * 2.0f;
+
+            //batch.AddVertex(Vector2.Transform(Position - _half_x + _half_y, Transform), Color.White);
+            //batch.AddVertex(Vector2.Transform(Position - _half_x - _half_y, Transform), Color.Blue);
+            //batch.AddVertex(Vector2.Transform(Position + _half_x + _half_y, Transform), Color.Green);
+
+            //batch.AddVertex(Vector2.Transform(Position - _half_x - _half_y, Transform), Color.Red);
+            //batch.AddVertex(Vector2.Transform(Position + _half_x - _half_y, Transform), Color.Gray);
+            //batch.AddVertex(Vector2.Transform(Position + _half_x + _half_y, Transform), Color.Yellow);
+
             batch.End();
         }
     }
@@ -86,6 +99,53 @@ namespace Galaxy
         {
             // TODO: implement me!
             throw new NotImplementedException();
+        }
+    }
+
+    public class CDebugRenderFullscreenQuad
+        : CDebugRenderElement
+    {
+        public Vector2 Scale { get; set; }
+        public Color ColorTL { get; set; }
+        public Color ColorTR { get; set; }
+        public Color ColorBR { get; set; }
+        public Color ColorBL { get; set; }
+
+        public CDebugRenderFullscreenQuad()
+        {
+            Scale = Vector2.One;
+            ColorTL = Color.White;
+            ColorTR = Color.White;
+            ColorBR = Color.White;
+            ColorBL = Color.White;
+        }
+
+        public override void Draw(CGalaxy game)
+        {
+            Vector3 scale;
+            Quaternion rotation_unused;
+            Vector3 translation_unused;
+            Transform.Decompose(out scale, out rotation_unused, out translation_unused);
+
+            float width = game.GraphicsDevice.Viewport.Width;
+            float height = game.GraphicsDevice.Viewport.Height;
+            Vector2 half_x = Vector2.UnitX * width * 0.5f;
+            Vector2 half_y = Vector2.UnitY * height * 0.5f;
+
+            PrimitivesSample.PrimitiveBatch batch = GetPrimitiveBatch(game.GraphicsDevice);
+            batch.Begin(PrimitiveType.TriangleList);
+
+            Position = Vector2.Zero;
+
+            batch.AddVertex(Vector2.Transform(Position - half_x + half_y, Transform), Color.White);
+            batch.AddVertex(Vector2.Transform(Position - half_x - half_y, Transform), Color.Blue);
+            batch.AddVertex(Vector2.Transform(Position + half_x + half_y, Transform), Color.Green);
+
+            batch.AddVertex(Vector2.Transform(Position - half_x - half_y, Transform), Color.Red);
+            batch.AddVertex(Vector2.Transform(Position + half_x - half_y, Transform), Color.Gray);
+            batch.AddVertex(Vector2.Transform(Position + half_x + half_y, Transform), Color.Yellow);
+
+            batch.End();
         }
     }
 
@@ -134,6 +194,17 @@ namespace Galaxy
                     Vector = vector,
                     Width = width,
                     Color = color
+                }
+            );
+        }
+
+        static public void FullscreenQuad(Matrix transform, Vector2 position, Vector2 vector, Color color)
+        {
+            RenderElements.Add(
+                new CDebugRenderFullscreenQuad() {
+                    Transform = transform,
+                    Position = position,
+                    ColorTL = color
                 }
             );
         }
