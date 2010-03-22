@@ -13,12 +13,27 @@ namespace Galaxy
     public class CMenu
     {
         public CGalaxy Game { get; set; }
-        public delegate void MenuFunction(object tag);
-        public struct MenuOption
+        public delegate void MenuSelectFunction(object tag);
+        public delegate void MenuHighlightFunction(object tag);
+        public delegate void MenuAxisFunction(object tag, int axis);
+        public delegate bool MenuAxisValidateFunction(object tag, int axis);
+        public class MenuOption
         {
             public string Text;
-            public MenuFunction Function;
+            public MenuSelectFunction Select;
+            public MenuHighlightFunction Highlight;
+            public MenuAxisFunction Axis;
+            public MenuAxisValidateFunction AxisValidate;
             public object Data;
+            public int AxisValue;
+
+            public MenuOption()
+            {
+                Select = (tag) => { };
+                Highlight = (tag) => { };
+                Axis = (tag, axis) => { };
+                AxisValidate = (tag, axis) => { return false; };
+            }
         }
         public List<MenuOption> MenuOptions { get; set; }
         public int Cursor { get; set; }
@@ -34,19 +49,55 @@ namespace Galaxy
 
         public void Update()
         {
-            Cursor += Game.Input.IsKeyPressed(Keys.Down) ? 1 : 0;
-            Cursor -= Game.Input.IsKeyPressed(Keys.Up) ? 1 : 0;
+            int offset = 0;
+            if (Game.Input.IsKeyPressed(Keys.Down))
+            {
+                offset += 1;
+                while (Cursor + offset < MenuOptions.Count && MenuOptions[Cursor + offset] == null)
+                    offset += 1;
+            }
+            if (Game.Input.IsKeyPressed(Keys.Up))
+            {
+                offset -= 1;
+                while (Cursor + offset > 0 && MenuOptions[Cursor + offset] == null)
+                    offset -= 1;
+            }
 
-            Cursor += Game.Input.IsKeyPressed(Keys.Down) ? 1 : 0;
-            Cursor -= Game.Input.IsKeyPressed(Keys.Up) ? 1 : 0;
+            int previous = Cursor;
 
+            Cursor = Cursor + offset;
             Cursor = Math.Max(Cursor, 0);
             Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
 
+            MenuOption option = MenuOptions[Cursor];
+
+            if (Cursor != previous)
+            {
+                option.Highlight(option.Data);
+                option.Axis(option.Data, option.AxisValue);
+            }
+
             if (Game.Input.IsKeyPressed(Keys.Enter))
             {
-                MenuOption option = MenuOptions[Cursor];
-                option.Function( option.Data );
+                option.Select(option.Data);
+            }
+
+            if (Game.Input.IsKeyPressed(Keys.Left))
+            {
+                option.AxisValue -= 1;
+                if (option.AxisValidate(option.Data, option.AxisValue))
+                    option.Axis(option.Data, option.AxisValue);
+                else
+                    option.AxisValue += 1;
+            }
+
+            if (Game.Input.IsKeyPressed(Keys.Right))
+            {
+                option.AxisValue += 1;
+                if (option.AxisValidate(option.Data, option.AxisValue))
+                    option.Axis(option.Data, option.AxisValue);
+                else
+                    option.AxisValue -= 1;
             }
         }
 
@@ -56,7 +107,10 @@ namespace Galaxy
             Vector2 position = Position;
             foreach (MenuOption option in MenuOptions)
             {
-                sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.White);
+                if (option != null)
+                {
+                    sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.White);
+                }
                 position += Vector2.UnitY * Spacing;
             }
             position = Position + Vector2.UnitY * Spacing * Cursor;

@@ -26,16 +26,16 @@ namespace Galaxy
                 Position = new Vector2(300.0f, 300.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "* New Profile", Function = NewProfile },
+                    new CMenu.MenuOption() { Text = "* New Profile", Select = NewProfile },
                 }
             };
 
             foreach (SProfile profile in CSaveData.SaveData.Profiles)
             {
-                Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Function = SelectProfile, Data = profile } );
+                Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Select = SelectProfile, Data = profile } );
             }
 
-            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Function = Back } );
+            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Select = Back } );
         }
 
         public override void Update()
