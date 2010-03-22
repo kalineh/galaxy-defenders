@@ -41,6 +41,8 @@ namespace Galaxy
                 profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
             }
 
+            profile.CurrentStage = world.Stage.Definition.Name;
+
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
 

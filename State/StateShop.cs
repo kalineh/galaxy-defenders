@@ -288,7 +288,7 @@ namespace Galaxy
         private void PrimarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponPrimaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.PrimaryWeaponTypes);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts);
             int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
             WorkingProfile.Money += total;
             WorkingProfile.WeaponPrimaryType = replace;
@@ -331,7 +331,7 @@ namespace Galaxy
         private void SecondarySwapType(object tag)
         {
             string current = WorkingProfile.WeaponSecondaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SecondaryWeaponTypes);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts);
             if (current != "")
             {
                 int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
@@ -377,7 +377,7 @@ namespace Galaxy
         private void SidekickLeftSwapType(object tag)
         {
             string current = WorkingProfile.WeaponSidekickLeftType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SidekickWeaponTypes);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
             if (current != "")
             {
                 int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
@@ -395,7 +395,7 @@ namespace Galaxy
         private void SidekickRightSwapType(object tag)
         {
             string current = WorkingProfile.WeaponSidekickRightType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SidekickWeaponTypes);
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
             if (current != "")
             {
                 int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);

@@ -30,13 +30,27 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
-            IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages"));
-            IEnumerable<Type> types_sorted = types.OrderBy(t => t.Name.Length);
-            foreach (Type type in types_sorted)
+            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().CurrentStage).Next;
+            foreach (string stage in selectable_stages)
             {
-                Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = type.Name, Function = StartGame, Data = type.Name });
+                // DEBUG: add all stages
+                if (stage == "*")
+                {
+                    Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
+                    IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages"));
+                    IEnumerable<Type> types_sorted = types.OrderBy(t => t.Name.Length);
+                    IEnumerable<Type> types_filtered = types.Where(t => selectable_stages.Contains(t.Name) == false);
+                    foreach (Type type in types_filtered)
+                    {
+                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Function = StartGame, Data = type.Name });
+                    }
+                }
+                else
+                {
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Function = StartGame, Data = stage });
+                }
             }
+
             Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Function = Back });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();

@@ -19,7 +19,6 @@ namespace Galaxy
         private List<CEntity> EntitiesToAdd { get; set; }
         private List<CEntity> EntitiesToDelete { get; set; }
         public int Score { get; set; }
-        public string StageName { get; set; }
         public CStage Stage { get; set; }
         public CScenery Scenery { get; set; }
         public CCamera GameCamera { get; set; }

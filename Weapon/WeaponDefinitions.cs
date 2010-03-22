@@ -58,29 +58,15 @@ namespace Galaxy
             return CanDowngrade(weapon_part.Type, weapon_part.Level, steps);
         }
 
-        public static List<string> PrimaryWeaponTypes = new List<string>
-        {
-            "FrontLaser",
-            "SpreadLaser",
-            "Plasma",
-        };
-
-        public static List<string> SecondaryWeaponTypes = new List<string>
-        {
-            "",
-            "SeekBomb",
-            "Missile",
-        };
-
-        public static List<string> SidekickWeaponTypes = new List<string>
-        {
-            "",
-            "MiniShot",
-        };
-
         public static string GetNextWeaponInCycle(string current, List<string> types)
         {
+            if (current == "")
+                return types[0];
+
             int index = types.FindIndex(s => s == current);
+            if (index == types.Count)
+                return "";
+
             int next = index + 1;
             return types[next % types.Count];
         }
