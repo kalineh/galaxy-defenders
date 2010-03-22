@@ -93,6 +93,8 @@
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Fibers.cs" />
+    <Compile Include="Projectile\MiniShot.cs" />
+    <Compile Include="Projectile\Plasma.cs" />
     <Compile Include="Scenery\Background.cs" />
     <Compile Include="Scenery\Clouds.cs" />
     <Compile Include="Scenery\SceneryPresets.cs" />
@@ -198,6 +200,8 @@
     <Compile Include="Scenery\Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\WeaponMiniShot.cs" />
+    <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />
     <Compile Include="Weapon\WeaponDefinitions.cs" />
     <Compile Include="Weapon\WeaponLaser.cs" />

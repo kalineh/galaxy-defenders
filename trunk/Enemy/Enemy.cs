@@ -104,6 +104,24 @@ namespace Galaxy
             seek_bomb.Die();
         }
 
+        public void OnCollide(CSmallPlasma plasma)
+        {
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
+        public void OnCollide(CBigPlasma plasma)
+        {
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
+        public void OnCollide(CMiniShot minishot)
+        {
+            TakeDamage(minishot.Damage);
+            minishot.Die();
+        }
+
         private int CalculateScoreFromHealth()
         {
             int base_ = BaseScore * (int)HealthMax;
