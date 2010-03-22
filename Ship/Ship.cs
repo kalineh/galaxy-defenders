@@ -34,6 +34,8 @@ namespace Galaxy
         public List<CWeapon> WeaponSidekickLeft { get; set; }
         public List<CWeapon> WeaponSidekickRight { get; set; }
 
+        public CVisual SidekickVisual { get; set; }
+
         public CShip(
             CWorld world,
             CChassisPart chassis,
@@ -57,8 +59,9 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = new CollisionCircle(Vector2.Zero, 12.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, chassis.Texture), Color.White);
+            Visual = CVisual.MakeSprite(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
+            SidekickVisual = CVisual.MakeSprite(world, "Textures/Player/Sidekick");
 
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
@@ -68,6 +71,13 @@ namespace Galaxy
             CurrentArmor = chassis.Armor;
             CurrentShield = shield.Shield;
             CurrentEnergy = generator.Energy;
+
+            foreach (CWeapon weapon in WeaponPrimary)
+                weapon.Offset = weapon.Offset + Vector2.UnitX * 16.0f;
+            foreach (CWeapon weapon in WeaponSidekickLeft)
+                weapon.Offset = weapon.Offset + Vector2.UnitY * -32.0f;
+            foreach (CWeapon weapon in WeaponSidekickRight)
+                weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
 
             IgnoreCameraScroll = true;
         }
@@ -113,6 +123,11 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             base.Draw(sprite_batch);
+
+            if (WeaponSidekickLeft.Count > 0)
+                SidekickVisual.Draw(sprite_batch, Physics.PositionPhysics.Position + Physics.AnglePhysics.GetDir().Perp() * -32.0f, Physics.AnglePhysics.GetDir().Perp().ToAngle());
+            if (WeaponSidekickRight.Count > 0)
+                SidekickVisual.Draw(sprite_batch, Physics.PositionPhysics.Position + Physics.AnglePhysics.GetDir().Perp() * 32.0f, Physics.AnglePhysics.GetDir().Perp().ToAngle());
         }
 
         public List<CWeapon> UpgradeWeapon(CWeaponPart weapon_part)

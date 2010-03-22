@@ -72,6 +72,18 @@ namespace Galaxy
             missile.Die();
         }
 
+        public void OnCollide(CBigPlasma plasma)
+        {
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
+        public void OnCollide(CSmallPlasma plasma)
+        {
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
         private int CalculateScoreFromHealth()
         {
             int base_ = (int)HealthMax * 10;

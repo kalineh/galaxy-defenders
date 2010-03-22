@@ -47,6 +47,7 @@ namespace Galaxy
             Cracks.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
         }
 
+        // TODO: better system
         public void OnCollide(CShip ship)
         {
             ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
@@ -65,6 +66,27 @@ namespace Galaxy
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
             TakeDamage(missile.Damage);
             missile.Die();
+        }
+
+        public void OnCollide(CSmallPlasma plasma)
+        {
+            Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
+        public void OnCollide(CBigPlasma plasma)
+        {
+            Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
+            TakeDamage(plasma.Damage);
+            plasma.Die();
+        }
+
+        public void OnCollide(CMiniShot minishot)
+        {
+            Physics.PositionPhysics.Velocity += minishot.Physics.AnglePhysics.GetDir() * minishot.Damage;
+            TakeDamage(minishot.Damage);
+            minishot.Die();
         }
 
         protected override void OnDie()

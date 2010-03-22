@@ -14,8 +14,8 @@ namespace Galaxy
         public float Speed { get; set; }
         public float Damage { get; set; }
         public float KickbackForce { get; set; }
-        public Vector2 Offset { get; private set; }
-        public float Rotation { get; private set; }
+        public Vector2 Offset { get; set; }
+        public float Rotation { get; set; }
         public float Energy { get; private set; }
         private float Cooldown { get; set; }
 

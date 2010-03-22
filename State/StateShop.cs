@@ -18,6 +18,11 @@ namespace Galaxy
         private CMenu MenuBase { get; set; }
         private CMenu MenuPrimaryWeapon { get; set; }
         private CMenu MenuSecondaryWeapon { get; set; }
+        private CMenu MenuSidekickLeft { get; set; }
+        private CMenu MenuSidekickRight { get; set; }
+        private CMenu MenuChassis { get; set; }
+        private CMenu MenuGenerator { get; set; }
+        private CMenu MenuShield { get; set; }
         private delegate void DrawMenuErrataFunction();
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
@@ -33,8 +38,13 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Start Game", Function = StartGame },
-                    new CMenu.MenuOption() { Text = "Primary Weapon", Function = EditPrimaryWeapon },
-                    new CMenu.MenuOption() { Text = "Secondary Weapon", Function = EditSecondaryWeapon },
+                    new CMenu.MenuOption() { Text = "Edit Primary Weapon", Function = EditPrimaryWeapon },
+                    new CMenu.MenuOption() { Text = "Edit Secondary Weapon", Function = EditSecondaryWeapon },
+                    new CMenu.MenuOption() { Text = "Edit Sidekick Left", Function = EditSidekickLeft },
+                    new CMenu.MenuOption() { Text = "Edit Sidekick Right", Function = EditSidekickRight },
+                    new CMenu.MenuOption() { Text = "Edit Chassis", Function = EditChassis },
+                    new CMenu.MenuOption() { Text = "Edit Generator", Function = EditGenerator },
+                    new CMenu.MenuOption() { Text = "Edit Shield", Function = EditShield },
                     new CMenu.MenuOption() { Text = "Back", Function = Back },
                 }
             };
@@ -60,6 +70,51 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
                 }
             };
+            MenuSidekickLeft = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Change Type", Function = SidekickLeftSwapType },
+                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
+                }
+            };
+            MenuSidekickRight = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Change Type", Function = SidekickRightSwapType },
+                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
+                }
+            };
+            MenuChassis = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Change Type", Function = ChassisSwapType },
+                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
+                }
+            };
+            MenuGenerator = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Change Type", Function = GeneratorSwapType },
+                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
+                }
+            };
+            MenuShield = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Change Type", Function = ShieldSwapType },
+                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
+                }
+            };
             Menu = MenuBase;
             DrawMenuErrata = DrawMenuBaseErrata;
 
@@ -73,6 +128,7 @@ namespace Galaxy
         {
             Menu.Update();
             EmptyWorld.UpdateEntities();
+            SampleShip.UpdateGenerator();
             SampleShip.FireAllWeapons();
             SampleShip.UpdateWeapons();
         }
@@ -195,6 +251,31 @@ namespace Galaxy
             Menu = MenuSecondaryWeapon;
         }
 
+        private void EditSidekickLeft(object tag)
+        {
+            Menu = MenuSidekickLeft;
+        }
+
+        private void EditSidekickRight(object tag)
+        {
+            Menu = MenuSidekickRight;
+        }
+
+        private void EditChassis(object tag)
+        {
+            Menu = MenuChassis;
+        }
+
+        private void EditGenerator(object tag)
+        {
+            Menu = MenuGenerator;
+        }
+
+        private void EditShield(object tag)
+        {
+            Menu = MenuShield;
+        }
+
         private void Back(object tag)
         {
             CSaveData.SetCurrentProfileData(WorkingProfile);
@@ -293,9 +374,63 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private void SidekickLeftSwapType(object tag)
+        {
+            string current = WorkingProfile.WeaponSidekickLeftType;
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SidekickWeaponTypes);
+            if (current != "")
+            {
+                int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+                WorkingProfile.Money += total;
+            }
+
+            WorkingProfile.WeaponSidekickLeftType = replace;
+            WorkingProfile.WeaponSidekickLeftLevel = 0;
+            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+            WorkingProfile.Money -= cost;
+
+            RefreshSampleDisplay();
+        }
+
+        private void SidekickRightSwapType(object tag)
+        {
+            string current = WorkingProfile.WeaponSidekickRightType;
+            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CWeaponFactory.SidekickWeaponTypes);
+            if (current != "")
+            {
+                int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
+                WorkingProfile.Money += total;
+            }
+
+            WorkingProfile.WeaponSidekickRightType = replace;
+            WorkingProfile.WeaponSidekickRightLevel = 0;
+            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
+            WorkingProfile.Money -= cost;
+
+            RefreshSampleDisplay();
+        }
+
         private void ReturnToBaseMenu(object tag)
         {
             Menu = MenuBase;
+        }
+
+        private void ChassisSwapType(object tag)
+        {
+            WorkingProfile.ChassisType = ChassisDefinitions.GetNextDefinition(WorkingProfile.ChassisType);
+            RefreshSampleDisplay();
+        }
+
+        private void GeneratorSwapType(object tag)
+        {
+            WorkingProfile.GeneratorType = GeneratorDefinitions.GetNextDefinition(WorkingProfile.GeneratorType);
+            RefreshSampleDisplay();
+        }
+
+        private void ShieldSwapType(object tag)
+        {
+            WorkingProfile.ShieldType = ShieldDefinitions.GetNextDefinition(WorkingProfile.ShieldType);
+            RefreshSampleDisplay();
         }
     }
 }

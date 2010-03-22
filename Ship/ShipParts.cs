@@ -13,6 +13,7 @@ namespace Galaxy
 {
     public class CChassisPart
     {
+        public int Price { get; set; }
         public string Texture { get; set; }
         public float VisualScale { get; set; }
         public float Armor { get; set; }
@@ -22,18 +23,21 @@ namespace Galaxy
 
     public class CGeneratorPart
     {
+        public int Price { get; set; }
         public float Energy { get; set; }
         public float Regen { get; set; }
     }
 
     public class CShieldPart
     {
+        public int Price { get; set; }
         public float Shield { get; set; }
         public float Regen { get; set; }
     }
 
     public class CWeaponPart
     {
+        public int Price { get; set; }
         public string Type { get; set; }
         public int Level { get; set; }
     }
