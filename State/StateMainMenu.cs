@@ -28,9 +28,9 @@ namespace Galaxy
                 Position = new Vector2(500.0f, 300.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Function = StartGame },
-                    new CMenu.MenuOption() { Text = "Select Profile", Function = SelectProfile },
-                    new CMenu.MenuOption() { Text = "Quit", Function = Quit },
+                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
+                    new CMenu.MenuOption() { Text = "Select Profile", Select = SelectProfile },
+                    new CMenu.MenuOption() { Text = "Quit Qame", Select = QuitGame },
                 }
             };
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile());
@@ -102,7 +102,7 @@ namespace Galaxy
             Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
         }
 
-        private void Quit(object tag)
+        private void QuitGame(object tag)
         {
             Game.Exit();
         }

@@ -42,16 +42,16 @@ namespace Galaxy
                     IEnumerable<Type> types_filtered = types.Where(t => selectable_stages.Contains(t.Name) == false);
                     foreach (Type type in types_filtered)
                     {
-                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Function = StartGame, Data = type.Name });
+                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name });
                     }
                 }
                 else
                 {
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Function = StartGame, Data = stage });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
                 }
             }
 
-            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Function = Back });
+            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
         }

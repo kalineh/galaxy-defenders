@@ -16,6 +16,7 @@ namespace Galaxy
         private CWorld EmptyWorld { get; set; }
         public CMenu Menu { get; set; }
         private CMenu MenuBase { get; set; }
+        private CMenu MenuUpgradeShip { get; set; }
         private CMenu MenuPrimaryWeapon { get; set; }
         private CMenu MenuSecondaryWeapon { get; set; }
         private CMenu MenuSidekickLeft { get; set; }
@@ -27,100 +28,231 @@ namespace Galaxy
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
+        private SProfile LockedProfile;
 
         public CStateShop(CGalaxy game)
         {
             Game = game;
             EmptyWorld = new CWorld(game);
+
+            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+                new CBackground(EmptyWorld, new Color(0, 0, 0)),
+                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 3.5f),
+                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 2.1f)
+            );
+
+            WorkingProfile = CSaveData.GetCurrentProfile();
+            LockedProfile = WorkingProfile;
+
+            //
+            // Base
+            //
             MenuBase = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Function = StartGame },
-                    new CMenu.MenuOption() { Text = "Edit Primary Weapon", Function = EditPrimaryWeapon },
-                    new CMenu.MenuOption() { Text = "Edit Secondary Weapon", Function = EditSecondaryWeapon },
-                    new CMenu.MenuOption() { Text = "Edit Sidekick Left", Function = EditSidekickLeft },
-                    new CMenu.MenuOption() { Text = "Edit Sidekick Right", Function = EditSidekickRight },
-                    new CMenu.MenuOption() { Text = "Edit Chassis", Function = EditChassis },
-                    new CMenu.MenuOption() { Text = "Edit Generator", Function = EditGenerator },
-                    new CMenu.MenuOption() { Text = "Edit Shield", Function = EditShield },
-                    new CMenu.MenuOption() { Text = "Back", Function = Back },
+                    new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
+                    new CMenu.MenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
+                    new CMenu.MenuOption() { Text = "Return to Menu", Select = Back },
                 }
             };
+
+            //
+            // Upgrade Ship
+            //
+            MenuUpgradeShip = new CMenu(game)
+            {
+                Position = new Vector2(500.0f, 300.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Chassis", Select = EditChassis },
+                    new CMenu.MenuOption() { Text = "Generator", Select = EditGenerator },
+                    new CMenu.MenuOption() { Text = "Shield", Select = EditShield },
+                    new CMenu.MenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon },
+                    new CMenu.MenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
+                    new CMenu.MenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
+                    new CMenu.MenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
+                    new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu },
+                }
+            };
+
+            //
+            // Primary Weapon
+            //
             MenuPrimaryWeapon = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = PrimarySwapType },
-                    new CMenu.MenuOption() { Text = "Power Up", Function = PrimaryPowerUp },
-                    new CMenu.MenuOption() { Text = "Power Down", Function = PrimaryPowerDown },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts)
+            {
+                MenuPrimaryWeapon.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = weapon_part,
+                        Data = weapon_part,
+                        Select = SelectPrimaryWeapon,
+                        Highlight = HighlightPrimaryWeapon,
+                        Axis = AxisPrimaryWeapon,
+                        AxisValidate = AxisValidatePrimaryWeapon,
+                        AxisValue = weapon_part == WorkingProfile.WeaponPrimaryType ? WorkingProfile.WeaponPrimaryLevel : 0,
+                    }
+                );
+            }
+            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Secondary Weapon
+            //
             MenuSecondaryWeapon = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = SecondarySwapType },
-                    new CMenu.MenuOption() { Text = "Power Up", Function = SecondaryPowerUp },
-                    new CMenu.MenuOption() { Text = "Power Down", Function = SecondaryPowerDown },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeaponEmpty, Data = "" });
+            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts)
+            {
+                MenuSecondaryWeapon.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = weapon_part,
+                        Data = weapon_part,
+                        Select = SelectSecondaryWeapon,
+                        Highlight = HighlightSecondaryWeapon,
+                        Axis = AxisSecondaryWeapon,
+                        AxisValidate = AxisValidateSecondaryWeapon,
+                        AxisValue = weapon_part == WorkingProfile.WeaponSecondaryType ? WorkingProfile.WeaponSecondaryLevel : 0,
+                    }
+                );
+            }
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Sidekick Left
+            //
             MenuSidekickLeft = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = SidekickLeftSwapType },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeftEmpty, Data = "" });
+            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
+            {
+                MenuSidekickLeft.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = weapon_part,
+                        Data = weapon_part,
+                        Select = SelectSidekickLeft,
+                        Highlight = HighlightSidekickLeft,
+                    }
+                );
+            }
+
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Sidekick Right
+            //
             MenuSidekickRight = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = SidekickRightSwapType },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickRightEmpty, Data = "" });
+            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
+            {
+                MenuSidekickRight.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = weapon_part,
+                        Data = weapon_part,
+                        Select = SelectSidekickRight,
+                        Highlight = HighlightSidekickRight,
+                    }
+                );
+            }
+            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Chassis
+            //
             MenuChassis = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = ChassisSwapType },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            foreach (string chassis_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableChassisParts)
+            {
+                MenuChassis.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = chassis_part,
+                        Data = chassis_part,
+                        Select = SelectChassis,
+                        Highlight = HighlightChassis,
+                    }
+                );
+            }
+            MenuChassis.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Generator
+            //
             MenuGenerator = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = GeneratorSwapType },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            foreach (string generator_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableGeneratorParts)
+            {
+                MenuGenerator.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = generator_part,
+                        Data = generator_part,
+                        Select = SelectGenerator,
+                        Highlight = HighlightGenerator,
+                    }
+                );
+            }
+            MenuGenerator.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+            //
+            // Shield
+            //
             MenuShield = new CMenu(game)
             {
                 Position = new Vector2(500.0f, 300.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
-                {
-                    new CMenu.MenuOption() { Text = "Change Type", Function = ShieldSwapType },
-                    new CMenu.MenuOption() { Text = "Back", Function = ReturnToBaseMenu },
-                }
+                MenuOptions = new List<CMenu.MenuOption>(),
             };
+
+            foreach (string shield_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableShieldParts)
+            {
+                MenuShield.MenuOptions.Add(
+                    new CMenu.MenuOption()
+                    {
+                        Text = shield_part,
+                        Data = shield_part,
+                        Select = SelectShield,
+                        Highlight = HighlightShield,
+                    }
+                );
+            }
+            MenuShield.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+
+
             Menu = MenuBase;
             DrawMenuErrata = DrawMenuBaseErrata;
 
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
 
-            WorkingProfile = CSaveData.GetCurrentProfile();
             RefreshSampleDisplay();
         }
 
@@ -128,6 +260,7 @@ namespace Galaxy
         {
             Menu.Update();
             EmptyWorld.UpdateEntities();
+            EmptyWorld.Scenery.Update();
             SampleShip.UpdateGenerator();
             SampleShip.FireAllWeapons();
             SampleShip.UpdateWeapons();
@@ -136,6 +269,7 @@ namespace Galaxy
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
+            EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             Game.DefaultSpriteBatch.End();
@@ -162,8 +296,22 @@ namespace Galaxy
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-100.0f, 150.0f);
         }
 
+        private void RevertWorkingProfile(object tag)
+        {
+            WorkingProfile = LockedProfile;
+            RefreshSampleDisplay();
+        }
+
+        private void LockWorkingProfile()
+        {
+            LockedProfile = WorkingProfile;
+        }
+
         private void DrawMenuBaseErrata()
         {
+            // TODO: implement me!
+            return;
+
             // HACK: bad hack time, fix me up
             // TODO: put stuff in menu itself?
             // TODO: check can upgrade
@@ -234,11 +382,16 @@ namespace Galaxy
             }
         }
 
-        private void StartGame(object tag)
+        private void StageSelect(object tag)
         {
-            CSaveData.SetCurrentProfileData(WorkingProfile);
+            CSaveData.SetCurrentProfileData(LockedProfile);
             CSaveData.Save();
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
+        }
+
+        private void UpgradeShip(object tag)
+        {
+            Menu = MenuUpgradeShip;
         }
 
         private void EditPrimaryWeapon(object tag)
@@ -278,141 +431,339 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            CSaveData.SetCurrentProfileData(WorkingProfile);
+            CSaveData.SetCurrentProfileData(LockedProfile);
             CSaveData.Save();
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
-        // TODO: replace with selection
-        // TODO: money reimburse shouldnt be automagic (will go negative)
-        private void PrimarySwapType(object tag)
+        private void SelectPrimaryWeapon(object tag)
         {
-            string current = WorkingProfile.WeaponPrimaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts);
-            int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-            WorkingProfile.Money += total;
-            WorkingProfile.WeaponPrimaryType = replace;
-            WorkingProfile.WeaponPrimaryLevel = 0;
-            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-            WorkingProfile.Money -= cost;
+            LockWorkingProfile();
             RefreshSampleDisplay();
         }
 
-        private void PrimaryPowerUp(object tag)
+        private void HighlightPrimaryWeapon(object tag)
         {
-            int current = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-            int next = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
-
-            if (WorkingProfile.Money < next)
-                return;
-
-            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
-                return;
-
-            WorkingProfile.Money -= next;
-            WorkingProfile.WeaponPrimaryLevel += 1;
-
-            RefreshSampleDisplay();
-        }
-
-        private void PrimaryPowerDown(object tag)
-        {
-            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
-                return;
-
-            WorkingProfile.Money += CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-            WorkingProfile.WeaponPrimaryLevel -= 1;
-
-            RefreshSampleDisplay();
-        }
-
-        // TODO: replace with selection
-        // TODO: money reimburse shouldnt be automagic (will go negative)
-        private void SecondarySwapType(object tag)
-        {
-            string current = WorkingProfile.WeaponSecondaryType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts);
-            if (current != "")
+            if (WorkingProfile.WeaponPrimaryType != (string)tag)
             {
-                int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-                WorkingProfile.Money += total;
+                int level = 0;
+                if (LockedProfile.WeaponPrimaryType == (string)tag)
+                    level = LockedProfile.WeaponPrimaryLevel;
+
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponPrimaryType = (string)tag;
+                WorkingProfile.WeaponPrimaryLevel = level;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
             }
+        }
 
-            WorkingProfile.WeaponSecondaryType = replace;
-            WorkingProfile.WeaponSecondaryLevel = 0;
-            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-            WorkingProfile.Money -= cost;
+        private void AxisPrimaryWeapon(object tag, int axis)
+        {
+            if (!AxisValidatePrimaryWeapon(tag, axis))
+                return;
 
+            WorkingProfile.Money += CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+            WorkingProfile.WeaponPrimaryType = (string)tag;
+            WorkingProfile.WeaponPrimaryLevel = axis;
+            WorkingProfile.Money -= CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
             RefreshSampleDisplay();
         }
 
-        private void SecondaryPowerUp(object tag)
+        private bool AxisValidatePrimaryWeapon(object tag, int axis)
         {
-            int current = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-            int next = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
+            // we cannot axis on a weapon we are unable to highlight due to price
+            if (WorkingProfile.WeaponPrimaryType != (string)tag)
+                return false;
 
-            if (WorkingProfile.Money < next)
-                return;
+            if (axis < 0 || axis >= CWeaponFactory.GetMaxLevel((string)tag))
+                return false;
 
-            if (!CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
-                return;
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+            int buy = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, axis);
+            int remaining = WorkingProfile.Money + sell - buy;
+            if (remaining < 0)
+                return false;
+            
+            return true;
+        }
 
-            WorkingProfile.Money -= next;
-            WorkingProfile.WeaponSecondaryLevel += 1;
-
+        private void SelectSecondaryWeaponEmpty(object tag)
+        {
+            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel);
+            LockedProfile.Money += sell;
+            LockedProfile.WeaponSecondaryType = "";
+            LockedProfile.WeaponSecondaryLevel = 0;
+            RevertWorkingProfile(null);
             RefreshSampleDisplay();
         }
 
-        private void SecondaryPowerDown(object tag)
+        private void SelectSecondaryWeapon(object tag)
         {
-            if (!CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
-                return;
-
-            WorkingProfile.Money += CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-            WorkingProfile.WeaponSecondaryLevel -= 1;
-
+            LockWorkingProfile();
             RefreshSampleDisplay();
         }
 
-        private void SidekickLeftSwapType(object tag)
+        private void HighlightSecondaryWeapon(object tag)
         {
-            string current = WorkingProfile.WeaponSidekickLeftType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
-            if (current != "")
+            if (WorkingProfile.WeaponSecondaryType != (string)tag)
             {
-                int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
-                WorkingProfile.Money += total;
+                int level = 0;
+                if (LockedProfile.WeaponSecondaryType == (string)tag)
+                    level = LockedProfile.WeaponSecondaryLevel;
+
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSecondaryType = (string)tag;
+                WorkingProfile.WeaponSecondaryLevel = level;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
             }
+        }
 
-            WorkingProfile.WeaponSidekickLeftType = replace;
-            WorkingProfile.WeaponSidekickLeftLevel = 0;
-            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
-            WorkingProfile.Money -= cost;
+        private void HighlightSecondaryWeaponEmpty(object tag)
+        {
+            if (LockedProfile.WeaponSecondaryType == "")
+            {
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
 
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSecondaryType = (string)tag;
+                WorkingProfile.WeaponSecondaryLevel = 0;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void AxisSecondaryWeapon(object tag, int axis)
+        {
+            if (!AxisValidateSecondaryWeapon(tag, axis))
+                return;
+
+            WorkingProfile.Money += CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+            WorkingProfile.WeaponSecondaryType = (string)tag;
+            WorkingProfile.WeaponSecondaryLevel = axis;
+            WorkingProfile.Money -= CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
             RefreshSampleDisplay();
         }
 
-        private void SidekickRightSwapType(object tag)
+        private bool AxisValidateSecondaryWeapon(object tag, int axis)
         {
-            string current = WorkingProfile.WeaponSidekickRightType;
-            string replace = CWeaponFactory.GetNextWeaponInCycle(current, CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
-            if (current != "")
-            {
-                int total = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-                WorkingProfile.Money += total;
-            }
+            // we cannot axis on a weapon we are unable to highlight due to price
+            if (WorkingProfile.WeaponSecondaryType != (string)tag)
+                return false;
 
-            WorkingProfile.WeaponSidekickRightType = replace;
-            WorkingProfile.WeaponSidekickRightLevel = 0;
-            int cost = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-            WorkingProfile.Money -= cost;
+            if (axis < 0 || axis >= CWeaponFactory.GetMaxLevel((string)tag))
+                return false;
 
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+            int buy = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, axis);
+            int remaining = WorkingProfile.Money + sell - buy;
+            if (remaining < 0)
+                return false;
+            
+            return true;
+        }
+
+        private void SelectSidekickLeft(object tag)
+        {
+            LockWorkingProfile();
             RefreshSampleDisplay();
+        }
+
+        private void SelectSidekickLeftEmpty(object tag)
+        {
+            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickLeftType, LockedProfile.WeaponSidekickLeftLevel);
+            LockedProfile.Money += sell;
+            LockedProfile.WeaponSidekickLeftType = "";
+            LockedProfile.WeaponSidekickLeftLevel = 0;
+            RevertWorkingProfile(null);
+            RefreshSampleDisplay();
+        }
+
+        private void HighlightSidekickLeft(object tag)
+        {
+            if (WorkingProfile.WeaponSidekickLeftType != (string)tag)
+            {
+                int level = 0;
+                if (LockedProfile.WeaponSidekickLeftType == (string)tag)
+                    level = LockedProfile.WeaponSidekickLeftLevel;
+
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+                int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSidekickLeftType = (string)tag;
+                WorkingProfile.WeaponSidekickLeftLevel = level;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void HighlightSidekickLeftEmpty(object tag)
+        {
+            if (LockedProfile.WeaponSidekickLeftType == "")
+            {
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSidekickLeftType = (string)tag;
+                WorkingProfile.WeaponSidekickLeftLevel = 0;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void SelectSidekickRight(object tag)
+        {
+            LockWorkingProfile();
+            RefreshSampleDisplay();
+        }
+
+        private void SelectSidekickRightEmpty(object tag)
+        {
+            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickRightType, LockedProfile.WeaponSidekickRightLevel);
+            LockedProfile.Money += sell;
+            LockedProfile.WeaponSidekickRightType = "";
+            LockedProfile.WeaponSidekickRightLevel = 0;
+            RevertWorkingProfile(null);
+            RefreshSampleDisplay();
+        }
+
+        private void HighlightSidekickRight(object tag)
+        {
+            if (WorkingProfile.WeaponSidekickRightType != (string)tag)
+            {
+                int level = 0;
+                if (LockedProfile.WeaponSidekickRightType == (string)tag)
+                    level = LockedProfile.WeaponSidekickRightLevel;
+
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
+                int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSidekickRightType = (string)tag;
+                WorkingProfile.WeaponSidekickRightLevel = level;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void HighlightSidekickRightEmpty(object tag)
+        {
+            if (LockedProfile.WeaponSidekickRightType == "")
+            {
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.WeaponSidekickRightType = (string)tag;
+                WorkingProfile.WeaponSidekickRightLevel = 0;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void SelectChassis(object tag)
+        {
+            LockWorkingProfile();
+            RefreshSampleDisplay();
+        }
+
+        private void HighlightChassis(object tag)
+        {
+            if (WorkingProfile.ChassisType != (string)tag)
+            {
+                int sell = ChassisDefinitions.GetPart((string)tag).Price;
+                int buy = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.ChassisType = (string)tag;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void SelectGenerator(object tag)
+        {
+            LockWorkingProfile();
+            RefreshSampleDisplay();
+        }
+
+        private void HighlightGenerator(object tag)
+        {
+            if (WorkingProfile.GeneratorType != (string)tag)
+            {
+                int sell = GeneratorDefinitions.GetPart((string)tag).Price;
+                int buy = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.GeneratorType = (string)tag;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
+            }
+        }
+
+        private void SelectShield(object tag)
+        {
+            LockWorkingProfile();
+            RefreshSampleDisplay();
+        }
+
+        private void HighlightShield(object tag)
+        {
+            if (WorkingProfile.ShieldType != (string)tag)
+            {
+                int sell = ShieldDefinitions.GetPart((string)tag).Price;
+                int buy = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
+                int remaining = WorkingProfile.Money + sell - buy;
+                if (remaining < 0)
+                    return;
+
+                WorkingProfile.Money += sell;
+                WorkingProfile.ShieldType = (string)tag;
+                WorkingProfile.Money -= buy;
+
+                RefreshSampleDisplay();
+            }
         }
 
         private void ReturnToBaseMenu(object tag)
         {
             Menu = MenuBase;
+        }
+
+        private void ReturnToUpgradeShip(object tag)
+        {
+            Menu = MenuUpgradeShip;
         }
 
         private void ChassisSwapType(object tag)

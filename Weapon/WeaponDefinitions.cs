@@ -35,6 +35,14 @@ namespace Galaxy
             return weapons;
         }
 
+        public static int GetMaxLevel(string typename)
+        {
+            if (!WeaponDefinitions.Items.ContainsKey(typename))
+                return 0;
+
+            return WeaponDefinitions.Items[typename].Data.Count - 1;
+        }
+
         public static bool CanUpgrade(string typename, int level, int steps)
         {
             if (!WeaponDefinitions.Items.ContainsKey(typename))
