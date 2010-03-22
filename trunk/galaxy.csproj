@@ -93,6 +93,7 @@
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Fibers.cs" />
+    <Compile Include="Map\Map.cs" />
     <Compile Include="Projectile\MiniShot.cs" />
     <Compile Include="Projectile\Plasma.cs" />
     <Compile Include="Scenery\Background.cs" />
@@ -188,7 +189,7 @@
     <Compile Include="Galaxy.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Ship\Ship.cs" />
-    <Compile Include="Stage.cs" />
+    <Compile Include="Stage\Stage.cs" />
     <Compile Include="StageDefinitions\StageDefinition.cs" />
     <Compile Include="StageDefinitions\TestStage.cs" />
     <Compile Include="Stage\Elements\StageElementAsteroidField.cs" />

@@ -17,6 +17,7 @@ namespace Galaxy
     {
         public string Name;
         public int Money;
+        public string CurrentStage;
         public string ChassisType;
         public string GeneratorType;
         public string ShieldType;
@@ -86,6 +87,7 @@ namespace Galaxy
             {
                 Name = "User",
                 Money = 1500,
+                CurrentStage = "Start",
                 ChassisType = "BasicShip",
                 GeneratorType = "BasicGenerator",
                 ShieldType = "BasicShield",
