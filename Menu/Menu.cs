@@ -20,6 +20,7 @@ namespace Galaxy
         public class MenuOption
         {
             public string Text;
+            public bool SpecialHighlight;
             public MenuSelectFunction Select;
             public MenuHighlightFunction Highlight;
             public MenuAxisFunction Axis;
@@ -105,16 +106,25 @@ namespace Galaxy
         {
             float Spacing = 20.0f;
             Vector2 position = Position;
+            sprite_batch.DrawString(Game.DefaultFont, ">", Position + Vector2.UnitY * Spacing * Cursor - Vector2.UnitX * 25.0f, Color.White);
             foreach (MenuOption option in MenuOptions)
             {
                 if (option != null)
                 {
-                    sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.White);
+                    if (option.SpecialHighlight)
+                    {
+                        Vector2 measured = Game.DefaultFont.MeasureString(option.Text);
+                        sprite_batch.DrawString(Game.DefaultFont, ">", position - Vector2.UnitX * 20.0f, Color.Yellow);
+                        sprite_batch.DrawString(Game.DefaultFont, "<", position + Vector2.UnitX * (measured.X + 5.0f), Color.Yellow);
+                        sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.Yellow);
+                    }
+                    else
+                    {
+                        sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.White);
+                    }
                 }
                 position += Vector2.UnitY * Spacing;
             }
-            position = Position + Vector2.UnitY * Spacing * Cursor;
-            sprite_batch.DrawString(Game.DefaultFont, ">", position - Vector2.UnitX * 20.0f, Color.White);
         }
     }
 }
