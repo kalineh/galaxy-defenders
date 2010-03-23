@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Galaxy
 {
@@ -73,6 +74,8 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
                     new CMenu.MenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
                     new CMenu.MenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
+                    new CMenu.MenuOption() { Text = "* Give 1000 Money", Select = EditMoney, Data = 1000 },
+                    new CMenu.MenuOption() { Text = "* Take 1000 Money", Select = EditMoney, Data = -1000 },
                     new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu },
                 }
             };
@@ -111,7 +114,7 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeaponEmpty, Data = "" });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts)
             {
                 MenuSecondaryWeapon.MenuOptions.Add(
@@ -138,7 +141,7 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeftEmpty, Data = "" });
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
             {
                 MenuSidekickLeft.MenuOptions.Add(
@@ -163,7 +166,7 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickRightEmpty, Data = "" });
+            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
             {
                 MenuSidekickRight.MenuOptions.Add(
@@ -258,6 +261,7 @@ namespace Galaxy
 
         public override void Update()
         {
+            MenuUpdateHighlights();
             Menu.Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.Scenery.Update();
@@ -278,15 +282,97 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);
+            //DrawShipStats();
+            DrawMoney();
             DrawMenuErrata();
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Money: " + WorkingProfile.Money, new Vector2(10.0f, 10.0f), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Primary: " + WorkingProfile.WeaponPrimaryType + ", level " + WorkingProfile.WeaponPrimaryLevel, new Vector2(10.0f, 50.0f), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Secondary: " + (WorkingProfile.WeaponSecondaryType ?? "None") + ", level " + WorkingProfile.WeaponSecondaryLevel, new Vector2(10.0f, 70.0f), Color.White);
             Game.DefaultSpriteBatch.End();
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             SampleShip.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
+        }
+
+        private void MenuUpdateHighlights()
+        {
+            if (Menu == MenuPrimaryWeapon)
+                foreach (CMenu.MenuOption option in MenuPrimaryWeapon.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponPrimaryType;
+            if (Menu == MenuSecondaryWeapon)
+                foreach (CMenu.MenuOption option in MenuSecondaryWeapon.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSecondaryType;
+            if (Menu == MenuSidekickLeft)
+                foreach (CMenu.MenuOption option in MenuSidekickLeft.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSidekickLeftType;
+            if (Menu == MenuSidekickRight)
+                foreach (CMenu.MenuOption option in MenuSidekickRight.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSidekickRightType;
+            if (Menu == MenuChassis)
+                foreach (CMenu.MenuOption option in MenuChassis.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.ChassisType;
+            if (Menu == MenuGenerator)
+                foreach (CMenu.MenuOption option in MenuGenerator.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.GeneratorType;
+            if (Menu == MenuShield)
+                foreach (CMenu.MenuOption option in MenuShield.MenuOptions)
+                    option.SpecialHighlight = (string)option.Data == LockedProfile.ShieldType;
+        }
+
+        private void DrawShipStats()
+        {
+            Vector2 KeysBase = new Vector2(10.0f, 10.0f);
+            Vector2 ValuesBase = new Vector2(180.0f, 10.0f);
+            Vector2 Step = new Vector2(0.0f, 30.0f);
+
+            string[] keys = {
+                "Money",
+                "Chassis",
+                "Generator",
+                "Shield",
+                "Main Weapon",
+                "Support Weapon",
+                "Sidekick Left",
+                "Sidekick Right"
+            };
+
+            string[] values = 
+            {
+                LockedProfile.Money.ToString(),
+                LockedProfile.ChassisType,
+                LockedProfile.GeneratorType,
+                LockedProfile.ShieldType,
+                LockedProfile.WeaponPrimaryType,
+                LockedProfile.WeaponSecondaryType,
+                LockedProfile.WeaponSidekickLeftType,
+                LockedProfile.WeaponSidekickRightType
+            };
+
+            foreach (int index in Enumerable.Range(0, keys.Length))
+            {
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, keys[index], KeysBase + Step * index, Color.White);
+            }
+
+            foreach (int index in Enumerable.Range(0, values.Length))
+            {
+                if (values[index] == "")
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "None", ValuesBase + Step * index, Color.White);
+                else
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, values[index], ValuesBase + Step * index, Color.White);
+            }
+        }
+
+        private void DrawMoney()
+        {
+            int base_ = WorkingProfile.Money;
+            int diff = WorkingProfile.Money - LockedProfile.Money;
+
+            Color color = Color.White;
+            if (diff < 0)
+                color = Color.LightSalmon;
+            if (diff > 0)
+                color = Color.LightGreen;
+
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "MONEY", new Vector2(260.0f, 700.0f), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), new Vector2(290.0f - Game.DefaultFont.MeasureString(WorkingProfile.Money.ToString()).X * 0.5f, 720.0f), color);
         }
 
         private void RefreshSampleDisplay()
@@ -309,75 +395,63 @@ namespace Galaxy
 
         private void DrawMenuBaseErrata()
         {
-            // TODO: implement me!
-            return;
-
             // HACK: bad hack time, fix me up
             // TODO: put stuff in menu itself?
             // TODO: check can upgrade
             // TODO: nicer display of purchasable items
             if (Menu == MenuPrimaryWeapon)
             {
-                switch (Menu.Cursor)
+                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType) - 1;
+                int level = WorkingProfile.WeaponPrimaryLevel;
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(260.0f, 640.0f), Color.White);
+                foreach (int index in Enumerable.Range(0, 10))
                 {
-                    case 1:
-                    {
-                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
-                        {
-                            int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
-                            Color color = WorkingProfile.Money > price ? Color.White : Color.Red;
-                            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Cost: -" + price, new Vector2(10.0f, 30.0f), color);
-                        }
-                        break;
-                    }
+                    if (index > max)
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                    else 
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                }
+                foreach (int index in Enumerable.Range(0, level + 1))
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.White);
 
-                    case 2:
-                    {
-                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel, 1))
-                        {
-                            int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-                            Color color = Color.Green;
-                            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Cost: +" + price, new Vector2(10.0f, 30.0f), color);
-                        }
-                        break;
-                    }
-                        
+                if (WorkingProfile.WeaponPrimaryType != "")
+                {
+                    int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, 665.0f), Color.LightGray);
+                }
+
+                if (level < max)
+                {
+                    int upgrade = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(430.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, 665.0f), Color.LightSalmon);
                 }
             }
+
             if (Menu == MenuSecondaryWeapon)
             {
-                switch (Menu.Cursor)
+                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType) - 1;
+                int level = WorkingProfile.WeaponSecondaryLevel;
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(260.0f, 640.0f), Color.White);
+                foreach (int index in Enumerable.Range(0, 10))
                 {
-                    case 1:
-                    {
-                        int price = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-                        Color color = Color.Green;
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Cost: +" + price, new Vector2(10.0f, 30.0f), color);
-                        break;
-                    }
+                    if (index > max)
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                    else 
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                }
+                foreach (int index in Enumerable.Range(0, level + 1))
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.White);
 
-                    case 2:
-                    {
-                        if (CWeaponFactory.CanUpgrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
-                        {
-                            int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
-                            Color color = WorkingProfile.Money > price ? Color.White : Color.Red;
-                            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Cost: -" + price, new Vector2(10.0f, 30.0f), color);
-                        }
-                        break;
-                    }
+                if (WorkingProfile.WeaponSecondaryType != "")
+                {
+                    int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, 665.0f), Color.LightGray);
+                }
 
-                    case 3:
-                    {
-                        if (CWeaponFactory.CanDowngrade(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel, 1))
-                        {
-                            int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-                            Color color = Color.Green;
-                            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Cost: +" + price, new Vector2(10.0f, 30.0f), color);
-                        }
-                        break;
-                    }
-                        
+                if (level < max)
+                {
+                    int upgrade = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(430.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, 665.0f), Color.LightSalmon);
                 }
             }
         }
@@ -412,6 +486,13 @@ namespace Galaxy
         private void EditSidekickRight(object tag)
         {
             Menu = MenuSidekickRight;
+        }
+
+        private void EditMoney(object tag)
+        {
+            WorkingProfile.Money += (int)tag;
+            WorkingProfile.Money = Math.Max(0, WorkingProfile.Money);
+            LockWorkingProfile();
         }
 
         private void EditChassis(object tag)
