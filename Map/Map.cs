@@ -30,14 +30,16 @@ namespace Galaxy
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
-                    "StrongShip",
+                    "FighterShip",
                 },
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
-                    "UltraGenerator",
+                    "CoreGenerator",
+                    "CoreGeneratorMark2",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
+                    "EnhancedShield",
                     "UltraShield",
                 },
             },
@@ -45,23 +47,40 @@ namespace Galaxy
                 Current = "Stage1",
                 Next = new List<string>() {
                     "Stage2",
+                    "*",
                 },
                 AvailablePrimaryWeaponParts = new List<string>() {
                     "FrontLaser",
                     "Plasma",
                 },
+                AvailableSecondaryWeaponParts = new List<string>() {
+                    "Missile",
+                    "SeekBomb",
+                },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
                 },
+                AvailableChassisParts = new List<string>() {
+                    "BasicShip",
+                    "FighterShip",
+                    "StrongShip",
+                },
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
+                    "CoreGenerator",
                     "UltraGenerator",
+                },
+                AvailableShieldParts = new List<string>() {
+                    "BasicShield",
+                    "EnhancedShield",
+                    "UltraShield",
                 },
             },
             new CMapNode() {
                 Current = "Stage2",
                 Next = new List<string>() {
                     "Stage3",
+                    "*",
                 }
             }
         };

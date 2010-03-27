@@ -29,23 +29,10 @@ namespace Galaxy
 
     public class ChassisDefinitions
     {
-        public static string GetNextDefinition(string current)
-        {
-            int index = Indexed.FindIndex(s => s == current);
-            int next = index + 1;
-            return Indexed[next % Indexed.Count];
-        }
-
         public static CChassisPart GetPart(string current)
         {
             return Items.ContainsKey(current) ? Items[current] : Items["BasicShip"];
         }
-
-        public static List<string> Indexed = new List<string>
-        {
-            "BasicShip",
-            "StrongShip",
-        };
 
         public static Dictionary<string, CChassisPart> Items = new Dictionary<string, CChassisPart>()
         {
@@ -54,16 +41,26 @@ namespace Galaxy
                 new CChassisPart() {
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
-                    Speed = 2.25f,
+                    Speed = 2.0f,
                     Friction = 0.8f,
                     Armor = 5.0f,
                 }
             },
-
+            {
+                "FighterShip",
+                new CChassisPart() {
+                    Price = 2500,
+                    Texture = "Textures/Player/FighterShip",
+                    VisualScale = 0.25f,
+                    Speed = 2.25f,
+                    Friction = 0.8f,
+                    Armor = 8.0f,
+                }
+            },
             {
                 "StrongShip",
                 new CChassisPart() {
-                    Price = 2500,
+                    Price = 6500,
                     Texture = "Textures/Player/StrongShip",
                     VisualScale = 0.25f,
                     Speed = 1.9f,
@@ -76,23 +73,10 @@ namespace Galaxy
 
     public class GeneratorDefinitions
     {
-        public static string GetNextDefinition(string current)
-        {
-            int index = Indexed.FindIndex(s => s == current);
-            int next = index + 1;
-            return Indexed[next % Indexed.Count];
-        }
-
         public static CGeneratorPart GetPart(string current)
         {
             return Items.ContainsKey(current) ? Items[current] : Items["BasicGenerator"];
         }
-
-        public static List<string> Indexed = new List<string>
-        {
-            "BasicGenerator",
-            "UltraGenerator",
-        };
 
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
         {
@@ -104,9 +88,25 @@ namespace Galaxy
                 }
             },
             {
+                "CoreGenerator",
+                new CGeneratorPart() {
+                    Price = 2000,
+                    Energy = 12.0f,
+                    Regen = 0.06f,
+                }
+            },
+            {
+                "CoreGeneratorMark2",
+                new CGeneratorPart() {
+                    Price = 4000,
+                    Energy = 14.0f,
+                    Regen = 0.09f,
+                }
+            },
+            {
                 "UltraGenerator",
                 new CGeneratorPart() {
-                    Price = 5000,
+                    Price = 12000,
                     Energy = 20.0f,
                     Regen = 0.15f,
                 }
@@ -116,23 +116,10 @@ namespace Galaxy
 
     public class ShieldDefinitions
     {
-        public static string GetNextDefinition(string current)
-        {
-            int index = Indexed.FindIndex(s => s == current);
-            int next = index + 1;
-            return Indexed[next % Indexed.Count];
-        }
-
         public static CShieldPart GetPart(string current)
         {
             return Items.ContainsKey(current) ? Items[current] : Items["BasicShield"];
         }
-
-        public static List<string> Indexed = new List<string>
-        {
-            "BasicShield",
-            "UltraShield",
-        };
 
         public static Dictionary<string, CShieldPart> Items = new Dictionary<string, CShieldPart>()
         {
@@ -144,9 +131,25 @@ namespace Galaxy
                 }
             },
             {
+                "EnhancedShield",
+                new CShieldPart() {
+                    Price = 2500,
+                    Shield = 6.0f,
+                    Regen = 0.03f,
+                }
+            },
+            {
+                "PowerShield",
+                new CShieldPart() {
+                    Price = 9000,
+                    Shield = 8.0f,
+                    Regen = 0.05f,
+                }
+            },
+            {
                 "UltraShield",
                 new CShieldPart() {
-                    Price = 5000,
+                    Price = 14000,
                     Shield = 15.0f,
                     Regen = 0.15f,
                 }
