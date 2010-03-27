@@ -90,6 +90,7 @@
             // 
             // NewStageButton
             // 
+            this.NewStageButton.Enabled = false;
             this.NewStageButton.Location = new System.Drawing.Point(935, 847);
             this.NewStageButton.Name = "NewStageButton";
             this.NewStageButton.Size = new System.Drawing.Size(75, 23);

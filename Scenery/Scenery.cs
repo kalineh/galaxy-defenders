@@ -47,7 +47,12 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             foreach (CScenery scenery in Sceneries)
+            {
+                // TODO: hack for render ordering
+                sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
                 scenery.Draw(sprite_batch);
+                sprite_batch.End();
+            }
         }
     }
 }

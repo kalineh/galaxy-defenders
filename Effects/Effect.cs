@@ -73,7 +73,6 @@ namespace Galaxy
             return animation;
         }
 
-
         public static CEntity LaserHit(CWorld world, Vector2 position, float scale)
         {
             COneShotAnimation animation = new COneShotAnimation(world,
@@ -90,6 +89,25 @@ namespace Galaxy
             );
 
             world.Sound.Play("LaserHit", 0.4f);
+            world.EntityAdd(animation);
+            return animation;
+        }
+
+        public static CEntity MissileTrail(CWorld world, Vector2 position, float scale)
+        {
+            COneShotAnimation animation = new COneShotAnimation(world,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = world.Random.NextAngle(),
+                    TextureName = "Textures/Effects/LaserHit",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 1.0f,
+                    Scale = scale,
+                }
+            );
+
             world.EntityAdd(animation);
             return animation;
         }

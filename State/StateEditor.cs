@@ -453,10 +453,7 @@ namespace Galaxy
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
-
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
             Scenery.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
 
             foreach (CEntity entity in HoverEntities)
             {
@@ -530,6 +527,9 @@ namespace Galaxy
             ClearStage();
             Game.StageDefinition = definition;
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+
+            MethodInfo method = typeof(SceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
+            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
 
         // TODO: rename me, move out of state editor too?
