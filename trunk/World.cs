@@ -112,9 +112,7 @@ namespace Galaxy
 
         public void DrawBackground(CCamera camera)
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
             Scenery.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
         }
 
         public void DrawEntities(CCamera camera)

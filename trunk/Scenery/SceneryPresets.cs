@@ -39,10 +39,38 @@ namespace Galaxy
             );
         }
 
-        public static CScenery Snowfall(CWorld world)
+        public static CScenery BonusStage1(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBackground(world, new Color(62, 140, 35)),
+                new CBackground(world, new Color(46, 46, 170)),
+                new CBlendingGradientBackground(world, 1.0f,
+                    new List<Color[]>() {
+                        new Color[] {
+                            new Color(0, 196, 0, 128),
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 0, 0, 0),
+                            new Color(0, 64, 0, 64)
+                        },
+                        new Color[] {
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 196, 0, 128),
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 0, 0, 0)
+                        },
+                        new Color[] {
+                            new Color(0, 0, 0, 0),
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 196, 0, 128),
+                            new Color(0, 64, 0, 64)
+                        },
+                        new Color[] {
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 0, 0, 0),
+                            new Color(0, 64, 0, 64),
+                            new Color(0, 196, 0, 128)
+                        },
+                    }
+                ),
                 new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 1.2f, 4.0f),
                 new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, 6.0f)
             );

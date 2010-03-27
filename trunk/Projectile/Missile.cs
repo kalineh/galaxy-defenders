@@ -46,6 +46,8 @@ namespace Galaxy
         {
             Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -FireVector * Speed, 0.05f);
 
+            CEffect.MissileTrail(World, Physics.PositionPhysics.Position, 0.3f);
+
             base.Update();
 
             if (!IsInScreen())

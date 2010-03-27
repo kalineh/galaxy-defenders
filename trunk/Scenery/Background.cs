@@ -99,15 +99,15 @@ namespace Galaxy
 
         public override void Update()
         {
-            int previous = Math.Abs(BlendCycle - 1) % BlendColors.Count;
+            int next = Math.Abs(BlendCycle + 1) % BlendColors.Count;
             float total = (float)Time.ToFrames(BlendTime);
             float current = (float)BlendCounter;
             float t = (total - current) / total;
 
-            ColorTL = ColorExtensions.Smoothstep(BlendColors[previous][0], BlendColors[BlendCycle][0], t);
-            ColorTR = ColorExtensions.Smoothstep(BlendColors[previous][1], BlendColors[BlendCycle][1], t);
-            ColorBR = ColorExtensions.Smoothstep(BlendColors[previous][2], BlendColors[BlendCycle][2], t);
-            ColorBL = ColorExtensions.Smoothstep(BlendColors[previous][3], BlendColors[BlendCycle][3], t);
+            ColorTL = ColorExtensions.Smoothstep(BlendColors[BlendCycle][0], BlendColors[next][0], t);
+            ColorTR = ColorExtensions.Smoothstep(BlendColors[BlendCycle][1], BlendColors[next][1], t);
+            ColorBR = ColorExtensions.Smoothstep(BlendColors[BlendCycle][2], BlendColors[next][2], t);
+            ColorBL = ColorExtensions.Smoothstep(BlendColors[BlendCycle][3], BlendColors[next][3], t);
 
             BlendCounter -= 1;
             if (BlendCounter <= 0)
