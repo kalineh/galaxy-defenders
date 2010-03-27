@@ -15,6 +15,8 @@ namespace Galaxy
     [Serializable]
     public struct SProfile
     {
+        public static int CurrentVersion = 1;
+        public int Version;
         public string Name;
         public int Money;
         public string CurrentStage;
@@ -49,7 +51,7 @@ namespace Galaxy
             DefaultSaveData = new SSaveData() {
                 CurrentProfile = "User",
                 Profiles = new List<SProfile>() {
-                    CreateDefaultProfile(),
+                    CreateDefaultProfile("User"),
                 }
             };
             SaveData = DefaultSaveData;
@@ -81,11 +83,12 @@ namespace Galaxy
             Load();
         }
 
-        public static SProfile CreateDefaultProfile()
+        public static SProfile CreateDefaultProfile(string name)
         {
             return new SProfile()
             {
-                Name = "User",
+                Version = SProfile.CurrentVersion,
+                Name = name,
                 Money = 1500,
                 CurrentStage = "Start",
                 ChassisType = "BasicShip",
@@ -114,8 +117,7 @@ namespace Galaxy
 
         public static void AddNewProfile(string name)
         {
-            SProfile profile = CreateDefaultProfile();
-            profile.Name = name;
+            SProfile profile = CreateDefaultProfile(name);
             SaveData.Profiles.RemoveAll(existing => existing.Name == name);
             SaveData.Profiles.Add(profile);
         }
@@ -152,6 +154,23 @@ namespace Galaxy
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
                 data = (SSaveData)serializer.Deserialize(stream);
+                
+                // TODO: cannot put this in a function because the out param must be assigned to
+                // TODO: change SSaveData to a class
+                // ---
+                foreach (int index in Enumerable.Range(0, data.Profiles.Count))
+                {
+                    SProfile profile = data.Profiles[index];
+
+                    if (profile.Version < SProfile.CurrentVersion)
+                    {
+                        // TODO: version migration
+                        string name = data.Profiles[index].Name;
+                        data.Profiles[index] = CreateDefaultProfile(name);
+                    }
+                }
+                // ---
+
             }
             catch (Exception exception)
             {

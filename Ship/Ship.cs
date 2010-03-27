@@ -186,8 +186,8 @@ namespace Galaxy
             if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
-            bool lshift_down = CInput.IsRawKeyDown(Keys.LeftShift);
-            if (lshift_down)
+            bool lctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
+            if (lctrl_down)
             {
                 if (CInput.IsRawKeyPressed(Keys.C))
                     WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
