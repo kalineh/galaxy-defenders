@@ -14,14 +14,17 @@ namespace Galaxy
     {
         public CGalaxy Game { get; set; }
         public delegate void MenuSelectFunction(object tag);
+        public delegate bool MenuSelectValidateFunction(object tag);
         public delegate void MenuHighlightFunction(object tag);
         public delegate void MenuAxisFunction(object tag, int axis);
         public delegate bool MenuAxisValidateFunction(object tag, int axis);
         public class MenuOption
         {
             public string Text;
+            public string SubText;
             public bool SpecialHighlight;
             public MenuSelectFunction Select;
+            public MenuSelectValidateFunction SelectValidate;
             public MenuHighlightFunction Highlight;
             public MenuAxisFunction Axis;
             public MenuAxisValidateFunction AxisValidate;
@@ -31,6 +34,7 @@ namespace Galaxy
             public MenuOption()
             {
                 Select = (tag) => { };
+                SelectValidate = (tag) => { return true; };
                 Highlight = (tag) => { };
                 Axis = (tag, axis) => { };
                 AxisValidate = (tag, axis) => { return false; };
@@ -54,13 +58,13 @@ namespace Galaxy
             if (Game.Input.IsKeyPressed(Keys.Down))
             {
                 offset += 1;
-                while (Cursor + offset < MenuOptions.Count && MenuOptions[Cursor + offset] == null)
+                while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
                     offset += 1;
             }
             if (Game.Input.IsKeyPressed(Keys.Up))
             {
                 offset -= 1;
-                while (Cursor + offset > 0 && MenuOptions[Cursor + offset] == null)
+                while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
                     offset -= 1;
             }
 
@@ -106,11 +110,16 @@ namespace Galaxy
         {
             float Spacing = 20.0f;
             Vector2 position = Position;
-            sprite_batch.DrawString(Game.DefaultFont, ">", Position + Vector2.UnitY * Spacing * Cursor - Vector2.UnitX * 25.0f, Color.White);
             foreach (MenuOption option in MenuOptions)
             {
                 if (option != null)
                 {
+                    bool valid = option.SelectValidate(option.Data);
+                    if (option == MenuOptions[Cursor])
+                    {
+                        sprite_batch.DrawString(Game.DefaultFont, ">", position - Vector2.UnitX * 25.0f, Color.White);
+                    }
+
                     if (option.SpecialHighlight)
                     {
                         Vector2 measured = Game.DefaultFont.MeasureString(option.Text);
@@ -120,7 +129,15 @@ namespace Galaxy
                     }
                     else
                     {
-                        sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.White);
+                        Color color = valid ? Color.White : Color.Gray;
+                        sprite_batch.DrawString(Game.DefaultFont, option.Text, position, color);
+                    }
+
+                    if (option.SubText != null)
+                    {
+                        position += Vector2.UnitY * Spacing;
+                        Color color = valid ? Color.LightGray : Color.Gray;
+                        sprite_batch.DrawString(Game.DefaultFont, option.SubText, position + Vector2.UnitX * 10.0f, color);
                     }
                 }
                 position += Vector2.UnitY * Spacing;
