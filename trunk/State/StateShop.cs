@@ -94,8 +94,10 @@ namespace Galaxy
                     new CMenu.MenuOption()
                     {
                         Text = weapon_part,
+                        SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
                         Data = weapon_part,
                         Select = SelectPrimaryWeapon,
+                        SelectValidate = SelectValidatePrimaryWeapon,
                         Highlight = HighlightPrimaryWeapon,
                         Axis = AxisPrimaryWeapon,
                         AxisValidate = AxisValidatePrimaryWeapon,
@@ -114,15 +116,17 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts)
             {
                 MenuSecondaryWeapon.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
                         Text = weapon_part,
+                        SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
                         Data = weapon_part,
                         Select = SelectSecondaryWeapon,
+                        SelectValidate = SelectValidateSecondaryWeapon,
                         Highlight = HighlightSecondaryWeapon,
                         Axis = AxisSecondaryWeapon,
                         AxisValidate = AxisValidateSecondaryWeapon,
@@ -141,15 +145,17 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
             {
                 MenuSidekickLeft.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
                         Text = weapon_part,
+                        SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
                         Data = weapon_part,
                         Select = SelectSidekickLeft,
+                        SelectValidate = SelectValidateSidekickLeft,
                         Highlight = HighlightSidekickLeft,
                     }
                 );
@@ -166,15 +172,17 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
+            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
             {
                 MenuSidekickRight.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
                         Text = weapon_part,
+                        SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
                         Data = weapon_part,
                         Select = SelectSidekickRight,
+                        SelectValidate = SelectValidateSidekickRight,
                         Highlight = HighlightSidekickRight,
                     }
                 );
@@ -196,8 +204,10 @@ namespace Galaxy
                     new CMenu.MenuOption()
                     {
                         Text = chassis_part,
+                        SubText = "Cost: " + ChassisDefinitions.GetPart(chassis_part).Price,
                         Data = chassis_part,
                         Select = SelectChassis,
+                        SelectValidate = SelectValidateChassis,
                         Highlight = HighlightChassis,
                     }
                 );
@@ -219,8 +229,10 @@ namespace Galaxy
                     new CMenu.MenuOption()
                     {
                         Text = generator_part,
+                        SubText = "Cost: " + GeneratorDefinitions.GetPart(generator_part).Price,
                         Data = generator_part,
                         Select = SelectGenerator,
+                        SelectValidate = SelectValidateGenerator,
                         Highlight = HighlightGenerator,
                     }
                 );
@@ -242,8 +254,10 @@ namespace Galaxy
                     new CMenu.MenuOption()
                     {
                         Text = shield_part,
+                        SubText = "Cost: " + ShieldDefinitions.GetPart(shield_part).Price,
                         Data = shield_part,
                         Select = SelectShield,
+                        SelectValidate = SelectValidateShield,
                         Highlight = HighlightShield,
                     }
                 );
@@ -427,7 +441,7 @@ namespace Galaxy
                 }
             }
 
-            if (Menu == MenuSecondaryWeapon)
+            if (Menu == MenuSecondaryWeapon && WorkingProfile.WeaponSecondaryType != "")
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType) - 1;
                 int level = WorkingProfile.WeaponSecondaryLevel;
@@ -523,6 +537,19 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private bool SelectValidatePrimaryWeapon(object tag)
+        {
+            if (WorkingProfile.WeaponPrimaryType == (string)tag)
+                return true;
+
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+            int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
+        }
+
         private void HighlightPrimaryWeapon(object tag)
         {
             if (WorkingProfile.WeaponPrimaryType != (string)tag)
@@ -590,6 +617,19 @@ namespace Galaxy
         {
             LockWorkingProfile();
             RefreshSampleDisplay();
+        }
+
+        private bool SelectValidateSecondaryWeapon(object tag)
+        {
+            if (WorkingProfile.WeaponSecondaryType == (string)tag)
+                return true;
+
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+            int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
         }
 
         private void HighlightSecondaryWeapon(object tag)
@@ -675,6 +715,19 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private bool SelectValidateSidekickLeft(object tag)
+        {
+            if (WorkingProfile.WeaponSidekickLeftType == (string)tag)
+                return true;
+
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+            int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
+        }
+
         private void HighlightSidekickLeft(object tag)
         {
             if (WorkingProfile.WeaponSidekickLeftType != (string)tag)
@@ -728,6 +781,19 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private bool SelectValidateSidekickRight(object tag)
+        {
+            if (WorkingProfile.WeaponSidekickRightType == (string)tag)
+                return true;
+
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
+            int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
+        }
+
         private void HighlightSidekickRight(object tag)
         {
             if (WorkingProfile.WeaponSidekickRightType != (string)tag)
@@ -771,6 +837,19 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private bool SelectValidateChassis(object tag)
+        {
+            if (WorkingProfile.ChassisType == (string)tag)
+                return true;
+
+            int sell = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
+            int buy = ChassisDefinitions.GetPart((string)tag).Price;
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
+        }
+
         private void HighlightChassis(object tag)
         {
             if (WorkingProfile.ChassisType != (string)tag)
@@ -795,6 +874,19 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        private bool SelectValidateGenerator(object tag)
+        {
+            if (WorkingProfile.GeneratorType == (string)tag)
+                return true;
+
+            int sell = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
+            int buy = GeneratorDefinitions.GetPart((string)tag).Price;
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
+        }
+
         private void HighlightGenerator(object tag)
         {
             if (WorkingProfile.GeneratorType != (string)tag)
@@ -817,6 +909,19 @@ namespace Galaxy
         {
             LockWorkingProfile();
             RefreshSampleDisplay();
+        }
+
+        private bool SelectValidateShield(object tag)
+        {
+            if (WorkingProfile.ShieldType == (string)tag)
+                return true;
+
+            int sell = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
+            int buy = ShieldDefinitions.GetPart((string)tag).Price;
+            if (buy > WorkingProfile.Money + sell)
+                return false;
+
+            return true;
         }
 
         private void HighlightShield(object tag)

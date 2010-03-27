@@ -63,6 +63,7 @@ namespace Galaxy
             {
                 "StrongShip",
                 new CChassisPart() {
+                    Price = 2500,
                     Texture = "Textures/Player/StrongShip",
                     VisualScale = 0.25f,
                     Speed = 1.9f,
@@ -99,12 +100,13 @@ namespace Galaxy
                 "BasicGenerator",
                 new CGeneratorPart() {
                     Energy = 10.0f,
-                    Regen = 0.02f,
+                    Regen = 0.04f,
                 }
             },
             {
                 "UltraGenerator",
                 new CGeneratorPart() {
+                    Price = 5000,
                     Energy = 20.0f,
                     Regen = 0.15f,
                 }
@@ -144,6 +146,7 @@ namespace Galaxy
             {
                 "UltraShield",
                 new CShieldPart() {
+                    Price = 5000,
                     Shield = 15.0f,
                     Regen = 0.15f,
                 }
