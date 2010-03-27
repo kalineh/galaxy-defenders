@@ -96,9 +96,11 @@ namespace Galaxy
         public bool IsInDieRegion()
         {
             if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
-            {
                 return false;
-            }
+
+            // TODO: bottom check stricter than 150 side check
+            if (IsOffScreenBottom())
+                return true;
 
             // TODO: proper region top check
             // TODO: proper edge buffer system

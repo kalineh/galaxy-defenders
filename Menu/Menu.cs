@@ -55,13 +55,13 @@ namespace Galaxy
         public void Update()
         {
             int offset = 0;
-            if (Game.Input.IsKeyPressed(Keys.Down))
+            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed())
             {
                 offset += 1;
                 while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
                     offset += 1;
             }
-            if (Game.Input.IsKeyPressed(Keys.Up))
+            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed())
             {
                 offset -= 1;
                 while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
@@ -82,12 +82,12 @@ namespace Galaxy
                 option.Axis(option.Data, option.AxisValue);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Enter))
+            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed())
             {
                 option.Select(option.Data);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Left))
+            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressed())
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -96,7 +96,7 @@ namespace Galaxy
                     option.AxisValue += 1;
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Right))
+            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressed())
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
