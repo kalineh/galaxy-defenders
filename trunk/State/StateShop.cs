@@ -55,7 +55,7 @@ namespace Galaxy
                 {
                     new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
                     new CMenu.MenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
-                    new CMenu.MenuOption() { Text = "Return to Menu", Select = Back },
+                    new CMenu.MenuOption() { Text = "Return to Menu", Select = Back, CancelOption = true },
                 }
             };
 
@@ -76,7 +76,7 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
                     new CMenu.MenuOption() { Text = "* Give 1000 Money", Select = EditMoney, Data = 1000 },
                     new CMenu.MenuOption() { Text = "* Take 1000 Money", Select = EditMoney, Data = -1000 },
-                    new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu },
+                    new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true },
                 }
             };
 
@@ -105,7 +105,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Secondary Weapon
@@ -134,7 +134,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Sidekick Left
@@ -161,7 +161,7 @@ namespace Galaxy
                 );
             }
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Sidekick Right
@@ -187,7 +187,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Chassis
@@ -212,7 +212,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuChassis.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuChassis.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Generator
@@ -237,7 +237,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuGenerator.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuGenerator.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
             //
             // Shield
@@ -262,7 +262,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuShield.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile });
+            MenuShield.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true });
 
 
             Menu = MenuBase;
@@ -467,6 +467,27 @@ namespace Galaxy
                     int upgrade = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
                     Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(430.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, 665.0f), Color.LightSalmon);
                 }
+            }
+
+            if (Menu == MenuChassis)
+            {
+                CChassisPart part = ChassisDefinitions.GetPart(WorkingProfile.ChassisType);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ARMOR: " + Convert.ToInt32(part.Armor * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "SPEED: " + Convert.ToInt32(part.Speed * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
+            }
+
+            if (Menu == MenuGenerator)
+            {
+                CGeneratorPart part = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Energy * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
+            }
+
+            if (Menu == MenuShield)
+            {
+                CShieldPart part = ShieldDefinitions.GetPart(WorkingProfile.ShieldType);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Shield * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
             }
         }
 
@@ -854,8 +875,8 @@ namespace Galaxy
         {
             if (WorkingProfile.ChassisType != (string)tag)
             {
-                int sell = ChassisDefinitions.GetPart((string)tag).Price;
-                int buy = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
+                int sell = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
+                int buy = ChassisDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
                 if (remaining < 0)
                     return;
@@ -891,8 +912,8 @@ namespace Galaxy
         {
             if (WorkingProfile.GeneratorType != (string)tag)
             {
-                int sell = GeneratorDefinitions.GetPart((string)tag).Price;
-                int buy = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
+                int sell = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
+                int buy = GeneratorDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
                 if (remaining < 0)
                     return;
@@ -928,8 +949,8 @@ namespace Galaxy
         {
             if (WorkingProfile.ShieldType != (string)tag)
             {
-                int sell = ShieldDefinitions.GetPart((string)tag).Price;
-                int buy = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
+                int sell = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
+                int buy = ShieldDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
                 if (remaining < 0)
                     return;
@@ -950,24 +971,6 @@ namespace Galaxy
         private void ReturnToUpgradeShip(object tag)
         {
             Menu = MenuUpgradeShip;
-        }
-
-        private void ChassisSwapType(object tag)
-        {
-            WorkingProfile.ChassisType = ChassisDefinitions.GetNextDefinition(WorkingProfile.ChassisType);
-            RefreshSampleDisplay();
-        }
-
-        private void GeneratorSwapType(object tag)
-        {
-            WorkingProfile.GeneratorType = GeneratorDefinitions.GetNextDefinition(WorkingProfile.GeneratorType);
-            RefreshSampleDisplay();
-        }
-
-        private void ShieldSwapType(object tag)
-        {
-            WorkingProfile.ShieldType = ShieldDefinitions.GetNextDefinition(WorkingProfile.ShieldType);
-            RefreshSampleDisplay();
         }
     }
 }

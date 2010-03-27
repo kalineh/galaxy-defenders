@@ -35,7 +35,7 @@ namespace Galaxy
                 Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Select = SelectProfile, Data = profile } );
             }
 
-            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Select = Back } );
+            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true } );
         }
 
         public override void Update()

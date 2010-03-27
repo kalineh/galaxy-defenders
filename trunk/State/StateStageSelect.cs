@@ -51,7 +51,7 @@ namespace Galaxy
                 }
             }
 
-            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back });
+            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
         }

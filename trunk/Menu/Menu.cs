@@ -28,6 +28,7 @@ namespace Galaxy
             public MenuHighlightFunction Highlight;
             public MenuAxisFunction Axis;
             public MenuAxisValidateFunction AxisValidate;
+            public bool CancelOption;
             public object Data;
             public int AxisValue;
 
@@ -54,6 +55,17 @@ namespace Galaxy
 
         public void Update()
         {
+            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed())
+            {
+                foreach (MenuOption cancel_option in MenuOptions)
+                {
+                    if (cancel_option.CancelOption)
+                    {
+                        cancel_option.Select(cancel_option.Data);
+                    }
+                }
+            }
+
             int offset = 0;
             if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed())
             {
