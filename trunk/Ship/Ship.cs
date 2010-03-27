@@ -36,6 +36,8 @@ namespace Galaxy
 
         public CVisual SidekickVisual { get; set; }
 
+        public float Vibrate { get; set; }
+
         public CShip(
             CWorld world,
             CChassisPart chassis,
@@ -111,6 +113,8 @@ namespace Galaxy
                 );
             }
 
+            GamePad.SetVibration(PlayerIndex.One, Vibrate, Vibrate);
+            Vibrate = Math.Max(0.0f, Vibrate - 0.1f);
         }
 
         public override void UpdateCollision()
@@ -277,6 +281,9 @@ namespace Galaxy
             Vector2 dir = offset.Normal();
             Physics.PositionPhysics.Velocity += dir * 7.0f;
             ApplyDamage(damage);
+
+            // TODO: find a way to be sure we can disable this in all cases so it doesnt get left on (particularly after program exit)
+            //Vibrate = 0.4f;
         }
 
         private void ApplyDamage(float damage)
