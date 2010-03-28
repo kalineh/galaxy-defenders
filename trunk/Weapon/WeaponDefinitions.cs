@@ -375,7 +375,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
+                                Rotation = MathHelper.ToRadians(-2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -384,7 +384,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
+                                Rotation = MathHelper.ToRadians(2.0f),
                                 Energy = 0.1f,
                             },
                         },
@@ -396,7 +396,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-3.0f),
+                                Rotation = MathHelper.ToRadians(-6.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -405,7 +405,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
+                                Rotation = MathHelper.ToRadians(-2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -414,7 +414,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
+                                Rotation = MathHelper.ToRadians(2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -423,7 +423,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(3.0f),
+                                Rotation = MathHelper.ToRadians(6.0f),
                                 Energy = 0.1f,
                             },
                         },
@@ -435,7 +435,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-5.0f),
+                                Rotation = MathHelper.ToRadians(-10.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -444,7 +444,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-3.0f),
+                                Rotation = MathHelper.ToRadians(-6.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -453,7 +453,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
+                                Rotation = MathHelper.ToRadians(-2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -462,7 +462,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
+                                Rotation = MathHelper.ToRadians(2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -471,7 +471,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(3.0f),
+                                Rotation = MathHelper.ToRadians(6.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -480,7 +480,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(5.0f),
+                                Rotation = MathHelper.ToRadians(10.0f),
                                 Energy = 0.1f,
                             },
                         },
@@ -492,7 +492,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-7.0f),
+                                Rotation = MathHelper.ToRadians(-14.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -501,7 +501,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-5.0f),
+                                Rotation = MathHelper.ToRadians(-10.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -510,7 +510,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-3.0f),
+                                Rotation = MathHelper.ToRadians(-6.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -519,7 +519,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
+                                Rotation = MathHelper.ToRadians(-2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -528,7 +528,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
+                                Rotation = MathHelper.ToRadians(2.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -537,7 +537,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(3.0f),
+                                Rotation = MathHelper.ToRadians(6.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -546,7 +546,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(5.0f),
+                                Rotation = MathHelper.ToRadians(10.0f),
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
@@ -555,7 +555,7 @@ namespace Galaxy
                                 Damage = 0.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(7.0f),
+                                Rotation = MathHelper.ToRadians(14.0f),
                                 Energy = 0.1f,
                             },
                         },

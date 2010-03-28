@@ -270,6 +270,8 @@ namespace Galaxy
 
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
 
+            Game.Music.Play("Music/Title");
+
             RefreshSampleDisplay();
         }
 

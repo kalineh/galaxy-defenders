@@ -15,8 +15,8 @@ namespace Galaxy
         public static void FadeIn(object obj)
         {
             Song song = obj as Song;
-            MediaPlayer.Volume = 0.0f;
-            MediaPlayer.Play(song);
+            //MediaPlayer.Volume = 0.0f;
+            //MediaPlayer.Play(song);
 
             float volume = MediaPlayer.Volume;
             while (volume < 1.0f)
@@ -41,7 +41,7 @@ namespace Galaxy
                 Thread.Sleep(100);
             }
 
-            MediaPlayer.Stop();
+            //MediaPlayer.Stop();
         }
 
         public static void FadeInFromZero(object obj)
@@ -71,17 +71,28 @@ namespace Galaxy
 
         public void Play(string song_name)
         {
-            Song = Galaxy.Content.Load<Song>(song_name);
+            Song new_song = Galaxy.Content.Load<Song>(song_name);
+            bool from_zero = new_song != Song;
+            Song = new_song;
 
             if (CrossFader != null)
             {
                 CrossFader.Abort();
             }
 
-            CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
+            if (from_zero)
+            {
+                MediaPlayer.Stop();
+                MediaPlayer.Play(Song);
+            }
+
+            if (from_zero)
+                CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
+            else
+                CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeIn));
             CrossFader.Name = "MusicFadeThread";
             // TODO: fix music system
-            //CrossFader.Start(Song);
+            CrossFader.Start(Song);
         }
 
         public void Stop()
@@ -93,7 +104,9 @@ namespace Galaxy
 
             CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeOut));
             // TODO: fix music system
-            //CrossFader.Start(Song);
+            CrossFader.Start(Song);
+
+            MediaPlayer.Stop();
         }
 
         public void StopImmediate()

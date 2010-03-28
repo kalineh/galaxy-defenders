@@ -54,19 +54,27 @@ namespace Galaxy
             Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
+
+            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+                new CBackground(EmptyWorld, new Color(0, 0, 0)),
+                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 18.0f),
+                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 14.0f)
+            );
+
+            Game.Music.Play("Music/Title");
         }
 
         public override void Update()
         {
             Menu.Update();
+            EmptyWorld.Scenery.Update();
         }
 
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            Game.DefaultSpriteBatch.End();
+            EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);
