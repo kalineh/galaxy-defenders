@@ -19,10 +19,10 @@ namespace Galaxy
             //MediaPlayer.Play(song);
 
             float volume = MediaPlayer.Volume;
-            while (volume < 1.0f)
+            while (volume < 0.75f)
             {
                 volume += 0.025f;
-                volume = MathHelper.Min(volume, 1.0f);
+                volume = MathHelper.Min(volume, 0.75f);
                 //Console.WriteLine("FadeIn(): Volume: {0}", volume);
                 MediaPlayer.Volume = volume;
                 Thread.Sleep(100);
