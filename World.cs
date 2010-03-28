@@ -61,7 +61,8 @@ namespace Galaxy
 
         public void Stop()
         {
-            Game.Music.StopImmediate();
+            // TODO: should this have ever been here?
+            //Game.Music.StopImmediate();
 
             // TODO: clean up
             if (Stage != null)

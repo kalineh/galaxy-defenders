@@ -110,7 +110,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
-                Current = "Stage3",
+                Current = "BonusStage1",
                 Next = new List<string>() {
                     "*",
                 },

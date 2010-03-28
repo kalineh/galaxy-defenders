@@ -40,6 +40,8 @@ namespace Galaxy
                 new CBackground(EmptyWorld, new Color(133, 145, 181)),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
             );
+
+            Game.Music.Play("Music/Title");
         }
 
         public override void Update()

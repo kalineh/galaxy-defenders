@@ -89,7 +89,7 @@ namespace Galaxy
             {
                 Version = SProfile.CurrentVersion,
                 Name = name,
-                Money = 1500,
+                Money = 3000,
                 CurrentStage = "Start",
                 ChassisType = "BasicShip",
                 GeneratorType = "BasicGenerator",

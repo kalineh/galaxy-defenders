@@ -11,9 +11,12 @@ namespace Galaxy
 {
     public static class SceneryPresets
     {
+        // TODO: cannot use direct scenery! must be a chain!
         public static CScenery Black(CWorld world)
         {
-            return new CBackground(world, new Color(0, 0, 0));
+            return new CSceneryChain(world,
+                new CBackground(world, new Color(0, 0, 0))
+            );
         }
 
         public static CScenery BlueSky(CWorld world)
