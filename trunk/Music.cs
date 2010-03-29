@@ -7,6 +7,7 @@
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
+using System;
 
 namespace Galaxy
 {
@@ -83,16 +84,24 @@ namespace Galaxy
             if (from_zero)
             {
                 MediaPlayer.Stop();
-                MediaPlayer.Play(Song);
+                MediaPlayer.Volume = 0.25f;
+                try
+                {
+                    MediaPlayer.Play(Song);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
             }
 
-            if (from_zero)
-                CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
-            else
-                CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeIn));
-            CrossFader.Name = "MusicFadeThread";
+            //if (from_zero)
+                //CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeInFromZero));
+            //else
+                //CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeIn));
+            //CrossFader.Name = "MusicFadeThread";
             // TODO: fix music system
-            CrossFader.Start(Song);
+            //CrossFader.Start(Song);
         }
 
         public void Stop()
