@@ -20,8 +20,6 @@ namespace Galaxy
         }
 
         public float Health { get; private set; }
-
-
         public int Coins { get; set; }
         public bool Powerup { get; set; }
 
@@ -42,6 +40,21 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = new CollisionCircle(Vector2.Zero, 16.0f);
         }
+
+#if XBOX360
+        public CBuilding()
+    	{
+    	}
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+        }
+#endif
 
         public override void Update()
         {

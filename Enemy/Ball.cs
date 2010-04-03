@@ -21,6 +21,24 @@ namespace Galaxy
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
         }
 
+#if XBOX360
+        public CBall()
+        {
+        }
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+            
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Collision = new CollisionCircle(Vector2.Zero, 32.0f);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Ball"), Color.White);
+            HealthMax = 1.0f;
+            Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
+        }
+#endif
+
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these

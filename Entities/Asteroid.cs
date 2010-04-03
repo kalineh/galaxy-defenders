@@ -31,6 +31,24 @@ namespace Galaxy
             Cracks.Alpha = 0.0f;
         }
 
+#if XBOX360
+        public CAsteroid()
+        {
+        }
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Asteroid"), Color.White);
+            Cracks = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Cracks"), Color.White);
+            Cracks.Alpha = 0.0f;
+        }
+#endif
+
         public override void Update()
         {
             base.Update();

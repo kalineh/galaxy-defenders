@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing.Design;
 using Microsoft.Xna.Framework;
 
 namespace Galaxy
@@ -34,7 +33,11 @@ namespace Galaxy
 
             try
             {
+#if XBOX360
+                CEntity entity = Galaxy.ActivatorExtensions.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
+#else
                 CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
+#endif
 
                 if (CustomMover != null)
                 {

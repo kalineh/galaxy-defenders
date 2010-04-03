@@ -34,6 +34,7 @@ namespace Galaxy
             foreach (string stage in selectable_stages)
             {
                 // DEBUG: add all stages
+#if !XBOX360
                 if (stage == "*")
                 {
                     Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
@@ -49,6 +50,9 @@ namespace Galaxy
                 {
                     Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
                 }
+#else // XBOX360
+                Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
+#endif
             }
 
             Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true });

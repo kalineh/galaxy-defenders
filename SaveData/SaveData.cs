@@ -55,7 +55,11 @@ namespace Galaxy
                 }
             };
             SaveData = DefaultSaveData;
+#if XBOX360
+            AccessMutex = new Mutex(false);
+#else
             AccessMutex = new Mutex(false, "CSaveData.AccessMutex");
+#endif
         }
 
         public static void Load()
@@ -146,6 +150,13 @@ namespace Galaxy
 
         private static void ImportImpl(out SSaveData data, string filename)
         {
+#if XBOX360
+            data = new SSaveData();
+            data.Profiles = new List<SProfile>() { CreateDefaultProfile("Default") };
+            data.CurrentProfile = "Default";
+            return;
+#endif
+
             AccessMutex.WaitOne();
 
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
@@ -195,6 +206,10 @@ namespace Galaxy
 
         private static void ExportImpl(SSaveData data, string filename)
         {
+#if XBOX360
+            return;
+#endif
+
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
             FileStream stream = File.Open(fullpath, FileMode.Create, FileAccess.Write);
             try

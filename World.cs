@@ -175,9 +175,11 @@ namespace Galaxy
 
             foreach (CEntity entity in Entities)
             {
+#if !XBOX360
                 // TODO: not this hack :|
                 if (entity.GetType() == typeof(CEditorEntityPreview))
                     continue;
+#endif
 
                 if (entity.Physics == null)
                     continue;
@@ -198,9 +200,11 @@ namespace Galaxy
             float highest = -1.0f;
             foreach (CEntity entity in Entities)
             {
+#if !XBOX360
                 // TODO: not this hack :|
                 if (entity.GetType() == typeof(CEditorEntityPreview))
                     continue;
+#endif
 
                 if (entity.Physics == null)
                     continue;

@@ -25,11 +25,18 @@ namespace Galaxy
 
         public static CStageDefinition GetStageDefinitionByName(string name)
         {
+#if XBOX360
+            Type type = Type.GetType("Galaxy.Stages." + name);
+            MethodInfo generate_method = type.GetMethod("GenerateDefinition");
+            CStageDefinition result = generate_method.Invoke(null, null) as CStageDefinition;
+            return result;
+#else
             Assembly assembly = Assembly.GetAssembly(typeof(CEntity));
             Type type = assembly.GetType("Galaxy.Stages." + name);
             MethodInfo generate_method = type.GetMethod("GenerateDefinition");
             CStageDefinition result = generate_method.Invoke(null, null) as CStageDefinition;
             return result;
+#endif
         }
 
         public CStageDefinition(string name)

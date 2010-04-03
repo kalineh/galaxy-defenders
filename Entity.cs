@@ -28,6 +28,22 @@ namespace Galaxy
             AliveTime = 0.0f;
         }
 
+#if XBOX360
+        public CEntity()
+        {
+        }
+
+        public void Init360(CWorld world)
+        {
+            World = world;
+            Physics = null;
+            Visual = null;
+            Collision = null;
+            Mover = null;
+            AliveTime = 0.0f;
+        }
+#endif
+
         public virtual void Update()
         {
             if (Mover != null)
