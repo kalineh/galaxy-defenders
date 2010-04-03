@@ -24,6 +24,27 @@ namespace Galaxy
             Collision = new CollisionCircle(Vector2.Zero, 28.0f);
         }
 
+#if XBOX360
+        public CSpike()
+        {
+        }
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Physics.PositionPhysics.Friction = 0.98f;
+            Visual = CVisual.MakeSprite(world, "Textures/Enemy/Spike");
+            Visual.TileX = 2;
+            Visual.AnimationSpeed = 0.05f;
+            HealthMax = 11.0f;
+            IgnoreCameraScroll = false;
+            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+        }
+#endif
+
         public override void UpdateAI()
         {
             Mover = null;

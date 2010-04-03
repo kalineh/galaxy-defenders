@@ -14,6 +14,17 @@ namespace Galaxy
         {
         }
 
+#if XBOX360
+        public CWeaponFrontLaser()
+        {
+        }
+
+        public new void Init360(CEntity owner)
+        {
+            base.Init360(owner);
+        }
+#endif
+
         protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
             CLaser laser = CLaser.Spawn(world, position, rotation, Speed, Damage);
@@ -27,6 +38,17 @@ namespace Galaxy
             : base(owner)
         {
         }
+
+#if XBOX360
+        public CWeaponSpreadLaser()
+        {
+        }
+
+        public new void Init360(CEntity owner)
+        {
+            base.Init360(owner);
+        }
+#endif
 
         protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {

@@ -54,11 +54,13 @@ namespace Galaxy
                 Game.State = new CStateGame(Game);
             }
 
+#if !XBOX360
             // TODO: organize debug somewhere?
             if (Game.Input.IsKeyPressed(Keys.F3))
             {
                 Game.State = new CStateEditor(Game);
             }
+#endif
 
             // sample display
             SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;

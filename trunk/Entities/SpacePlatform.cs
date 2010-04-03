@@ -20,6 +20,21 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
         }
 
+#if XBOX360
+        public CSpacePlatform()
+    	{
+    	}
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
+        }
+#endif
+
         public override void Update()
         {
             base.Update();
@@ -39,6 +54,21 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
         }
+
+#if XBOX360
+        public CBigSpacePlatform()
+    	{
+    	}
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Decoration/Platform1"), Color.White);
+        }
+#endif
 
         public override void Update()
         {

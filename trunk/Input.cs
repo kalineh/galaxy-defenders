@@ -134,6 +134,9 @@ namespace Galaxy
 
         public static bool IsRawKeyDown(Keys key)
         {
+#if XBOX360
+            return false;
+#endif
             int keycode = (int)key;
             int keystate = GetAsyncKeyState(keycode);
             int is_down = keystate & 0x8000;
@@ -142,6 +145,10 @@ namespace Galaxy
 
         public static bool IsRawKeyPressed(Keys key)
         {
+#if XBOX360
+            return false;
+#endif
+
             int keycode = (int)key;
             int keystate = GetAsyncKeyState(keycode);
             int is_down = keystate & 0x8000;

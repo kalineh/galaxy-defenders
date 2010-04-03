@@ -20,6 +20,20 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
         }
 
+#if XBOX360
+        public CDecoration()
+        {
+        }
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+        }
+#endif
+
         public override void Update()
         {
             // TODO: this is kind of crappy

@@ -84,6 +84,59 @@ namespace Galaxy
             IgnoreCameraScroll = true;
         }
 
+#if XBOX360
+        public CShip()
+    	{
+    	}
+
+        public void Init360(
+            CWorld world,
+            CChassisPart chassis,
+            CGeneratorPart generator,
+            CShieldPart shield,
+            CWeaponPart primary,
+            CWeaponPart secondary,
+            CWeaponPart sidekick_left,
+            CWeaponPart sidekick_right)
+        {
+            base.Init360(world);
+
+            Chassis = chassis;
+            Generator = generator;
+            Shield = shield;
+            PrimaryWeapon = primary;
+            SecondaryWeapon = secondary;
+            SidekickLeft = sidekick_left;
+            SidekickRight = sidekick_right;
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Friction = chassis.Friction;
+            Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
+            Collision = new CollisionCircle(Vector2.Zero, 12.0f);
+            Visual = CVisual.MakeSprite(world, chassis.Texture);
+            Visual.Scale = new Vector2(chassis.VisualScale);
+            SidekickVisual = CVisual.MakeSprite(world, "Textures/Player/Sidekick");
+
+            WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
+            WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
+            WeaponSidekickLeft = CWeaponFactory.GenerateWeapon(this, SidekickLeft);
+            WeaponSidekickRight = CWeaponFactory.GenerateWeapon(this, SidekickRight);
+
+            CurrentArmor = chassis.Armor;
+            CurrentShield = shield.Shield;
+            CurrentEnergy = generator.Energy;
+
+            foreach (CWeapon weapon in WeaponPrimary)
+                weapon.Offset = weapon.Offset + Vector2.UnitX * 16.0f;
+            foreach (CWeapon weapon in WeaponSidekickLeft)
+                weapon.Offset = weapon.Offset + Vector2.UnitY * -32.0f;
+            foreach (CWeapon weapon in WeaponSidekickRight)
+                weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
+
+            IgnoreCameraScroll = true;
+        }
+#endif
+
         public override void Update()
         {
             UpdateInput();

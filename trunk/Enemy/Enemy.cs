@@ -30,6 +30,20 @@ namespace Galaxy
             BaseScore = 10;
         }
 
+#if XBOX360
+        public CEnemy()
+        {
+        }
+
+        public new void Init360(CWorld world)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            BaseScore = 10;
+        }
+#endif
+
         public virtual void UpdateAI()
         {
             float t = World.Game.GameFrame * 0.05f;

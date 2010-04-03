@@ -1,16 +1,16 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProjectGuid>{A87E45DB-543D-40C8-8B38-C9593AFFF029}</ProjectGuid>
+    <ProjectGuid>{1E8771D1-D85D-4BF9-911E-51471124EB70}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>galaxy</RootNamespace>
     <AssemblyName>galaxy</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
-    <XnaPlatform>Windows</XnaPlatform>
+    <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCrossPlatformGroupID>85badecf-3032-4508-8713-f13a2766521b</XnaCrossPlatformGroupID>
     <ApplicationIcon>Galaxy.ico</ApplicationIcon>
     <Thumbnail>GalaxyThumbnail.png</Thumbnail>
@@ -34,62 +34,33 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
+    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\x86\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+    <OutputPath>bin\Xbox 360\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
-    <XnaCompressContent>false</XnaCompressContent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\x86\Release</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoStdLib>true</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
-      <Private>False</Private>
-      <SpecificVersion>True</SpecificVersion>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <SpecificVersion>True</SpecificVersion>
-    </Reference>
-    <Reference Include="mscorlib">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Fibers.cs" />
@@ -103,26 +74,25 @@
     <Compile Include="Ship\ShipParts.cs" />
     <Compile Include="Ship\ShipDefinitions.cs" />
     <Compile Include="Sound.cs" />
-    <Compile Include="Editor\Converters\EditorConverters.cs" />
-    <Compile Include="Editor\Converters\EntityMoverTypeConverter.cs" />
-    <Compile Include="Editor\Editors\EntityMoverPresetSelector.cs" />
-    <Compile Include="Editor\Editors\EntityTypeSelector.cs" />
-    <Compile Include="Editor\Entities\EditorEntityCameraStop.cs" />
-    <Compile Include="Editor\Entities\EditorEntityBuilding.cs" />
-    <Compile Include="Editor\Entities\EditorEntityDecoration.cs" />
-    <Compile Include="Editor\Entities\EditorEntitySpawnerEnemy.cs" />
-    <Compile Include="Editor\Entities\EditorEntityAsteroidField.cs" />
-    <Compile Include="Editor\Entities\EditorStageElementGeneration.cs" />
-    <Compile Include="Editor\Entities\EditorEntityBase.cs" />
-    <Compile Include="Editor\Entities\EditorEntityStageFinish.cs" />
-    <Compile Include="Editor\Entities\EditorEntityTypes.cs" />
-    <Compile Include="Editor\Entities\EditorEntityPreview.cs" />
-    <Compile Include="Editor\Entities\EditorEntityUnknown.cs" />
-    <Compile Include="Editor\StageSerializer.cs" />
-    <Compile Include="Editor\Editor.cs" />
-    <Compile Include="Editor\Entities\EditorEntitySpawnerEntity.cs">
-    </Compile>
-    <Compile Include="Editor\EditorStageDefinitionProcessing.cs" />
+    <None Include="Editor\Converters\EditorConverters.cs" />
+    <None Include="Editor\Converters\EntityMoverTypeConverter.cs" />
+    <None Include="Editor\Editors\EntityMoverPresetSelector.cs" />
+    <None Include="Editor\Editors\EntityTypeSelector.cs" />
+    <None Include="Editor\Entities\EditorEntityCameraStop.cs" />
+    <None Include="Editor\Entities\EditorEntityBuilding.cs" />
+    <None Include="Editor\Entities\EditorEntityDecoration.cs" />
+    <None Include="Editor\Entities\EditorEntitySpawnerEnemy.cs" />
+    <None Include="Editor\Entities\EditorEntityAsteroidField.cs" />
+    <None Include="Editor\Entities\EditorStageElementGeneration.cs" />
+    <None Include="Editor\Entities\EditorEntityBase.cs" />
+    <None Include="Editor\Entities\EditorEntityStageFinish.cs" />
+    <None Include="Editor\Entities\EditorEntityTypes.cs" />
+    <None Include="Editor\Entities\EditorEntityPreview.cs" />
+    <None Include="Editor\Entities\EditorEntityUnknown.cs" />
+    <None Include="Editor\StageSerializer.cs" />
+    <None Include="Editor\Editor.cs" />
+    <None Include="Editor\Entities\EditorEntitySpawnerEntity.cs" />
+    <None Include="Editor\EditorStageDefinitionProcessing.cs" />
     <Compile Include="Enemy\ShootBall.cs" />
     <Compile Include="Enemy\Spike.cs" />
     <Compile Include="Entities\Decoration.cs" />
@@ -151,14 +121,14 @@
     </Compile>
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
-    <Compile Include="Editor\StageCodeWriter.cs" />
+    <None Include="Editor\StageCodeWriter.cs" />
     <Compile Include="Stage\Elements\StageElementCameraStop.cs" />
     <Compile Include="Stage\Elements\StageElementBuilding.cs" />
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
-    <Compile Include="Stage\StageCompiler.cs" />
+    <None Include="Stage\StageCompiler.cs" />
     <Compile Include="State\StateStageSelect.cs" />
-    <Compile Include="State\StateEditor.cs" />
+    <None Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />
     <Compile Include="State\StateShop.cs" />
     <Compile Include="State\StateFadeTo.cs" />
@@ -200,7 +170,6 @@
     <Compile Include="Stage\Elements\StageElementSpawnerEntity.cs" />
     <Compile Include="Stage\Elements\StageElement.cs" />
     <Compile Include="Scenery\Stars.cs" />
-    <Compile Include="Stubs360.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
@@ -252,6 +221,31 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="galaxy_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

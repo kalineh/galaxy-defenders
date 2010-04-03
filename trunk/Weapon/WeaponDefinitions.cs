@@ -27,7 +27,11 @@ namespace Galaxy
             foreach (WeaponDefinitions.SWeaponData data in weapon_data)
             {
                 Type type = Type.GetType("Galaxy.CWeapon" + typename);
+#if XBOX360
+                CWeapon weapon = Galaxy.ActivatorExtensions.CreateInstance(type, new object[] { owner }) as CWeapon;
+#else
                 CWeapon weapon = Activator.CreateInstance(type, new object[] { owner }) as CWeapon;
+#endif
                 weapon.ApplyWeaponData(data);
                 weapons.Add(weapon);
             }

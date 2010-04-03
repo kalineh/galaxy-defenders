@@ -89,7 +89,7 @@ namespace Galaxy
                 {
                     MediaPlayer.Play(Song);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return;
                 }
@@ -111,9 +111,11 @@ namespace Galaxy
                 CrossFader.Abort();
             }
 
+#if !XBOX360
             CrossFader = new Thread(new ParameterizedThreadStart(CCrossFader.FadeOut));
             // TODO: fix music system
             CrossFader.Start(Song);
+#endif
 
             MediaPlayer.Stop();
         }

@@ -36,6 +36,22 @@ namespace Galaxy
             Damage = damage;
         }
 
+#if XBOX360
+        public CEnemyShot()
+        {
+        }
+
+        public void Init360(CWorld world, float damage)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyShot"), Color.White);
+            Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
+            Damage = damage;
+        }
+#endif
+
         public override void Update()
         {
             base.Update();

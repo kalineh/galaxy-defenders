@@ -27,6 +27,20 @@ namespace Galaxy
             Rotation = 0.0f;
         }
 
+#if XBOX360
+        public CWeapon()
+        {
+        }
+
+        public void Init360(CEntity owner)
+        {
+            Owner = owner;
+            Offset = Vector2.Zero;
+            Cooldown = 0.0f;
+            Rotation = 0.0f;
+        }
+#endif
+
         public void Update()
         {
             Cooldown -= Time.SingleFrame;

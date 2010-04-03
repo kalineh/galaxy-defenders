@@ -30,6 +30,28 @@ namespace Galaxy
             FireSpeed = 10.0f;
         }
 
+#if XBOX360
+        public CIsosceles()
+        {
+        }
+
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world);
+
+            Physics = new CPhysics();
+            Physics.PositionPhysics.Position = position;
+            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+            Visual = CVisual.MakeSprite(world, "Textures/Enemy/Isosceles");
+            HealthMax = 3.0f;
+
+            FireDelay = 1.5f;
+            FireCooldown = Time.ToFrames(FireDelay) / 3;
+            FireDamage = 1.0f;
+            FireSpeed = 10.0f;
+        }
+#endif
+
         public override void UpdateAI()
         {
             UpdateFire();

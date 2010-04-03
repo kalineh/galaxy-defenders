@@ -35,6 +35,22 @@ namespace Galaxy
             IgnoreCameraScroll = true;
         }
 
+#if XBOX360
+        public CMiniShot()
+        {
+        }
+
+        public void Init360(CWorld world, float damage)
+        {
+            base.Init360(world);
+            Physics = new CPhysics();
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/MiniShot"), Color.White);
+            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Damage = damage;
+            IgnoreCameraScroll = true;
+        }
+#endif
+
         public override void Update()
         {
             base.Update();
