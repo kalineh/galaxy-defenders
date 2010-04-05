@@ -13,6 +13,7 @@ namespace Galaxy
 {
     public class CHud
     {
+        public bool Primary { get; set; }
         public CWorld World { get; set; }
         public float Energy { get; set; }
         public float Shield { get; set; }
@@ -29,6 +30,7 @@ namespace Galaxy
         private CVisual ShieldIconVisual { get; set; }
         private CVisual ArmorIconVisual { get; set; }
 
+        private Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
         private Vector2 RightPanelPosition { get; set; }
         private Vector2 EnergyPosition { get; set; }
@@ -40,9 +42,11 @@ namespace Galaxy
         private Vector2 ShieldIconPosition { get; set; }
         private Vector2 ArmorIconPosition { get; set; }
 
-        public CHud(CWorld world)
+        public CHud(CWorld world, Vector2 base_position, bool primary)
         {
+            Primary = primary;
             World = world;
+            BasePosition = base_position;
 
             LeftPanelVisual = CVisual.MakeSprite(World, "Textures/UI/LeftPanel");
             RightPanelVisual = CVisual.MakeSprite(World, "Textures/UI/RightPanel");
@@ -57,14 +61,14 @@ namespace Galaxy
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
 
-            MoneyTextPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 156.0f, World.Game.GraphicsDevice.Viewport.Height - 280.0f - 40.0f);
-            EnergyPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 220.0f);
-            ShieldPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 160.0f);
-            ArmorPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 100.0f);
-            MoneyIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 280.0f);
-            EnergyIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 220.0f);
-            ShieldIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 160.0f);
-            ArmorIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 100.0f);
+            MoneyTextPosition = BasePosition + new Vector2(156.0f, -280.0f - 40.0f);
+            EnergyPosition = BasePosition + new Vector2(140.0f, -220.0f);
+            ShieldPosition = BasePosition + new Vector2(140.0f, -160.0f);
+            ArmorPosition = BasePosition + new Vector2(140.0f, -100.0f);
+            MoneyIconPosition = BasePosition + new Vector2(70.0f, -280.0f);
+            EnergyIconPosition = BasePosition + new Vector2(70.0f, -220.0f);
+            ShieldIconPosition = BasePosition + new Vector2(70.0f, -160.0f);
+            ArmorIconPosition = BasePosition + new Vector2(70.0f, -100.0f);
 
             EnergyVisual.Depth += CLayers.SubLayerIncrement;
             ShieldVisual.Depth += CLayers.SubLayerIncrement;
@@ -100,8 +104,12 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
-            RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
+            if (Primary)
+            {
+                LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
+                RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
+            }
+
             EnergyVisual.Draw(sprite_batch, EnergyPosition, 0.0f);
             ShieldVisual.Draw(sprite_batch, ShieldPosition, 0.0f);
             ArmorVisual.Draw(sprite_batch, ArmorPosition, 0.0f);
@@ -109,13 +117,16 @@ namespace Galaxy
             ShieldIconVisual.Draw(sprite_batch, ShieldIconPosition, 0.0f);
             ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
 
-            MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
-            int money = CSaveData.GetCurrentProfile().Money + World.Score;
+            if (Primary)
+            {
+                MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
+                int money = CSaveData.GetCurrentProfile().Money + World.Score;
 
-            if (MoneyOverride != null)
-                money = (int)MoneyOverride;
+                if (MoneyOverride != null)
+                    money = (int)MoneyOverride;
 
-            sprite_batch.DrawString(World.Game.DefaultFont, money.ToString(), MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
+                sprite_batch.DrawString(World.Game.DefaultFont, money.ToString(), MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
+            }
         }
     }
 }

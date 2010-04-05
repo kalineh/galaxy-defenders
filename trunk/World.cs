@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
@@ -22,8 +23,9 @@ namespace Galaxy
         public CStage Stage { get; set; }
         public CScenery Scenery { get; set; }
         public CCamera GameCamera { get; set; }
-        public CHud Hud { get; set; }
         public CSound Sound { get; set; }
+        public List<CHud> Huds { get; set; }
+        public List<CShip> Players { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -35,7 +37,8 @@ namespace Galaxy
             GameCamera = new CCamera(game);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
             Sound = new CSound(this);
-            Hud = new CHud(this);
+            Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
+            Players = new List<CShip>();
         }
 
         // TODO: stage definition param
@@ -48,6 +51,7 @@ namespace Galaxy
             CShip ship = CShipFactory.GenerateShip(this, profile);
             ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
             Entities.Add(ship);
+            Players.Add(ship);
 
             Stage = new CStage(this, Game.StageDefinition);
             Stage.Start();
@@ -81,10 +85,30 @@ namespace Galaxy
 
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
+
+            UpdateInput();
             UpdateEntities();
-            UpdateHud();
+            UpdateHuds();
 
             Sound.Update();
+        }
+
+        public void UpdateInput()
+        {
+            // TODO: just allow in-game setting instead?
+            if (Players.Count <= 1)
+            {
+                if (Game.Input.IsPadStartPressed(PlayerIndex.Two) || Game.Input.IsKeyDown(Keys.RightShift))
+                {
+                    SProfile profile = CSaveData.GetCurrentProfile();
+                    CShip ship2 = CShipFactory.GenerateShip(this, profile);
+                    ship2.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition + Vector2.UnitX * 64.0f;
+                    ship2.PlayerIndex = PlayerIndex.Two;
+                    Entities.Add(ship2);
+                    Players.Add(ship2);
+                    Huds.Add(new CHud(this, new Vector2(Game.GraphicsDevice.Viewport.Width - 490.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), false));
+                }
+            }
         }
 
         public void UpdateEntities()
@@ -95,10 +119,10 @@ namespace Galaxy
             ProcessEntityDelete();
         }
 
-        public void UpdateHud()
+        public void UpdateHuds()
         {
-            CShip ship = GetNearestShip(Vector2.Zero);
-            Hud.Update(ship);
+            foreach (int index in Enumerable.Range(0, Players.Count))
+                Huds[index].Update(Players[index]);
         }
 
         public void Draw()
@@ -117,7 +141,7 @@ namespace Galaxy
             DrawEntities(GameCamera);
 
             Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
-            DrawHud(GameCamera);
+            DrawHuds(GameCamera);
         }
 
         public void DrawBackground(CCamera camera)
@@ -134,11 +158,12 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        public void DrawHud(CCamera camera)
+        public void DrawHuds(CCamera camera)
         {
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
-            Hud.Draw(Game.DefaultSpriteBatch);
+            foreach (CHud hud in Huds)
+                hud.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
         }

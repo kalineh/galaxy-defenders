@@ -17,6 +17,8 @@ namespace Galaxy
         // TODO: spawn point (Window.ClientBounds)
         // TODO: game object sprite def?
 
+        public PlayerIndex PlayerIndex { get; set; }
+
         public CChassisPart Chassis { get; set; }
         public CGeneratorPart Generator { get; set; }
         public CShieldPart Shield { get; set; }
@@ -49,6 +51,8 @@ namespace Galaxy
             CWeaponPart sidekick_right)
             : base(world)
         {
+            PlayerIndex = PlayerIndex.One;
+
             Chassis = chassis;
             Generator = generator;
             Shield = shield;
@@ -166,7 +170,7 @@ namespace Galaxy
                 );
             }
 
-            GamePad.SetVibration(PlayerIndex.One, Vibrate, Vibrate);
+            GamePad.SetVibration(PlayerIndex, Vibrate, Vibrate);
             Vibrate = Math.Max(0.0f, Vibrate - 0.1f);
         }
 
@@ -215,7 +219,7 @@ namespace Galaxy
         private void UpdateInput()
         {
             // TODO: entity/physics input controller?
-            GamePadState state = GamePad.GetState(PlayerIndex.One);
+            GamePadState state = GamePad.GetState(PlayerIndex);
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
@@ -227,7 +231,7 @@ namespace Galaxy
             if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
             if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right) ) { force.X += Speed; }
 
-            force += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
+            force += GamePad.GetState(PlayerIndex).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
 
             if (force.Length() > 0.0f)
                 force = force.Normal() * Math.Min(force.Length(), Speed);

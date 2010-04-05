@@ -90,7 +90,7 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
-            EmptyWorld.DrawHud(EmptyWorld.GameCamera);
+            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 200.0f), Color.White);

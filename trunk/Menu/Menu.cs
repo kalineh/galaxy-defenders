@@ -56,7 +56,7 @@ namespace Galaxy
 
         public void Update()
         {
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed())
+            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed(PlayerIndex.One))
             {
                 foreach (MenuOption cancel_option in MenuOptions)
                 {
@@ -68,13 +68,13 @@ namespace Galaxy
             }
 
             int offset = 0;
-            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed())
+            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed(PlayerIndex.One))
             {
                 offset += 1;
                 while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
                     offset += 1;
             }
-            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed())
+            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed(PlayerIndex.One))
             {
                 offset -= 1;
                 while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
@@ -95,12 +95,12 @@ namespace Galaxy
                 option.Axis(option.Data, option.AxisValue);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed())
+            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed(PlayerIndex.One))
             {
                 option.Select(option.Data);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressed())
+            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressed(PlayerIndex.One))
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -109,7 +109,7 @@ namespace Galaxy
                     option.AxisValue += 1;
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressed())
+            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressed(PlayerIndex.One))
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
