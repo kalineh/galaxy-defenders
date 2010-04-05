@@ -279,8 +279,8 @@ namespace Galaxy
         {
             MenuUpdateHighlights();
             Menu.Update();
-            EmptyWorld.Hud.MoneyOverride = (int)LockedProfile.Money;
-            EmptyWorld.Hud.Update(SampleShip);
+            EmptyWorld.Huds[0].MoneyOverride = (int)LockedProfile.Money;
+            EmptyWorld.Huds[0].Update(SampleShip);
             EmptyWorld.UpdateEntities();
             EmptyWorld.Scenery.Update();
             SampleShip.UpdateGenerator();
@@ -295,7 +295,7 @@ namespace Galaxy
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
-            EmptyWorld.DrawHud(EmptyWorld.GameCamera);
+            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);
@@ -391,7 +391,7 @@ namespace Galaxy
             if (diff > 0)
                 color = Color.LightGreen;
 
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), EmptyWorld.Hud.MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), EmptyWorld.Huds[0].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
         }
 
         private void RefreshSampleDisplay()

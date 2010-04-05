@@ -11,17 +11,20 @@ namespace Galaxy
     public class CInput
     {
         private CGalaxy Game { get; set; }
-        private GamePadState PreviousFrameGamePadState { get; set; }
+        private GamePadState[] PreviousFrameGamePadState { get; set; }
 
         public CInput(CGalaxy game)
         {
             Game = game;
-            PreviousFrameGamePadState = GamePad.GetState(PlayerIndex.One);
+            PreviousFrameGamePadState = new GamePadState[2];
+            PreviousFrameGamePadState[(int)PlayerIndex.One] = GamePad.GetState(PlayerIndex.One);
+            PreviousFrameGamePadState[(int)PlayerIndex.Two] = GamePad.GetState(PlayerIndex.Two);
         }
 
         public void Update()
         {
-            PreviousFrameGamePadState = GamePad.GetState(PlayerIndex.One);
+            PreviousFrameGamePadState[(int)PlayerIndex.One] = GamePad.GetState(PlayerIndex.One);
+            PreviousFrameGamePadState[(int)PlayerIndex.Two] = GamePad.GetState(PlayerIndex.Two);
         }
 
         public bool IsKeyDown(Keys query)
@@ -34,79 +37,79 @@ namespace Galaxy
             return IsRawKeyPressed(query);
         }
 
-        public bool IsPadLeftDown()
+        public bool IsPadLeftDown(PlayerIndex player_index)
         {
-            return IsPadLeftDownImpl(GamePad.GetState(PlayerIndex.One));
+            return IsPadLeftDownImpl(GamePad.GetState(player_index));
         }
 
-        public bool IsPadRightDown()
+        public bool IsPadRightDown(PlayerIndex player_index)
         {
-            return IsPadRightDownImpl(GamePad.GetState(PlayerIndex.One));
+            return IsPadRightDownImpl(GamePad.GetState(player_index));
         }
 
-        public bool IsPadUpDown()
+        public bool IsPadUpDown(PlayerIndex player_index)
         {
-            return IsPadUpDownImpl(GamePad.GetState(PlayerIndex.One));
+            return IsPadUpDownImpl(GamePad.GetState(player_index));
         }
 
-        public bool IsPadDownDown()
+        public bool IsPadDownDown(PlayerIndex player_index)
         {
-            return IsPadDownDownImpl(GamePad.GetState(PlayerIndex.One));
+            return IsPadDownDownImpl(GamePad.GetState(player_index));
         }
 
-        public bool IsPadLeftPressed()
+        public bool IsPadLeftPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadLeftDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadLeftDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadLeftDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadLeftDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 
-        public bool IsPadRightPressed()
+        public bool IsPadRightPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadRightDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadRightDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadRightDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadRightDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 
-        public bool IsPadUpPressed()
+        public bool IsPadUpPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadUpDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadUpDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadUpDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadUpDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 
-        public bool IsPadDownPressed()
+        public bool IsPadDownPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadDownDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadDownDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadDownDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadDownDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 
-        public bool IsPadConfirmPressed()
+        public bool IsPadConfirmPressed(PlayerIndex player_index)
         {
-            bool is_down = GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed;
-            bool was_down = PreviousFrameGamePadState.Buttons.B == ButtonState.Pressed;
+            bool is_down = GamePad.GetState(player_index).Buttons.B == ButtonState.Pressed;
+            bool was_down = PreviousFrameGamePadState[(int)player_index].Buttons.B == ButtonState.Pressed;
             return is_down && !was_down;
         }
 
-        public bool IsPadCancelPressed()
+        public bool IsPadCancelPressed(PlayerIndex player_index)
         {
-            bool is_down = GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed;
-            bool was_down = PreviousFrameGamePadState.Buttons.A == ButtonState.Pressed;
+            bool is_down = GamePad.GetState(player_index).Buttons.A == ButtonState.Pressed;
+            bool was_down = PreviousFrameGamePadState[(int)player_index].Buttons.A == ButtonState.Pressed;
             return is_down && !was_down;
         }
 
-        public bool IsPadStartPressed()
+        public bool IsPadStartPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadStartDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadStartDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadStartDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadStartDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 
-        public bool IsPadBackPressed()
+        public bool IsPadBackPressed(PlayerIndex player_index)
         {
-            bool is_down = IsPadBackDownImpl(GamePad.GetState(PlayerIndex.One));
-            bool was_down = IsPadBackDownImpl(PreviousFrameGamePadState);
+            bool is_down = IsPadBackDownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadBackDownImpl(PreviousFrameGamePadState[(int)player_index]);
             return is_down && !was_down;
         }
 

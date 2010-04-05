@@ -25,7 +25,7 @@ namespace Galaxy
         {
             World.Update();
 
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressed())
+            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressed(PlayerIndex.One))
             {
                 // TODO: is this a good place?
                 CSaveData.Save();
