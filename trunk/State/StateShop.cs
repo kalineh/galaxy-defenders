@@ -50,7 +50,7 @@ namespace Galaxy
             //
             MenuBase = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
@@ -64,7 +64,7 @@ namespace Galaxy
             //
             MenuUpgradeShip = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Chassis", Select = EditChassis },
@@ -85,7 +85,7 @@ namespace Galaxy
             //
             MenuPrimaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
             foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts)
@@ -112,7 +112,7 @@ namespace Galaxy
             //
             MenuSecondaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -141,7 +141,7 @@ namespace Galaxy
             //
             MenuSidekickLeft = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -168,7 +168,7 @@ namespace Galaxy
             //
             MenuSidekickRight = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -194,7 +194,7 @@ namespace Galaxy
             //
             MenuChassis = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -219,7 +219,7 @@ namespace Galaxy
             //
             MenuGenerator = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -244,7 +244,7 @@ namespace Galaxy
             //
             MenuShield = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -279,6 +279,8 @@ namespace Galaxy
         {
             MenuUpdateHighlights();
             Menu.Update();
+            EmptyWorld.Hud.MoneyOverride = (int)LockedProfile.Money;
+            EmptyWorld.Hud.Update(SampleShip);
             EmptyWorld.UpdateEntities();
             EmptyWorld.Scenery.Update();
             SampleShip.UpdateGenerator();
@@ -291,10 +293,9 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            Game.DefaultSpriteBatch.End();
-
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
+
+            EmptyWorld.DrawHud(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);
@@ -381,21 +382,23 @@ namespace Galaxy
             int base_ = WorkingProfile.Money;
             int diff = WorkingProfile.Money - LockedProfile.Money;
 
+            if (diff == 0)
+                return;
+
             Color color = Color.White;
             if (diff < 0)
                 color = Color.LightSalmon;
             if (diff > 0)
                 color = Color.LightGreen;
 
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "MONEY", new Vector2(260.0f, 700.0f), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), new Vector2(290.0f - Game.DefaultFont.MeasureString(WorkingProfile.Money.ToString()).X * 0.5f, 720.0f), color);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), EmptyWorld.Hud.MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
         }
 
         private void RefreshSampleDisplay()
         {
             EmptyWorld.Stop();
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-100.0f, 150.0f);
+            SampleShip.Physics.PositionPhysics.Position = new Vector2(-150.0f, 150.0f);
         }
 
         private void RevertWorkingProfile(object tag)
@@ -419,27 +422,27 @@ namespace Galaxy
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType) - 1;
                 int level = WorkingProfile.WeaponPrimaryLevel;
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(260.0f, 640.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 60.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
                 foreach (int index in Enumerable.Range(0, 10))
                 {
                     if (index > max)
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.Gray);
                     else 
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.Gray);
                 }
                 foreach (int index in Enumerable.Range(0, level + 1))
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.White);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.White);
 
                 if (WorkingProfile.WeaponPrimaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, 665.0f), Color.LightGray);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.LightGray);
                 }
 
                 if (level < max)
                 {
                     int upgrade = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(430.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, 665.0f), Color.LightSalmon);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 170.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.LightSalmon);
                 }
             }
 
@@ -447,49 +450,49 @@ namespace Galaxy
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType) - 1;
                 int level = WorkingProfile.WeaponSecondaryLevel;
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(260.0f, 640.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 60.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
                 foreach (int index in Enumerable.Range(0, 10))
                 {
                     if (index > max)
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "x", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.Gray);
                     else 
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.Gray);
+                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.Gray);
                 }
                 foreach (int index in Enumerable.Range(0, level + 1))
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(200.0f + 20.0f * index, 665.0f), Color.White);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "=", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f + 20.0f * index, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.White);
 
                 if (WorkingProfile.WeaponSecondaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, 665.0f), Color.LightGray);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 170.0f - Game.DefaultFont.MeasureString(price.ToString()).X * 0.5f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.LightGray);
                 }
 
                 if (level < max)
                 {
                     int upgrade = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(430.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, 665.0f), Color.LightSalmon);
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, upgrade.ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 170.0f - Game.DefaultFont.MeasureString(upgrade.ToString()).X * 0.5f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.LightSalmon);
                 }
             }
 
             if (Menu == MenuChassis)
             {
                 CChassisPart part = ChassisDefinitions.GetPart(WorkingProfile.ChassisType);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ARMOR: " + Convert.ToInt32(part.Armor * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "SPEED: " + Convert.ToInt32(part.Speed * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ARMOR: " + Convert.ToInt32(part.Armor * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "SPEED: " + Convert.ToInt32(part.Speed * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.White);
             }
 
             if (Menu == MenuGenerator)
             {
                 CGeneratorPart part = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Energy * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Energy * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.White);
             }
 
             if (Menu == MenuShield)
             {
                 CShieldPart part = ShieldDefinitions.GetPart(WorkingProfile.ShieldType);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Shield * 100.0f).ToString(), new Vector2(260.0f, 640.0f), Color.White);
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(260.0f, 660.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY: " + Convert.ToInt32(part.Shield * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:  " + Convert.ToInt32(part.Regen * 100.0f).ToString(), new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 120.0f, Game.GraphicsDevice.Viewport.Height - 200.0f), Color.White);
             }
         }
 

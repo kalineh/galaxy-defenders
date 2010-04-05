@@ -17,42 +17,74 @@ namespace Galaxy
         public float Energy { get; set; }
         public float Shield { get; set; }
         public float Armor { get; set; }
+        public int? MoneyOverride { get; set; }
 
-        private CVisual MainPanelVisual { get; set; }
+        private CVisual LeftPanelVisual { get; set; }
+        private CVisual RightPanelVisual { get; set; }
         private CVisual EnergyVisual { get; set; }
         private CVisual ShieldVisual { get; set; }
         private CVisual ArmorVisual { get; set; }
-        private CVisual MoneyPanelVisual { get; set; }
+        private CVisual MoneyIconVisual { get; set; }
+        private CVisual EnergyIconVisual { get; set; }
+        private CVisual ShieldIconVisual { get; set; }
+        private CVisual ArmorIconVisual { get; set; }
 
-        private Vector2 MainPanelPosition { get; set; }
+        private Vector2 LeftPanelPosition { get; set; }
+        private Vector2 RightPanelPosition { get; set; }
         private Vector2 EnergyPosition { get; set; }
         private Vector2 ShieldPosition { get; set; }
         private Vector2 ArmorPosition { get; set; }
-        private Vector2 MoneyPanelPosition { get; set; }
+        public Vector2 MoneyTextPosition { get; set; }
+        private Vector2 MoneyIconPosition { get; set; }
+        private Vector2 EnergyIconPosition { get; set; }
+        private Vector2 ShieldIconPosition { get; set; }
+        private Vector2 ArmorIconPosition { get; set; }
 
         public CHud(CWorld world)
         {
             World = world;
 
-            MainPanelVisual = CVisual.MakeSprite(World, "Textures/UI/MainPanel");
+            LeftPanelVisual = CVisual.MakeSprite(World, "Textures/UI/LeftPanel");
+            RightPanelVisual = CVisual.MakeSprite(World, "Textures/UI/RightPanel");
             EnergyVisual = CVisual.MakeSprite(World, "Textures/UI/Energy");
             ShieldVisual = CVisual.MakeSprite(World, "Textures/UI/Shield");
             ArmorVisual = CVisual.MakeSprite(World, "Textures/UI/Armor");
-            MoneyPanelVisual = CVisual.MakeSprite(World, "Textures/UI/MoneyPanel");
+            MoneyIconVisual = CVisual.MakeSprite(World, "Textures/UI/MoneyIcon");
+            EnergyIconVisual = CVisual.MakeSprite(World, "Textures/UI/EnergyIcon");
+            ShieldIconVisual = CVisual.MakeSprite(World, "Textures/UI/ShieldIcon");
+            ArmorIconVisual = CVisual.MakeSprite(World, "Textures/UI/ArmorIcon");
 
-            MainPanelPosition = new Vector2(400.0f, 768.0f);
-            EnergyPosition = new Vector2(400.0f, 768.0f);
-            ShieldPosition = new Vector2(799.0f, 764.0f);
-            ArmorPosition = new Vector2(1.0f, 764.0f);
-            MoneyPanelPosition = new Vector2(0.0f, 0.0f);
+            LeftPanelPosition = new Vector2(0.0f, 0.0f);
+            RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
 
-            EnergyVisual.SpriteEffects = SpriteEffects.FlipHorizontally;
+            MoneyTextPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 156.0f, World.Game.GraphicsDevice.Viewport.Height - 280.0f - 40.0f);
+            EnergyPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 220.0f);
+            ShieldPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 160.0f);
+            ArmorPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 140.0f, World.Game.GraphicsDevice.Viewport.Height - 100.0f);
+            MoneyIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 280.0f);
+            EnergyIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 220.0f);
+            ShieldIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 160.0f);
+            ArmorIconPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width - World.GameCamera.ScreenSize.X / 2.0f + 70.0f, World.Game.GraphicsDevice.Viewport.Height - 100.0f);
+
             EnergyVisual.Depth += CLayers.SubLayerIncrement;
             ShieldVisual.Depth += CLayers.SubLayerIncrement;
-            ShieldVisual.NormalizedOrigin = new Vector2(1.0f, 0.5f);
             ArmorVisual.Depth += CLayers.SubLayerIncrement;
+            EnergyIconVisual.Depth += CLayers.SubLayerIncrement;
+            ShieldIconVisual.Depth += CLayers.SubLayerIncrement;
+            ArmorIconVisual.Depth += CLayers.SubLayerIncrement;
+            MoneyIconVisual.Depth += CLayers.SubLayerIncrement;
+
+            LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
+            RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
+            EnergyVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            ShieldVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             ArmorVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
-            MoneyPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
+            MoneyIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            EnergyIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            ShieldIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            ArmorIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+
+            MoneyOverride = null;
         }
 
         public void Update(CShip ship)
@@ -61,23 +93,29 @@ namespace Galaxy
             Shield = ship == null ? 0.0f : ship.CurrentShield / ship.Shield.Shield;
             Armor = ship == null ? 0.0f : ship.CurrentArmor / ship.Chassis.Armor;
 
-            EnergyVisual.Scale = new Vector2(Energy, Energy);
+            EnergyVisual.Scale = new Vector2(Energy, 1.0f);
             ShieldVisual.Scale = new Vector2(Shield, 1.0f);
             ArmorVisual.Scale = new Vector2(Armor, 1.0f);
         }
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            MainPanelVisual.Draw(sprite_batch, MainPanelPosition, 0.0f);
+            LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
+            RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
             EnergyVisual.Draw(sprite_batch, EnergyPosition, 0.0f);
             ShieldVisual.Draw(sprite_batch, ShieldPosition, 0.0f);
             ArmorVisual.Draw(sprite_batch, ArmorPosition, 0.0f);
+            EnergyIconVisual.Draw(sprite_batch, EnergyIconPosition, 0.0f);
+            ShieldIconVisual.Draw(sprite_batch, ShieldIconPosition, 0.0f);
+            ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
 
-            MoneyPanelVisual.Draw(sprite_batch, MoneyPanelPosition, 0.0f);
-            // TODO: split to Hud system
-
+            MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
             int money = CSaveData.GetCurrentProfile().Money + World.Score;
-            sprite_batch.DrawString(World.Game.DefaultFont, "￥" + money, new Vector2(4.0f, 4.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, MoneyPanelVisual.Depth + CLayers.SubLayerIncrement);
+
+            if (MoneyOverride != null)
+                money = (int)MoneyOverride;
+
+            sprite_batch.DrawString(World.Game.DefaultFont, money.ToString(), MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
         }
     }
 }

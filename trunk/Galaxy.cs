@@ -33,8 +33,15 @@ namespace Galaxy
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
 
             // TODO: this needs to be done so we have a valid device by the time we get to Initialize()
-            GraphicsDeviceManager.PreferredBackBufferHeight = 800;
-            GraphicsDeviceManager.PreferredBackBufferWidth = 800;
+#if XBOX360
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+#else
+            //GraphicsDeviceManager.PreferredBackBufferWidth = 1024;
+            //GraphicsDeviceManager.PreferredBackBufferHeight = 576;
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+#endif
             GraphicsDeviceManager.ApplyChanges();
 
             Debug = new CDebug(this);

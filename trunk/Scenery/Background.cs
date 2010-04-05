@@ -48,6 +48,7 @@ namespace Galaxy
             ColorBR = br;
             ColorBL = bl;
         }
+
         public override void Update()
         {
             // TODO: color lerp
@@ -58,15 +59,22 @@ namespace Galaxy
             if (PrimitiveBatch == null)
                 PrimitiveBatch = new PrimitivesSample.PrimitiveBatch(World.Game.GraphicsDevice);
 
+            Viewport viewport = World.Game.GraphicsDevice.Viewport;
             Vector2 position = World.GameCamera.GetCenter().ToVector2();
             Vector2 screen_size = World.GameCamera.ScreenSize * 1.0f / World.GameCamera.Zoom;
-            Vector2 half = screen_size * 0.5f;
             Matrix transform = World.GameCamera.WorldMatrix;
 
             PrimitiveBatch.Begin(PrimitiveType.TriangleList);
 
-            Vector2 half_x = Vector2.UnitX * screen_size.X;
-            Vector2 half_y = Vector2.UnitY * screen_size.Y;
+            float screen_scale_x = World.GameCamera.ScreenSize.X / viewport.Width;
+            float screen_scale_y = World.GameCamera.ScreenSize.Y / viewport.Height;
+
+            // TODO: determine why we lose a pixel when moving left/right!
+            float magic_hack_x = 1.01f;
+            float magic_hack_y = 1.01f;
+
+            Vector2 half_x = Vector2.UnitX * screen_size.X * screen_scale_x * magic_hack_x;
+            Vector2 half_y = Vector2.UnitY * screen_size.Y * screen_scale_y * magic_hack_y;
 
             PrimitiveBatch.AddVertex(Vector2.Transform(position - half_x + half_y, transform), ColorBL);
             PrimitiveBatch.AddVertex(Vector2.Transform(position - half_x - half_y, transform), ColorTL);

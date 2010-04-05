@@ -26,7 +26,7 @@ namespace Galaxy
             EmptyWorld = new CWorld(game);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 70.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 

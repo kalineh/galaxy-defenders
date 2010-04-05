@@ -44,6 +44,7 @@ namespace Galaxy
         public List<MenuOption> MenuOptions { get; set; }
         public int Cursor { get; set; }
         public Vector2 Position { get; set; }
+        public bool Centered { get; set; }
 
         public CMenu(CGalaxy game)
         {
@@ -120,7 +121,7 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            float Spacing = 20.0f;
+            float Spacing = 36.0f;
             Vector2 position = Position;
             foreach (MenuOption option in MenuOptions)
             {

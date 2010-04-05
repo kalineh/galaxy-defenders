@@ -96,6 +96,32 @@ namespace Galaxy
             return is_down && !was_down;
         }
 
+        public bool IsPadStartPressed()
+        {
+            bool is_down = IsPadStartDownImpl(GamePad.GetState(PlayerIndex.One));
+            bool was_down = IsPadStartDownImpl(PreviousFrameGamePadState);
+            return is_down && !was_down;
+        }
+
+        public bool IsPadBackPressed()
+        {
+            bool is_down = IsPadBackDownImpl(GamePad.GetState(PlayerIndex.One));
+            bool was_down = IsPadBackDownImpl(PreviousFrameGamePadState);
+            return is_down && !was_down;
+        }
+
+        private bool IsPadStartDownImpl(GamePadState state)
+        {
+            bool down = state.Buttons.Start == ButtonState.Pressed;
+            return down;
+        }
+
+        private bool IsPadBackDownImpl(GamePadState state)
+        {
+            bool down = state.Buttons.Back == ButtonState.Pressed;
+            return down;
+        }
+
         private bool IsPadLeftDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Left == ButtonState.Pressed;

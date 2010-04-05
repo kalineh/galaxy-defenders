@@ -33,6 +33,44 @@ namespace Galaxy
             );
         }
 
+        public static CScenery BlendToDarkBlue(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CBlendingGradientBackground(world, 120.0f,
+                    new List<Color[]>() {
+                        new Color[] {
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181),
+                            new Color(133, 145, 181),
+                        },
+                        new Color[] {
+                            new Color(60, 93, 123),
+                            new Color(60, 93, 123),
+                            new Color(60, 93, 123),
+                            new Color(60, 93, 123),
+                        },
+                    }
+                ),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
+            );
+        }
+
+        public static CScenery Sunset(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CGradientBackground(world,
+                    new Color(133, 145, 181),
+                    new Color(133, 145, 181),
+                    new Color(233, 145, 181),
+                    new Color(233, 145, 181)
+                ),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
+            );
+        }
+
         public static CScenery SimpleSpace(CWorld world)
         {
             return new CSceneryChain(world,

@@ -35,13 +35,12 @@ namespace Galaxy
             GameCamera = new CCamera(game);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
             Sound = new CSound(this);
+            Hud = new CHud(this);
         }
 
         // TODO: stage definition param
         public void Start()
         {
-            Hud = new CHud(this);
-
             Entities = new List<CEntity>();
 
             // TODO: load ship from profile
@@ -106,8 +105,18 @@ namespace Galaxy
         {
             Game.GraphicsDevice.Clear(Color.Black);
 
+            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
+            Game.GraphicsDevice.ScissorRectangle = new Rectangle(
+                (int)((Game.GraphicsDevice.Viewport.Width - GameCamera.ScreenSize.X) / 2.0f),
+                (int)((Game.GraphicsDevice.Viewport.Height - GameCamera.ScreenSize.Y) / 2.0f),
+                (int)GameCamera.ScreenSize.X,
+                (int)GameCamera.ScreenSize.Y
+            );
+
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
+
+            Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
             DrawHud(GameCamera);
         }
 

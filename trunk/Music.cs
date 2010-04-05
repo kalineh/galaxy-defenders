@@ -68,6 +68,7 @@ namespace Galaxy
         {
             Galaxy = galaxy;
             CrossFader = null;
+            MediaPlayer.Volume = 0.3f;
         }
 
         public void Play(string song_name)
