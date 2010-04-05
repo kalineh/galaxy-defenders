@@ -33,7 +33,12 @@ namespace Galaxy
             Zoom = 1.0f;
             Border = 150.0f;
             PanLimit = 100.0f;
-            ScreenSize = new Vector2(800.0f, 800.0f);
+
+#if XBOX360
+            ScreenSize = new Vector2(1920.0f * 0.5f, 1080.0f);
+#else
+            ScreenSize = new Vector2(1920.0f * 0.5f, 1080.0f);
+#endif
 
             float aspect_ratio = (float)game.GraphicsDevice.Viewport.Width / (float)game.GraphicsDevice.Viewport.Height;
 
@@ -86,16 +91,18 @@ namespace Galaxy
 
         public Vector2 GetTopLeft()
         {
-            Viewport viewport = Game.GraphicsDevice.Viewport;
-            Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
-            return (Position - viewport_size).ToVector2();
+            //Viewport viewport = Game.GraphicsDevice.Viewport;
+            //Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            //return (Position - viewport_size).ToVector2();
+            return Position.ToVector2() - (ScreenSize * 1.0f / Zoom) * 0.5f;
         }
 
         public Vector2 GetBottomRight()
         {
-            Viewport viewport = Game.GraphicsDevice.Viewport;
-            Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
-            return (Position + viewport_size).ToVector2();
+            //Viewport viewport = Game.GraphicsDevice.Viewport;
+            //Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            //return (Position + viewport_size).ToVector2();
+            return Position.ToVector2() + (ScreenSize * 1.0f / Zoom) * 0.5f;
         }
 
         public Vector2 ClampInside(Vector2 position, float buffer)

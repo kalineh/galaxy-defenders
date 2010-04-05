@@ -25,7 +25,7 @@ namespace Galaxy
             EmptyWorld = new CWorld(game);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(500.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
@@ -34,12 +34,13 @@ namespace Galaxy
                 }
             };
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile());
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-200.0f, 0.0f);
+            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
-            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
-                new CBackground(EmptyWorld, new Color(133, 145, 181)),
-                new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
-            );
+            EmptyWorld.Scenery = SceneryPresets.BlueSky(EmptyWorld);
+            //EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+                //new CBackground(EmptyWorld, new Color(133, 145, 181)),
+                //new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
+            //);
 
             Game.Music.Play("Music/Title");
         }
@@ -89,11 +90,13 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
+            EmptyWorld.DrawHud(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
-            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
+            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 200.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
+
         }
 
         private void StartGame(object tag)

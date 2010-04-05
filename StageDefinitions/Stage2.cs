@@ -7,7 +7,7 @@ public class Stage2 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage2");
 stage.ScrollSpeed = 4;
-stage.SceneryName = "BlueSky";
+stage.SceneryName = "BlendToDarkBlue";
 stage.MusicName = "Music/Stage2";
 stage.AddElement(0, 
 new Galaxy.CStageElementBuilding() {

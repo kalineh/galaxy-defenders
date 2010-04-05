@@ -99,7 +99,7 @@ namespace Galaxy
                 GeneratorType = "BasicGenerator",
                 ShieldType = "BasicShield",
                 WeaponPrimaryType = "FrontLaser",
-                WeaponPrimaryLevel = 0,
+                WeaponPrimaryLevel = 1,
                 WeaponSecondaryType = "",
                 WeaponSecondaryLevel = 0,
                 WeaponSidekickLeftType = "",
