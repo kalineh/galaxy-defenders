@@ -20,7 +20,7 @@ namespace Galaxy
         {
             Game = game;
             Texture = CContent.LoadTexture2D(Game, "Textures/Top/Pixel");
-            TransitionTime = 0.75f;
+            TransitionTime = 0.5f;
             CurrentTime = 0.0f;
             CurrentAlpha = -1.0f;
         }
@@ -39,7 +39,15 @@ namespace Galaxy
             Color color = Color.Black;
             int alpha = byte.MaxValue - (byte)(Math.Abs(CurrentAlpha) * 255.0f);
             color.A = (byte)alpha;
-            Rectangle destination = Game.GraphicsDevice.Viewport.TitleSafeArea;
+
+            // TODO: this is not synced with CWorld.GameCamera
+            Vector2 screen_size = new Vector2(1920.0f * 0.5f, 1080.0f);
+            Rectangle destination = new Rectangle(
+                (int)((Game.GraphicsDevice.Viewport.Width - screen_size.X) / 2.0f),
+                (int)((Game.GraphicsDevice.Viewport.Height - screen_size.Y) / 2.0f),
+                (int)screen_size.X,
+                (int)screen_size.Y
+            );
             sprite_batch.Draw(Texture, destination, color);
         }
 

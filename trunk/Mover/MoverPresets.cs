@@ -15,6 +15,17 @@ namespace Galaxy
 {
     public class CMoverPresets
     {
+        public static CMover MoveSin(float speed)
+        {
+            return new CMoverSin()
+            {
+                Name = (new StackFrame(0, false)).GetMethod().Name,
+                Frequency = 0.05f,
+                Amplitude = 4.0f,
+                Down = speed,
+            };
+        }
+
         public static CMover MoveDownToDownRight(float speed)
         {
             return new CMoverSequence()

@@ -20,6 +20,12 @@ namespace Galaxy
             GameControl = game_control;
             PreviousSelectedEntities = new List<CEntity>();
             AccessMutex = new Mutex(false, "EditorGame.AccessMutex");
+            EditorMode = true;
+
+            // NOTE: reduce backbuffer so game area is full screen size
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1920 / 2;
+            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+            GraphicsDeviceManager.ApplyChanges();
         }
 
         /// <summary>

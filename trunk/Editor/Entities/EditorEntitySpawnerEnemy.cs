@@ -30,9 +30,6 @@ namespace Galaxy
         [CategoryAttribute("Mover")]
         public float MoveSpeed { get; set; }
 
-        // TODO: replace me and use positional system in-game
-        public int StartTime { get; set; }
-
         [CategoryAttribute("Bonus")]
         public int Coins { get; set; }
 
@@ -43,12 +40,23 @@ namespace Galaxy
             : base(world, position)
         {
             Type = type;
-            CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
-            Visual.TileX = visual_get.Visual.TileX;
-            Visual.TileY = visual_get.Visual.TileY;
-            Visual.AnimationSpeed = visual_get.Visual.AnimationSpeed;
-            Mover = CMoverPresets.MoveDown(0.0f);
+            Coins = 1;
+            CEntity sample_instance = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, sample_instance.Visual.Texture.Name), sample_instance.Visual.Color);
+            Visual.TileX = sample_instance.Visual.TileX;
+            Visual.TileY = sample_instance.Visual.TileY;
+            Visual.AnimationSpeed = sample_instance.Visual.AnimationSpeed;
+            
+            MoveSpeed = 4.0f;
+            Mover = CMoverPresets.MoveDown(MoveSpeed);
+
+            if (sample_instance.Mover != null)
+            {
+                Mover = sample_instance.Mover;
+                PropertyInfo speed_multiplier_property = sample_instance.GetType().GetProperty("SpeedMultiplier");
+                if (speed_multiplier_property != null)
+                    MoveSpeed = (float)speed_multiplier_property.GetValue(sample_instance, null);
+            }
         }
 
         public CEditorEntitySpawnerEnemy(CWorld world, Vector2 position)

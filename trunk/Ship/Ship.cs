@@ -64,7 +64,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
-            Collision = new CollisionCircle(Vector2.Zero, 12.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
             Visual = CVisual.MakeSprite(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
             SidekickVisual = CVisual.MakeSprite(world, "Textures/Player/Sidekick");
@@ -116,7 +116,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
-            Collision = new CollisionCircle(Vector2.Zero, 12.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
             Visual = CVisual.MakeSprite(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
             SidekickVisual = CVisual.MakeSprite(world, "Textures/Player/Sidekick");

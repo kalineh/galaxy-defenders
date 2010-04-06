@@ -44,6 +44,8 @@ namespace Galaxy
         // TODO: stage definition param
         public void Start()
         {
+            CCollision.ClearCache();
+
             Entities = new List<CEntity>();
 
             // TODO: load ship from profile
@@ -57,7 +59,9 @@ namespace Galaxy
             Stage.Start();
 
             // TODO: should this be in the stage?
-            Game.Music.Play(Stage.Definition.MusicName);
+            if (!Game.EditorMode)
+                Game.Music.Play(Stage.Definition.MusicName);
+
             MethodInfo method = typeof(SceneryPresets).GetMethod(Stage.Definition.SceneryName);
             Scenery = method.Invoke(null, new object[] { this }) as CScenery;
         }
@@ -137,6 +141,10 @@ namespace Galaxy
                 (int)GameCamera.ScreenSize.Y
             );
 
+            // NOTE: no side panels in editor mode
+            if (Game.EditorMode)
+                Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
+
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
 
@@ -160,6 +168,10 @@ namespace Galaxy
 
         public void DrawHuds(CCamera camera)
         {
+            // NOTE: no side panels in editor mode!
+            if (Game.EditorMode)
+                return;
+
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
             foreach (CHud hud in Huds)
@@ -195,7 +207,7 @@ namespace Galaxy
             foreach (CEntity entity in Entities)
             {
                 // TODO: dont create so many objects
-                CollisionCircle collide = new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CollisionCircle collide = CCollision.GetCacheCircle(this, entity.Physics.PositionPhysics.Position, entity.GetRadius());
                 if (collide.Intersects(box))
                     results.Add(entity);
             }
@@ -205,7 +217,7 @@ namespace Galaxy
 
         public CEntity GetEntityAtPosition(Vector2 position)
         {
-            Collision find = new CollisionCircle(position, 1.0f);
+            CCollision find = CCollision.GetCacheCircle(this, position, 1.0f);
 
             foreach (CEntity entity in Entities)
             {
@@ -218,7 +230,7 @@ namespace Galaxy
                 if (entity.Physics == null)
                     continue;
 
-                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(this, entity.Physics.PositionPhysics.Position, entity.GetRadius());
                 if (find.Intersects(collision))
                     return entity;
             }
@@ -228,7 +240,7 @@ namespace Galaxy
 
         public CEntity GetHighestEntityAtPosition(Vector2 position)
         {
-            Collision find = new CollisionCircle(position, 1.0f);
+            CCollision find = CCollision.GetCacheCircle(this, position, 1.0f);
 
             CEntity result = null;
             float highest = -1.0f;
@@ -243,7 +255,7 @@ namespace Galaxy
                 if (entity.Physics == null)
                     continue;
 
-                Collision collision = entity.Collision ?? new CollisionCircle(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(this, entity.Physics.PositionPhysics.Position, entity.GetRadius());
                 if (!find.Intersects(collision))
                     continue;
 
@@ -322,6 +334,9 @@ namespace Galaxy
 
         private void ProcessEntityCollisions()
         {
+            Type[] types = new Type[] { null };
+            object[] parameters = new object[] { null };
+
             foreach (CEntity outer in Entities)
             {
                 foreach (CEntity inner in Entities)
@@ -346,14 +361,16 @@ namespace Galaxy
                         // TODO: something proper
                         System.Type inner_type = inner.GetType();
                         System.Type outer_type = outer.GetType();
-                        MethodInfo method = outer_type.GetMethod("OnCollide", new Type[]{ inner_type });
+                        types[0] = inner_type;
+                        MethodInfo method = outer_type.GetMethod("OnCollide", types);
 
                         if (method == null)
                             continue;
 
                         try
                         {
-                            method.Invoke(outer, new object[] { inner });
+                            parameters[0] = inner;
+                            method.Invoke(outer, parameters);
                         }
                         catch (Exception exception)
                         {

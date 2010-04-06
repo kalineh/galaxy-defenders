@@ -60,6 +60,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />

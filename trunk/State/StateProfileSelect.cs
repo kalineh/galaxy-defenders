@@ -23,7 +23,7 @@ namespace Galaxy
             EmptyWorld = new CWorld(game);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(300.0f, 300.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "* New Profile", Select = NewProfile },
@@ -49,10 +49,12 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin();
 
-            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(250.0f, 100.0f), Color.White);
+            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 200.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
+
+            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
         }
 
         public void NewProfile(object tag)

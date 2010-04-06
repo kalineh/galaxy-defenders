@@ -30,9 +30,6 @@ namespace Galaxy
         [CategoryAttribute("Mover")]
         public float MoveSpeed { get; set; }
 
-        // TODO: replace me and use positional system in-game
-        public int StartTime { get; set; }
-
         public CEditorEntitySpawnerEntity(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {

@@ -20,7 +20,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 32.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
             HealthMax = 4.0f;
 
@@ -41,7 +41,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 32.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
             HealthMax = 4.0f;
 

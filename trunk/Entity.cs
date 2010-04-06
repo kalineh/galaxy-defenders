@@ -13,7 +13,7 @@ namespace Galaxy
         public CWorld World { get; set; }
         public CPhysics Physics { get; set; }
         public CVisual Visual { get; set; }
-        public Collision Collision { get; set; }
+        public CCollision Collision { get; set; }
         public CMover Mover { get; set; }
         public float AliveTime { get; protected set; }
         public bool IgnoreCameraScroll { get; set; }

@@ -45,7 +45,7 @@
             // 
             // RestartGameButton
             // 
-            this.RestartGameButton.Location = new System.Drawing.Point(12, 819);
+            this.RestartGameButton.Location = new System.Drawing.Point(975, 808);
             this.RestartGameButton.Name = "RestartGameButton";
             this.RestartGameButton.Size = new System.Drawing.Size(108, 22);
             this.RestartGameButton.TabIndex = 3;
@@ -62,7 +62,7 @@
             // 
             // EditorModeButton
             // 
-            this.EditorModeButton.Location = new System.Drawing.Point(12, 847);
+            this.EditorModeButton.Location = new System.Drawing.Point(975, 1066);
             this.EditorModeButton.Name = "EditorModeButton";
             this.EditorModeButton.Size = new System.Drawing.Size(108, 22);
             this.EditorModeButton.TabIndex = 6;
@@ -73,14 +73,14 @@
             // EntityPropertyGrid
             // 
             this.EntityPropertyGrid.HelpVisible = false;
-            this.EntityPropertyGrid.Location = new System.Drawing.Point(818, 12);
+            this.EntityPropertyGrid.Location = new System.Drawing.Point(978, 10);
             this.EntityPropertyGrid.Name = "EntityPropertyGrid";
-            this.EntityPropertyGrid.Size = new System.Drawing.Size(354, 425);
+            this.EntityPropertyGrid.Size = new System.Drawing.Size(354, 395);
             this.EntityPropertyGrid.TabIndex = 7;
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(1016, 846);
+            this.SaveButton.Location = new System.Drawing.Point(1173, 1064);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 8;
@@ -91,7 +91,7 @@
             // NewStageButton
             // 
             this.NewStageButton.Enabled = false;
-            this.NewStageButton.Location = new System.Drawing.Point(935, 847);
+            this.NewStageButton.Location = new System.Drawing.Point(1092, 1065);
             this.NewStageButton.Name = "NewStageButton";
             this.NewStageButton.Size = new System.Drawing.Size(75, 23);
             this.NewStageButton.TabIndex = 10;
@@ -101,7 +101,7 @@
             // 
             // QuitButton
             // 
-            this.QuitButton.Location = new System.Drawing.Point(1097, 846);
+            this.QuitButton.Location = new System.Drawing.Point(1254, 1064);
             this.QuitButton.Name = "QuitButton";
             this.QuitButton.Size = new System.Drawing.Size(75, 23);
             this.QuitButton.TabIndex = 11;
@@ -111,9 +111,9 @@
             // 
             // EntityTree
             // 
-            this.EntityTree.Location = new System.Drawing.Point(818, 443);
+            this.EntityTree.Location = new System.Drawing.Point(975, 411);
             this.EntityTree.Name = "EntityTree";
-            this.EntityTree.Size = new System.Drawing.Size(354, 171);
+            this.EntityTree.Size = new System.Drawing.Size(354, 265);
             this.EntityTree.TabIndex = 13;
             // 
             // Game
@@ -121,15 +121,15 @@
             this.Game.CachedHandle = null;
             this.Game.Game = null;
             this.Game.GameThread = null;
-            this.Game.Location = new System.Drawing.Point(12, 12);
+            this.Game.Location = new System.Drawing.Point(9, 12);
             this.Game.Name = "Game";
-            this.Game.Size = new System.Drawing.Size(800, 800);
+            this.Game.Size = new System.Drawing.Size(960, 1080);
             this.Game.TabIndex = 15;
             this.Game.Text = "Game";
             // 
             // EntityDeleteButton
             // 
-            this.EntityDeleteButton.Location = new System.Drawing.Point(1097, 817);
+            this.EntityDeleteButton.Location = new System.Drawing.Point(1254, 1035);
             this.EntityDeleteButton.Name = "EntityDeleteButton";
             this.EntityDeleteButton.Size = new System.Drawing.Size(75, 23);
             this.EntityDeleteButton.TabIndex = 16;
@@ -139,7 +139,7 @@
             // 
             // PreviewEntitiesButton
             // 
-            this.PreviewEntitiesButton.Location = new System.Drawing.Point(1016, 816);
+            this.PreviewEntitiesButton.Location = new System.Drawing.Point(1173, 1034);
             this.PreviewEntitiesButton.Name = "PreviewEntitiesButton";
             this.PreviewEntitiesButton.Size = new System.Drawing.Size(75, 23);
             this.PreviewEntitiesButton.TabIndex = 17;
@@ -150,7 +150,7 @@
             // StagePropertyGrid
             // 
             this.StagePropertyGrid.HelpVisible = false;
-            this.StagePropertyGrid.Location = new System.Drawing.Point(818, 620);
+            this.StagePropertyGrid.Location = new System.Drawing.Point(978, 836);
             this.StagePropertyGrid.Name = "StagePropertyGrid";
             this.StagePropertyGrid.Size = new System.Drawing.Size(354, 192);
             this.StagePropertyGrid.TabIndex = 18;
@@ -158,7 +158,7 @@
             // StageSelectDropdown
             // 
             this.StageSelectDropdown.FormattingEnabled = true;
-            this.StageSelectDropdown.Location = new System.Drawing.Point(889, 816);
+            this.StageSelectDropdown.Location = new System.Drawing.Point(1046, 1034);
             this.StageSelectDropdown.Name = "StageSelectDropdown";
             this.StageSelectDropdown.Size = new System.Drawing.Size(121, 21);
             this.StageSelectDropdown.TabIndex = 19;
@@ -168,7 +168,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 879);
+            this.ClientSize = new System.Drawing.Size(1341, 1096);
             this.Controls.Add(this.StageSelectDropdown);
             this.Controls.Add(this.EntityPropertyGrid);
             this.Controls.Add(this.EntityTree);
