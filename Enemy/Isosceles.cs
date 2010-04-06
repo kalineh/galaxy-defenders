@@ -20,7 +20,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Isosceles");
             HealthMax = 3.0f;
 
@@ -41,7 +41,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSprite(world, "Textures/Enemy/Isosceles");
             HealthMax = 3.0f;
 

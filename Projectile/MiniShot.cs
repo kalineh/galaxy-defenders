@@ -29,8 +29,8 @@ namespace Galaxy
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/MiniShot"), Color.White);
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Visual = CVisual.MakeSprite(world, "Textures/Weapons/MiniShot");
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
         }
@@ -45,7 +45,7 @@ namespace Galaxy
             base.Init360(world);
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/MiniShot"), Color.White);
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
         }

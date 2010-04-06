@@ -21,7 +21,7 @@ namespace Galaxy
             Visual.AnimationSpeed = 0.05f;
             HealthMax = 11.0f;
             IgnoreCameraScroll = false;
-            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
         }
 
 #if XBOX360
@@ -41,7 +41,7 @@ namespace Galaxy
             Visual.AnimationSpeed = 0.05f;
             HealthMax = 11.0f;
             IgnoreCameraScroll = false;
-            Collision = new CollisionCircle(Vector2.Zero, 28.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
         }
 #endif
 

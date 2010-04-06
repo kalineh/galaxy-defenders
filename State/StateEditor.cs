@@ -63,8 +63,6 @@ namespace Galaxy
             SnapToGrid = true;
             GridSize = 8.0f;
 
-            Game.Music.Play(game.StageDefinition.MusicName);
-            Game.Music.SetVolume(0.1f);
             MethodInfo method = typeof(SceneryPresets).GetMethod(game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
@@ -301,7 +299,7 @@ namespace Galaxy
             Vector2 tl = Vector2.Min(drag_start, drag_end);
             Vector2 br = Vector2.Max(drag_start, drag_end);
             Vector2 size = new Vector2(Math.Abs(offset.X), Math.Abs(offset.Y));
-            CollisionAABB box = new CollisionAABB(tl, size);
+            CollisionAABB box = CCollision.GetCacheAABB(this, tl, size);
 
             HoverEntities.Clear();
             HoverEntities = World.GetEntitiesInBox(box).Where(e => e is CEditorEntityBase).ToList();
@@ -542,7 +540,9 @@ namespace Galaxy
             ClearStage();
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
 
-            Game.Music.Play(Game.StageDefinition.MusicName);
+            if (!Game.EditorMode)
+                Game.Music.Play(Game.StageDefinition.MusicName);
+
             MethodInfo method = typeof(SceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }

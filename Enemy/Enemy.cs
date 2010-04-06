@@ -85,6 +85,11 @@ namespace Galaxy
 
         public virtual void TakeDamage(float damage)
         {
+            if (World.Players.Count > 1)
+            {
+                damage *= 0.5f + 0.5f / (float)World.Players.Count;
+            }
+
             Health -= damage;
             if (Health <= 0.0f)
             {
@@ -94,8 +99,8 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
-            TakeDamage(1.0f);
+            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.5f);
+            TakeDamage(0.5f);
         }
 
         // TODO: need to handle IsSubClassOf in the collision system

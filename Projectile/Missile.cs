@@ -37,7 +37,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
-            Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
         }
@@ -53,7 +53,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
-            Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
         }

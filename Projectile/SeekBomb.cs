@@ -36,7 +36,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), Color.White);
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
             SeekFramesRemaining = 90;
@@ -53,7 +53,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), Color.White);
-            Collision = new CollisionCircle(Vector2.Zero, 1.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
             SeekFramesRemaining = 90;

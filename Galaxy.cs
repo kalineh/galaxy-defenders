@@ -25,6 +25,7 @@ namespace Galaxy
         public CState State { get; set; }
         public CStageDefinition StageDefinition { get; set; }
         public Vector2 PlayerSpawnPosition { get; set; }
+        public bool EditorMode { get; set; }
 
         public CGalaxy()
         {
@@ -37,11 +38,11 @@ namespace Galaxy
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
             GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
 #else
-            //GraphicsDeviceManager.PreferredBackBufferWidth = 1024;
-            //GraphicsDeviceManager.PreferredBackBufferHeight = 576;
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
             GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
 #endif
+
+            GraphicsDeviceManager.PreferMultiSampling = false;
             GraphicsDeviceManager.ApplyChanges();
 
             Debug = new CDebug(this);
@@ -97,8 +98,8 @@ namespace Galaxy
             GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
             GraphicsDevice.PresentationParameters.BackBufferCount = 1;
             GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
-            GraphicsDevice.PresentationParameters.BackBufferHeight = 800;
-            GraphicsDevice.PresentationParameters.BackBufferWidth = 800;
+            GraphicsDevice.PresentationParameters.BackBufferHeight = 1920;
+            GraphicsDevice.PresentationParameters.BackBufferWidth = 1080;
             GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
             GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
             GraphicsDevice.PresentationParameters.IsFullScreen = false;

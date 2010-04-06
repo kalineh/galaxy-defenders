@@ -79,7 +79,7 @@ namespace Galaxy
             //Console.WriteLine(String.Format("{0} -> {1}", screen.ToString(), result.ToString()));
 
             // TODO: fixme! math power!
-            result -= new Vector2(0.0f, 100.0f * 1.0f / Zoom);
+            result -= new Vector2(80.0f * 1.0f / Zoom, 240.0f * 1.0f / Zoom);
 
             return result;
         }

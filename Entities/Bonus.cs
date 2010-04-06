@@ -23,7 +23,7 @@ namespace Galaxy
             Physics.PositionPhysics.Velocity = world.Random.NextVector2(2.0f);
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
-            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
             IgnoreCameraScroll = true;
         }
@@ -43,7 +43,7 @@ namespace Galaxy
             Physics.PositionPhysics.Velocity = world.Random.NextVector2(2.0f);
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
-            Collision = new CollisionCircle(Vector2.Zero, 16.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
             IgnoreCameraScroll = true;
         }

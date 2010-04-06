@@ -4,6 +4,8 @@
 
 using System;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 // TODO: type-type mapping for collision
 // TODO: collision results retrieval
@@ -11,18 +13,70 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class Collision
+    public class CCollision
     {
+        private static Dictionary<object, CollisionCircle> CollisionCircleCache { get; set; }
+        private static Dictionary<object, CollisionAABB> CollisionAABBCache { get; set; }
+
+        static CCollision()
+        {
+            ClearCache();
+        }
+
+        public static void ClearCache()
+        {
+            CollisionCircleCache = new Dictionary<object, CollisionCircle>(2048);
+            CollisionAABBCache = new Dictionary<object, CollisionAABB>(2048);
+        }
+
+        public static CollisionCircle GetCacheCircle(object key, Vector2 position, float radius)
+        {
+            CollisionCircle result;
+            bool had = CollisionCircleCache.TryGetValue(key, out result);
+            if (!had)
+            {
+                result = new CollisionCircle(position, radius);
+                CollisionCircleCache[key] = result;
+                return result;
+            }
+
+            result.Position = position;
+            result.Radius = radius;
+
+            return result;
+        }
+
+        public static CollisionAABB GetCacheAABB(object key, Vector2 position, Vector2 size)
+        {
+            CollisionAABB result;
+            bool had = CollisionAABBCache.TryGetValue(key, out result);
+            if (!had)
+            {
+                result = new CollisionAABB(position, size);
+                CollisionAABBCache[key] = result;
+                return result;
+            }
+
+            result.Position = position;
+            result.Size = size;
+
+            return result;
+        }
+
+
         public bool Enabled { get; set; }
         public bool IgnoreSelfType { get; set; }
 
-        public Collision()
+        private BoundingSphere BoundingSphereCache { get; set; }
+        private BoundingBox BoundingBoxCache { get; set; }
+
+        public CCollision()
         {
             Enabled = true;
             IgnoreSelfType = true;
         }
 
-        public virtual bool Intersects(Collision vs)
+        public virtual bool Intersects(CCollision vs)
         {
             // TODO: not this!
             if (GetType() == typeof(CollisionCircle))
@@ -80,7 +134,7 @@ namespace Galaxy
     }
 
     public class CollisionCircle
-        : Collision
+        : CCollision
     {
         public Vector2 Position { get; set; }
         public float Radius { get; set; }
@@ -93,7 +147,7 @@ namespace Galaxy
     }
 
     public class CollisionAABB
-        : Collision
+        : CCollision
     {
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }

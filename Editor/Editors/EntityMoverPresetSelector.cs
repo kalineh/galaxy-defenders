@@ -29,6 +29,8 @@ namespace Galaxy
         {
             MoverPresets = new Dictionary<string, MoverPresetFunction>();
 
+            MoverPresets["None"] = (speed) => { return null; };
+
             MethodInfo[] methods = typeof(CMoverPresets).GetMethods(BindingFlags.Public | BindingFlags.Static);
             foreach (MethodInfo method in methods)
             {
