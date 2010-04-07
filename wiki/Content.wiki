@@ -1,0 +1,76 @@
+#summary Content overview.
+
+= Play Time =
+ * Average stage time: 4 minutes.
+ * Average shop time: 1 minute.
+ * Minimal completion time: 1 hour.
+ * Average completion time: 1.5 hours.
+
+= Replay Value =
+ * Difficulty Settings (1.5x average playthrough?)
+ * Weapon variations
+ * Improved score
+
+= Stages =
+ * Stage 1
+ * Stage 2
+ * Stage 3
+ * Stage 4
+ * Stage 5
+ * Stage 6
+ * Stage 7
+ * Stage 8
+ * Stage 9
+ * Stage 10
+ * Stage 11
+ * Stage 12
+
+= Weapons - Primary =
+ * Front Laser
+ * Spread Laser
+ * Plasma
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+
+= Weapons - Support =
+ * Missile
+ * Seek Bomb
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+
+= Weapons - Sidekick =
+ * Mini-Shot
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+ * ?
+
+= Enemy =
+ * Ball
+ * Shoot-Ball
+ * Isosceles
+ * PewPew
+ * Spike
+ * Turret
+ * ?
+ * ?
+ * ?
+ * ?
+ * .. more ..
+
+= Assets =
+ * Destructibles x60
+ * Decorations x60
+ * Stage Scenery x12
+ * Menu Scenery x4
+ 
