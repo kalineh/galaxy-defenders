@@ -48,15 +48,15 @@ namespace Galaxy
             World = world;
             BasePosition = base_position;
 
-            LeftPanelVisual = CVisual.MakeSprite(World, "Textures/UI/LeftPanel");
-            RightPanelVisual = CVisual.MakeSprite(World, "Textures/UI/RightPanel");
-            EnergyVisual = CVisual.MakeSprite(World, "Textures/UI/Energy");
-            ShieldVisual = CVisual.MakeSprite(World, "Textures/UI/Shield");
-            ArmorVisual = CVisual.MakeSprite(World, "Textures/UI/Armor");
-            MoneyIconVisual = CVisual.MakeSprite(World, "Textures/UI/MoneyIcon");
-            EnergyIconVisual = CVisual.MakeSprite(World, "Textures/UI/EnergyIcon");
-            ShieldIconVisual = CVisual.MakeSprite(World, "Textures/UI/ShieldIcon");
-            ArmorIconVisual = CVisual.MakeSprite(World, "Textures/UI/ArmorIcon");
+            LeftPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/LeftPanel");
+            RightPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/RightPanel");
+            EnergyVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Energy");
+            ShieldVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Shield");
+            ArmorVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Armor");
+            MoneyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/MoneyIcon");
+            EnergyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/EnergyIcon");
+            ShieldIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ShieldIcon");
+            ArmorIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ArmorIcon");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);

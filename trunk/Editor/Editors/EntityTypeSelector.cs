@@ -61,6 +61,7 @@ namespace Galaxy
             typeof(CShootBall),
             typeof(CSpike),
             typeof(CTurret),
+            typeof(CTripleShot),
         };
     }
 

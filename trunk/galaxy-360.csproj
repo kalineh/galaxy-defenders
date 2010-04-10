@@ -60,6 +60,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />

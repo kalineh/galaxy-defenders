@@ -25,6 +25,12 @@ namespace Galaxy
 
         public override void Move(CEntity entity)
         {
+            if (Paused)
+            {
+                entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
+                return;
+            }
+
             Vector2 velocity = GetVelocity(entity);
 
             if (entity.AliveTime == 0.0f)

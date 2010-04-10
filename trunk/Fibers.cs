@@ -63,5 +63,11 @@ namespace Galaxy
 
             Fibers.RemoveAll(fiber => fiber.Active == false);
         }
+
+        public static IEnumerable WaitFrames(int frames)
+        {
+            while (frames-- > 0)
+                yield return frames;
+        }
     }
 }
