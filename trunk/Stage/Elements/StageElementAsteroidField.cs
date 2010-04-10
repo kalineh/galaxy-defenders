@@ -90,7 +90,7 @@ namespace Galaxy
         public override void Update(CWorld world)
         {
             int spawn = SpawnTimer.Update(world);
-            foreach (int i in Enumerable.Range(0, spawn))
+            for (int i = 0; i < spawn; ++i)
             {
                 Spawn(world);
                 SpawnedCount += 1;

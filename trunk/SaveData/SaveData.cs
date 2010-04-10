@@ -154,6 +154,30 @@ namespace Galaxy
             data = new SSaveData();
             data.Profiles = new List<SProfile>() { CreateDefaultProfile("Default") };
             data.CurrentProfile = "Default";
+
+            // TODO: remove debug data when load/save is fixed on 360
+            data.Profiles = new List<SProfile>() {
+                new SProfile()
+                {
+                    Version = SProfile.CurrentVersion,
+                    Name = "Default",
+                    Money = 200000,
+                    CurrentStage = "Start",
+                    ChassisType = "BasicShip",
+                    GeneratorType = "CoreGeneratorMark2",
+                    ShieldType = "BasicShield",
+                    WeaponPrimaryType = "SpreadLaser",
+                    WeaponPrimaryLevel = 3,
+                    WeaponSecondaryType = "Missile",
+                    WeaponSecondaryLevel = 1,
+                    WeaponSidekickLeftType = "MiniShot",
+                    WeaponSidekickLeftLevel = 0,
+                    WeaponSidekickRightType = "MiniShot",
+                    WeaponSidekickRightLevel = 0
+                }
+            };
+            // end debug
+
             return;
 #endif
 
@@ -169,7 +193,7 @@ namespace Galaxy
                 // TODO: cannot put this in a function because the out param must be assigned to
                 // TODO: change SSaveData to a class
                 // ---
-                foreach (int index in Enumerable.Range(0, data.Profiles.Count))
+                for (int index = 0; index < data.Profiles.Count; ++index)
                 {
                     SProfile profile = data.Profiles[index];
 
