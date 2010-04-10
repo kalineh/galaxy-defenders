@@ -3,6 +3,7 @@
 //
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
@@ -13,6 +14,7 @@ namespace Galaxy
         public CState Source { get; private set; }
         public CState Target { get; private set; }
         public CFader Fader { get; private set; }
+        private SpriteBatch SpriteBatch { get; set; }
 
         public CStateFadeTo(CGalaxy game, CState source, CState target)
         {
@@ -20,6 +22,7 @@ namespace Galaxy
             Source = source;
             Target = target;
             Fader = new CFader(Game);
+            SpriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
 
         public override void Update()
@@ -49,9 +52,9 @@ namespace Galaxy
                 Target.Draw();
             }
 
-            Game.DefaultSpriteBatch.Begin();
-            Fader.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
+            SpriteBatch.Begin();
+            Fader.Draw(SpriteBatch);
+            SpriteBatch.End();
         }
     }
 }

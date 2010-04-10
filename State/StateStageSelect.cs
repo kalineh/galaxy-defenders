@@ -52,6 +52,14 @@ namespace Galaxy
                 }
 #else // XBOX360
                 Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
+                // TODO: find a way to automate this on 360
+                if (stage == "*")
+                {
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "BonusStage1", Select = StartGame, Data = "Stage1" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "BonusStage1", Select = StartGame, Data = "Stage2" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "BonusStage1", Select = StartGame, Data = "Stage3" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "BonusStage1", Select = StartGame, Data = "BonusStage1" });
+                }
 #endif
             }
 

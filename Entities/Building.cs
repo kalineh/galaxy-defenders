@@ -110,7 +110,7 @@ namespace Galaxy
             Visual = VisualDestroyed;
             Collision = null;
 
-            foreach (int i in Enumerable.Range(0, Coins))
+            for (int i = 0; i < Coins; i++)
             {
                 World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
             }

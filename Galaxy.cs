@@ -29,6 +29,12 @@ namespace Galaxy
 
         public CGalaxy()
         {
+
+#if XBOX360
+            // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
+            this.IsFixedTimeStep = false;
+#endif
+
             Content.RootDirectory = "Content";
 
             GraphicsDeviceManager = new GraphicsDeviceManager(this);

@@ -117,9 +117,9 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
-            Visual = CVisual.MakeSprite(world, chassis.Texture);
+            Visual = CVisual.MakeSpriteCached(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
-            SidekickVisual = CVisual.MakeSprite(world, "Textures/Player/Sidekick");
+            SidekickVisual = CVisual.MakeSpriteCached(world, "Textures/Player/Sidekick");
 
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);

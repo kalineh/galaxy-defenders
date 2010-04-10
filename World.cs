@@ -26,6 +26,7 @@ namespace Galaxy
         public CSound Sound { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
+        public CCollisionGrid CollisionGrid { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -39,6 +40,7 @@ namespace Galaxy
             Sound = new CSound(this);
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
+            CollisionGrid = new CCollisionGrid(this, new Vector2(GameCamera.ScreenSize.X, GameCamera.ScreenSize.Y), 6, 8);
         }
 
         // TODO: stage definition param
@@ -125,7 +127,7 @@ namespace Galaxy
 
         public void UpdateHuds()
         {
-            foreach (int index in Enumerable.Range(0, Players.Count))
+            for (int index = 0; index < Players.Count; ++index)
                 Huds[index].Update(Players[index]);
         }
 
@@ -161,7 +163,10 @@ namespace Galaxy
         {
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
 
-            Entities.ForEach(entity => entity.Draw(Game.DefaultSpriteBatch));
+            foreach (CEntity entity in Entities)
+            {
+                entity.Draw(Game.DefaultSpriteBatch);
+            }
 
             Game.DefaultSpriteBatch.End();
         }
@@ -333,6 +338,13 @@ namespace Galaxy
         }
 
         private void ProcessEntityCollisions()
+        {
+            CollisionGrid.Clear(GameCamera.GetCenter().ToVector2());
+            CollisionGrid.Insert(Entities.GetEnumerator());
+            CollisionGrid.Collide();
+        }
+
+        private void ProcessEntityCollisionsOld()
         {
             Type[] types = new Type[] { null };
             object[] parameters = new object[] { null };

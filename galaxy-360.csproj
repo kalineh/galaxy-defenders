@@ -46,6 +46,7 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <OutputPath>bin\Xbox 360\Release</OutputPath>
@@ -60,6 +61,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CollisionGrid.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="Stubs360.cs" />
