@@ -123,6 +123,13 @@ namespace Galaxy
                 mover.SpeedMultiplier = MoveSpeed;
             }
 
+            // TODO: here is where we need to set the speed multiplier on the SpawnerEnemy from the mover
+            if (Mover.GetType() == typeof(CMoverSin))
+            {
+                CMoverSin mover = result.CustomMover as CMoverSin;
+                mover.SpeedMultiplier = MoveSpeed;
+            }
+
             return result;
         }
     }

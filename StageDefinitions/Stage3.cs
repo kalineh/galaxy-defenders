@@ -7,7 +7,7 @@ public class Stage3 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage3");
 stage.ScrollSpeed = 4;
-stage.SceneryName = "BlueSky";
+stage.SceneryName = "Sunset";
 stage.MusicName = "Music/Stage1";
 stage.AddElement(0, 
 new Galaxy.CStageElementBuilding() {
@@ -564,8 +564,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 23.54f,
-Y = -629.51f,
+X = 248.0f,
+Y = -544.0f,
 },
 },
 CustomMover = new Galaxy.CMoverSin() {
@@ -576,8 +576,16 @@ Name = "MoveSin",
 },
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 23.54f,
-Y = -629.51f,
+X = 248.0f,
+Y = -544.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "Platform1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -194.0f,
+Y = -354.0f,
 },
 });
 

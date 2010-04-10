@@ -65,8 +65,8 @@ namespace Galaxy
 
         private void UpdateTexture()
         {
-            VisualNormal = CVisual.MakeSprite(World, "Textures/Static/" + TextureName);
-            VisualDestroyed = CVisual.MakeSprite(World, "Textures/Static/Destroyed/" + TextureName);
+            VisualNormal = CVisual.MakeSpriteCached(World, "Textures/Static/" + TextureName);
+            VisualDestroyed = CVisual.MakeSpriteCached(World, "Textures/Static/Destroyed/" + TextureName);
             VisualNormal = VisualNormal ?? CVisual.MakeLabel(World, TextureName);
             VisualDestroyed = VisualDestroyed ?? CVisual.MakeLabel(World, "Destroyed/" + TextureName);
             Visual = VisualNormal;

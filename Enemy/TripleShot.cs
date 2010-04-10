@@ -1,5 +1,5 @@
 ﻿//
-// Turret.cs
+// TripleShot.cs
 //
 
 using System;
@@ -8,31 +8,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CTurret
+    public class CTripleShot
         : CEnemy
     {
         public float FireDelay { get; private set; }
         private int FireCooldown { get; set; }
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
+        public float PauseCounter { get; private set; }
+        public float TripleShotDelay { get; set; }
+        public int TripleShotCounter { get; set; }
 
-        public CTurret(CWorld world, Vector2 position)
+        public CTripleShot(CWorld world, Vector2 position)
             : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
-            FireDelay = 0.75f;
+            FireDelay = 1.25f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 1.0f;
             FireSpeed = 14.0f;
+            TripleShotDelay = 0.1f;
         }
 
 #if XBOX360
-        public CTurret()
+        public CTripleShot()
         {
         }
 
@@ -43,13 +47,14 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
-            FireDelay = 0.75f;
+            FireDelay = 1.25f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 1.0f;
             FireSpeed = 14.0f;
+            TripleShotDelay = 0.1f;
         }
 #endif
 
@@ -69,14 +74,30 @@ namespace Galaxy
 
         private void Fire()
         {
-            Vector2 position = Physics.PositionPhysics.Position;
-            Vector2 dir = GetDirToShip();
-            float rotation = dir.ToAngle();
+            // TODO: fibers :(
+            // TODO: make sure the last shot isnt fired so we get a nice delay after shot before moving again
+            if (TripleShotCounter < 3)
+            {
+                Vector2 position = Physics.PositionPhysics.Position;
+                Vector2 dir = GetDirToShip();
+                float rotation = dir.ToAngle();
 
-            rotation += World.Random.NextAngle() * 0.015f;
+                rotation += World.Random.NextAngle() * 0.015f;
 
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
-            FireCooldown = Time.ToFrames(FireDelay);
+                CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
+
+                FireCooldown = Time.ToFrames(TripleShotDelay);
+                Mover.Paused = true;
+                IgnoreCameraScroll = true;
+                TripleShotCounter += 1;
+            }
+            else
+            {
+                FireCooldown = Time.ToFrames(FireDelay);
+                TripleShotCounter = 0;
+                IgnoreCameraScroll = false;
+                Mover.Paused = false;
+            }
         }
 
         public override void UpdateCollision()

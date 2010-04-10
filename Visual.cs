@@ -5,11 +5,19 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
 
 namespace Galaxy
 {
     public class CVisual
     {
+        public static Dictionary<string, CVisual> VisualCache { get; set; }
+
+        static CVisual()
+        {
+            VisualCache = new Dictionary<string, CVisual>();
+        }
+
         public static CVisual MakeLabel(CWorld world, string text)
         {
             return MakeLabel(world, text, Color.Blue);
@@ -29,12 +37,25 @@ namespace Galaxy
             return result;
         }
 
-        public static CVisual MakeSprite(CWorld world, string texture_name)
+        public static CVisual MakeSpriteCached(CWorld world, string texture_name)
         {
-            return MakeSprite(world, texture_name, Vector2.One, Color.White);
+            CVisual result;
+            if (!VisualCache.TryGetValue(texture_name, out result))
+
+            {
+                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                VisualCache[texture_name] = result;
+            }
+
+            return result;
         }
 
-        public static CVisual MakeSprite(CWorld world, string texture_name, Vector2 size, Color color)
+        public static CVisual MakeSpriteUncached(CWorld world, string texture_name)
+        {
+            return MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+        }
+
+        public static CVisual MakeSpriteUncached(CWorld world, string texture_name, Vector2 size, Color color)
         {
             try
             {

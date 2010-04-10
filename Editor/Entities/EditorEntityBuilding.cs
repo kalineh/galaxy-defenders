@@ -92,7 +92,7 @@ namespace Galaxy
 
         private void UpdateTexture()
         {
-            Visual = CVisual.MakeSprite(World, "Textures/Static/" + TextureName);
+            Visual = CVisual.MakeSpriteCached(World, "Textures/Static/" + TextureName);
             Visual = Visual ?? CVisual.MakeLabel(World, TextureName);
 
             SetDefaultHealth();

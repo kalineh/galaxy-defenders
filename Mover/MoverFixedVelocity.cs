@@ -14,6 +14,12 @@ namespace Galaxy
 
         public override void Move(CEntity entity)
         {
+            if (Paused)
+            {
+                entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
+                return;
+            }
+
             entity.Physics.PositionPhysics.Velocity = Velocity * SpeedMultiplier;
         }
     }

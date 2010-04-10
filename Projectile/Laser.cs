@@ -29,7 +29,7 @@ namespace Galaxy
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = CVisual.MakeSprite(world, "Textures/Weapons/Laser");
+            Visual = CVisual.MakeSpriteCached(world, "Textures/Weapons/Laser");
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
