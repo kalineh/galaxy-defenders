@@ -56,6 +56,7 @@ namespace Galaxy
 
         public static Vector3 xy0(this Vector2 vector) { return new Vector3(vector.X, vector.Y, 0.0f); }
         public static Vector3 xy1(this Vector2 vector) { return new Vector3(vector.X, vector.Y, 1.0f); }
+        public static Vector3 xyz(this Vector2 vector, float z) { return new Vector3(vector.X, vector.Y, z); }
 
         public static Vector2 ToVector2(this Vector3 vector)
         {

@@ -90,6 +90,7 @@ namespace Galaxy
             World.GameCamera.Update();
             Scenery.Update();
             World.UpdateEntities();
+            World.QuadTree.Update();
         }
 
         public void UpdateMouse()
@@ -468,6 +469,7 @@ namespace Galaxy
             }
 
             World.DrawEntities(World.GameCamera);
+            World.QuadTree.Draw();
 
             // Debug render.
             float game_width = World.GameCamera.GetGameWidth();

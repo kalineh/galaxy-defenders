@@ -89,6 +89,7 @@ namespace StageEditor
 
                 Game.Update(game_time);
                 Game.Draw(game_time);
+                Galaxy.CDebugRender.Render(Game);
                 Game.GraphicsDevice.Present((IntPtr)CachedHandle);
                 Thread.Sleep(TimeSpan.FromSeconds(FrameTimeInSeconds));
             }
