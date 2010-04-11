@@ -160,8 +160,17 @@ namespace Galaxy
 
         public bool Contains(Vector2 point)
         {
-            BoundingBox box = new BoundingBox(Position.xy0(), Position.xy0() + Size.xy0());
-            return box.Contains(point.xy0()) == ContainmentType.Contains;
+            BoundingBox box = new BoundingBox(Position.xyz(-10000.0f), Position.xyz(-10000.0f) + Size.xyz(20000.0f));
+            ContainmentType result = box.Contains(point.xy0());
+            return result == ContainmentType.Contains;
+        }
+
+        public bool Contains(Vector2 point, float radius)
+        {
+            BoundingBox box = new BoundingBox(Position.xyz(-10000.0f), Position.xyz(-10000.0f) + Size.xyz(20000.0f));
+            BoundingSphere sphere = new BoundingSphere(point.xy0(), radius);
+            ContainmentType result = box.Contains(sphere);
+            return result == ContainmentType.Contains;
         }
     }
 }

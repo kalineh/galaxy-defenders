@@ -26,7 +26,7 @@ namespace Galaxy
         public CSound Sound { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
-        public CCollisionGrid CollisionGrid { get; set; }
+        public CQuadTree QuadTree { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -40,7 +40,7 @@ namespace Galaxy
             Sound = new CSound(this);
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
-            CollisionGrid = new CCollisionGrid(this, new Vector2(GameCamera.ScreenSize.X, GameCamera.ScreenSize.Y), 6, 8);
+            QuadTree = new CQuadTree(this, new Vector2(-800.0f, -10000.0f), new Vector2(3200.0f, 20000.0f));
         }
 
         // TODO: stage definition param
@@ -54,7 +54,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             CShip ship = CShipFactory.GenerateShip(this, profile);
             ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
-            Entities.Add(ship);
+            EntityAdd(ship);
             Players.Add(ship);
 
             Stage = new CStage(this, Game.StageDefinition);
@@ -96,6 +96,8 @@ namespace Galaxy
             UpdateEntities();
             UpdateHuds();
 
+            QuadTree.Update();
+
             Sound.Update();
         }
 
@@ -110,7 +112,7 @@ namespace Galaxy
                     CShip ship2 = CShipFactory.GenerateShip(this, profile);
                     ship2.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition + Vector2.UnitX * 64.0f;
                     ship2.PlayerIndex = PlayerIndex.Two;
-                    Entities.Add(ship2);
+                    EntityAdd(ship2);
                     Players.Add(ship2);
                     Huds.Add(new CHud(this, new Vector2(Game.GraphicsDevice.Viewport.Width - 490.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), false));
                 }
@@ -152,6 +154,11 @@ namespace Galaxy
 
             Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
             DrawHuds(GameCamera);
+
+#if DEBUG
+            if (CInput.IsRawKeyDown(Keys.Q))
+                QuadTree.Draw();
+#endif
         }
 
         public void DrawBackground(CCamera camera)
@@ -339,9 +346,7 @@ namespace Galaxy
 
         private void ProcessEntityCollisions()
         {
-            CollisionGrid.Clear(GameCamera.GetCenter().ToVector2());
-            CollisionGrid.Insert(Entities.GetEnumerator());
-            CollisionGrid.Collide();
+            QuadTree.Collide();
         }
 
         private void ProcessEntityCollisionsOld()
@@ -398,6 +403,7 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToAdd)
             {
                 Entities.Add(entity);
+                QuadTree.Insert(entity);
             }
             EntitiesToAdd.Clear();
         }
@@ -407,6 +413,7 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToDelete)
             {
                 Entities.Remove(entity);
+                QuadTree.Remove(entity);
             }
             EntitiesToDelete.Clear();
         }
