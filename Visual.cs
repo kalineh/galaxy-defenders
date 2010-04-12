@@ -70,19 +70,95 @@ namespace Galaxy
         private static SpriteFont DebugFont { get; set; }
 
         public CWorld World { get; set; }
-        public int TileX { get; set; }
-        public int TileY { get; set; }
-        public int Frame { get { return (int)FrameCounter; } set { FrameCounter = (float)value; } }
+
+        private bool _Dirty;
+        private int _TileX;
+        private int _TileY;
+        private Texture2D _Texture;
+        private Vector2 _Scale;
+        private Color _Color;
+        private float _Alpha;
+        private float _Depth;
+        private string _DebugText;
+        private SpriteEffects _SpriteEffects;
+        private Vector2? _NormalizedOrigin;
+
+        public int TileX
+        {
+            get { return _TileX; }
+            set { _TileX = value; SetDirty(true); }
+        }
+
+        public int TileY
+        {
+            get { return _TileY; }
+            set { _TileY = value; SetDirty(true); }
+        }
+
+        public int Frame
+        {
+            get { return (int)FrameCounter; }
+            set { FrameCounter = (float)value; }
+        }
+
         private float FrameCounter { get; set; }
         public float AnimationSpeed { get; set; }
-        public Texture2D Texture { get; set; }
-        public Vector2 Scale { get; set; }
-        public Color Color { get; set; }
-        public float Alpha { get; set; }
-        public float Depth { get; set; }
-        public string DebugText { get; set; }
-        public SpriteEffects SpriteEffects { get; set; }
-        public Vector2? NormalizedOrigin { get; set; }
+
+        public Texture2D Texture
+        {
+            get { return _Texture; }
+            set { _Texture = value; SetDirty(true); }
+        }
+
+        public Vector2 Scale
+        { 
+            get { return _Scale; }
+            set { _Scale = value; SetDirty(true); }
+        }
+
+        public Color Color
+        { 
+            get { return _Color; }
+            set { _Color = value; SetDirty(true); }
+        }
+        
+        public float Alpha
+        { 
+            get { return _Alpha; }
+            // NOTE: special case so we can fade out objects without causing a whole recache
+            set { _Alpha = value; _Color.A = (byte)(value * 255); _CacheColor.A = (byte)(value * 255); }
+        }
+
+        public float Depth
+        { 
+            get { return _Depth; }
+            set { _Depth = value; SetDirty(true); }
+        }
+
+        public string DebugText
+        { 
+            get { return _DebugText; }
+            set { _DebugText = value; SetDirty(true); }
+        }
+
+        public SpriteEffects SpriteEffects
+        { 
+            get { return _SpriteEffects; }
+            set { _SpriteEffects = value; SetDirty(true); }
+        }
+
+        public Vector2? NormalizedOrigin
+        {
+            get { return _NormalizedOrigin; }
+            set { _NormalizedOrigin = value; SetDirty(true); }
+        }
+
+        // cached values
+        private float _CacheTextureWidthScaled;
+        private float _CacheTextureHeightScaled;
+        private Rectangle _CacheFrameSourceRect;
+        private Vector2 _CacheOrigin;
+        private Color _CacheColor;
 
         public CVisual(CWorld world, Texture2D texture, Color color)
         {
@@ -97,43 +173,60 @@ namespace Galaxy
             Alpha = 1.0f;
             Depth = CLayers.CalculateDepth(Texture);
             SpriteEffects = SpriteEffects.None;
+
+            Recache();
+        }
+
+        public void SetDirty(bool dirty)
+        {
+            _Dirty = dirty;
+        }
+
+        public void Recache()
+        {
+            _CacheTextureWidthScaled = Texture.Width * Scale.X;
+            _CacheTextureHeightScaled = Texture.Height * Scale.Y;
+            _CacheFrameSourceRect = GetFrameSourceRect(Frame);
+            _CacheOrigin = NormalizedOrigin != null
+                ? (Vector2)NormalizedOrigin * new Vector2(_CacheFrameSourceRect.Width, _CacheFrameSourceRect.Height) 
+                : new Vector2(_CacheFrameSourceRect.Width / 2.0f, _CacheFrameSourceRect.Height / 2.0f);
+            _CacheColor = Color;
+
+            //float tx = Texture.Width * Scale.X;
+            //float ty = Texture.Height * Scale.Y;
+            //Rectangle source = GetFrameSourceRect(Frame);
+            //Vector2 origin = NormalizedOrigin != null
+                //? (Vector2)NormalizedOrigin * new Vector2(source.Width, source.Height) 
+                //: new Vector2(source.Width / 2.0f, source.Height / 2.0f);
+            //Color color = Color;
+            //color.A = (byte)(Alpha * 255.0f);
+            //sprite_batch.Draw(Texture, position, source, color, rotation, origin, Scale, SpriteEffects, Depth);
+
+            SetDirty(false);
         }
 
         public void Update()
         {
+            if (_Dirty)
+                Recache();
+
             UpdateAnimation();
         }
 
         public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation)
         {
-            //Draw(Texture2D texture, Rectangle destinationRectangle, Color color);
-            //Draw(Texture2D texture, Vector2 position, Color color);
-            //Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color);
-            //Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color);
-            //Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth);
-            //Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
-            //Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth);
-
-            float tx = Texture.Width * Scale.X;
-            float ty = Texture.Height * Scale.Y;
-            Rectangle source = GetFrameSourceRect(Frame);
-            Vector2 origin = NormalizedOrigin != null
-                ? (Vector2)NormalizedOrigin * new Vector2(source.Width, source.Height) 
-                : new Vector2(source.Width / 2.0f, source.Height / 2.0f);
-            Color color = Color;
-            color.A = (byte)(Alpha * 255.0f);
-            sprite_batch.Draw(Texture, position, source, color, rotation, origin, Scale, SpriteEffects, Depth);
+            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, SpriteEffects.None, Depth);
 
             if (DebugText != null)
             {
                 Vector2 size = GetDebugFont().MeasureString(DebugText);
-                Vector2 center = position - new Vector2(source.Center.X, source.Center.Y) * 0.5f - size * 0.5f;
+                Vector2 center = position - new Vector2(_CacheFrameSourceRect.Center.X, _CacheFrameSourceRect.Center.Y) * 0.5f - size * 0.5f;
                 Color text_color = Color.White;
 
                 // TODO: dont waste time on stuff like this (also endianness bad)
-                if (color.R > 200 && color.G > 200 && color.B > 200)
+                if (_CacheColor.R > 200 && _CacheColor.G > 200 && _CacheColor.B > 200)
                 {
-                    uint packed = color.PackedValue;
+                    uint packed = _CacheColor.PackedValue;
                     uint invert = ~packed;
                     byte r = (byte)((packed & 0xFF000000) >> 24);
                     byte g = (byte)((packed & 0x00FF0000) >> 16);
@@ -153,7 +246,15 @@ namespace Galaxy
 
         private void UpdateAnimation()
         {
+            int pre_frame = Frame;
+
             FrameCounter += AnimationSpeed;
+
+            int post_frame = Frame;
+            if (pre_frame != post_frame)
+            {
+                _CacheFrameSourceRect = GetFrameSourceRect(post_frame);
+            }
         }
 
         private Rectangle GetFrameSourceRect(int frame)

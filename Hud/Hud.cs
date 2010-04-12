@@ -88,6 +88,17 @@ namespace Galaxy
             ShieldIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             ArmorIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
 
+            // TODO: force a recache, need to handle non-entity visuals better
+            LeftPanelVisual.Update();
+            RightPanelVisual.Update();
+            EnergyVisual.Update();
+            ShieldVisual.Update();
+            ArmorVisual.Update();
+            MoneyIconVisual.Update();
+            EnergyIconVisual.Update();
+            ShieldIconVisual.Update();
+            ArmorIconVisual.Update();
+
             MoneyOverride = null;
         }
 

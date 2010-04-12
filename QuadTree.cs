@@ -69,7 +69,7 @@ namespace Galaxy
         public void Update()
         {
             // expand if too many entities
-            if (Children.Count == 0 && Entities.Count > 4)
+            if (Children.Count == 0 && Entities.Count > 7)
                 MakeChildren();
 
             // remove if no need for child nodes
@@ -140,9 +140,6 @@ namespace Galaxy
 
         private void CollideImpl(CEntity outer)
         {
-            Type[] types = new Type[] { null };
-            object[] parameters = new object[] { null };
-
             foreach (CEntity inner in Entities)
             {
                 if (inner == outer)
@@ -162,6 +159,9 @@ namespace Galaxy
 
                 if (outer.Collision.Intersects(inner.Collision))
                 {
+                    Type[] types = new Type[] { null };
+                    object[] parameters = new object[] { null };
+
                     // TODO: something proper
                     System.Type inner_type = inner.GetType();
                     System.Type outer_type = outer.GetType();
@@ -223,6 +223,16 @@ namespace Galaxy
             {
                 child.Draw(transform, new Color(color.R, color.G, color.B, color.A * 0.95f));
             }
+        }
+
+        public int CountTotalChildren()
+        {
+            int result = Children.Count;
+
+            foreach (CQuadTreeNode child in Children)
+                result += child.CountTotalChildren();
+
+            return result;
         }
     }
 

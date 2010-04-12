@@ -106,17 +106,17 @@ namespace Galaxy
         : CDebugRenderElement
     {
         public string Text { get; set; }
-        public Vector2 Scale { get; set; }
+        public float Scale { get; set; }
 
         public CDebugRenderText()
         {
-            Scale = Vector2.One;
+            Scale = 1.0f;
         }
 
         public override void Draw(CGalaxy game)
         {
             game.DefaultSpriteBatch.Begin();
-            game.DefaultSpriteBatch.DrawString(game.DefaultFont, Text, Vector2.Transform(Position, Transform), Color.White, 0.0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0.0f);
+            game.DefaultSpriteBatch.DrawString(game.DefaultFont, Text, Vector2.Transform(Position, Transform), Color.White, 0.0f, Vector2.Zero, 0.5f * Scale, SpriteEffects.None, 0.0f);
             game.DefaultSpriteBatch.End();
         }
     }
@@ -234,7 +234,20 @@ namespace Galaxy
                 new CDebugRenderText() {
                     Transform = transform,
                     Position = position,
-                    Scale = Vector2.One,
+                    Scale = 1.0f,
+                    Color = color,
+                    Text = text,
+                }
+            );
+        }
+
+        static public void Text(Matrix transform, Vector2 position, string text, float scale, Color color)
+        {
+            RenderElements.Add(
+                new CDebugRenderText() {
+                    Transform = transform,
+                    Position = position,
+                    Scale = scale,
                     Color = color,
                     Text = text,
                 }

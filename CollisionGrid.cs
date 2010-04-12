@@ -14,6 +14,8 @@ using System.Reflection;
 
 namespace Galaxy
 {
+    using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
+
     public class CCollisionGrid
     {
         public CWorld World { get; private set; }
@@ -50,12 +52,11 @@ namespace Galaxy
 
         public void Insert(IEnumerator<CEntity> entities)
         {
-            Vector2 upper = Center - Dimensions / 2;
-            Vector2 lower = Center - Dimensions / 2;
-
-            // TODO: correct row/column naming and usage when brain function
-            float row_width = Dimensions.Y / (float)Rows;
             float column_width = Dimensions.X / (float)Columns;
+            float row_width = Dimensions.Y / (float)Rows;
+
+            Vector2 upper = Center - Dimensions / 2.0f;
+            Vector2 half_grid = new Vector2(column_width, row_width) * 0.5f;
 
             while (entities.MoveNext())
             {
@@ -67,20 +68,20 @@ namespace Galaxy
                 if (entity.Collision.Enabled == false)
                     continue;
 
-                Vector2 local = entity.Physics.PositionPhysics.Position - Center;
-                int x = (int)(local.X % (float)Rows);
-                int y = (int)(local.Y % (float)Columns);
+                Vector2 local = entity.Physics.PositionPhysics.Position - upper + half_grid;
+                int x = (int)(local.X / column_width);
+                int y = (int)(local.Y / row_width);
 
-                int row = Math.Max(0, Math.Min(x, Rows - 1));
                 int col = Math.Max(0, Math.Min(y, Columns - 1));
+                int row = Math.Max(0, Math.Min(x, Rows - 1));
 
-                Entities[row][col].Add(entity);
+                Entities[col][row].Add(entity);
 
                 // TODO: hack: put all the entities in surrounding grid too
-                if (row + 1 < Rows) Entities[row + 1][col].Add(entity);
-                if (row > 0) Entities[row - 1][col].Add(entity);
-                if (col + 1 < Columns) Entities[row][col + 1].Add(entity);
-                if (col > 0) Entities[row][col - 1].Add(entity);
+                //if (row + 1 < Rows) Entities[row + 1][col].Add(entity);
+                //if (row > 0) Entities[row - 1][col].Add(entity);
+                //if (col + 1 < Columns) Entities[row][col + 1].Add(entity);
+                //if (col > 0) Entities[row][col - 1].Add(entity);
             }
         }
 
@@ -134,5 +135,23 @@ namespace Galaxy
                 }
             }
         }
+
+        public void Draw(Matrix transform, XnaColor color)
+        {
+            float row_width = Dimensions.Y / (float)Rows;
+            float column_width = Dimensions.X / (float)Columns;
+
+            for (int y = 0; y < Rows; y++)
+            {
+                for (int x = 0; x < Columns; x++)
+                {
+                    Vector2 p = Center - Dimensions / 2.0f + new Vector2(column_width * x, row_width * y);
+                    CDebugRender.Box(transform, p, new Vector2(column_width, row_width), 1.0f, color);
+                    int n = Entities[y][x].Count;
+                    CDebugRender.Text(transform, p, n.ToString(), 1.5f, color);
+                }
+            }
+        }
+
     }
 }
