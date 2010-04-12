@@ -107,23 +107,37 @@ namespace Galaxy
 
         private static bool CircleCircle(CollisionCircle a, CollisionCircle b)
         {
-            BoundingSphere sphere_a = new BoundingSphere(a.Position.xy0(), a.Radius);
-            BoundingSphere sphere_b = new BoundingSphere(b.Position.xy0(), b.Radius);
-            return sphere_a.Intersects(sphere_b);
+            float range = a.Radius * a.Radius + b.Radius * b.Radius;
+            float lensqr = (a.Position - b.Position).LengthSquared();
+            return lensqr < range;
         }
 
         private static bool BoxBox(CollisionAABB a, CollisionAABB b)
         {
-            BoundingBox box_a = new BoundingBox(a.Position.xy0(), a.Position.xy0() + a.Size.xy0());
-            BoundingBox box_b = new BoundingBox(b.Position.xy0(), b.Position.xy0() + b.Size.xy0());
-            return box_a.Intersects(box_b);
+            if (a.Position.X > b.Position.X + b.Size.X)
+                return false;
+            if (a.Position.Y > b.Position.Y + b.Size.Y)
+                return false;
+            if (a.Position.X + a.Size.X < b.Position.X)
+                return false;
+            if (a.Position.Y + a.Size.Y < b.Position.Y)
+                return false;
+
+            return true;
         }
 
         private static bool CircleBox(CollisionCircle a, CollisionAABB b)
         {
-            BoundingSphere sphere_a = new BoundingSphere(a.Position.xy0(), a.Radius);
-            BoundingBox box_b = new BoundingBox(b.Position.xy0(), b.Position.xy0() + b.Size.xy0());
-            return sphere_a.Intersects(box_b);
+            if (a.Position.X + a.Radius < b.Position.X)
+                return false;
+            if (a.Position.Y + a.Radius < b.Position.Y)
+                return false;
+            if (a.Position.X - a.Radius > b.Position.X + b.Size.X)
+                return false;
+            if (a.Position.Y - a.Radius > b.Position.Y + b.Size.Y)
+                return false;
+
+            return true;
         }
 
         // reverse

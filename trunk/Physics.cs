@@ -84,6 +84,9 @@ namespace Galaxy
 
         public override void Solve()
         {
+            if (AngularVelocity == 0.0f)
+                return;
+
             Rotation += AngularVelocity;
             AngularVelocity *= AngularFriction;
             Wrap();

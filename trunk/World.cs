@@ -27,6 +27,7 @@ namespace Galaxy
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
         public CQuadTree QuadTree { get; set; }
+        public CCollisionGrid CollisionGrid { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -41,6 +42,7 @@ namespace Galaxy
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
             QuadTree = new CQuadTree(this, new Vector2(-800.0f, -10000.0f), new Vector2(3200.0f, 20000.0f));
+            CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
         }
 
         // TODO: stage definition param
@@ -96,7 +98,9 @@ namespace Galaxy
             UpdateEntities();
             UpdateHuds();
 
-            QuadTree.Update();
+            //QuadTree.Update();
+            CollisionGrid.Clear(GameCamera.Position.ToVector2());
+            CollisionGrid.Insert(Entities.GetEnumerator());
 
             Sound.Update();
         }
@@ -157,7 +161,11 @@ namespace Galaxy
 
 #if DEBUG
             if (CInput.IsRawKeyDown(Keys.Q))
-                QuadTree.Draw();
+            {
+                //QuadTree.Draw();
+                //Console.WriteLine("Total Children: " + QuadTree.Root.CountTotalChildren().ToString());
+                CollisionGrid.Draw(GameCamera.WorldMatrix, Color.White);
+            }
 #endif
         }
 
@@ -294,9 +302,8 @@ namespace Galaxy
         {
             CShip result = null;
             float nearest = float.MaxValue;
-            foreach (CEntity entity in GetEntitiesOfType(typeof(CShip)))
+            foreach (CShip ship in Players)
             {
-                CShip ship = entity as CShip;
                 Vector2 ship_position = ship.Physics.PositionPhysics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
@@ -346,7 +353,8 @@ namespace Galaxy
 
         private void ProcessEntityCollisions()
         {
-            QuadTree.Collide();
+            //QuadTree.Collide();
+            CollisionGrid.Collide();
         }
 
         private void ProcessEntityCollisionsOld()
@@ -403,7 +411,7 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToAdd)
             {
                 Entities.Add(entity);
-                QuadTree.Insert(entity);
+                //QuadTree.Insert(entity);
             }
             EntitiesToAdd.Clear();
         }
@@ -413,7 +421,7 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToDelete)
             {
                 Entities.Remove(entity);
-                QuadTree.Remove(entity);
+                //QuadTree.Remove(entity);
             }
             EntitiesToDelete.Clear();
         }
