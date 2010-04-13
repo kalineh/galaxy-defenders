@@ -54,8 +54,10 @@ namespace Galaxy
         {
             // TODO: generic place
             List<string> types = new List<string>();
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, "profiles.xml");
-            foreach (string filepath in Directory.GetFiles(Directory.GetCurrentDirectory() + "/Content/Textures/Decoration/", "*.png"))
+            string fullpath = Directory.GetCurrentDirectory();
+            string texture_directory = fullpath + "\\..\\..\\..\\Content\\Textures\\Decoration";
+            string[] filepaths = Directory.GetFiles(texture_directory, "*.png");
+            foreach (string filepath in filepaths)
             {
                 types.Add(Path.GetFileNameWithoutExtension(filepath));
             }
