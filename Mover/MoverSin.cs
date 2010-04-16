@@ -14,6 +14,7 @@ namespace Galaxy
         public float Amplitude { get; set; }
         public float Down { get; set; }
         public float SpeedMultiplier { get; set; }
+        public int? StartFrame { get; set; }
 
         public CMoverSin()
         {
@@ -22,13 +23,17 @@ namespace Galaxy
 
         public override void Move(CEntity entity)
         {
+            if (StartFrame == null)
+                StartFrame = (int)entity.World.Game.GameFrame;
+
             if (Paused)
             {
                 entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
                 return;
             }
 
-            float t = entity.World.Game.GameFrame * Frequency;
+            int frame = entity.World.Game.GameFrame - (int)StartFrame;
+            float t = frame * Frequency;
             float x = (float)Math.Cos(t) * Amplitude;
             float y = Down * SpeedMultiplier;
 

@@ -304,6 +304,34 @@ namespace Galaxy
             float nearest = float.MaxValue;
             foreach (CShip ship in Players)
             {
+                // died
+                if (ship.Physics == null)
+                    continue;
+
+                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 offset = ship_position - position;
+                float length = offset.Length();
+
+                if (length < nearest)
+                {
+                    result = ship;
+                    nearest = length;
+                }
+            }
+
+            return result;
+        }
+
+        public CShip GetNearestShipEditor(Vector2 position)
+        {
+            CShip result = null;
+            float nearest = float.MaxValue;
+            foreach (CEntity entity in Entities)
+            {
+                CShip ship = entity as CShip;
+                if (ship == null)
+                    continue;
+
                 Vector2 ship_position = ship.Physics.PositionPhysics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
