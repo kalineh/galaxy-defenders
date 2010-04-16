@@ -81,6 +81,11 @@ namespace Galaxy
                 SelectedEntities.ForEach(entity => World.EntityDelete(entity));
             }
 
+            if (Game.Input.IsKeyDown(Keys.LeftControl) && Game.Input.IsKeyPressed(Keys.G))
+            {
+                SnapToGrid = !SnapToGrid;
+            }
+
             UpdateMouse();
 
             CShip player = World.GetNearestShip(Vector2.Zero);
@@ -158,14 +163,7 @@ namespace Galaxy
                     CStageElement element = editor_entity.GenerateStageElement();
                     CEditorEntityBase new_entity = Activator.CreateInstance(type, new object[] { World, element }) as CEditorEntityBase;
                     new_entity.Position += offset;
-
-                    if (SnapToGrid)
-                    {
-                        new_entity.Position = new Vector2(
-                            new_entity.Position.X - new_entity.Position.X % GridSize,
-                            new_entity.Position.Y - new_entity.Position.Y % GridSize
-                        );
-                    }
+                    new_entity.Position = SnapPositionToGrid(new_entity.Position);
 
                     World.EntityAdd(new_entity);
                 }
@@ -399,17 +397,11 @@ namespace Galaxy
             if (offset.Length() < 4.0f)
                 return;
 
-            // snap to grid
-            if (CInput.IsRawKeyDown(Keys.LeftControl) && CInput.IsRawKeyPressed(Keys.G))
-                SnapToGrid = !SnapToGrid;
-
-            Vector2 snapped = world;
-            if (SnapToGrid)
-            {
-                snapped = new Vector2(world.X - world.X % GridSize, world.Y - world.Y % GridSize);
-            }
+            Vector2 snapped = SnapPositionToGrid(world);
 
             SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = snapped + SelectedEntitiesOffset[entity]);
+            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = SnapPositionToGrid(entity.Physics.PositionPhysics.Position));
+            SelectedEntities.ForEach(entity => CDebugRender.Text(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, entity.Physics.PositionPhysics.Position.ToString(), Color.White));
 
             // TODO: is this a bad hack?
             foreach (CEntity entity in SelectedEntities)
@@ -417,6 +409,14 @@ namespace Galaxy
                 if (entity is CEditorEntityBase)
                     ((CEditorEntityBase)entity).EditorDirty = true;
             }
+        }
+
+        public Vector2 SnapPositionToGrid(Vector2 position)
+        {
+            if (!SnapToGrid)
+                return position;
+
+            return position - new Vector2(position.X % GridSize, position.Y % GridSize);
         }
 
         public void UpdateInteractionZoomCamera(Vector2 mouse, Vector2 delta, Vector2 world)
