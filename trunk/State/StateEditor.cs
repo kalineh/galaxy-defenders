@@ -158,6 +158,15 @@ namespace Galaxy
                     CStageElement element = editor_entity.GenerateStageElement();
                     CEditorEntityBase new_entity = Activator.CreateInstance(type, new object[] { World, element }) as CEditorEntityBase;
                     new_entity.Position += offset;
+
+                    if (SnapToGrid)
+                    {
+                        new_entity.Position = new Vector2(
+                            new_entity.Position.X - new_entity.Position.X % GridSize,
+                            new_entity.Position.Y - new_entity.Position.Y % GridSize
+                        );
+                    }
+
                     World.EntityAdd(new_entity);
                 }
             }
@@ -369,8 +378,8 @@ namespace Galaxy
             {
                 InteractionState = EditorInteractionState.None;
 
-                Vector2 offset = mouse - DragEntityStart;
-                if (offset.Length() < 2.0f)
+                Vector2 offset_inner = mouse - DragEntityStart;
+                if (offset_inner.Length() < 4.0f)
                 {
                     SelectedEntities.Clear();
                     HoverEntities.Clear();
@@ -385,6 +394,11 @@ namespace Galaxy
                 return;
             }
 
+            // ignore until sufficient movement
+            Vector2 offset = mouse - DragEntityStart;
+            if (offset.Length() < 4.0f)
+                return;
+
             // snap to grid
             if (CInput.IsRawKeyDown(Keys.LeftControl) && CInput.IsRawKeyPressed(Keys.G))
                 SnapToGrid = !SnapToGrid;
@@ -393,16 +407,8 @@ namespace Galaxy
             if (SnapToGrid)
             {
                 snapped = new Vector2(world.X - world.X % GridSize, world.Y - world.Y % GridSize);
-
-                // TODO: can we do this without so much redundancy?
-                Dictionary<CEntity, Vector2> copy = new Dictionary<CEntity,Vector2>(SelectedEntitiesOffset);
-                foreach (KeyValuePair<CEntity, Vector2> pair in copy)
-                {
-                    SelectedEntitiesOffset[pair.Key] = new Vector2(pair.Value.X - pair.Value.X % GridSize, pair.Value.Y - pair.Value.Y % GridSize);
-                }
             }
 
-            // TODO: each entity needs a selection offset
             SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = snapped + SelectedEntitiesOffset[entity]);
 
             // TODO: is this a bad hack?
@@ -478,7 +484,7 @@ namespace Galaxy
             CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitY * -25000.0f, 2.0f, XnaColor.Blue);
             CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(half_game_width, game_height), Vector2.UnitY * -25000.0f, 2.0f, XnaColor.Blue);
             CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, game_height), Vector2.UnitX * World.GameCamera.GetGameWidth(), 2.0f, XnaColor.Blue);
-            SampleShip = World.GetNearestShip(Vector2.Zero);
+            SampleShip = World.GetNearestShipEditor(Vector2.Zero);
             if (SampleShip != null)
             {
                 CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.PositionPhysics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);

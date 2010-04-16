@@ -33,6 +33,7 @@ namespace Galaxy
             FireDamage = 1.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
+            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -55,6 +56,7 @@ namespace Galaxy
             FireDamage = 1.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
+            IgnoreCameraScroll = true;
         }
 #endif
 

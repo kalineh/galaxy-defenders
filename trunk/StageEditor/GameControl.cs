@@ -77,6 +77,7 @@ namespace StageEditor
             this.Invoke(callback);
 
             const double FrameTimeInSeconds = 1.0 / 60.0;
+            double NextFrame = FrameTimeInSeconds;
             while (true)
             {
                 GameTime game_time = new GameTime(
@@ -87,11 +88,16 @@ namespace StageEditor
                     false
                 );
 
+                DateTime pre = DateTime.Now;
                 Game.Update(game_time);
                 Game.Draw(game_time);
                 Galaxy.CDebugRender.Render(Game);
                 Game.GraphicsDevice.Present((IntPtr)CachedHandle);
-                Thread.Sleep(TimeSpan.FromSeconds(FrameTimeInSeconds));
+                DateTime post = DateTime.Now;
+                TimeSpan diff = post - pre;
+                TimeSpan frame = TimeSpan.FromSeconds(FrameTimeInSeconds);
+                TimeSpan sleep = diff > frame ? TimeSpan.FromSeconds(0.0f) : TimeSpan.FromSeconds(FrameTimeInSeconds) - diff;
+                Thread.Sleep(sleep);
             }
         }
 
