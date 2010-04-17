@@ -10,9 +10,9 @@ namespace Galaxy
     public class CLaser
         : CEntity
     {
-        public static CLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CLaser laser = new CLaser(world, damage);
+            CLaser laser = new CLaser(world, damage, index);
 
             laser.Physics.AnglePhysics.Rotation = rotation;
             laser.Physics.PositionPhysics.Position = position;
@@ -25,11 +25,14 @@ namespace Galaxy
 
         public float Damage { get; private set; }
 
-        public CLaser(CWorld world, float damage)
+        public CLaser(CWorld world, float damage, PlayerIndex index)
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Weapons/Laser");
+
+            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/Laser", index);
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -40,12 +43,14 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CWorld world, float damage)
+        public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
 
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;

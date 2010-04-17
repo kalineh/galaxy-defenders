@@ -9,7 +9,7 @@ namespace Galaxy
     public class CWeaponPlasma
         : CWeapon
     {
-        public CWeaponPlasma(CEntity owner)
+        public CWeaponPlasma(CShip owner)
             : base(owner)
         {
         }
@@ -19,7 +19,7 @@ namespace Galaxy
         {
         }
 
-        public new void Init360(CEntity owner)
+        public new void Init360(CShip owner)
         {
             base.Init360(owner);
         }
@@ -29,11 +29,11 @@ namespace Galaxy
         {
             if (damage >= 1.0f)
             {
-                CBigPlasma.Spawn(world, position, rotation, Speed, Damage);
+                CBigPlasma.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
             }
             else
             {
-                CSmallPlasma.Spawn(world, position, rotation, Speed, Damage);
+                CSmallPlasma.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
             }
         }
     };

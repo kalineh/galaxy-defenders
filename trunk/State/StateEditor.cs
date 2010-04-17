@@ -55,7 +55,7 @@ namespace Galaxy
             Game = game;
             ClearStage();
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
-            SampleShip = World.GetNearestShip(Vector2.Zero);
+            SampleShip = World.GetNearestShipEditor(Vector2.Zero);
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
             SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();

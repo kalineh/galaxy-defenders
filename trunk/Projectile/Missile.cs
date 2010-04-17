@@ -13,9 +13,9 @@ namespace Galaxy
         public Vector2 FireVector { get; set; }
         public float Speed { get; set; }
 
-        public static CMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CMissile missile = new CMissile(world, damage);
+            CMissile missile = new CMissile(world, damage, index);
 
             missile.Speed = speed;
 
@@ -32,11 +32,13 @@ namespace Galaxy
 
         public float Damage { get; private set; }
 
-        public CMissile(CWorld world, float damage)
+        public CMissile(CWorld world, float damage, PlayerIndex index)
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -47,12 +49,14 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CWorld world, float damage)
+        public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
 
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Missile"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -63,7 +67,7 @@ namespace Galaxy
         {
             Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -FireVector * Speed, 0.05f);
 
-            CEffect.MissileTrail(World, Physics.PositionPhysics.Position, 0.3f);
+            CEffect.MissileTrail(World, Physics.PositionPhysics.Position, 0.3f, Visual.Color);
 
             base.Update();
 

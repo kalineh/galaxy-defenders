@@ -25,7 +25,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/TripleShot");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
             FireDelay = 1.25f;
@@ -48,7 +48,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/TripleShot");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
             FireDelay = 1.25f;

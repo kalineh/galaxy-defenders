@@ -16,8 +16,18 @@ namespace Galaxy
     {
         // TODO: spawn point (Window.ClientBounds)
         // TODO: game object sprite def?
+        private static Color[] PlayerColors = {
+            new Color(247, 208, 74, 255),
+            new Color(195, 150, 255, 255),
+        };
+
+        public static Color GetPlayerColor(PlayerIndex index)
+        {
+            return PlayerColors[(int)index];
+        }
 
         public PlayerIndex PlayerIndex { get; set; }
+        public Color PlayerColor { get; set; }
 
         public CChassisPart Chassis { get; set; }
         public CGeneratorPart Generator { get; set; }
@@ -42,6 +52,7 @@ namespace Galaxy
 
         public CShip(
             CWorld world,
+            PlayerIndex index,
             CChassisPart chassis,
             CGeneratorPart generator,
             CShieldPart shield,
@@ -51,7 +62,8 @@ namespace Galaxy
             CWeaponPart sidekick_right)
             : base(world)
         {
-            PlayerIndex = PlayerIndex.One;
+            PlayerIndex = index;
+            PlayerColor = GetPlayerColor(PlayerIndex);
 
             Chassis = chassis;
             Generator = generator;
@@ -67,7 +79,11 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f); // NOTE: radius updated per-frame below
             Visual = CVisual.MakeSpriteUncached(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
-            SidekickVisual = CVisual.MakeSpriteCached(world, "Textures/Player/Sidekick");
+            Visual.Color = PlayerColor;
+            Visual.Update();
+            SidekickVisual = CVisual.MakeSpriteUncached(world, "Textures/Player/Sidekick");
+            SidekickVisual.Color = PlayerColor;
+            SidekickVisual.Update();
 
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
@@ -117,9 +133,9 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
-            Visual = CVisual.MakeSpriteCached(world, chassis.Texture);
+            Visual = CVisual.MakeSpriteCached1(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
-            SidekickVisual = CVisual.MakeSpriteCached(world, "Textures/Player/Sidekick");
+            SidekickVisual = CVisual.MakeSpriteCached1(world, "Textures/Player/Sidekick");
 
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
@@ -355,7 +371,7 @@ namespace Galaxy
                 CurrentShield -= damage;
                 if (CurrentShield > 0.0f)
                 {
-                    CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 3.0f);
+                    CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 3.0f, PlayerColor);
                     return;
                 }
 

@@ -22,7 +22,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
             HealthMax = 4.0f;
 
             FireDelay = 0.75f;
@@ -43,7 +43,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
             HealthMax = 4.0f;
 
             FireDelay = 0.75f;
