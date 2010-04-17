@@ -10,9 +10,9 @@ namespace Galaxy
     public class CSmallPlasma
         : CEntity
     {
-        public static CSmallPlasma Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CSmallPlasma Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CSmallPlasma plasma = new CSmallPlasma(world, damage);
+            CSmallPlasma plasma = new CSmallPlasma(world, damage, index);
 
             plasma.Physics.AnglePhysics.Rotation = rotation;
             plasma.Physics.PositionPhysics.Position = position;
@@ -25,11 +25,13 @@ namespace Galaxy
 
         public float Damage { get; private set; }
 
-        public CSmallPlasma(CWorld world, float damage)
+        public CSmallPlasma(CWorld world, float damage, PlayerIndex index)
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SmallPlasma"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SmallPlasma"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -40,12 +42,14 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CWorld world, float damage)
+        public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
 
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SmallPlasma"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SmallPlasma"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -78,9 +82,9 @@ namespace Galaxy
     public class CBigPlasma
         : CEntity
     {
-        public static CBigPlasma Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CBigPlasma Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CBigPlasma plasma = new CBigPlasma(world, damage);
+            CBigPlasma plasma = new CBigPlasma(world, damage, index);
 
             plasma.Physics.AnglePhysics.Rotation = rotation;
             plasma.Physics.PositionPhysics.Position = position;
@@ -93,11 +97,13 @@ namespace Galaxy
 
         public float Damage { get; private set; }
 
-        public CBigPlasma(CWorld world, float damage)
+        public CBigPlasma(CWorld world, float damage, PlayerIndex index)
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/BigPlasma"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/BigPlasma"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -108,12 +114,14 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CWorld world, float damage)
+        public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
 
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/BigPlasma"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/BigPlasma"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
             IgnoreCameraScroll = true;

@@ -52,7 +52,7 @@ namespace Galaxy
 
             // TODO: load ship from profile
             SProfile profile = CSaveData.GetCurrentProfile();
-            CShip ship = CShipFactory.GenerateShip(this, profile);
+            CShip ship = CShipFactory.GenerateShip(this, profile, PlayerIndex.One);
             ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
             EntityAdd(ship);
             Players.Add(ship);
@@ -110,7 +110,7 @@ namespace Galaxy
                 if (Game.Input.IsPadStartPressed(PlayerIndex.Two) || Game.Input.IsKeyDown(Keys.RightShift))
                 {
                     SProfile profile = CSaveData.GetCurrentProfile();
-                    CShip ship2 = CShipFactory.GenerateShip(this, profile);
+                    CShip ship2 = CShipFactory.GenerateShip(this, profile, PlayerIndex.Two);
                     ship2.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition + Vector2.UnitX * 64.0f;
                     ship2.PlayerIndex = PlayerIndex.Two;
                     EntityAdd(ship2);

@@ -4,6 +4,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
@@ -51,7 +52,7 @@ namespace Galaxy
             return animation;
         }
 
-        public static CEntity PlayerTakeShieldDamage(CShip ship, Vector2 position, float scale)
+        public static CEntity PlayerTakeShieldDamage(CShip ship, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation(ship.World,
                 new COneShotAnimation.Settings()
@@ -63,6 +64,7 @@ namespace Galaxy
                     TileY = 4,
                     AnimationSpeed = 1.0f,
                     Scale = scale,
+                    Color = color,
                 }
             );
 
@@ -93,7 +95,7 @@ namespace Galaxy
             return animation;
         }
 
-        public static CEntity MissileTrail(CWorld world, Vector2 position, float scale)
+        public static CEntity MissileTrail(CWorld world, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation(world,
                 new COneShotAnimation.Settings()
@@ -105,6 +107,7 @@ namespace Galaxy
                     TileY = 4,
                     AnimationSpeed = 1.0f,
                     Scale = scale,
+                    Color = color,
                 }
             );
 

@@ -19,6 +19,7 @@ namespace Galaxy
             public float AnimationSpeed { get; set; }
             public int TileX { get; set; }
             public int TileY { get; set; }
+            public Color Color { get; set; }
         }
 
         // TODO: scene graph :(
@@ -35,6 +36,8 @@ namespace Galaxy
             Visual.TileY = settings.TileY;
             Visual.AnimationSpeed = settings.AnimationSpeed;
             Visual.Scale = new Vector2(settings.Scale);
+            Visual.Color = settings.Color;
+            Visual.Update();
             IgnoreCameraScroll = true;
         }
 

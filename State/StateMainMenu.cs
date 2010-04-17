@@ -33,7 +33,7 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Quit Qame", Select = QuitGame },
                 }
             };
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile());
+            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
             EmptyWorld.Scenery = SceneryPresets.BlueSky(EmptyWorld);

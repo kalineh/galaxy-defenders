@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
+    // TODO: delete me
     public class CWeaponTest
     {
         struct Settings
@@ -27,7 +28,7 @@ namespace Galaxy
             SSettings.KickbackForce = 3.0f;
         }
 
-        public CEntity Owner { get; private set; }
+        public CShip Owner { get; private set; }
         public Vector2 Offset { get; private set; }
         public int Level { get; set; }
         public float ReloadTime { get { return SSettings.ReloadTime[Level]; } }
@@ -35,7 +36,7 @@ namespace Galaxy
         public float Damage { get { return SSettings.Damage[Level]; } }
         private float Cooldown { get; set; }
 
-        public CWeaponTest(CEntity owner, Vector2 offset)
+        public CWeaponTest(CShip owner, Vector2 offset)
         {
             Owner = owner;
             Offset = offset;
@@ -74,7 +75,7 @@ namespace Galaxy
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;
 
-            CLaser laser = CLaser.Spawn(Owner.World, fire_position, rotation, Speed, Damage);
+            CLaser laser = CLaser.Spawn(Owner.World, fire_position, rotation, Speed, Damage, Owner.PlayerIndex);
             Cooldown = ReloadTime;
         }
 

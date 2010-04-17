@@ -11,9 +11,9 @@ namespace Galaxy
     public class CSeekBomb
         : CEntity
     {
-        public static CSeekBomb Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        public static CSeekBomb Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CSeekBomb seek_bomb = new CSeekBomb(world, damage);
+            CSeekBomb seek_bomb = new CSeekBomb(world, damage, index);
 
             seek_bomb.Speed = speed;
 
@@ -31,11 +31,13 @@ namespace Galaxy
         public int SeekFramesRemaining { get; set; }
         public CEnemy Target { get; set; }
 
-        public CSeekBomb(CWorld world, float damage)
+        public CSeekBomb(CWorld world, float damage, PlayerIndex index)
             : base(world)
         {
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -47,12 +49,12 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CWorld world, float damage)
+        public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
 
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             IgnoreCameraScroll = true;
@@ -97,6 +99,9 @@ namespace Galaxy
             }
 
             Physics.AnglePhysics.Rotation += 0.1f;
+
+            if (!IsInScreen())
+                Delete();
 
             base.Update();
         }

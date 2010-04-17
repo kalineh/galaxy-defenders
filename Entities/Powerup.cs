@@ -13,7 +13,7 @@ namespace Galaxy
         public CPowerup(CWorld world, Vector2 position)
             : base(world, position)
         {
-            Visual = CVisual.MakeSpriteCached(world, "Textures/Entity/Powerup");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Entity/Powerup");
         }
 
         public new void OnCollide(CShip ship)

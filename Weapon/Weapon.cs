@@ -9,7 +9,7 @@ namespace Galaxy
 {
     public abstract class CWeapon
     {
-        public CEntity Owner { get; private set; }
+        public CShip Owner { get; private set; }
         public float ReloadTime { get; set; }
         public float Speed { get; set; }
         public float Damage { get; set; }
@@ -19,7 +19,7 @@ namespace Galaxy
         public float Energy { get; private set; }
         private float Cooldown { get; set; }
 
-        public CWeapon(CEntity owner)
+        public CWeapon(CShip owner)
         {
             Owner = owner;
             Offset = Vector2.Zero;
@@ -32,7 +32,7 @@ namespace Galaxy
         {
         }
 
-        public void Init360(CEntity owner)
+        public void Init360(CShip owner)
         {
             Owner = owner;
             Offset = Vector2.Zero;

@@ -397,7 +397,7 @@ namespace Galaxy
         private void RefreshSampleDisplay()
         {
             EmptyWorld.Stop();
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile);
+            SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-150.0f, 150.0f);
         }
 

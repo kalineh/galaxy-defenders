@@ -11,11 +11,13 @@ namespace Galaxy
 {
     public class CVisual
     {
-        public static Dictionary<string, CVisual> VisualCache { get; set; }
+        public static Dictionary<string, CVisual> VisualCache1 { get; set; }
+        public static Dictionary<string, CVisual> VisualCache2 { get; set; }
 
         static CVisual()
         {
-            VisualCache = new Dictionary<string, CVisual>();
+            VisualCache1 = new Dictionary<string, CVisual>();
+            VisualCache2 = new Dictionary<string, CVisual>();
         }
 
         public static CVisual MakeLabel(CWorld world, string text)
@@ -37,14 +39,39 @@ namespace Galaxy
             return result;
         }
 
-        public static CVisual MakeSpriteCached(CWorld world, string texture_name)
+        public static CVisual MakeSpriteCachedForPlayer(CWorld world, string texture_name, PlayerIndex index)
         {
-            CVisual result;
-            if (!VisualCache.TryGetValue(texture_name, out result))
+            Dictionary<string, CVisual> cache = index == 0 ? VisualCache1 : VisualCache2;
 
+            CVisual result;
+            if (!cache.TryGetValue(texture_name, out result))
             {
                 result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
-                VisualCache[texture_name] = result;
+                cache[texture_name] = result;
+            }
+
+            return result;
+        }
+
+        public static CVisual MakeSpriteCached1(CWorld world, string texture_name)
+        {
+            CVisual result;
+            if (!VisualCache1.TryGetValue(texture_name, out result))
+            {
+                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                VisualCache1[texture_name] = result;
+            }
+
+            return result;
+        }
+
+        public static CVisual MakeSpriteCached2(CWorld world, string texture_name)
+        {
+            CVisual result;
+            if (!VisualCache2.TryGetValue(texture_name, out result))
+            {
+                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                VisualCache2[texture_name] = result;
             }
 
             return result;
