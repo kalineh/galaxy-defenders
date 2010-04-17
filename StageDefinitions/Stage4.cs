@@ -8,12 +8,12 @@ public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage4");
 stage.ScrollSpeed = 4;
 stage.SceneryName = "DullGreen";
-stage.MusicName = "Music/Stage1";
+stage.MusicName = "Music/BonusStage1";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,
-Y = -17376.0f,
+Y = -17416.0f,
 },
 });
 stage.AddElement(0, 
