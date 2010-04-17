@@ -24,16 +24,16 @@ namespace Galaxy
 
         public CVisual Visual { get; set; }
         public float Scale { get; set; }
-        public Vector2 Speed { get; set; }
+        public Vector2 Velocity { get; set; }
         private List<Cloud> Clouds { get; set; }
         private int Count { get; set; }
 
-        public CClouds(CWorld world, Texture2D texture, float scale, float speed)
+        public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity)
             : base(world)
         {
             Visual = new CVisual(world, texture, Color.White);
             Scale = scale;
-            Speed = Vector2.UnitY * speed;
+            Velocity = velocity;
             Clouds = new List<Cloud>();
             UpdateCloudCount();
         }
@@ -50,8 +50,6 @@ namespace Galaxy
 
         public override void Update()
         {
-            //Speed *= new Vector2(0.9f, 1.0f);
-
             UpdateCloudCount();
 
             foreach (Cloud cloud in Clouds)
@@ -62,7 +60,7 @@ namespace Galaxy
                 }
 
                 float speed_scale = 1.0f - Math.Abs(cloud.Position.X) * 0.001f;
-                cloud.Position += Speed * speed_scale;
+                cloud.Position += Velocity * speed_scale;
             }
         }
 

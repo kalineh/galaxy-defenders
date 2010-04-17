@@ -94,6 +94,7 @@
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CollisionGrid.cs" />
+    <Compile Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Editor\Editors\DecorationTypeSelector.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
@@ -149,8 +150,8 @@
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
     <Compile Include="StageDefinitions\BonusStage1.cs" />
+    <Compile Include="StageDefinitions\Stage4.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
-    <Compile Include="StageDefinitions\FriendlyStage01.cs" />
     <Compile Include="StageDefinitions\Stage2.cs" />
     <Compile Include="StageDefinitions\EditorStage.cs">
       <SubType>Code</SubType>
@@ -198,7 +199,6 @@
     <Compile Include="Ship\Ship.cs" />
     <Compile Include="Stage\Stage.cs" />
     <Compile Include="StageDefinitions\StageDefinition.cs" />
-    <Compile Include="StageDefinitions\TestStage.cs" />
     <Compile Include="Stage\Elements\StageElementAsteroidField.cs" />
     <Compile Include="Stage\Elements\StageElementStageFinish.cs" />
     <Compile Include="Stage\Elements\SpawnTimer.cs" />

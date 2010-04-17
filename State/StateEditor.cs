@@ -95,7 +95,6 @@ namespace Galaxy
             World.GameCamera.Update();
             Scenery.Update();
             World.UpdateEntities();
-            World.QuadTree.Update();
         }
 
         public void UpdateMouse()
@@ -144,7 +143,7 @@ namespace Galaxy
                 CopyEntities = new List<CEntity>(SelectedEntities);
             }
 
-            if (paste)
+            if (paste && CopyEntities != null)
             {
                 Vector2 total = Vector2.Zero;
                 foreach (CEntity entity in CopyEntities)
@@ -401,7 +400,6 @@ namespace Galaxy
 
             SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = snapped + SelectedEntitiesOffset[entity]);
             SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = SnapPositionToGrid(entity.Physics.PositionPhysics.Position));
-            SelectedEntities.ForEach(entity => CDebugRender.Text(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, entity.Physics.PositionPhysics.Position.ToString(), Color.White));
 
             // TODO: is this a bad hack?
             foreach (CEntity entity in SelectedEntities)
@@ -475,7 +473,6 @@ namespace Galaxy
             }
 
             World.DrawEntities(World.GameCamera);
-            World.QuadTree.Draw();
 
             // Debug render.
             float game_width = World.GameCamera.GetGameWidth();
