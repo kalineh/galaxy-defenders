@@ -64,7 +64,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
             Visual = CVisual.MakeSpriteUncached(world, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
             SidekickVisual = CVisual.MakeSpriteCached(world, "Textures/Player/Sidekick");
@@ -353,7 +353,10 @@ namespace Galaxy
             {
                 CurrentShield -= damage;
                 if (CurrentShield > 0.0f)
+                {
+                    CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 2.0f);
                     return;
+                }
 
                 damage = Math.Abs(CurrentShield);
                 CurrentShield = 0.0f;
@@ -368,11 +371,7 @@ namespace Galaxy
 
             if (CurrentShield <= 0.0f)
             {
-                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 0.5f);
-            }
-            else
-            {
-                CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 0.5f);
+                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.0f);
             }
         }
     };

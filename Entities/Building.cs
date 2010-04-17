@@ -97,6 +97,12 @@ namespace Galaxy
             plasma.Die();
         }
 
+        public void OnCollide(CMiniShot minishot)
+        {
+            TakeDamage(minishot.Damage);
+            minishot.Die();
+        }
+
         private int CalculateScoreFromHealth()
         {
             int base_ = (int)HealthMax * 10;

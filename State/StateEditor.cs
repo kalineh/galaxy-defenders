@@ -166,6 +166,8 @@ namespace Galaxy
 
                     World.EntityAdd(new_entity);
                 }
+
+                SelectedEntities.Clear();
             }
         }
         

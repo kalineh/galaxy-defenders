@@ -58,7 +58,7 @@ namespace Galaxy
                 {
                     Position = position,
                     Rotation = ship.World.Random.NextAngle(),
-                    TextureName = "Textures/Effects/LaserHit",
+                    TextureName = "Textures/Effects/PlayerShieldHit",
                     TileX = 4,
                     TileY = 4,
                     AnimationSpeed = 1.0f,
@@ -68,7 +68,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            ship.World.Sound.Play("ExplosionSound", 0.2f);
+            ship.World.Sound.Play("PlayerShieldHit", 0.2f);
             ship.World.EntityAdd(animation);
             return animation;
         }
