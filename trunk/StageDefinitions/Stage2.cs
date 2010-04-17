@@ -789,8 +789,8 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 10.95f,
-Y = -17356.88f,
+X = 16.0f,
+Y = -20088.0f,
 },
 });
 stage.AddElement(0, 

@@ -46,7 +46,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            ship.World.Sound.Play("ExplosionSound", 0.125f);
+            ship.World.Sound.Play("ExplosionSound", 0.1f);
             ship.World.EntityAdd(animation);
             return animation;
         }
@@ -68,7 +68,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            ship.World.Sound.Play("PlayerShieldHit", 0.2f);
+            ship.World.Sound.Play("PlayerShieldHit", 0.25f);
             ship.World.EntityAdd(animation);
             return animation;
         }

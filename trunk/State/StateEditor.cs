@@ -88,7 +88,7 @@ namespace Galaxy
 
             UpdateMouse();
 
-            CShip player = World.GetNearestShip(Vector2.Zero);
+            CShip player = World.GetNearestShipEditor(Vector2.Zero);
             if (player != null)
                 Game.PlayerSpawnPosition = player.Physics.PositionPhysics.Position;
 

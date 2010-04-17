@@ -420,7 +420,7 @@ namespace Galaxy
             // TODO: nicer display of purchasable items
             if (Menu == MenuPrimaryWeapon)
             {
-                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType) - 1;
+                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType);
                 int level = WorkingProfile.WeaponPrimaryLevel;
                 Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 60.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
                 foreach (int index in Enumerable.Range(0, 10))
@@ -448,7 +448,7 @@ namespace Galaxy
 
             if (Menu == MenuSecondaryWeapon && WorkingProfile.WeaponSecondaryType != "")
             {
-                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType) - 1;
+                int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType);
                 int level = WorkingProfile.WeaponSecondaryLevel;
                 Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "POWER", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 60.0f, Game.GraphicsDevice.Viewport.Height - 240.0f), Color.White);
                 foreach (int index in Enumerable.Range(0, 10))
@@ -617,7 +617,7 @@ namespace Galaxy
             if (WorkingProfile.WeaponPrimaryType != (string)tag)
                 return false;
 
-            if (axis < 0 || axis >= CWeaponFactory.GetMaxLevel((string)tag))
+            if (axis < 0 || axis > CWeaponFactory.GetMaxLevel((string)tag))
                 return false;
 
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
@@ -713,7 +713,7 @@ namespace Galaxy
             if (WorkingProfile.WeaponSecondaryType != (string)tag)
                 return false;
 
-            if (axis < 0 || axis >= CWeaponFactory.GetMaxLevel((string)tag))
+            if (axis < 0 || axis > CWeaponFactory.GetMaxLevel((string)tag))
                 return false;
 
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
