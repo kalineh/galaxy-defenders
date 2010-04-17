@@ -26,7 +26,6 @@ namespace Galaxy
         public CSound Sound { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
-        public CQuadTree QuadTree { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
 
         public CWorld(CGalaxy game)
@@ -41,7 +40,6 @@ namespace Galaxy
             Sound = new CSound(this);
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
-            QuadTree = new CQuadTree(this, new Vector2(-800.0f, -10000.0f), new Vector2(3200.0f, 20000.0f));
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
         }
 
@@ -98,7 +96,6 @@ namespace Galaxy
             UpdateEntities();
             UpdateHuds();
 
-            //QuadTree.Update();
             CollisionGrid.Clear(GameCamera.Position.ToVector2());
             CollisionGrid.Insert(Entities.GetEnumerator());
 
@@ -162,7 +159,6 @@ namespace Galaxy
 #if DEBUG
             if (CInput.IsRawKeyDown(Keys.Q))
             {
-                //QuadTree.Draw();
                 //Console.WriteLine("Total Children: " + QuadTree.Root.CountTotalChildren().ToString());
                 CollisionGrid.Draw(GameCamera.WorldMatrix, Color.White);
             }
@@ -381,7 +377,6 @@ namespace Galaxy
 
         private void ProcessEntityCollisions()
         {
-            //QuadTree.Collide();
             CollisionGrid.Collide();
         }
 
@@ -439,7 +434,6 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToAdd)
             {
                 Entities.Add(entity);
-                //QuadTree.Insert(entity);
             }
             EntitiesToAdd.Clear();
         }
@@ -449,7 +443,6 @@ namespace Galaxy
             foreach (CEntity entity in EntitiesToDelete)
             {
                 Entities.Remove(entity);
-                //QuadTree.Remove(entity);
             }
             EntitiesToDelete.Clear();
         }

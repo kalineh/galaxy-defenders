@@ -17,7 +17,6 @@ namespace Galaxy
         public CMover Mover { get; set; }
         public float AliveTime { get; protected set; }
         public bool IgnoreCameraScroll { get; set; }
-        public CQuadTreeNode TreeNode { get; set; }
 
         public CEntity(CWorld world)
         {

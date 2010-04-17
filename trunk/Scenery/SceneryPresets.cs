@@ -28,32 +28,36 @@ namespace Galaxy
                     new Color(133, 145, 181),
                     new Color(133, 145, 181)
                 ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, Vector2.UnitY * 6.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, Vector2.UnitY * 9.0f)
             );
         }
 
-        public static CScenery BlendToDarkBlue(CWorld world)
+        public static CScenery DarkBlueSky(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBlendingGradientBackground(world, 120.0f,
-                    new List<Color[]>() {
-                        new Color[] {
-                            new Color(133, 145, 181),
-                            new Color(133, 145, 181),
-                            new Color(133, 145, 181),
-                            new Color(133, 145, 181),
-                        },
-                        new Color[] {
-                            new Color(60, 93, 123),
-                            new Color(60, 93, 123),
-                            new Color(60, 93, 123),
-                            new Color(60, 93, 123),
-                        },
-                    }
+                new CGradientBackground(world,
+                    new Color(8, 28, 68),
+                    new Color(8, 28, 68),
+                    new Color(8, 28, 68),
+                    new Color(8, 28, 68)
                 ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/BoxCloud"), 1.2f, new Vector2( 2.0f, 3.0f )),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/BoxCloud"), 0.8f, new Vector2( -2.0f, 3.0f ))
+            );
+        }
+
+        public static CScenery DullGreen(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CGradientBackground(world,
+                    new Color(39, 40, 26),
+                    new Color(39, 40, 26),
+                    new Color(39, 40, 26),
+                    new Color(39, 40, 26)
+                ),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 0.6f, Vector2.UnitY * 11.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 0.6f, Vector2.UnitY * 12.0f)
             );
         }
 
@@ -66,8 +70,8 @@ namespace Galaxy
                     new Color(233, 145, 181),
                     new Color(233, 145, 181)
                 ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, 6.0f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, 9.0f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, Vector2.UnitY * 6.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, Vector2.UnitY * 9.0f)
             );
         }
 

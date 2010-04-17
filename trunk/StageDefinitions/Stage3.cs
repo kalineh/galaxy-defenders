@@ -3076,6 +3076,240 @@ X = 440.0f,
 Y = -15184.0f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 640.0f,
+Y = -13016.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 640.0f,
+Y = -13016.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 640.0f,
+Y = -12880.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 640.0f,
+Y = -12880.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 648.0f,
+Y = -12944.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 648.0f,
+Y = -12944.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 608.0f,
+Y = -7560.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 608.0f,
+Y = -7560.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 608.0f,
+Y = -7424.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 608.0f,
+Y = -7424.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 616.0f,
+Y = -7488.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 616.0f,
+Y = -7488.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -656.0f,
+Y = -5288.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -656.0f,
+Y = -5288.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -656.0f,
+Y = -5152.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -656.0f,
+Y = -5152.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -648.0f,
+Y = -5216.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 4.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+Paused = false,
+Name = "MoveRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -648.0f,
+Y = -5216.0f,
+},
+});
 
 return stage;
 }

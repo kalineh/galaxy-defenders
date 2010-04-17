@@ -22,7 +22,7 @@ namespace Galaxy
         private string _TextureName = "Platform1";
 
         [CategoryAttribute("Texture")]
-        [EditorAttribute(typeof(CDecorationSelector), typeof(UITypeEditor))]
+        [EditorAttribute(typeof(CTextureSelector<CTextureSelectoryCategoryDecoration>), typeof(UITypeEditor))]
         public string TextureName
         {
             get { return _TextureName; }

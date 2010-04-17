@@ -32,6 +32,7 @@ namespace Galaxy
         private string _TextureName = "Building1";
 
         [CategoryAttribute("Texture")]
+        [EditorAttribute(typeof(CTextureSelector<CTextureSelectoryCategoryStatic>), typeof(UITypeEditor))]
         public string TextureName
         {
             get { return _TextureName; }

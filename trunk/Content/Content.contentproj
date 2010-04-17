@@ -467,6 +467,37 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Background\BoxCloud.png">
+      <Name>BoxCloud</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Background\Droplet.png">
+      <Name>Droplet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Static\Building6.png">
+      <Name>Building6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Static\Building7.png">
+      <Name>Building7</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Static\Building8.png">
+      <Name>Building8</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>

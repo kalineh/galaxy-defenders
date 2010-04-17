@@ -145,16 +145,35 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Platform1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -206.0f,
-Y = 187.0f,
+X = -168.0f,
+Y = 152.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Platform1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -53.0f,
-Y = 179.0f,
+X = -40.0f,
+Y = 152.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "Platform1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 88.0f,
+Y = 152.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building8",
+HealthMax = 7.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 247.0f,
+Y = 301.0f,
 },
 });
 
