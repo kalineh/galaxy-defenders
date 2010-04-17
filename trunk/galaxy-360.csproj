@@ -63,7 +63,7 @@
   <ItemGroup>
     <Compile Include="CollisionGrid.cs" />
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
-    <Compile Include="Editor\Editors\TextureSelector.cs" />
+    <None Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Quadtree.cs">
       <SubType>Code</SubType>

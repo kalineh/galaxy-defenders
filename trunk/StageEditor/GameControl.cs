@@ -34,6 +34,13 @@ namespace StageEditor
             GameThread = new Thread(new ThreadStart(RunGameThread));
             CachedHandle = (object)this.Handle;
             HandleDestroyed += (sender, event_args) => Dispose();
+            Click += new EventHandler(GameControl_Click);
+        }
+
+        void GameControl_Click(object sender, EventArgs e)
+        {
+            this.FindForm().Focus();
+            this.Focus();
         }
 
         /// <summary>

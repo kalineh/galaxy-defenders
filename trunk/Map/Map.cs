@@ -112,6 +112,70 @@ namespace Galaxy
             new CMapNode() {
                 Current = "BonusStage1",
                 Next = new List<string>() {
+                    "Stage3",
+                    "*",
+                },
+                AvailablePrimaryWeaponParts = new List<string>() {
+                    "SpreadLaser",
+                    "Plasma",
+                },
+                AvailableSecondaryWeaponParts = new List<string>() {
+                    "SeekBomb",
+                },
+                AvailableSidekickWeaponParts = new List<string>() {
+                    "MiniShot",
+                },
+                AvailableChassisParts = new List<string>() {
+                    "BasicShip",
+                    "FighterShip",
+                    "StrongShip",
+                },
+                AvailableGeneratorParts = new List<string>() {
+                    "BasicGenerator",
+                    "CoreGenerator",
+                    "UltraGenerator",
+                },
+                AvailableShieldParts = new List<string>() {
+                    "BasicShield",
+                    "EnhancedShield",
+                    "UltraShield",
+                },
+            },
+
+            new CMapNode() {
+                Current = "Stage3",
+                Next = new List<string>() {
+                    "Stage4",
+                    "*",
+                },
+                AvailablePrimaryWeaponParts = new List<string>() {
+                    "FrontLaser",
+                    "Plasma",
+                },
+                AvailableSecondaryWeaponParts = new List<string>() {
+                    "Missile",
+                    "SeekBomb",
+                },
+                AvailableSidekickWeaponParts = new List<string>() {
+                    "MiniShot",
+                },
+                AvailableChassisParts = new List<string>() {
+                    "FighterShip",
+                    "StrongShip",
+                },
+                AvailableGeneratorParts = new List<string>() {
+                    "CoreGenerator",
+                    "UltraGenerator",
+                },
+                AvailableShieldParts = new List<string>() {
+                    "EnhancedShield",
+                    "UltraShield",
+                },
+            },
+
+            new CMapNode() {
+                Current = "Stage4",
+                Next = new List<string>() {
                     "*",
                 },
                 AvailablePrimaryWeaponParts = new List<string>() {

@@ -149,8 +149,24 @@ namespace Galaxy
                     CDebugRender.Box(transform, p, new Vector2(column_width, row_width), 1.0f, color);
                     int n = Entities[y][x].Count;
                     CDebugRender.Text(transform, p, n.ToString(), 1.5f, color);
+
+                    foreach (CEntity entity in Entities[y][x])
+                    {
+                        CollisionCircle circle = entity.Collision as CollisionCircle;
+                        CollisionAABB box = entity.Collision as CollisionAABB;
+                        if (circle != null)
+                        {
+                            // TODO: circle debug render!
+                            CDebugRender.Box(transform, circle.Position, circle.Radius * Vector2.One, 1.0f, XnaColor.Blue);
+                        }
+                        if (box != null)
+                        {
+                            CDebugRender.Box(transform, box.Position, box.Size, 1.0f, XnaColor.Red);
+                        }
+                    }
                 }
             }
+
         }
 
     }
