@@ -512,6 +512,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Static\Destroyed\Building6.png">
+      <Name>Building6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Static\Destroyed\Building7.png">
+      <Name>Building7</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Static\Destroyed\Building8.png">
+      <Name>Building8</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>
