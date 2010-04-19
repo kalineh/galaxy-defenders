@@ -96,6 +96,7 @@
     <Compile Include="CollisionGrid.cs" />
     <Compile Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Editor\Editors\DecorationTypeSelector.cs" />
+    <Compile Include="Enemy\Glob.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Fibers.cs" />

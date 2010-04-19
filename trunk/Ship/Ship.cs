@@ -350,28 +350,45 @@ namespace Galaxy
 
         public void TakeDamage(float damage)
         {
-            ApplyDamage(damage);
+            ApplyDamage(damage, true);
         }
 
         public void TakeCollideDamage(Vector2 source, float damage)
         {
             Vector2 offset = Physics.PositionPhysics.Position - source;
-            Vector2 dir = offset.Normal();
-            Physics.PositionPhysics.Velocity += dir * 7.0f;
-            ApplyDamage(damage);
+            if (!offset.IsEffectivelyZero())
+            {
+                Vector2 dir = offset.Normal();
+                Physics.PositionPhysics.Velocity += dir * 7.0f;
+            }
+            ApplyDamage(damage, true);
 
             // TODO: find a way to be sure we can disable this in all cases so it doesnt get left on (particularly after program exit)
             //Vibrate = 0.4f;
         }
 
-        private void ApplyDamage(float damage)
+        public void TakeDirectDamage(float damage)
+        {
+            ApplyDamage(damage, false);
+        }
+
+        public void TakeDirectArmorDamage(float damage)
+        {
+            float shield = CurrentShield;
+            CurrentShield = 0.0f;
+            ApplyDamage(damage, false);
+            CurrentShield = shield;
+        }
+
+        private void ApplyDamage(float damage, bool effects)
         {
             if (CurrentShield > 0.0f)
             {
                 CurrentShield -= damage;
                 if (CurrentShield > 0.0f)
                 {
-                    CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 3.0f, PlayerColor);
+                    if (effects)
+                        CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 3.0f, PlayerColor);
                     return;
                 }
 
@@ -388,7 +405,8 @@ namespace Galaxy
 
             if (CurrentShield <= 0.0f)
             {
-                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.5f);
+                if (effects)
+                    CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.5f);
             }
         }
     };

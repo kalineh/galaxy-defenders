@@ -139,5 +139,12 @@ namespace Galaxy
                 sprite_batch.DrawString(World.Game.DefaultFont, money.ToString(), MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
             }
         }
+
+        public void DrawEditor(SpriteBatch sprite_batch)
+        {
+            sprite_batch.DrawString(World.Game.DefaultFont, "E: " + (float)Energy, new Vector2(8.0f, 960.0f), Color.White);
+            sprite_batch.DrawString(World.Game.DefaultFont, "S: " + (float)Shield, new Vector2(8.0f, 990.0f), Color.White);
+            sprite_batch.DrawString(World.Game.DefaultFont, "A: " + (float)Armor, new Vector2(8.0f, 1020.0f), Color.White);
+        }
     }
 }

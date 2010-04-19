@@ -49,17 +49,17 @@ namespace Galaxy
         {
             Mover = null;
             CShip ship = World.GetNearestShip(Physics.PositionPhysics.Position);
-            if (ship != null)
+            if (ship == null)
+                return;
+
+            Vector2 offset = ship.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
+            float length = offset.Length();
+            const float limit = 750.0f;
+            if (offset.Length() < limit)
             {
-                Vector2 offset = ship.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
-                float length = offset.Length();
-                const float limit = 750.0f;
-                if (offset.Length() < limit)
-                {
-                    float t = 1.0f - length / limit;
-                    Vector2 force = offset.Normal() * t * t * 0.05f;
-                    Physics.PositionPhysics.Velocity += force;
-                }
+                float t = 1.0f - length / limit;
+                Vector2 force = offset.Normal() * t * t * 0.05f;
+                Physics.PositionPhysics.Velocity += force;
             }
         }
 
