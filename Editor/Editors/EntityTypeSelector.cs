@@ -57,6 +57,7 @@ namespace Galaxy
         {
             typeof(CBall),
             typeof(CBeamer),
+            typeof(CGlob),
             typeof(CIsosceles),
             typeof(CShootBall),
             typeof(CSpike),

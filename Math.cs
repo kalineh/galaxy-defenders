@@ -42,6 +42,11 @@ namespace Galaxy
             return result;
         }
 
+        public static bool IsEffectivelyZero(this Vector2 vector)
+        {
+            return vector.LengthSquared() < 0.00001f;
+        }
+
         public static void Set(this Vector2 self, float x, float y)
         {
             self.X = x;

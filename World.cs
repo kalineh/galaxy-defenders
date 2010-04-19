@@ -186,7 +186,13 @@ namespace Galaxy
         {
             // NOTE: no side panels in editor mode!
             if (Game.EditorMode)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
+                foreach (CHud hud in Huds)
+                    hud.DrawEditor(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
                 return;
+            }
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
@@ -309,6 +315,30 @@ namespace Galaxy
                 float length = offset.Length();
 
                 if (length < nearest)
+                {
+                    result = ship;
+                    nearest = length;
+                }
+            }
+
+            return result;
+        }
+
+        public CShip GetNearestShip(Vector2 position, float radius)
+        {
+            CShip result = null;
+            float nearest = float.MaxValue;
+            foreach (CShip ship in Players)
+            {
+                // died
+                if (ship.Physics == null)
+                    continue;
+
+                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 offset = ship_position - position;
+                float length = offset.Length();
+
+                if (length < nearest && length < radius)
                 {
                     result = ship;
                     nearest = length;

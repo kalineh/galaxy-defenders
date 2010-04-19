@@ -111,6 +111,10 @@ namespace Galaxy
 
         public bool IsInDieRegion()
         {
+            // TODO: is this a good result?
+            if (Physics == null)
+                return false;
+
             if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
                 return false;
 
@@ -163,6 +167,9 @@ namespace Galaxy
             OnDie();
             World.EntityDelete(this);
 
+            // TODO: making these null will make things crash
+            // TODO: maybe make an interface for this that handles death state?
+            // TODO: maybe the collision system and tree lookup should explicitly handle deadness
             Physics = null;
             Visual = null;
             Collision = null;
