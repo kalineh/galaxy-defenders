@@ -25,7 +25,7 @@ namespace Galaxy
         {
             World.Update();
 
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadStartPressed(PlayerIndex.One))
             {
                 // TODO: is this a good place?
                 // TODO: dont want to save here? this should be a cancel, not a save-quit

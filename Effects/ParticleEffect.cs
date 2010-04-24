@@ -14,6 +14,7 @@ namespace Galaxy
     {
         public CWorld World { get; set; }
         public List<CParticle> Particles { get; set; }
+        public List<CParticle> Cache { get; set; }
         public static CVisual Dot { get; set; }
         public static CVisual Triangle { get; set; }
 
@@ -23,6 +24,12 @@ namespace Galaxy
             Dot = CVisual.MakeSpriteUncached(world, "Textures/Effects/DotParticle");
             Triangle = CVisual.MakeSpriteUncached(world, "Textures/Effects/TriangleParticle");
             Particles = new List<CParticle>();
+            Cache = new List<CParticle>();
+
+            for (int i = 0; i < 1024; ++i)
+            {
+                Cache.Add(new CParticle());
+            }
         }
 
         public void Update()
@@ -41,6 +48,7 @@ namespace Galaxy
                         return;
                     }
 
+                    Cache.Add(particle);
                     Particles[i] = Particles[Particles.Count - 1];
                     Particles.RemoveAt(Particles.Count - 1);
                 }
@@ -80,6 +88,18 @@ namespace Galaxy
         {
             Particles.Add(particle);
         }
+
+        public CParticle GetCachedParticle()
+        {
+            if (Cache.Count == 0)
+            {
+                Cache.Add(new CParticle());
+            }
+
+            CParticle result = Cache[Cache.Count - 1];
+            Cache.RemoveAt(Cache.Count - 1);
+            return result;
+        }
     }
 
     public class CParticle
@@ -95,7 +115,7 @@ namespace Galaxy
         public float Alpha = 1.0f;
         public float AlphaDelta = (1.0f / 60.0f) * -1.0f;
         public int Lifetime = 60;
-        private int Frame = 0;
+        public int Frame = 0;
 
         public void Update()
         {
@@ -142,20 +162,20 @@ namespace Galaxy
             Vector2 ignore_camera = manager.World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY * 0.5f;
             for (int i = 0; i < Count; ++i)
             {
-                CParticle particle = new CParticle()
-                {
-                    Visual = Visual,
-                    Position = Position - PositionVariation * 0.5f + random.NextVector2() * PositionVariation,
-                    PositionDelta = PositionDelta - PositionDeltaVariation * 0.5f + random.NextVector2Variable() * PositionDeltaVariation + ignore_camera,
-                    Angle = Angle + -AngleDeltaVariation * 0.5f + AngleVariation * random.NextFloat(),
-                    AngleDelta = AngleDelta - AngleDeltaVariation * 0.5f + AngleDeltaVariation * random.NextFloat(),
-                    Scale = Scale - ScaleVariation * 0.5f + ScaleVariation * random.NextFloat(),
-                    ScaleDelta = ScaleDelta - ScaleDeltaVariation * 0.5f + ScaleDeltaVariation * random.NextFloat(),
-                    Color = Color,
-                    Alpha = Alpha - AlphaVariation * 0.5f + AlphaVariation * random.NextFloat(),
-                    AlphaDelta = AlphaDelta - AlphaDeltaVariation * 0.5f + AlphaDeltaVariation * random.NextFloat(),
-                    Lifetime = Lifetime + (int)(LifetimeVariation * -0.5f + LifetimeVariation * random.NextFloat()),
-                };
+                CParticle particle = manager.GetCachedParticle();
+
+                particle.Visual = Visual;
+                particle.Position = Position - PositionVariation * 0.5f + random.NextVector2() * PositionVariation;
+                particle.PositionDelta = PositionDelta - PositionDeltaVariation * 0.5f + random.NextVector2Variable() * PositionDeltaVariation + ignore_camera;
+                particle.Angle = Angle + -AngleDeltaVariation * 0.5f + AngleVariation * random.NextFloat();
+                particle.AngleDelta = AngleDelta - AngleDeltaVariation * 0.5f + AngleDeltaVariation * random.NextFloat();
+                particle.Scale = Scale - ScaleVariation * 0.5f + ScaleVariation * random.NextFloat();
+                particle.ScaleDelta = ScaleDelta - ScaleDeltaVariation * 0.5f + ScaleDeltaVariation * random.NextFloat();
+                particle.Color = Color;
+                particle.Alpha = Alpha - AlphaVariation * 0.5f + AlphaVariation * random.NextFloat();
+                particle.AlphaDelta = AlphaDelta - AlphaDeltaVariation * 0.5f + AlphaDeltaVariation * random.NextFloat();
+                particle.Lifetime = Lifetime + (int)(LifetimeVariation * -0.5f + LifetimeVariation * random.NextFloat());
+                particle.Frame = 0;
 
                 manager.Add(particle);
             }
