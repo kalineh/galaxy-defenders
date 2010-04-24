@@ -22,6 +22,7 @@ namespace Galaxy
                     TileY = 4,
                     AnimationSpeed = 1.0f,
                     Scale = scale,
+                    Color = Color.White,
                 }
             );
 
@@ -42,6 +43,7 @@ namespace Galaxy
                     TileY = 4,
                     AnimationSpeed = 1.0f,
                     Scale = scale,
+                    Color = Color.White,
                 }
             );
 
@@ -75,7 +77,7 @@ namespace Galaxy
             return animation;
         }
 
-        public static CEntity LaserHit(CWorld world, Vector2 position, float scale)
+        public static CEntity LaserHit(CWorld world, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation(world,
                 new COneShotAnimation.Settings()
@@ -87,6 +89,7 @@ namespace Galaxy
                     TileY = 4,
                     AnimationSpeed = 1.0f,
                     Scale = scale,
+                    Color = color,
                 }
             );
 

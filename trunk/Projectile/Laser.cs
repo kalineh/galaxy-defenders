@@ -74,7 +74,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.LaserHit(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.LaserHit(World, Physics.PositionPhysics.Position, 1.0f, Visual.Color);
             base.OnDie();
         }
     }
