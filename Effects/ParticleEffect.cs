@@ -14,12 +14,14 @@ namespace Galaxy
     {
         public CWorld World { get; set; }
         public List<CParticle> Particles { get; set; }
-        private CVisual Dot { get; set; }
+        public static CVisual Dot { get; set; }
+        public static CVisual Triangle { get; set; }
 
         public CParticleEffectManager(CWorld world)
         {
             World = world;
-            Dot = CVisual.MakeSpriteUncached(world, "Textures/Effects/Particle");
+            Dot = CVisual.MakeSpriteUncached(world, "Textures/Effects/DotParticle");
+            Triangle = CVisual.MakeSpriteUncached(world, "Textures/Effects/TriangleParticle");
             Particles = new List<CParticle>();
         }
 
@@ -61,7 +63,7 @@ namespace Galaxy
 
                 //sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, SpriteEffects.None, Depth);
                 sprite_batch.Draw(
-                    Dot.Texture, 
+                    particle.Visual.Texture,
                     particle.Position,
                     null,
                     color,
@@ -82,6 +84,7 @@ namespace Galaxy
 
     public class CParticle
     {
+        public CVisual Visual = null;
         public Vector2 Position = Vector2.Zero;
         public Vector2 PositionDelta = Vector2.Zero;
         public float Angle = 0.0f;
@@ -112,6 +115,7 @@ namespace Galaxy
     class CParticleGroupSpawner
     {
         public int Count = 1;
+        public CVisual Visual = null;
         public Vector2 Position = Vector2.Zero;
         public Vector2 PositionVariation = Vector2.Zero;
         public Vector2 PositionDelta = Vector2.Zero;
@@ -140,6 +144,7 @@ namespace Galaxy
             {
                 CParticle particle = new CParticle()
                 {
+                    Visual = Visual,
                     Position = Position - PositionVariation * 0.5f + random.NextVector2() * PositionVariation,
                     PositionDelta = PositionDelta - PositionDeltaVariation * 0.5f + random.NextVector2Variable() * PositionDeltaVariation + ignore_camera,
                     Angle = Angle + -AngleDeltaVariation * 0.5f + AngleVariation * random.NextFloat(),
@@ -160,13 +165,14 @@ namespace Galaxy
         {
             return new CParticleGroupSpawner()
             {
+                Visual = CParticleEffectManager.Dot,
                 Count = 8,
                 Position = position,
                 PositionDeltaVariation = new Vector2(4.0f, 4.0f),
-                Alpha = 0.5f,
-                AngleDeltaVariation = 0.01f,
+                Alpha = 0.8f,
+                AngleDeltaVariation = 0.1f,
                 Scale = new Vector2(0.3f, 0.3f),
-                ScaleVariation = new Vector2(0.1f, 0.1f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
                 ScaleDeltaVariation = new Vector2(1.0f / 10.0f * -1.0f, 1.0f / 10.0f * -1.0f),
                 Lifetime = 10,
                 Color = color,
@@ -177,13 +183,14 @@ namespace Galaxy
         {
             return new CParticleGroupSpawner()
             {
+                Visual = CParticleEffectManager.Triangle,
                 Count = 14,
                 Position = position,
                 PositionDeltaVariation = new Vector2(8.0f, 8.0f),
-                Alpha = 0.5f,
-                AngleDeltaVariation = 0.01f,
+                Alpha = 0.8f,
+                AngleDeltaVariation = 0.1f,
                 Scale = new Vector2(0.4f, 0.4f),
-                ScaleVariation = new Vector2(0.1f, 0.1f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
                 ScaleDeltaVariation = new Vector2(1.0f / 14.0f * -1.0f, 1.0f / 14.0f * -1.0f),
                 Lifetime = 14,
                 Color = color,

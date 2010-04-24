@@ -536,8 +536,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Effects\Particle.png">
-      <Name>Particle</Name>
+    <Compile Include="Textures\Effects\DotParticle.png">
+      <Name>DotParticle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Effects\TriangleParticle.png">
+      <Name>TriangleParticle</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
