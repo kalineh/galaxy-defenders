@@ -19,6 +19,7 @@
     <ManifestKeyFile>galaxy_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
+    <SignAssembly>true</SignAssembly>
     <PublishUrl>E:\Dev\galaxy-publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,11 +30,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>11</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +96,7 @@
     <Compile Include="CollisionGrid.cs" />
     <Compile Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Editor\Editors\DecorationTypeSelector.cs" />
+    <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\Glob.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
