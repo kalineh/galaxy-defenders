@@ -74,7 +74,9 @@ namespace Galaxy
         public void Play(string song_name)
         {
             // TODO: debug disable, volume hang bug
+#if !XBOX360
             return;
+#endif
 
             Song new_song = Galaxy.Content.Load<Song>(song_name);
             bool from_zero = new_song != Song;

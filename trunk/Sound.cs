@@ -32,8 +32,10 @@ namespace Galaxy
         {
             World = world;
             Registry = new Dictionary<string, CEntry>() {
-                { "sample-limit-1", new CEntry() { MaxConcurrent = 2, MinSpacing = 0 } },
-                { "sample-limit-2", new CEntry() { MaxConcurrent = 2, MinSpacing = 0 } },
+                { "LaserHit", new CEntry() { MaxConcurrent = 4, MinSpacing = 2 } },
+                { "ExplosionSound", new CEntry() { MaxConcurrent = 2, MinSpacing = 2 } },
+                { "PlayerShieldHit", new CEntry() { MaxConcurrent = 1, MinSpacing = 4 } },
+                { "BonusGet", new CEntry() { MaxConcurrent = 1, MinSpacing = 2 } },
             };
             PlayLock = new Dictionary<string, bool>();
             Fibers = new CFiberManager();

@@ -9,6 +9,7 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Threading;
 
 namespace Galaxy
 {
@@ -28,6 +29,7 @@ namespace Galaxy
         public List<CShip> Players { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
         public CParticleEffectManager ParticleEffects { get; set; }
+        public Thread ParticleUpdateThread { get; set; }
 
         public CWorld(CGalaxy game)
         {
