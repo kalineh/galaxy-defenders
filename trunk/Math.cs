@@ -105,6 +105,11 @@ namespace Galaxy
         {
             return Vector2.UnitX.Rotate(self.NextFloat() * MathHelper.TwoPi) * magnitude;
         }
+
+        public static Vector2 NextVector2Variable(this Random self)
+        {
+            return new Vector2(self.NextFloat(), self.NextFloat());
+        }
     }
 
     public static class Units

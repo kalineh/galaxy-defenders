@@ -150,7 +150,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.5f);
+            CEffect.EnemyExplosion(World, Physics.PositionPhysics.Position, 1.5f);
 
             World.Score += CalculateScoreFromHealth();
 

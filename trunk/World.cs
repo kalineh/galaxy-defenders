@@ -27,6 +27,7 @@ namespace Galaxy
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
+        public CParticleEffectManager ParticleEffects { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -41,6 +42,7 @@ namespace Galaxy
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
+            ParticleEffects = new CParticleEffectManager(this);
         }
 
         // TODO: stage definition param
@@ -98,6 +100,9 @@ namespace Galaxy
 
             CollisionGrid.Clear(GameCamera.Position.ToVector2());
             CollisionGrid.Insert(Entities.GetEnumerator());
+
+            // TODO: can be threaded
+            ParticleEffects.Update();
 
             Sound.Update();
         }
@@ -163,6 +168,10 @@ namespace Galaxy
                 CollisionGrid.Draw(GameCamera.WorldMatrix, Color.White);
             }
 #endif
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
+            ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
         }
 
         public void DrawBackground(CCamera camera)
