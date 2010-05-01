@@ -148,8 +148,8 @@ namespace Galaxy
                         // level 1
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
@@ -160,8 +160,8 @@ namespace Galaxy
                         // level 2
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
@@ -169,8 +169,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
@@ -181,8 +181,8 @@ namespace Galaxy
                         // level 3
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
@@ -190,8 +190,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
@@ -199,8 +199,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
@@ -208,8 +208,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
@@ -220,8 +220,8 @@ namespace Galaxy
                         // level 4
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -20.0f),
@@ -229,8 +229,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
@@ -238,8 +238,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
@@ -247,8 +247,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
@@ -256,8 +256,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
@@ -265,8 +265,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 20.0f),
@@ -277,8 +277,8 @@ namespace Galaxy
                         // level 5
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -28.0f),
@@ -286,8 +286,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -20.0f),
@@ -295,8 +295,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -12.0f),
@@ -304,8 +304,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -4.0f),
@@ -313,8 +313,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 4.0f),
@@ -322,8 +322,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 12.0f),
@@ -331,8 +331,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 20.0f),
@@ -340,8 +340,8 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
-                                Speed = 15.0f,
+                                ReloadTime = 0.14f,
+                                Speed = 17.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 28.0f),
