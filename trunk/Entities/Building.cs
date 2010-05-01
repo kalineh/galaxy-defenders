@@ -38,7 +38,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 20.0f);
         }
 
 #if XBOX360
