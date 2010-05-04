@@ -24,11 +24,16 @@ namespace Galaxy
         public bool Powerup { get; set; }
         private int BaseScore { get; set; }
 
+        // TODO: not good in enemy class?
+        public bool CanSeekerTarget { get; set; }
+        public bool IsSeekerTarget { get; set; }
+
         public CEnemy(CWorld world)
             : base(world)
         {
             Physics = new CPhysics();
             BaseScore = 10;
+            CanSeekerTarget = true;
         }
 
 #if XBOX360
@@ -42,6 +47,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             BaseScore = 10;
+            CanSeekerTarget = true;
         }
 #endif
 
@@ -120,6 +126,9 @@ namespace Galaxy
 
         public void OnCollide(CSeekBomb seek_bomb)
         {
+            if (CanSeekerTarget == false)
+                return;
+
             TakeDamage(seek_bomb.Damage);
             seek_bomb.Die();
         }

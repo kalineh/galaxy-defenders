@@ -408,6 +408,41 @@ namespace Galaxy
             return result;
         }
 
+        public CEnemy GetNearestEnemySeekable(Vector2 position, bool ignore_already_targeted)
+        {
+            CEnemy result = null;
+            float nearest = float.MaxValue;
+            foreach (CEntity entity in Entities)
+            {
+                if (entity.GetType().IsSubclassOf(typeof(CEnemy)) == false)
+                    continue;
+
+                CEnemy enemy = entity as CEnemy;
+
+                if (enemy.CanSeekerTarget == false)
+                    continue;
+
+                if (ignore_already_targeted && enemy.IsSeekerTarget == true)
+                    continue;
+
+                if (enemy.IsInScreen() == false)
+                    continue;
+
+                Vector2 enemy_position = enemy.Physics.PositionPhysics.Position;
+                Vector2 offset = enemy_position - position;
+                float length = offset.Length();
+
+                if (length < nearest)
+                {
+                    result = enemy;
+                    nearest = length;
+
+                }
+            }
+
+            return result;
+        }
+
         private void ProcessEntityUpdates()
         {
             foreach (CEntity entity in Entities)
