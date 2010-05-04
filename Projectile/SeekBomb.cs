@@ -76,7 +76,7 @@ namespace Galaxy
                     Target.Health <= 0.0f ||
                     Target.IsInScreen() == false)
                 {
-                    Target = null;
+                    ClearTarget();
                 }
             }
 
@@ -85,6 +85,7 @@ namespace Galaxy
             {
                 target_position = Target.Physics.PositionPhysics.Position;
             }
+
 
             SeekFramesRemaining = Math.Max(0, SeekFramesRemaining - 1);
             if (SeekFramesRemaining > 0)
@@ -100,6 +101,8 @@ namespace Galaxy
 
             Physics.AnglePhysics.Rotation += 0.1f;
 
+                    //CDebugRender.Text(World.GameCamera.WorldMatrix, Physics.PositionPhysics.Position, ((this as CShootBall).IsSeekerTarget).ToString(), Color.White);
+
             if (!IsInScreen())
                 Delete();
 
@@ -108,6 +111,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
+            ClearTarget();
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 2.5f);
             base.OnDie();
         }
@@ -121,8 +125,24 @@ namespace Galaxy
 
         private void FindTarget()
         {
-            CEnemy enemy = World.GetNearestEnemy(Physics.PositionPhysics.Position);
+            CEnemy enemy =
+                World.GetNearestEnemySeekable(Physics.PositionPhysics.Position, true) ??
+                World.GetNearestEnemySeekable(Physics.PositionPhysics.Position, false);
+
             Target = enemy;
+            if (Target != null)
+            {
+                Target.IsSeekerTarget = true;
+            }
+        }
+
+        private void ClearTarget()
+        {
+            if (Target != null)
+            {
+                Target.IsSeekerTarget = false;
+                Target = null;
+            }
         }
     }
 }

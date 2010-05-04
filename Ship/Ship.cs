@@ -359,7 +359,8 @@ namespace Galaxy
             if (!offset.IsEffectivelyZero())
             {
                 Vector2 dir = offset.Normal();
-                Physics.PositionPhysics.Velocity += dir * 7.0f;
+                Physics.PositionPhysics.Velocity *= 0.8f;
+                Physics.PositionPhysics.Velocity += dir * 7.0f * damage;
             }
             ApplyDamage(damage, true);
 

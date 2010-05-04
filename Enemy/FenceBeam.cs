@@ -66,7 +66,7 @@ namespace Galaxy
         {
             Vector2 collision_point = Physics.PositionPhysics.Position;
             collision_point.X = ship.Physics.PositionPhysics.Position.X;
-            ship.TakeCollideDamage(collision_point, 0.5f);
+            ship.TakeCollideDamage(collision_point, 1.0f);
         }
     }
 }

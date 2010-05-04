@@ -797,6 +797,41 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(165.0f),
                             },
                         },
+                        // level 4
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
+                                ReloadTime = 0.7f,
+                                Speed = 14.0f,
+                                Damage = 0.8f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, -10.0f),
+                                Rotation = MathHelper.ToRadians(195.0f),
+                            },
+                            new SWeaponData() {
+                                ReloadTime = 0.7f,
+                                Speed = 14.0f,
+                                Damage = 0.8f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, -5.0f),
+                                Rotation = MathHelper.ToRadians(185.0f),
+                            },
+                            new SWeaponData() {
+                                ReloadTime = 0.7f,
+                                Speed = 14.0f,
+                                Damage = 0.8f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 5.0f),
+                                Rotation = MathHelper.ToRadians(175.0f),
+                            },
+                            new SWeaponData() {
+                                ReloadTime = 0.7f,
+                                Speed = 14.0f,
+                                Damage = 0.8f,
+                                KickbackForce = 0.0f,
+                                Offset = new Vector2(0.0f, 10.0f),
+                                Rotation = MathHelper.ToRadians(165.0f),
+                            },
+                        },
                     },
                 }
             },

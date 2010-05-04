@@ -38,7 +38,7 @@ namespace Galaxy
                 },
                 Duration = new List<float>()
                 {
-                    1.0f * speed,
+                    0.5f * speed,
                     0.0f,
                 },
             };
@@ -56,7 +56,7 @@ namespace Galaxy
                 },
                 Duration = new List<float>()
                 {
-                    1.0f * speed,
+                    0.5f * speed,
                     0.0f,
                 },
 

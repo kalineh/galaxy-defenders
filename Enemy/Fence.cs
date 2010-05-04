@@ -14,7 +14,8 @@ namespace Galaxy
     public class CFence
         : CEnemy
     {
-        public CFence Partner { get; set; }
+        public CFence Child { get; set; }
+        public CFence Parent { get; set; }
         public bool HasChecked { get; set; }
         public CFenceBeam FenceBeam { get; set; }
         public Vector2 FenceOffset { get; set; }
@@ -26,8 +27,10 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
-            HealthMax = 5.0f;
+            HealthMax = 10.0f;
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
+            IgnoreCameraScroll = true;
+            CanSeekerTarget = false;
         }
 
 #if XBOX360
@@ -43,8 +46,10 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
-            HealthMax = 5.0f;
+            HealthMax = 10.0f;
             Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
+            IgnoreCameraScroll = true;
+            CanSeekerTarget = false;
         }
 #endif
 
@@ -68,10 +73,11 @@ namespace Galaxy
                 if (Math.Abs(offset.X) > 256.0f)
                     continue;
 
-                if (fence.Partner != null)
+                if (fence.Child != null)
                     continue;
 
-                Partner = fence;
+                Child = fence;
+                Child.Parent = this;
 
                 FenceOffset = offset * 0.5f;
                 FenceBeam = new CFenceBeam(World, Physics.PositionPhysics.Position + FenceOffset);
@@ -113,6 +119,12 @@ namespace Galaxy
             if (FenceBeam != null)
             {
                 FenceBeam.Die();
+            }
+
+            if (Parent != null && Parent.FenceBeam != null)
+            {
+                Parent.FenceBeam.Die();
+                Parent.FenceBeam = null;
             }
 
             base.OnDie();
