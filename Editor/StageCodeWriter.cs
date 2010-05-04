@@ -22,7 +22,7 @@ namespace Galaxy
         {
             Type type = instance.GetType();
             if (type == typeof(float))
-                return String.Format("{0:0.0#}f", (float)instance);
+                return String.Format("{0:0.0#}R", (float)instance);
             if (type == typeof(bool))
                 return instance.ToString().ToLower();
             return instance.ToString();
