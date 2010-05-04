@@ -69,19 +69,45 @@ namespace Galaxy
                     continue;
 
                 Vector2 local = entity.Physics.PositionPhysics.Position - upper + half_grid;
-                int x = (int)(local.X / column_width);
-                int y = (int)(local.Y / row_width);
 
-                int col = Math.Max(0, Math.Min(y, Columns - 1));
-                int row = Math.Max(0, Math.Min(x, Rows - 1));
+                float x = 0.0f;
+                float y = 0.0f;
 
-                Entities[col][row].Add(entity);
+                CollisionAABB aabb = entity.Collision as CollisionAABB;
+                CollisionCircle circle = entity.Collision as CollisionCircle;
 
-                // TODO: hack: put all the entities in surrounding grid too
-                //if (row + 1 < Rows) Entities[row + 1][col].Add(entity);
-                //if (row > 0) Entities[row - 1][col].Add(entity);
-                //if (col + 1 < Columns) Entities[row][col + 1].Add(entity);
-                //if (col > 0) Entities[row][col - 1].Add(entity);
+                if (aabb != null)
+                {
+                    x = aabb.Size.X * 0.5f;
+                    y = aabb.Size.Y * 0.5f;
+                }
+                else if (circle != null)
+                {
+                    x = circle.Radius;
+                    y = circle.Radius;
+                }
+
+                Vector2 halfsize = new Vector2(x, y);
+                Vector2 ul = local - halfsize;
+                Vector2 br = local + halfsize;
+
+                int min_x = (int)(ul.X / column_width);
+                int min_y = (int)(ul.Y / row_width);
+                int max_x = (int)(br.X / column_width);
+                int max_y = (int)(br.Y / row_width);
+
+                min_x = Math.Max(0, Math.Min(min_x, Columns - 1));
+                min_y = Math.Max(0, Math.Min(min_y, Rows - 1));
+                max_x = Math.Max(0, Math.Min(max_x, Columns - 1));
+                max_y = Math.Max(0, Math.Min(max_y, Rows - 1));
+
+                for (int j = min_y; j <= max_y; ++j)
+                {
+                    for (int i = min_x; i <= max_x; ++i)
+                    {
+                        Entities[j][i].Add(entity);
+                    }
+                }
             }
         }
 
@@ -145,10 +171,19 @@ namespace Galaxy
             {
                 for (int x = 0; x < Columns; x++)
                 {
-                    Vector2 p = Center - Dimensions / 2.0f + new Vector2(column_width * x, row_width * y);
-                    CDebugRender.Box(transform, p, new Vector2(column_width, row_width), 1.0f, color);
+                    Vector2 grid_topleft = new Vector2(column_width * x, row_width * y);
+                    Vector2 screen_topleft = Dimensions * 0.5f;
+                    Vector2 grid_size = new Vector2(column_width, row_width);
+                    Vector2 grid_halfsize = grid_size * 0.5f;
+                    Vector2 local_center = Center - screen_topleft + grid_topleft;
+
                     int n = Entities[y][x].Count;
-                    CDebugRender.Text(transform, p, n.ToString(), 1.5f, color);
+
+                    CDebugRender.Box(transform, local_center, grid_size, 1.0f, color);
+                    CDebugRender.Text(transform, local_center, n.ToString(), 1.5f, color);
+
+                    //Vector2 p = Center - Dimensions / 2.0f + new Vector2(column_width * x, row_width * y);
+                    //CDebugRender.Box(transform, center, new Vector2(column_width, row_width), 1.0f, color);
 
                     foreach (CEntity entity in Entities[y][x])
                     {
@@ -157,11 +192,11 @@ namespace Galaxy
                         if (circle != null)
                         {
                             // TODO: circle debug render!
-                            CDebugRender.Box(transform, circle.Position, circle.Radius * Vector2.One, 1.0f, XnaColor.Blue);
+                            CDebugRender.Box(transform, circle.Position, circle.Radius * Vector2.One * 2.0f, 1.0f, XnaColor.Blue);
                         }
                         if (box != null)
                         {
-                            CDebugRender.Box(transform, box.Position, box.Size, 1.0f, XnaColor.Red);
+                            CDebugRender.Box(transform, box.Position + box.Size * 0.5f, box.Size, 1.0f, XnaColor.Red);
                         }
                     }
                 }

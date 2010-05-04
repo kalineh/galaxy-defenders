@@ -150,10 +150,23 @@ namespace Galaxy
 
         public virtual float GetRadius()
         {
+            if (Collision != null)
+            {
+                CollisionCircle circle = Collision as CollisionCircle;
+                if (circle != null)
+                    return circle.Radius;
+
+                CollisionAABB aabb = Collision as CollisionAABB;
+                if (aabb != null)
+                    return Math.Max(aabb.Size.X, aabb.Size.Y) * 0.5f;
+            }
+
             if (Visual == null)
                 return 0.0f;
+
             float texture = Math.Max(Visual.Texture.Width, Visual.Texture.Height);
             float scale = Math.Max(Visual.Scale.X, Visual.Scale.Y);
+
             return texture * scale * 0.5f;
         }
 

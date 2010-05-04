@@ -240,10 +240,16 @@ namespace Galaxy
             UpdateAnimation();
         }
 
+        public void UpdateColor()
+        {
+            _CacheColor = Color;
+        }
+
         public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation)
         {
             sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, SpriteEffects.None, Depth);
 
+#if DEBUG
             if (DebugText != null)
             {
                 Vector2 size = GetDebugFont().MeasureString(DebugText);
@@ -263,6 +269,7 @@ namespace Galaxy
 
                 sprite_batch.DrawString(GetDebugFont(), DebugText, center, text_color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
             }
+#endif
         }
 
         public SpriteFont GetDebugFont()

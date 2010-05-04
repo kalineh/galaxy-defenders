@@ -62,6 +62,8 @@ namespace Galaxy
                 {
                     ChaseTarget = null;
                     AttachTarget = null;
+                    Die();
+                    return;
                 }
 
                 Vector2 target = ChaseTarget.Physics.PositionPhysics.Position;
