@@ -23,7 +23,7 @@ namespace Galaxy
             Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
-            Visual.Depth += CLayers.SubLayerIncrement * -1;
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             IgnoreCameraScroll = true;
         }
 
@@ -43,7 +43,7 @@ namespace Galaxy
             Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
-            Visual.Depth += CLayers.SubLayerIncrement * -1;
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             IgnoreCameraScroll = true;
         }
 #endif

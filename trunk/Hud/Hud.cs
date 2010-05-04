@@ -70,13 +70,13 @@ namespace Galaxy
             ShieldIconPosition = BasePosition + new Vector2(70.0f, -160.0f);
             ArmorIconPosition = BasePosition + new Vector2(70.0f, -100.0f);
 
-            EnergyVisual.Depth += CLayers.SubLayerIncrement;
-            ShieldVisual.Depth += CLayers.SubLayerIncrement;
-            ArmorVisual.Depth += CLayers.SubLayerIncrement;
-            EnergyIconVisual.Depth += CLayers.SubLayerIncrement;
-            ShieldIconVisual.Depth += CLayers.SubLayerIncrement;
-            ArmorIconVisual.Depth += CLayers.SubLayerIncrement;
-            MoneyIconVisual.Depth += CLayers.SubLayerIncrement;
+            EnergyVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            ShieldVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            ArmorVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            EnergyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            ShieldIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
+            MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * -1.0f;
 
             LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
             RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);

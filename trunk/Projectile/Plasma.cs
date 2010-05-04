@@ -74,7 +74,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             // TODO: plasma hit effect
-            CEffect.LaserHit(World, Physics.PositionPhysics.Position, 1.0f, Visual.Color);
+            CEffect.LaserHit(World, Physics.PositionPhysics.Position, Physics.PositionPhysics.Velocity.Normal(), 1.0f, Visual.Color);
             base.OnDie();
         }
     }
@@ -146,7 +146,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             // TODO: plasma hit effect
-            CEffect.LaserHit(World, Physics.PositionPhysics.Position, 1.0f, Visual.Color);
+            CEffect.LaserHit(World, Physics.PositionPhysics.Position, Physics.PositionPhysics.Velocity.Normal(), 1.0f, Visual.Color);
             base.OnDie();
         }
     }

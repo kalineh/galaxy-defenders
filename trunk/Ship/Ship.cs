@@ -293,7 +293,8 @@ namespace Galaxy
             {
                 Fire(WeaponSidekickRight);
             }
-            if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.LeftControl))
+
+            if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.LeftShift))
             {
                 FireAllWeapons();
             }
