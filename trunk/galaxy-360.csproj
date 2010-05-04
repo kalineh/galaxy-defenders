@@ -72,6 +72,7 @@
     <Compile Include="Quadtree.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StageDefinitions\Stage5.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="StageDefinitions\Stage4.cs" />
     <Compile Include="Stubs360.cs" />

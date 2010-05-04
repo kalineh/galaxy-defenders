@@ -38,7 +38,7 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 20.0f);
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, Vector2.Zero);
         }
 
 #if XBOX360
@@ -70,6 +70,10 @@ namespace Galaxy
             VisualNormal = VisualNormal ?? CVisual.MakeLabel(World, TextureName);
             VisualDestroyed = VisualDestroyed ?? CVisual.MakeLabel(World, "Destroyed/" + TextureName);
             Visual = VisualNormal;
+
+            Vector2 texture = new Vector2(Visual.Texture.Width, Visual.Texture.Height);
+            CollisionAABB aabb = Collision as CollisionAABB;
+            aabb.Size = texture * Visual.Scale * 0.75f;
         }
 
         // TODO: CWeapon OnCollide?
@@ -136,5 +140,11 @@ namespace Galaxy
             }
         }
 
+        public override void UpdateCollision()
+        {
+            // TODO: find a better way to sync these
+            CollisionAABB aabb = Collision as CollisionAABB;
+            aabb.Position = Physics.PositionPhysics.Position - aabb.Size * 0.5f;
+        }
     }
 }
