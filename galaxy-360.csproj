@@ -75,6 +75,7 @@
     <Compile Include="StageDefinitions\Stage5.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="StageDefinitions\Stage4.cs" />
+    <Compile Include="StageDefinitions\Stage6.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />

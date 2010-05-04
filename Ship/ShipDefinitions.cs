@@ -96,7 +96,7 @@ namespace Galaxy
                 }
             },
             {
-                "CoreGeneratorMark2",
+                "PowerGenerator",
                 new CGeneratorPart() {
                     Price = 4000,
                     Energy = 14.0f,

@@ -162,6 +162,7 @@
     </Compile>
     <Compile Include="StageDefinitions\Stage1.cs" />
     <Compile Include="StageDefinitions\Stage5.cs" />
+    <Compile Include="StageDefinitions\Stage6.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
     <Compile Include="Stage\Elements\StageElementCameraStop.cs" />

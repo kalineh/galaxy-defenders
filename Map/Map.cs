@@ -35,12 +35,11 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
                     "CoreGenerator",
-                    "CoreGeneratorMark2",
+                    "PowerGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
-                    "UltraShield",
                 },
             },
             new CMapNode() {
@@ -68,12 +67,12 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
                     "CoreGenerator",
-                    "UltraGenerator",
+                    "PowerGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
-                    "UltraShield",
+                    "PowerShield",
                 },
             },
             new CMapNode() {
@@ -106,7 +105,7 @@ namespace Galaxy
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
-                    "UltraShield",
+                    "PowerShield",
                 },
             },
             new CMapNode() {
@@ -133,11 +132,12 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
                     "CoreGenerator",
-                    "UltraGenerator",
+                    "PowerGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
+                    "PowerShield",
                     "UltraShield",
                 },
             },
@@ -165,10 +165,12 @@ namespace Galaxy
                 },
                 AvailableGeneratorParts = new List<string>() {
                     "CoreGenerator",
+                    "PowerGenerator",
                     "UltraGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "EnhancedShield",
+                    "PowerShield",
                     "UltraShield",
                 },
             },
@@ -198,6 +200,7 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",
                     "CoreGenerator",
+                    "PowerGenerator",
                     "UltraGenerator",
                 },
                 AvailableShieldParts = new List<string>() {

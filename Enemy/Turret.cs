@@ -23,7 +23,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
-            Visual.Depth = Visual.Depth + CLayers.SubLayerIncrement * -1;
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 4.0f;
 
             FireDelay = 0.75f;
@@ -45,6 +45,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 4.0f;
 
             FireDelay = 0.75f;

@@ -199,6 +199,25 @@ namespace Galaxy
             };
         }
 
+        public static CParticleGroupSpawner MakeSmallDirectionalExplosion(Vector2 position, Vector2 direction, Color color)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 8,
+                Position = position,
+                PositionDelta = direction * -0.5f + new Vector2(0.0f, 2.0f),
+                PositionDeltaVariation = new Vector2(2.5f, 2.5f),
+                Alpha = 0.8f,
+                AngleDeltaVariation = 0.1f,
+                Scale = new Vector2(0.3f, 0.3f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(1.0f / 10.0f * -1.0f, 1.0f / 10.0f * -1.0f),
+                Lifetime = 10,
+                Color = color,
+            };
+        }
+
         public static CParticleGroupSpawner MakeBigExplosion(Vector2 position, Color color)
         {
             return new CParticleGroupSpawner()
@@ -210,6 +229,26 @@ namespace Galaxy
                 Alpha = 0.8f,
                 AngleDeltaVariation = 0.1f,
                 Scale = new Vector2(0.4f, 0.4f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(1.0f / 14.0f * -1.0f, 1.0f / 14.0f * -1.0f),
+                Lifetime = 14,
+                Color = color,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeBuildingExplosion(Vector2 position, Color color, float power)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Triangle,
+                Count = 6 + (int)power,
+                Position = position,
+                PositionVariation = new Vector2(16.0f, 16.0f),
+                PositionDelta = new Vector2(0.0f, 2.0f), // anti-scroll
+                PositionDeltaVariation = new Vector2(8.0f, 8.0f),
+                Alpha = 0.8f,
+                AngleDeltaVariation = 0.1f,
+                Scale = new Vector2(0.5f, 0.5f) + new Vector2(0.05f * power),
                 ScaleVariation = new Vector2(-0.1f, -0.1f),
                 ScaleDeltaVariation = new Vector2(1.0f / 14.0f * -1.0f, 1.0f / 14.0f * -1.0f),
                 Lifetime = 14,

@@ -148,8 +148,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Music\Stage1.mp3">
-      <Name>Stage1</Name>
+    <Compile Include="Music\A.mp3">
+      <Name>A</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
@@ -391,13 +391,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Music\BonusStage1.mp3">
-      <Name>BonusStage1</Name>
+    <Compile Include="Music\C.mp3">
+      <Name>C</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>
-    <Compile Include="Music\Stage2.mp3">
-      <Name>Stage2</Name>
+    <Compile Include="Music\B.mp3">
+      <Name>B</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
     </Compile>

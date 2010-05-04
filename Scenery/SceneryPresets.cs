@@ -47,14 +47,14 @@ namespace Galaxy
             );
         }
 
-        public static CScenery DullGreen(CWorld world)
+        public static CScenery DullGray(CWorld world)
         {
             return new CSceneryChain(world,
                 new CGradientBackground(world,
-                    new Color(47, 91, 87),
-                    new Color(47, 91, 87),
-                    new Color(47, 91, 87),
-                    new Color(47, 91, 87)
+                    new Color(27, 76, 87),
+                    new Color(27, 76, 87),
+                    new Color(77, 76, 87),
+                    new Color(77, 76, 87)
                 ),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 0.6f, Vector2.UnitY * 11.0f),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 0.6f, Vector2.UnitY * 12.0f)

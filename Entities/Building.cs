@@ -109,13 +109,13 @@ namespace Galaxy
 
         private int CalculateScoreFromHealth()
         {
-            int base_ = (int)HealthMax * 10;
+            int base_ = (int)HealthMax * 15;
             return base_ - base_ % 10;
         }
 
         private void OnDestroyed()
         {
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.BuildingExplosion(World, Physics.PositionPhysics.Position, HealthMax);
             World.Score += CalculateScoreFromHealth();
             Visual = VisualDestroyed;
             Collision = null;

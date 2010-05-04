@@ -644,7 +644,7 @@ namespace Galaxy
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = 0.0f,
-                                Energy = 0.5f,
+                                Energy = 0.7f,
                             },
                             new SWeaponData() {
                                 ReloadTime = 0.25f,
@@ -679,7 +679,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -687,10 +687,9 @@ namespace Galaxy
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
+                            new SWeaponData() { ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -698,7 +697,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -709,7 +708,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 16.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -717,7 +716,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -725,7 +724,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 2.0f,
+                                Damage = 1.2f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -16.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -841,17 +840,18 @@ namespace Galaxy
             //
             { "MiniShot", 
                 new SWeaponDefinition() {
-                    BasePrice = 1500,
+                    BasePrice = 2500,
                     Sound = null,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             new SWeaponData() {
                                 ReloadTime = 0.075f,
                                 Speed = 18.0f,
-                                Damage = 0.01f,
+                                Damage = 0.075f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(0.0f),
+                                Energy = 0.015f,
                             },
                         },
                     },
