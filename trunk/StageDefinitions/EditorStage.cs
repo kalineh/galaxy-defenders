@@ -33,7 +33,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
-Paused = false,
+Paused = true,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -85,7 +85,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
-Paused = false,
+Paused = true,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -137,7 +137,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
-Paused = false,
+Paused = true,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -166,6 +166,83 @@ HealthMax = 7.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 304.0f,
 Y = -1552.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -97.0f,
+Y = 49.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 23.0f,
+Y = 65.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 48.0f,
+Y = -600.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 152.0f,
+Y = -760.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -56.0f,
+Y = -480.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -42.0f,
+Y = -50.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+HealthMax = 6.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -141.0f,
+Y = -61.0f,
 },
 });
 

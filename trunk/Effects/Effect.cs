@@ -35,6 +35,31 @@ namespace Galaxy
             return animation;
         }
 
+        public static CEntity MissileExplosion(CWorld world, Vector2 position, float scale, Color color)
+        {
+            COneShotAnimation animation = new COneShotAnimation(world,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = world.Random.NextAngle(),
+                    TextureName = "Textures/Effects/MissileExplosion",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 1.0f,
+                    Scale = scale,
+                    Color = color,
+                }
+            );
+
+            world.Sound.Play("ExplosionSound", 0.1f);
+            world.EntityAdd(animation);
+
+            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, color);
+            light_spawner.Spawn(world.ParticleEffects);
+
+            return animation;
+        }
+
         public static void BuildingExplosion(CWorld world, Vector2 position, float power)
         {
             world.Sound.Play("ExplosionSound", 0.1f);
