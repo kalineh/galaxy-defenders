@@ -209,6 +209,41 @@ namespace Galaxy
                     "UltraShield",
                 },
             },
+
+            new CMapNode() {
+                Current = "Stage5",
+                Next = new List<string>() {
+                    "*",
+                },
+                AvailablePrimaryWeaponParts = new List<string>() {
+                    "FrontLaser",
+                    "SpreadLaser",
+                    "Plasma",
+                },
+                AvailableSecondaryWeaponParts = new List<string>() {
+                    "Missile",
+                    "SeekBomb",
+                },
+                AvailableSidekickWeaponParts = new List<string>() {
+                    "MiniShot",
+                },
+                AvailableChassisParts = new List<string>() {
+                    "BasicShip",
+                    "FighterShip",
+                    "StrongShip",
+                },
+                AvailableGeneratorParts = new List<string>() {
+                    "BasicGenerator",
+                    "CoreGenerator",
+                    "PowerGenerator",
+                    "UltraGenerator",
+                },
+                AvailableShieldParts = new List<string>() {
+                    "BasicShield",
+                    "EnhancedShield",
+                    "UltraShield",
+                },
+            },
         };
 
         public static CMapNode GetMapNodeByStageName(string stage_name)

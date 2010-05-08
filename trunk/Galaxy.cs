@@ -162,7 +162,7 @@ namespace Galaxy
                 this.Exit();
 
             // State update.
-            if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) || State.GetType() != typeof(CStateGame))
+            if (!Keyboard.GetState().IsKeyDown(Keys.P) || State.GetType() != typeof(CStateGame))
                 State.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);

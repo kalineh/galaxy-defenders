@@ -79,6 +79,13 @@ namespace Galaxy
             laser.Die();
         }
 
+        public void OnCollide(CBigLaser laser)
+        {
+            Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
+            TakeDamage(laser.Damage);
+            laser.Die();
+        }
+
         public void OnCollide(CMissile missile)
         {
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;

@@ -36,7 +36,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -1016.0f,
 Y = -2088.0f,
@@ -82,7 +82,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building4",
-HealthMax = 11.0f,
+HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -1008.0f,
 Y = -2224.0f,
@@ -284,7 +284,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -1044.78f,
 Y = -6174.85f,
@@ -962,7 +962,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.0f,
 Y = -3832.0f,
@@ -1422,7 +1422,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -905.04f,
 Y = -6836.45f,
@@ -1468,7 +1468,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building4",
-HealthMax = 11.0f,
+HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -897.04f,
 Y = -6972.45f,
@@ -2243,7 +2243,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 368.0f,
 Y = -11696.0f,
@@ -3402,7 +3402,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -1336.0f,
 Y = -15808.0f,
@@ -3448,7 +3448,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building4",
-HealthMax = 11.0f,
+HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -1337.58f,
 Y = -15947.55f,
@@ -3483,7 +3483,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -104.0f,
 Y = -16024.0f,
@@ -3494,7 +3494,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
 Y = -16024.0f,
@@ -3505,7 +3505,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 6.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
 Y = -16024.0f,
@@ -3853,6 +3853,58 @@ HealthMax = 3.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -12224.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 15,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -16.0f,
+Y = -9256.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSin() {
+Frequency = 0.05f,
+Amplitude = 4.0f,
+Down = 1.0f,
+SpeedMultiplier = 4.0f,
+StartFrame = 1364,
+Paused = false,
+Name = "MoveSin",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -16.0f,
+Y = -9256.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 15,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 16.0f,
+Y = -14632.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSin() {
+Frequency = 0.05f,
+Amplitude = 4.0f,
+Down = 1.0f,
+SpeedMultiplier = 4.0f,
+StartFrame = 1364,
+Paused = false,
+Name = "MoveSin",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 16.0f,
+Y = -14632.0f,
 },
 });
 

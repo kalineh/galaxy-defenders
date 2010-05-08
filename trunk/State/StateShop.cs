@@ -74,8 +74,8 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
                     new CMenu.MenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
                     new CMenu.MenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
-                    new CMenu.MenuOption() { Text = "* Give 1000 Money", Select = EditMoney, Data = 1000 },
-                    new CMenu.MenuOption() { Text = "* Take 1000 Money", Select = EditMoney, Data = -1000 },
+                    new CMenu.MenuOption() { Text = "* Give 10000 Money", Select = EditMoney, Data = 10000 },
+                    new CMenu.MenuOption() { Text = "* Take 10000 Money", Select = EditMoney, Data = -10000 },
                     new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true },
                 }
             };

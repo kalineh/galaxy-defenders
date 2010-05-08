@@ -27,7 +27,10 @@ namespace Galaxy
 
         protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CLaser laser = CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            if (damage >= 0.4f)
+                CBigLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            else
+                CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
         }
     };
 
@@ -52,7 +55,10 @@ namespace Galaxy
 
         protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CLaser laser = CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            if (damage >= 0.4f)
+                CBigLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            else
+                CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
         }
     };
 }

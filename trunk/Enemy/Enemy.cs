@@ -117,6 +117,12 @@ namespace Galaxy
             TakeDamage(laser.Damage);
             laser.Die();
         }
+
+        public void OnCollide(CBigLaser laser)
+        {
+            TakeDamage(laser.Damage);
+            laser.Die();
+        }
         
         public void OnCollide(CMissile missile)
         {
@@ -164,7 +170,14 @@ namespace Galaxy
 
             World.Score += CalculateScoreFromHealth();
 
-            for (int i = 0; i < Coins; i++)
+            int big_coins = Coins / 10;
+            for (int i = 0; i < big_coins; i++)
+            {
+                World.EntityAdd(new CBigBonus(World, Physics.PositionPhysics.Position));
+            }
+
+            int small_coins = Coins - big_coins * 10;
+            for (int i = 0; i < small_coins; i++)
             {
                 World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
             }

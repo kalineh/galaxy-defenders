@@ -56,7 +56,6 @@ namespace Galaxy
             Offset = data.Offset;
             Rotation = data.Rotation;
             Energy = data.Energy;
-
             Cooldown = Math.Min(Cooldown, ReloadTime);
         }
 
