@@ -84,7 +84,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 2.5f);
+            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.5f, Visual.Color);
             base.OnDie();
         }
     }
