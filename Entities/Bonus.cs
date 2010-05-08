@@ -101,4 +101,32 @@ namespace Galaxy
             Die();
         }
     }
+
+    public class CBigBonus
+        : CBonus
+    {
+        public CBigBonus(CWorld world, Vector2 position)
+            : base(world, position)
+        {
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/BigBonus"), Color.White);
+            Visual.Depth = CLayers.Entity + CLayers.SubLayerIncrement * 1;
+        }
+
+#if XBOX360
+        public void Init360(CWorld world, Vector2 position)
+        {
+            base.Init360(world, position);
+
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/BigBonus"), Color.White);
+            Visual.Depth = CLayers.Entity + CLayers.SubLayerIncrement * 1;
+        }
+#endif
+
+        public new void OnCollide(CShip ship)
+        {
+            World.Score += 500;
+            World.Sound.Play("BonusGet", 0.25f);
+            Die();
+        }
+    }
 }

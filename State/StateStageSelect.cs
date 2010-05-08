@@ -57,9 +57,11 @@ namespace Galaxy
                 {
                     Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
                     Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* BonusStage1", Select = StartGame, Data = "BonusStage1" });
                     Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* BonusStage1", Select = StartGame, Data = "BonusStage1" });
                     Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
+                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
                 }
 #endif
             }

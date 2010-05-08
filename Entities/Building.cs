@@ -83,6 +83,12 @@ namespace Galaxy
             laser.Die();
         }
 
+        public void OnCollide(CBigLaser laser)
+        {
+            TakeDamage(laser.Damage);
+            laser.Die();
+        }
+
         public void OnCollide(CMissile missile)
         {
             TakeDamage(missile.Damage);

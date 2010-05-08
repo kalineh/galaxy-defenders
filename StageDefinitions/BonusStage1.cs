@@ -6,7 +6,7 @@ namespace Stages {
 public class BonusStage1 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("BonusStage1");
-stage.ScrollSpeed = 4;
+stage.ScrollSpeed = 4.0f;
 stage.SceneryName = "BonusStage1";
 stage.MusicName = "Music/C";
 stage.AddElement(0, 
@@ -25,7 +25,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building1",
-HealthMax = 7.0f,
+HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -761.72f,
 Y = 109.02f,
@@ -36,7 +36,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 7.0f,
+HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -774.82f,
 Y = -0.98f,
@@ -74,7 +74,7 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building4",
-HealthMax = 11.0f,
+HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -625.43f,
 Y = 13.19f,
@@ -585,6 +585,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -610,6 +611,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -635,6 +637,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -660,6 +663,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -685,6 +689,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -710,6 +715,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -735,6 +741,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -760,6 +767,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -785,6 +793,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -810,6 +819,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -835,6 +845,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -860,6 +871,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -885,6 +897,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -910,6 +923,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -935,6 +949,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -960,6 +975,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -985,6 +1001,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1010,6 +1027,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1035,6 +1053,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1060,6 +1079,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1085,6 +1105,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1110,6 +1131,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1135,6 +1157,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1160,6 +1183,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1185,6 +1209,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1210,6 +1235,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1235,6 +1261,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1260,6 +1287,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1285,6 +1313,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1310,6 +1339,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1335,6 +1365,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1360,6 +1391,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1385,6 +1417,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1410,6 +1443,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1435,6 +1469,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1460,6 +1495,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1485,6 +1521,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1510,6 +1547,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1535,6 +1573,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1560,6 +1599,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1585,6 +1625,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1610,6 +1651,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1635,6 +1677,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1660,6 +1703,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1685,6 +1729,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1710,6 +1755,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1735,6 +1781,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1760,6 +1807,7 @@ Velocity = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
 Y = 1.0f,
 },
+Paused = false,
 Name = "MoveDown",
 },
 CustomElement = null,
@@ -1797,6 +1845,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -1834,6 +1883,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -1871,6 +1921,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -1908,6 +1959,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -1945,6 +1997,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -1982,6 +2035,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2019,6 +2073,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2056,6 +2111,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2093,6 +2149,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2130,6 +2187,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2167,6 +2225,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2204,6 +2263,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2241,6 +2301,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2278,6 +2339,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2315,6 +2377,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2352,6 +2415,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2389,6 +2453,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2426,6 +2491,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2463,6 +2529,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2500,6 +2567,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2537,6 +2605,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2574,6 +2643,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2611,6 +2681,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2648,6 +2719,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2685,6 +2757,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2722,6 +2795,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2759,6 +2833,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2796,6 +2871,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -2833,6 +2909,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2870,6 +2947,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2907,6 +2985,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2944,6 +3023,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -2981,6 +3061,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3018,6 +3099,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3078,8 +3160,8 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
-Y = -14984.0f,
+X = 48.0f,
+Y = -19288.0f,
 },
 });
 stage.AddElement(0, 
@@ -3111,6 +3193,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3148,6 +3231,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3241,6 +3325,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3278,6 +3363,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3315,6 +3401,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3352,6 +3439,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3389,6 +3477,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3426,6 +3515,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3463,6 +3553,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3500,6 +3591,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3537,6 +3629,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3574,6 +3667,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -3611,6 +3705,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3648,6 +3743,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3685,6 +3781,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3722,6 +3819,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3759,6 +3857,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3884,6 +3983,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3921,6 +4021,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3958,6 +4059,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -3995,6 +4097,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4032,6 +4135,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4069,6 +4173,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4106,6 +4211,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4143,6 +4249,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4180,6 +4287,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4217,6 +4325,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4254,6 +4363,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4291,6 +4401,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4328,6 +4439,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4365,6 +4477,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4402,6 +4515,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4439,6 +4553,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4476,6 +4591,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpRight",
 },
 CustomElement = null,
@@ -4513,6 +4629,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4550,6 +4667,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4587,6 +4705,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4624,6 +4743,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4661,6 +4781,7 @@ Duration = new System.Collections.Generic.List<System.Single>() {
 VelocityLerpRate = 0.13f,
 AlwaysMaxSpeed = true,
 SpeedMultiplier = 3.0f,
+Paused = false,
 Name = "MoveDownLerpLeft",
 },
 CustomElement = null,
@@ -4672,8 +4793,1738 @@ Y = -12512.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
+X = 40.0f,
+Y = -16536.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 320.0f,
+Y = -13032.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 320.0f,
+Y = -13032.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -312.0f,
+Y = -13112.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -16.0f,
+Y = -13280.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 72.0f,
+Y = -12976.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 320.0f,
+Y = -13216.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 184.0f,
+Y = -13184.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 184.0f,
+Y = -13184.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 328.0f,
+Y = -13384.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 328.0f,
+Y = -13384.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 112.0f,
+Y = -13512.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 376.0f,
 Y = -13664.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 112.0f,
+Y = -13936.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 304.0f,
+Y = -14112.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -248.0f,
+Y = -14080.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -72.0f,
+Y = -13768.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -352.0f,
+Y = -13592.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -392.0f,
+Y = -13128.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -392.0f,
+Y = -13128.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -184.0f,
+Y = -13344.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -184.0f,
+Y = -13344.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -56.0f,
+Y = -13552.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -56.0f,
+Y = -13552.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -296.0f,
+Y = -13776.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -296.0f,
+Y = -13776.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -240.0f,
+Y = -13976.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -240.0f,
+Y = -13976.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -24.0f,
+Y = -14016.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -24.0f,
+Y = -14016.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 104.0f,
+Y = -13688.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 104.0f,
+Y = -13688.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 336.0f,
+Y = -13840.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 336.0f,
+Y = -13840.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 224.0f,
+Y = -13992.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 224.0f,
+Y = -13992.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -144.0f,
+Y = -13104.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -144.0f,
+Y = -13104.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -368.0f,
+Y = -12816.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -368.0f,
+Y = -12816.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -176.0f,
+Y = -12904.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -176.0f,
+Y = -12904.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 8.0f,
+Y = -12712.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 8.0f,
+Y = -12712.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 240.0f,
+Y = -12808.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 240.0f,
+Y = -12808.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -280.0f,
+Y = -12784.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 216.0f,
+Y = -12800.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 520.0f,
+Y = -12976.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -384.0f,
+Y = -14440.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 216.0f,
+Y = -14480.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -96.0f,
+Y = -14744.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 296.0f,
+Y = -14952.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -216.0f,
+Y = -15064.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 256.0f,
+Y = -15272.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "WhiteBlock2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -376.0f,
+Y = -15448.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -168.0f,
+Y = -14384.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -168.0f,
+Y = -14384.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 40.0f,
+Y = -15008.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 40.0f,
+Y = -15008.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -192.0f,
+Y = -15232.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -192.0f,
+Y = -15232.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -496.0f,
+Y = -14984.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -496.0f,
+Y = -14984.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -168.0f,
+Y = -14848.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -168.0f,
+Y = -14848.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -360.0f,
+Y = -14616.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -360.0f,
+Y = -14616.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -440.0f,
+Y = -14304.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -440.0f,
+Y = -14304.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -40.0f,
+Y = -14536.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -40.0f,
+Y = -14536.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 152.0f,
+Y = -14168.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 152.0f,
+Y = -14168.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 384.0f,
+Y = -14336.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 384.0f,
+Y = -14336.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 312.0f,
+Y = -14792.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 312.0f,
+Y = -14792.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 112.0f,
+Y = -14880.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 112.0f,
+Y = -14880.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 136.0f,
+Y = -14632.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 136.0f,
+Y = -14632.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 424.0f,
+Y = -14608.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 424.0f,
+Y = -14608.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 456.0f,
+Y = -14944.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 456.0f,
+Y = -14944.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 216.0f,
+Y = -15104.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 216.0f,
+Y = -15104.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 432.0f,
+Y = -15248.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = -1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpLeft",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 432.0f,
+Y = -15248.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -144.0f,
+Y = -15064.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -144.0f,
+Y = -15064.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -360.0f,
+Y = -15240.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -360.0f,
+Y = -15240.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -15768.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -15768.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 72.0f,
+Y = -15880.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 72.0f,
+Y = -15880.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -8.0f,
+Y = -15880.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -8.0f,
+Y = -15880.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -15984.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -15984.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -56.0f,
+Y = -15984.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -56.0f,
+Y = -15984.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CBonusShip),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 120.0f,
+Y = -15984.0f,
+},
+},
+CustomMover = new Galaxy.CMoverFixedVelocity() {
+SpeedMultiplier = 2.0f,
+Velocity = new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+Paused = false,
+Name = "MoveDown",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 120.0f,
+Y = -15984.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CShootBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -16.0f,
+Y = -14264.0f,
+},
+},
+CustomMover = new Galaxy.CMoverSequence() {
+Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
+new Microsoft.Xna.Framework.Vector2() {
+X = 0.0f,
+Y = 1.0f,
+},
+new Microsoft.Xna.Framework.Vector2() {
+X = 1.0f,
+Y = 0.0f,
+},
+},
+Duration = new System.Collections.Generic.List<System.Single>() {
+0.1f,
+0.0f,
+},
+VelocityLerpRate = 0.13f,
+AlwaysMaxSpeed = true,
+SpeedMultiplier = 3.0f,
+Paused = false,
+Name = "MoveDownLerpRight",
+},
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -16.0f,
+Y = -14264.0f,
 },
 });
 
