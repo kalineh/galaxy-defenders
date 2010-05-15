@@ -69,5 +69,11 @@ namespace Galaxy
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.PositionPhysics.Position;
         }
+
+        protected override void OnDie()
+        {
+            World.Sound.Play("WeaponHitMiniShot", 1.0f);
+            base.OnDie();
+        }
     }
 }

@@ -68,7 +68,7 @@ namespace Galaxy
         {
             Galaxy = galaxy;
             CrossFader = null;
-            MediaPlayer.Volume = 0.3f;
+            MediaPlayer.Volume = 0.5f;
         }
 
         public void Play(string song_name)
@@ -90,7 +90,7 @@ namespace Galaxy
             if (from_zero)
             {
                 MediaPlayer.Stop();
-                MediaPlayer.Volume = 0.25f;
+                MediaPlayer.Volume = 0.5f;
                 try
                 {
                     MediaPlayer.Play(Song);

@@ -12,6 +12,37 @@ namespace Galaxy
         public static List<CMapNode> Nodes = new List<CMapNode>()
         {
             new CMapNode() {
+                Current = "EditorStage",
+                Next = new List<string>() {
+                    "*",
+                },
+                AvailablePrimaryWeaponParts = new List<string>() {
+                    "FrontLaser",
+                    "SpreadLaser",
+                    "Plasma",
+                },
+                AvailableSecondaryWeaponParts = new List<string>() {
+                    "Missile",
+                    "SeekBomb",
+                },
+                AvailableSidekickWeaponParts = new List<string>() {
+                    "MiniShot",
+                },
+                AvailableChassisParts = new List<string>() {
+                    "BasicShip",
+                    "FighterShip",
+                },
+                AvailableGeneratorParts = new List<string>() {
+                    "BasicGenerator",
+                    "CoreGenerator",
+                    "PowerGenerator",
+                },
+                AvailableShieldParts = new List<string>() {
+                    "BasicShield",
+                    "EnhancedShield",
+                },
+            },
+            new CMapNode() {
                 Current = "Start",
                 Next = new List<string>() {
                     "Stage1",

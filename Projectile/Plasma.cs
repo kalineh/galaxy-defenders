@@ -75,6 +75,7 @@ namespace Galaxy
         {
             // TODO: plasma hit effect
             CEffect.LaserHit(World, Physics.PositionPhysics.Position, Physics.PositionPhysics.Velocity.Normal(), 1.0f, Visual.Color);
+            //World.Sound.Play("WeaponHitPlasma", 1.0f);
             base.OnDie();
         }
     }

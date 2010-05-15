@@ -113,6 +113,7 @@ namespace Galaxy
         {
             ClearTarget();
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 2.5f);
+            World.Sound.Play("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }
 

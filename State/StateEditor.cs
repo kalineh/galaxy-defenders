@@ -79,6 +79,7 @@ namespace Galaxy
             if (Game.Input.IsKeyPressed(Keys.Delete))
             {
                 SelectedEntities.ForEach(entity => World.EntityDelete(entity));
+                SelectedEntities.Clear();
             }
 
             if (Game.Input.IsKeyDown(Keys.LeftControl) && Game.Input.IsKeyPressed(Keys.G))
