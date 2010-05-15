@@ -26,9 +26,9 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 4.0f;
 
-            FireDelay = 0.75f;
+            FireDelay = 1.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 1.0f;
+            FireDamage = 2.0f;
             FireSpeed = 14.0f;
         }
 
@@ -48,9 +48,9 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 4.0f;
 
-            FireDelay = 0.75f;
+            FireDelay = 1.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 1.0f;
+            FireDamage = 2.0f;
             FireSpeed = 14.0f;
         }
 #endif
@@ -78,6 +78,7 @@ namespace Galaxy
             rotation += World.Random.NextAngle() * 0.015f;
 
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
+            World.Sound.Play("EnemyShoot");
             FireCooldown = Time.ToFrames(FireDelay);
         }
 

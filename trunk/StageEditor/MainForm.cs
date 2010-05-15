@@ -105,18 +105,21 @@ namespace StageEditor
             // TODO: this is crap, dont do text and validation, make some easier dropdown selectors (types, types in namespace, functions in class, etc)
             Galaxy.CStageDefinition definition = StagePropertyGrid.SelectedObject as Galaxy.CStageDefinition;
 
-            try
+            if (e.ChangedItem.Label == "Music")
             {
-                Game.Game.Content.Load<Song>(definition.MusicName);
-                if (typeof(Galaxy.SceneryPresets).GetMethod(definition.SceneryName) == null)
-                    throw new Exception();
-            }
-            catch
-            {
-                e.ChangedItem.PropertyDescriptor.SetValue(StagePropertyGrid.SelectedObject, e.OldValue);
-                NotifyIcon notify = new NotifyIcon();
-                notify.BalloonTipText = "invalid";
-                return;
+                try
+                {
+                    Game.Game.Content.Load<Song>(definition.MusicName);
+                    if (typeof(Galaxy.SceneryPresets).GetMethod(definition.SceneryName) == null)
+                        throw new Exception();
+                }
+                catch
+                {
+                    e.ChangedItem.PropertyDescriptor.SetValue(StagePropertyGrid.SelectedObject, e.OldValue);
+                    NotifyIcon notify = new NotifyIcon();
+                    notify.BalloonTipText = "invalid";
+                    return;
+                }
             }
 
             GameControl game_control = this.Game;

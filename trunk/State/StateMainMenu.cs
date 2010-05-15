@@ -51,8 +51,9 @@ namespace Galaxy
             Menu.Update();
 
             // TODO: organize debug somewhere?
-            if (Game.Input.IsKeyPressed(Keys.F2))
+            if (Game.Input.IsKeyPressed(Keys.F1))
             {
+                Game.StageDefinition = CStageDefinition.GetStageDefinitionByName("Stage1");
                 Game.State = new CStateGame(Game);
             }
 

@@ -97,7 +97,7 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Score += 50;
-            World.Sound.Play("BonusGet", 0.1f);
+            World.Sound.Play("BonusGet", 1.0f);
             Die();
         }
     }
@@ -113,7 +113,7 @@ namespace Galaxy
         }
 
 #if XBOX360
-        public void Init360(CWorld world, Vector2 position)
+        public new void Init360(CWorld world, Vector2 position)
         {
             base.Init360(world, position);
 
@@ -125,7 +125,7 @@ namespace Galaxy
         public new void OnCollide(CShip ship)
         {
             World.Score += 500;
-            World.Sound.Play("BonusGet", 0.25f);
+            World.Sound.Play("BonusGet", 1.0f);
             Die();
         }
     }

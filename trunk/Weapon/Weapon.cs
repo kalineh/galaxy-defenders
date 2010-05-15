@@ -10,6 +10,7 @@ namespace Galaxy
     public abstract class CWeapon
     {
         public CShip Owner { get; private set; }
+        public string Sound { get; set; }
         public float ReloadTime { get; set; }
         public float Speed { get; set; }
         public float Damage { get; set; }
@@ -96,6 +97,11 @@ namespace Galaxy
             Owner.Physics.PositionPhysics.Velocity += Kickback(Owner.Physics.AnglePhysics.Rotation);
 
             Cooldown = ReloadTime;
+
+            if (Sound != null)
+            {
+                Owner.World.Sound.Play(Sound);
+            }
         }
 
         protected abstract void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage);

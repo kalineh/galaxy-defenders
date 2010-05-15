@@ -28,10 +28,55 @@ namespace Galaxy
 
         public CFiberManager Fibers { get; set; }
 
+        public float MainVolume { get; set; }
+
+        public AudioEngine AudioEngine { get; set; }
+        public SoundBank SoundBank { get; set; }
+
         public CSound(CWorld world)
         {
             World = world;
             Registry = new Dictionary<string, CEntry>() {
+
+
+                // SOUND LIST
+
+                // 
+                /* 
+                 * MenuMoveItem
+                 * MenuSelect
+                 * MenuCancel
+                 * MenuBuy
+                 * MenuUpgrade
+                 * MenuDowngrade
+                 * 
+                 * PlayerShieldHit
+                 * PlayerArmorHit
+                 * PlayerArmorWarning
+                 * PlayerDie
+                 * 
+                 * WeaponShootLaser
+                 * WeaponShootPlasma
+                 * WeaponShootMissile
+                 * WeaponShootSeekBomb
+                 * WeaponShootMiniShot
+                 * 
+                 * WeaponHitLaser
+                 * WeaponHitPlasma
+                 * WeaponHitMissile
+                 * WeaponHitSeekBomb
+                 * WeaponHitMiniShot
+                 * 
+                 * BuildingExplode
+                 * BonusGet
+                 * BigBonusGet
+                 * 
+                 * EnemyDie
+                 * PowerupShipDie
+                 * 
+                 */
+
+
                 { "LaserHit", new CEntry() { MaxConcurrent = 4, MinSpacing = 2 } },
                 { "ExplosionSound", new CEntry() { MaxConcurrent = 2, MinSpacing = 2 } },
                 { "PlayerShieldHit", new CEntry() { MaxConcurrent = 1, MinSpacing = 4 } },
@@ -39,6 +84,18 @@ namespace Galaxy
             };
             PlayLock = new Dictionary<string, bool>();
             Fibers = new CFiberManager();
+
+            //AudioEngine = new AudioEngine(
+
+            MainVolume = 0.4f;
+        }
+
+        public static void DirectPlay(CGalaxy game, string sound, float volume)
+        {
+            SoundEffect effect = game.Content.Load<SoundEffect>("SE/" + sound);
+            SoundEffectInstance instance = effect.CreateInstance();
+            instance.Volume = volume;
+            instance.Play();
         }
 
         public void Play(string sound)
@@ -66,7 +123,7 @@ namespace Galaxy
 
             SoundEffect effect = World.Game.Content.Load<SoundEffect>("SE/" + sound);
             SoundEffectInstance instance = effect.CreateInstance();
-            instance.Volume = volume;
+            instance.Volume = volume * MainVolume;
             instance.Pitch = pitch;
             instance.Pan = pan;
             instance.Play();

@@ -26,7 +26,6 @@ namespace Galaxy
                 }
             );
 
-            world.Sound.Play("ExplosionSound", 0.1f);
             world.EntityAdd(animation);
 
             CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
@@ -51,7 +50,7 @@ namespace Galaxy
                 }
             );
 
-            world.Sound.Play("ExplosionSound", 0.1f);
+            world.Sound.Play("WeaponHitMissile", 1.0f);
             world.EntityAdd(animation);
 
             CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, color);
@@ -62,7 +61,7 @@ namespace Galaxy
 
         public static void BuildingExplosion(CWorld world, Vector2 position, float power)
         {
-            world.Sound.Play("ExplosionSound", 0.1f);
+            world.Sound.Play("BuildingExplode", 1.0f);
 
             CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBuildingExplosion(position, new Color(177, 167, 167), power);
             light_spawner.Spawn(world.ParticleEffects);
@@ -86,7 +85,8 @@ namespace Galaxy
                 }
             );
 
-            world.Sound.Play("ExplosionSound", 0.1f);
+            string death_sound = "EnemyDie" + (world.Random.Next() % 3 + 1);
+            world.Sound.Play(death_sound);
             world.EntityAdd(animation);
 
             CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(252, 124, 85));
@@ -115,7 +115,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            ship.World.Sound.Play("ExplosionSound", 0.1f);
+            ship.World.Sound.Play("PlayerArmorHit", 1.0f);
             ship.World.EntityAdd(animation);
 
             CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallExplosion(position, new Color(252, 124, 85));
@@ -142,7 +142,7 @@ namespace Galaxy
 
             animation.AttachToEntity = ship;
 
-            ship.World.Sound.Play("PlayerShieldHit", 0.25f);
+            ship.World.Sound.Play("PlayerShieldHit", 1.0f);
             ship.World.EntityAdd(animation);
 
             return animation;
@@ -150,7 +150,7 @@ namespace Galaxy
 
         public static void LaserHit(CWorld world, Vector2 position, Vector2 direction, float scale, Color color)
         {
-            world.Sound.Play("LaserHit", 0.4f);
+            world.Sound.Play("WeaponHitLaser", 1.0f);
             CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
             spawner.Spawn(world.ParticleEffects);
         }

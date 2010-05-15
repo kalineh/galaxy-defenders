@@ -24,9 +24,9 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
             HealthMax = 4.0f;
 
-            FireDelay = 1.0f;
+            FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;
-            FireDamage = 1.5f;
+            FireDamage = 2.0f;
             FireSpeed = 17.0f;
         }
 
@@ -45,9 +45,9 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
             HealthMax = 4.0f;
 
-            FireDelay = 1.0f;
+            FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;
-            FireDamage = 1.5f;
+            FireDamage = 2.0f;
             FireSpeed = 17.0f;
         }
         #endif

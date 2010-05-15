@@ -33,6 +33,10 @@ namespace Galaxy
                 CWeapon weapon = Activator.CreateInstance(type, new object[] { owner }) as CWeapon;
 #endif
                 weapon.ApplyWeaponData(data);
+
+                // TODO: cleanup
+                weapon.Sound = WeaponDefinitions.Items[typename].Sound;
+
                 weapons.Add(weapon);
             }
 
@@ -143,7 +147,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 750,
-                    Sound = "SE/LaserShoot",
+                    Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -444,12 +448,12 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 750,
-                    Sound = "SE/LaserShoot",
+                    Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -461,7 +465,7 @@ namespace Galaxy
                         // level 2
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -470,7 +474,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -482,7 +486,7 @@ namespace Galaxy
                         // level 3
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -491,7 +495,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -500,7 +504,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -509,7 +513,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -521,7 +525,7 @@ namespace Galaxy
                         // level 4
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -530,7 +534,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -539,7 +543,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -548,7 +552,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -557,7 +561,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -569,7 +573,7 @@ namespace Galaxy
                         // level 5
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -578,7 +582,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -587,7 +591,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -596,7 +600,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -605,7 +609,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -614,7 +618,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -626,7 +630,7 @@ namespace Galaxy
                         // level 6
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -635,7 +639,7 @@ namespace Galaxy
                                 Energy = 0.1f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -644,7 +648,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -653,7 +657,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -662,7 +666,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -671,7 +675,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.3f,
                                 KickbackForce = 0.0f,
@@ -683,7 +687,7 @@ namespace Galaxy
                         // level 7
                         new List<SWeaponData>() {
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -692,7 +696,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -701,7 +705,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -710,7 +714,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -719,7 +723,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -728,7 +732,7 @@ namespace Galaxy
                                 Energy = 0.15f,
                             },
                             new SWeaponData() {
-                                ReloadTime = 0.15f,
+                                ReloadTime = 0.18f,
                                 Speed = 15.0f,
                                 Damage = 0.5f,
                                 KickbackForce = 0.0f,
@@ -743,8 +747,8 @@ namespace Galaxy
 
             { "Plasma", 
                 new SWeaponDefinition() {
+                    Sound = "WeaponShootPlasma",
                     BasePrice = 1750,
-                    Sound = null,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -980,15 +984,15 @@ namespace Galaxy
 
             { "Missile", 
                 new SWeaponDefinition() {
+                    Sound = "WeaponShootMissile",
                     BasePrice = 1000,
-                    Sound = null,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -998,7 +1002,7 @@ namespace Galaxy
                         new List<SWeaponData>() {
                             new SWeaponData() { ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1006,7 +1010,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1017,7 +1021,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 16.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1025,7 +1029,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(12.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1033,7 +1037,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -16.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1044,7 +1048,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 18.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1052,7 +1056,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(12.0f, 6.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1060,7 +1064,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(12.0f, -6.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1068,7 +1072,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.5f,
                                 Speed = 17.0f,
-                                Damage = 0.8f,
+                                Damage = 0.7f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -18.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1080,15 +1084,15 @@ namespace Galaxy
 
             { "SeekBomb", 
                 new SWeaponDefinition() {
+                    Sound = "WeaponShootSeekBomb",
                     BasePrice = 1750,
-                    Sound = null,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1099,7 +1103,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(195.0f),
@@ -1107,7 +1111,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(165.0f),
@@ -1118,7 +1122,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(195.0f),
@@ -1126,7 +1130,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 0.0f),
                                 Rotation = MathHelper.ToRadians(180.0f),
@@ -1134,7 +1138,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(165.0f),
@@ -1145,7 +1149,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -10.0f),
                                 Rotation = MathHelper.ToRadians(195.0f),
@@ -1153,7 +1157,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, -5.0f),
                                 Rotation = MathHelper.ToRadians(185.0f),
@@ -1161,7 +1165,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 5.0f),
                                 Rotation = MathHelper.ToRadians(175.0f),
@@ -1169,7 +1173,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.7f,
                                 Speed = 14.0f,
-                                Damage = 0.8f,
+                                Damage = 0.5f,
                                 KickbackForce = 0.0f,
                                 Offset = new Vector2(0.0f, 10.0f),
                                 Rotation = MathHelper.ToRadians(165.0f),
@@ -1184,8 +1188,8 @@ namespace Galaxy
             //
             { "MiniShot", 
                 new SWeaponDefinition() {
+                    Sound = "WeaponShootMiniShot",
                     BasePrice = 2500,
-                    Sound = null,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             new SWeaponData() {

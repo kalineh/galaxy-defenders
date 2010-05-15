@@ -62,6 +62,7 @@ namespace Galaxy
                 {
                     if (cancel_option.CancelOption)
                     {
+                        CSound.DirectPlay(Game, "MenuCancel", 1.0f);
                         cancel_option.Select(cancel_option.Data);
                     }
                 }
@@ -91,12 +92,15 @@ namespace Galaxy
 
             if (Cursor != previous)
             {
+                CSound.DirectPlay(Game, "MenuMoveItem", 1.0f);
+
                 option.Highlight(option.Data);
                 option.Axis(option.Data, option.AxisValue);
             }
 
             if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed(PlayerIndex.One))
             {
+                CSound.DirectPlay(Game, "MenuSelect", 1.0f);
                 option.Select(option.Data);
             }
 
@@ -104,7 +108,10 @@ namespace Galaxy
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
+                {
+                    CSound.DirectPlay(Game, "MenuDowngrade", 1.0f);
                     option.Axis(option.Data, option.AxisValue);
+                }
                 else
                     option.AxisValue += 1;
             }
@@ -113,7 +120,10 @@ namespace Galaxy
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
+                { 
+                    CSound.DirectPlay(Game, "MenuUpgrade", 1.0f);
                     option.Axis(option.Data, option.AxisValue);
+                }
                 else
                     option.AxisValue -= 1;
             }

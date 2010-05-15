@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Galaxy
 {
@@ -18,9 +19,13 @@ namespace Galaxy
            
             // TODO: not hack into the stage definition!
             if (enemies > 0)
+            {
                 world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 0.0f, 0.05f);
-            else
-                world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 100.0f, 0.005f);
+                return;
+            }
+
+            world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 100.0f, 0.005f);
+            world.FadeScreen = Math.Min(world.FadeScreen + 0.05f, 1.0f);
         }
 
         public override bool IsExpired()

@@ -28,12 +28,12 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
-            FireDelay = 1.25f;
+            FireDelay = 2.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 1.0f;
+            FireDamage = 2.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
-            IgnoreCameraScroll = true;
+            IgnoreCameraScroll = false;
         }
 
 #if XBOX360
@@ -51,12 +51,12 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
-            FireDelay = 1.25f;
+            FireDelay = 2.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 1.0f;
+            FireDamage = 2.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
-            IgnoreCameraScroll = true;
+            IgnoreCameraScroll = false;
         }
 #endif
 
@@ -87,17 +87,18 @@ namespace Galaxy
                 rotation += World.Random.NextAngle() * 0.015f;
 
                 CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
+                World.Sound.Play("EnemyShoot");
 
                 FireCooldown = Time.ToFrames(TripleShotDelay);
                 Mover.Paused = true;
-                IgnoreCameraScroll = true;
+                //IgnoreCameraScroll = true;
                 TripleShotCounter += 1;
             }
             else
             {
                 FireCooldown = Time.ToFrames(FireDelay);
                 TripleShotCounter = 0;
-                IgnoreCameraScroll = false;
+                //IgnoreCameraScroll = false;
                 Mover.Paused = false;
             }
         }

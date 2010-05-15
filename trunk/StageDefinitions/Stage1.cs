@@ -6,7 +6,7 @@ namespace Stages {
 public class Stage1 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage1");
-stage.ScrollSpeed = 4;
+stage.ScrollSpeed = 4.0f;
 stage.SceneryName = "BlueSky";
 stage.MusicName = "Music/A";
 stage.AddElement(0, 

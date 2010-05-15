@@ -17,6 +17,7 @@ namespace Galaxy
         public float Rotation { get; set; }
         public float Zoom { get; set; }
         public float Border { get; set; }
+        public float SpawnBorder { get; set; }
         public float PanLimit { get; set; }
         public Vector2 ScreenSize { get; set; }
 
@@ -32,6 +33,7 @@ namespace Galaxy
             LookAt = Vector3.UnitZ * -1.0f;
             Zoom = 1.0f;
             Border = 150.0f;
+            SpawnBorder = 100.0f;
             PanLimit = 100.0f;
 
 #if XBOX360
@@ -165,7 +167,7 @@ namespace Galaxy
         public Vector2 GetSpawnBorderLine()
         {
             float half_screen = ScreenSize.Y / 2.0f;
-            return Position.ToVector2() + new Vector2(0.0f, -half_screen + -Border);
+            return Position.ToVector2() + new Vector2(0.0f, -half_screen + -SpawnBorder);
         }
     }
 }

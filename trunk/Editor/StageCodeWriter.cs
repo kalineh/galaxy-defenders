@@ -22,7 +22,7 @@ namespace Galaxy
         {
             Type type = instance.GetType();
             if (type == typeof(float))
-                return String.Format("{0:0.0#}R", (float)instance);
+                return String.Format("{0:0.0#}f", (float)instance);
             if (type == typeof(bool))
                 return instance.ToString().ToLower();
             return instance.ToString();
@@ -285,7 +285,7 @@ namespace Galaxy
             sb.AppendLine(String.Format("CStageDefinition stage = new CStageDefinition(\"{0}\");", stage));
 
             // properties
-            sb.AppendLine(String.Format("stage.ScrollSpeed = {0};", stage_definition.ScrollSpeed));
+            sb.AppendLine(String.Format("stage.ScrollSpeed = {0:0.0#}f;", stage_definition.ScrollSpeed));
             sb.AppendLine(String.Format("stage.SceneryName = \"{0}\";", stage_definition.SceneryName));
             sb.AppendLine(String.Format("stage.MusicName = \"{0}\";", stage_definition.MusicName));
 
