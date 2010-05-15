@@ -30,8 +30,6 @@ namespace Galaxy
         public CCollisionGrid CollisionGrid { get; set; }
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
-        public float FadeScreen { get; set; }
-        public Texture2D FadeTexture { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -72,9 +70,6 @@ namespace Galaxy
 
             MethodInfo method = typeof(SceneryPresets).GetMethod(Stage.Definition.SceneryName);
             Scenery = method.Invoke(null, new object[] { this }) as CScenery;
-
-            FadeScreen = 0.0f;
-            FadeTexture = CContent.LoadTexture2D(Game, "Textures/Top/Pixel");
         }
 
         public void Stop()
@@ -179,8 +174,6 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
             ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
-
-            DrawFadeScreen(GameCamera);
         }
 
         public void DrawBackground(CCamera camera)
@@ -217,29 +210,6 @@ namespace Galaxy
             foreach (CHud hud in Huds)
                 hud.Draw(Game.DefaultSpriteBatch);
 
-            Game.DefaultSpriteBatch.End();
-        }
-
-        public void DrawFadeScreen(CCamera camera)
-        {
-            if (FadeScreen <= 0.0f)
-                return;
-
-            Color color = Color.Black;
-            int alpha = (byte)(Math.Abs(FadeScreen) * 255.0f);
-            color.A = (byte)alpha;
-
-            // TODO: this is not synced with CWorld.GameCamera
-            Vector2 screen_size = new Vector2(1920.0f * 0.5f, 1080.0f);
-            Rectangle destination = new Rectangle(
-                (int)((Game.GraphicsDevice.Viewport.Width - screen_size.X) / 2.0f),
-                (int)((Game.GraphicsDevice.Viewport.Height - screen_size.Y) / 2.0f),
-                (int)screen_size.X,
-                (int)screen_size.Y
-            );
-
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-            Game.DefaultSpriteBatch.Draw(FadeTexture, destination, color);
             Game.DefaultSpriteBatch.End();
         }
 

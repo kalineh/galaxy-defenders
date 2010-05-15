@@ -25,7 +25,6 @@ namespace Galaxy
             }
 
             world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 100.0f, 0.005f);
-            world.FadeScreen = Math.Min(world.FadeScreen + 0.05f, 1.0f);
         }
 
         public override bool IsExpired()
