@@ -79,7 +79,7 @@ namespace Galaxy
 
         private bool ShouldActivateElement(Vector2 previous, Vector2 current, CStageElement element)
         {
-            return element.Position.Y < previous.Y && element.Position.Y > current.Y;
+            return element.Position.Y <= previous.Y && element.Position.Y > current.Y;
         }
 
         public List<CStageElement> GetNewElements(Vector2 previous, Vector2 current)

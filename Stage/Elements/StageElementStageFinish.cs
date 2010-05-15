@@ -46,9 +46,6 @@ namespace Galaxy
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
 
-            // NOTE: set in the camera stop element
-            world.FadeScreen = 0.0f;
-
             // TODO: lobby state
             world.Game.State = new CStateFadeTo(world.Game, world.Game.State, new CStateShop(world.Game));
         }
