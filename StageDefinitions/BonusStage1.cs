@@ -579,15 +579,8 @@ X = 40.0f,
 Y = -704.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
@@ -605,16 +598,10 @@ X = 168.0f,
 Y = -456.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 168.0f,
 Y = -456.0f,
@@ -631,16 +618,10 @@ X = -192.0f,
 Y = -480.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -192.0f,
 Y = -480.0f,
@@ -657,16 +638,10 @@ X = 8.0f,
 Y = -288.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
 Y = -288.0f,
@@ -683,16 +658,10 @@ X = -223.15f,
 Y = -955.32f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -223.15f,
 Y = -955.32f,
@@ -709,16 +678,10 @@ X = 197.9f,
 Y = -1146.9f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 197.9f,
 Y = -1146.9f,
@@ -735,16 +698,10 @@ X = -170.52f,
 Y = -1450.06f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -170.52f,
 Y = -1450.06f,
@@ -761,16 +718,10 @@ X = 134.74f,
 Y = -1690.06f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 134.74f,
 Y = -1690.06f,
@@ -787,16 +738,10 @@ X = -286.31f,
 Y = -2029.01f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -286.31f,
 Y = -2029.01f,
@@ -813,16 +758,10 @@ X = 94.74f,
 Y = -1955.32f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 94.74f,
 Y = -1955.32f,
@@ -839,16 +778,10 @@ X = 362.11f,
 Y = -2300.59f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 362.11f,
 Y = -2300.59f,
@@ -865,16 +798,10 @@ X = -145.26f,
 Y = -2509.01f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -145.26f,
 Y = -2509.01f,
@@ -891,16 +818,10 @@ X = 128.42f,
 Y = -2669.01f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.42f,
 Y = -2669.01f,
@@ -917,16 +838,10 @@ X = -265.26f,
 Y = -2959.53f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -265.26f,
 Y = -2959.53f,
@@ -943,16 +858,10 @@ X = -71.58f,
 Y = -3037.43f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -71.58f,
 Y = -3037.43f,
@@ -969,16 +878,10 @@ X = -29.47f,
 Y = -3283.74f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -29.47f,
 Y = -3283.74f,
@@ -995,16 +898,10 @@ X = 305.27f,
 Y = -3161.64f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 305.27f,
 Y = -3161.64f,
@@ -1021,16 +918,10 @@ X = 378.95f,
 Y = -3521.64f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 378.95f,
 Y = -3521.64f,
@@ -1047,16 +938,10 @@ X = -174.73f,
 Y = -3586.9f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -174.73f,
 Y = -3586.9f,
@@ -1073,16 +958,10 @@ X = 105.27f,
 Y = -3784.8f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 105.27f,
 Y = -3784.8f,
@@ -1099,16 +978,10 @@ X = -280.0f,
 Y = -3992.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -280.0f,
 Y = -3992.0f,
@@ -1125,16 +998,10 @@ X = 128.0f,
 Y = -4200.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -4200.0f,
@@ -1151,16 +1018,10 @@ X = -165.27f,
 Y = -4508.28f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -165.27f,
 Y = -4508.28f,
@@ -1177,16 +1038,10 @@ X = 291.87f,
 Y = -4622.56f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 291.87f,
 Y = -4622.56f,
@@ -1203,16 +1058,10 @@ X = 63.3f,
 Y = -4870.18f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 63.3f,
 Y = -4870.18f,
@@ -1229,16 +1078,10 @@ X = -193.85f,
 Y = -5108.28f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -193.85f,
 Y = -5108.28f,
@@ -1255,16 +1098,10 @@ X = 234.73f,
 Y = -5193.99f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 234.73f,
 Y = -5193.99f,
@@ -1281,16 +1118,10 @@ X = 6.15f,
 Y = -5555.9f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 6.15f,
 Y = -5555.9f,
@@ -1307,16 +1138,10 @@ X = -231.94f,
 Y = -5870.18f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -231.94f,
 Y = -5870.18f,
@@ -1333,16 +1158,10 @@ X = 206.15f,
 Y = -6146.37f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 206.15f,
 Y = -6146.37f,
@@ -1359,16 +1178,10 @@ X = 349.01f,
 Y = -5898.75f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 349.01f,
 Y = -5898.75f,
@@ -1385,16 +1198,10 @@ X = -108.13f,
 Y = -6365.42f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -108.13f,
 Y = -6365.42f,
@@ -1411,16 +1218,10 @@ X = 253.77f,
 Y = -6622.56f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 253.77f,
 Y = -6622.56f,
@@ -1437,16 +1238,10 @@ X = -212.89f,
 Y = -6851.14f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -212.89f,
 Y = -6851.14f,
@@ -1463,16 +1258,10 @@ X = 129.96f,
 Y = -7079.71f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 129.96f,
 Y = -7079.71f,
@@ -1489,16 +1278,10 @@ X = -22.42f,
 Y = -7517.8f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -22.42f,
 Y = -7517.8f,
@@ -1515,16 +1298,10 @@ X = 149.01f,
 Y = -7879.71f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 149.01f,
 Y = -7879.71f,
@@ -1541,16 +1318,10 @@ X = -136.7f,
 Y = -8127.33f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -136.7f,
 Y = -8127.33f,
@@ -1567,16 +1338,10 @@ X = -403.37f,
 Y = -7565.42f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -403.37f,
 Y = -7565.42f,
@@ -1593,16 +1358,10 @@ X = 329.96f,
 Y = -7660.66f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 329.96f,
 Y = -7660.66f,
@@ -1619,16 +1378,10 @@ X = 358.53f,
 Y = -7041.61f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 358.53f,
 Y = -7041.61f,
@@ -1645,16 +1398,10 @@ X = 282.34f,
 Y = -8270.18f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 282.34f,
 Y = -8270.18f,
@@ -1671,16 +1418,10 @@ X = 34.73f,
 Y = -8603.52f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 34.73f,
 Y = -8603.52f,
@@ -1697,16 +1438,10 @@ X = -212.89f,
 Y = -8641.61f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -212.89f,
 Y = -8641.61f,
@@ -1723,16 +1458,10 @@ X = 291.87f,
 Y = -8936.85f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 291.87f,
 Y = -8936.85f,
@@ -1749,16 +1478,10 @@ X = -193.85f,
 Y = -9298.75f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -193.85f,
 Y = -9298.75f,
@@ -1775,16 +1498,10 @@ X = 184.0f,
 Y = -9624.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 184.0f,
 Y = -9624.0f,
@@ -1801,16 +1518,10 @@ X = 6.15f,
 Y = -9003.52f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 4.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 6.15f,
 Y = -9003.52f,
@@ -1827,28 +1538,10 @@ X = -328.0f,
 Y = -4296.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -328.0f,
 Y = -4296.0f,
@@ -1865,28 +1558,10 @@ X = -168.0f,
 Y = -4832.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -168.0f,
 Y = -4832.0f,
@@ -1903,28 +1578,10 @@ X = -264.0f,
 Y = -5304.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -264.0f,
 Y = -5304.0f,
@@ -1941,28 +1598,10 @@ X = -222.08f,
 Y = -5721.65f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -222.08f,
 Y = -5721.65f,
@@ -1979,28 +1618,10 @@ X = -42.59f,
 Y = -6167.81f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -42.59f,
 Y = -6167.81f,
@@ -2017,28 +1638,10 @@ X = -314.39f,
 Y = -6475.5f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -314.39f,
 Y = -6475.5f,
@@ -2055,28 +1658,10 @@ X = -22.08f,
 Y = -6906.27f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -22.08f,
 Y = -6906.27f,
@@ -2093,28 +1678,10 @@ X = -345.16f,
 Y = -7296.01f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -345.16f,
 Y = -7296.01f,
@@ -2131,28 +1698,10 @@ X = -57.98f,
 Y = -7716.53f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -57.98f,
 Y = -7716.53f,
@@ -2169,28 +1718,10 @@ X = -328.0f,
 Y = -7976.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -328.0f,
 Y = -7976.0f,
@@ -2207,28 +1738,10 @@ X = 280.0f,
 Y = -9096.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
 Y = -9096.0f,
@@ -2245,28 +1758,10 @@ X = -280.0f,
 Y = -8856.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -280.0f,
 Y = -8856.0f,
@@ -2283,28 +1778,10 @@ X = -47.72f,
 Y = -9172.94f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -47.72f,
 Y = -9172.94f,
@@ -2321,28 +1798,10 @@ X = -192.0f,
 Y = -9704.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -192.0f,
 Y = -9704.0f,
@@ -2359,28 +1818,10 @@ X = 320.0f,
 Y = -8464.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 320.0f,
 Y = -8464.0f,
@@ -2397,28 +1838,10 @@ X = 162.53f,
 Y = -8090.89f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 162.53f,
 Y = -8090.89f,
@@ -2435,28 +1858,10 @@ X = 398.43f,
 Y = -7521.66f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 398.43f,
 Y = -7521.66f,
@@ -2473,28 +1878,10 @@ X = 172.79f,
 Y = -7280.63f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 172.79f,
 Y = -7280.63f,
@@ -2511,28 +1898,10 @@ X = 357.41f,
 Y = -6829.35f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 357.41f,
 Y = -6829.35f,
@@ -2549,28 +1918,10 @@ X = 312.0f,
 Y = -6456.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -6456.0f,
@@ -2587,28 +1938,10 @@ X = 216.0f,
 Y = -5944.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 216.0f,
 Y = -5944.0f,
@@ -2625,28 +1958,10 @@ X = 249.71f,
 Y = -5460.12f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 249.71f,
 Y = -5460.12f,
@@ -2663,28 +1978,10 @@ X = 357.41f,
 Y = -5080.63f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 357.41f,
 Y = -5080.63f,
@@ -2701,28 +1998,10 @@ X = 229.2f,
 Y = -4424.22f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 229.2f,
 Y = -4424.22f,
@@ -2739,28 +2018,10 @@ X = 167.66f,
 Y = -3470.38f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 167.66f,
 Y = -3470.38f,
@@ -2777,28 +2038,10 @@ X = 331.76f,
 Y = -2901.14f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 331.76f,
 Y = -2901.14f,
@@ -2815,28 +2058,10 @@ X = 147.15f,
 Y = -2208.84f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 147.15f,
 Y = -2208.84f,
@@ -2853,28 +2078,10 @@ X = 328.0f,
 Y = -1192.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 328.0f,
 Y = -1192.0f,
@@ -2891,28 +2098,10 @@ X = -352.0f,
 Y = -1120.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -352.0f,
 Y = -1120.0f,
@@ -2929,28 +2118,10 @@ X = -323.52f,
 Y = -2341.11f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -323.52f,
 Y = -2341.11f,
@@ -2967,28 +2138,10 @@ X = -274.74f,
 Y = -3245.98f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -274.74f,
 Y = -3245.98f,
@@ -3005,28 +2158,10 @@ X = -274.74f,
 Y = -8472.81f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -274.74f,
 Y = -8472.81f,
@@ -3043,28 +2178,10 @@ X = 181.36f,
 Y = -9492.32f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 181.36f,
 Y = -9492.32f,
@@ -3081,28 +2198,10 @@ X = 312.0f,
 Y = -9856.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -9856.0f,
@@ -3175,28 +2274,10 @@ X = 178.31f,
 Y = -10002.41f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 178.31f,
 Y = -10002.41f,
@@ -3213,28 +2294,10 @@ X = 320.0f,
 Y = -10208.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 320.0f,
 Y = -10208.0f,
@@ -3307,28 +2370,10 @@ X = -416.0f,
 Y = -9952.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -416.0f,
 Y = -9952.0f,
@@ -3345,28 +2390,10 @@ X = -204.82f,
 Y = -10166.26f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -204.82f,
 Y = -10166.26f,
@@ -3383,28 +2410,10 @@ X = -81.93f,
 Y = -10373.49f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -81.93f,
 Y = -10373.49f,
@@ -3421,28 +2430,10 @@ X = -320.48f,
 Y = -10600.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -320.48f,
 Y = -10600.0f,
@@ -3459,28 +2450,10 @@ X = -262.65f,
 Y = -10800.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -262.65f,
 Y = -10800.0f,
@@ -3497,28 +2470,10 @@ X = -48.0f,
 Y = -10840.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -10840.0f,
@@ -3535,28 +2490,10 @@ X = 93.98f,
 Y = -10508.43f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 93.98f,
 Y = -10508.43f,
@@ -3573,28 +2510,10 @@ X = 327.71f,
 Y = -10662.65f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 327.71f,
 Y = -10662.65f,
@@ -3611,28 +2530,10 @@ X = 216.0f,
 Y = -10816.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 216.0f,
 Y = -10816.0f,
@@ -3649,28 +2550,10 @@ X = -168.67f,
 Y = -9925.3f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -168.67f,
 Y = -9925.3f,
@@ -3687,28 +2570,10 @@ X = 281.93f,
 Y = -9371.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 281.93f,
 Y = -9371.08f,
@@ -3725,28 +2590,10 @@ X = 176.0f,
 Y = -9040.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 176.0f,
 Y = -9040.0f,
@@ -3763,28 +2610,10 @@ X = 327.71f,
 Y = -8657.83f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 327.71f,
 Y = -8657.83f,
@@ -3801,28 +2630,10 @@ X = -349.4f,
 Y = -9185.54f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -349.4f,
 Y = -9185.54f,
@@ -3839,28 +2650,10 @@ X = -339.76f,
 Y = -9513.25f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -339.76f,
 Y = -9513.25f,
@@ -3965,28 +2758,10 @@ X = 61.11f,
 Y = -11137.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 61.11f,
 Y = -11137.08f,
@@ -4003,28 +2778,10 @@ X = 408.0f,
 Y = -11248.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 408.0f,
 Y = -11248.0f,
@@ -4041,28 +2798,10 @@ X = 230.56f,
 Y = -11134.3f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 230.56f,
 Y = -11134.3f,
@@ -4079,28 +2818,10 @@ X = 336.11f,
 Y = -11437.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.11f,
 Y = -11437.08f,
@@ -4117,28 +2838,10 @@ X = 136.11f,
 Y = -11612.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 136.11f,
 Y = -11612.08f,
@@ -4155,28 +2858,10 @@ X = 286.11f,
 Y = -11812.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 286.11f,
 Y = -11812.08f,
@@ -4193,28 +2878,10 @@ X = 120.0f,
 Y = -12008.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
 Y = -12008.0f,
@@ -4231,28 +2898,10 @@ X = -161.11f,
 Y = -11109.3f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -161.11f,
 Y = -11109.3f,
@@ -4269,28 +2918,10 @@ X = -80.56f,
 Y = -11373.19f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -80.56f,
 Y = -11373.19f,
@@ -4307,28 +2938,10 @@ X = -311.11f,
 Y = -11428.74f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -311.11f,
 Y = -11428.74f,
@@ -4345,28 +2958,10 @@ X = -377.78f,
 Y = -11650.96f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -377.78f,
 Y = -11650.96f,
@@ -4383,28 +2978,10 @@ X = -283.33f,
 Y = -11914.85f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -283.33f,
 Y = -11914.85f,
@@ -4421,28 +2998,10 @@ X = -141.67f,
 Y = -11725.96f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -141.67f,
 Y = -11725.96f,
@@ -4459,28 +3018,10 @@ X = -83.33f,
 Y = -12014.85f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -83.33f,
 Y = -12014.85f,
@@ -4497,28 +3038,10 @@ X = -305.56f,
 Y = -12212.08f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -305.56f,
 Y = -12212.08f,
@@ -4535,28 +3058,10 @@ X = -261.11f,
 Y = -12475.96f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -261.11f,
 Y = -12475.96f,
@@ -4573,28 +3078,10 @@ X = -150.0f,
 Y = -12314.85f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -150.0f,
 Y = -12314.85f,
@@ -4611,28 +3098,10 @@ X = 152.78f,
 Y = -12253.74f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.78f,
 Y = -12253.74f,
@@ -4649,28 +3118,10 @@ X = 258.33f,
 Y = -12375.96f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 258.33f,
 Y = -12375.96f,
@@ -4687,28 +3138,10 @@ X = 368.0f,
 Y = -12112.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 368.0f,
 Y = -12112.0f,
@@ -4725,28 +3158,10 @@ X = 86.11f,
 Y = -12450.96f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 86.11f,
 Y = -12450.96f,
@@ -4763,28 +3178,10 @@ X = 368.0f,
 Y = -12512.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 368.0f,
 Y = -12512.0f,
@@ -4808,28 +3205,10 @@ X = 320.0f,
 Y = -13032.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 320.0f,
 Y = -13032.0f,
@@ -4878,28 +3257,10 @@ X = 184.0f,
 Y = -13184.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 184.0f,
 Y = -13184.0f,
@@ -4916,28 +3277,10 @@ X = 328.0f,
 Y = -13384.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 328.0f,
 Y = -13384.0f,
@@ -5010,28 +3353,10 @@ X = -392.0f,
 Y = -13128.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -392.0f,
 Y = -13128.0f,
@@ -5048,27 +3373,8 @@ X = -184.0f,
 Y = -13344.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -184.0f,
@@ -5086,27 +3392,8 @@ X = -56.0f,
 Y = -13552.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -56.0f,
@@ -5124,27 +3411,8 @@ X = -296.0f,
 Y = -13776.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -296.0f,
@@ -5162,27 +3430,8 @@ X = -240.0f,
 Y = -13976.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -240.0f,
@@ -5200,27 +3449,8 @@ X = -24.0f,
 Y = -14016.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -24.0f,
@@ -5238,27 +3468,8 @@ X = 104.0f,
 Y = -13688.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 104.0f,
@@ -5276,27 +3487,8 @@ X = 336.0f,
 Y = -13840.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,
@@ -5314,27 +3506,8 @@ X = 224.0f,
 Y = -13992.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 224.0f,
@@ -5352,27 +3525,8 @@ X = -144.0f,
 Y = -13104.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -144.0f,
@@ -5390,27 +3544,8 @@ X = -368.0f,
 Y = -12816.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -368.0f,
@@ -5428,27 +3563,8 @@ X = -176.0f,
 Y = -12904.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -176.0f,
@@ -5466,27 +3582,8 @@ X = 8.0f,
 Y = -12712.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
@@ -5504,27 +3601,8 @@ X = 240.0f,
 Y = -12808.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 240.0f,
@@ -5622,27 +3700,8 @@ X = -168.0f,
 Y = -14384.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -168.0f,
@@ -5660,27 +3719,8 @@ X = 40.0f,
 Y = -15008.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
@@ -5698,27 +3738,8 @@ X = -192.0f,
 Y = -15232.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -192.0f,
@@ -5736,27 +3757,8 @@ X = -496.0f,
 Y = -14984.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -496.0f,
@@ -5774,27 +3776,8 @@ X = -168.0f,
 Y = -14848.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -168.0f,
@@ -5812,27 +3795,8 @@ X = -360.0f,
 Y = -14616.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -360.0f,
@@ -5850,27 +3814,8 @@ X = -440.0f,
 Y = -14304.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -440.0f,
@@ -5888,27 +3833,8 @@ X = -40.0f,
 Y = -14536.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -40.0f,
@@ -5926,27 +3852,8 @@ X = 152.0f,
 Y = -14168.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.0f,
@@ -5964,27 +3871,8 @@ X = 384.0f,
 Y = -14336.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 384.0f,
@@ -6002,27 +3890,8 @@ X = 312.0f,
 Y = -14792.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
@@ -6040,27 +3909,8 @@ X = 112.0f,
 Y = -14880.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
@@ -6078,27 +3928,8 @@ X = 136.0f,
 Y = -14632.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 136.0f,
@@ -6116,27 +3947,8 @@ X = 424.0f,
 Y = -14608.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 424.0f,
@@ -6154,27 +3966,8 @@ X = 456.0f,
 Y = -14944.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 456.0f,
@@ -6192,27 +3985,8 @@ X = 216.0f,
 Y = -15104.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 216.0f,
@@ -6230,27 +4004,8 @@ X = 432.0f,
 Y = -15248.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = -1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpLeft",
-},
+MoverPresetName = "DownLerpLeft",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 432.0f,
@@ -6268,27 +4023,8 @@ X = -144.0f,
 Y = -15064.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -144.0f,
@@ -6306,27 +4042,8 @@ X = -360.0f,
 Y = -15240.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -360.0f,
@@ -6344,15 +4061,8 @@ X = 32.0f,
 Y = -15768.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 32.0f,
@@ -6370,15 +4080,8 @@ X = 72.0f,
 Y = -15880.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 72.0f,
@@ -6396,15 +4099,8 @@ X = -8.0f,
 Y = -15880.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
@@ -6422,16 +4118,10 @@ X = 32.0f,
 Y = -15984.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
+
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 32.0f,
 Y = -15984.0f,
@@ -6448,15 +4138,8 @@ X = -56.0f,
 Y = -15984.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -56.0f,
@@ -6474,15 +4157,8 @@ X = 120.0f,
 Y = -15984.0f,
 },
 },
-CustomMover = new Galaxy.CMoverFixedVelocity() {
-SpeedMultiplier = 2.0f,
-Velocity = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-Paused = false,
-Name = "Down",
-},
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
@@ -6500,27 +4176,8 @@ X = -16.0f,
 Y = -14264.0f,
 },
 },
-CustomMover = new Galaxy.CMoverSequence() {
-Velocity = new System.Collections.Generic.List<Microsoft.Xna.Framework.Vector2>() {
-new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = 1.0f,
-},
-new Microsoft.Xna.Framework.Vector2() {
-X = 1.0f,
-Y = 0.0f,
-},
-},
-Duration = new System.Collections.Generic.List<System.Single>() {
-0.1f,
-0.0f,
-},
-VelocityLerpRate = 0.13f,
-AlwaysMaxSpeed = true,
-SpeedMultiplier = 3.0f,
-Paused = false,
-Name = "DownLerpRight",
-},
+MoverPresetName = "DownLerpRight",
+MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,

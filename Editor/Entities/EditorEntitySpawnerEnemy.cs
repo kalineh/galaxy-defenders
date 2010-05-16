@@ -61,15 +61,6 @@ namespace Galaxy
         {
             CStageElementSpawnerEnemy spawner = element as CStageElementSpawnerEnemy;
 
-            // TODO: remove after re-save with MoverPresetName
-            if (spawner.CustomMover != null)
-            {
-                MoverPresetName = spawner.CustomMover.Name;
-                if (spawner.GetType() == typeof(CMoverSin)) { MoverSpeedMultiplier = (spawner as CMoverSin).SpeedMultiplier; }
-                if (spawner.GetType() == typeof(CMoverFixedVelocity)) { MoverSpeedMultiplier = (spawner as CMoverFixedVelocity).SpeedMultiplier; }
-                if (spawner.GetType() == typeof(CMoverSequence)) { MoverSpeedMultiplier = (spawner as CMoverSequence).SpeedMultiplier; }
-            }
-
             MoverPresetName = spawner.MoverPresetName;
             MoverSpeedMultiplier = spawner.MoverSpeedMultiplier;
 

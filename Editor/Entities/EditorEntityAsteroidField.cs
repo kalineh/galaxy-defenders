@@ -63,7 +63,6 @@ namespace Galaxy
                 SpawnPosition = new CSpawnPositionRandom() { BasePosition = Position },
                 SpawnCount = SpawnCount,
                 SpawnTimer = new CSpawnTimerRandom() { Frequency = Frequency, IncreaseRate = 0.0f },
-                CustomMover = null,
                 CustomElement = Big ? new CSpawnerCustomBigAsteroid() : new CSpawnerCustomAsteroid(),
             };
             return result;

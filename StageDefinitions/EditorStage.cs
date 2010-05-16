@@ -23,7 +23,6 @@ Y = -72.0f,
 MoverPresetName = "Sin",
 MoverSpeedMultiplier = 1.0f,
 CustomElement = null,
-CustomMover = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -24.0f,
 Y = -72.0f,
