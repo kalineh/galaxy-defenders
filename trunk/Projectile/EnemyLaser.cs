@@ -32,7 +32,6 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyLaser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -48,7 +47,6 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyLaser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 #endif
 

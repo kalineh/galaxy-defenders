@@ -25,7 +25,6 @@ namespace Galaxy
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -45,7 +44,6 @@ namespace Galaxy
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
-            IgnoreCameraScroll = true;
         }
 #endif
 

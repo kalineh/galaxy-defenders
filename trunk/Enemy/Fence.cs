@@ -28,8 +28,6 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
             HealthMax = 10.0f;
-            Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
-            IgnoreCameraScroll = true;
             CanSeekerTarget = false;
         }
 
@@ -47,8 +45,6 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
             HealthMax = 10.0f;
-            Mover = new CMoverSin() { Frequency = 0.05f, Amplitude = 4.0f, Down = 0.5f };
-            IgnoreCameraScroll = true;
             CanSeekerTarget = false;
         }
 #endif

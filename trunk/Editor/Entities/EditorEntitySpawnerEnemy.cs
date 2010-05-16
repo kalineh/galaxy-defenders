@@ -25,10 +25,10 @@ namespace Galaxy
         [CategoryAttribute("Mover")]
         [EditorAttribute(typeof(CEntityMoverPresetSelector), typeof(UITypeEditor))]
         [TypeConverter(typeof(CEntityMoverTypeConverter))]
-        public new CMover Mover { get; set; }
+        public string MoverPresetName { get; set; }
 
         [CategoryAttribute("Mover")]
-        public float MoveSpeed { get; set; }
+        public float MoverSpeedMultiplier { get; set; }
 
         [CategoryAttribute("Bonus")]
         public int Coins { get; set; }
@@ -47,16 +47,8 @@ namespace Galaxy
             Visual.TileY = sample_instance.Visual.TileY;
             Visual.AnimationSpeed = sample_instance.Visual.AnimationSpeed;
             
-            MoveSpeed = 4.0f;
-            Mover = CMoverPresets.MoveDown(MoveSpeed);
-
-            if (sample_instance.Mover != null)
-            {
-                Mover = sample_instance.Mover;
-                PropertyInfo speed_multiplier_property = sample_instance.GetType().GetProperty("SpeedMultiplier");
-                if (speed_multiplier_property != null)
-                    MoveSpeed = (float)speed_multiplier_property.GetValue(sample_instance, null);
-            }
+            MoverPresetName = "IgnoreCamera";
+            MoverSpeedMultiplier = 1.0f;
         }
 
         public CEditorEntitySpawnerEnemy(CWorld world, Vector2 position)
@@ -69,17 +61,17 @@ namespace Galaxy
         {
             CStageElementSpawnerEnemy spawner = element as CStageElementSpawnerEnemy;
 
-            // TODO: not this hack
-            Mover = spawner.CustomMover;
-            MoveSpeed = world.Game.StageDefinition.ScrollSpeed;
-            if (Mover as Galaxy.CMoverSequence != null)
+            // TODO: remove after re-save with MoverPresetName
+            if (spawner.CustomMover != null)
             {
-                MoveSpeed = ((Galaxy.CMoverSequence)Mover).SpeedMultiplier;
+                MoverPresetName = spawner.CustomMover.Name;
+                if (spawner.GetType() == typeof(CMoverSin)) { MoverSpeedMultiplier = (spawner as CMoverSin).SpeedMultiplier; }
+                if (spawner.GetType() == typeof(CMoverFixedVelocity)) { MoverSpeedMultiplier = (spawner as CMoverFixedVelocity).SpeedMultiplier; }
+                if (spawner.GetType() == typeof(CMoverSequence)) { MoverSpeedMultiplier = (spawner as CMoverSequence).SpeedMultiplier; }
             }
-            if (Mover as Galaxy.CMoverFixedVelocity != null)
-            {
-                MoveSpeed = ((Galaxy.CMoverFixedVelocity)Mover).SpeedMultiplier;
-            }
+
+            MoverPresetName = spawner.MoverPresetName;
+            MoverSpeedMultiplier = spawner.MoverSpeedMultiplier;
 
             Coins = spawner.Coins;
             Powerup = spawner.Powerup;
@@ -87,13 +79,10 @@ namespace Galaxy
 
         public override CEditorEntityPreview GeneratePreviewEntity()
         {
-            if (MoveSpeed == 0.0f)
+            if (MoverSpeedMultiplier == 0.0f)
                 return null;
 
-            if (Mover == null)
-                return null;
-
-            return new CEditorEntityPreview(World, this) { Mover = Mover };
+            return new CEditorEntityPreview(World, this);
         }
 
         public override CStageElement GenerateStageElement()
@@ -103,32 +92,12 @@ namespace Galaxy
                 Type = Type,
                 Position = Position,
                 SpawnPosition = new CSpawnPositionFixed() { Position = Position },
-                CustomMover = Mover,
+                MoverPresetName = MoverPresetName,
+                MoverSpeedMultiplier = MoverSpeedMultiplier,
                 CustomElement = null,
                 Coins = Coins,
                 Powerup = Powerup,
             };
-
-            // TODO: here is where we need to set the speed multiplier on the SpawnerEnemy from the mover
-            if (Mover.GetType() == typeof(CMoverSequence))
-            {
-                CMoverSequence mover = result.CustomMover as CMoverSequence;
-                mover.SpeedMultiplier = MoveSpeed;
-            }
-
-            // TODO: here is where we need to set the speed multiplier on the SpawnerEnemy from the mover
-            if (Mover.GetType() == typeof(CMoverFixedVelocity))
-            {
-                CMoverFixedVelocity mover = result.CustomMover as CMoverFixedVelocity;
-                mover.SpeedMultiplier = MoveSpeed;
-            }
-
-            // TODO: here is where we need to set the speed multiplier on the SpawnerEnemy from the mover
-            if (Mover.GetType() == typeof(CMoverSin))
-            {
-                CMoverSin mover = result.CustomMover as CMoverSin;
-                mover.SpeedMultiplier = MoveSpeed;
-            }
 
             return result;
         }

@@ -13,9 +13,6 @@ using System.Globalization;
 
 namespace Galaxy
 {
-    // TODO: put this elsewhere?
-    public delegate CMover MoverPresetFunction(float speed);
-
     /// <summary>
     /// Entity type selector control. Allows selection from preset entity list.
     /// </summary>
@@ -23,38 +20,38 @@ namespace Galaxy
     public class CEntityMoverPresetSelectorControl 
         : ListBox
     {
-        public static Dictionary<string, MoverPresetFunction> MoverPresets;
+        public static Dictionary<string, string> MoverPresets;
 
         static CEntityMoverPresetSelectorControl()
         {
-            MoverPresets = new Dictionary<string, MoverPresetFunction>();
-
-            MoverPresets["None"] = (speed) => { return null; };
+            MoverPresets = new Dictionary<string, string>();
 
             MethodInfo[] methods = typeof(CMoverPresets).GetMethods(BindingFlags.Public | BindingFlags.Static);
             foreach (MethodInfo method in methods)
             {
-                Delegate delegate_ = Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
-                MoverPresetFunction function = (MoverPresetFunction)delegate_;
+                // NOTE: ignore this helper function
+                if (method.Name == "FromName")
+                    continue;
+
                 string name = method.ToString();
                 char[] seperators = { ' ', '(' };
                 string stripped = name.Split(seperators)[1];
-                MoverPresets[stripped] = function;
+                MoverPresets[stripped] = stripped;
             }
         }
 
-        public CMover Result = null;
+        public string Result = null;
 
         public CEntityMoverPresetSelectorControl()
         {
             InitializeComponent();
             this.BorderStyle = BorderStyle.None;
-            Result = CMoverPresets.MoveDown(1.0f);
+            Result = "IgnoreCamera";
         }
 
         private void InitializeComponent()
         {
-            foreach (KeyValuePair<string, MoverPresetFunction> items in MoverPresets)
+            foreach (KeyValuePair<string, string> items in MoverPresets)
             {
                 string text = items.Key;
                 this.Items.Add(items.Key);
@@ -105,11 +102,8 @@ namespace Galaxy
         void MoverPresetSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
             CEntityMoverPresetSelectorControl selector = sender as CEntityMoverPresetSelectorControl;
-            string method_name = (string)selector.SelectedItem;
-            MethodInfo method = typeof(CMoverPresets).GetMethod(method_name);
-            MoverPresetFunction function = (MoverPresetFunction)Delegate.CreateDelegate(typeof(MoverPresetFunction), method);
-            CMover result = function(1.0f);
-            selector.Result = result;
+            string selected = (string)selector.SelectedItem;
+            selector.Result = selected;
             EditorService.CloseDropDown();
         }
     }

@@ -35,7 +35,6 @@ namespace Galaxy
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -53,7 +52,6 @@ namespace Galaxy
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 #endif
 
@@ -107,7 +105,6 @@ namespace Galaxy
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -125,7 +122,6 @@ namespace Galaxy
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 #endif
 

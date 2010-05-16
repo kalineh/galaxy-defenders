@@ -18,7 +18,6 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/BonusShip"), Color.White);
             HealthMax = 3.0f;
-            Mover = new CMoverSin() { Frequency = 0.02f, Amplitude = 8.0f, Down = 2.0f };
         }
 
 #if XBOX360
@@ -33,9 +32,8 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Ball"), Color.White);
+            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/BonusShip"), Color.White);
             HealthMax = 3.0f;
-            Mover = new CMoverSin() { Frequency = 0.02f, Amplitude = 8.0f, Down = 2.0f };
         }
 #endif
 

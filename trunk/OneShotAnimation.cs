@@ -38,7 +38,6 @@ namespace Galaxy
             Visual.Scale = new Vector2(settings.Scale);
             Visual.Color = settings.Color;
             Visual.Update();
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -58,7 +57,6 @@ namespace Galaxy
             Visual.TileY = settings.TileY;
             Visual.AnimationSpeed = settings.AnimationSpeed;
             Visual.Scale = new Vector2(settings.Scale);
-            IgnoreCameraScroll = true;
         }
 #endif
 

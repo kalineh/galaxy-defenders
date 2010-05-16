@@ -142,9 +142,9 @@ namespace Galaxy
 
         public void DrawEditor(SpriteBatch sprite_batch)
         {
-            sprite_batch.DrawString(World.Game.DefaultFont, "E: " + (float)Energy, new Vector2(8.0f, 960.0f), Color.White);
-            sprite_batch.DrawString(World.Game.DefaultFont, "S: " + (float)Shield, new Vector2(8.0f, 990.0f), Color.White);
-            sprite_batch.DrawString(World.Game.DefaultFont, "A: " + (float)Armor, new Vector2(8.0f, 1020.0f), Color.White);
+            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
+            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
+            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
         }
     }
 }

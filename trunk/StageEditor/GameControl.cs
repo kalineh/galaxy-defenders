@@ -84,7 +84,6 @@ namespace StageEditor
             this.Invoke(callback);
 
             const double FrameTimeInSeconds = 1.0 / 60.0;
-            double NextFrame = FrameTimeInSeconds;
             while (true)
             {
                 GameTime game_time = new GameTime(

@@ -43,7 +43,7 @@ namespace Galaxy
         {
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
-            ScrollSpeed = 4.0f;
+            ScrollSpeed = 3.0f;
             SceneryName = "Black";
             MusicName = "Music/Stage1";
         }

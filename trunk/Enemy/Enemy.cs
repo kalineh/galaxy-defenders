@@ -53,10 +53,6 @@ namespace Galaxy
 
         public virtual void UpdateAI()
         {
-            float t = World.Game.GameFrame * 0.05f;
-            float x = (float)Math.Cos(t) * 4.0f;
-            float y = 2.0f;
-            Physics.PositionPhysics.Velocity = new Vector2(x, y);
         }
 
         public override void Update()
@@ -72,11 +68,6 @@ namespace Galaxy
             UpdateAI();
 
             base.Update();
-
-            //if (World.Game.State.GetType() == typeof(CStateGame))
-            //{
-                //Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
-            //}
 
             if (IsInDieRegion())
                 Delete();

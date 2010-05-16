@@ -34,7 +34,6 @@ namespace Galaxy
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -51,7 +50,6 @@ namespace Galaxy
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
-            IgnoreCameraScroll = true;
         }
 #endif
 
