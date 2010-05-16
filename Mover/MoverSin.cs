@@ -13,13 +13,7 @@ namespace Galaxy
         public float Frequency { get; set; }
         public float Amplitude { get; set; }
         public float Down { get; set; }
-        public float SpeedMultiplier { get; set; }
         public int? StartFrame { get; set; }
-
-        public CMoverSin()
-        {
-            SpeedMultiplier = 1.0f;
-        }
 
         public override void Move(CEntity entity)
         {

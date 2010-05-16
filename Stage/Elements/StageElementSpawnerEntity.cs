@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Xna.Framework;
+using System.Reflection;
 
 namespace Galaxy
 {
@@ -14,8 +15,18 @@ namespace Galaxy
     {
         public Type Type { get; set; }
         public CSpawnPosition SpawnPosition { get; set; }
-        public CMover CustomMover { get; set; }
+        public string MoverPresetName { get; set; }
+        public float MoverSpeedMultiplier { get; set; }
         public CSpawnerCustomElement CustomElement { get; set; }
+
+        // TODO: remove me after levels are re-saved with new MoverPresetName
+        public CMover CustomMover { get; set; }
+
+        public CStageElementSpawnerEntity()
+        {
+            MoverPresetName = "IgnoreCamera";
+            MoverSpeedMultiplier = 1.0f;
+        }
 
         public override void Update(CWorld world)
         {
@@ -39,9 +50,10 @@ namespace Galaxy
                 CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
 #endif
 
-                if (CustomMover != null)
+                if (MoverPresetName != "" && MoverPresetName != "None")
                 {
-                    entity.Mover = CustomMover;
+                    MethodInfo method = typeof(CMoverPresets).GetMethod(MoverPresetName);
+                    entity.Mover = method.Invoke(null, new object[] { MoverSpeedMultiplier }) as CMover;
                 }
 
                 if (CustomElement != null)

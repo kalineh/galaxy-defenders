@@ -6,18 +6,27 @@ namespace Stages {
 public class EditorStage {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("EditorStage");
-stage.ScrollSpeed = 2.5f;
-stage.SceneryName = "Blend";
+stage.ScrollSpeed = 3.0f;
+stage.SceneryName = "BlueSky";
 stage.MusicName = "Music/Stage1";
 stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
 Powerup = false,
-TextureName = "Building1",
-HealthMax = 6.0f,
+Type = typeof(Galaxy.CBall),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 16.0f,
-Y = -976.0f,
+X = -24.0f,
+Y = -72.0f,
+},
+},
+MoverPresetName = "Sin",
+MoverSpeedMultiplier = 1.0f,
+CustomElement = null,
+CustomMover = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -24.0f,
+Y = -72.0f,
 },
 });
 

@@ -14,13 +14,11 @@ namespace Galaxy
         public List<float> Duration { get; set; }
         public float VelocityLerpRate { get; set; }
         public bool AlwaysMaxSpeed { get; set; }
-        public float SpeedMultiplier { get; set; }
 
         public CMoverSequence()
         {
             VelocityLerpRate = 1.0f;
             AlwaysMaxSpeed = true;
-            SpeedMultiplier = 1.0f;
         }
 
         public override void Move(CEntity entity)
@@ -33,7 +31,7 @@ namespace Galaxy
 
             Vector2 velocity = GetVelocity(entity);
 
-            if (entity.AliveTime == 0.0f)
+            if (entity.AliveTime == 0)
             {
                 entity.Physics.PositionPhysics.Velocity = velocity;
                 return;
@@ -55,7 +53,7 @@ namespace Galaxy
         private Vector2 GetVelocity(CEntity entity)
         {
             Vector2 velocity = Velocity[Velocity.Count - 1];
-            float remaining = entity.AliveTime;
+            float remaining = Time.ToSeconds(entity.AliveTime);
 
             for (int i = 0; i < Duration.Count; ++i)
             {

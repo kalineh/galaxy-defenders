@@ -101,6 +101,7 @@
     <Compile Include="Enemy\Fence.cs" />
     <Compile Include="Enemy\FenceBeam.cs" />
     <Compile Include="Enemy\Glob.cs" />
+    <Compile Include="Mover\MoverIgnoreCamera.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Fibers.cs" />

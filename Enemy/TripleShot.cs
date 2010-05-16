@@ -18,6 +18,8 @@ namespace Galaxy
         public float PauseCounter { get; private set; }
         public float TripleShotDelay { get; set; }
         public int TripleShotCounter { get; set; }
+        private CMover OriginalMover { get; set; }
+        private CMover IgnoreCameraMover { get; set; }
 
         public CTripleShot(CWorld world, Vector2 position)
             : base(world)
@@ -33,7 +35,6 @@ namespace Galaxy
             FireDamage = 2.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
-            IgnoreCameraScroll = false;
         }
 
 #if XBOX360
@@ -56,7 +57,6 @@ namespace Galaxy
             FireDamage = 2.0f;
             FireSpeed = 14.0f;
             TripleShotDelay = 0.1f;
-            IgnoreCameraScroll = false;
         }
 #endif
 
@@ -89,17 +89,18 @@ namespace Galaxy
                 CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
                 World.Sound.Play("EnemyShoot");
 
+                OriginalMover = OriginalMover ?? Mover;
+                IgnoreCameraMover = IgnoreCameraMover ?? new CMoverIgnoreCamera();
+                Mover = IgnoreCameraMover;
                 FireCooldown = Time.ToFrames(TripleShotDelay);
-                Mover.Paused = true;
-                //IgnoreCameraScroll = true;
                 TripleShotCounter += 1;
             }
             else
             {
                 FireCooldown = Time.ToFrames(FireDelay);
+                Mover = OriginalMover;
+                OriginalMover = null;
                 TripleShotCounter = 0;
-                //IgnoreCameraScroll = false;
-                Mover.Paused = false;
             }
         }
 

@@ -101,7 +101,7 @@ namespace Galaxy
             foreach (CWeapon weapon in WeaponSidekickRight)
                 weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
 
-            IgnoreCameraScroll = true;
+            Mover = new CMoverIgnoreCamera();
         }
 
 #if XBOX360
@@ -153,7 +153,6 @@ namespace Galaxy
             foreach (CWeapon weapon in WeaponSidekickRight)
                 weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
 
-            IgnoreCameraScroll = true;
         }
 #endif
 

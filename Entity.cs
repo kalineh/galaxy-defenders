@@ -15,8 +15,7 @@ namespace Galaxy
         public CVisual Visual { get; set; }
         public CCollision Collision { get; set; }
         public CMover Mover { get; set; }
-        public float AliveTime { get; protected set; }
-        public bool IgnoreCameraScroll { get; set; }
+        public int AliveTime { get; protected set; }
 
         public CEntity(CWorld world)
         {
@@ -25,7 +24,7 @@ namespace Galaxy
             Visual = null;
             Collision = null;
             Mover = null;
-            AliveTime = 0.0f;
+            AliveTime = 0;
         }
 
 #if XBOX360
@@ -40,7 +39,7 @@ namespace Galaxy
             Visual = null;
             Collision = null;
             Mover = null;
-            AliveTime = 0.0f;
+            AliveTime = 0;
         }
 #endif
 
@@ -55,14 +54,6 @@ namespace Galaxy
             {
                 Physics.PositionPhysics.Solve();
                 Physics.AnglePhysics.Solve();
-
-                if (IgnoreCameraScroll)
-                {
-                    if (World.Game.State.GetType() == typeof(CStateGame))
-                    {
-                        Physics.PositionPhysics.Position += World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
-                    }
-                }
             }
 
             if (Collision != null)
@@ -75,7 +66,7 @@ namespace Galaxy
                 Visual.Update();
             }
 
-            AliveTime += Time.SingleFrame;
+            AliveTime += 1;
         }
 
         public virtual void UpdateCollision()

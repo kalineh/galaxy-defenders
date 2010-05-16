@@ -29,7 +29,7 @@ namespace Galaxy
         {
             base.Update();
 
-            if (AliveTime > 10.0f)
+            if (AliveTime > Time.ToFrames(10.0f))
             {
                 Delete();
             }

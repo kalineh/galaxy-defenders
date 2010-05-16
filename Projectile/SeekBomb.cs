@@ -40,7 +40,6 @@ namespace Galaxy
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
-            IgnoreCameraScroll = true;
             SeekFramesRemaining = 90;
         }
 
@@ -57,7 +56,6 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
-            IgnoreCameraScroll = true;
             SeekFramesRemaining = 90;
         }
 #endif

@@ -25,9 +25,7 @@ namespace Galaxy
         {
             if (destination_type == typeof(String))
             {
-                CMover mover = value as CMover;
-                if (mover.Name != null && mover.Name.Length > 0)
-                    return mover.Name;
+                return value as string;
             }
             return base.ConvertTo(context, culture, value, destination_type);
         }

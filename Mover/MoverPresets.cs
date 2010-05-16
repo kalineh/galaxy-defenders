@@ -10,12 +10,25 @@ using Galaxy.Diagnostics;
 
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Reflection;
                        
 namespace Galaxy
 {
     public class CMoverPresets
     {
-        public static CMover MoveSin(float speed)
+        public static CMover FromName(string name, float speed_multiplier)
+        {
+            MethodInfo method = typeof(CMoverPresets).GetMethod(name);
+            CMover result = method.Invoke(null, new object[] { speed_multiplier }) as CMover;
+            return result;
+        }
+
+        public static CMover IgnoreCamera(float unused)
+        {
+            return new CMoverIgnoreCamera();
+        }
+
+        public static CMover Sin(float speed)
         {
             return new CMoverSin()
             {
@@ -26,45 +39,40 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownToDownRight(float speed)
+        // down
+        
+        // right
+
+        // left
+
+        // intoleft
+
+        // into right
+
+        // 
+
+        public static CMover DownUp(float speed)
         {
             return new CMoverSequence()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, speed),
-                    new Vector2(speed, speed),
+                    new Vector2(0.0f, 2.0f) * speed,
+                    new Vector2(0.0f, -1.0f) * speed,
                 },
                 Duration = new List<float>()
                 {
-                    0.5f * speed,
-                    0.0f,
-                },
-            };
-        }
-
-        public static CMover MoveDownToDownLeft(float speed)
-        {
-            return new CMoverSequence()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new List<Vector2>()
-                {
-                    new Vector2(0.0f, speed),
-                    new Vector2(-speed, speed),
-                },
-                Duration = new List<float>()
-                {
-                    0.5f * speed,
+                    0.3f * speed,
                     0.0f,
                 },
 
-                VelocityLerpRate = 0.1f,
+                VelocityLerpRate = 0.05f,
+                AlwaysMaxSpeed = false,
             };
         }
 
-        public static CMover MoveDownUp(float speed)
+        public static CMover DownStopUp(float speed)
         {
             return new CMoverSequence()
             {
@@ -76,16 +84,16 @@ namespace Galaxy
                 },
                 Duration = new List<float>()
                 {
-                    0.2f * speed,
+                    1.5f * speed,
                     0.0f,
                 },
 
-                VelocityLerpRate = 0.02f,
+                VelocityLerpRate = 0.03f,
                 AlwaysMaxSpeed = false,
             };
         }
 
-        public static CMover MoveDownStopDown(float speed)
+        public static CMover DownStopDown(float speed)
         {
             return new CMoverSequence()
             {
@@ -108,7 +116,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveUp(float speed)
+        public static CMover Up(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -117,7 +125,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDown(float speed)
+        public static CMover Down(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -126,7 +134,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveLeft(float speed)
+        public static CMover Left(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -135,7 +143,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveRight(float speed)
+        public static CMover Right(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -144,7 +152,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownLeft(float speed)
+        public static CMover DownLeft(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -153,7 +161,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownRight(float speed)
+        public static CMover DownRight(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -162,7 +170,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownLerpLeft(float speed)
+        public static CMover DownLerpLeft(float speed)
         {
             return new CMoverSequence()
             {
@@ -182,7 +190,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownLerpRight(float speed)
+        public static CMover DownLerpRight(float speed)
         {
             return new CMoverSequence()
             {
@@ -202,7 +210,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownDownLeft(float speed)
+        public static CMover DownDownLeft(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -211,7 +219,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownDownRight(float speed)
+        public static CMover DownDownRight(float speed)
         {
             return new CMoverFixedVelocity()
             {
@@ -220,7 +228,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownLoopRightUp(float speed)
+        public static CMover DownLoopRightUp(float speed)
         {
             return new CMoverSequence()
             {
@@ -246,7 +254,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover MoveDownLoopLeftUp(float speed)
+        public static CMover DownLoopLeftUp(float speed)
         {
             return new CMoverSequence()
             {

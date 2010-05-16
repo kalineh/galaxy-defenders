@@ -24,7 +24,6 @@ namespace Galaxy
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            IgnoreCameraScroll = true;
         }
 
 #if XBOX360
@@ -44,7 +43,6 @@ namespace Galaxy
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            IgnoreCameraScroll = true;
         }
 #endif
 
