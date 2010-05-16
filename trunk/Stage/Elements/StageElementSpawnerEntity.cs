@@ -19,9 +19,6 @@ namespace Galaxy
         public float MoverSpeedMultiplier { get; set; }
         public CSpawnerCustomElement CustomElement { get; set; }
 
-        // TODO: remove me after levels are re-saved with new MoverPresetName
-        public CMover CustomMover { get; set; }
-
         public CStageElementSpawnerEntity()
         {
             MoverPresetName = "IgnoreCamera";
