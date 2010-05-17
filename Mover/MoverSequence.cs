@@ -18,7 +18,7 @@ namespace Galaxy
         public CMoverSequence()
         {
             VelocityLerpRate = 1.0f;
-            AlwaysMaxSpeed = true;
+            AlwaysMaxSpeed = false;
         }
 
         public override void Move(CEntity entity)
@@ -46,7 +46,6 @@ namespace Galaxy
             else
             {
                 entity.Physics.PositionPhysics.Velocity = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
-
             }
         }
 

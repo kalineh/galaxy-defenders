@@ -16,10 +16,12 @@ namespace Galaxy
 {
     public class CMoverPresets
     {
-        public static CMover FromName(string name, float speed_multiplier)
+        public static CMover FromName(string name, float speed_multiplier, float transition_multiplier)
         {
+            // TODO: wont work on 360?
             MethodInfo method = typeof(CMoverPresets).GetMethod(name);
-            CMover result = method.Invoke(null, new object[] { speed_multiplier }) as CMover;
+            System.Diagnostics.Debug.Assert(method != null);
+            CMover result = method.Invoke(null, new object[] { speed_multiplier, transition_multiplier }) as CMover;
             return result;
         }
 
@@ -28,95 +30,19 @@ namespace Galaxy
             return new CMoverIgnoreCamera();
         }
 
-        public static CMover Sin(float speed)
+        public static CMover Sin(float speed, float transition)
         {
             return new CMoverSin()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Frequency = 0.05f,
-                Amplitude = 4.0f,
+                Frequency = Time.SingleFrame * transition,
+                Amplitude = speed * 2.0f,
                 Down = speed,
             };
         }
 
         // down
-        
-        // right
-
-        // left
-
-        // intoleft
-
-        // into right
-
-        // 
-
-        public static CMover DownUp(float speed)
-        {
-            return new CMoverSequence()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new List<Vector2>()
-                {
-                    new Vector2(0.0f, 2.0f) * speed,
-                    new Vector2(0.0f, -1.0f) * speed,
-                },
-                Duration = new List<float>()
-                {
-                    0.3f * speed,
-                    0.0f,
-                },
-
-                VelocityLerpRate = 0.05f,
-                AlwaysMaxSpeed = false,
-            };
-        }
-
-        public static CMover DownStopUp(float speed)
-        {
-            return new CMoverSequence()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new List<Vector2>()
-                {
-                    new Vector2(0.0f, speed),
-                    new Vector2(0.0f, -speed),
-                },
-                Duration = new List<float>()
-                {
-                    1.5f * speed,
-                    0.0f,
-                },
-
-                VelocityLerpRate = 0.03f,
-                AlwaysMaxSpeed = false,
-            };
-        }
-
-        public static CMover DownStopDown(float speed)
-        {
-            return new CMoverSequence()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new List<Vector2>()
-                {
-                    new Vector2(0.0f, speed),
-                    new Vector2(0.0f, -speed * 2.0f),
-                    new Vector2(0.0f, speed),
-                },
-                Duration = new List<float>()
-                {
-                    0.2f * speed,
-                    1.3f * speed,
-                    0.0f,
-                },
-
-                VelocityLerpRate = 0.04f,
-                AlwaysMaxSpeed = false,
-            };
-        }
-
-        public static CMover Up(float speed)
+        public static CMover Up(float speed, float transition)
         {
             return new CMoverFixedVelocity()
             {
@@ -125,7 +51,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover Down(float speed)
+        public static CMover Down(float speed, float transition)
         {
             return new CMoverFixedVelocity()
             {
@@ -134,16 +60,7 @@ namespace Galaxy
             };
         }
 
-        public static CMover Left(float speed)
-        {
-            return new CMoverFixedVelocity()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(-speed, 0.0f),
-            };
-        }
-
-        public static CMover Right(float speed)
+        public static CMover Right(float speed, float transition)
         {
             return new CMoverFixedVelocity()
             {
@@ -152,131 +69,119 @@ namespace Galaxy
             };
         }
 
-        public static CMover DownLeft(float speed)
+        public static CMover Left(float speed, float transition)
         {
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(-speed, speed),
+                Velocity = new Vector2(-speed, 0.0f),
             };
         }
 
-        public static CMover DownRight(float speed)
-        {
-            return new CMoverFixedVelocity()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(speed, speed),
-            };
-        }
-
-        public static CMover DownLerpLeft(float speed)
+        public static CMover ToUp(float speed, float transition)
         {
             return new CMoverSequence()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, speed),
-                    new Vector2(-speed, 0.0f),
+                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, -6.0f) * speed,
                 },
                 Duration = new List<float>()
                 {
-                    0.1f * speed,
-                    0.0f * speed,
+                    1.0f * transition,
+                    0.0f,
                 },
 
-                VelocityLerpRate = 0.13f,
+                VelocityLerpRate = 0.02f,
+                AlwaysMaxSpeed = false,
             };
         }
 
-        public static CMover DownLerpRight(float speed)
+        public static CMover DownWaitUp(float speed, float transition)
         {
             return new CMoverSequence()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, speed),
-                    new Vector2(speed, 0.0f),
+                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, -3.0f) * speed,
+                    new Vector2(0.0f, -6.0f) * speed,
                 },
                 Duration = new List<float>()
                 {
-                    0.1f * speed,
-                    0.0f * speed,
+                    1.0f * transition,
+                    0.5f * transition,
+                    0.0f,
                 },
 
-                VelocityLerpRate = 0.13f,
+                VelocityLerpRate = 0.02f,
+                AlwaysMaxSpeed = false,
             };
         }
 
-        public static CMover DownDownLeft(float speed)
-        {
-            return new CMoverFixedVelocity()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(speed * -0.5f, speed),
-            };
-        }
-
-        public static CMover DownDownRight(float speed)
-        {
-            return new CMoverFixedVelocity()
-            {
-                Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(speed * 0.5f, speed),
-            };
-        }
-
-        public static CMover DownLoopRightUp(float speed)
+        public static CMover DownWaitDown(float speed, float transition)
         {
             return new CMoverSequence()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, speed),
-                    new Vector2(speed, 0.0f),
-                    new Vector2(0.0f, -speed),
-                    new Vector2(-speed, 0.0f),
-                    new Vector2(0.0f, speed),
+                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, -3.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed,
                 },
                 Duration = new List<float>()
                 {
-                    0.2f * speed,
-                    0.2f * speed,
-                    0.1f * speed,
-                    0.2f * speed,
-                    0.2f * speed,
+                    1.0f * transition,
+                    0.5f * transition,
+                    0.0f,
                 },
 
-                VelocityLerpRate = 0.03f,
+                VelocityLerpRate = 0.02f,
+                AlwaysMaxSpeed = false,
             };
         }
 
-        public static CMover DownLoopLeftUp(float speed)
+        public static CMover DownLeft(float speed, float transition)
         {
             return new CMoverSequence()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, speed),
-                    new Vector2(-speed, 0.0f),
-                    new Vector2(0.0f, -speed),
-                    new Vector2(speed, 0.0f),
-                    new Vector2(0.0f, speed),
+                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(-3.0f, -3.0f) * speed,
                 },
                 Duration = new List<float>()
                 {
-                    0.2f * speed,
-                    0.2f * speed,
-                    0.1f * speed,
-                    0.2f * speed,
-                    0.2f * speed,
+                    0.5f * transition,
+                    0.0f * transition,
                 },
 
-                VelocityLerpRate = 0.03f,
+                VelocityLerpRate = 0.02f,
+            };
+        }
+
+        public static CMover DownRight(float speed, float transition)
+        {
+            return new CMoverSequence()
+            {
+                Name = (new StackFrame(0, false)).GetMethod().Name,
+                Velocity = new List<Vector2>()
+                {
+                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(3.0f, -3.0f) * speed,
+                },
+                Duration = new List<float>()
+                {
+                    0.5f * transition,
+                    0.0f * transition,
+                },
+
+                VelocityLerpRate = 0.02f,
             };
         }
     }

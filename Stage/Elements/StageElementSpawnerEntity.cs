@@ -17,12 +17,14 @@ namespace Galaxy
         public CSpawnPosition SpawnPosition { get; set; }
         public string MoverPresetName { get; set; }
         public float MoverSpeedMultiplier { get; set; }
+        public float MoverTransitionMultiplier { get; set; }
         public CSpawnerCustomElement CustomElement { get; set; }
 
         public CStageElementSpawnerEntity()
         {
             MoverPresetName = "IgnoreCamera";
             MoverSpeedMultiplier = 1.0f;
+            MoverTransitionMultiplier = 1.0f;
         }
 
         public override void Update(CWorld world)
@@ -49,8 +51,7 @@ namespace Galaxy
 
                 if (MoverPresetName != "" && MoverPresetName != "None")
                 {
-                    MethodInfo method = typeof(CMoverPresets).GetMethod(MoverPresetName);
-                    entity.Mover = method.Invoke(null, new object[] { MoverSpeedMultiplier }) as CMover;
+                    entity.Mover = CMoverPresets.FromName(MoverPresetName, MoverSpeedMultiplier, MoverTransitionMultiplier);
                 }
 
                 if (CustomElement != null)

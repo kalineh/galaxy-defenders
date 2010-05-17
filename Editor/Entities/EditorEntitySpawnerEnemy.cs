@@ -30,6 +30,9 @@ namespace Galaxy
         [CategoryAttribute("Mover")]
         public float MoverSpeedMultiplier { get; set; }
 
+        [CategoryAttribute("Mover")]
+        public float MoverTransitionMultiplier { get; set; }
+
         [CategoryAttribute("Bonus")]
         public int Coins { get; set; }
 
@@ -49,6 +52,7 @@ namespace Galaxy
             
             MoverPresetName = "IgnoreCamera";
             MoverSpeedMultiplier = 1.0f;
+            MoverTransitionMultiplier = 1.0f;
         }
 
         public CEditorEntitySpawnerEnemy(CWorld world, Vector2 position)
@@ -63,6 +67,7 @@ namespace Galaxy
 
             MoverPresetName = spawner.MoverPresetName;
             MoverSpeedMultiplier = spawner.MoverSpeedMultiplier;
+            MoverTransitionMultiplier = spawner.MoverTransitionMultiplier;
 
             Coins = spawner.Coins;
             Powerup = spawner.Powerup;
@@ -85,6 +90,7 @@ namespace Galaxy
                 SpawnPosition = new CSpawnPositionFixed() { Position = Position },
                 MoverPresetName = MoverPresetName,
                 MoverSpeedMultiplier = MoverSpeedMultiplier,
+                MoverTransitionMultiplier = MoverTransitionMultiplier,
                 CustomElement = null,
                 Coins = Coins,
                 Powerup = Powerup,
