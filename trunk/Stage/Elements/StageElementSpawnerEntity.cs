@@ -49,7 +49,7 @@ namespace Galaxy
                 CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
 #endif
 
-                if (MoverPresetName != "" && MoverPresetName != "None")
+                if (MoverPresetName != "")
                 {
                     entity.Mover = CMoverPresets.FromName(MoverPresetName, MoverSpeedMultiplier, MoverTransitionMultiplier);
                 }

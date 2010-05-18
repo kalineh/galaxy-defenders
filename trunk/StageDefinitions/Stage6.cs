@@ -2063,7 +2063,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.0f,
 Y = -7008.0f,
@@ -2074,7 +2073,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building3",
-HealthMax = 10.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -7008.0f,
@@ -2101,7 +2099,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building1",
-HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -328.0f,
 Y = -1648.0f,
@@ -2112,7 +2109,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building2",
-HealthMax = 3.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -248.0f,
 Y = -1592.0f,
@@ -2131,7 +2127,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building2",
-HealthMax = 3.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -208.0f,
 Y = -1664.0f,
@@ -2158,7 +2153,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building4",
-HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 168.0f,
 Y = -296.0f,
@@ -2177,7 +2171,6 @@ new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
 TextureName = "Building1",
-HealthMax = 6.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -392.0f,

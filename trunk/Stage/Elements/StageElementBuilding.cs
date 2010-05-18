@@ -15,7 +15,6 @@ namespace Galaxy
         public int Coins { get; set; }
         public bool Powerup { get; set; }
         public string TextureName { get; set; }
-        public float HealthMax { get; set; }
 
         public override void Update(CWorld world)
         {
@@ -23,7 +22,6 @@ namespace Galaxy
                 Coins = Coins,
                 Powerup = Powerup,
                 TextureName = TextureName,
-                HealthMax = HealthMax,
             };
 
             //building.UpdateTexture();

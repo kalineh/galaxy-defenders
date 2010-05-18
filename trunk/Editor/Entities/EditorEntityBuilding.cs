@@ -19,10 +19,6 @@ namespace Galaxy
     public class CEditorEntityBuilding
         : CEditorEntityBase
     {
-        // TODO: generating automatically for now
-        //[CategoryAttribute("Core")]
-        public float HealthMax { get; set; }
-
         [CategoryAttribute("Bonus")]
         public int Coins { get; set; }
 
@@ -54,7 +50,6 @@ namespace Galaxy
             : this(world, typeof(CBuilding), element.Position)
         {
             CStageElementBuilding building = element as CStageElementBuilding;
-            HealthMax = building.HealthMax;
             Coins = building.Coins;
             Powerup = building.Powerup;
             TextureName = building.TextureName;
@@ -65,7 +60,6 @@ namespace Galaxy
             CStageElementBuilding result = new CStageElementBuilding()
             {
                 Position = Position,
-                HealthMax = HealthMax,
                 Coins = Coins,
                 Powerup = Powerup,
                 TextureName = TextureName,
@@ -74,32 +68,10 @@ namespace Galaxy
             return result;
         }
 
-        private void SetDefaultHealth()
-        {
-            // TODO: do this in a way that doesnt suck
-            // TODO: all use default health
-            //if (HealthMax > 0.0f)
-                //return;
-
-            switch (TextureName)
-            {
-                case "Building1": HealthMax = 6.0f; return;
-                case "Building2": HealthMax = 3.0f; return;
-                case "Building3": HealthMax = 10.0f; return;
-                case "Building4": HealthMax = 6.0f; return;
-                case "Building5": HealthMax = 11.0f; return;
-                case "Building6": HealthMax = 7.0f; return;
-                case "Building7": HealthMax = 9.0f; return;
-                case "Building8": HealthMax = 9.0f; return;
-            }
-        }
-
         private void UpdateTexture()
         {
             Visual = CVisual.MakeSpriteCached1(World, "Textures/Static/" + TextureName);
             Visual = Visual ?? CVisual.MakeLabel(World, TextureName);
-
-            SetDefaultHealth();
         }
     }
 }
