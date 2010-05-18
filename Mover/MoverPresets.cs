@@ -16,6 +16,8 @@ namespace Galaxy
 {
     public class CMoverPresets
     {
+        public static Vector2 AntiCamera = new Vector2(0.0f, -3.0f);
+
         public static CMover FromName(string name, float speed_multiplier, float transition_multiplier)
         {
             // TODO: wont work on 360?
@@ -25,7 +27,12 @@ namespace Galaxy
             return result;
         }
 
-        public static CMover IgnoreCamera(float unused)
+        public static CMover None(float speed, float transition)
+        {
+            return null;
+        }
+
+        public static CMover IgnoreCamera(float speed, float transition)
         {
             return new CMoverIgnoreCamera();
         }
@@ -47,7 +54,7 @@ namespace Galaxy
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(0.0f, -speed),
+                Velocity = new Vector2(0.0f, -1.0f) * speed + AntiCamera,
             };
         }
 
@@ -56,7 +63,7 @@ namespace Galaxy
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(0.0f, speed),
+                Velocity = new Vector2(0.0f, 1.0f) * speed,
             };
         }
 
@@ -65,7 +72,7 @@ namespace Galaxy
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(speed, 0.0f),
+                Velocity = new Vector2(1.0f, 0.0f) * speed,
             };
         }
 
@@ -74,7 +81,7 @@ namespace Galaxy
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(-speed, 0.0f),
+                Velocity = new Vector2(-1.0f, 0.0f) * speed,
             };
         }
 
@@ -86,7 +93,7 @@ namespace Galaxy
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, 1.0f) * speed,
-                    new Vector2(0.0f, -6.0f) * speed,
+                    new Vector2(0.0f, -1.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
                 {
@@ -107,8 +114,8 @@ namespace Galaxy
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, 1.0f) * speed,
-                    new Vector2(0.0f, -3.0f) * speed,
-                    new Vector2(0.0f, -6.0f) * speed,
+                    AntiCamera,
+                    new Vector2(0.0f, -1.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
                 {
@@ -130,7 +137,7 @@ namespace Galaxy
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, 1.0f) * speed,
-                    new Vector2(0.0f, -3.0f) * speed,
+                    AntiCamera,
                     new Vector2(0.0f, 1.0f) * speed,
                 },
                 Duration = new List<float>()
@@ -153,7 +160,7 @@ namespace Galaxy
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, 1.0f) * speed,
-                    new Vector2(-3.0f, -3.0f) * speed,
+                    new Vector2(-1.0f, 0.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
                 {
@@ -173,7 +180,7 @@ namespace Galaxy
                 Velocity = new List<Vector2>()
                 {
                     new Vector2(0.0f, 1.0f) * speed,
-                    new Vector2(3.0f, -3.0f) * speed,
+                    new Vector2(1.0f, 0.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
                 {

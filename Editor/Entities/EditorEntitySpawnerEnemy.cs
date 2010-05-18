@@ -75,10 +75,13 @@ namespace Galaxy
 
         public override CEditorEntityPreview GeneratePreviewEntity()
         {
-            if (MoverSpeedMultiplier == 0.0f)
+            if (MoverSpeedMultiplier == 0.0f && MoverPresetName != "" && MoverPresetName != "None" && MoverPresetName != "IgnoreCamera")
                 return null;
 
-            return new CEditorEntityPreview(World, this);
+            return new CEditorEntityPreview(World, this)
+            {
+                Mover = CMoverPresets.FromName(MoverPresetName, MoverSpeedMultiplier, MoverTransitionMultiplier),
+            };
         }
 
         public override CStageElement GenerateStageElement()

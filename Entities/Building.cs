@@ -74,6 +74,8 @@ namespace Galaxy
             Vector2 texture = new Vector2(Visual.Texture.Width, Visual.Texture.Height);
             CollisionAABB aabb = Collision as CollisionAABB;
             aabb.Size = texture * Visual.Scale * 0.75f;
+
+            SetDefaultHealth();
         }
 
         // TODO: CWeapon OnCollide?
@@ -151,6 +153,28 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionAABB aabb = Collision as CollisionAABB;
             aabb.Position = Physics.PositionPhysics.Position - aabb.Size * 0.5f;
+        }
+
+        private void SetDefaultHealth()
+        {
+            // TODO: do this in a way that doesnt suck
+            // TODO: all use default health
+            //if (HealthMax > 0.0f)
+                //return;
+
+            switch (TextureName)
+            {
+                case "Building1": HealthMax = 4.0f; break;
+                case "Building2": HealthMax = 2.0f; break;
+                case "Building3": HealthMax = 10.0f; break;
+                case "Building4": HealthMax = 6.0f; break;
+                case "Building5": HealthMax = 11.0f; break;
+                case "Building6": HealthMax = 7.0f; break;
+                case "Building7": HealthMax = 9.0f; break;
+                case "Building8": HealthMax = 9.0f; break;
+            }
+
+            Health = HealthMax;
         }
     }
 }
