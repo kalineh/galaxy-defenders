@@ -75,7 +75,15 @@ namespace Galaxy
 
         public override CEditorEntityPreview GeneratePreviewEntity()
         {
-            if (MoverSpeedMultiplier == 0.0f && MoverPresetName != "" && MoverPresetName != "None" && MoverPresetName != "IgnoreCamera")
+            if (MoverPresetName == null)
+                return null;
+            if (MoverSpeedMultiplier == 0.0f)
+                return null;
+            if (MoverPresetName != "")
+                return null;
+            if (MoverPresetName != "None")
+                return null;
+            if (MoverPresetName != "IgnoreCamera")
                 return null;
 
             return new CEditorEntityPreview(World, this)

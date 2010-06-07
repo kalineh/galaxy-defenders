@@ -66,6 +66,7 @@
     <None Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\BonusShip.cs" />
+    <Compile Include="Enemy\DownTurret.cs" />
     <Compile Include="Enemy\FenceBeam.cs" />
     <Compile Include="Enemy\Fence.cs" />
     <Compile Include="Enemy\Glob.cs" />

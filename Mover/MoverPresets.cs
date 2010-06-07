@@ -63,7 +63,7 @@ namespace Galaxy
             return new CMoverFixedVelocity()
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
-                Velocity = new Vector2(0.0f, 1.0f) * speed,
+                Velocity = new Vector2(0.0f, 1.0f) * speed + AntiCamera,
             };
         }
 
@@ -92,7 +92,7 @@ namespace Galaxy
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                     new Vector2(0.0f, -1.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
@@ -113,7 +113,7 @@ namespace Galaxy
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                     AntiCamera,
                     new Vector2(0.0f, -1.0f) * speed + AntiCamera,
                 },
@@ -136,9 +136,9 @@ namespace Galaxy
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                     AntiCamera,
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
                 {
@@ -159,7 +159,7 @@ namespace Galaxy
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                     new Vector2(-1.0f, 0.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
@@ -168,7 +168,7 @@ namespace Galaxy
                     0.0f * transition,
                 },
 
-                VelocityLerpRate = 0.02f,
+                VelocityLerpRate = 0.01f,
             };
         }
 
@@ -179,7 +179,7 @@ namespace Galaxy
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Velocity = new List<Vector2>()
                 {
-                    new Vector2(0.0f, 1.0f) * speed,
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
                     new Vector2(1.0f, 0.0f) * speed + AntiCamera,
                 },
                 Duration = new List<float>()
@@ -188,7 +188,7 @@ namespace Galaxy
                     0.0f * transition,
                 },
 
-                VelocityLerpRate = 0.02f,
+                VelocityLerpRate = 0.01f,
             };
         }
     }
