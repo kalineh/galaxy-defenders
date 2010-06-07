@@ -1,5 +1,5 @@
 ﻿//
-// Turret.cs
+// DownTurret.cs
 //
 
 using System;
@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CTurret
+    public class CDownTurret
         : CEnemy
     {
         public float FireDelay { get; private set; }
@@ -16,13 +16,13 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public CTurret(CWorld world, Vector2 position)
+        public CDownTurret(CWorld world, Vector2 position)
             : base(world)
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/DownTurret");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 2.5f;
 
@@ -33,7 +33,7 @@ namespace Galaxy
         }
 
 #if XBOX360
-        public CTurret()
+        public CDownTurret()
         {
         }
 
@@ -44,7 +44,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/DownTurret");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 2.5f;
 
@@ -72,10 +72,8 @@ namespace Galaxy
         private void Fire()
         {
             Vector2 position = Physics.PositionPhysics.Position;
-            Vector2 dir = GetDirToShip();
-            float rotation = dir.ToAngle();
-
-            rotation += World.Random.NextAngle() * 0.015f;
+            Vector2 dir = Vector2.UnitY;
+            float rotation = MathHelper.PiOver2;
 
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
             World.Sound.Play("EnemyShoot");

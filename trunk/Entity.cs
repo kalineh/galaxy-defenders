@@ -106,6 +106,10 @@ namespace Galaxy
             if (Physics == null)
                 return false;
 
+            // some enemies travel up after appearing!
+            if (World.GameCamera.IsAboveActiveRegionForDeath(Physics.PositionPhysics.Position))
+                return true;
+
             if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
                 return false;
 

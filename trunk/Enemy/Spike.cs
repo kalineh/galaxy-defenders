@@ -19,7 +19,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Spike");
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
-            HealthMax = 11.0f;
+            HealthMax = 7.0f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
         }
 
@@ -38,7 +38,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Spike");
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
-            HealthMax = 11.0f;
+            HealthMax = 7.0f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
         }
 #endif
