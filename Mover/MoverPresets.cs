@@ -43,7 +43,7 @@ namespace Galaxy
             {
                 Name = (new StackFrame(0, false)).GetMethod().Name,
                 Frequency = Time.SingleFrame * transition,
-                Amplitude = speed * 2.0f,
+                Amplitude = speed,
                 Down = speed,
             };
         }
