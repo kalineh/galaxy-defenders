@@ -748,7 +748,7 @@ namespace Galaxy
             { "Plasma", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootPlasma",
-                    BasePrice = 1750,
+                    BasePrice = 1500,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -1085,7 +1085,7 @@ namespace Galaxy
             { "SeekBomb", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootSeekBomb",
-                    BasePrice = 1750,
+                    BasePrice = 500,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {

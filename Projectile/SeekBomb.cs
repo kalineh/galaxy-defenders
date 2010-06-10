@@ -110,7 +110,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             ClearTarget();
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 2.5f);
+            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 0.75f, Visual.Color);
             World.Sound.Play("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }
