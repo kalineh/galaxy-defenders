@@ -23,7 +23,7 @@ namespace Galaxy
             Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
-            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
         }
 
 #if XBOX360

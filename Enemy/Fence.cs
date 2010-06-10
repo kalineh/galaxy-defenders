@@ -25,8 +25,9 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 10.0f;
             CanSeekerTarget = false;
         }
