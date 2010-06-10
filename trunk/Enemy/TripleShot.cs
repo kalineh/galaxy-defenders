@@ -90,7 +90,12 @@ namespace Galaxy
                 World.Sound.Play("EnemyShoot");
 
                 OriginalMover = OriginalMover ?? Mover;
-                IgnoreCameraMover = IgnoreCameraMover ?? new CMoverIgnoreCamera();
+
+                if (Mover != null)
+                {
+                    IgnoreCameraMover = IgnoreCameraMover ?? new CMoverIgnoreCamera();
+                }
+
                 Mover = IgnoreCameraMover;
                 FireCooldown = Time.ToFrames(TripleShotDelay);
                 TripleShotCounter += 1;
