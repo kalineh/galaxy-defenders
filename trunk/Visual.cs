@@ -107,6 +107,7 @@ namespace Galaxy
         private float _Alpha;
         private float _Depth;
         private string _DebugText;
+        private bool _DebugTextClampToScreen;
         private SpriteEffects _SpriteEffects;
         private Vector2? _NormalizedOrigin;
 
@@ -166,6 +167,12 @@ namespace Galaxy
         { 
             get { return _DebugText; }
             set { _DebugText = value; SetDirty(true); }
+        }
+
+        public bool DebugTextClampToScreen
+        { 
+            get { return _DebugTextClampToScreen; }
+            set { _DebugTextClampToScreen = value; SetDirty(true); }
         }
 
         public SpriteEffects SpriteEffects
@@ -254,6 +261,17 @@ namespace Galaxy
             {
                 Vector2 size = GetDebugFont().MeasureString(DebugText);
                 Vector2 center = position - new Vector2(_CacheFrameSourceRect.Center.X, _CacheFrameSourceRect.Center.Y) * 0.5f - size * 0.5f;
+
+                if (DebugTextClampToScreen)
+                {
+                    Vector2 tl = World.GameCamera.GetTopLeft();
+                    Vector2 br = World.GameCamera.GetBottomRight();
+                    center = new Vector2(
+                        MathHelper.Clamp(center.X, tl.X, br.X - size.X),
+                        MathHelper.Clamp(center.Y, tl.Y, br.Y - size.Y * 2.0f)
+                    );
+                }
+
                 Color text_color = Color.White;
 
                 // TODO: dont waste time on stuff like this (also endianness bad)

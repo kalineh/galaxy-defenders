@@ -13,12 +13,27 @@ namespace Galaxy
     public class CStageElementCameraStop
         : CStageElement
     {
+        private bool EnemiesExist(CWorld world)
+        {
+            foreach (CEntity entity in world.GetEntities())
+            {
+                // ignore
+                if (entity.GetType() == typeof(CFence))
+                    continue;
+
+                if (entity.GetType().IsSubclassOf(typeof(CEnemy)))
+                    return true;
+            }
+
+            return false;
+        }
+
         public override void Update(CWorld world)
         {
-            int enemies = world.GetEntities().Where(e => e.GetType().IsSubclassOf(typeof(CEnemy))).Count();
+            bool enemies = EnemiesExist(world);
            
             // TODO: not hack into the stage definition!
-            if (enemies > 0)
+            if (enemies)
             {
                 world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 0.0f, 0.05f);
                 return;

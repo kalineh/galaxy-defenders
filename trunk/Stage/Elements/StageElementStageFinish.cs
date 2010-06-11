@@ -52,9 +52,17 @@ namespace Galaxy
 
         public override bool IsExpired()
         {
-            int enemies = World.GetEntities().Where(e => e.GetType().IsSubclassOf(typeof(CEnemy))).Count();
-            // TODO: sleep
-            return enemies <= 0;
+            foreach (CEntity entity in World.GetEntities())
+            {
+                // ignore
+                if (entity.GetType() == typeof(CFence))
+                    continue;
+
+                if (entity.GetType().IsSubclassOf(typeof(CEnemy)))
+                    return false;
+            }
+
+            return true;
         }
     }
 }
