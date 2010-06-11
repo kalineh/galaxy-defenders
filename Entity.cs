@@ -5,6 +5,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
@@ -83,6 +84,17 @@ namespace Galaxy
             {
                 Visual.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
             }
+
+#if DEBUG
+            if (CInput.IsRawKeyDown(Keys.L))
+            {
+                if (Visual != null)
+                {
+                    Visual.DebugText = GetType().ToString().Replace("Galaxy.", "");
+                    Visual.DebugTextClampToScreen = true;
+                }
+            }
+#endif
         }
 
         public void ClampInsideScreen()

@@ -13,230 +13,60 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CFence),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 40.0f,
-Y = -272.0f,
+X = 80.0f,
+Y = -808.0f,
 },
 },
-MoverPresetName = "DownLeft",
+MoverPresetName = "None",
 MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 40.0f,
-Y = -272.0f,
+X = 80.0f,
+Y = -808.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CFence),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 120.0f,
-Y = -368.0f,
+X = -104.0f,
+Y = -816.0f,
 },
 },
-MoverPresetName = "DownLeft",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 2.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 120.0f,
-Y = -368.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CBall),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 200.0f,
-Y = -464.0f,
-},
-},
-MoverPresetName = "DownLeft",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 3.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 200.0f,
-Y = -464.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CBall),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -160.0f,
-Y = -680.0f,
-},
-},
-MoverPresetName = "DownRight",
+MoverPresetName = "None",
 MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -160.0f,
-Y = -680.0f,
+X = -104.0f,
+Y = -816.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CBall),
+Type = typeof(Galaxy.CFence),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -80.0f,
-Y = -592.0f,
+X = -168.0f,
+Y = 264.0f,
 },
 },
-MoverPresetName = "DownRight",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 2.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -80.0f,
-Y = -592.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CBall),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = -504.0f,
-},
-},
-MoverPresetName = "DownRight",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 3.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = -504.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building1",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -64.0f,
-Y = -152.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building2",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
-Y = -160.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building2",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 104.0f,
-Y = -160.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building2",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 160.0f,
-Y = -160.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building2",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 200.0f,
-Y = -152.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CSpike),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 169.23f,
-Y = -596.15f,
-},
-},
-MoverPresetName = "IgnoreCamera",
-MoverSpeedMultiplier = 1.0f,
+MoverPresetName = "Down",
+MoverSpeedMultiplier = 5.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 169.23f,
-Y = -596.15f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CDownTurret),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -80.0f,
-Y = -8.0f,
-},
-},
-MoverPresetName = "IgnoreCamera",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -80.0f,
-Y = -8.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CTurret),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 72.0f,
-Y = 0.0f,
-},
-},
-MoverPresetName = "IgnoreCamera",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 72.0f,
-Y = 0.0f,
+X = -168.0f,
+Y = 264.0f,
 },
 });
 
