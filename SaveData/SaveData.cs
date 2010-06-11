@@ -19,6 +19,7 @@ namespace Galaxy
         public int Version;
         public string Name;
         public int Money;
+        public int Difficulty;
         public string CurrentStage;
         public string ChassisType;
         public string GeneratorType;
@@ -94,6 +95,7 @@ namespace Galaxy
                 Version = SProfile.CurrentVersion,
                 Name = name,
                 Money = 3000,
+                Difficulty = 1,
                 CurrentStage = "Start",
                 ChassisType = "BasicShip",
                 GeneratorType = "BasicGenerator",

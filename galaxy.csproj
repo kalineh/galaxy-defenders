@@ -94,6 +94,7 @@
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CollisionGrid.cs" />
+    <Compile Include="Difficulty.cs" />
     <Compile Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Editor\Editors\DecorationTypeSelector.cs" />
     <Compile Include="Effects\ParticleEffect.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
     <Compile Include="Stage\StageCompiler.cs" />
+    <Compile Include="State\StateDifficultySelect.cs" />
     <Compile Include="State\StateStageSelect.cs" />
     <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />

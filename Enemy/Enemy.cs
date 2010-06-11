@@ -16,7 +16,11 @@ namespace Galaxy
         public float HealthMax
         {
             get { return _HealthMax; }
-            set { _HealthMax = value; Health = value; }
+            set
+            { 
+                _HealthMax = value * CDifficulty.HealthScale[CSaveData.GetCurrentProfile().Difficulty];
+                Health = _HealthMax;
+            }
         }
 
         public float Health { get; private set; }
@@ -32,7 +36,7 @@ namespace Galaxy
             : base(world)
         {
             Physics = new CPhysics();
-            BaseScore = 10;
+            BaseScore = 50;
             CanSeekerTarget = true;
         }
 
@@ -46,7 +50,7 @@ namespace Galaxy
             base.Init360(world);
 
             Physics = new CPhysics();
-            BaseScore = 10;
+            BaseScore = 50;
             CanSeekerTarget = true;
         }
 #endif
@@ -142,8 +146,10 @@ namespace Galaxy
 
         private int CalculateScoreFromHealth()
         {
-            int base_ = BaseScore * (int)HealthMax;
-            return base_ - base_ % 10;
+            float s = (float)BaseScore * HealthMax;
+            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Difficulty];
+            int score = (int)d;
+            return score - score % 10;
         }
         
         protected override void OnDie()

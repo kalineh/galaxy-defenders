@@ -117,8 +117,10 @@ namespace Galaxy
 
         private int CalculateScoreFromHealth()
         {
-            int base_ = (int)HealthMax * 15;
-            return base_ - base_ % 10;
+            float s = HealthMax * 15.0f;
+            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Difficulty];
+            int score = (int)d;
+            return score - score % 10;
         }
 
         private void OnDestroyed()

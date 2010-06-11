@@ -64,6 +64,7 @@
     <Compile Include="CollisionGrid.cs" />
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
+    <Compile Include="Difficulty.cs" />
     <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\DownTurret.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="StageDefinitions\Stage3.cs" />
     <Compile Include="StageDefinitions\Stage4.cs" />
     <Compile Include="StageDefinitions\Stage6.cs" />
+    <Compile Include="State\StateDifficultySelect.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />
