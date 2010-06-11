@@ -1,5 +1,5 @@
 ﻿//
-// StateMainMenu.cs
+// StateDifficultySelect.cs
 //
 
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    public class CStateMainMenu
+    public class CStateDifficultySelect
         : CState
     {
         public CGalaxy Game { get; set; }
@@ -18,7 +18,7 @@ namespace Galaxy
         public CMenu Menu { get; set; }
         public CShip SampleShip { get; set; }
 
-        public CStateMainMenu(CGalaxy game)
+        public CStateDifficultySelect(CGalaxy game)
         {
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
@@ -28,19 +28,19 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
-                    new CMenu.MenuOption() { Text = "Select Profile", Select = SelectProfile },
-                    new CMenu.MenuOption() { Text = "Quit Qame", Select = QuitGame },
+                    new CMenu.MenuOption() { Text = "Easy", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Easy },
+                    new CMenu.MenuOption() { Text = "Normal", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Normal },
+                    new CMenu.MenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
+                    new CMenu.MenuOption() { Text = "LOL", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.LOL },
+                    new CMenu.MenuOption() { Text = "Back", Select = Back },
                 }
             };
+            Menu.Cursor = 1;
+
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
             EmptyWorld.Scenery = SceneryPresets.BlueSky(EmptyWorld);
-            //EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
-                //new CBackground(EmptyWorld, new Color(133, 145, 181)),
-                //new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
-            //);
 
             if (!Game.EditorMode)
                 Game.Music.Play("Music/Title");
@@ -49,21 +49,6 @@ namespace Galaxy
         public override void Update()
         {
             Menu.Update();
-
-            // TODO: organize debug somewhere?
-            if (Game.Input.IsKeyPressed(Keys.F1))
-            {
-                Game.StageDefinition = CStageDefinition.GetStageDefinitionByName("Stage1");
-                Game.State = new CStateGame(Game);
-            }
-
-#if !XBOX360
-            // TODO: organize debug somewhere?
-            if (Game.Input.IsKeyPressed(Keys.F3))
-            {
-                Game.State = new CStateEditor(Game);
-            }
-#endif
 
             // sample display
             SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
@@ -101,19 +86,17 @@ namespace Galaxy
 
         }
 
-        private void StartGame(object tag)
+        private void SelectDifficulty(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
+            CSaveData.SetCurrentProfileData(profile);
+            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
         }
 
-        private void SelectProfile(object tag)
+        private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
-        }
-
-        private void QuitGame(object tag)
-        {
-            Game.Exit();
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
     }
 }
