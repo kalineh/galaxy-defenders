@@ -63,6 +63,7 @@ namespace Galaxy
                     if (cancel_option.CancelOption)
                     {
                         CSound.DirectPlay(Game, "MenuCancel", 1.0f);
+                        cancel_option.Highlight(cancel_option.Data);
                         cancel_option.Select(cancel_option.Data);
                     }
                 }
