@@ -32,8 +32,8 @@ namespace Galaxy
 
         #if XBOX360
         public CBeamer()
-            {
-            }
+        {
+        }
 
         public void Init360(CWorld world, Vector2 position)
         {

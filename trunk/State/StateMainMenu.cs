@@ -36,7 +36,7 @@ namespace Galaxy
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
-            EmptyWorld.Scenery = SceneryPresets.BlueSky(EmptyWorld);
+            EmptyWorld.Scenery = CSceneryPresets.BlueSky(EmptyWorld);
             //EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
                 //new CBackground(EmptyWorld, new Color(133, 145, 181)),
                 //new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)

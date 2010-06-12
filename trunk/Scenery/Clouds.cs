@@ -14,26 +14,37 @@ namespace Galaxy
     {
         private class Cloud
         {
-            public Cloud(Vector2 position)
+            public Cloud(Vector2 position, Vector2 velocity, Vector2 lerp_velocity)
             {
                 Position = position;
+                Velocity = velocity;
+                LerpVelocity = lerp_velocity;
             }
 
             public Vector2 Position { get; set; }
+            public Vector2 Velocity { get; set; }
+            public Vector2 LerpVelocity { get; set; }
         }
 
         public CVisual Visual { get; set; }
         public float Scale { get; set; }
         public Vector2 Velocity { get; set; }
+        public float RandomLerp { get; set; }
         private List<Cloud> Clouds { get; set; }
         private int Count { get; set; }
 
         public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity)
+            : this(world, texture, scale, velocity, 0.0f)
+        {
+        }
+
+        public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity, float random_lerp)
             : base(world)
         {
             Visual = new CVisual(world, texture, Color.White);
             Scale = scale;
             Velocity = velocity;
+            RandomLerp = random_lerp;
             Clouds = new List<Cloud>();
             UpdateCloudCount();
         }
@@ -43,7 +54,11 @@ namespace Galaxy
             Count = (int)(10.0f * 1.0f / World.GameCamera.Zoom);
             for (int i = 0; i < Count - Clouds.Count; ++i)
             {
-                Cloud cloud = new Cloud(RandomScreenPosition());
+                Cloud cloud = new Cloud(
+                    RandomScreenPosition(),
+                    Velocity,
+                    RandomLerpVelocity()
+                );
                 Clouds.Add(cloud);
             }
         }
@@ -57,10 +72,13 @@ namespace Galaxy
                 if (World.GameCamera.IsOffBottom(cloud.Position, 1.0f))
                 {
                     cloud.Position = RandomRespawnPosition();
+                    cloud.Velocity = Velocity;
+                    cloud.LerpVelocity = RandomLerpVelocity();
                 }
 
                 float speed_scale = 1.0f - Math.Abs(cloud.Position.X) * 0.001f;
-                cloud.Position += Velocity * speed_scale;
+                cloud.Position += cloud.Velocity * speed_scale;
+                cloud.Velocity = cloud.Velocity * 0.999f + cloud.LerpVelocity * 0.001f;
             }
         }
 
@@ -86,6 +104,11 @@ namespace Galaxy
             Vector2 br = World.GameCamera.GetBottomRight();
             Vector2 range = br - tl;
             return tl + new Vector2(World.Random.NextFloat() * range.X, -100.0f);
+        }
+
+        private Vector2 RandomLerpVelocity()
+        {
+            return Velocity.Rotate((World.Random.NextAngle() - MathHelper.PiOver2) * RandomLerp);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace Galaxy
             SnapToGrid = true;
             GridSize = 8.0f;
 
-            MethodInfo method = typeof(SceneryPresets).GetMethod(game.StageDefinition.SceneryName);
+            MethodInfo method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -534,7 +534,7 @@ namespace Galaxy
             Game.StageDefinition = definition;
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
 
-            MethodInfo method = typeof(SceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
+            MethodInfo method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -551,7 +551,7 @@ namespace Galaxy
             if (!Game.EditorMode)
                 Game.Music.Play(Game.StageDefinition.MusicName);
 
-            MethodInfo method = typeof(SceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
+            MethodInfo method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;
         }
     }
