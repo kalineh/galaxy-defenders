@@ -88,7 +88,10 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
-            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts)
+            IEnumerable<string> primary_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponPrimaryType };
+            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts);
+            IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct();
+            foreach (string weapon_part in primary_weapon_parts)
             {
                 MenuPrimaryWeapon.MenuOptions.Add(
                     new CMenu.MenuOption()
@@ -117,8 +120,14 @@ namespace Galaxy
             };
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
-            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts)
+            IEnumerable<string> secondary_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSecondaryType };
+            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts);
+            IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct();
+            foreach (string weapon_part in secondary_weapon_parts)
             {
+                if (weapon_part == "")
+                    continue;
+
                 MenuSecondaryWeapon.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
@@ -146,8 +155,14 @@ namespace Galaxy
             };
 
             MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
-            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
+            IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSidekickLeftType };
+            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct();
+            foreach (string weapon_part in sidekick_left_weapon_parts)
             {
+                if (weapon_part == "")
+                    continue;
+
                 MenuSidekickLeft.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
@@ -173,8 +188,14 @@ namespace Galaxy
             };
 
             MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
-            foreach (string weapon_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts)
+            IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSidekickRightType };
+            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct();
+            foreach (string weapon_part in sidekick_right_weapon_parts)
             {
+                if (weapon_part == "")
+                    continue;
+
                 MenuSidekickRight.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
@@ -198,7 +219,10 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            foreach (string chassis_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableChassisParts)
+            IEnumerable<string> chassis_parts_own = new List<string>() { CSaveData.GetCurrentProfile().ChassisType };
+            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableChassisParts);
+            IEnumerable<string> chassis_parts = chassis_parts_all.Distinct();
+            foreach (string chassis_part in chassis_parts)
             {
                 MenuChassis.MenuOptions.Add(
                     new CMenu.MenuOption()
@@ -223,8 +247,12 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            foreach (string generator_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableGeneratorParts)
+            IEnumerable<string> generator_parts_own = new List<string>() { CSaveData.GetCurrentProfile().GeneratorType };
+            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableGeneratorParts);
+            IEnumerable<string> generator_parts = generator_parts_all.Distinct();
+            foreach (string generator_part in generator_parts)
             {
+
                 MenuGenerator.MenuOptions.Add(
                     new CMenu.MenuOption()
                     {
@@ -248,7 +276,10 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            foreach (string shield_part in CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableShieldParts)
+            IEnumerable<string> shield_parts_own = new List<string>() { CSaveData.GetCurrentProfile().ShieldType };
+            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableShieldParts);
+            IEnumerable<string> shield_parts = shield_parts_all.Distinct();
+            foreach (string shield_part in shield_parts)
             {
                 MenuShield.MenuOptions.Add(
                     new CMenu.MenuOption()
