@@ -110,7 +110,7 @@ namespace StageEditor
                 try
                 {
                     Game.Game.Content.Load<Song>(definition.MusicName);
-                    if (typeof(Galaxy.SceneryPresets).GetMethod(definition.SceneryName) == null)
+                    if (typeof(Galaxy.CSceneryPresets).GetMethod(definition.SceneryName) == null)
                         throw new Exception();
                 }
                 catch

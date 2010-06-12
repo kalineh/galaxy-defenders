@@ -68,7 +68,7 @@ namespace Galaxy
             if (!Game.EditorMode)
                 Game.Music.Play(Stage.Definition.MusicName);
 
-            MethodInfo method = typeof(SceneryPresets).GetMethod(Stage.Definition.SceneryName);
+            MethodInfo method = typeof(CSceneryPresets).GetMethod(Stage.Definition.SceneryName);
             Scenery = method.Invoke(null, new object[] { this }) as CScenery;
         }
 

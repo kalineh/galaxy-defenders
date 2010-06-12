@@ -99,6 +99,13 @@ namespace Galaxy
                 FenceBeam.UpdateAttachment(this);
         }
 
+        public override void Delete()
+        {
+            if (FenceBeam != null)
+                World.EntityDelete(FenceBeam);
+            base.Delete();
+        }
+
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these
