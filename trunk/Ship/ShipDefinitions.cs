@@ -15,6 +15,7 @@ namespace Galaxy
     {
         public static CShip GenerateShip(CWorld world, SProfile profile, PlayerIndex index)
         {
+            CPilot pilot = CPilot.MakePilot(profile.Pilot);
             CChassisPart chassis = ChassisDefinitions.GetPart(profile.ChassisType);
             CGeneratorPart generator = GeneratorDefinitions.GetPart(profile.GeneratorType);
             CShieldPart shield = ShieldDefinitions.GetPart(profile.ShieldType);
@@ -22,7 +23,7 @@ namespace Galaxy
             CWeaponPart secondary = WeaponDefinitions.GetPart(profile.WeaponSecondaryType, profile.WeaponSecondaryLevel);
             CWeaponPart sidekick_left = WeaponDefinitions.GetPart(profile.WeaponSidekickLeftType, profile.WeaponSidekickLeftLevel);
             CWeaponPart sidekick_right = WeaponDefinitions.GetPart(profile.WeaponSidekickRightType, profile.WeaponSidekickRightLevel);
-            CShip ship = new CShip(world, index, chassis, generator, shield, primary, secondary, sidekick_left, sidekick_right);
+            CShip ship = new CShip(world, index, pilot, chassis, generator, shield, primary, secondary, sidekick_left, sidekick_right);
             return ship;
         }
     }

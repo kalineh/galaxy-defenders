@@ -18,6 +18,7 @@ namespace Galaxy
         public static int CurrentVersion = 1;
         public int Version;
         public string Name;
+        public string Pilot;
         public int Money;
         public int Difficulty;
         public string CurrentStage;
@@ -94,6 +95,7 @@ namespace Galaxy
             {
                 Version = SProfile.CurrentVersion,
                 Name = name,
+                Pilot = "Kazuki",
                 Money = 3000,
                 Difficulty = 1,
                 CurrentStage = "Start",

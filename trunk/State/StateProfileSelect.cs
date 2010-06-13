@@ -61,7 +61,7 @@ namespace Galaxy
         {
             CSaveData.AddNewProfile("New User");
             CSaveData.SetCurrentProfile("New User");
-            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
         }
 
         public void SelectProfile(object tag)
