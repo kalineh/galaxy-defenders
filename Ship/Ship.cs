@@ -50,9 +50,18 @@ namespace Galaxy
 
         public float Vibrate { get; set; }
 
+        public CPilot Pilot { get; set; }
+
+        public int IsIgnoreBullets { get; set; }
+        public int IsReflectBullets { get; set; }
+        public int IsInvincible { get; set; }
+        public int IsAbsorbBullets { get; set; }
+        public float SpeedEnhancement { get; set; }
+
         public CShip(
             CWorld world,
             PlayerIndex index,
+            CPilot pilot,
             CChassisPart chassis,
             CGeneratorPart generator,
             CShieldPart shield,
@@ -64,6 +73,9 @@ namespace Galaxy
         {
             PlayerIndex = index;
             PlayerColor = GetPlayerColor(PlayerIndex);
+
+            Pilot = pilot;
+            Pilot.Ship = this;
 
             Chassis = chassis;
             Generator = generator;
@@ -102,6 +114,8 @@ namespace Galaxy
                 weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
 
             Mover = new CMoverIgnoreCamera();
+
+            SpeedEnhancement = 1.0f;
         }
 
 #if XBOX360
@@ -153,6 +167,8 @@ namespace Galaxy
             foreach (CWeapon weapon in WeaponSidekickRight)
                 weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
 
+            Mover = new CMoverIgnoreCamera();
+            SpeedEnhancement = 1.0f;
         }
 #endif
 
@@ -164,6 +180,8 @@ namespace Galaxy
             UpdateShields();
 
             base.Update();
+
+            Pilot.Update();
 
             // post-physics update
             // TODO: camera scroll management (scenery system?)
@@ -239,7 +257,7 @@ namespace Galaxy
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
-            float Speed = Chassis.Speed;
+            float Speed = Chassis.Speed * SpeedEnhancement;
             Vector2 force = new Vector2(0.0f, 0.0f);
  
             if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
@@ -278,15 +296,15 @@ namespace Galaxy
             // TODO: bind to functions?
             if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
             {
-                Fire(WeaponPrimary);
+                Pilot.Ability0.TryEnable();
             }
             if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
             {
-                Fire(WeaponSecondary);
+                Pilot.Ability1.TryEnable();
             }
             if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
             {
-                Fire(WeaponSidekickLeft);
+                Pilot.Ability2.TryEnable();
             }
             if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.F))
             {
@@ -306,6 +324,7 @@ namespace Galaxy
 
         public void UpdateWeapons()
         {
+            // TODO: de-linq
             WeaponPrimary.ForEach(weapon => weapon.Update());
             WeaponSecondary.ForEach(weapon => weapon.Update());
             WeaponSidekickLeft.ForEach(weapon => weapon.Update());
@@ -356,7 +375,7 @@ namespace Galaxy
         public void TakeCollideDamage(Vector2 source, float damage)
         {
             Vector2 offset = Physics.PositionPhysics.Position - source;
-            if (!offset.IsEffectivelyZero())
+            if (!offset.IsEffectivelyZero() && IsInvincible <= 0)
             {
                 Vector2 dir = offset.Normal();
                 Physics.PositionPhysics.Velocity *= 0.8f;
@@ -383,6 +402,9 @@ namespace Galaxy
 
         private void ApplyDamage(float damage, bool effects)
         {
+            if (IsInvincible > 0)
+                return;
+
             if (CurrentShield > 0.0f)
             {
                 CurrentShield -= damage;
@@ -404,11 +426,29 @@ namespace Galaxy
                 return;
             }
 
-            if (CurrentShield <= 0.0f)
-            {
-                if (effects)
-                    CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.5f);
-            }
+            if (CurrentShield > 0.0f)
+                return;
+
+            if (effects)
+                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.5f);
+        }
+
+        public void AbsorbBullet(CEnemyShot shot)
+        {
+            float value = shot.Damage;
+            float max_to_energy = Generator.Energy - CurrentEnergy;
+            float max_to_shield = Shield.Shield - CurrentShield;
+
+            float to_energy = Math.Max(value, max_to_energy);
+            value -= to_energy;
+            float to_shield = Math.Max(value, max_to_shield);
+
+            const float Scale = 0.025f;
+            CurrentEnergy += to_energy * Scale;
+            CurrentShield += to_shield * Scale;
+
+            CurrentEnergy = Math.Max(CurrentEnergy, Generator.Energy);
+            CurrentShield = Math.Max(CurrentShield, Shield.Shield);
         }
     };
 }

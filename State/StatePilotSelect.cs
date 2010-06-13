@@ -1,7 +1,8 @@
 ﻿//
-// StateDifficultySelect.cs
+// StatePilotSelect.cs
 //
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    public class CStateDifficultySelect
+    public class CStatePilotSelect
         : CState
     {
         public CGalaxy Game { get; set; }
@@ -18,7 +19,7 @@ namespace Galaxy
         public CMenu Menu { get; set; }
         public CShip SampleShip { get; set; }
 
-        public CStateDifficultySelect(CGalaxy game)
+        public CStatePilotSelect(CGalaxy game)
         {
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
@@ -28,11 +29,10 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Easy", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Easy },
-                    new CMenu.MenuOption() { Text = "Normal", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Normal },
-                    new CMenu.MenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
-                    new CMenu.MenuOption() { Text = "LOL", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.LOL },
-                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true },
+                    new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Data = "Kazuki" },
+                    new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Data = "Rabbit" },
+                    new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Data = "Gunthor" },
+                    new CMenu.MenuOption() { Text = "???", Select = SelectPilot, Data = null },
                 }
             };
             Menu.Cursor = 1;
@@ -86,17 +86,17 @@ namespace Galaxy
 
         }
 
-        private void SelectDifficulty(object tag)
+        private void SelectPilot(object tag)
         {
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
+            profile.Pilot = (string)tag ?? "";
             CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
         private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
         }
     }
 }

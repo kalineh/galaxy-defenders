@@ -104,6 +104,7 @@
     <Compile Include="Enemy\FenceBeam.cs" />
     <Compile Include="Enemy\Glob.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
+    <Compile Include="Pilot.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Fibers.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
     <Compile Include="Stage\StageCompiler.cs" />
     <Compile Include="State\StateDifficultySelect.cs" />
+    <Compile Include="State\StatePilotSelect.cs" />
     <Compile Include="State\StateStageSelect.cs" />
     <Compile Include="State\StateEditor.cs" />
     <Compile Include="State\StateProfileSelect.cs" />

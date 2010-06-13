@@ -2,6 +2,7 @@
 // Shot.cs
 //
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -69,8 +70,32 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
+            if (ship.IsIgnoreBullets > 0)
+                return;
+
+            if (ship.IsReflectBullets > 0)
+            {
+                Reflect(ship);
+                return;
+            }
+
+            if (ship.IsAbsorbBullets > 0)
+            {
+                ship.AbsorbBullet(this);
+                Die();
+                return;
+            }
+
             ship.TakeDamage(Damage);
             Die();
+        }
+
+        private void Reflect(CShip ship)
+        {
+            Vector2 from_ship = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 reflect = from_ship.Normal();
+            Vector2 new_velocity = reflect * Physics.PositionPhysics.Velocity.Length();
+            Physics.PositionPhysics.Velocity = new_velocity;
         }
     }
 }
