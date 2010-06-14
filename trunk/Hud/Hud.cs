@@ -29,6 +29,7 @@ namespace Galaxy
         private CVisual EnergyIconVisual { get; set; }
         private CVisual ShieldIconVisual { get; set; }
         private CVisual ArmorIconVisual { get; set; }
+        private CVisual PortraitIconVisual { get; set; }
 
         private Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
@@ -41,6 +42,7 @@ namespace Galaxy
         private Vector2 EnergyIconPosition { get; set; }
         private Vector2 ShieldIconPosition { get; set; }
         private Vector2 ArmorIconPosition { get; set; }
+        private Vector2 PortraitIconPosition { get; set; }
 
         public CHud(CWorld world, Vector2 base_position, bool primary)
         {
@@ -57,6 +59,7 @@ namespace Galaxy
             EnergyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/EnergyIcon");
             ShieldIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ShieldIcon");
             ArmorIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ArmorIcon");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot);
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
@@ -69,6 +72,7 @@ namespace Galaxy
             EnergyIconPosition = BasePosition + new Vector2(70.0f, -220.0f);
             ShieldIconPosition = BasePosition + new Vector2(70.0f, -160.0f);
             ArmorIconPosition = BasePosition + new Vector2(70.0f, -100.0f);
+            PortraitIconPosition = BasePosition + new Vector2(240.0f, -500.0f);
 
             EnergyVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             ShieldVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
@@ -77,6 +81,7 @@ namespace Galaxy
             ShieldIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
 
             LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
             RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
@@ -98,6 +103,7 @@ namespace Galaxy
             EnergyIconVisual.Update();
             ShieldIconVisual.Update();
             ArmorIconVisual.Update();
+            PortraitIconVisual.Update();
 
             MoneyOverride = null;
         }
@@ -127,6 +133,7 @@ namespace Galaxy
             EnergyIconVisual.Draw(sprite_batch, EnergyIconPosition, 0.0f);
             ShieldIconVisual.Draw(sprite_batch, ShieldIconPosition, 0.0f);
             ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
+            PortraitIconVisual.Draw(sprite_batch, PortraitIconPosition, 0.0f);
 
             if (Primary)
             {
@@ -145,6 +152,14 @@ namespace Galaxy
             sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
             sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
             sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
+        }
+
+        public void UpdatePilot()
+        {
+            float depth = PortraitIconVisual.Depth;
+            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot);
+            PortraitIconVisual.Depth = depth;
+            PortraitIconVisual.Update();
         }
     }
 }
