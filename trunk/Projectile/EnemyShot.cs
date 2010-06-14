@@ -11,6 +11,8 @@ namespace Galaxy
     public class CEnemyShot
         : CEntity
     {
+        public bool IsReflected { get; set; }
+
         public static CEnemyShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
             CEnemyShot shot = new CEnemyShot(world, damage);
@@ -70,6 +72,9 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
+            if (IsReflected)
+                return;
+
             if (ship.IsIgnoreBullets > 0)
                 return;
 
@@ -96,6 +101,7 @@ namespace Galaxy
             Vector2 reflect = from_ship.Normal();
             Vector2 new_velocity = reflect * Physics.PositionPhysics.Velocity.Length();
             Physics.PositionPhysics.Velocity = new_velocity;
+            IsReflected = true;
         }
     }
 }

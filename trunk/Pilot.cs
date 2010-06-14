@@ -3,6 +3,7 @@
 //
 
 using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection;
 
@@ -214,6 +215,111 @@ namespace Galaxy
                 base.Update();
             }
         }
+
+        public class BulletReflect
+            : CAbility
+        {
+            public BulletReflect(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 6.0f;
+                CooldownTime = 15.0f;
+            }
+
+            public override void Enable()
+            {
+                Pilot.Ship.IsReflectBullets += 1;
+                base.Enable();
+            }
+
+            public override void Disable()
+            {
+                Pilot.Ship.IsReflectBullets -= 1;
+                base.Disable();
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    CEffect.ReflectBulletEffect(Pilot.Ship, 
+                                         Pilot.Ship.Physics.PositionPhysics.Position,
+                                         3.0f,
+                                         Pilot.Ship.Visual.Color);
+                }
+                base.Update();
+            }
+        }
+
+        public class BulletDetonate
+            : CAbility
+        {
+            public BulletDetonate(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 0.0f;
+                CooldownTime = 15.0f;
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    foreach (CEntity entity in Pilot.Ship.World.GetEntities())
+                    {
+                        CEnemyShot shot = entity as CEnemyShot;
+                        if (shot != null)
+                        {
+                            CDetonation.MakeDetonation(Pilot.Ship.World, shot.Physics.PositionPhysics.Position);
+                            shot.Die();
+                        }
+
+                        CEnemyLaser laser = entity as CEnemyLaser;
+                        if (laser != null)
+                        {
+                            CDetonation.MakeDetonation(Pilot.Ship.World, laser.Physics.PositionPhysics.Position);
+                            laser.Die();
+                        }
+                    }
+                }
+                base.Update();
+            }
+        }
+
+        public class BulletAlchemy
+            : CAbility
+        {
+            public BulletAlchemy(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 0.0f;
+                CooldownTime = 15.0f;
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    foreach (CEntity entity in Pilot.Ship.World.GetEntities())
+                    {
+                        CEnemyShot shot = entity as CEnemyShot;
+                        if (shot != null)
+                        {
+                            Pilot.Ship.World.EntityAdd(new CBonus(Pilot.Ship.World, shot.Physics.PositionPhysics.Position));
+                            shot.Die();
+                        }
+
+                        CEnemyLaser laser = entity as CEnemyLaser;
+                        if (laser != null)
+                        {
+                            Pilot.Ship.World.EntityAdd(new CBonus(Pilot.Ship.World, laser.Physics.PositionPhysics.Position));
+                            laser.Die();
+                        }
+                    }
+                }
+                base.Update();
+            }
+        }
     }
 
     namespace Pilots
@@ -226,6 +332,17 @@ namespace Galaxy
                 Ability0 = new Abilities.DashBurst(this);
                 Ability1 = new Abilities.Shimmer(this);
                 Ability2 = new Abilities.AbsorbEnergy(this);
+            }
+        }
+
+        public class Rabbit
+            : CPilot
+        {
+            public Rabbit()
+            {
+                Ability0 = new Abilities.BulletReflect(this);
+                Ability1 = new Abilities.BulletDetonate(this);
+                Ability2 = new Abilities.BulletAlchemy(this);
             }
         }
     }

@@ -190,7 +190,8 @@ namespace Galaxy
             // TODO: making these null will make things crash
             // TODO: maybe make an interface for this that handles death state?
             // TODO: maybe the collision system and tree lookup should explicitly handle deadness
-            Physics = null;
+            // TODO: will it be ok to leave just physics on?
+            //Physics = null;
             Visual = null;
             Collision = null;
             Mover = null;

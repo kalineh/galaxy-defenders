@@ -29,7 +29,7 @@ namespace Galaxy
             FireDelay = 1.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 2.0f;
-            FireSpeed = 14.0f;
+            FireSpeed = 12.0f;
         }
 
 #if XBOX360
@@ -51,7 +51,7 @@ namespace Galaxy
             FireDelay = 1.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 2.0f;
-            FireSpeed = 14.0f;
+            FireSpeed = 12.0f;
         }
 #endif
 
