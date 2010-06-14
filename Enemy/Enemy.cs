@@ -144,6 +144,29 @@ namespace Galaxy
             minishot.Die();
         }
 
+        public void OnCollide(CDetonation detonation)
+        {
+            TakeDamage(5.0f);
+        }
+
+        public void OnCollide(CEnemyShot shot)
+        {
+            if (!shot.IsReflected)
+                return;
+
+            TakeDamage(shot.Damage);
+            shot.Die();
+        }
+
+        public void OnCollide(CEnemyLaser laser)
+        {
+            if (!laser.IsReflected)
+                return;
+
+            TakeDamage(laser.Damage);
+            laser.Die();
+        }
+
         private int CalculateScoreFromHealth()
         {
             float s = (float)BaseScore * HealthMax;

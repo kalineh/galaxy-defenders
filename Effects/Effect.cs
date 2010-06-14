@@ -2,6 +2,7 @@
 // Effect.cs
 //
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -195,7 +196,7 @@ namespace Galaxy
             return animation;
         }
 
-        public static CEntity AbsorbBulletEffect(CShip ship, Vector2 position, float scale, Color color)
+        public static void AbsorbBulletEffect(CShip ship, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation(ship.World,
                 new COneShotAnimation.Settings()
@@ -212,8 +213,49 @@ namespace Galaxy
             );
 
             animation.AttachToEntity = ship;
-
             ship.World.EntityAdd(animation);
+        }
+
+        public static void ReflectBulletEffect(CShip ship, Vector2 position, float scale, Color color)
+        {
+            COneShotAnimation animation = new COneShotAnimation(ship.World,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = ship.World.Random.NextAngle(),
+                    TextureName = "Textures/Effects/PlayerShieldHit",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 1.0f,
+                    Scale = scale,
+                    Color = color,
+                }
+            );
+
+            animation.AttachToEntity = ship;
+            ship.World.EntityAdd(animation);
+        }
+
+        public static CEntity DetonationEffect(CWorld world, Vector2 position)
+        {
+            COneShotAnimation animation = new COneShotAnimation(world,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = world.Random.NextAngle(),
+                    TextureName = "Textures/Effects/Explosion",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 1.0f,
+                    Scale = 2.0f,
+                    Color = Color.White,
+                }
+            );
+
+            world.EntityAdd(animation);
+
+            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
+            light_spawner.Spawn(world.ParticleEffects);
 
             return animation;
         }

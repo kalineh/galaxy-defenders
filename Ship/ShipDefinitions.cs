@@ -44,7 +44,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.8f,
-                    Armor = 5.0f,
+                    Armor = 10.0f,
                 }
             },
             {
@@ -55,7 +55,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.25f,
                     Friction = 0.8f,
-                    Armor = 8.0f,
+                    Armor = 14.0f,
                 }
             },
             {
@@ -66,7 +66,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 1.9f,
                     Friction = 0.85f,
-                    Armor = 15.0f,
+                    Armor = 25.0f,
                 }
             }
         };
