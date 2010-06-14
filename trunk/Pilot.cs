@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Reflection;
@@ -320,6 +321,163 @@ namespace Galaxy
                 base.Update();
             }
         }
+
+        // ground smash
+        // armor repair
+        // suction crusher
+
+
+        public class GroundSmash
+            : CAbility
+        {
+            public GroundSmash(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 0.0f;
+                CooldownTime = 15.0f;
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    Vector2 hit_location = Pilot.Ship.Physics.PositionPhysics.Position + Vector2.UnitY * -100.0f;
+                    CEffect.Explosion(Pilot.Ship.World, hit_location, 4.0f);
+
+                    const float Range = 150.0f;
+                    foreach (CEntity entity in Pilot.Ship.World.GetEntities())
+                    {
+                        CBuilding building = entity as CBuilding;
+                        if (building != null)
+                        {
+                            Vector2 offset = hit_location - building.Physics.PositionPhysics.Position;
+                            float length = offset.Length();
+                            if (length > Range)
+                                continue;
+
+                            CEffect.BuildingExplosion(Pilot.Ship.World, building.Physics.PositionPhysics.Position, 4.0f);
+                            building.TakeDamage(1000.0f);
+                        }
+
+                        // TODO: not a duplicate of above
+                        CEnemy enemy = entity as CEnemy;
+                        if ((enemy as CTurret) != null || (enemy as CDownTurret) != null)
+                        {
+                            Vector2 offset = hit_location - enemy.Physics.PositionPhysics.Position;
+                            float length = offset.Length();
+                            if (length > Range)
+                                continue;
+
+                            CEffect.BuildingExplosion(Pilot.Ship.World, enemy.Physics.PositionPhysics.Position, 4.0f);
+                            enemy.TakeDamage(1000.0f);
+                        }
+                    }
+                }
+                base.Update();
+            }
+        }
+
+        public class SuctionCrusher
+            : CAbility
+        {
+            private List<CEntity> SuctionList { get; set; }
+
+            public SuctionCrusher(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 1.0f;
+                CooldownTime = 15.0f;
+                SuctionList = new List<CEntity>();
+            }
+
+            public override void Enable()
+            {
+                Pilot.Ship.IsInvincible += 1;
+
+                Vector2 position = Pilot.Ship.Physics.PositionPhysics.Position;
+                foreach (CEntity entity in Pilot.Ship.World.GetEntities())
+                {
+                    CEnemy enemy = entity as CEnemy;
+                    if (enemy == null)
+                        continue;
+
+                    if ((enemy as CTurret) != null || (enemy as CDownTurret) != null)
+                        continue;
+
+                    Vector2 offset = position - enemy.Physics.PositionPhysics.Position;
+                    float length = offset.Length();
+                    if (length > 400.0f)
+                        continue;
+
+                    SuctionList.Add(entity);
+                }
+
+                base.Enable();
+            }
+
+            public override void Disable()
+            {
+                Pilot.Ship.IsInvincible -= 1;
+                SuctionList.Clear();
+                base.Disable();
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    Vector2 position = Pilot.Ship.Physics.PositionPhysics.Position;
+                    foreach (CEntity entity in SuctionList)
+                    {
+                        CEnemy enemy = entity as CEnemy;
+                        if (enemy == null)
+                            continue;
+
+                        Vector2 offset = position - enemy.Physics.PositionPhysics.Position;
+                        enemy.Physics.PositionPhysics.Position += offset * 0.3f;
+                    }
+                }
+                base.Update();
+            }
+        }
+
+        public class ArmorRepair
+            : CAbility
+        {
+            public ArmorRepair(CPilot pilot)
+                : base(pilot)
+            {
+                ActiveTime = 1.5f;
+                CooldownTime = 15.0f;
+            }
+
+            public override void Enable()
+            {
+                Pilot.Ship.IsInvincible += 1;
+                base.Enable();
+            }
+
+            public override void Disable()
+            {
+                Pilot.Ship.IsInvincible -= 1;
+                base.Disable();
+            }
+
+            public override void Update()
+            {
+                if (Enabled)
+                {
+                    CEffect.ArmorRepairEffect(Pilot.Ship.World, 
+                                         Pilot.Ship.Physics.PositionPhysics.Position,
+                                         1.5f,
+                                         Pilot.Ship.Visual.Color);
+
+                    Pilot.Ship.CurrentArmor += 0.05f;
+                    Pilot.Ship.CurrentArmor = Math.Min(Pilot.Ship.CurrentArmor, Pilot.Ship.Chassis.Armor);
+                }
+                base.Update();
+            }
+        }
     }
 
     namespace Pilots
@@ -343,6 +501,17 @@ namespace Galaxy
                 Ability0 = new Abilities.BulletReflect(this);
                 Ability1 = new Abilities.BulletDetonate(this);
                 Ability2 = new Abilities.BulletAlchemy(this);
+            }
+        }
+
+        public class Gunthor
+            : CPilot
+        {
+            public Gunthor()
+            {
+                Ability0 = new Abilities.GroundSmash(this);
+                Ability1 = new Abilities.SuctionCrusher(this);
+                Ability2 = new Abilities.ArmorRepair(this);
             }
         }
     }

@@ -439,16 +439,16 @@ namespace Galaxy
             float max_to_energy = Generator.Energy - CurrentEnergy;
             float max_to_shield = Shield.Shield - CurrentShield;
 
-            float to_energy = Math.Max(value, max_to_energy);
+            float to_energy = Math.Min(value, max_to_energy);
             value -= to_energy;
-            float to_shield = Math.Max(value, max_to_shield);
+            float to_shield = Math.Min(value, max_to_shield);
 
             const float Scale = 0.025f;
             CurrentEnergy += to_energy * Scale;
             CurrentShield += to_shield * Scale;
 
-            CurrentEnergy = Math.Max(CurrentEnergy, Generator.Energy);
-            CurrentShield = Math.Max(CurrentShield, Shield.Shield);
+            CurrentEnergy = Math.Min(CurrentEnergy, Generator.Energy);
+            CurrentShield = Math.Min(CurrentShield, Shield.Shield);
         }
     };
 }

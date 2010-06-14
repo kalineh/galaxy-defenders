@@ -260,6 +260,24 @@ namespace Galaxy
             return animation;
         }
 
+        public static void ArmorRepairEffect(CWorld world, Vector2 position, float scale, Color color)
+        {
+            COneShotAnimation animation = new COneShotAnimation(world,
+                new COneShotAnimation.Settings()
+                {
+                    Position = position,
+                    Rotation = world.Random.NextAngle(),
+                    TextureName = "Textures/Effects/LaserHit",
+                    TileX = 4,
+                    TileY = 4,
+                    AnimationSpeed = 1.0f,
+                    Scale = scale,
+                    Color = color,
+                }
+            );
+
+            world.EntityAdd(animation);
+        }
     }
 }
 
