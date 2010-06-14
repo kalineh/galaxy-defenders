@@ -29,13 +29,12 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Data = "Kazuki" },
-                    new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Data = "Rabbit" },
-                    new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Data = "Gunthor" },
-                    new CMenu.MenuOption() { Text = "???", Select = SelectPilot, Data = null },
+                    new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Highlight = HighlightPilot, Data = "Kazuki" },
+                    new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Highlight = HighlightPilot, Data = "Rabbit" },
+                    new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Highlight = HighlightPilot, Data = "Gunthor" },
+                    new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, Data = "Mystery" },
                 }
             };
-            Menu.Cursor = 1;
 
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
@@ -92,6 +91,14 @@ namespace Galaxy
             profile.Pilot = (string)tag ?? "";
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+        }
+
+        private void HighlightPilot(object tag)
+        {
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Pilot = (string)tag ?? "";
+            CSaveData.SetCurrentProfileData(profile);
+            EmptyWorld.Huds[0].UpdatePilot();
         }
 
         private void Back(object tag)
