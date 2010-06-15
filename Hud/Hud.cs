@@ -19,6 +19,12 @@ namespace Galaxy
         public float Shield { get; set; }
         public float Armor { get; set; }
         public int? MoneyOverride { get; set; }
+        public bool CanUseAbility0 { get; set; }
+        public bool CanUseAbility1 { get; set; }
+        public bool CanUseAbility2 { get; set; }
+        public bool IsActiveAbility0 { get; set; }
+        public bool IsActiveAbility1 { get; set; }
+        public bool IsActiveAbility2 { get; set; }
 
         private CVisual LeftPanelVisual { get; set; }
         private CVisual RightPanelVisual { get; set; }
@@ -30,6 +36,9 @@ namespace Galaxy
         private CVisual ShieldIconVisual { get; set; }
         private CVisual ArmorIconVisual { get; set; }
         private CVisual PortraitIconVisual { get; set; }
+        private CVisual Ability0IconVisual { get; set; }
+        private CVisual Ability1IconVisual { get; set; }
+        private CVisual Ability2IconVisual { get; set; }
 
         private Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
@@ -43,6 +52,9 @@ namespace Galaxy
         private Vector2 ShieldIconPosition { get; set; }
         private Vector2 ArmorIconPosition { get; set; }
         private Vector2 PortraitIconPosition { get; set; }
+        private Vector2 Ability0IconPosition { get; set; }
+        private Vector2 Ability1IconPosition { get; set; }
+        private Vector2 Ability2IconPosition { get; set; }
 
         public CHud(CWorld world, Vector2 base_position, bool primary)
         {
@@ -59,7 +71,10 @@ namespace Galaxy
             EnergyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/EnergyIcon");
             ShieldIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ShieldIcon");
             ArmorIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ArmorIcon");
-            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot);
+            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
@@ -72,7 +87,10 @@ namespace Galaxy
             EnergyIconPosition = BasePosition + new Vector2(70.0f, -220.0f);
             ShieldIconPosition = BasePosition + new Vector2(70.0f, -160.0f);
             ArmorIconPosition = BasePosition + new Vector2(70.0f, -100.0f);
-            PortraitIconPosition = BasePosition + new Vector2(240.0f, -500.0f);
+            PortraitIconPosition = BasePosition + new Vector2(240.0f, -600.0f);
+            Ability0IconPosition = BasePosition + new Vector2(160.0f, -450.0f);
+            Ability1IconPosition = BasePosition + new Vector2(240.0f, -450.0f);
+            Ability2IconPosition = BasePosition + new Vector2(320.0f, -450.0f);
 
             EnergyVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             ShieldVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
@@ -82,6 +100,9 @@ namespace Galaxy
             ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
 
             LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
             RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
@@ -104,6 +125,9 @@ namespace Galaxy
             ShieldIconVisual.Update();
             ArmorIconVisual.Update();
             PortraitIconVisual.Update();
+            Ability0IconVisual.Update();
+            Ability1IconVisual.Update();
+            Ability2IconVisual.Update();
 
             MoneyOverride = null;
         }
@@ -117,6 +141,14 @@ namespace Galaxy
             EnergyVisual.Scale = new Vector2(Energy, 1.0f);
             ShieldVisual.Scale = new Vector2(Shield, 1.0f);
             ArmorVisual.Scale = new Vector2(Armor, 1.0f);
+
+            CanUseAbility0 = ship.Pilot.Ability0.CanEnable();
+            CanUseAbility1 = ship.Pilot.Ability1.CanEnable();
+            CanUseAbility2 = ship.Pilot.Ability2.CanEnable();
+
+            IsActiveAbility0 = ship.Pilot.Ability0.Active > 0.0f;
+            IsActiveAbility1 = ship.Pilot.Ability1.Active > 0.0f;
+            IsActiveAbility2 = ship.Pilot.Ability2.Active > 0.0f;
         }
 
         public void Draw(SpriteBatch sprite_batch)
@@ -134,6 +166,22 @@ namespace Galaxy
             ShieldIconVisual.Draw(sprite_batch, ShieldIconPosition, 0.0f);
             ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
             PortraitIconVisual.Draw(sprite_batch, PortraitIconPosition, 0.0f);
+
+            Ability0IconVisual.Color = CanUseAbility0 ? Color.White : Color.Gray;
+            Ability1IconVisual.Color = CanUseAbility1 ? Color.White : Color.Gray;
+            Ability2IconVisual.Color = CanUseAbility2 ? Color.White : Color.Gray;
+
+            Ability0IconVisual.Color = IsActiveAbility0 ? Color.Green : Ability0IconVisual.Color;
+            Ability1IconVisual.Color = IsActiveAbility1 ? Color.Green : Ability1IconVisual.Color;
+            Ability2IconVisual.Color = IsActiveAbility2 ? Color.Green : Ability2IconVisual.Color;
+
+            Ability0IconVisual.UpdateColor();
+            Ability1IconVisual.UpdateColor();
+            Ability2IconVisual.UpdateColor();
+
+            Ability0IconVisual.Draw(sprite_batch, Ability0IconPosition, 0.0f);
+            Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
+            Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
 
             if (Primary)
             {
@@ -156,10 +204,18 @@ namespace Galaxy
 
         public void UpdatePilot()
         {
-            float depth = PortraitIconVisual.Depth;
-            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot);
-            PortraitIconVisual.Depth = depth;
+            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
+            Ability0IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
+            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            Ability0IconVisual.Update();
+            Ability1IconVisual.Update();
+            Ability2IconVisual.Update();
         }
     }
 }

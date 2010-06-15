@@ -92,19 +92,10 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            CPilot mock_pilot = CPilot.MakePilot(CSaveData.GetCurrentProfile().Pilot);
-            List<string> abilities = new List<string>()
+            string pilot = CSaveData.GetCurrentProfile().Pilot;
+            for (int i = 0; i < 3; ++i)
             {
-                mock_pilot.Ability0.GetType().Name,
-                mock_pilot.Ability1.GetType().Name,
-                mock_pilot.Ability2.GetType().Name,
-            };
-
-            int ability_index = 0;
-            foreach (string s in abilities)
-            {
-                MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = s, Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = ability_index, });
-                ability_index += 1;
+                MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = CAbility.GetAbilityName(pilot, i), Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = i, });
             }
             MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, Highlight = CancelHighlightAbility, CancelOption = true });
 
