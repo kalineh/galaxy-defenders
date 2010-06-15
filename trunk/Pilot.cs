@@ -13,16 +13,17 @@ namespace Galaxy
     public abstract class CAbility
     {
         public CPilot Pilot { get; set; }
-
+        public bool HasPurchased { get; set; }
         public bool Enabled { get; set; }
         public float ActiveTime { get; set; }
         public float Active { get; set; }
         public float CooldownTime { get; set; }
         public float Cooldown { get; set; }
 
-        public CAbility(CPilot pilot)
+        public CAbility(CPilot pilot, bool has_purchased)
         {
             Pilot = pilot;
+            HasPurchased = has_purchased;
         }
 
         public virtual void Enable()
@@ -53,6 +54,9 @@ namespace Galaxy
 
         public void TryEnable()
         {
+            if (!HasPurchased)
+                return;
+
             if (Cooldown > 0.0f)
                 return;
 
@@ -114,8 +118,8 @@ namespace Galaxy
         public class DashBurst
             : CAbility
         {
-            public DashBurst(CPilot pilot)
-                : base(pilot)
+            public DashBurst(CPilot pilot, bool ability0)
+                : base(pilot, ability0)
             {
                 ActiveTime = 3.0f;
                 CooldownTime = 15.0f;
@@ -152,8 +156,8 @@ namespace Galaxy
         public class Shimmer
             : CAbility
         {
-            public Shimmer(CPilot pilot)
-                : base(pilot)
+            public Shimmer(CPilot pilot, bool ability1)
+                : base(pilot, ability1)
             {
                 ActiveTime = 3.0f;
                 CooldownTime = 15.0f;
@@ -185,8 +189,8 @@ namespace Galaxy
         public class AbsorbEnergy
             : CAbility
         {
-            public AbsorbEnergy(CPilot pilot)
-                : base(pilot)
+            public AbsorbEnergy(CPilot pilot, bool ability2)
+                : base(pilot, ability2)
             {
                 ActiveTime = 3.0f;
                 CooldownTime = 15.0f;
@@ -220,8 +224,8 @@ namespace Galaxy
         public class BulletReflect
             : CAbility
         {
-            public BulletReflect(CPilot pilot)
-                : base(pilot)
+            public BulletReflect(CPilot pilot, bool ability0)
+                : base(pilot, ability0)
             {
                 ActiveTime = 6.0f;
                 CooldownTime = 15.0f;
@@ -255,8 +259,8 @@ namespace Galaxy
         public class BulletDetonate
             : CAbility
         {
-            public BulletDetonate(CPilot pilot)
-                : base(pilot)
+            public BulletDetonate(CPilot pilot, bool ability1)
+                : base(pilot, ability1)
             {
                 ActiveTime = 0.0f;
                 CooldownTime = 15.0f;
@@ -290,8 +294,8 @@ namespace Galaxy
         public class BulletAlchemy
             : CAbility
         {
-            public BulletAlchemy(CPilot pilot)
-                : base(pilot)
+            public BulletAlchemy(CPilot pilot, bool ability2)
+                : base(pilot, ability2)
             {
                 ActiveTime = 0.0f;
                 CooldownTime = 15.0f;
@@ -330,8 +334,8 @@ namespace Galaxy
         public class GroundSmash
             : CAbility
         {
-            public GroundSmash(CPilot pilot)
-                : base(pilot)
+            public GroundSmash(CPilot pilot, bool ability0)
+                : base(pilot, ability0)
             {
                 ActiveTime = 0.0f;
                 CooldownTime = 15.0f;
@@ -382,8 +386,8 @@ namespace Galaxy
         {
             private List<CEntity> SuctionList { get; set; }
 
-            public SuctionCrusher(CPilot pilot)
-                : base(pilot)
+            public SuctionCrusher(CPilot pilot, bool ability1)
+                : base(pilot, ability1)
             {
                 ActiveTime = 1.0f;
                 CooldownTime = 15.0f;
@@ -444,8 +448,8 @@ namespace Galaxy
         public class ArmorRepair
             : CAbility
         {
-            public ArmorRepair(CPilot pilot)
-                : base(pilot)
+            public ArmorRepair(CPilot pilot, bool ability2)
+                : base(pilot, ability2)
             {
                 ActiveTime = 1.5f;
                 CooldownTime = 15.0f;
@@ -487,9 +491,9 @@ namespace Galaxy
         {
             public Kazuki()
             {
-                Ability0 = new Abilities.DashBurst(this);
-                Ability1 = new Abilities.Shimmer(this);
-                Ability2 = new Abilities.AbsorbEnergy(this);
+                Ability0 = new Abilities.DashBurst(this, CSaveData.GetCurrentProfile().Ability0);
+                Ability1 = new Abilities.Shimmer(this, CSaveData.GetCurrentProfile().Ability1);
+                Ability2 = new Abilities.AbsorbEnergy(this, CSaveData.GetCurrentProfile().Ability2);
             }
         }
 
@@ -498,9 +502,9 @@ namespace Galaxy
         {
             public Rabbit()
             {
-                Ability0 = new Abilities.BulletReflect(this);
-                Ability1 = new Abilities.BulletDetonate(this);
-                Ability2 = new Abilities.BulletAlchemy(this);
+                Ability0 = new Abilities.BulletReflect(this, CSaveData.GetCurrentProfile().Ability0);
+                Ability1 = new Abilities.BulletDetonate(this, CSaveData.GetCurrentProfile().Ability1);
+                Ability2 = new Abilities.BulletAlchemy(this, CSaveData.GetCurrentProfile().Ability2);
             }
         }
 
@@ -509,9 +513,10 @@ namespace Galaxy
         {
             public Gunthor()
             {
-                Ability0 = new Abilities.GroundSmash(this);
-                Ability1 = new Abilities.SuctionCrusher(this);
-                Ability2 = new Abilities.ArmorRepair(this);
+                Ability0 = new Abilities.GroundSmash(this, CSaveData.GetCurrentProfile().Ability0);
+                Ability1 = new Abilities.SuctionCrusher(this, CSaveData.GetCurrentProfile().Ability1);
+                Ability2 = new Abilities.ArmorRepair(this, CSaveData.GetCurrentProfile().Ability2);
+                ;
             }
         }
     }

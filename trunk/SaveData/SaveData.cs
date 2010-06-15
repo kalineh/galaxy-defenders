@@ -19,6 +19,10 @@ namespace Galaxy
         public int Version;
         public string Name;
         public string Pilot;
+        public bool HasClearedGame;
+        public bool Ability0;
+        public bool Ability1;
+        public bool Ability2;
         public int Money;
         public int Difficulty;
         public string CurrentStage;
@@ -96,7 +100,11 @@ namespace Galaxy
                 Version = SProfile.CurrentVersion,
                 Name = name,
                 Pilot = "Kazuki",
+                HasClearedGame = false,
                 Money = 3000,
+                Ability0 = false,
+                Ability1 = false,
+                Ability2 = false,
                 Difficulty = 1,
                 CurrentStage = "Start",
                 ChassisType = "BasicShip",

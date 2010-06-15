@@ -69,25 +69,15 @@ namespace Galaxy
                 }
             }
 
-            int offset = 0;
-            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed(PlayerIndex.One))
-            {
-                offset += 1;
-                while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
-                    offset += 1;
-            }
-            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed(PlayerIndex.One))
-            {
-                offset -= 1;
-                while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
-                    offset -= 1;
-            }
-
+            int offset = GetCursorInputOffset();
             int previous = Cursor;
 
             Cursor = Cursor + offset;
             Cursor = Math.Max(Cursor, 0);
             Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
+
+            if ((MenuOptions[Cursor] == null || MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data) == false))
+                MoveToFirstValid();
 
             MenuOption option = MenuOptions[Cursor];
 
@@ -167,5 +157,35 @@ namespace Galaxy
                 position += Vector2.UnitY * Spacing;
             }
         }
+
+        public int GetCursorInputOffset()
+        {
+            int offset = 0;
+            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed(PlayerIndex.One))
+            {
+                offset += 1;
+                while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
+                    offset += 1;
+            }
+            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed(PlayerIndex.One))
+            {
+                offset -= 1;
+                while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
+                    offset -= 1;
+            }
+            return offset;
+        }
+
+        public void MoveToFirstValid()
+        {
+            int offset = 0;
+            while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
+                offset += 1;
+
+            Cursor = Cursor + offset;
+            Cursor = Math.Max(Cursor, 0);
+            Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
+        }
+
     }
 }
