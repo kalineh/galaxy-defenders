@@ -32,7 +32,7 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Highlight = HighlightPilot, Data = "Kazuki" },
                     new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Highlight = HighlightPilot, Data = "Rabbit" },
                     new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Highlight = HighlightPilot, Data = "Gunthor" },
-                    new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, Data = "Mystery" },
+                    new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, SelectValidate = ValidatePilot, Data = "Mystery" },
                 }
             };
 
@@ -99,6 +99,11 @@ namespace Galaxy
             profile.Pilot = (string)tag ?? "";
             CSaveData.SetCurrentProfileData(profile);
             EmptyWorld.Huds[0].UpdatePilot();
+        }
+
+        private bool ValidatePilot(object tag)
+        {
+            return CSaveData.GetCurrentProfile().HasClearedGame;
         }
 
         private void Back(object tag)

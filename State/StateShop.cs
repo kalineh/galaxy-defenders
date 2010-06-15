@@ -4,6 +4,7 @@
 
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -25,6 +26,7 @@ namespace Galaxy
         private CMenu MenuChassis { get; set; }
         private CMenu MenuGenerator { get; set; }
         private CMenu MenuShield { get; set; }
+        private CMenu MenuTrainPilot { get; set; }
         private delegate void DrawMenuErrataFunction();
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
@@ -55,6 +57,7 @@ namespace Galaxy
                 {
                     new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
                     new CMenu.MenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
+                    new CMenu.MenuOption() { Text = "Train Pilot", Select = TrainPilot },
                     new CMenu.MenuOption() { Text = "Return to Menu", Select = Back, CancelOption = true },
                 }
             };
@@ -79,6 +82,31 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true },
                 }
             };
+
+            //
+            // Training
+            //
+            MenuTrainPilot = new CMenu(game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
+                MenuOptions = new List<CMenu.MenuOption>(),
+            };
+
+            CPilot mock_pilot = CPilot.MakePilot(CSaveData.GetCurrentProfile().Pilot);
+            List<string> abilities = new List<string>()
+            {
+                mock_pilot.Ability0.GetType().Name,
+                mock_pilot.Ability1.GetType().Name,
+                mock_pilot.Ability2.GetType().Name,
+            };
+
+            int ability_index = 0;
+            foreach (string s in abilities)
+            {
+                MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = s, Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = ability_index, });
+                ability_index += 1;
+            }
+            MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, Highlight = CancelHighlightAbility, CancelOption = true });
 
             //
             // Primary Weapon
@@ -344,25 +372,29 @@ namespace Galaxy
         {
             if (Menu == MenuPrimaryWeapon)
                 foreach (CMenu.MenuOption option in MenuPrimaryWeapon.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponPrimaryType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponPrimaryType;
             if (Menu == MenuSecondaryWeapon)
                 foreach (CMenu.MenuOption option in MenuSecondaryWeapon.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSecondaryType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSecondaryType;
             if (Menu == MenuSidekickLeft)
                 foreach (CMenu.MenuOption option in MenuSidekickLeft.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSidekickLeftType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickLeftType;
             if (Menu == MenuSidekickRight)
                 foreach (CMenu.MenuOption option in MenuSidekickRight.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.WeaponSidekickRightType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickRightType;
             if (Menu == MenuChassis)
                 foreach (CMenu.MenuOption option in MenuChassis.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.ChassisType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.ChassisType;
             if (Menu == MenuGenerator)
                 foreach (CMenu.MenuOption option in MenuGenerator.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.GeneratorType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.GeneratorType;
             if (Menu == MenuShield)
                 foreach (CMenu.MenuOption option in MenuShield.MenuOptions)
-                    option.SpecialHighlight = (string)option.Data == LockedProfile.ShieldType;
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.ShieldType;
+            if (Menu == MenuTrainPilot)
+                foreach (CMenu.MenuOption option in MenuTrainPilot.MenuOptions)
+                    if (option.Data != null)
+                        option.SpecialHighlight = HasAbilityWithLockedProfile(option.Data);
         }
 
         private void DrawShipStats()
@@ -537,6 +569,12 @@ namespace Galaxy
         private void UpgradeShip(object tag)
         {
             Menu = MenuUpgradeShip;
+        }
+
+        private void TrainPilot(object tag)
+        {
+            Menu = MenuTrainPilot;
+            MenuTrainPilot.MoveToFirstValid();
         }
 
         private void EditPrimaryWeapon(object tag)
@@ -1007,6 +1045,75 @@ namespace Galaxy
         private void ReturnToUpgradeShip(object tag)
         {
             Menu = MenuUpgradeShip;
+        }
+
+        private void TrainAbility(object tag)
+        {
+            string ability_name = string.Format("Ability{0}", tag.ToString());
+            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            bool has_ability = (bool)field.GetValue(CSaveData.GetCurrentProfile());
+            if (has_ability)
+                return;
+
+            // TODO: price cleanup
+            int price = 10000 + (int)tag * 5000;
+            if (LockedProfile.Money < price)
+                return;
+
+            LockedProfile.Money -= price;
+            object reference = (object)LockedProfile;
+            field.SetValue(reference, true);
+            LockedProfile = (SProfile)reference;
+
+            RevertWorkingProfile(null);
+            MenuUpdateHighlights();
+        }
+
+        private void HighlightAbility(object tag)
+        {
+            string ability_name = string.Format("Ability{0}", tag.ToString());
+            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            bool has_ability = (bool)field.GetValue(LockedProfile);
+            if (has_ability)
+                return;
+
+            int price = 10000 + (int)tag * 5000;
+            WorkingProfile.Money = LockedProfile.Money - price;
+        }
+
+        private void CancelHighlightAbility(object tag)
+        {
+            RevertWorkingProfile(null);
+            MenuUpdateHighlights();
+        }
+
+        private bool ValidateAbility(object tag, SProfile profile)
+        {
+            string ability_name = string.Format("Ability{0}", tag.ToString());
+            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            bool has_ability = (bool)field.GetValue(LockedProfile);
+            if (has_ability)
+                return true;
+
+            // TODO: price cleanup
+            int price = 10000 + (int)tag * 5000;
+            if (profile.Money < price)
+                return false;
+
+            return true;
+        }
+
+        private bool ValidateAbilityWithLockedProfile(object tag)
+        {
+            return ValidateAbility(tag, LockedProfile);
+        }
+
+        private bool HasAbilityWithLockedProfile(object tag)
+        {
+            string ability_name = string.Format("Ability{0}", tag.ToString());
+            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            bool has_ability = (bool)field.GetValue(LockedProfile);
+            return has_ability;
         }
     }
 }
