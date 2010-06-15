@@ -715,25 +715,72 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\Gunthor.png">
-      <Name>Gunthor</Name>
+    <Compile Include="Textures\UI\GunthorPortrait.png">
+      <Name>GunthorPortrait</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\Kazuki.png">
-      <Name>Kazuki</Name>
+    <Compile Include="Textures\UI\KazukiPortrait.png">
+      <Name>KazukiPortrait</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\Rabbit.png">
-      <Name>Rabbit</Name>
+    <Compile Include="Textures\UI\RabbitPortrait.png">
+      <Name>RabbitPortrait</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\Mystery.png">
-      <Name>Mystery</Name>
+    <Compile Include="Textures\UI\MysteryPortrait.png">
+      <Name>MysteryPortrait</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\AbsorbEnergyIcon.png">
+      <Name>AbsorbEnergyIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\ArmorRepairIcon.png">
+      <Name>ArmorRepairIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\BulletAlchemyIcon.png">
+      <Name>BulletAlchemyIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\BulletDetonateIcon.png">
+      <Name>BulletDetonateIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\BulletReflectIcon.png">
+      <Name>BulletReflectIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\DashBurstIcon.png">
+      <Name>DashBurstIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\GroundSmashIcon.png">
+      <Name>GroundSmashIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\ShimmerIcon.png">
+      <Name>ShimmerIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\SuctionCrusherIcon.png">
+      <Name>SuctionCrusherIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

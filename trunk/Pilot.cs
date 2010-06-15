@@ -12,6 +12,19 @@ namespace Galaxy
 {
     public abstract class CAbility
     {
+        public static string GetAbilityName(string pilot, int index)
+        {
+            // TODO: cleanup ability data
+            CPilot mock_pilot = CPilot.MakePilot(pilot);
+            List<string> abilities = new List<string>()
+            {
+                mock_pilot.Ability0.GetType().Name,
+                mock_pilot.Ability1.GetType().Name,
+                mock_pilot.Ability2.GetType().Name,
+            };
+            return abilities[index];
+        }
+
         public CPilot Pilot { get; set; }
         public bool HasPurchased { get; set; }
         public bool Enabled { get; set; }
@@ -54,13 +67,19 @@ namespace Galaxy
 
         public void TryEnable()
         {
+            if (CanEnable())
+                Enable();
+        }
+
+        public bool CanEnable()
+        {
             if (!HasPurchased)
-                return;
+                return false;
 
             if (Cooldown > 0.0f)
-                return;
+                return false;
 
-            Enable();
+            return true;
         }
     }
 

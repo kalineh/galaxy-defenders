@@ -294,23 +294,18 @@ namespace Galaxy
             }
 
             // TODO: bind to functions?
-            if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
+            if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
             {
                 Pilot.Ability0.TryEnable();
             }
-            if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
+            if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
             {
                 Pilot.Ability1.TryEnable();
             }
-            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
+            if (buttons.A == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
             {
                 Pilot.Ability2.TryEnable();
             }
-            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.F))
-            {
-                Fire(WeaponSidekickRight);
-            }
-
             if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.LeftShift))
             {
                 FireAllWeapons();
