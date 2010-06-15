@@ -32,7 +32,7 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Highlight = HighlightPilot, Data = "Kazuki" },
                     new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Highlight = HighlightPilot, Data = "Rabbit" },
                     new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Highlight = HighlightPilot, Data = "Gunthor" },
-                    new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, SelectValidate = ValidatePilot, Data = "Mystery" },
+                    //new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, SelectValidate = ValidatePilot, Data = "Mystery" },
                 }
             };
 
