@@ -70,7 +70,7 @@ namespace Galaxy
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
 
-            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+            EmptyWorld.BackgroundScenery = new CSceneryChain(EmptyWorld,
                 new CBackground(EmptyWorld, new Color(0, 0, 0)),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 18.0f),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 14.0f)
@@ -84,7 +84,8 @@ namespace Galaxy
         public override void Update()
         {
             Menu.Update();
-            EmptyWorld.Scenery.Update();
+            EmptyWorld.BackgroundScenery.Update();
+            EmptyWorld.ForegroundScenery.Update();
         }
 
         public override void Draw()

@@ -286,7 +286,8 @@ namespace Galaxy
 
             // properties
             sb.AppendLine(String.Format("stage.ScrollSpeed = {0:0.0#}f;", stage_definition.ScrollSpeed));
-            sb.AppendLine(String.Format("stage.SceneryName = \"{0}\";", stage_definition.SceneryName));
+            sb.AppendLine(String.Format("stage.BackgroundSceneryName = \"{0}\";", stage_definition.BackgroundSceneryName));
+            sb.AppendLine(String.Format("stage.ForegroundSceneryName = \"{0}\";", stage_definition.ForegroundSceneryName));
             sb.AppendLine(String.Format("stage.MusicName = \"{0}\";", stage_definition.MusicName));
 
             // stage data

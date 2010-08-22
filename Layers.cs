@@ -15,9 +15,10 @@ namespace Galaxy
         public static float LayerIncrement = 0.05f;
         public static float SubLayerIncrement = 0.001f;
 
-        public static float Top = 0.0f;
-        public static float FullScreen = LayerIncrement * 10;
-        public static float UI = LayerIncrement * 9;
+        public static float Top = 1.0f;
+        public static float FullScreen = LayerIncrement * 11;
+        public static float UI = LayerIncrement * 10;
+        public static float Sky = LayerIncrement * 9;
         public static float Effects = LayerIncrement * 8;
         public static float Weapons = LayerIncrement * 7;
         public static float Player = LayerIncrement * 6;
@@ -26,7 +27,7 @@ namespace Galaxy
         public static float Static = LayerIncrement * 3;
         public static float Decoration = LayerIncrement * 2;
         public static float Background = LayerIncrement * 1;
-        public static float Bottom = 1.0f;
+        public static float Bottom = 0.0f;
 
         public static float CalculateDepth(Texture texture)
         {
@@ -36,6 +37,7 @@ namespace Galaxy
             if (name.StartsWith("Textures/Top")) return Top;
             if (name.StartsWith("Textures/FullScreen")) return FullScreen;
             if (name.StartsWith("Textures/UI")) return UI;
+            if (name.StartsWith("Textures/Sky")) return Sky;
             if (name.StartsWith("Textures/Effects")) return Effects;
             if (name.StartsWith("Textures/Weapons")) return Weapons;
             if (name.StartsWith("Textures/Player")) return Player;

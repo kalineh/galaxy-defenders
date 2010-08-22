@@ -36,8 +36,8 @@ namespace Galaxy
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
-            EmptyWorld.Scenery = CSceneryPresets.BlueSky(EmptyWorld);
-            //EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+            EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
+            //EmptyWorld.BackgroundScenery = new CSceneryChain(EmptyWorld,
                 //new CBackground(EmptyWorld, new Color(133, 145, 181)),
                 //new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
             //);
@@ -78,7 +78,8 @@ namespace Galaxy
             SampleShip.UpdateWeapons();
 
             EmptyWorld.UpdateEntities();
-            EmptyWorld.Scenery.Update();
+            EmptyWorld.BackgroundScenery.Update();
+            EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
         }
 

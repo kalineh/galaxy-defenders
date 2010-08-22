@@ -38,7 +38,7 @@ namespace Galaxy
             Game = game;
             EmptyWorld = new CWorld(game);
 
-            EmptyWorld.Scenery = new CSceneryChain(EmptyWorld,
+            EmptyWorld.BackgroundScenery = new CSceneryChain(EmptyWorld,
                 new CBackground(EmptyWorld, new Color(0, 0, 0)),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 3.5f),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 2.1f)
@@ -333,7 +333,8 @@ namespace Galaxy
             EmptyWorld.Huds[0].MoneyOverride = (int)LockedProfile.Money;
             EmptyWorld.Huds[0].Update(SampleShip);
             EmptyWorld.UpdateEntities();
-            EmptyWorld.Scenery.Update();
+            EmptyWorld.BackgroundScenery.Update();
+            EmptyWorld.ForegroundScenery.Update();
             SampleShip.UpdateGenerator();
             SampleShip.FireAllWeapons();
             SampleShip.UpdateWeapons();

@@ -19,6 +19,11 @@ namespace Galaxy
             );
         }
 
+        public static CScenery Empty(CWorld world)
+        {
+            return new CSceneryChain(world);
+        }
+
         public static CScenery BlueSky(CWorld world)
         {
             return new CSceneryChain(world,
@@ -33,7 +38,7 @@ namespace Galaxy
             );
         }
 
-        public static CScenery SpaceClouds(CWorld world)
+        public static CScenery SpaceCloudsBG(CWorld world)
         {
             return new CSceneryChain(world,
                 new CGradientBackground(world,
@@ -41,10 +46,16 @@ namespace Galaxy
                     new Color(57, 54, 93),
                     new Color(57, 54, 93),
                     new Color(57, 54, 93)
-                ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud1"), 1.2f, Vector2.UnitY * 6.0f, 0.0f, 3),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud2"), 0.7f, Vector2.UnitY * 9.0f, 0.0f, 3),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud3"), 0.8f, Vector2.UnitY * 9.0f, 0.0f, 3)
+                )
+            );
+        }
+
+        public static CScenery SpaceCloudsFG(CWorld world)
+        {
+            return new CSceneryChain(world,
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Sky/SpaceCloud1"), 1.2f, Vector2.UnitY * 6.0f, 0.0f, 3),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Sky/SpaceCloud2"), 0.7f, Vector2.UnitY * 9.0f, 0.0f, 3),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Sky/SpaceCloud3"), 0.8f, Vector2.UnitY * 9.0f, 0.0f, 3)
             );
         }
 
