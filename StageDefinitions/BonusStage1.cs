@@ -119,8 +119,8 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "WhiteBlock2",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 104.0f,
-Y = -888.0f,
+X = 96.0f,
+Y = -872.0f,
 },
 });
 stage.AddElement(0, 

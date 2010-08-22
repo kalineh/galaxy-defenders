@@ -33,17 +33,18 @@ namespace Galaxy
             );
         }
 
-        public static CScenery BrightBlueSky(CWorld world)
+        public static CScenery SpaceClouds(CWorld world)
         {
             return new CSceneryChain(world,
                 new CGradientBackground(world,
-                    new Color(40, 30, 90),
-                    new Color(40, 30, 90),
-                    new Color(30, 20, 50),
-                    new Color(30, 20, 50)
+                    new Color(57, 54, 93),
+                    new Color(57, 54, 93),
+                    new Color(57, 54, 93),
+                    new Color(57, 54, 93)
                 ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/StarCloud"), 1.2f, Vector2.UnitY * 6.0f, 0.1f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/StarCloud"), 0.8f, Vector2.UnitY * 9.0f, 0.3f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud1"), 1.2f, Vector2.UnitY * 6.0f, 0.0f, 3),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud2"), 0.7f, Vector2.UnitY * 9.0f, 0.0f, 3),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/SpaceCloud3"), 0.8f, Vector2.UnitY * 9.0f, 0.0f, 3)
             );
         }
 

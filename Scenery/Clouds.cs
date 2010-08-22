@@ -32,13 +32,14 @@ namespace Galaxy
         public float RandomLerp { get; set; }
         private List<Cloud> Clouds { get; set; }
         private int Count { get; set; }
+        private int BaseCount { get; set; }
 
         public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity)
-            : this(world, texture, scale, velocity, 0.0f)
+            : this(world, texture, scale, velocity, 0.0f, 10)
         {
         }
 
-        public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity, float random_lerp)
+        public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity, float random_lerp, int base_count)
             : base(world)
         {
             Visual = new CVisual(world, texture, Color.White);
@@ -46,12 +47,13 @@ namespace Galaxy
             Velocity = velocity;
             RandomLerp = random_lerp;
             Clouds = new List<Cloud>();
+            BaseCount = base_count;
             UpdateCloudCount();
         }
 
         public void UpdateCloudCount()
         {
-            Count = (int)(10.0f * 1.0f / World.GameCamera.Zoom);
+            Count = (int)((float)BaseCount * 1.0f / World.GameCamera.Zoom);
             for (int i = 0; i < Count - Clouds.Count; ++i)
             {
                 Cloud cloud = new Cloud(

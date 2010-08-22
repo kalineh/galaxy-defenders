@@ -708,13 +708,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Background\StarCloud.png">
-      <Name>StarCloud</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\UI\GunthorPortrait.png">
       <Name>GunthorPortrait</Name>
       <Importer>TextureImporter</Importer>
@@ -781,6 +774,23 @@
     </Compile>
     <Compile Include="Textures\UI\SuctionCrusherIcon.png">
       <Name>SuctionCrusherIcon</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Background\SpaceCloud1.png">
+      <Name>SpaceCloud1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Background\SpaceCloud2.png">
+      <Name>SpaceCloud2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Background\SpaceCloud3.png">
+      <Name>SpaceCloud3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
