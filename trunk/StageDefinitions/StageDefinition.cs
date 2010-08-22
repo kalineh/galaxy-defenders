@@ -16,7 +16,8 @@ namespace Galaxy
         [Browsable(false)]
         public string Name { get; private set; }
         public float ScrollSpeed { get; set; }
-        public string SceneryName { get; set; }
+        public string BackgroundSceneryName { get; set; }
+        public string ForegroundSceneryName { get; set; }
         public string MusicName { get; set; }
         [Browsable(false)]
         public Dictionary<int, List<CStageElement>> Elements { get; private set; }
@@ -44,7 +45,8 @@ namespace Galaxy
             Name = name;
             Elements = new Dictionary<int, List<CStageElement>>();
             ScrollSpeed = 3.0f;
-            SceneryName = "Black";
+            BackgroundSceneryName = "Black";
+            ForegroundSceneryName = "Empty";
             MusicName = "A";
         }
 

@@ -33,7 +33,8 @@ namespace Galaxy
         // TODO: remove me! shouldnt need a sample ship in the editor world
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
-        private CScenery Scenery { get; set; }
+        private CScenery BackgroundScenery { get; set; }
+        private CScenery ForegroundScenery { get; set; }
         public WinPoint FormTopLeft { get; set; }
         public IntPtr Hwnd { get; set; }
         public Vector2 DragSelectStart { get; set; }
@@ -63,8 +64,10 @@ namespace Galaxy
             SnapToGrid = true;
             GridSize = 8.0f;
 
-            MethodInfo method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.SceneryName);
-            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.BackgroundSceneryName);
+            BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.ForegroundSceneryName);
+            ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
         public override void Update()
@@ -94,7 +97,8 @@ namespace Galaxy
                 Game.PlayerSpawnPosition = player.Physics.PositionPhysics.Position;
 
             World.GameCamera.Update();
-            Scenery.Update();
+            BackgroundScenery.Update();
+            ForegroundScenery.Update();
             World.UpdateEntities();
         }
 
@@ -459,7 +463,7 @@ namespace Galaxy
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
-            Scenery.Draw(Game.DefaultSpriteBatch);
+            BackgroundScenery.Draw(Game.DefaultSpriteBatch);
 
             foreach (CEntity entity in HoverEntities)
             {
@@ -476,6 +480,9 @@ namespace Galaxy
             }
 
             World.DrawEntities(World.GameCamera);
+
+            ForegroundScenery.Draw(Game.DefaultSpriteBatch);
+
 
             // Debug render.
             float game_width = World.GameCamera.GetGameWidth();
@@ -534,8 +541,10 @@ namespace Galaxy
             Game.StageDefinition = definition;
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
 
-            MethodInfo method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
-            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.BackgroundSceneryName);
+            BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.ForegroundSceneryName);
+            ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
         // TODO: rename me, move out of state editor too?
@@ -551,8 +560,10 @@ namespace Galaxy
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");
 
-            MethodInfo method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
-            Scenery = method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.BackgroundSceneryName);
+            BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.ForegroundSceneryName);
+            ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
     }
 }

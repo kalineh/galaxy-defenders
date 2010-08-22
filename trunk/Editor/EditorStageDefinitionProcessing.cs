@@ -53,7 +53,8 @@ namespace Galaxy
 
             // rollover existing stage properties
             result.ScrollSpeed = world.Game.StageDefinition.ScrollSpeed;
-            result.SceneryName = world.Game.StageDefinition.SceneryName;
+            result.BackgroundSceneryName = world.Game.StageDefinition.BackgroundSceneryName;
+            result.ForegroundSceneryName = world.Game.StageDefinition.ForegroundSceneryName;
             result.MusicName = world.Game.StageDefinition.MusicName;
 
             // from EDITOR ENTITY to STAGE ELEMENT

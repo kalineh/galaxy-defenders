@@ -129,13 +129,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Music\A.mp3">
-      <Name>A</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Effects\Sprite.fx">
       <Name>Sprite</Name>
       <Importer>EffectImporter</Importer>
@@ -365,23 +358,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Music\C.mp3">
-      <Name>C</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-    <Compile Include="Music\B.mp3">
-      <Name>B</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-    <Compile Include="Music\Title.mp3">
-      <Name>Title</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\UI\Armor.png">
       <Name>Armor</Name>
       <Importer>TextureImporter</Importer>
@@ -555,152 +531,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SE\BigBonusGet.wav">
-      <Name>BigBonusGet</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\BonusGet.wav">
-      <Name>BonusGet</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\BuildingExplode.wav">
-      <Name>BuildingExplode</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuBuy.wav">
-      <Name>MenuBuy</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuCancel.wav">
-      <Name>MenuCancel</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuDowngrade.wav">
-      <Name>MenuDowngrade</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuMoveItem.wav">
-      <Name>MenuMoveItem</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuSelect.wav">
-      <Name>MenuSelect</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\MenuUpgrade.wav">
-      <Name>MenuUpgrade</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\PlayerArmorHit.wav">
-      <Name>PlayerArmorHit</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\PlayerArmorWarning.wav">
-      <Name>PlayerArmorWarning</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\PlayerDie.wav">
-      <Name>PlayerDie</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\PlayerShieldHit.wav">
-      <Name>PlayerShieldHit</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\PowerupShipDie.wav">
-      <Name>PowerupShipDie</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponHitLaser.wav">
-      <Name>WeaponHitLaser</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponHitMiniShot.wav">
-      <Name>WeaponHitMiniShot</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponHitMissile.wav">
-      <Name>WeaponHitMissile</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponHitPlasma.wav">
-      <Name>WeaponHitPlasma</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponHitSeekBomb.wav">
-      <Name>WeaponHitSeekBomb</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponShootLaser.wav">
-      <Name>WeaponShootLaser</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponShootMiniShot.wav">
-      <Name>WeaponShootMiniShot</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponShootMissile.wav">
-      <Name>WeaponShootMissile</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponShootPlasma.wav">
-      <Name>WeaponShootPlasma</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\WeaponShootSeekBomb.wav">
-      <Name>WeaponShootSeekBomb</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SE\EnemyShoot.wav">
-      <Name>EnemyShoot</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SE\EnemyDie1.wav">
-      <Name>EnemyDie1</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\EnemyDie2.wav">
-      <Name>EnemyDie2</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-    <Compile Include="SE\EnemyDie3.wav">
-      <Name>EnemyDie3</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Enemy\DownTurret.png">
       <Name>DownTurret</Name>
       <Importer>TextureImporter</Importer>
@@ -779,23 +609,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Background\SpaceCloud1.png">
-      <Name>SpaceCloud1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Background\SpaceCloud2.png">
-      <Name>SpaceCloud2</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Background\SpaceCloud3.png">
-      <Name>SpaceCloud3</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Decoration\Block1.png">
       <Name>Block1</Name>
       <Importer>TextureImporter</Importer>
@@ -817,6 +630,23 @@
       <Name>galaxy</Name>
       <Importer>XactImporter</Importer>
       <Processor>XactProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sky\SpaceCloud1.png">
+      <Name>SpaceCloud1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sky\SpaceCloud2.png">
+      <Name>SpaceCloud2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sky\SpaceCloud3.png">
+      <Name>SpaceCloud3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

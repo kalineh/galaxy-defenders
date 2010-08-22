@@ -7,7 +7,8 @@ public class Stage5 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage5");
 stage.ScrollSpeed = 3.0f;
-stage.SceneryName = "DullGray";
+stage.BackgroundSceneryName = "DullGray";
+stage.ForegroundSceneryName = "Empty";
 stage.MusicName = "B";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {

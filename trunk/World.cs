@@ -22,7 +22,8 @@ namespace Galaxy
         private List<CEntity> EntitiesToDelete { get; set; }
         public int Score { get; set; }
         public CStage Stage { get; set; }
-        public CScenery Scenery { get; set; }
+        public CScenery BackgroundScenery { get; set; }
+        public CScenery ForegroundScenery { get; set; }
         public CCamera GameCamera { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
@@ -66,8 +67,10 @@ namespace Galaxy
             if (!Game.EditorMode)
                 CAudio.PlayMusic(Stage.Definition.MusicName);
 
-            MethodInfo method = typeof(CSceneryPresets).GetMethod(Stage.Definition.SceneryName);
-            Scenery = method.Invoke(null, new object[] { this }) as CScenery;
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.BackgroundSceneryName);
+            BackgroundScenery = bg_method.Invoke(null, new object[] { this }) as CScenery;
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.ForegroundSceneryName);
+            ForegroundScenery = fg_method.Invoke(null, new object[] { this }) as CScenery;
         }
 
         public void Stop()
@@ -89,7 +92,8 @@ namespace Galaxy
         public void Update()
         {
             Stage.Update();
-            Scenery.Update();
+            BackgroundScenery.Update();
+            ForegroundScenery.Update();
 
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
@@ -155,6 +159,7 @@ namespace Galaxy
 
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
+            DrawForeground(GameCamera);
 
             Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
             DrawHuds(GameCamera);
@@ -174,7 +179,12 @@ namespace Galaxy
 
         public void DrawBackground(CCamera camera)
         {
-            Scenery.Draw(Game.DefaultSpriteBatch);
+            BackgroundScenery.Draw(Game.DefaultSpriteBatch);
+        }
+
+        public void DrawForeground(CCamera camera)
+        {
+            ForegroundScenery.Draw(Game.DefaultSpriteBatch);
         }
 
         public void DrawEntities(CCamera camera)
