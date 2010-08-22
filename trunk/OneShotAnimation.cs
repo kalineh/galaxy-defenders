@@ -57,6 +57,8 @@ namespace Galaxy
             Visual.TileY = settings.TileY;
             Visual.AnimationSpeed = settings.AnimationSpeed;
             Visual.Scale = new Vector2(settings.Scale);
+            Visual.Color = settings.Color;
+            Visual.Update();
         }
 #endif
 

@@ -19,7 +19,6 @@ namespace Galaxy
         public CDebug Debug { get; private set; }
         public CInput Input { get; private set; }
         public Texture2D PixelTexture { get; private set; }
-        public CMusic Music { get; private set; }
         public CFrameRateDisplay FrameRateDisplay { get; private set; }
         public int GameFrame { get; set; }
         public CState State { get; set; }
@@ -53,7 +52,6 @@ namespace Galaxy
 
             Debug = new CDebug(this);
             Input = new CInput(this);
-            Music = new CMusic(this);
 
             FrameRateDisplay = new CFrameRateDisplay(this);
             GameFrame = 0;
@@ -119,6 +117,8 @@ namespace Galaxy
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             GraphicsDeviceManager.ApplyChanges();
 
+            CAudio.Initialize();
+
             base.Initialize();
         }
 
@@ -148,6 +148,8 @@ namespace Galaxy
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+
+            CAudio.Shutdown();
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace Galaxy
             GamePadState input = GamePad.GetState(PlayerIndex.One);
 
             Input.Update();
-            Music.Update();
+            CAudio.Update();
             FrameRateDisplay.Update(game_time);
 
             base.Update(game_time);

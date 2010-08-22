@@ -8,7 +8,7 @@ public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("EditorStage");
 stage.ScrollSpeed = 3.0f;
 stage.SceneryName = "BlueSky";
-stage.MusicName = "Music/Stage1";
+stage.MusicName = "A";
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,

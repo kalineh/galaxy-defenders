@@ -54,6 +54,8 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
+            Visual.Color = CShip.GetPlayerColor(index);
+            Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             SeekFramesRemaining = 90;
@@ -111,7 +113,7 @@ namespace Galaxy
         {
             ClearTarget();
             CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 0.75f, Visual.Color);
-            World.Sound.Play("WeaponHitSeekBomb", 1.0f);
+            CAudio.PlaySound("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }
 

@@ -30,7 +30,7 @@ namespace Galaxy
                 // TODO: is this a good place?
                 // TODO: dont want to save here? this should be a cancel, not a save-quit
                 //CSaveData.Save();
-                Game.Music.StopImmediate();
+                CAudio.StopMusic();
                 Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
             }
         }

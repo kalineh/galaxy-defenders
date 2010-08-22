@@ -23,10 +23,10 @@ namespace Galaxy
         {
             return new CSceneryChain(world,
                 new CGradientBackground(world,
-                    new Color(112, 140, 220),
-                    new Color(112, 140, 220),
-                    new Color(112, 140, 220),
-                    new Color(112, 140, 220)
+                    new Color(102, 130, 210),
+                    new Color(102, 130, 210),
+                    new Color(102, 130, 210),
+                    new Color(102, 130, 210)
                 ),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.2f, Vector2.UnitY * 6.0f),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 0.8f, Vector2.UnitY * 9.0f)

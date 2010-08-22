@@ -76,7 +76,7 @@ namespace Galaxy
             float rotation = MathHelper.PiOver2;
 
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
-            World.Sound.Play("EnemyShoot");
+            CAudio.PlaySound("EnemyShoot");
             FireCooldown = Time.ToFrames(FireDelay);
         }
 

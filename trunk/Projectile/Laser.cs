@@ -46,8 +46,7 @@ namespace Galaxy
         {
             base.Init360(world);
 
-            Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/Laser"), CShip.GetPlayerColor(index));
+            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/Laser", index);
             Visual.Color = CShip.GetPlayerColor(index);
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
@@ -116,8 +115,7 @@ namespace Galaxy
         {
             base.Init360(world);
 
-            Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/BigLaser"), CShip.GetPlayerColor(index));
+            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/BigLaser", index);
             Visual.Color = CShip.GetPlayerColor(index);
             Visual.UpdateColor();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));

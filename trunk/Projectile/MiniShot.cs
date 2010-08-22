@@ -44,8 +44,9 @@ namespace Galaxy
         public void Init360(CWorld world, float damage, PlayerIndex index)
         {
             base.Init360(world);
+
             Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/MiniShot"), CShip.GetPlayerColor(index));
+            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/MiniShot", index);
             Visual.Color = CShip.GetPlayerColor(index);
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
@@ -70,7 +71,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.Sound.Play("WeaponHitMiniShot", 1.0f);
+            CAudio.PlaySound("WeaponHitMiniShot", 1.0f);
             base.OnDie();
         }
     }
