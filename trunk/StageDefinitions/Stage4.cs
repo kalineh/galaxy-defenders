@@ -820,7 +820,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Platform1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 224.0f,
+X = 232.0f,
 Y = -13896.0f,
 },
 });
@@ -884,7 +884,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Platform1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -488.0f,
+X = -480.0f,
 Y = -10672.0f,
 },
 });
@@ -1939,7 +1939,7 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 224.0f,
+X = 232.0f,
 Y = -13896.0f,
 },
 },
@@ -1948,7 +1948,7 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 224.0f,
+X = 232.0f,
 Y = -13896.0f,
 },
 });
@@ -2349,7 +2349,7 @@ Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
-Y = -10664.0f,
+Y = -10672.0f,
 },
 });
 stage.AddElement(0, 

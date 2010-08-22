@@ -7,7 +7,7 @@ public class Stage2 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage2");
 stage.ScrollSpeed = 3.0f;
-stage.SceneryName = "BrightBlueSky";
+stage.SceneryName = "SpaceClouds";
 stage.MusicName = "Music/B";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
@@ -1978,7 +1978,7 @@ Y = -15984.0f,
 },
 },
 MoverPresetName = "Down",
-MoverSpeedMultiplier = 3.25f,
+MoverSpeedMultiplier = 5.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
@@ -1998,7 +1998,7 @@ Y = -15984.0f,
 },
 },
 MoverPresetName = "Down",
-MoverSpeedMultiplier = 3.25f,
+MoverSpeedMultiplier = 5.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
@@ -2018,7 +2018,7 @@ Y = -15984.0f,
 },
 },
 MoverPresetName = "Down",
-MoverSpeedMultiplier = 3.25f,
+MoverSpeedMultiplier = 5.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
@@ -2038,7 +2038,7 @@ Y = -15984.0f,
 },
 },
 MoverPresetName = "Down",
-MoverSpeedMultiplier = 3.25f,
+MoverSpeedMultiplier = 5.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
