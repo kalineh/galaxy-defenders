@@ -45,7 +45,7 @@ namespace Galaxy
             Elements = new Dictionary<int, List<CStageElement>>();
             ScrollSpeed = 3.0f;
             SceneryName = "Black";
-            MusicName = "Music/Stage1";
+            MusicName = "A";
         }
 
         public string ToFilename()

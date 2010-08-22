@@ -8,7 +8,7 @@ public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("BonusStage1");
 stage.ScrollSpeed = 3.0f;
 stage.SceneryName = "BonusStage1";
-stage.MusicName = "Music/C";
+stage.MusicName = "C";
 stage.AddElement(0, 
 new Galaxy.CStageElementBuilding() {
 Coins = 0,

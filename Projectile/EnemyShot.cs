@@ -23,7 +23,7 @@ namespace Galaxy
 
             world.EntityAdd(shot);
 
-            //world.Sound.Play("Shot", 1.0f);
+            //CAudio.PlaySound("Shot", 1.0f);
 
             return shot;
         }

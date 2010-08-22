@@ -87,7 +87,7 @@ namespace Galaxy
                 rotation += World.Random.NextAngle() * 0.015f;
 
                 CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
-                World.Sound.Play("EnemyShoot");
+                CAudio.PlaySound("EnemyShoot");
 
                 OriginalMover = OriginalMover ?? Mover;
 

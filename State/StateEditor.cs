@@ -549,7 +549,7 @@ namespace Galaxy
             CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
 
             if (!Game.EditorMode)
-                Game.Music.Play(Game.StageDefinition.MusicName);
+                CAudio.PlayMusic("Title");
 
             MethodInfo method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.SceneryName);
             Scenery = method.Invoke(null, new object[] { World }) as CScenery;

@@ -42,7 +42,7 @@ namespace Galaxy
             EmptyWorld.Scenery = CSceneryPresets.BlueSky(EmptyWorld);
 
             if (!Game.EditorMode)
-                Game.Music.Play("Music/Title");
+                CAudio.PlayMusic("Title");
         }
 
         public override void Update()

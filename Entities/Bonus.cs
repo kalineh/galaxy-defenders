@@ -97,7 +97,7 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Score += 50;
-            World.Sound.Play("BonusGet", 1.0f);
+            CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }
     }
@@ -125,7 +125,7 @@ namespace Galaxy
         public new void OnCollide(CShip ship)
         {
             World.Score += 500;
-            World.Sound.Play("BonusGet", 1.0f);
+            CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }
     }

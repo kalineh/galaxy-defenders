@@ -100,7 +100,7 @@ namespace Galaxy
 
             if (Sound != null)
             {
-                Owner.World.Sound.Play(Sound);
+                CAudio.PlaySound(Sound);
             }
         }
 

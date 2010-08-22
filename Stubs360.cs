@@ -36,15 +36,20 @@ namespace Galaxy
 
     namespace Diagnostics
     {
+        public struct FakeMethodInfo
+        {
+            public string Name;
+        }
+
         public class StackFrame
         {
             public StackFrame(int a, bool b)
             {
             }
 
-            public MethodInfo GetMethod()
+            public FakeMethodInfo GetMethod()
             {
-                return null;
+                return new FakeMethodInfo();
             }
         }
     }

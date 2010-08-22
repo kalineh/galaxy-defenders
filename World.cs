@@ -24,7 +24,6 @@ namespace Galaxy
         public CStage Stage { get; set; }
         public CScenery Scenery { get; set; }
         public CCamera GameCamera { get; set; }
-        public CSound Sound { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CShip> Players { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
@@ -40,7 +39,6 @@ namespace Galaxy
             EntitiesToDelete = new List<CEntity>();
             GameCamera = new CCamera(game);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
-            Sound = new CSound(this);
             Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
             Players = new List<CShip>();
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
@@ -66,7 +64,7 @@ namespace Galaxy
 
             // TODO: should this be in the stage?
             if (!Game.EditorMode)
-                Game.Music.Play(Stage.Definition.MusicName);
+                CAudio.PlayMusic(Stage.Definition.MusicName);
 
             MethodInfo method = typeof(CSceneryPresets).GetMethod(Stage.Definition.SceneryName);
             Scenery = method.Invoke(null, new object[] { this }) as CScenery;
@@ -105,8 +103,6 @@ namespace Galaxy
 
             // TODO: can be threaded
             ParticleEffects.Update();
-
-            Sound.Update();
         }
 
         public void UpdateInput()

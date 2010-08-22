@@ -76,7 +76,9 @@ namespace Galaxy
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 14.0f)
             );
 
-            Game.Music.Play("Music/Title");
+
+            if (!Game.EditorMode)
+                CAudio.PlayMusic("Title");
         }
 
         public override void Update()
