@@ -23,7 +23,7 @@ namespace Galaxy
             }
         }
 
-        public float Health { get; private set; }
+        public float Health { get; set; }
         public int Coins { get; set; }
         public bool Powerup { get; set; }
         private int BaseScore { get; set; }

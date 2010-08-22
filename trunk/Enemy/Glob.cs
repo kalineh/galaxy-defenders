@@ -20,10 +20,11 @@ namespace Galaxy
         {
             Physics = new CPhysics();
             Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 18.0f);
+            Physics.AnglePhysics.Rotation = world.Random.NextAngle();
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Glob"), Color.White);
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
-            HealthMax = 1.5f;
+            HealthMax = 4.5f;
             SelfDestructTimer = 120;
         }
 
@@ -40,7 +41,7 @@ namespace Galaxy
             Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Ball"), Color.White);
-            HealthMax = 0.5f;
+            HealthMax = 4.5f;
         }
 #endif
 
@@ -67,9 +68,10 @@ namespace Galaxy
                 Vector2 target = ChaseTarget.Physics.PositionPhysics.Position;
                 Vector2 offset = target - Physics.PositionPhysics.Position;
                 Vector2 velocity = Physics.PositionPhysics.Velocity;
-                float speed = velocity.Length();
-                Vector2 new_velocity = velocity + offset * 0.15f;
+                float speed = Math.Max(velocity.Length(), 5.0f);
+                Vector2 new_velocity = velocity + offset * 0.005f;
                 Physics.PositionPhysics.Velocity = new_velocity.Normal() * speed;
+                Physics.PositionPhysics.Position += Vector2.UnitY * -World.Game.StageDefinition.ScrollSpeed;
             }
             else if (AttachTarget != null)
             {
@@ -82,6 +84,8 @@ namespace Galaxy
 
                 Physics.PositionPhysics.Position = AttachTarget.Physics.PositionPhysics.Position;
                 AttachTarget.TakeDirectArmorDamage(0.01f);
+                AttachTarget.Physics.PositionPhysics.Velocity *= 0.60f;
+                Health += 0.5f;
                 SelfDestructTimer -= 1;
                 if (SelfDestructTimer <= 0)
                 {
@@ -91,7 +95,7 @@ namespace Galaxy
             }
             else if (AttachTarget == null && ChaseTarget == null)
             {
-                CShip nearest = World.GetNearestShip(Physics.PositionPhysics.Position, 200.0f);
+                CShip nearest = World.GetNearestShip(Physics.PositionPhysics.Position, 2000.0f);
                 ChaseTarget = nearest;
             }
         }
