@@ -37,10 +37,7 @@ namespace Galaxy
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
-            //EmptyWorld.BackgroundScenery = new CSceneryChain(EmptyWorld,
-                //new CBackground(EmptyWorld, new Color(133, 145, 181)),
-                //new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 1.2f)
-            //);
+            EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");

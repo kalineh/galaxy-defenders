@@ -33,28 +33,13 @@ namespace Galaxy
         public CVisual VisualNormal { get; private set; }
         public CVisual VisualDestroyed { get; private set; }
 
-        public CBuilding(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, Vector2.Zero);
-        }
-
-#if XBOX360
-        public CBuilding()
-    	{
-    	}
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
+            base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, Vector2.Zero);
         }
-#endif
 
         public override void Update()
         {
@@ -85,25 +70,13 @@ namespace Galaxy
             laser.Die();
         }
 
-        public void OnCollide(CBigLaser laser)
-        {
-            TakeDamage(laser.Damage);
-            laser.Die();
-        }
-
         public void OnCollide(CMissile missile)
         {
             TakeDamage(missile.Damage);
             missile.Die();
         }
 
-        public void OnCollide(CBigPlasma plasma)
-        {
-            TakeDamage(plasma.Damage);
-            plasma.Die();
-        }
-
-        public void OnCollide(CSmallPlasma plasma)
+        public void OnCollide(CPlasma plasma)
         {
             TakeDamage(plasma.Damage);
             plasma.Die();
@@ -155,12 +128,18 @@ namespace Galaxy
 
             for (int i = 0; i < Coins; i++)
             {
-                World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
+                CBonus bonus = new CBonus();
+                bonus.Initialize(World);
+                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                World.EntityAdd(bonus);
             }
 
             if (Powerup)
             {
-                World.EntityAdd(new CPowerup(World, Physics.PositionPhysics.Position));
+                CPowerup powerup = new CPowerup();
+                powerup.Initialize(World);
+                powerup.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                World.EntityAdd(powerup);
             }
         }
 

@@ -8,18 +8,20 @@ namespace Galaxy
     {
         public static CDetonation MakeDetonation(CWorld world, Vector2 position)
         {
-            CDetonation result = new CDetonation(world, position);
+            CDetonation result = new CDetonation();
+            result.Initialize(world);
+            result.Physics.PositionPhysics.Position = position;
             world.EntityAdd(result);
             return result;
         }
 
-        private CDetonation(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+            
             World = world;
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, position, 128.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 128.0f);
         }
 
         public override void Update()
@@ -31,6 +33,13 @@ namespace Galaxy
 
             if (AliveTime > 3)
                 Die();
+        }
+
+        public override void UpdateCollision()
+        {
+            CollisionCircle circle = Collision as CollisionCircle;
+            circle.Position = Physics.PositionPhysics.Position;
+            circle.Radius = 128.0f;
         }
     }
 }

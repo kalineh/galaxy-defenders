@@ -16,8 +16,9 @@ namespace Galaxy
         private Vector2 BasePosition { get; set; }
 
         public CEditorEntityPreview(CWorld world, CEntity parent)
-            : base(world)
         {
+            base.Initialize(world);
+
             Parent = parent;
             Physics = new CPhysics();
             BasePosition = parent.Physics.PositionPhysics.Position;

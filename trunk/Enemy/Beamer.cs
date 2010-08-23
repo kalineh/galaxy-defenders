@@ -15,11 +15,11 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public CBeamer(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
             HealthMax = 4.0f;
@@ -29,28 +29,6 @@ namespace Galaxy
             FireDamage = 2.0f;
             FireSpeed = 14.0f;
         }
-
-        #if XBOX360
-        public CBeamer()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Beamer"), Color.White);
-            HealthMax = 4.0f;
-
-            FireDelay = 1.5f;
-            FireCooldown = Time.ToFrames(FireDelay) / 2;
-            FireDamage = 2.0f;
-            FireSpeed = 14.0f;
-        }
-        #endif
 
         public override void UpdateAI()
         {

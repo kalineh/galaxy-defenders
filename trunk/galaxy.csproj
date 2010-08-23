@@ -106,6 +106,7 @@
     <Compile Include="Enemy\Glob.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
     <Compile Include="Pilot.cs" />
+    <Compile Include="Projectile\Projectile.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Fibers.cs" />
@@ -223,12 +224,12 @@
     <Compile Include="Stubs360.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Projectile\ProjectileCache.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
     <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />
     <Compile Include="Weapon\WeaponDefinitions.cs" />
     <Compile Include="Weapon\WeaponLaser.cs" />
-    <Compile Include="Weapon\WeaponTest.cs" />
     <Compile Include="Weapon\WeaponMissile.cs" />
     <Compile Include="Weapon\Weapon.cs" />
     <Compile Include="World.cs" />

@@ -18,7 +18,7 @@ namespace Galaxy
         public CMover Mover { get; set; }
         public int AliveTime { get; protected set; }
 
-        public CEntity(CWorld world)
+        public virtual void Initialize(CWorld world)
         {
             World = world;
             Physics = null;
@@ -27,22 +27,6 @@ namespace Galaxy
             Mover = null;
             AliveTime = 0;
         }
-
-#if XBOX360
-        public CEntity()
-        {
-        }
-
-        public void Init360(CWorld world)
-        {
-            World = world;
-            Physics = null;
-            Visual = null;
-            Collision = null;
-            Mover = null;
-            AliveTime = 0;
-        }
-#endif
 
         public virtual void Update()
         {

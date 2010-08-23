@@ -32,28 +32,14 @@ namespace Galaxy
         public bool CanSeekerTarget { get; set; }
         public bool IsSeekerTarget { get; set; }
 
-        public CEnemy(CWorld world)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            BaseScore = 50;
-            CanSeekerTarget = true;
-        }
-
-#if XBOX360
-        public CEnemy()
-        {
-        }
-
-        public new void Init360(CWorld world)
-        {
-            base.Init360(world);
+            base.Initialize(world);
 
             Physics = new CPhysics();
             BaseScore = 50;
             CanSeekerTarget = true;
         }
-#endif
 
         public virtual void UpdateAI()
         {
@@ -105,12 +91,6 @@ namespace Galaxy
             laser.Die();
         }
 
-        public void OnCollide(CBigLaser laser)
-        {
-            TakeDamage(laser.Damage);
-            laser.Die();
-        }
-        
         public void OnCollide(CMissile missile)
         {
             TakeDamage(missile.Damage);
@@ -126,13 +106,7 @@ namespace Galaxy
             seek_bomb.Die();
         }
 
-        public void OnCollide(CSmallPlasma plasma)
-        {
-            TakeDamage(plasma.Damage);
-            plasma.Die();
-        }
-
-        public void OnCollide(CBigPlasma plasma)
+        public void OnCollide(CPlasma plasma)
         {
             TakeDamage(plasma.Damage);
             plasma.Die();
@@ -185,18 +159,27 @@ namespace Galaxy
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)
             {
-                World.EntityAdd(new CBigBonus(World, Physics.PositionPhysics.Position));
+                CBigBonus bonus = new CBigBonus();
+                bonus.Initialize(World);
+                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                World.EntityAdd(bonus);
             }
 
             int small_coins = Coins - big_coins * 10;
             for (int i = 0; i < small_coins; i++)
             {
-                World.EntityAdd(new CBonus(World, Physics.PositionPhysics.Position));
+                CBonus bonus = new CBonus();
+                bonus.Initialize(World);
+                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                World.EntityAdd(bonus);
             }
 
             if (Powerup)
             {
-                World.EntityAdd(new CPowerup(World, Physics.PositionPhysics.Position));
+                CPowerup powerup = new CPowerup();
+                powerup.Initialize(World);
+                powerup.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                World.EntityAdd(powerup);
             }
 
             base.OnDie();

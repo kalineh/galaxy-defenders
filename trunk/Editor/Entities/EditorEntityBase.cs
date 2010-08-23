@@ -30,9 +30,8 @@ namespace Galaxy
         /// Generate default editor entity from just position.
         /// </summary>
         public CEditorEntityBase(CWorld world, Vector2 position)
-            : base(world)
         {
-            Physics = new CPhysics();
+            base.Initialize(world);
             Position = position;
         }
 
@@ -40,8 +39,8 @@ namespace Galaxy
         /// Generate editor entity from stage element.
         /// </summary>
         public CEditorEntityBase(CWorld world, CStageElement element)
-            : base(world)
         {
+            base.Initialize(world);
         }
 
         public virtual CEditorEntityPreview GeneratePreviewEntity()

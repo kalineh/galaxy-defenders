@@ -41,13 +41,21 @@ namespace Galaxy
         {
             Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
 
+            //
+            // TODO: caching system!
+            //
+
+
             try
             {
-#if XBOX360
-                CEntity entity = Galaxy.ActivatorExtensions.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
-#else
-                CEntity entity = Activator.CreateInstance(Type, new object[] { world, spawn_position }) as CEntity;
-#endif
+                CEntity entity = Activator.CreateInstance(Type) as CEntity;
+                entity.Initialize(world);
+
+                // TODO: cleaner implementation?
+                if (entity.Physics != null)
+                {
+                    entity.Physics.PositionPhysics.Position = spawn_position;
+                }
 
                 if (MoverPresetName != "")
                 {

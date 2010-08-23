@@ -20,36 +20,17 @@ namespace Galaxy
         public CFenceBeam FenceBeam { get; set; }
         public Vector2 FenceOffset { get; set; }
         
-        public CFence(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
-            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 10.0f;
-            CanSeekerTarget = false;
-        }
-
-#if XBOX360
-        public CFence()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
+            base.Initialize(world);
             
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Fence"), Color.White);
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 10.0f;
             CanSeekerTarget = false;
         }
-#endif
 
         public void FindNearestFence()
         {
@@ -78,7 +59,9 @@ namespace Galaxy
                 Child.Parent = this;
 
                 FenceOffset = offset * 0.5f;
-                FenceBeam = new CFenceBeam(World, Physics.PositionPhysics.Position + FenceOffset);
+                FenceBeam = new CFenceBeam();
+                FenceBeam.Initialize(World);
+                FenceBeam.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position + FenceOffset;
                 FenceBeam.UpdateAttachment(this);
                 World.EntityAdd(FenceBeam);
                 break;

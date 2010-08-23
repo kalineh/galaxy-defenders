@@ -8,42 +8,25 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Galaxy
 {
     public class CMiniShot
-        : CEntity
+        : CProjectile
     {
         public static CMiniShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CMiniShot laser = new CMiniShot(world, damage, index);
+            CMiniShot mini_shot = new CMiniShot();
+            mini_shot.Initialize(world, index, damage);
 
-            laser.Physics.AnglePhysics.Rotation = rotation;
-            laser.Physics.PositionPhysics.Position = position;
-            laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            mini_shot.Physics.AnglePhysics.Rotation = rotation;
+            mini_shot.Physics.PositionPhysics.Position = position;
+            mini_shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
-            world.EntityAdd(laser);
+            world.EntityAdd(mini_shot);
 
-            return laser;
+            return mini_shot;
         }
 
-        public float Damage { get; private set; }
-
-        public CMiniShot(CWorld world, float damage, PlayerIndex index)
-            : base(world)
+        public override void Initialize(CWorld world, PlayerIndex index, float damage)
         {
-            Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/MiniShot", index);
-            Visual.Color = CShip.GetPlayerColor(index);
-            Visual.Update();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
-            Damage = damage;
-        }
-
-#if XBOX360
-        public CMiniShot()
-        {
-        }
-
-        public void Init360(CWorld world, float damage, PlayerIndex index)
-        {
-            base.Init360(world);
+            base.Initialize(world);
 
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/MiniShot", index);
@@ -52,7 +35,6 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
         }
-#endif
 
         public override void Update()
         {

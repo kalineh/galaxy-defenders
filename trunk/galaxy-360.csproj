@@ -75,6 +75,8 @@
     <Compile Include="Enemy\Glob.cs" />
     <Compile Include="Enemy\TripleShot.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
+    <Compile Include="Projectile\Projectile.cs" />
+    <Compile Include="Projectile\ProjectileCache.cs" />
     <Compile Include="Quadtree.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -199,7 +201,6 @@
     <Compile Include="Weapon\WeaponSeekBomb.cs" />
     <Compile Include="Weapon\WeaponDefinitions.cs" />
     <Compile Include="Weapon\WeaponLaser.cs" />
-    <Compile Include="Weapon\WeaponTest.cs" />
     <Compile Include="Weapon\WeaponMissile.cs" />
     <Compile Include="Weapon\Weapon.cs" />
     <Compile Include="World.cs" />

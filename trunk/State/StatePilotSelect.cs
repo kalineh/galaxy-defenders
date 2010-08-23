@@ -40,6 +40,7 @@ namespace Galaxy
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
+            EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");

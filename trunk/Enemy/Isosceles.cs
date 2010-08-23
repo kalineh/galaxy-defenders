@@ -15,11 +15,11 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public CIsosceles(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Isosceles");
             HealthMax = 2.0f;
@@ -29,28 +29,6 @@ namespace Galaxy
             FireDamage = 1.0f;
             FireSpeed = 10.0f;
         }
-
-#if XBOX360
-        public CIsosceles()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Isosceles");
-            HealthMax = 2.0f;
-
-            FireDelay = 1.5f;
-            FireCooldown = Time.ToFrames(FireDelay) / 3;
-            FireDamage = 1.0f;
-            FireSpeed = 10.0f;
-        }
-#endif
 
         public override void UpdateAI()
         {

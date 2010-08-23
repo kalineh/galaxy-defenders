@@ -107,11 +107,7 @@ namespace Galaxy
                 return new Pilots.Kazuki();
 
             Type type = Type.GetType("Galaxy.Pilots." + pilot);
-#if XBOX360
             CPilot result = Activator.CreateInstance(type) as CPilot;
-#else
-            CPilot result = Activator.CreateInstance(type, null) as CPilot;
-#endif
             return result;
         }
     }
@@ -329,14 +325,20 @@ namespace Galaxy
                         CEnemyShot shot = entity as CEnemyShot;
                         if (shot != null)
                         {
-                            Pilot.Ship.World.EntityAdd(new CBonus(Pilot.Ship.World, shot.Physics.PositionPhysics.Position));
+                            CBonus bonus = new CBonus();
+                            bonus.Initialize(Pilot.Ship.World);
+                            bonus.Physics.PositionPhysics.Position = shot.Physics.PositionPhysics.Position;
+                            Pilot.Ship.World.EntityAdd(bonus);
                             shot.Die();
                         }
 
                         CEnemyLaser laser = entity as CEnemyLaser;
                         if (laser != null)
                         {
-                            Pilot.Ship.World.EntityAdd(new CBonus(Pilot.Ship.World, laser.Physics.PositionPhysics.Position));
+                            CBonus bonus = new CBonus();
+                            bonus.Initialize(Pilot.Ship.World);
+                            bonus.Physics.PositionPhysics.Position = laser.Physics.PositionPhysics.Position;
+                            Pilot.Ship.World.EntityAdd(bonus);
                             laser.Die();
                         }
                     }

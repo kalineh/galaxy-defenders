@@ -53,34 +53,6 @@ namespace Galaxy
             }
         }
     }
-
-    public static class ActivatorExtensions
-    {
-        public static object CreateInstance(Type type, params object[] arguments)
-        {
-            object entity = Activator.CreateInstance(type);
-
-            try
-            {
-                MethodInfo method = type.GetMethod("Init360");
-                method.Invoke(entity, arguments);
-            }
-            catch (System.Reflection.AmbiguousMatchException)
-            {
-                try
-                {
-                    MethodInfo method = type.GetMethod("Init360", BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-                    method.Invoke(entity, arguments);
-                }
-                catch (System.MissingMethodException e)
-                {
-                    Console.WriteLine(e.ToString());
-                }
-            }
-
-            return entity;
-        }
-    }
 }
 
 #endif

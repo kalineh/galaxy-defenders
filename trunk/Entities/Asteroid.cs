@@ -20,34 +20,16 @@ namespace Galaxy
         public float Health { get; private set; }
         public CVisual Cracks { get; set; }
 
-        public CAsteroid(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Asteroid"), Color.White);
             Cracks = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Cracks"), Color.White);
             Cracks.Alpha = 0.0f;
         }
-
-#if XBOX360
-        public CAsteroid()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Asteroid"), Color.White);
-            Cracks = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Cracks"), Color.White);
-            Cracks.Alpha = 0.0f;
-        }
-#endif
 
         public override void Update()
         {
@@ -79,13 +61,6 @@ namespace Galaxy
             laser.Die();
         }
 
-        public void OnCollide(CBigLaser laser)
-        {
-            Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
-            TakeDamage(laser.Damage);
-            laser.Die();
-        }
-
         public void OnCollide(CMissile missile)
         {
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
@@ -93,14 +68,7 @@ namespace Galaxy
             missile.Die();
         }
 
-        public void OnCollide(CSmallPlasma plasma)
-        {
-            Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
-            TakeDamage(plasma.Damage);
-            plasma.Die();
-        }
-
-        public void OnCollide(CBigPlasma plasma)
+        public void OnCollide(CPlasma plasma)
         {
             Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
             TakeDamage(plasma.Damage);

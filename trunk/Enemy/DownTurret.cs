@@ -16,11 +16,11 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public CDownTurret(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/DownTurret");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
@@ -31,29 +31,6 @@ namespace Galaxy
             FireDamage = 2.0f;
             FireSpeed = 12.0f;
         }
-
-#if XBOX360
-        public CDownTurret()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/DownTurret");
-            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 2.5f;
-
-            FireDelay = 1.5f;
-            FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 2.0f;
-            FireSpeed = 12.0f;
-        }
-#endif
 
         public override void UpdateAI()
         {
