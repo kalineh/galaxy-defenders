@@ -2,63 +2,46 @@
 // WeaponLaser.cs
 //
 
+using System;
 using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CWeaponFrontLaser
+    public class CWeaponLaser
         : CWeapon
     {
-        public CWeaponFrontLaser(CShip owner)
-            : base(owner)
-        {
-        }
+        public CProjectileCache<CLaser> Cache { get; set; }
 
-#if XBOX360
-        public CWeaponFrontLaser()
+        public override void Initialize(CShip owner)
         {
-        }
+            base.Initialize(owner);
 
-        public new void Init360(CShip owner)
-        {
-            base.Init360(owner);
+            Cache = new CProjectileCache<CLaser>(owner.World);
         }
-#endif
 
         protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            if (damage >= 0.4f)
-                CBigLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
-            else
-                CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            CLaser laser = Cache.GetProjectileInstance(Owner.PlayerIndex);
+
+            laser.Initialize(world, Owner.PlayerIndex, damage);
+
+            laser.Physics.AnglePhysics.Rotation = rotation;
+            laser.Physics.PositionPhysics.Position = position;
+            laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+
+            // TODO: what if this is on the entity delete list?!
+            // TODO: it will be added (a second instance), then deleted at the end of the frame
+            world.EntityAdd(laser);
         }
-    };
+    }
+
+    public class CWeaponFrontLaser
+        : CWeaponLaser
+    {
+    }
 
     public class CWeaponSpreadLaser
-        : CWeapon
+        : CWeaponLaser
     {
-        public CWeaponSpreadLaser(CShip owner)
-            : base(owner)
-        {
-        }
-
-#if XBOX360
-        public CWeaponSpreadLaser()
-        {
-        }
-
-        public new void Init360(CShip owner)
-        {
-            base.Init360(owner);
-        }
-#endif
-
-        protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
-        {
-            if (damage >= 0.4f)
-                CBigLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
-            else
-                CLaser.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
-        }
-    };
+    }
 }

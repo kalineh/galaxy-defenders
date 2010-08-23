@@ -14,11 +14,13 @@ namespace Galaxy
 
         public static CEnemyLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyLaser laser = new CEnemyLaser(world, damage);
+            CEnemyLaser laser = new CEnemyLaser();
 
-            laser.Physics.AnglePhysics.Rotation = rotation;
+            laser.Initialize(world);
             laser.Physics.PositionPhysics.Position = position;
             laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            laser.Physics.AnglePhysics.Rotation = rotation;
+            laser.Damage = damage;
 
             world.EntityAdd(laser);
 
@@ -27,30 +29,14 @@ namespace Galaxy
 
         public float Damage { get; private set; }
 
-        public CEnemyLaser(CWorld world, float damage)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyLaser"), Color.White);
-            Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
-            Damage = damage;
-        }
-
-#if XBOX360
-        public CEnemyLaser()
-        {
-        }
-
-        public void Init360(CWorld world, float damage)
-        {
-            base.Init360(world);
+            base.Initialize(world);
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyLaser"), Color.White);
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
-            Damage = damage;
         }
-#endif
 
         public override void Update()
         {

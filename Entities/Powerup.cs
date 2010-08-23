@@ -10,9 +10,10 @@ namespace Galaxy
     public class CPowerup
         : CBonus
     {
-        public CPowerup(CWorld world, Vector2 position)
-            : base(world, position)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Entity/Powerup");
         }
 

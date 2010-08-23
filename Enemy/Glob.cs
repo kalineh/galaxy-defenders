@@ -15,30 +15,11 @@ namespace Galaxy
         private CShip AttachTarget { get; set; }
         private int SelfDestructTimer { get; set; }
 
-        public CGlob(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Physics.AnglePhysics.Rotation = world.Random.NextAngle();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Glob"), Color.White);
-            Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
-            HealthMax = 4.5f;
-            SelfDestructTimer = 120;
-        }
-
-#if XBOX360
-        public CGlob()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
+            base.Initialize(world);
             
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Physics.AnglePhysics.Rotation = world.Random.NextAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Glob"), Color.White);
@@ -46,7 +27,6 @@ namespace Galaxy
             HealthMax = 4.5f;
             SelfDestructTimer = 120;
         }
-#endif
 
         public override void UpdateAI()
         {

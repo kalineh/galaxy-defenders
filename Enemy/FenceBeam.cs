@@ -14,37 +14,17 @@ namespace Galaxy
     public class CFenceBeam
         : CEntity
     {
-        public CFenceBeam(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheAABB(this, position, Vector2.Zero);
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, Vector2.Zero);
             Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
         }
-
-#if XBOX360
-
-        public CFenceBeam()
-    	{
-    	}
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheAABB(this, position, Vector2.Zero);
-            Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
-            Visual.TileY = 4;
-            Visual.AnimationSpeed = 0.25f;
-            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
-        }
-#endif
 
         public void UpdateAttachment(CFence owner)
         {

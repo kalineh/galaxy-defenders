@@ -20,27 +20,13 @@ namespace Galaxy
         public float Energy { get; private set; }
         private float Cooldown { get; set; }
 
-        public CWeapon(CShip owner)
+        public virtual void Initialize(CShip owner)
         {
             Owner = owner;
             Offset = Vector2.Zero;
             Cooldown = 0.0f;
             Rotation = 0.0f;
         }
-
-#if XBOX360
-        public CWeapon()
-        {
-        }
-
-        public void Init360(CShip owner)
-        {
-            Owner = owner;
-            Offset = Vector2.Zero;
-            Cooldown = 0.0f;
-            Rotation = 0.0f;
-        }
-#endif
 
         public void Update()
         {

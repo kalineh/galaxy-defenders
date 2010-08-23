@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3263490432;
-    Last Modified High = 30097920;
+    Last Modified Low = 2166441132;
+    Last Modified High = 30097924;
 
     Category
     {
@@ -3286,6 +3286,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
+    Bank Last Modified Low = 2166451133;
+    Bank Last Modified High = 30097924;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 

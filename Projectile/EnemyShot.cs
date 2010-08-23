@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Galaxy
 {
     public class CEnemyShot
-        : CEntity
+        : CProjectile
     {
         public bool IsReflected { get; set; }
 
         public static CEnemyShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyShot shot = new CEnemyShot(world, damage);
+            CEnemyShot shot = new CEnemyShot();
+            shot.Initialize(world, PlayerIndex.One, damage);
 
             shot.Physics.AnglePhysics.Rotation = rotation;
             shot.Physics.PositionPhysics.Position = position;
@@ -28,32 +29,14 @@ namespace Galaxy
             return shot;
         }
 
-        public float Damage { get; private set; }
-
-        public CEnemyShot(CWorld world, float damage)
-            : base(world)
+        public override void Initialize(CWorld world, PlayerIndex index, float damage)
         {
-            Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyShot"), Color.White);
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
-            Damage = damage;
-        }
-
-#if XBOX360
-        public CEnemyShot()
-        {
-        }
-
-        public void Init360(CWorld world, float damage)
-        {
-            base.Init360(world);
+            base.Initialize(world, index, damage);
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/EnemyShot"), Color.White);
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
-            Damage = damage;
         }
-#endif
 
         public override void Update()
         {

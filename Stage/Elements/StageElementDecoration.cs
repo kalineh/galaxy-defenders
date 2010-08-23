@@ -16,9 +16,10 @@ namespace Galaxy
 
         public override void Update(CWorld world)
         {
-            CDecoration decoration = new CDecoration(world, Position) {
-                TextureName = TextureName
-            };
+            CDecoration decoration = new CDecoration();
+            decoration.Initialize(world);
+            decoration.Physics.PositionPhysics.Position = Position;
+            decoration.TextureName = TextureName;
 
             //decoration.UpdateTexture();
 

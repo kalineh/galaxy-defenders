@@ -13,26 +13,12 @@ namespace Galaxy
         public string TextureName { get; set; }
         public int DepthOffset { get; set; }
 
-        public CDecoration(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-        }
-
-#if XBOX360
-        public CDecoration()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
+            base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
         }
-#endif
 
         public override void Update()
         {

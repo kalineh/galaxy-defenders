@@ -43,6 +43,7 @@ namespace Galaxy
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 3.5f),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 2.1f)
             );
+            EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             WorkingProfile = CSaveData.GetCurrentProfile();
             LockedProfile = WorkingProfile;

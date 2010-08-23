@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Galaxy
 {
     public class CSeekBomb
-        : CEntity
+        : CProjectile
     {
         public static CSeekBomb Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
         {
-            CSeekBomb seek_bomb = new CSeekBomb(world, damage, index);
+            CSeekBomb seek_bomb = new CSeekBomb();
+            seek_bomb.Initialize(world, index, damage);
 
             seek_bomb.Speed = speed;
 
@@ -26,31 +27,13 @@ namespace Galaxy
             return seek_bomb;
         }
 
-        public float Damage { get; private set; }
         public float Speed { get; set; }
         public int SeekFramesRemaining { get; set; }
         public CEnemy Target { get; set; }
 
-        public CSeekBomb(CWorld world, float damage, PlayerIndex index)
-            : base(world)
+        public override void Initialize(CWorld world, PlayerIndex index, float damage)
         {
-            Physics = new CPhysics();
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
-            Visual.Color = CShip.GetPlayerColor(index);
-            Visual.Update();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
-            Damage = damage;
-            SeekFramesRemaining = 90;
-        }
-
-#if XBOX360
-        public CSeekBomb()
-        {
-        }
-
-        public void Init360(CWorld world, float damage, PlayerIndex index)
-        {
-            base.Init360(world);
+            base.Initialize(world, index, damage);
 
             Physics = new CPhysics();
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SeekBomb"), CShip.GetPlayerColor(index));
@@ -60,7 +43,6 @@ namespace Galaxy
             Damage = damage;
             SeekFramesRemaining = 90;
         }
-#endif
 
         public override void Update()
         {

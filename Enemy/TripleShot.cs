@@ -21,11 +21,11 @@ namespace Galaxy
         private CMover OriginalMover { get; set; }
         private CMover IgnoreCameraMover { get; set; }
 
-        public CTripleShot(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
@@ -36,29 +36,6 @@ namespace Galaxy
             FireSpeed = 10.0f;
             TripleShotDelay = 0.15f;
         }
-
-#if XBOX360
-        public CTripleShot()
-        {
-        }
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
-            HealthMax = 4.0f;
-
-            FireDelay = 2.5f;
-            FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 2.0f;
-            FireSpeed = 10.0f;
-            TripleShotDelay = 0.15f;
-        }
-#endif
 
         public override void UpdateAI()
         {

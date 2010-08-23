@@ -13,8 +13,9 @@ namespace Galaxy
     {
         public static CEntity Explosion(CWorld world, Vector2 position, float scale)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -37,8 +38,9 @@ namespace Galaxy
 
         public static CEntity MissileExplosion(CWorld world, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -72,8 +74,9 @@ namespace Galaxy
 
         public static CEntity EnemyExplosion(CWorld world, Vector2 position, float scale)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -100,8 +103,9 @@ namespace Galaxy
 
         public static CEntity PlayerTakeDamage(CShip ship, Vector2 position, float scale)
         {
-            COneShotAnimation animation = new COneShotAnimation(ship.World,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(ship.World);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = ship.World.Random.NextAngle(),
@@ -127,8 +131,9 @@ namespace Galaxy
 
         public static CEntity PlayerTakeShieldDamage(CShip ship, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(ship.World,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(ship.World);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = ship.World.Random.NextAngle(),
@@ -158,8 +163,9 @@ namespace Galaxy
 
         public static CEntity MissileTrail(CWorld world, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -178,8 +184,9 @@ namespace Galaxy
 
         public static CEntity DashBurstEffect(CWorld world, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -198,8 +205,9 @@ namespace Galaxy
 
         public static void AbsorbBulletEffect(CShip ship, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(ship.World,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(ship.World);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = ship.World.Random.NextAngle(),
@@ -218,8 +226,9 @@ namespace Galaxy
 
         public static void ReflectBulletEffect(CShip ship, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(ship.World,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(ship.World);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = ship.World.Random.NextAngle(),
@@ -238,8 +247,9 @@ namespace Galaxy
 
         public static CEntity DetonationEffect(CWorld world, Vector2 position)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),
@@ -262,8 +272,9 @@ namespace Galaxy
 
         public static void ArmorRepairEffect(CWorld world, Vector2 position, float scale, Color color)
         {
-            COneShotAnimation animation = new COneShotAnimation(world,
-                new COneShotAnimation.Settings()
+            COneShotAnimation animation = new COneShotAnimation();
+            animation.Initialize(world);
+            animation.ApplySettings(new COneShotAnimation.Settings()
                 {
                     Position = position,
                     Rotation = world.Random.NextAngle(),

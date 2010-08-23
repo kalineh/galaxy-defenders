@@ -15,11 +15,11 @@ namespace Galaxy
         private bool GotoPlayer { get; set; }
         private float GotoForce { get; set; }
 
-        public CBonus(CWorld world, Vector2 position)
-            : base(world)
+        public override void Initialize(CWorld world)
         {
+            base.Initialize(world);
+
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
             Physics.PositionPhysics.Velocity = world.Random.NextVector2(2.0f);
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
@@ -27,27 +27,6 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
             Mover = new CMoverIgnoreCamera();
         }
-
-#if XBOX360
-
-        public CBonus()
-    	{
-    	}
-
-        public void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world);
-
-            Physics = new CPhysics();
-            Physics.PositionPhysics.Position = position;
-            Physics.PositionPhysics.Velocity = world.Random.NextVector2(2.0f);
-            Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
-            Physics.AnglePhysics.AngularVelocity = 0.1f;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
-            Mover = new CMoverIgnoreCamera();
-        }
-#endif
 
         public override void Update()
         {
@@ -105,22 +84,13 @@ namespace Galaxy
     public class CBigBonus
         : CBonus
     {
-        public CBigBonus(CWorld world, Vector2 position)
-            : base(world, position)
+        public override void Initialize(CWorld world)
         {
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/BigBonus"), Color.White);
-            Visual.Depth = CLayers.Entity + CLayers.SubLayerIncrement * 1;
-        }
-
-#if XBOX360
-        public new void Init360(CWorld world, Vector2 position)
-        {
-            base.Init360(world, position);
+            base.Initialize(world);
 
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/BigBonus"), Color.White);
             Visual.Depth = CLayers.Entity + CLayers.SubLayerIncrement * 1;
         }
-#endif
 
         public new void OnCollide(CShip ship)
         {

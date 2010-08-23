@@ -75,7 +75,7 @@ namespace Galaxy
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.4f, 18.0f),
                 new CStars(EmptyWorld, CContent.LoadTexture2D(Game, "Textures/Background/Star"), 0.6f, 14.0f)
             );
-
+            EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");
