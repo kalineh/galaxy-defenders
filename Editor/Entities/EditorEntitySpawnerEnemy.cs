@@ -44,7 +44,9 @@ namespace Galaxy
         {
             Type = type;
             Coins = 1;
-            CEntity sample_instance = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
+            CEntity sample_instance = Activator.CreateInstance(type) as CEntity;
+            sample_instance.Initialize(world);
+            sample_instance.Physics.PositionPhysics.Position = position;
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, sample_instance.Visual.Texture.Name), sample_instance.Visual.Color);
             Visual.TileX = sample_instance.Visual.TileX;
             Visual.TileY = sample_instance.Visual.TileY;
