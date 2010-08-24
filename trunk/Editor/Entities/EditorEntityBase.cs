@@ -32,6 +32,7 @@ namespace Galaxy
         public CEditorEntityBase(CWorld world, Vector2 position)
         {
             base.Initialize(world);
+            Physics = new CPhysics();
             Position = position;
         }
 

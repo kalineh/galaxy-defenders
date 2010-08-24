@@ -26,9 +26,9 @@ namespace Galaxy
 
         public static float[] MoneyScale = new float[4]
         {
+            1.5f,
+            1.3f,
             1.2f,
-            1.0f,
-            1.1f,
             1.5f,
         };
     }
