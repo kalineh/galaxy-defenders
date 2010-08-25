@@ -39,7 +39,7 @@ namespace Galaxy
                 return;
             }
 
-            world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 100.0f, 0.005f);
+            world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 32.0f, 0.015f);
         }
 
         public override bool IsExpired()

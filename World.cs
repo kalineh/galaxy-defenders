@@ -31,6 +31,11 @@ namespace Galaxy
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
         public bool Paused { get; set; }
+        public bool StageEnd { get; set; }
+        public int StageEndCounter { get; set; }
+        public CFader StageEndFader { get; set; }
+        public bool StageFinalEndExitFlag { get; set; }
+        public List<string> StageEndText { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -45,6 +50,7 @@ namespace Galaxy
             Players = new List<CShip>();
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
             ParticleEffects = new CParticleEffectManager(this);
+            StageEndText = new List<string>();
         }
 
         // TODO: stage definition param
@@ -115,15 +121,19 @@ namespace Galaxy
 
             // TODO: can be threaded
             ParticleEffects.Update();
+
+            UpdateStageEnd();
         }
 
         public void UpdatePauseInput()
         {
+            if (StageEnd)
+                return;
+
             if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P))
             {
                 Paused = !Paused;      
             }
-
         }
 
         public void UpdateInput()
@@ -158,6 +168,72 @@ namespace Galaxy
                 Huds[index].Update(Players[index]);
         }
 
+        public void UpdateStageEnd()
+        {
+            if (!StageEnd)
+                return;
+
+            StageEndCounter += 1;
+
+            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            {
+                ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
+
+                CEffect.StageEndFlyEffect(this,
+                                     ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
+                                     0.5f,
+                                     ship.Visual.Color);
+            }
+
+            StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            StageEndFader.Update();
+
+            if (StageEndCounter == 60)
+            {
+                StageEndText.Add("STAGE CLEAR");
+                StageEndText.Add("");
+                StageEndText.Add("");
+            }
+
+            if (StageEndCounter == 120)
+            {
+                StageEndText.Add(String.Format("MONEY: {0}", 100));
+                StageEndText.Add("");
+            }
+
+            if (StageEndCounter == 140)
+            {
+                StageEndText.Add(String.Format("KILLS: {0}", 100));
+                StageEndText.Add("");
+            }
+
+            if (StageEndCounter == 160)
+            {
+                StageEndText.Add(String.Format("COINS: {0}", 100));
+                StageEndText.Add("");
+            }
+
+            if (StageEndCounter > 240)
+            {
+                if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
+                {
+                    StageFinalEndExitFlag = true;
+                }
+            }
+
+            if (StageFinalEndExitFlag)
+            {
+                StageEndFader.StopAtFullFadeOut();
+                if (StageEndCounter > 300)
+                    SaveAndExit();
+            }
+            else
+            {
+                StageEndCounter = Math.Min(StageEndCounter, 300);
+                StageEndFader.StopAtHalfFadeOut();
+            }
+        }
+
         public void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
@@ -177,6 +253,25 @@ namespace Galaxy
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
             DrawForeground(GameCamera);
+
+            if (StageEndFader != null)
+            {
+                Game.DefaultSpriteBatch.Begin();
+                StageEndFader.Draw(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            if (StageEndText.Count > 0)
+            {
+                Game.DefaultSpriteBatch.Begin();
+                Vector2 text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f);
+                foreach (string text in StageEndText)
+                {
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, text_position, Color.White);
+                    text_position += Vector2.UnitY * 30.0f;
+                }
+                Game.DefaultSpriteBatch.End();
+            }
 
             Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
             DrawHuds(GameCamera);
@@ -545,5 +640,37 @@ namespace Galaxy
             }
             EntitiesToDelete.Clear();
         }
+
+        private void SaveAndExit()
+        {
+            // TODO: is this a good place to add score to money?
+            // TODO: 2p
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Money += Score;
+
+            // TODO: not this, but save current ship upgrades to profile
+            CShip ship = GetNearestShip(Vector2.Zero);
+            if (ship != null)
+            {
+                profile.WeaponPrimaryType = ship.PrimaryWeapon.Type;
+                profile.WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
+                profile.WeaponSecondaryType = ship.SecondaryWeapon.Type;
+                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.WeaponSidekickLeftType = ship.SidekickLeft.Type;
+                profile.WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
+                profile.WeaponSidekickRightType = ship.SidekickRight.Type;
+                profile.WeaponSidekickRightLevel = ship.SidekickRight.Level;
+                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+            }
+
+            profile.CurrentStage = Stage.Definition.Name;
+
+            CSaveData.SetCurrentProfileData(profile);
+            CSaveData.Save();
+
+            // TODO: lobby state
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
+        }
+
     }
 }

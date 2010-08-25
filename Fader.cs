@@ -12,7 +12,7 @@ namespace Galaxy
     {
         public CGalaxy Game { get; private set; }
         public Texture2D Texture { get; private set; }
-        public float TransitionTime { get; private set; }
+        public float TransitionTime { get; set; }
         private float CurrentTime { get; set; }
         private float CurrentAlpha { get; set; }
 
@@ -64,6 +64,18 @@ namespace Galaxy
         public bool IsComplete()
         {
             return CurrentAlpha >= 1.0f;
+        }
+
+        public void StopAtHalfFadeOut()
+        {
+            CurrentAlpha = Math.Min(CurrentAlpha, -0.5f);
+            CurrentTime = Math.Min(CurrentTime, TransitionTime / 4.0f);
+        }
+
+        public void StopAtFullFadeOut()
+        {
+            CurrentAlpha = Math.Min(CurrentAlpha, 0.0f);
+            CurrentTime = Math.Min(CurrentTime, TransitionTime / 2.0f);
         }
     }
 }

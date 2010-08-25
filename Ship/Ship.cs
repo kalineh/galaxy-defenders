@@ -135,6 +135,9 @@ namespace Galaxy
             // TODO: camera scroll management (scenery system?)
             if (World.Game.State.GetType() == typeof(CStateGame))
             {
+                if (World.StageEnd)
+                    return;
+
                 ClampInsideScreen();
 
                 float ship_x = Physics.PositionPhysics.Position.X;
@@ -200,6 +203,10 @@ namespace Galaxy
 
         private void UpdateInput()
         {
+            // no input at stage end
+            if (World.StageEnd)
+                return;
+
             // TODO: entity/physics input controller?
             GamePadState state = GamePad.GetState(PlayerIndex);
             GamePadButtons buttons = state.Buttons;
@@ -221,8 +228,8 @@ namespace Galaxy
             Physics.PositionPhysics.Velocity += force;
 
             // TODO: remove eventually
-            if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
-            if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
+            //if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
+            //if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
             bool lctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
