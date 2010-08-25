@@ -30,6 +30,7 @@ namespace Galaxy
         public CCollisionGrid CollisionGrid { get; set; }
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
+        public bool Paused { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -91,6 +92,12 @@ namespace Galaxy
 
         public void Update()
         {
+            if (Paused)
+            {
+                UpdatePauseInput();
+                return;
+            }
+
             Stage.Update();
             BackgroundScenery.Update();
             ForegroundScenery.Update();
@@ -98,6 +105,7 @@ namespace Galaxy
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
 
+            UpdatePauseInput();
             UpdateInput();
             UpdateEntities();
             UpdateHuds();
@@ -107,6 +115,15 @@ namespace Galaxy
 
             // TODO: can be threaded
             ParticleEffects.Update();
+        }
+
+        public void UpdatePauseInput()
+        {
+            if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P))
+            {
+                Paused = !Paused;      
+            }
+
         }
 
         public void UpdateInput()

@@ -159,13 +159,7 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime game_time)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-            // State update.
-            if (!Keyboard.GetState().IsKeyDown(Keys.P) || State.GetType() != typeof(CStateGame))
-                State.Update();
+            State.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);
 

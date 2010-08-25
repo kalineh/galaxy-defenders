@@ -62,6 +62,10 @@ namespace Galaxy
             }
 #endif
 
+            // allow application exit from main menu
+            if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Q))
+                Game.Exit();
+
             // sample display
             SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
             SampleShip.Physics.AnglePhysics.AngularVelocity = 0.025f;
