@@ -66,24 +66,28 @@ namespace Galaxy
         // TODO: CWeapon OnCollide?
         public void OnCollide(CLaser laser)
         {
+            World.Stats.ShotDamageDealt += laser.Damage;
             TakeDamage(laser.Damage);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
+            World.Stats.ShotDamageDealt += missile.Damage;
             TakeDamage(missile.Damage);
             missile.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
+            World.Stats.ShotDamageDealt += plasma.Damage;
             TakeDamage(plasma.Damage);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
+            World.Stats.ShotDamageDealt += minishot.Damage;
             TakeDamage(minishot.Damage);
             minishot.Die();
         }
@@ -148,6 +152,7 @@ namespace Galaxy
             Health -= damage;
             if (Health < 0.0f)
             {
+                World.Stats.BuildingKills += 1;
                 OnDestroyed();
             }
         }

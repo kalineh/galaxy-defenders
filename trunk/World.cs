@@ -36,6 +36,8 @@ namespace Galaxy
         public CFader StageEndFader { get; set; }
         public bool StageFinalEndExitFlag { get; set; }
         public List<string> StageEndText { get; set; }
+        public List<string> StageEndAwardText { get; set; }
+        public CStats Stats { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -51,6 +53,7 @@ namespace Galaxy
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
             ParticleEffects = new CParticleEffectManager(this);
             StageEndText = new List<string>();
+            StageEndAwardText = new List<string>();
         }
 
         // TODO: stage definition param
@@ -78,6 +81,9 @@ namespace Galaxy
             BackgroundScenery = bg_method.Invoke(null, new object[] { this }) as CScenery;
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.ForegroundSceneryName);
             ForegroundScenery = fg_method.Invoke(null, new object[] { this }) as CScenery;
+
+            Stats = new CStats();
+            Stats.Initialize(this);
         }
 
         public void Stop()
@@ -173,47 +179,69 @@ namespace Galaxy
             if (!StageEnd)
                 return;
 
+            // frame count of display operations
+            const int StageClearShow = 60;
+            const int StatsShow = 100;
+            const int StatsInterval = 20;
+            const int AwardShow = 240;
+            const int AwardInterval = 20;
+            const int AllowExit = 340;
+            const int UpperClamp = AllowExit + 60;
+
             StageEndCounter += 1;
 
-            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            foreach (CShip ship in GetEntitiesOfType(typeof (CShip)))
             {
                 ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
                 CEffect.StageEndFlyEffect(this,
-                                     ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
-                                     0.5f,
-                                     ship.Visual.Color);
+                                          ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
+                                          0.5f,
+                                          ship.Visual.Color);
             }
 
-            StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            StageEndFader = StageEndFader ?? new CFader(Game)
+                                             {
+                                                 TransitionTime = 2.0f
+                                             };
             StageEndFader.Update();
 
-            if (StageEndCounter == 60)
+            if (StageEndCounter == StageClearShow)
             {
                 StageEndText.Add("STAGE CLEAR");
                 StageEndText.Add("");
                 StageEndText.Add("");
             }
 
-            if (StageEndCounter == 120)
+            if (StageEndCounter == StatsShow + StatsInterval * 0)
+                StageEndText.Add(Stats.GetCoinsCollectedString());
+            if (StageEndCounter == StatsShow + StatsInterval * 1)
+                StageEndText.Add(Stats.GetEnemyKillsString());
+            if (StageEndCounter == StatsShow + StatsInterval * 2)
+                StageEndText.Add(Stats.GetBuildingKillsString());
+            if (StageEndCounter == StatsShow + StatsInterval * 3)
+                StageEndText.Add(Stats.GetShotDamageDealtString());
+            if (StageEndCounter == StatsShow + StatsInterval * 4)
+                StageEndText.Add(Stats.GetShotDamageReceivedString());
+            if (StageEndCounter == StatsShow + StatsInterval * 5)
+                StageEndText.Add(Stats.GetCollisionDamageDealtString());
+            if (StageEndCounter == StatsShow + StatsInterval * 6)
+                StageEndText.Add(Stats.GetCollisionDamageReceivedString());
+
+            if (StageEndCounter == 1)
+                Stats.CheckAwards();
+
+            for (int i = 0; i < Stats.GetAwardCount(); ++i)
             {
-                StageEndText.Add(String.Format("MONEY: {0}", 100));
-                StageEndText.Add("");
+                if (StageEndCounter == AwardShow + AwardInterval * i)
+                {
+                    CStats.SAward award = Stats.GetAward(i);
+                    StageEndAwardText.Add(String.Format("{0}: +{1}{2}", award.Text, award.Bonus, '￥'));
+                    Score += award.Bonus;
+                }
             }
 
-            if (StageEndCounter == 140)
-            {
-                StageEndText.Add(String.Format("KILLS: {0}", 100));
-                StageEndText.Add("");
-            }
-
-            if (StageEndCounter == 160)
-            {
-                StageEndText.Add(String.Format("COINS: {0}", 100));
-                StageEndText.Add("");
-            }
-
-            if (StageEndCounter > 240)
+            if (StageEndCounter > AllowExit)
             {
                 if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
                 {
@@ -224,12 +252,12 @@ namespace Galaxy
             if (StageFinalEndExitFlag)
             {
                 StageEndFader.StopAtFullFadeOut();
-                if (StageEndCounter > 300)
+                if (StageEndCounter > UpperClamp)
                     SaveAndExit();
             }
             else
             {
-                StageEndCounter = Math.Min(StageEndCounter, 300);
+                StageEndCounter = Math.Min(StageEndCounter, UpperClamp);
                 StageEndFader.StopAtHalfFadeOut();
             }
         }
@@ -264,11 +292,21 @@ namespace Galaxy
             if (StageEndText.Count > 0)
             {
                 Game.DefaultSpriteBatch.Begin();
-                Vector2 text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f);
+                Vector2 text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, 150.0f);
+                Vector2 first_offset = new Vector2(100.0f, 0.0f);
                 foreach (string text in StageEndText)
                 {
                     Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, text_position, Color.White);
                     text_position += Vector2.UnitY * 30.0f;
+                    text_position -= first_offset;
+                    first_offset = Vector2.Zero;
+                }
+
+                Vector2 award_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 140.0f, 500.0f);
+                foreach (string text in StageEndAwardText)
+                {
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, award_position, Color.LightGreen);
+                    award_position += Vector2.UnitY * 30.0f;
                 }
                 Game.DefaultSpriteBatch.End();
             }

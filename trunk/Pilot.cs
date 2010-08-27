@@ -386,7 +386,7 @@ namespace Galaxy
 
                         // TODO: not a duplicate of above
                         CEnemy enemy = entity as CEnemy;
-                        if ((enemy as CTurret) != null || (enemy as CDownTurret) != null)
+                        if (enemy is CTurret || enemy is CDownTurret)
                         {
                             Vector2 offset = hit_location - enemy.Physics.PositionPhysics.Position;
                             float length = offset.Length();
@@ -426,7 +426,7 @@ namespace Galaxy
                     if (enemy == null)
                         continue;
 
-                    if ((enemy as CTurret) != null || (enemy as CDownTurret) != null)
+                    if (enemy is CTurret || enemy is CDownTurret)
                         continue;
 
                     Vector2 offset = position - enemy.Physics.PositionPhysics.Position;
