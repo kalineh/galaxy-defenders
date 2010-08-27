@@ -73,13 +73,17 @@ namespace Galaxy
             Health -= damage;
             if (Health <= 0.0f)
             {
+                World.Stats.EnemyKills += 1;
                 Die();
             }
         }
 
         public void OnCollide(CShip ship)
         {
+            World.Stats.CollisionDamageReceived += 1.5f;
             ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.5f);
+
+            World.Stats.CollisionDamageDealt += 0.5f;
             TakeDamage(0.5f);
         }
 
@@ -87,12 +91,14 @@ namespace Galaxy
         // TODO: replace with generic CWeapon collider
         public void OnCollide(CLaser laser)
         {
+            World.Stats.ShotDamageDealt += laser.Damage;
             TakeDamage(laser.Damage);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
+            World.Stats.ShotDamageDealt += missile.Damage;
             TakeDamage(missile.Damage);
             missile.Die();
         }
@@ -102,18 +108,21 @@ namespace Galaxy
             if (CanSeekerTarget == false)
                 return;
 
+            World.Stats.ShotDamageDealt += seek_bomb.Damage;
             TakeDamage(seek_bomb.Damage);
             seek_bomb.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
+            World.Stats.ShotDamageDealt += plasma.Damage;
             TakeDamage(plasma.Damage);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
+            World.Stats.ShotDamageDealt += minishot.Damage;
             TakeDamage(minishot.Damage);
             minishot.Die();
         }

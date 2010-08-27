@@ -221,6 +221,7 @@
     <Compile Include="Stage\Elements\StageElementSpawnerEntity.cs" />
     <Compile Include="Stage\Elements\StageElement.cs" />
     <Compile Include="Scenery\Stars.cs" />
+    <Compile Include="Stats.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />

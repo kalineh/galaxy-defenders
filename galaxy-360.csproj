@@ -64,6 +64,7 @@
     <Compile Include="CollisionGrid.cs" />
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
+    <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Pilot.cs" />
     <Compile Include="Difficulty.cs" />

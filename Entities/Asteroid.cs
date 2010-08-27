@@ -50,6 +50,7 @@ namespace Galaxy
         // TODO: better system
         public void OnCollide(CShip ship)
         {
+            World.Stats.CollisionDamageReceived += 1.0f;
             ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
             Health -= 1.0f;
         }
