@@ -67,7 +67,7 @@ namespace Galaxy
         {
             if (World.Players.Count > 1)
             {
-                damage *= 0.5f + 0.5f / (float)World.Players.Count;
+                damage *= 0.5f + 0.5f / World.Players.Count;
             }
 
             Health -= damage;
