@@ -114,6 +114,12 @@ namespace Galaxy
             BackgroundScenery.Update();
             ForegroundScenery.Update();
 
+            // DEBUG
+            if (!Game.EditorMode && Game.Input.IsKeyDown(Keys.O))
+            {
+                GameCamera.Position += Vector3.UnitY * -8.0f;
+            }
+
             GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
             GameCamera.Update();
 
@@ -685,6 +691,7 @@ namespace Galaxy
             // TODO: 2p
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Money += Score;
+            Score = 0;
 
             // TODO: not this, but save current ship upgrades to profile
             CShip ship = GetNearestShip(Vector2.Zero);

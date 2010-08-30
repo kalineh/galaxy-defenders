@@ -191,7 +191,21 @@ namespace Galaxy
                 World.EntityAdd(powerup);
             }
 
+            GenerateCorpse();
+
             base.OnDie();
+        }
+
+        protected virtual void GenerateCorpse()
+        {
+            if (Mover == null)
+            {
+                CDecoration corpse = new CDecoration();
+                corpse.Initialize(World);
+                corpse.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                corpse.Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, Visual.Texture.Name + "Dead"), Color.White);
+                World.EntityAdd(corpse);
+            }
         }
     }
 }

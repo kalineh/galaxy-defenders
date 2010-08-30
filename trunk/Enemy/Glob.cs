@@ -25,7 +25,7 @@ namespace Galaxy
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Glob"), Color.White);
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
             HealthMax = 4.5f;
-            SelfDestructTimer = 120;
+            SelfDestructTimer = 90;
         }
 
         public override void UpdateAI()
@@ -58,10 +58,13 @@ namespace Galaxy
             }
             else if (AttachTarget != null)
             {
+                Collision = null;
+
                 // TODO: less bugs
                 if (AttachTarget.Physics == null)
                 {
                     AttachTarget = null;
+                    Die();
                     return;
                 }
 
@@ -95,6 +98,10 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.PositionPhysics.Position;
+        }
+
+        protected override void GenerateCorpse()
+        {
         }
     }
 }

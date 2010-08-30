@@ -21,13 +21,13 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = -20352.0f,
+X = -16.0f,
+Y = -18968.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
 Y = -1088.0f,
@@ -35,7 +35,7 @@ Y = -1088.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 136.0f,
 Y = -1088.0f,
@@ -43,7 +43,7 @@ Y = -1088.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 264.0f,
 Y = -1088.0f,
@@ -191,7 +191,7 @@ Y = -2656.33f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -32.0f,
 Y = -2712.0f,
@@ -199,7 +199,7 @@ Y = -2712.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 96.0f,
 Y = -2712.0f,
@@ -207,7 +207,7 @@ Y = -2712.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 224.0f,
 Y = -2712.0f,
@@ -215,7 +215,7 @@ Y = -2712.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 96.0f,
 Y = -2840.0f,
@@ -303,7 +303,7 @@ Y = -2853.66f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -400.1f,
 Y = -5550.3f,
@@ -311,7 +311,7 @@ Y = -5550.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.0f,
 Y = -5552.0f,
@@ -319,7 +319,7 @@ Y = -5552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -144.1f,
 Y = -5550.3f,
@@ -327,7 +327,7 @@ Y = -5550.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.1f,
 Y = -5678.3f,
@@ -335,7 +335,7 @@ Y = -5678.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -26.76f,
 Y = -7070.3f,
@@ -343,7 +343,7 @@ Y = -7070.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 101.24f,
 Y = -7070.3f,
@@ -351,7 +351,7 @@ Y = -7070.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 229.24f,
 Y = -7070.3f,
@@ -359,7 +359,7 @@ Y = -7070.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 101.24f,
 Y = -7198.3f,
@@ -367,7 +367,7 @@ Y = -7198.3f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 133.24f,
 Y = -11003.63f,
@@ -375,7 +375,7 @@ Y = -11003.63f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 261.24f,
 Y = -11003.63f,
@@ -383,7 +383,7 @@ Y = -11003.63f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 389.24f,
 Y = -11003.63f,
@@ -391,7 +391,7 @@ Y = -11003.63f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 261.24f,
 Y = -11131.63f,
@@ -399,71 +399,39 @@ Y = -11131.63f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -866.76f,
-Y = -14083.63f,
+X = 296.0f,
+Y = -15208.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -738.76f,
-Y = -14083.63f,
+X = 424.0f,
+Y = -15208.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -610.76f,
-Y = -14083.63f,
+X = 552.0f,
+Y = -15208.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -738.76f,
-Y = -14211.63f,
+X = 424.0f,
+Y = -15336.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 439.9f,
-Y = -15190.3f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 567.9f,
-Y = -15190.3f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 695.9f,
-Y = -15190.3f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 567.9f,
-Y = -15318.3f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -8488.0f,
@@ -471,7 +439,7 @@ Y = -8488.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -8248.0f,
@@ -479,7 +447,7 @@ Y = -8248.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 432.0f,
 Y = -8248.0f,
@@ -487,7 +455,7 @@ Y = -8248.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -8368.0f,
@@ -495,103 +463,103 @@ Y = -8368.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 387.99f,
-Y = -4591.22f,
+X = 336.0f,
+Y = -4632.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 387.99f,
-Y = -4351.22f,
+X = 336.0f,
+Y = -4392.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 507.99f,
-Y = -4351.22f,
+X = 456.0f,
+Y = -4392.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 387.99f,
-Y = -4471.22f,
+X = 336.0f,
+Y = -4512.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -500.9f,
-Y = -9820.85f,
+X = -400.0f,
+Y = -9832.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -500.9f,
-Y = -9580.85f,
+X = -400.0f,
+Y = -9592.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -380.9f,
-Y = -9580.85f,
+X = -280.0f,
+Y = -9592.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -500.9f,
-Y = -9700.85f,
+X = -400.0f,
+Y = -9712.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -537.94f,
-Y = -15783.82f,
+X = -416.0f,
+Y = -15776.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -537.94f,
-Y = -15543.82f,
+X = -416.0f,
+Y = -15536.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -417.94f,
-Y = -15543.82f,
+X = -296.0f,
+Y = -15536.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -537.94f,
-Y = -15663.82f,
+X = -416.0f,
+Y = -15656.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -256.0f,
 Y = -12872.0f,
@@ -599,7 +567,7 @@ Y = -12872.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -256.0f,
 Y = -12632.0f,
@@ -607,7 +575,7 @@ Y = -12632.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -12872.0f,
@@ -615,7 +583,7 @@ Y = -12872.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -256.0f,
 Y = -12752.0f,
@@ -623,7 +591,7 @@ Y = -12752.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 287.02f,
 Y = -10111.78f,
@@ -631,7 +599,7 @@ Y = -10111.78f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 287.02f,
 Y = -9871.78f,
@@ -639,7 +607,7 @@ Y = -9871.78f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 159.02f,
 Y = -10111.78f,
@@ -647,7 +615,7 @@ Y = -10111.78f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 287.02f,
 Y = -9991.78f,
@@ -655,7 +623,7 @@ Y = -9991.78f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -125.48f,
 Y = -3774.28f,
@@ -663,7 +631,7 @@ Y = -3774.28f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -125.48f,
 Y = -3534.28f,
@@ -671,7 +639,7 @@ Y = -3534.28f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -253.48f,
 Y = -3774.28f,
@@ -679,7 +647,7 @@ Y = -3774.28f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -125.48f,
 Y = -3654.28f,
@@ -747,7 +715,7 @@ Y = -3393.52f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -281.43f,
 Y = -141.4f,
@@ -755,7 +723,7 @@ Y = -141.4f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -157.01f,
 Y = -259.79f,
@@ -763,7 +731,7 @@ Y = -259.79f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -281.19f,
 Y = -260.32f,
@@ -771,7 +739,7 @@ Y = -260.32f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -281.19f,
 Y = -386.72f,
@@ -779,7 +747,7 @@ Y = -386.72f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -120.0f,
 Y = -1088.0f,
@@ -787,39 +755,39 @@ Y = -1088.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -355.02f,
-Y = -8529.28f,
+X = -312.0f,
+Y = -8520.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -480.0f,
-Y = -8400.0f,
+X = -440.0f,
+Y = -8392.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -352.0f,
-Y = -8400.0f,
+X = -312.0f,
+Y = -8392.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -480.0f,
-Y = -8528.0f,
+X = -440.0f,
+Y = -8520.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 232.0f,
 Y = -13896.0f,
@@ -827,7 +795,7 @@ Y = -13896.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 104.0f,
 Y = -13768.0f,
@@ -835,7 +803,7 @@ Y = -13768.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 232.0f,
 Y = -13768.0f,
@@ -843,7 +811,7 @@ Y = -13768.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 104.0f,
 Y = -13896.0f,
@@ -851,66 +819,66 @@ Y = -13896.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 528.0f,
-Y = -12192.0f,
+X = 472.0f,
+Y = -12208.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = -12064.0f,
+X = 344.0f,
+Y = -12080.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 528.0f,
-Y = -12064.0f,
+X = 472.0f,
+Y = -12080.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = -12192.0f,
+X = 344.0f,
+Y = -12208.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -480.0f,
-Y = -10672.0f,
+X = -328.0f,
+Y = -10640.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -608.0f,
-Y = -10544.0f,
+X = -456.0f,
+Y = -10512.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -480.0f,
-Y = -10544.0f,
+X = -328.0f,
+Y = -10512.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -608.0f,
-Y = -10672.0f,
+X = -456.0f,
+Y = -10640.0f,
 },
 });
 stage.AddElement(0, 
@@ -1760,8 +1728,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -350.33f,
-Y = -8398.5f,
+X = -312.0f,
+Y = -8392.0f,
 },
 },
 MoverPresetName = "None",
@@ -1769,8 +1737,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -350.33f,
-Y = -8398.5f,
+X = -312.0f,
+Y = -8392.0f,
 },
 });
 stage.AddElement(0, 
@@ -1780,8 +1748,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -384.0f,
-Y = -9576.0f,
+X = -280.0f,
+Y = -9584.0f,
 },
 },
 MoverPresetName = "None",
@@ -1789,8 +1757,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -384.0f,
-Y = -9576.0f,
+X = -280.0f,
+Y = -9584.0f,
 },
 });
 stage.AddElement(0, 
@@ -1820,8 +1788,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -472.0f,
-Y = -10536.0f,
+X = -320.0f,
+Y = -10504.0f,
 },
 },
 MoverPresetName = "None",
@@ -1829,8 +1797,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -472.0f,
-Y = -10536.0f,
+X = -320.0f,
+Y = -10504.0f,
 },
 });
 stage.AddElement(0, 
@@ -1860,8 +1828,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = -12080.0f,
+X = 344.0f,
+Y = -12096.0f,
 },
 },
 MoverPresetName = "None",
@@ -1869,8 +1837,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.0f,
-Y = -12080.0f,
+X = 344.0f,
+Y = -12096.0f,
 },
 });
 stage.AddElement(0, 
@@ -1880,8 +1848,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.26f,
-Y = -12194.89f,
+X = 344.0f,
+Y = -12208.0f,
 },
 },
 MoverPresetName = "None",
@@ -1889,8 +1857,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 400.26f,
-Y = -12194.89f,
+X = 344.0f,
+Y = -12208.0f,
 },
 });
 stage.AddElement(0, 
@@ -1960,8 +1928,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -424.0f,
-Y = -15536.0f,
+X = -304.0f,
+Y = -15528.0f,
 },
 },
 MoverPresetName = "None",
@@ -1969,8 +1937,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -424.0f,
-Y = -15536.0f,
+X = -304.0f,
+Y = -15528.0f,
 },
 });
 stage.AddElement(0, 
@@ -2080,8 +2048,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 384.0f,
-Y = -4600.0f,
+X = 328.0f,
+Y = -4640.0f,
 },
 },
 MoverPresetName = "None",
@@ -2089,8 +2057,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 384.0f,
-Y = -4600.0f,
+X = 328.0f,
+Y = -4640.0f,
 },
 });
 stage.AddElement(0, 
@@ -2100,8 +2068,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 512.0f,
-Y = -4344.0f,
+X = 456.0f,
+Y = -4384.0f,
 },
 },
 MoverPresetName = "None",
@@ -2109,8 +2077,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 512.0f,
-Y = -4344.0f,
+X = 456.0f,
+Y = -4384.0f,
 },
 });
 stage.AddElement(0, 
@@ -2179,8 +2147,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 384.03f,
-Y = -4350.3f,
+X = 336.0f,
+Y = -4392.0f,
 },
 });
 stage.AddElement(0, 
@@ -2309,8 +2277,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -352.0f,
-Y = -8520.0f,
+X = -312.0f,
+Y = -8512.0f,
 },
 });
 stage.AddElement(0, 
@@ -2319,8 +2287,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -496.0f,
-Y = -9712.0f,
+X = -392.0f,
+Y = -9720.0f,
 },
 });
 stage.AddElement(0, 
@@ -2349,8 +2317,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -472.0f,
-Y = -10672.0f,
+X = -320.0f,
+Y = -10640.0f,
 },
 });
 stage.AddElement(0, 
@@ -2399,8 +2367,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 531.78f,
-Y = -12190.05f,
+X = 472.0f,
+Y = -12208.0f,
 },
 });
 stage.AddElement(0, 
@@ -2449,8 +2417,8 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 440.0f,
-Y = -15184.0f,
+X = 296.0f,
+Y = -15200.0f,
 },
 });
 stage.AddElement(0, 
@@ -2635,7 +2603,7 @@ Y = -12920.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -464.0f,
 Y = -16552.0f,
@@ -2643,7 +2611,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -336.0f,
 Y = -16552.0f,
@@ -2651,7 +2619,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -208.0f,
 Y = -16552.0f,
@@ -2659,7 +2627,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -464.0f,
 Y = -16680.0f,
@@ -2667,7 +2635,7 @@ Y = -16680.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -16552.0f,
@@ -2675,7 +2643,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,
 Y = -16552.0f,
@@ -2683,7 +2651,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 464.0f,
 Y = -16552.0f,
@@ -2691,7 +2659,7 @@ Y = -16552.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 464.0f,
 Y = -16680.0f,
@@ -2719,7 +2687,7 @@ Y = -16680.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -464.0f,
 Y = -16808.0f,
@@ -2727,7 +2695,7 @@ Y = -16808.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -336.0f,
 Y = -16808.0f,
@@ -2735,7 +2703,7 @@ Y = -16808.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -208.0f,
 Y = -16808.0f,
@@ -2743,7 +2711,7 @@ Y = -16808.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -16808.0f,
@@ -2751,7 +2719,7 @@ Y = -16808.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,
 Y = -16808.0f,
@@ -2759,7 +2727,7 @@ Y = -16808.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "Platform1",
+TextureName = "DullGreen1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 464.0f,
 Y = -16808.0f,
@@ -3133,6 +3101,26 @@ CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -464.0f,
 Y = -16680.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -280.0f,
+Y = -136.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building2",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -152.0f,
+Y = -256.0f,
 },
 });
 
