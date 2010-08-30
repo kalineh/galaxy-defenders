@@ -70,14 +70,16 @@ namespace Galaxy
                     if (element is CStageElementSpawnerEnemy)
                     {
                         CStageElementSpawnerEnemy enemy = element as CStageElementSpawnerEnemy;
-                        CoinsTotal += enemy.Coins;
+
+                        if (enemy.Type == typeof(CFence))
+                            continue;
+
                         EnemyTotal += 1;
                     }
 
                     if (element is CStageElementBuilding)
                     {
                         CStageElementBuilding building = element as CStageElementBuilding;
-                        CoinsTotal += building.Coins;
                         BuildingTotal += 1;
                     }
                 }

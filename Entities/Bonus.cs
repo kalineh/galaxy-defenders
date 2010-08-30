@@ -26,6 +26,8 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
             Mover = new CMoverIgnoreCamera();
+
+            world.Stats.CoinsTotal += 1;
         }
 
         public override void Update()

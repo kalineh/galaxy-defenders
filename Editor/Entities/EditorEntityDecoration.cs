@@ -19,7 +19,7 @@ namespace Galaxy
     public class CEditorEntityDecoration
         : CEditorEntityBase
     {
-        private string _TextureName = "Platform1";
+        private string _TextureName = "DarkBlue1";
 
         [CategoryAttribute("Texture")]
         [EditorAttribute(typeof(CTextureSelector<CTextureSelectoryCategoryDecoration>), typeof(UITypeEditor))]
@@ -32,7 +32,7 @@ namespace Galaxy
         public CEditorEntityDecoration(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
-            TextureName = "Platform1";
+            TextureName = "DarkBlue1";
             UpdateTexture();
         }
 
