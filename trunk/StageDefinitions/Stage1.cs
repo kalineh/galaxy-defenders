@@ -1662,7 +1662,7 @@ Y = -13848.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1682,7 +1682,7 @@ Y = -14920.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1734,7 +1734,7 @@ Y = -14920.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1754,7 +1754,7 @@ Y = -15336.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1806,7 +1806,7 @@ Y = -15336.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1826,7 +1826,7 @@ Y = -15736.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1956,7 +1956,7 @@ Y = -15960.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1976,7 +1976,7 @@ Y = -16096.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1996,7 +1996,7 @@ Y = -16096.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+Coins = 0,
 Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
