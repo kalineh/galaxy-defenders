@@ -47,5 +47,9 @@ namespace Galaxy
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.PositionPhysics.Position;
         }
+
+        protected override void GenerateCorpse()
+        {
+        }
     }
 }

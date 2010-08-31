@@ -31,6 +31,7 @@ namespace Galaxy
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
         public bool Paused { get; set; }
+        public bool WasStepped { get; set; }
         public bool StageEnd { get; set; }
         public int StageEndCounter { get; set; }
         public CFader StageEndFader { get; set; }
@@ -135,6 +136,12 @@ namespace Galaxy
             ParticleEffects.Update();
 
             UpdateStageEnd();
+
+            if (WasStepped)
+            {
+                Paused = true;
+                WasStepped = false;
+            }
         }
 
         public void UpdatePauseInput()
@@ -145,6 +152,12 @@ namespace Galaxy
             if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P))
             {
                 Paused = !Paused;      
+            }
+
+            if (Game.Input.IsKeyPressed(Keys.T))
+            {
+                Paused = false;
+                WasStepped = true;
             }
         }
 

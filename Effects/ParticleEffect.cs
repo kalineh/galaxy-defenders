@@ -23,6 +23,8 @@ namespace Galaxy
             World = world;
             Dot = CVisual.MakeSpriteUncached(world, "Textures/Effects/DotParticle");
             Triangle = CVisual.MakeSpriteUncached(world, "Textures/Effects/TriangleParticle");
+            Dot.Recache();
+            Triangle.Recache();
             Particles = new List<CParticle>();
             Cache = new List<CParticle>();
 
@@ -76,7 +78,7 @@ namespace Galaxy
                     null,
                     color,
                     particle.Angle,
-                    Vector2.Zero,
+                    particle.Visual._CacheOrigin,
                     particle.Scale,
                     SpriteEffects.None,
                     Dot.Depth
@@ -132,7 +134,7 @@ namespace Galaxy
         }
     }
 
-    class CParticleGroupSpawner
+    public class CParticleGroupSpawner
     {
         public int Count = 1;
         public CVisual Visual = null;
@@ -255,6 +257,29 @@ namespace Galaxy
                 Color = color,
             };
         }
+
+        public static CParticleGroupSpawner MakeMissileTrail(Vector2 position, Vector2 direction, Color color)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 4,
+                Position = Vector2.Zero,
+                PositionVariation = direction * -5.0f,
+                PositionDelta = new Vector2(-0.3f, -0.3f),
+                PositionDeltaVariation = new Vector2(0.6f, 0.6f),
+                Alpha = 0.8f,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(0.5f, 0.5f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
+                Lifetime = 5,
+                Color = color,
+            };
+        }
+
     }
 }
 

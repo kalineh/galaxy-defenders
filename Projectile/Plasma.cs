@@ -14,7 +14,7 @@ namespace Galaxy
         {
             base.Initialize(world, index, damage);
 
-            if (damage <= 1.0f)
+            if (damage < 1.0f)
             {
                 Physics = new CPhysics();
                 Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Weapons/SmallPlasma"), CShip.GetPlayerColor(index));
@@ -29,7 +29,6 @@ namespace Galaxy
                 Visual.Color = CShip.GetPlayerColor(index);
                 Visual.Update();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
-                Damage = damage;
             }
         }
 
