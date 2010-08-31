@@ -30,6 +30,12 @@ namespace Galaxy
 
             // cannot play before first update, so just update in advance
             AudioEngine.Update();
+
+            AudioCategory sfx = AudioEngine.GetCategory("SFX");
+            AudioCategory music = AudioEngine.GetCategory("Music");
+
+            sfx.SetVolume(0.25f);
+            music.SetVolume(1.0f);
         }
 
         public static void Update()
