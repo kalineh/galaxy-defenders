@@ -117,6 +117,11 @@ namespace Galaxy
 
             base.OnDie();
         }
+
+        protected override bool DoesGenerateCorpse()
+        {
+            return true;
+        }
     }
 }
 

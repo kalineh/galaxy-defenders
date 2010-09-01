@@ -196,8 +196,18 @@ namespace Galaxy
             base.OnDie();
         }
 
+        protected virtual bool DoesGenerateCorpse()
+        {
+            return false;
+        }
+
         protected virtual void GenerateCorpse()
         {
+            if (!DoesGenerateCorpse())
+            {
+                return;
+            }
+
             if (Mover == null)
             {
                 CDecoration corpse = new CDecoration();

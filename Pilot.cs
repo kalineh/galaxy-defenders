@@ -160,7 +160,7 @@ namespace Galaxy
                 {
                     CEffect.DashBurstEffect(Pilot.Ship.World,
                                          Pilot.Ship.Physics.PositionPhysics.Position + Pilot.Ship.World.Random.NextVector2Variable() * 16.0f,
-                                         0.5f,
+                                         1.5f,
                                          Pilot.Ship.Visual.Color);
                 }
 

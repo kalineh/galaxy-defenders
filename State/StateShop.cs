@@ -336,6 +336,7 @@ namespace Galaxy
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
+            EmptyWorld.ParticleEffects.Update();
             SampleShip.UpdateGenerator();
             SampleShip.FireAllWeapons();
             SampleShip.UpdateWeapons();
@@ -359,6 +360,10 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             SampleShip.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
         }
 

@@ -716,6 +716,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\Enemy\Pyramid.png">
+      <Name>Pyramid</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>

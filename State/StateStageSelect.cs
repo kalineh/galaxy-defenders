@@ -98,6 +98,10 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
         }
 
         private void StartGame(object stage)

@@ -67,6 +67,8 @@ namespace Galaxy
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
+
+            EmptyWorld.ParticleEffects.Update();
         }
 
         public override void Draw()
@@ -86,6 +88,9 @@ namespace Galaxy
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
         }
 
         private void SelectDifficulty(object tag)

@@ -65,8 +65,9 @@ namespace Galaxy
             circle.Position = Physics.PositionPhysics.Position;
         }
 
-        protected override void GenerateCorpse()
+        protected override bool DoesGenerateCorpse()
         {
+            return true;
         }
     }
 }

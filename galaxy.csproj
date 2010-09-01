@@ -104,6 +104,7 @@
     <Compile Include="Enemy\Fence.cs" />
     <Compile Include="Enemy\FenceBeam.cs" />
     <Compile Include="Enemy\Glob.cs" />
+    <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
     <Compile Include="Pilot.cs" />
     <Compile Include="Projectile\Projectile.cs" />

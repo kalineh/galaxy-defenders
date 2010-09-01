@@ -151,6 +151,29 @@ namespace Galaxy
                 AlwaysMaxSpeed = false,
             };
         }
+        
+        public static CMover DownWait(float speed, float transition)
+        {
+            return new CMoverSequence()
+            {
+                Name = (new StackFrame(0, false)).GetMethod().Name,
+                Velocity = new List<Vector2>()
+                {
+                    new Vector2(0.0f, 1.0f) * speed + AntiCamera,
+                    AntiCamera,
+                    AntiCamera,
+                },
+                Duration = new List<float>()
+                {
+                    1.0f * transition,
+                    0.5f * transition,
+                    0.0f,
+                },
+
+                VelocityLerpRate = 0.02f,
+                AlwaysMaxSpeed = false,
+            };
+        }
 
         public static CMover DownLeft(float speed, float transition)
         {
