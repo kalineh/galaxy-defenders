@@ -161,27 +161,6 @@ namespace Galaxy
             spawner.Spawn(world.ParticleEffects);
         }
 
-        public static CEntity MissileTrail(CWorld world, Vector2 position, float scale, Color color)
-        {
-            COneShotAnimation animation = new COneShotAnimation();
-            animation.Initialize(world);
-            animation.ApplySettings(new COneShotAnimation.Settings()
-                {
-                    Position = position,
-                    Rotation = world.Random.NextAngle(),
-                    TextureName = "Textures/Effects/LaserHit",
-                    TileX = 4,
-                    TileY = 4,
-                    AnimationSpeed = 1.0f,
-                    Scale = scale,
-                    Color = color,
-                }
-            );
-
-            world.EntityAdd(animation);
-            return animation;
-        }
-
         public static CEntity DashBurstEffect(CWorld world, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation();

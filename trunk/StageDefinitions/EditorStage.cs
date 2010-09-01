@@ -14,15 +14,15 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 56.0f,
-Y = -2056.0f,
+X = 0.0f,
+Y = -4288.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 24.0f,
-Y = -680.0f,
+X = -40.0f,
+Y = -3224.0f,
 },
 });
 stage.AddElement(0, 
@@ -32,8 +32,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 112.0f,
-Y = -288.0f,
+X = 152.0f,
+Y = -3128.0f,
 },
 },
 MoverPresetName = "None",
@@ -41,8 +41,28 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 112.0f,
-Y = -288.0f,
+X = 152.0f,
+Y = -3128.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CPyramid),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -504.0f,
+},
+},
+MoverPresetName = "DownWait",
+MoverSpeedMultiplier = 4.0f,
+MoverTransitionMultiplier = 1.3f,
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 32.0f,
+Y = -504.0f,
 },
 });
 stage.AddElement(0, 
@@ -51,28 +71,28 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -12.77f,
-Y = 97.87f,
+X = -176.0f,
+Y = -296.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
 Powerup = false,
-Type = typeof(Galaxy.CGlob),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 187.0f,
-Y = 172.0f,
+X = 155.86f,
+Y = -188.97f,
 },
-},
-MoverPresetName = "IgnoreCamera",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementBuilding() {
+Coins = 0,
+Powerup = false,
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 187.0f,
-Y = 172.0f,
+X = 224.83f,
+Y = -339.31f,
 },
 });
 
