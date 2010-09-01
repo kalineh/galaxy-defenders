@@ -24,7 +24,7 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AnglePhysics.AngularVelocity = 0.1f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/Bonus"), Color.White);
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Entity/Bonus");
             Mover = new CMoverIgnoreCamera();
 
             world.Stats.CoinsTotal += 1;
@@ -91,7 +91,7 @@ namespace Galaxy
         {
             base.Initialize(world);
 
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Entity/BigBonus"), Color.White);
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Entity/BigBonus");
             Visual.Depth = CLayers.Entity + CLayers.SubLayerIncrement * 1;
         }
 

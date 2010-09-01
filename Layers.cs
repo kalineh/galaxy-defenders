@@ -13,7 +13,7 @@ namespace Galaxy
     public class CLayers
     {
         public static float LayerIncrement = 0.05f;
-        public static float SubLayerIncrement = 0.001f;
+        public static float SubLayerIncrement = 0.0001f;
 
         public static float Top = 1.0f;
         public static float FullScreen = LayerIncrement * 11;

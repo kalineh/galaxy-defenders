@@ -20,7 +20,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, Vector2.Zero);
-            Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Enemy/FenceBeam"), Color.White);
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/FenceBeam");
             Visual.TileY = 4;
             Visual.AnimationSpeed = 0.25f;
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
