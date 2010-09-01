@@ -25,7 +25,9 @@ namespace Galaxy
             // TODO: this is kind of crappy
             if (Visual == null && TextureName != null)
             {
-                Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Decoration/" + TextureName), Color.White);
+                //Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Decoration/" + TextureName), Color.White);
+                //Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration" + TextureName);
+                Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration/" + TextureName);
             }
 
             base.Update();

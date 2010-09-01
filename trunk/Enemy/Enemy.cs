@@ -213,7 +213,7 @@ namespace Galaxy
                 CDecoration corpse = new CDecoration();
                 corpse.Initialize(World);
                 corpse.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
-                corpse.Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, Visual.Texture.Name + "Dead"), Color.White);
+                corpse.Visual = CVisual.MakeSpriteCached1(World, Visual.Texture.Name + "Dead");
                 World.EntityAdd(corpse);
             }
         }

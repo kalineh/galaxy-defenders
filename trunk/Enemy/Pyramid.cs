@@ -17,7 +17,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Enemy/Pyramid"), Color.White);
+            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Pyramid");
             HealthMax = 13.0f;
 
             Physics.AnglePhysics.AngularVelocity = 0.005f * World.Random.RandomSign();
