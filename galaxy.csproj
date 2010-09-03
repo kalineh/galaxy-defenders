@@ -101,6 +101,8 @@
     <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\Airship.cs" />
+    <Compile Include="Enemy\CutterBall.cs" />
+    <Compile Include="Enemy\Cutter.cs" />
     <Compile Include="Enemy\DownTurret.cs" />
     <Compile Include="Enemy\Fence.cs" />
     <Compile Include="Enemy\FenceBeam.cs" />
