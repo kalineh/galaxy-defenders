@@ -30,8 +30,9 @@ namespace Galaxy
 
         public override void UpdateAI()
         {
-            float scale_speed = AttachTarget == null ? 0.2f : 0.6f;
-            Visual.Scale = Vector2.One + Vector2.One * (float)Math.Sin(World.Game.GameFrame * scale_speed) * 0.02f;
+            float scale_speed = AttachTarget == null ? 0.1f : 0.3f;
+            float scale_size = AttachTarget == null ? 0.04f : 0.08f;
+            Visual.Scale = Vector2.One + Vector2.One * (float)Math.Sin(World.Game.GameFrame * scale_speed) * scale_size;
             // TODO: not full recache!
             Visual.Update();
 
@@ -40,7 +41,7 @@ namespace Galaxy
                 Mover = null;
 
                 // TODO: this can become null suddenly -> this will be bugs
-                if (ChaseTarget.Physics == null)
+                if (ChaseTarget.IsDead)
                 {
                     ChaseTarget = null;
                     AttachTarget = null;
@@ -61,7 +62,7 @@ namespace Galaxy
                 Collision = null;
 
                 // TODO: less bugs
-                if (AttachTarget.Physics == null)
+                if (AttachTarget.IsDead)
                 {
                     AttachTarget = null;
                     Die();

@@ -36,6 +36,7 @@ namespace Galaxy
             Vector2 size = result.GetDebugFont().MeasureString(text);
             result.Scale = size + Vector2.One * 4.0f; ;
             result.DebugText = text;
+            result.Depth = CLayers.Top - CLayers.SubLayerIncrement;
             return result;
         }
 
@@ -285,7 +286,7 @@ namespace Galaxy
                     text_color = new Color(r, g, b);
                 }
 
-                sprite_batch.DrawString(GetDebugFont(), DebugText, center, text_color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+                sprite_batch.DrawString(GetDebugFont(), DebugText, center, text_color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.Top);
             }
 #endif
         }

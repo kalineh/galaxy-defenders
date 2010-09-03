@@ -36,7 +36,7 @@ namespace Galaxy
             BeamRotation = 0.0f;
             BeamRotationSpeed = 0.03f * World.Random.RandomSign();
 
-            HealthMax = 9.0f;
+            HealthMax = 14.0f;
         }
 
         public override void Update()
