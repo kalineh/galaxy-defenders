@@ -84,11 +84,10 @@ namespace Galaxy
             return element.Position.Y <= previous.Y && element.Position.Y > current.Y;
         }
 
-        public List<CStageElement> GetNewElements(Vector2 previous, Vector2 current)
+        public void GetNewElements(List<CStageElement> results, Vector2 previous, Vector2 current)
         {
             // TODO: sort elements based on y?
             // TODO: not create a list every frame
-            List<CStageElement> results = new List<CStageElement>();
             foreach (KeyValuePair<int, List<CStageElement>> element in Elements)
             {
                 foreach (CStageElement item in element.Value)
@@ -97,8 +96,6 @@ namespace Galaxy
                         results.Add(item);
                 }
             }
-
-            return results;
         }
 
         public List<CStageElement> GetOrCreateElementsAtTime(int time)

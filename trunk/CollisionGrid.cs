@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-// TODO: type-type mapping for collision
-// TODO: collision results retrieval
-// TODO: !!! cache bounding objects
+// TODO
+// * move collision to seperate thread
+// * process collision results on main thread
 
 namespace Galaxy
 {
@@ -24,6 +24,9 @@ namespace Galaxy
         public Vector2 Dimensions { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
+        private Type[] CacheTypes { get; set; }
+        private object[] CacheParameters { get; set; }
+        private Dictionary<Type, Dictionary<Type, MethodInfo>> CachedMethodInfo { get; set; }
 
         public CCollisionGrid(CWorld world, Vector2 dimensions, int rows, int columns)
         {
@@ -33,9 +36,12 @@ namespace Galaxy
             Dimensions = dimensions;
             Rows = rows;
             Columns = columns;
+            CacheTypes = new Type[] { null };
+            CacheParameters = new object[] { null };
+            CachedMethodInfo = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
         }
 
-        public void Clear(Vector2 center)
+        public void Initialize(Vector2 center)
         {
             Center = center;
             Entities = new List<List<List<CEntity>>>();
@@ -49,8 +55,20 @@ namespace Galaxy
                 }
             }
         }
+        public void Clear(Vector2 center)
+        {
+            Center = center;
 
-        public void Insert(IEnumerator<CEntity> entities)
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int col = 0; col < Columns; col++)
+                {
+                    Entities[row][col].Clear();
+                }
+            }
+        }
+
+        public void Insert(List<CEntity> entities)
         {
             float column_width = Dimensions.X / (float)Columns;
             float row_width = Dimensions.Y / (float)Rows;
@@ -58,10 +76,8 @@ namespace Galaxy
             Vector2 upper = Center - Dimensions / 2.0f;
             Vector2 half_grid = new Vector2(column_width, row_width) * 0.5f;
 
-            while (entities.MoveNext())
+            foreach (CEntity entity in entities)
             {
-                CEntity entity = entities.Current;
-
                 if (entity.Collision == null)
                     continue;
 
@@ -113,8 +129,8 @@ namespace Galaxy
 
         public void Collide()
         {
-            Type[] types = new Type[] { null };
-            object[] parameters = new object[] { null };
+            CacheTypes[0] = null;
+            CacheParameters[0] = null;
 
             foreach (List<List<CEntity>> row in Entities)
             {
@@ -140,16 +156,29 @@ namespace Galaxy
                             {
                                 System.Type inner_type = inner.GetType();
                                 System.Type outer_type = outer.GetType();
-                                types[0] = inner_type;
-                                MethodInfo method = outer_type.GetMethod("OnCollide", types);
+                                CacheTypes[0] = inner_type;
+
+                                Dictionary<Type, MethodInfo> inner_cache;
+                                if (!CachedMethodInfo.TryGetValue(outer_type, out inner_cache))
+                                {
+                                    inner_cache = new Dictionary<Type, MethodInfo>();
+                                    CachedMethodInfo.Add(outer_type, inner_cache);
+                                }
+
+                                MethodInfo method;
+                                if (!inner_cache.TryGetValue(inner_type, out method))
+                                {
+                                    method = outer_type.GetMethod("OnCollide", CacheTypes);
+                                    inner_cache[inner_type] = method;
+                                }
 
                                 if (method == null)
                                     continue;
 
                                 try
                                 {
-                                    parameters[0] = inner;
-                                    method.Invoke(outer, parameters);
+                                    CacheParameters[0] = inner;
+                                    method.Invoke(outer, CacheParameters);
                                 }
                                 catch (Exception exception)
                                 {

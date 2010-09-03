@@ -85,6 +85,8 @@ namespace Galaxy
 
             Stats = new CStats();
             Stats.Initialize(this);
+
+            CollisionGrid.Initialize(GameCamera.Position.ToVector2());
         }
 
         public void Stop()
@@ -130,7 +132,7 @@ namespace Galaxy
             UpdateHuds();
 
             CollisionGrid.Clear(GameCamera.Position.ToVector2());
-            CollisionGrid.Insert(Entities.GetEnumerator());
+            CollisionGrid.Insert(Entities);
 
             // TODO: can be threaded
             ParticleEffects.Update();

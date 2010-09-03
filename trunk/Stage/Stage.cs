@@ -18,7 +18,7 @@ namespace Galaxy
         {
             World = world;
             Definition = definition;
-            ActiveElements = new List<CStageElement>();
+            ActiveElements = new List<CStageElement>(512);
         }
 
         public void Start()
@@ -35,8 +35,21 @@ namespace Galaxy
         {
             ActivateElements();
 
-            ActiveElements.ForEach(element => element.Update(World));
-            ActiveElements.RemoveAll(element => element.IsExpired());
+            for (int i = 0; i < ActiveElements.Count; ++i)
+            {
+                CStageElement element = ActiveElements[i];
+                element.Update(World);
+
+                if (element.IsExpired())
+                {
+                    ActiveElements[i] = ActiveElements[ActiveElements.Count - 1];
+                    ActiveElements.RemoveAt(ActiveElements.Count - 1);
+                    --i;
+                }
+            }
+
+            //ActiveElements.ForEach(element => element.Update(World));
+            //ActiveElements.RemoveAll(element => element.IsExpired());
 
             PreviousCameraPosition = World.GameCamera.GetSpawnBorderLine();
         }
@@ -46,10 +59,7 @@ namespace Galaxy
             Vector2 current = World.GameCamera.GetSpawnBorderLine();
             Vector2 previous = PreviousCameraPosition;
 
-            foreach (CStageElement element in Definition.GetNewElements(previous, current))
-            {
-                ActiveElements.Add(element);
-            }
+            Definition.GetNewElements(ActiveElements, previous, current);
         }
     }
 }

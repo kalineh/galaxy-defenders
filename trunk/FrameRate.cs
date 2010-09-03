@@ -14,13 +14,18 @@ namespace Galaxy
         public int FrameRate { get; set; }
         public int FrameCounter { get; set; }
         public TimeSpan ElapsedTime { get; set; }
+        private string CachedFrameRateString { get; set; }
+        private Vector2 DrawPosition { get; set; }
 
         public CFrameRateDisplay(CGalaxy game)
         {
             Game = game;
             FrameRate = 60;
             FrameCounter = 0;
+            CachedFrameRateString = "fps: 60";
             ElapsedTime = TimeSpan.Zero;
+            DrawPosition = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
+
         }
 
         public void Update(GameTime game_time)
@@ -30,7 +35,11 @@ namespace Galaxy
             if (ElapsedTime > TimeSpan.FromSeconds(1.0))
             {
                 ElapsedTime -= TimeSpan.FromSeconds(1.0);
-                FrameRate = FrameCounter;
+                if (FrameRate != FrameCounter)
+                {
+                    FrameRate= FrameCounter;
+                    CachedFrameRateString = string.Format("fps: {0}", FrameRate);
+                }
                 FrameCounter = 0;
             }
         }
@@ -39,12 +48,10 @@ namespace Galaxy
         {
             FrameCounter += 1;
 
-            string fps = string.Format("fps: {0}", FrameRate);
-
             sprite_batch.Begin();
 
-            Vector2 position = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(fps).X * 1.2f, 15.0f);
-            sprite_batch.DrawString(Game.DefaultFont, fps, position, Color.White);
+            Vector2 position = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
+            sprite_batch.DrawString(Game.DefaultFont, CachedFrameRateString, position, Color.White);
             
             sprite_batch.End();
         }

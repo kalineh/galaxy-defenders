@@ -123,12 +123,24 @@ namespace Galaxy
 
         public static SProfile GetProfile(string name)
         {
-            return SaveData.Profiles.Where(profile => profile.Name == name).First();
+            foreach (SProfile profile in SaveData.Profiles)
+            {
+                if (profile.Name == name)
+                    return profile;
+            }
+
+            return new SProfile();
         }
 
         public static SProfile GetCurrentProfile()
         {
-            return SaveData.Profiles.Where(profile => profile.Name == SaveData.CurrentProfile).First();
+            foreach (SProfile profile in SaveData.Profiles)
+            {
+                if (profile.Name == SaveData.CurrentProfile)
+                    return profile;
+            }
+
+            return new SProfile();
         }
 
         public static void AddNewProfile(string name)
