@@ -51,7 +51,7 @@ namespace Galaxy
             if (Game.Input.IsKeyPressed(Keys.F1))
             {
                 Game.StageDefinition = CStageDefinition.GetStageDefinitionByName("Stage1");
-                Game.State = new CStateGame(Game);
+                Game.State = new CStateGame(Game, null);
             }
 
 #if !XBOX360

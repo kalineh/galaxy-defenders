@@ -108,7 +108,7 @@ namespace Galaxy
         {
             CStageDefinition definition = CStageDefinition.GetStageDefinitionByName((string)stage);
             Game.StageDefinition = definition;
-            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, null));
         }
 
         private void Back(object tag)
