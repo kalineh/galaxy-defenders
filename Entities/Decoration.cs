@@ -11,7 +11,7 @@ namespace Galaxy
         : CEntity
     {
         public string TextureName { get; set; }
-        public int DepthOffset { get; set; }
+        public float DepthOffset { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -27,7 +27,16 @@ namespace Galaxy
             {
                 //Visual = new CVisual(World, CContent.LoadTexture2D(World.Game, "Textures/Decoration/" + TextureName), Color.White);
                 //Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration" + TextureName);
-                Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration/" + TextureName);
+                if (DepthOffset != 0.0f)
+                {
+                    Visual = CVisual.MakeSpriteUncached(World, "Textures/Decoration/" + TextureName);
+                }
+                else
+                {
+                    Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration/" + TextureName);
+                }
+
+                Visual.Depth += DepthOffset;
             }
 
             base.Update();

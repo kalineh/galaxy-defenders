@@ -29,6 +29,9 @@ namespace Galaxy
             set { _TextureName = value; UpdateTexture(); }
         }
 
+        [CategoryAttribute("Texture")]
+        public float DepthOffset { get; set; }
+
         public CEditorEntityDecoration(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
@@ -45,6 +48,7 @@ namespace Galaxy
             : this(world, typeof(CDecoration), element.Position)
         {
             TextureName = ((CStageElementDecoration)element).TextureName;
+            DepthOffset = ((CStageElementDecoration)element).DepthOffset;
         }
 
         public override CStageElement GenerateStageElement()
@@ -53,6 +57,7 @@ namespace Galaxy
             {
                 Position = Position,
                 TextureName = TextureName,
+                DepthOffset = DepthOffset,
             };
 
             return result;
