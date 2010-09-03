@@ -98,6 +98,7 @@
     <Compile Include="Difficulty.cs" />
     <Compile Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Editor\Editors\DecorationTypeSelector.cs" />
+    <Compile Include="Editor\Entities\EditorEntitySecretEntry.cs" />
     <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\Airship.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="StageDefinitions\Stage7.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="Stage\Elements\StageElementCameraStop.cs" />
     <Compile Include="Stage\Elements\StageElementBuilding.cs" />
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />

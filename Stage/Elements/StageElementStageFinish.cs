@@ -21,6 +21,11 @@ namespace Galaxy
             if (IsExpired() == false)
                 return;
 
+            if (World.IsSecretWorld)
+                World.StartSecretStageFinish();
+            else
+                World.StartStageEnd();
+
             World.StageEnd = true;
         }
 

@@ -58,7 +58,7 @@ namespace StageEditor
                 state_game.World.Stop();
             }
 
-            game.State = new Galaxy.CStateGame(game);
+            game.State = new Galaxy.CStateGame(game, null);
 
             TextBox input_catcher = this.InputCatcher;
             while (!input_catcher.Focus())

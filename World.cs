@@ -39,6 +39,15 @@ namespace Galaxy
         public List<string> StageEndText { get; set; }
         public List<string> StageEndAwardText { get; set; }
         public CStats Stats { get; set; }
+        public CFader SecretEntryFader { get; set; }
+        public string SecretStageName { get; set; }
+        public Vector2 SecretEntryPosition { get; set; }
+        public int SecretEntryCounter { get; set; }
+        public CFader SecretFinishFader { get; set; }
+        public int SecretFinishCounter { get; set; }
+        public bool IgnoreSecrets { get; set; }
+        public CWorld ReturnWorld { get; set; }
+        public bool IsSecretWorld { get; set; }
 
         public CWorld(CGalaxy game)
         {
@@ -138,6 +147,8 @@ namespace Galaxy
             ParticleEffects.Update();
 
             UpdateStageEnd();
+            UpdateSecretStageEntry();
+            UpdateSecretStageFinish();
 
             if (WasStepped)
             {
@@ -197,7 +208,7 @@ namespace Galaxy
 
         public void UpdateStageEnd()
         {
-            if (!StageEnd)
+            if (StageEndCounter > 0)
                 return;
 
             // frame count of display operations
@@ -221,10 +232,7 @@ namespace Galaxy
                                           ship.Visual.Color);
             }
 
-            StageEndFader = StageEndFader ?? new CFader(Game)
-                                             {
-                                                 TransitionTime = 2.0f
-                                             };
+            StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
 
             if (StageEndCounter == StageClearShow)
@@ -274,13 +282,110 @@ namespace Galaxy
             {
                 StageEndFader.StopAtFullFadeOut();
                 if (StageEndCounter > UpperClamp)
+                {
                     SaveAndExit();
+                    GotoLobby();
+                }
             }
             else
             {
                 StageEndCounter = Math.Min(StageEndCounter, UpperClamp);
                 StageEndFader.StopAtHalfFadeOut();
             }
+        }
+
+        public void UpdateSecretStageEntry()
+        {
+            if (SecretEntryCounter == 0)
+                return;
+
+            StageEnd = true;
+
+            SecretEntryFader = SecretEntryFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            SecretEntryFader.Update();
+
+            if (SecretEntryCounter < 60)
+            {
+                SecretEntryFader.StopAtHalfFadeOut();
+            }
+            else
+            {
+                SecretEntryFader.StopAtFullFadeOut();
+            }
+
+            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            {
+                SecretEntryPosition *= new Vector2(1.01f, 1.0f);
+                Vector2 ofs = SecretEntryPosition - ship.Physics.PositionPhysics.Position;
+                ship.Physics.PositionPhysics.Position += ofs * 0.25f;
+                ship.IsInvincible += 1;
+            }
+
+            if (SecretEntryCounter == 20)
+            {
+                StageEndText.Add("SECRET WARP");
+            }
+
+            if (SecretEntryCounter == 120)
+            {
+                StageEndText.Clear();
+            }
+
+            if (SecretEntryCounter > 120)
+            {
+                IgnoreSecrets = true;
+
+                SaveAndExit();
+
+                CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(SecretStageName);
+                Game.StageDefinition = definition;
+
+                CStateGame bonus_stage = new CStateGame(Game, null);
+                bonus_stage.World.ReturnWorld = this;
+                bonus_stage.World.IsSecretWorld = true;
+
+                Game.State = new CStateFadeTo(Game, Game.State, bonus_stage);
+                StageEndText.Clear();
+                return;
+            }
+
+            SecretEntryCounter += 1;
+        }
+
+        public void UpdateSecretStageFinish()
+        {
+            // TODO: less shit
+            if (IsSecretWorld)
+            {
+                // TODO: faster implementation
+                if (GetEntitiesOfType(typeof(CShip)).Count() == 0)
+                {
+                    SecretFinishCounter = Math.Max(SecretFinishCounter, 1);
+                }
+            }
+
+            if (SecretFinishCounter == 0)
+                return;
+
+            SecretFinishFader = SecretFinishFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            SecretFinishFader.Update();
+
+            if (SecretFinishCounter < 60)
+            {
+                SecretFinishFader.StopAtHalfFadeOut();
+            }
+            else
+            {
+                SecretFinishFader.StopAtFullFadeOut();
+            }
+
+            if (SecretFinishCounter > 120)
+            {
+                CStateGame return_state = new CStateGame(Game, ReturnWorld);
+                Game.State = new CStateFadeTo(Game, Game.State, return_state);
+            }
+
+            SecretFinishCounter += 1;
         }
 
         public void Draw()
@@ -307,6 +412,20 @@ namespace Galaxy
             {
                 Game.DefaultSpriteBatch.Begin();
                 StageEndFader.Draw(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            if (SecretEntryFader != null)
+            {
+                Game.DefaultSpriteBatch.Begin();
+                SecretEntryFader.Draw(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            if (SecretFinishFader != null)
+            {
+                Game.DefaultSpriteBatch.Begin();
+                SecretFinishFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
@@ -633,55 +752,6 @@ namespace Galaxy
             CollisionGrid.Collide();
         }
 
-        private void ProcessEntityCollisionsOld()
-        {
-            Type[] types = new Type[] { null };
-            object[] parameters = new object[] { null };
-
-            foreach (CEntity outer in Entities)
-            {
-                foreach (CEntity inner in Entities)
-                {
-                    if (inner == outer)
-                        continue;
-
-                    if (inner.Collision == null || outer.Collision == null)
-                        continue;
-
-                    if (inner.Collision.Enabled == false || outer.Collision.Enabled == false)
-                        continue;
-
-                    if (outer.GetType() == inner.GetType())
-                    {
-                        if (outer.Collision.IgnoreSelfType && inner.Collision.IgnoreSelfType)
-                            continue;
-                    }
-
-                    if (outer.Collision.Intersects(inner.Collision))
-                    {
-                        // TODO: something proper
-                        System.Type inner_type = inner.GetType();
-                        System.Type outer_type = outer.GetType();
-                        types[0] = inner_type;
-                        MethodInfo method = outer_type.GetMethod("OnCollide", types);
-
-                        if (method == null)
-                            continue;
-
-                        try
-                        {
-                            parameters[0] = inner;
-                            method.Invoke(outer, parameters);
-                        }
-                        catch (Exception exception)
-                        {
-                            throw exception.InnerException;
-                        }
-                    }
-                }
-            }
-        }
-
         public void ProcessEntityAdd()
         {
             foreach (CEntity entity in EntitiesToAdd)
@@ -704,11 +774,13 @@ namespace Galaxy
         {
             // TODO: is this a good place to add score to money?
             // TODO: 2p
+            // TODO: secret stage
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Money += Score;
             Score = 0;
 
             // TODO: not this, but save current ship upgrades to profile
+            // TODO: we can remove this if we decide to never have powerups in-game
             CShip ship = GetNearestShip(Vector2.Zero);
             if (ship != null)
             {
@@ -727,10 +799,32 @@ namespace Galaxy
 
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
+        }
 
-            // TODO: lobby state
+        private void GotoLobby()
+        {
             Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
         }
 
+        public void StartStageEnd()
+        {
+            StageEndCounter = 1;
+        }
+
+        public void StartSecretStageEntry(string stage, Vector2 position)
+        {
+            if (IgnoreSecrets)
+                return;
+
+            IgnoreSecrets = true;
+            SecretStageName = stage;
+            SecretEntryPosition = position;
+            SecretEntryCounter = 1;
+        }
+
+        public void StartSecretStageFinish()
+        {
+            SecretFinishCounter = 1;
+        }
     }
 }

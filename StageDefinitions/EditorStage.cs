@@ -45,8 +45,8 @@ Powerup = false,
 Type = typeof(Galaxy.CAirship),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 96.0f,
-Y = -56.0f,
+X = 288.0f,
+Y = -200.0f,
 },
 },
 MoverPresetName = "DownWait",
@@ -54,8 +54,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 2.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 96.0f,
-Y = -56.0f,
+X = 288.0f,
+Y = -200.0f,
 },
 });
 stage.AddElement(0, 
@@ -65,8 +65,8 @@ Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -32.0f,
-Y = 104.0f,
+X = -208.0f,
+Y = -96.0f,
 },
 },
 MoverPresetName = "Down",
@@ -74,8 +74,26 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -32.0f,
-Y = 104.0f,
+X = -208.0f,
+Y = -96.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSecretEntry() {
+World = null,
+SecretStage = "BonusStage1",
+Expired = false,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -504.0f,
+Y = 80.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "DarkBlue1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -504.0f,
+Y = 80.0f,
 },
 });
 
