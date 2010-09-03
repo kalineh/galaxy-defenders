@@ -163,6 +163,12 @@
     <Compile Include="SaveData\HighScoreData.cs" />
     <Compile Include="SaveData\SaveData.cs" />
     <Compile Include="StageDefinitions\BonusStage1.cs" />
+    <Compile Include="StageDefinitions\BonusStage2.cs" />
+    <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\Stage12.cs" />
+    <Compile Include="StageDefinitions\Stage11.cs" />
+    <Compile Include="StageDefinitions\Stage10.cs" />
+    <Compile Include="StageDefinitions\Stage9.cs" />
     <Compile Include="StageDefinitions\Stage8.cs" />
     <Compile Include="StageDefinitions\Stage4.cs" />
     <Compile Include="StageDefinitions\Stage3.cs" />
