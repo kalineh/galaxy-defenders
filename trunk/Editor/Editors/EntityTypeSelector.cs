@@ -55,6 +55,7 @@ namespace Galaxy
     {
         public static List<Type> Types = new List<Type>()
         {
+            typeof(CAirship),
             typeof(CBall),
             typeof(CBeamer),
             typeof(CBonusShip),

@@ -178,7 +178,7 @@ namespace Galaxy
                 case "Building3": HealthMax = 10.0f; break;
                 case "Building4": HealthMax = 6.0f; break;
                 case "Building5": HealthMax = 7.0f; break;
-                case "Building6": HealthMax = 7.0f; break;
+                case "Building6": HealthMax = 6.0f; break;
                 case "Building7": HealthMax = 9.0f; break;
                 case "Building8": HealthMax = 9.0f; break;
             }
