@@ -12,6 +12,13 @@ namespace Galaxy
     public class CEnemy
         : CEntity
     {
+        public static Color EnemyOrangeColor { get; set; }
+
+        static CEnemy()
+        {
+            EnemyOrangeColor = new Color(252, 124, 85, 255);
+        }
+
         private float _HealthMax;
         public float HealthMax
         {
@@ -148,6 +155,15 @@ namespace Galaxy
 
             TakeDamage(laser.Damage);
             laser.Die();
+        }
+
+        public void OnCollide(CEnemyPellet pellet)
+        {
+            if (!pellet.IsReflected)
+                return;
+
+            TakeDamage(pellet.Damage);
+            pellet.Die();
         }
 
         private int CalculateScoreFromHealth()

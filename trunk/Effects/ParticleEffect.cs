@@ -265,9 +265,31 @@ namespace Galaxy
                 Visual = CParticleEffectManager.Dot,
                 Count = 4,
                 Position = Vector2.Zero,
-                PositionVariation = direction * -5.0f,
-                PositionDelta = new Vector2(-0.3f, -0.3f),
-                PositionDeltaVariation = new Vector2(0.6f, 0.6f),
+                //PositionVariation = direction * -5.0f,
+                PositionDelta = new Vector2(-0.4f, -0.4f),
+                PositionDeltaVariation = new Vector2(0.8f, 0.8f),
+                Alpha = 0.8f,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(0.5f, 0.5f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
+                Lifetime = 5,
+                Color = color,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeEnemyMissileTrail(Vector2 position, Vector2 direction, Color color)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 3,
+                Position = Vector2.Zero,
+                //PositionVariation = direction * -5.0f,
+                PositionDelta = new Vector2(-0.4f, -0.4f),
+                PositionDeltaVariation = new Vector2(0.8f, 0.8f),
                 Alpha = 0.8f,
                 AngleDelta = 0.0f,
                 AngleDeltaVariation = 0.0f,

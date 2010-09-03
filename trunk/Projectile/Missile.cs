@@ -49,7 +49,6 @@ namespace Galaxy
         {
             Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -FireVector * Speed, 0.05f);
 
-            //CEffect.MissileTrail(World, Physics.PositionPhysics.Position, 0.3f, Visual.Color);
             TrailEffect.Position = Physics.PositionPhysics.Position;
             TrailEffect.Spawn(World.ParticleEffects);
 

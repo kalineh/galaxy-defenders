@@ -17,6 +17,7 @@ namespace Galaxy
         public CCollision Collision { get; set; }
         public CMover Mover { get; set; }
         public int AliveTime { get; protected set; }
+        public bool IsDead { get; set; }
 
         public virtual void Initialize(CWorld world)
         {
@@ -168,6 +169,7 @@ namespace Galaxy
 
         public virtual void Die()
         {
+            IsDead = true;
             OnDie();
             World.EntityDelete(this);
 

@@ -34,7 +34,7 @@ namespace Galaxy
         public override void TakeDamage(float damage)
         {
             //Owner.TakeDamage(damage);
-            CEffect.CutterBallAbsorb(World, Physics.PositionPhysics.Position, Vector2.Zero, 0.5f, new Color(252, 124, 85, 255));
+            CEffect.CutterBallAbsorb(World, Physics.PositionPhysics.Position, Vector2.Zero, 0.5f, CEnemy.EnemyOrangeColor);
         }
     }
 }

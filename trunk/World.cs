@@ -220,7 +220,7 @@ namespace Galaxy
             const int AllowExit = 340;
             const int UpperClamp = AllowExit + 60;
 
-            foreach (CShip ship in GetEntitiesOfType(typeof (CShip)))
+            foreach (CShip ship in Players)
             {
                 ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
@@ -301,7 +301,7 @@ namespace Galaxy
 
             StageEnd = true;
 
-            foreach (CShip ship in GetEntitiesOfType(typeof (CShip)))
+            foreach (CShip ship in Players)
             {
                 ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
@@ -324,7 +324,7 @@ namespace Galaxy
                 SecretEntryFader.StopAtFullFadeOut();
             }
 
-            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            foreach (CShip ship in Players)
             {
                 SecretEntryPosition *= new Vector2(1.01f, 1.0f);
                 Vector2 ofs = SecretEntryPosition - ship.Physics.PositionPhysics.Position;
@@ -369,7 +369,7 @@ namespace Galaxy
             if (IsSecretWorld)
             {
                 // TODO: faster implementation
-                if (GetEntitiesOfType(typeof(CShip)).Count() == 0)
+                if (Players.Count == 0)
                 {
                     SecretFinishCounter = Math.Max(SecretFinishCounter, 1);
                 }
@@ -628,6 +628,9 @@ namespace Galaxy
                 if (ship.Physics == null)
                     continue;
 
+                if (ship.IsDead)
+                    continue;
+
                 Vector2 ship_position = ship.Physics.PositionPhysics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
@@ -850,7 +853,7 @@ namespace Galaxy
             if (!Game.EditorMode)
                 CAudio.PlayMusic(Game.StageDefinition.MusicName);
 
-            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            foreach (CShip ship in Players)
             {
                 Vector2 to_center = GameCamera.GetCenter().ToVector2() - ship.Physics.PositionPhysics.Position;
                 Vector2 clamped_entry = GameCamera.ClampInside(SecretEntryPosition, 32.0f);

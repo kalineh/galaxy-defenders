@@ -52,7 +52,7 @@ namespace Galaxy
             Visual.TileY = sample_instance.Visual.TileY;
             Visual.AnimationSpeed = sample_instance.Visual.AnimationSpeed;
             
-            MoverPresetName = "IgnoreCamera";
+            MoverPresetName = "None";
             MoverSpeedMultiplier = 1.0f;
             MoverTransitionMultiplier = 1.0f;
         }

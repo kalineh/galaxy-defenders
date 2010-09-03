@@ -102,6 +102,8 @@
     <Compile Include="Effects\ParticleEffect.cs" />
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\Airship.cs" />
+    <Compile Include="Enemy\MissilePod.cs" />
+    <Compile Include="Enemy\RaidTurret.cs" />
     <Compile Include="Enemy\CutterBall.cs" />
     <Compile Include="Enemy\Cutter.cs" />
     <Compile Include="Enemy\DownTurret.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
     <Compile Include="Pilot.cs" />
+    <Compile Include="Projectile\EnemyMissile.cs" />
+    <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="Projectile\Projectile.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="Enemy\TripleShot.cs" />

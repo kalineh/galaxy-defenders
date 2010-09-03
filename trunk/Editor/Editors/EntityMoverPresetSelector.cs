@@ -46,7 +46,7 @@ namespace Galaxy
         {
             InitializeComponent();
             this.BorderStyle = BorderStyle.None;
-            Result = "IgnoreCamera";
+            Result = "None";
         }
 
         private void InitializeComponent()
