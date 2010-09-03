@@ -13,6 +13,7 @@ namespace Galaxy
         : CStageElement
     {
         public string TextureName { get; set; }
+        public float DepthOffset { get; set; }
 
         public override void Update(CWorld world)
         {
@@ -20,6 +21,7 @@ namespace Galaxy
             decoration.Initialize(world);
             decoration.Physics.PositionPhysics.Position = Position;
             decoration.TextureName = TextureName;
+            decoration.DepthOffset = DepthOffset;
 
             //decoration.UpdateTexture();
 

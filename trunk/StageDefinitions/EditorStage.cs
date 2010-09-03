@@ -91,8 +91,27 @@ Y = 192.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -544.0f,
+Y = 184.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 66.0f,
+Y = 183.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "SecretHint",
+DepthOffset = 0.01f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 64.0f,
 Y = 184.0f,
 },
 });
