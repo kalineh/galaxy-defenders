@@ -21,8 +21,8 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 48.0f,
-Y = -18280.0f,
+X = 24.0f,
+Y = -17560.0f,
 },
 });
 stage.AddElement(0, 
@@ -2165,6 +2165,40 @@ CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 296.0f,
 Y = -14240.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 536.0f,
+Y = -10072.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSecretEntry() {
+World = null,
+SecretStage = "BonusStage1",
+Expired = false,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 512.0f,
+Y = -10072.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 568.0f,
+Y = -10112.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 568.0f,
+Y = -10032.0f,
 },
 });
 
