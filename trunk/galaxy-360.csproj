@@ -65,6 +65,8 @@
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
     <Compile Include="Enemy\Airship.cs" />
+    <Compile Include="Enemy\Cutter.cs" />
+    <Compile Include="Enemy\CutterBall.cs" />
     <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />

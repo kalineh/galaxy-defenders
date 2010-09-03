@@ -154,6 +154,13 @@ namespace Galaxy
             return animation;
         }
 
+        public static void CutterBallAbsorb(CWorld world, Vector2 position, Vector2 direction, float scale, Color color)
+        {
+            CAudio.PlaySound("WeaponHitLaser", 1.0f);
+            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
+            spawner.Spawn(world.ParticleEffects);
+        }
+
         public static void LaserHit(CWorld world, Vector2 position, Vector2 direction, float scale, Color color)
         {
             CAudio.PlaySound("WeaponHitLaser", 1.0f);
