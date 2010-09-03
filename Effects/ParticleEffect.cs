@@ -26,7 +26,7 @@ namespace Galaxy
             Dot.Recache();
             Triangle.Recache();
             Particles = new List<CParticle>();
-            Cache = new List<CParticle>();
+            Cache = new List<CParticle>(8192);
 
             for (int i = 0; i < 1024; ++i)
             {

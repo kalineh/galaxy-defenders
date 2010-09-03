@@ -256,7 +256,11 @@ namespace Galaxy
 
         static public void Render(CGalaxy game)
         {
-            RenderElements.ForEach(element => element.Draw(game));
+            foreach (CDebugRenderElement element in RenderElements)
+            {
+                element.Draw(game);
+            }
+
             RenderElements.Clear();
         }
     }

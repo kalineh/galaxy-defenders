@@ -53,7 +53,6 @@ namespace Galaxy
             Debug = new CDebug(this);
             Input = new CInput(this);
 
-            FrameRateDisplay = new CFrameRateDisplay(this);
             GameFrame = 0;
 
             StageDefinition = Stages.EditorStage.GenerateDefinition();
@@ -136,6 +135,9 @@ namespace Galaxy
             // Import profiles.
             CSaveData.VerifyProfilesExist();
             CSaveData.Load();
+
+            // Frame rate display.
+            FrameRateDisplay = new CFrameRateDisplay(this);
 
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);

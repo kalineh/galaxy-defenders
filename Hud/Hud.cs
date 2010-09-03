@@ -56,6 +56,9 @@ namespace Galaxy
         private Vector2 Ability1IconPosition { get; set; }
         private Vector2 Ability2IconPosition { get; set; }
 
+        private string CachedMoneyString { get; set; }
+        private int LastMoney { get; set; }
+
         public CHud(CWorld world, Vector2 base_position, bool primary)
         {
             Primary = primary;
@@ -130,6 +133,7 @@ namespace Galaxy
             Ability2IconVisual.Update();
 
             MoneyOverride = null;
+            CachedMoneyString = "0";
         }
 
         public void Update(CShip ship)
@@ -191,7 +195,12 @@ namespace Galaxy
                 if (MoneyOverride != null)
                     money = (int)MoneyOverride;
 
-                sprite_batch.DrawString(World.Game.DefaultFont, money.ToString(), MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
+                if (money != LastMoney)
+                {
+                    CachedMoneyString = money.ToString();
+                    LastMoney = money;
+                }
+                sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
             }
         }
 
