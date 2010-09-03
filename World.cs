@@ -85,7 +85,7 @@ namespace Galaxy
 
             // TODO: should this be in the stage?
             if (!Game.EditorMode)
-                CAudio.PlayMusic(Stage.Definition.MusicName);
+                CAudio.PlayMusic(Game.StageDefinition.MusicName);
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { this }) as CScenery;
@@ -300,6 +300,17 @@ namespace Galaxy
                 return;
 
             StageEnd = true;
+
+            foreach (CShip ship in GetEntitiesOfType(typeof (CShip)))
+            {
+                ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
+
+                CEffect.StageEndFlyEffect(this,
+                                          ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
+                                          0.5f,
+                                          ship.Visual.Color);
+            }
+
 
             SecretEntryFader = SecretEntryFader ?? new CFader(Game) { TransitionTime = 2.0f };
             SecretEntryFader.Update();
@@ -825,6 +836,27 @@ namespace Galaxy
         public void StartSecretStageFinish()
         {
             SecretFinishCounter = 1;
+        }
+
+        public void ReturnFromSecret()
+        {
+            SecretEntryCounter = 0;
+            SecretEntryFader = null;
+            StageEnd = false;
+
+            // TODO: terrible hack, please fix
+            Game.StageDefinition.ScrollSpeed = 3.0f;
+
+            if (!Game.EditorMode)
+                CAudio.PlayMusic(Game.StageDefinition.MusicName);
+
+            foreach (CShip ship in GetEntitiesOfType(typeof(CShip)))
+            {
+                Vector2 to_center = GameCamera.GetCenter().ToVector2() - ship.Physics.PositionPhysics.Position;
+                Vector2 clamped_entry = GameCamera.ClampInside(SecretEntryPosition, 32.0f);
+                ship.Physics.PositionPhysics.Position = clamped_entry;
+                ship.Physics.PositionPhysics.Velocity = to_center.Normal() * 40.0f;
+            }
         }
     }
 }

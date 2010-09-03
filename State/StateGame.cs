@@ -27,17 +27,7 @@ namespace Galaxy
             else
             {
                 World = reuse_world;
-                World.SecretEntryCounter = 0;
-                World.SecretEntryFader = null;
-                World.StageEnd = false;
-
-                foreach (CShip ship in World.GetEntitiesOfType(typeof(CShip)))
-                {
-                    Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - ship.Physics.PositionPhysics.Position;
-                    Vector2 clamped_entry = World.GameCamera.ClampInside(World.SecretEntryPosition, 32.0f);
-                    ship.Physics.PositionPhysics.Position = clamped_entry;
-                    ship.Physics.PositionPhysics.Velocity = to_center.Normal() * 40.0f;
-                }
+                World.ReturnFromSecret();
             }
         }
 
