@@ -291,13 +291,13 @@ namespace Galaxy
 
             if (state.MiddleButton == ButtonState.Pressed)
             {
-                World.GameCamera.Position -= new Vector3(delta, 0.0f) * 1.0f / World.GameCamera.Zoom;
+                InteractionState = EditorInteractionState.ZoomCamera;
+                System.Windows.Forms.Cursor.Hide();
             }
 
             if (state.RightButton == ButtonState.Pressed)
             {
-                InteractionState = EditorInteractionState.ZoomCamera;
-                System.Windows.Forms.Cursor.Hide();
+                World.GameCamera.Position -= new Vector3(delta, 0.0f) * 1.0f / World.GameCamera.Zoom;
             }
         }
 
@@ -427,7 +427,7 @@ namespace Galaxy
         public void UpdateInteractionZoomCamera(Vector2 mouse, Vector2 delta, Vector2 world)
         {
             MouseState state = Mouse.GetState();
-            if (state.RightButton == ButtonState.Released)
+            if (state.MiddleButton == ButtonState.Released)
             {
                 InteractionState = EditorInteractionState.None;
                 System.Windows.Forms.Cursor.Show();

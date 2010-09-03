@@ -208,7 +208,7 @@ namespace Galaxy
 
         public void UpdateStageEnd()
         {
-            if (StageEndCounter > 0)
+            if (StageEndCounter <= 0)
                 return;
 
             // frame count of display operations
@@ -219,8 +219,6 @@ namespace Galaxy
             const int AwardInterval = 20;
             const int AllowExit = 340;
             const int UpperClamp = AllowExit + 60;
-
-            StageEndCounter += 1;
 
             foreach (CShip ship in GetEntitiesOfType(typeof (CShip)))
             {
@@ -292,6 +290,8 @@ namespace Galaxy
                 StageEndCounter = Math.Min(StageEndCounter, UpperClamp);
                 StageEndFader.StopAtHalfFadeOut();
             }
+
+            StageEndCounter += 1;
         }
 
         public void UpdateSecretStageEntry()
