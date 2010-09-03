@@ -142,8 +142,8 @@ namespace Galaxy
                         },
                     }
                 ),
-                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 1.2f, 4.0f),
-                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, 6.0f)
+                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 1.2f, 8.0f),
+                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, 11.0f)
             );
         }
 
