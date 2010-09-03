@@ -32,7 +32,6 @@ namespace Galaxy
                 World.StartSecretStageEntry(SecretStage, Position);
                 Expired = true;
             }
-            System.Console.WriteLine("len: {0}", len);
         }
 
         public override bool IsExpired()
