@@ -27,11 +27,12 @@ namespace Galaxy
 
             Vector2 ofs = ship.Physics.PositionPhysics.Position - Position;
             float len = ofs.LengthSquared();
-            if (len < 128.0f)
+            if (len < 32.0f * 32.0f)
             {
                 World.StartSecretStageEntry(SecretStage, Position);
                 Expired = true;
             }
+            System.Console.WriteLine("len: {0}", len);
         }
 
         public override bool IsExpired()

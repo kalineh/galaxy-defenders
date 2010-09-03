@@ -2025,8 +2025,8 @@ stage.AddElement(0,
 new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -18272.0f,
+X = 16.0f,
+Y = -17648.0f,
 },
 });
 stage.AddElement(0, 

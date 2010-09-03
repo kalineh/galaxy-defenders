@@ -109,7 +109,7 @@ namespace Galaxy
             new CMapNode() {
                 Current = "Stage2",
                 Next = new List<string>() {
-                    "BonusStage1",
+                    "Stage3",
                     "*",
                 },
                 AvailablePrimaryWeaponParts = new List<string>() {
@@ -139,40 +139,6 @@ namespace Galaxy
                     "PowerShield",
                 },
             },
-            new CMapNode() {
-                Current = "BonusStage1",
-                Next = new List<string>() {
-                    "Stage3",
-                    "*",
-                },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "PowerShield",
-                    "UltraShield",
-                },
-            },
-
             new CMapNode() {
                 Current = "Stage3",
                 Next = new List<string>() {

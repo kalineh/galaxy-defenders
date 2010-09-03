@@ -14,6 +14,7 @@ namespace Galaxy
     public class CEditorEntitySecretEntry
         : CEditorEntityBase
     {
+        [CategoryAttribute("Core")]
         public string SecretStage { get; set; }
 
         public CEditorEntitySecretEntry(CWorld world, Vector2 position)
@@ -26,6 +27,8 @@ namespace Galaxy
         public CEditorEntitySecretEntry(CWorld world, CStageElement element)
             : this(world, element.Position)
         {
+            CStageElementSecretEntry secret = element as CStageElementSecretEntry;
+            SecretStage = secret.SecretStage;
         }
 
         public override CStageElement GenerateStageElement()
