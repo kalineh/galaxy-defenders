@@ -66,6 +66,7 @@
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
     <Compile Include="Enemy\Airship.cs" />
+    <Compile Include="Enemy\BlackHole.cs" />
     <Compile Include="Enemy\Cutter.cs" />
     <Compile Include="Enemy\CutterBall.cs" />
     <Compile Include="Enemy\MissilePod.cs" />
