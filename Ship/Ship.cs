@@ -204,6 +204,28 @@ namespace Galaxy
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
         }
 
+        public Vector2 GetInputVector()
+        {
+            GamePadState state = GamePad.GetState(PlayerIndex);
+            GamePadButtons buttons = state.Buttons;
+            GamePadDPad dpad = state.DPad;
+
+            float Speed = Chassis.Speed * SpeedEnhancement;
+            Vector2 force = Vector2.Zero;
+
+            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
+            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Down)) { force.Y += Speed; }
+            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left)) { force.X -= Speed; }
+            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right)) { force.X += Speed; }
+
+            force += GamePad.GetState(PlayerIndex).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
+
+            if (force.LengthSquared() > 0.0f)
+                force = force.Normal() * Math.Min(force.Length(), Speed);
+
+            return force;
+        }
+
         private void UpdateInput()
         {
             // no input at stage end
@@ -215,19 +237,7 @@ namespace Galaxy
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
-            float Speed = Chassis.Speed * SpeedEnhancement;
-            Vector2 force = new Vector2(0.0f, 0.0f);
- 
-            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
-            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Down) ) { force.Y += Speed; }
-            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left) ) { force.X -= Speed; }
-            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right) ) { force.X += Speed; }
-
-            force += GamePad.GetState(PlayerIndex).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
-
-            if (force.Length() > 0.0f)
-                force = force.Normal() * Math.Min(force.Length(), Speed);
-
+            Vector2 force = GetInputVector();
             Physics.PositionPhysics.Velocity += force;
 
             // TODO: remove eventually

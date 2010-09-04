@@ -4,6 +4,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace Galaxy
@@ -45,8 +46,9 @@ namespace Galaxy
             float length = offset.Length();
             float inverse = Math.Max( 0.0f, 300.0f - length );
             float square_inverse = inverse * inverse;
-            Vector2 pull = offset * square_inverse * 0.0000015f * scale;
+            Vector2 pull = offset * square_inverse * 0.0000025f * scale;
             entity.Physics.PositionPhysics.Velocity += pull;
+            entity.Physics.PositionPhysics.Velocity *= 0.99f;
             PullEffect.Position = Physics.PositionPhysics.Position - offset.Normal() * 58.0f;
             PullEffect.Spawn(World.ParticleEffects);
 
@@ -59,7 +61,18 @@ namespace Galaxy
 
         public new void OnCollide(CShip ship)
         {
-            PullEntity(ship, 0.2f);
+            float scale = 0.3f;
+
+            Vector2 offset = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 force = ship.GetInputVector();
+
+            float dot = Vector2.Dot(offset, force);
+            if (dot < 0.0f)
+            {
+                scale = 0.05f;    
+            }
+
+            PullEntity(ship, scale);
         }
 
         // TODO: need to handle IsSubClassOf in the collision system

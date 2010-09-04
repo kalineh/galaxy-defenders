@@ -98,24 +98,6 @@ Y = 184.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "DarkBlue1",
-DepthOffset = 0.0f,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = 168.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementDecoration() {
-TextureName = "SecretHint",
-DepthOffset = 0.01f,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 48.0f,
-Y = 168.0f,
-},
-});
-stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
@@ -176,34 +158,21 @@ Y = -992.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
-Powerup = false,
-Type = typeof(Galaxy.CRaidTurret),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -304.0f,
-Y = -16.0f,
-},
-},
-MoverPresetName = "IgnoreCamera",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -304.0f,
-Y = -16.0f,
+X = 0.44f,
+Y = -2595.05f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
 Coins = 1,
 Powerup = false,
-Type = typeof(Galaxy.CMissilePod),
+Type = typeof(Galaxy.CBlackHole),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 240.0f,
-Y = 16.0f,
+X = 40.0f,
+Y = -24.0f,
 },
 },
 MoverPresetName = "None",
@@ -211,15 +180,28 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 240.0f,
-Y = 16.0f,
+X = 40.0f,
+Y = -24.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementCameraStop() {
+new Galaxy.CStageElementSpawnerEnemy() {
+Coins = 1,
+Powerup = false,
+Type = typeof(Galaxy.CRotateTurret),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.44f,
-Y = -2595.05f,
+X = 336.0f,
+Y = 64.0f,
+},
+},
+MoverPresetName = "None",
+MoverSpeedMultiplier = 1.0f,
+MoverTransitionMultiplier = 1.0f,
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 336.0f,
+Y = 64.0f,
 },
 });
 
