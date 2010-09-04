@@ -68,6 +68,7 @@ namespace Galaxy
             typeof(CMissilePod),
             typeof(CPyramid),
             typeof(CRaidTurret),
+            typeof(CRotateTurret),
             typeof(CShootBall),
             typeof(CSpike),
             typeof(CTurret),

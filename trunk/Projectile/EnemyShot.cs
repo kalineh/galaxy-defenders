@@ -35,7 +35,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Weapons/EnemyShot");
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
         }
 
         public override void Update()
@@ -49,7 +49,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these
-            CollisionAABB box = Collision as CollisionAABB;
+            CollisionCircle box = Collision as CollisionCircle;
             box.Position = Physics.PositionPhysics.Position;
         }
 
