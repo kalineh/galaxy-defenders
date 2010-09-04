@@ -135,7 +135,7 @@ namespace Galaxy
             // DEBUG
             if (!Game.EditorMode && Game.Input.IsKeyDown(Keys.O))
             {
-                GameCamera.Position += Vector3.UnitY * -8.0f;
+                GameCamera.Position += Vector3.UnitY * -16.0f;
             }
 
             GameCamera.Position += Vector3.UnitY * -ScrollSpeed;

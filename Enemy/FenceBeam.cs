@@ -42,10 +42,10 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            World.Stats.CollisionDamageReceived += 1.0f;
+            World.Stats.CollisionDamageReceived += 2.0f;
             Vector2 collision_point = Physics.PositionPhysics.Position;
             collision_point.X = ship.Physics.PositionPhysics.Position.X;
-            ship.TakeCollideDamage(collision_point, 1.0f);
+            ship.TakeCollideDamage(collision_point, 2.0f);
         }
     }
 }

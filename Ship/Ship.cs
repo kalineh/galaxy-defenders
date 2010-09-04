@@ -41,6 +41,7 @@ namespace Galaxy
         public float CurrentArmor { get; set; }
         public float CurrentShield { get; set; }
         public float CurrentEnergy { get; set; }
+        private float SingleShotEnergyUsage { get; set; }
 
         public List<CWeapon> WeaponPrimary { get; set; }
         public List<CWeapon> WeaponSecondary { get; set; }
@@ -108,6 +109,7 @@ namespace Galaxy
             CurrentArmor = chassis.Armor;
             CurrentShield = shield.Shield;
             CurrentEnergy = generator.Energy;
+            SingleShotEnergyUsage = CalculateSingleShotEnergy();
 
             foreach (CWeapon weapon in WeaponPrimary)
                 weapon.Offset = weapon.Offset + Vector2.UnitX * 16.0f;
@@ -275,6 +277,15 @@ namespace Galaxy
 
         public void UpdateWeapons()
         {
+            foreach (CWeapon weapon in WeaponPrimary)
+                weapon.Update();
+            foreach (CWeapon weapon in WeaponSecondary)
+                weapon.Update();
+            foreach (CWeapon weapon in WeaponSidekickLeft)
+                weapon.Update();
+            foreach (CWeapon weapon in WeaponSidekickRight)
+                weapon.Update();
+
             // TODO: de-linq
             WeaponPrimary.ForEach(weapon => weapon.Update());
             WeaponSecondary.ForEach(weapon => weapon.Update());
@@ -284,6 +295,11 @@ namespace Galaxy
 
         public void UpdateShields()
         {
+            // shields never use the energy of the primary weapon
+            // this forces the player to balance weapon usage with shields
+            if (CurrentEnergy < SingleShotEnergyUsage * 2.0f)
+                return;
+
             float used_energy = Math.Min(CurrentEnergy, Shield.Regen);
             used_energy = Math.Min(used_energy, Shield.Shield - CurrentShield);
             CurrentShield += used_energy;
@@ -401,5 +417,22 @@ namespace Galaxy
             CurrentEnergy = Math.Min(CurrentEnergy, Generator.Energy);
             CurrentShield = Math.Min(CurrentShield, Shield.Shield);
         }
+
+        private float CalculateSingleShotEnergy()
+        {
+            float usage = 0.0f;
+
+            foreach (CWeapon weapon in WeaponPrimary)
+                usage += weapon.Energy;
+            foreach (CWeapon weapon in WeaponSecondary)
+                usage += weapon.Energy;
+            foreach (CWeapon weapon in WeaponSidekickLeft)
+                usage += weapon.Energy;
+            foreach (CWeapon weapon in WeaponSidekickRight)
+                usage += weapon.Energy;
+
+            return usage;
+        }
+
     };
 }

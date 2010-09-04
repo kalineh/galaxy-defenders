@@ -70,8 +70,8 @@ namespace Galaxy
                 }
 
                 Physics.PositionPhysics.Position = AttachTarget.Physics.PositionPhysics.Position;
-                World.Stats.CollisionDamageReceived += 0.01f;
-                AttachTarget.TakeDirectArmorDamage(0.01f);
+                World.Stats.CollisionDamageReceived += 0.05f;
+                AttachTarget.TakeDirectArmorDamage(0.05f);
                 AttachTarget.Physics.PositionPhysics.Velocity *= 0.60f;
                 Health += 0.5f;
                 SelfDestructTimer -= 1;
