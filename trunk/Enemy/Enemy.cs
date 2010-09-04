@@ -87,8 +87,8 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
-            World.Stats.CollisionDamageReceived += 1.5f;
-            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.5f);
+            World.Stats.CollisionDamageReceived += 2.5f;
+            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 2.5f);
 
             World.Stats.CollisionDamageDealt += 0.5f;
             TakeDamage(0.5f);

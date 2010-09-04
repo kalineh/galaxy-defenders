@@ -45,7 +45,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.8f,
-                    Armor = 10.0f,
+                    Armor = 20.0f,
                 }
             },
             {
@@ -56,7 +56,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.25f,
                     Friction = 0.8f,
-                    Armor = 14.0f,
+                    Armor = 28.0f,
                 }
             },
             {
@@ -67,7 +67,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 1.9f,
                     Friction = 0.85f,
-                    Armor = 25.0f,
+                    Armor = 40.0f,
                 }
             }
         };
@@ -128,32 +128,32 @@ namespace Galaxy
             {
                 "BasicShield",
                 new CShieldPart() {
-                    Shield = 5.0f,
-                    Regen = 0.01f,
+                    Shield = 20.0f,
+                    Regen = 0.05f,
                 }
             },
             {
                 "EnhancedShield",
                 new CShieldPart() {
                     Price = 2500,
-                    Shield = 6.0f,
-                    Regen = 0.03f,
+                    Shield = 26.0f,
+                    Regen = 0.08f,
                 }
             },
             {
                 "PowerShield",
                 new CShieldPart() {
                     Price = 9000,
-                    Shield = 8.0f,
-                    Regen = 0.05f,
+                    Shield = 40.0f,
+                    Regen = 0.13f,
                 }
             },
             {
                 "UltraShield",
                 new CShieldPart() {
                     Price = 14000,
-                    Shield = 15.0f,
-                    Regen = 0.15f,
+                    Shield = 75.0f,
+                    Regen = 0.25f,
                 }
             }
         };

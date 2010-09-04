@@ -26,7 +26,7 @@ namespace Galaxy
 
             FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;
-            FireDamage = 2.0f;
+            FireDamage = 5.0f;
             FireSpeed = 14.0f;
         }
 
