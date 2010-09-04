@@ -265,7 +265,6 @@ namespace Galaxy
                 Visual = CParticleEffectManager.Dot,
                 Count = 4,
                 Position = Vector2.Zero,
-                //PositionVariation = direction * -5.0f,
                 PositionDelta = new Vector2(-0.4f, -0.4f),
                 PositionDeltaVariation = new Vector2(0.8f, 0.8f),
                 Alpha = 0.8f,
@@ -287,7 +286,6 @@ namespace Galaxy
                 Visual = CParticleEffectManager.Dot,
                 Count = 3,
                 Position = Vector2.Zero,
-                //PositionVariation = direction * -5.0f,
                 PositionDelta = new Vector2(-0.4f, -0.4f),
                 PositionDeltaVariation = new Vector2(0.8f, 0.8f),
                 Alpha = 0.8f,
@@ -298,6 +296,51 @@ namespace Galaxy
                 ScaleDelta = new Vector2(-0.1f, -0.1f),
                 ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
                 Lifetime = 5,
+                Color = color,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeBlackHoleCenter(Vector2 position, Color color)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 3,
+                Position = Vector2.Zero,
+                PositionVariation = new Vector2(0.8f, 0.8f),
+                PositionDelta = new Vector2(0.0f, 0.0f),
+                PositionDeltaVariation = new Vector2(2.6f, 2.6f),
+                Alpha = 1.0f,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(1.3f, 1.3f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
+                Lifetime = 5,
+                Color = color,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeBlackHolePull(Vector2 position, Color color)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 3,
+                Position = Vector2.Zero,
+                PositionVariation = new Vector2(2.8f, 2.8f),
+                PositionDelta = new Vector2(-0.3f, -0.3f),
+                PositionDeltaVariation = new Vector2(0.6f, 0.6f),
+                Alpha = 1.0f,
+                AngleVariation = MathHelper.TwoPi,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(1.0f, 1.0f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
+                Lifetime = 4,
                 Color = color,
             };
         }
