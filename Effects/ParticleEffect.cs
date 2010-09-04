@@ -161,7 +161,7 @@ namespace Galaxy
         public void Spawn(CParticleEffectManager manager)
         {
             Random random = manager.World.Random;
-            Vector2 ignore_camera = manager.World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY * 0.5f;
+            Vector2 ignore_camera = manager.World.ScrollSpeed * -Vector2.UnitY * 0.5f;
             for (int i = 0; i < Count; ++i)
             {
                 CParticle particle = manager.GetCachedParticle();

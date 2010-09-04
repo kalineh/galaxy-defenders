@@ -32,14 +32,13 @@ namespace Galaxy
         {
             bool enemies = EnemiesExist(world);
            
-            // TODO: not hack into the stage definition!
             if (enemies)
             {
-                world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 0.0f, 0.05f);
+                world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 0.0f, 0.05f);
                 return;
             }
 
-            world.Game.StageDefinition.ScrollSpeed = MathHelper.Lerp(world.Game.StageDefinition.ScrollSpeed, 32.0f, 0.015f);
+            world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.015f);
         }
 
         public override bool IsExpired()

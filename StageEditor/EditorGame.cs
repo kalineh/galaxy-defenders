@@ -34,7 +34,7 @@ namespace Galaxy
         public new void Initialize()
         {
             base.Initialize();
-            State = new CStateEditor(this);
+            State = new CStateEditor(this, null);
 
             // Add editor entity types to entity tree.
 
@@ -140,9 +140,9 @@ namespace Galaxy
             }
 
             PropertyGrid stage_grid = form.GetStagePropertyGrid();
-            if (stage_grid.SelectedObject == null || stage_grid.SelectedObject != editor.Game.StageDefinition)
+            if (stage_grid.SelectedObject == null || stage_grid.SelectedObject != editor.StageDefinition)
             {
-                stage_grid.Invoke((Action)(() => stage_grid.SelectedObject = editor.Game.StageDefinition));
+                stage_grid.Invoke((Action)(() => stage_grid.SelectedObject = editor.StageDefinition));
                 stage_grid.Invoke((Action)(() => stage_grid.Refresh()));
             }
 

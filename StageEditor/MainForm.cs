@@ -51,14 +51,29 @@ namespace StageEditor
             Galaxy.CGalaxy game = game_control.Game;
             game.GameFrame = 0;
 
+            Galaxy.CStageDefinition definition = null;
+
             // TODO: generalize cleanup?
             Galaxy.CStateGame state_game = game.State as Galaxy.CStateGame;
             if (state_game != null)
             {
+                definition = state_game.World.Stage.Definition;
                 state_game.World.Stop();
             }
 
-            game.State = new Galaxy.CStateGame(game, null);
+            Galaxy.CStateEditor state_editor = game.State as Galaxy.CStateEditor;
+            if (state_editor != null)
+            {
+                definition = state_editor.StageDefinition;
+            }
+
+            definition = definition ?? Galaxy.CStageDefinition.GetStageDefinitionByName("EditorStage");
+
+
+            StageSelectDropdown.Enabled = false;
+            EntityTree.Enabled = false;
+
+            game.State = new Galaxy.CStateGame(game, definition);
 
             TextBox input_catcher = this.InputCatcher;
             while (!input_catcher.Focus())
@@ -75,13 +90,20 @@ namespace StageEditor
 
             // TODO: generalize cleanup?
             Galaxy.CStateGame state_game = game.State as Galaxy.CStateGame;
+            Galaxy.CStageDefinition existing = null;
             if (state_game != null)
             {
+                existing = state_game.World.Stage.Definition;
                 state_game.World.Stop();
             }
+            existing = existing ?? Galaxy.CStageDefinition.GetStageDefinitionByName("EditorStage");
 
-            game_control.Game.State = new Galaxy.CStateEditor(game);
+            Galaxy.CStateEditor editor_state = new Galaxy.CStateEditor(game, existing);
+            game_control.Game.State = editor_state;
             game_control.UpdateEditorPosition();
+
+            StageSelectDropdown.Enabled = true;
+            EntityTree.Enabled = true;
         }
 
         public PropertyGrid GetEntityPropertyGrid()
@@ -155,8 +177,8 @@ namespace StageEditor
 
             // NOTE: save on this thread before we touch the game thread in case it breaks
             editor.RefreshStageDefinition();
-            Galaxy.CStageCodeWriter.Save(game.StageDefinition);
-            StagePropertyGrid.SelectedObject = game.StageDefinition;
+            Galaxy.CStageCodeWriter.Save(editor.StageDefinition);
+            StagePropertyGrid.SelectedObject = editor.StageDefinition;
 
             game.AccessMutex.ReleaseMutex();
         }
