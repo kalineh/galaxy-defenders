@@ -23,7 +23,7 @@ namespace Galaxy
         {
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
-            EmptyWorld = new CWorld(game);
+            EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),

@@ -48,8 +48,9 @@ namespace Galaxy
         public bool IgnoreSecrets { get; set; }
         public CWorld ReturnWorld { get; set; }
         public bool IsSecretWorld { get; set; }
+        public float ScrollSpeed { get; set; }
 
-        public CWorld(CGalaxy game)
+        public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
             Game = game;
             Random = new Random();
@@ -64,6 +65,11 @@ namespace Galaxy
             ParticleEffects = new CParticleEffectManager(this);
             StageEndText = new List<string>();
             StageEndAwardText = new List<string>();
+
+            if (stage_definition != null)
+            {
+                Stage = new CStage(this, stage_definition);
+            }
         }
 
         // TODO: stage definition param
@@ -80,12 +86,12 @@ namespace Galaxy
             EntityAdd(ship);
             Players.Add(ship);
 
-            Stage = new CStage(this, Game.StageDefinition);
+            ScrollSpeed = Stage.Definition.ScrollSpeed;
             Stage.Start();
 
             // TODO: should this be in the stage?
             if (!Game.EditorMode)
-                CAudio.PlayMusic(Game.StageDefinition.MusicName);
+                CAudio.PlayMusic(Stage.Definition.MusicName);
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { this }) as CScenery;
@@ -132,7 +138,7 @@ namespace Galaxy
                 GameCamera.Position += Vector3.UnitY * -8.0f;
             }
 
-            GameCamera.Position += Vector3.UnitY * -Stage.Definition.ScrollSpeed;
+            GameCamera.Position += Vector3.UnitY * -ScrollSpeed;
             GameCamera.Update();
 
             UpdatePauseInput();
@@ -349,9 +355,8 @@ namespace Galaxy
                 SaveAndExit();
 
                 CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(SecretStageName);
-                Game.StageDefinition = definition;
 
-                CStateGame bonus_stage = new CStateGame(Game, null);
+                CStateGame bonus_stage = new CStateGame(Game, definition);
                 bonus_stage.World.ReturnWorld = this;
                 bonus_stage.World.IsSecretWorld = true;
 
@@ -847,11 +852,8 @@ namespace Galaxy
             SecretEntryFader = null;
             StageEnd = false;
 
-            // TODO: terrible hack, please fix
-            Game.StageDefinition.ScrollSpeed = 3.0f;
-
             if (!Game.EditorMode)
-                CAudio.PlayMusic(Game.StageDefinition.MusicName);
+                CAudio.PlayMusic(Stage.Definition.MusicName);
 
             foreach (CShip ship in Players)
             {

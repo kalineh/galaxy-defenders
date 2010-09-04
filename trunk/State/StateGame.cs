@@ -14,21 +14,22 @@ namespace Galaxy
         public CGalaxy Game { get; private set; }
         public CWorld World { get; private set; }
         
+        public CStateGame(CGalaxy game, CStageDefinition stage_definition)
+        {
+            Game = game;
+            Game.GameFrame = 0;
+
+            World = new CWorld(game, stage_definition);
+            World.Start();
+        }
+
         public CStateGame(CGalaxy game, CWorld reuse_world)
         {
             Game = game;
             Game.GameFrame = 0;
 
-            if (reuse_world == null)
-            {
-                World = new CWorld(game);
-                World.Start();
-            }
-            else
-            {
-                World = reuse_world;
-                World.ReturnFromSecret();
-            }
+            World = reuse_world;
+            World.ReturnFromSecret();
         }
 
         public override void Update()

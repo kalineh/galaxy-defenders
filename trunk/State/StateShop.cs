@@ -36,7 +36,7 @@ namespace Galaxy
         public CStateShop(CGalaxy game)
         {
             Game = game;
-            EmptyWorld = new CWorld(game);
+            EmptyWorld = new CWorld(game, null);
 
             EmptyWorld.BackgroundScenery = new CSceneryChain(EmptyWorld,
                 new CBackground(EmptyWorld, new Color(0, 0, 0)),

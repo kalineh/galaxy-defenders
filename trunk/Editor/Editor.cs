@@ -26,7 +26,7 @@ namespace Galaxy
         public CEditor(CGalaxy game)
         {
             Game = game;
-            World = new CWorld(game);
+            World = new CWorld(game, CStageDefinition.GetStageDefinitionByName("EditorStage"));
         }
 
         public void Update()

@@ -55,7 +55,7 @@ namespace Galaxy
                 float speed = Math.Max(velocity.Length(), 5.0f);
                 Vector2 new_velocity = velocity + offset * 0.005f;
                 Physics.PositionPhysics.Velocity = new_velocity.Normal() * speed;
-                Physics.PositionPhysics.Position += Vector2.UnitY * -World.Game.StageDefinition.ScrollSpeed;
+                Physics.PositionPhysics.Position += Vector2.UnitY * -World.ScrollSpeed;
             }
             else if (AttachTarget != null)
             {

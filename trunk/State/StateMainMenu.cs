@@ -22,7 +22,7 @@ namespace Galaxy
         {
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
-            EmptyWorld = new CWorld(game);
+            EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
@@ -50,17 +50,9 @@ namespace Galaxy
             // TODO: organize debug somewhere?
             if (Game.Input.IsKeyPressed(Keys.F1))
             {
-                Game.StageDefinition = CStageDefinition.GetStageDefinitionByName("Stage1");
-                Game.State = new CStateGame(Game, null);
+                CStageDefinition stage1 = CStageDefinition.GetStageDefinitionByName("Stage1");
+                Game.State = new CStateGame(Game, stage1);
             }
-
-#if !XBOX360
-            // TODO: organize debug somewhere?
-            if (Game.Input.IsKeyPressed(Keys.F3))
-            {
-                Game.State = new CStateEditor(Game);
-            }
-#endif
 
             // allow application exit from main menu
             if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Q))

@@ -202,8 +202,8 @@ Powerup = false,
 Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 232.0f,
-Y = 0.0f,
+X = 240.0f,
+Y = 16.0f,
 },
 },
 MoverPresetName = "None",
@@ -211,8 +211,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 232.0f,
-Y = 0.0f,
+X = 240.0f,
+Y = 16.0f,
 },
 });
 stage.AddElement(0, 

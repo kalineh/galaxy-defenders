@@ -15,7 +15,7 @@ namespace Galaxy
 
     public class CStageGenerate
     {
-        public static void GenerateStageEntitiesFromDefinition(CWorld world, CStageDefinition definition)
+        public static void GenerateWorldFromStageDefinition(CWorld world, CStageDefinition definition)
         {
             // TODO: there shouldnt be a ship really (replace with player spawn? (should always be center-bottom though really))
             CShip ship = CShipFactory.GenerateShip(world, CSaveData.GetCurrentProfile(), PlayerIndex.One);
@@ -47,15 +47,9 @@ namespace Galaxy
             return entity;
         }
 
-        public static CStageDefinition GenerateDefinitionFromStageEntities(CWorld world, string name)
+        public static CStageDefinition GenerateDefinitionFromWorld(CWorld world, string name)
         {
             CStageDefinition result = new CStageDefinition(name);
-
-            // rollover existing stage properties
-            result.ScrollSpeed = world.Game.StageDefinition.ScrollSpeed;
-            result.BackgroundSceneryName = world.Game.StageDefinition.BackgroundSceneryName;
-            result.ForegroundSceneryName = world.Game.StageDefinition.ForegroundSceneryName;
-            result.MusicName = world.Game.StageDefinition.MusicName;
 
             // from EDITOR ENTITY to STAGE ELEMENT
 

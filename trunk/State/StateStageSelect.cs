@@ -23,7 +23,7 @@ namespace Galaxy
         public CStateStageSelect(CGalaxy game)
         {
             Game = game;
-            EmptyWorld = new CWorld(game);
+            EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 70.0f, 350.0f),
@@ -107,8 +107,7 @@ namespace Galaxy
         private void StartGame(object stage)
         {
             CStageDefinition definition = CStageDefinition.GetStageDefinitionByName((string)stage);
-            Game.StageDefinition = definition;
-            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, null));
+            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
         }
 
         private void Back(object tag)

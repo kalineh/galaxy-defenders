@@ -133,6 +133,7 @@ Y = -2688.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.0f,
 Y = -3840.0f,
@@ -141,6 +142,7 @@ Y = -3840.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue3",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -272.0f,
 Y = -3744.0f,
@@ -319,6 +321,7 @@ Y = -4848.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 64.0f,
 Y = -4800.0f,
@@ -337,6 +340,7 @@ Y = -4800.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 168.0f,
 Y = -4776.0f,
@@ -355,6 +359,7 @@ Y = -4776.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -360.0f,
 Y = -1848.0f,
@@ -363,6 +368,7 @@ Y = -1848.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
 Y = -1848.0f,
@@ -371,6 +377,7 @@ Y = -1848.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue2",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -144.0f,
 Y = -6184.0f,
@@ -379,6 +386,7 @@ Y = -6184.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue2",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,
 Y = -6184.0f,
@@ -387,6 +395,7 @@ Y = -6184.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue2",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
 Y = -6184.0f,
@@ -490,6 +499,7 @@ Y = -17472.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
 Y = -1848.0f,
@@ -628,6 +638,7 @@ Y = -3832.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue5",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -3320.0f,
@@ -886,6 +897,7 @@ Y = -4104.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -160.0f,
 Y = -7296.0f,
@@ -894,6 +906,7 @@ Y = -7296.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -200.0f,
 Y = -7088.0f,
@@ -902,6 +915,7 @@ Y = -7088.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 168.0f,
 Y = -7296.0f,
@@ -910,6 +924,7 @@ Y = -7296.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -7088.0f,
@@ -1178,6 +1193,7 @@ Y = -8624.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -248.0f,
 Y = -8920.0f,
@@ -1196,6 +1212,7 @@ Y = -8920.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 264.0f,
 Y = -8528.0f,
@@ -1214,6 +1231,7 @@ Y = -8528.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 216.0f,
 Y = -9064.0f,
@@ -1332,6 +1350,7 @@ Y = -11048.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue5",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -72.0f,
 Y = -11024.0f,
@@ -1390,6 +1409,7 @@ Y = -11016.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
 Y = -9832.0f,
@@ -1408,6 +1428,7 @@ Y = -9832.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 400.0f,
 Y = -9584.0f,
@@ -1426,6 +1447,7 @@ Y = -9584.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -408.0f,
 Y = -9456.0f,
@@ -1444,6 +1466,7 @@ Y = -9456.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 248.0f,
 Y = -11704.0f,
@@ -1472,6 +1495,7 @@ Y = -11696.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 192.0f,
 Y = -11704.0f,
@@ -1480,6 +1504,7 @@ Y = -11704.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 368.0f,
 Y = -11704.0f,
@@ -1658,6 +1683,7 @@ Y = -12416.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 83.48f,
 Y = -12889.8f,
@@ -1666,6 +1692,7 @@ Y = -12889.8f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 211.48f,
 Y = -12889.8f,
@@ -1674,6 +1701,7 @@ Y = -12889.8f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -36.52f,
 Y = -12889.8f,
@@ -1702,6 +1730,7 @@ Y = -12889.8f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -160.0f,
 Y = -12888.0f,
@@ -2030,6 +2059,7 @@ Y = -15176.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 64.0f,
 Y = -14248.0f,
@@ -2038,6 +2068,7 @@ Y = -14248.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 192.0f,
 Y = -14248.0f,
@@ -2046,6 +2077,7 @@ Y = -14248.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -14248.0f,
@@ -2074,6 +2106,7 @@ Y = -14248.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -168.0f,
 Y = -14248.0f,
@@ -2122,6 +2155,7 @@ Y = -14248.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -448.0f,
 Y = -12224.0f,
@@ -2140,6 +2174,7 @@ Y = -12224.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -320.0f,
 Y = -12224.0f,
@@ -2158,6 +2193,7 @@ Y = -12224.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -15032.0f,
@@ -2176,6 +2212,7 @@ Y = -15032.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 376.0f,
 Y = -15008.0f,
@@ -2194,6 +2231,7 @@ Y = -15008.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -408.0f,
 Y = -216.0f,
@@ -2212,6 +2250,7 @@ Y = -216.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -296.0f,
 Y = -216.0f,
@@ -2250,6 +2289,7 @@ Y = -1848.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 480.0f,
 Y = -1336.0f,
@@ -2258,6 +2298,7 @@ Y = -1336.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 232.0f,
 Y = -1336.0f,
@@ -2266,6 +2307,7 @@ Y = -1336.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue4",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 360.0f,
 Y = -1336.0f,
@@ -2344,6 +2386,7 @@ Y = -16024.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue6",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -128.0f,
 Y = -16080.0f,
@@ -2352,6 +2395,7 @@ Y = -16080.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue6",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
 Y = -16080.0f,
@@ -2540,6 +2584,7 @@ Y = -16176.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -304.0f,
 Y = -10208.0f,
@@ -2558,6 +2603,7 @@ Y = -10208.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 184.0f,
 Y = -10472.0f,
@@ -2576,6 +2622,7 @@ Y = -10472.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
+DepthOffset = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -224.0f,
 Y = -8208.0f,

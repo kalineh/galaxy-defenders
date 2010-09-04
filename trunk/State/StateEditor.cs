@@ -50,12 +50,14 @@ namespace Galaxy
         private bool NoSelectTillRelease { get; set; }
         public bool SnapToGrid { get; set; }
         public float GridSize { get; set; }
+        public CStageDefinition StageDefinition { get; set; }
 
-        public CStateEditor(CGalaxy game)
+        public CStateEditor(CGalaxy game, CStageDefinition stage_definition)
         {
             Game = game;
             ClearStage();
-            CStageGenerate.GenerateStageEntitiesFromDefinition(World, game.StageDefinition);
+            StageDefinition = stage_definition ?? CStageDefinition.GetStageDefinitionByName("EditorStage");
+            CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
             SampleShip = World.GetNearestShipEditor(Vector2.Zero);
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
@@ -64,9 +66,9 @@ namespace Galaxy
             SnapToGrid = true;
             GridSize = 8.0f;
 
-            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.BackgroundSceneryName);
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
-            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(game.StageDefinition.ForegroundSceneryName);
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -505,7 +507,7 @@ namespace Galaxy
         {
             CWorld old_world = World;
 
-            World = new CWorld(Game);
+            World = new CWorld(Game, StageDefinition);
             WorkingProfile = CSaveData.GetCurrentProfile();
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
@@ -538,12 +540,12 @@ namespace Galaxy
         public void ReplaceStageDefinition(CStageDefinition definition)
         {
             ClearStage();
-            Game.StageDefinition = definition;
-            CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+            StageDefinition = definition;
+            CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
 
-            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.BackgroundSceneryName);
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
-            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.ForegroundSceneryName);
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -553,16 +555,26 @@ namespace Galaxy
             // TODO: if we have queued entities to add, we should add them now so they get serialized
             World.ProcessEntityAdd();
 
-            Game.StageDefinition = CStageGenerate.GenerateDefinitionFromStageEntities(World, Game.StageDefinition.Name);
+            // generate entities from world
+            CStageDefinition new_definition = CStageGenerate.GenerateDefinitionFromWorld(World, StageDefinition.Name);
+
+            // rollover existing stage properties
+            new_definition.ScrollSpeed = StageDefinition.ScrollSpeed;
+            new_definition.BackgroundSceneryName = StageDefinition.BackgroundSceneryName;
+            new_definition.ForegroundSceneryName = StageDefinition.ForegroundSceneryName;
+            new_definition.MusicName = StageDefinition.MusicName;
+
+            StageDefinition = new_definition;
+
             ClearStage();
-            CStageGenerate.GenerateStageEntitiesFromDefinition(World, Game.StageDefinition);
+            CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
 
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");
 
-            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.BackgroundSceneryName);
+            MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
-            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(Game.StageDefinition.ForegroundSceneryName);
+            MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
     }

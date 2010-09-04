@@ -19,7 +19,7 @@ namespace Galaxy
             if (entity.World.Game.State.GetType() != typeof(CStateGame))
                 return;
 
-            entity.Physics.PositionPhysics.Position += entity.World.Game.StageDefinition.ScrollSpeed * -Vector2.UnitY;
+            entity.Physics.PositionPhysics.Position += entity.World.ScrollSpeed * -Vector2.UnitY;
         }
     }
 }
