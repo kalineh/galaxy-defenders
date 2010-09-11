@@ -27,6 +27,7 @@ namespace Galaxy
             Collision = null;
             Mover = null;
             AliveTime = 0;
+            IsDead = false;
         }
 
         public virtual void Update()
@@ -169,6 +170,9 @@ namespace Galaxy
 
         public virtual void Die()
         {
+            if (IsDead)
+                return;
+
             IsDead = true;
             OnDie();
             World.EntityDelete(this);

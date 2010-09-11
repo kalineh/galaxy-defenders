@@ -28,6 +28,15 @@ namespace Galaxy
         private object[] CacheParameters { get; set; }
         private Dictionary<Type, Dictionary<Type, MethodInfo>> CachedMethodInfo { get; set; }
 
+        private struct CollisionRecord
+        {
+            public MethodInfo Method;
+            public object Inner;
+            public object Outer;
+        };
+
+        private List<CollisionRecord> CollisionRecords { get; set; }
+
         public CCollisionGrid(CWorld world, Vector2 dimensions, int rows, int columns)
         {
             World = world;
@@ -39,6 +48,7 @@ namespace Galaxy
             CacheTypes = new Type[] { null };
             CacheParameters = new object[] { null };
             CachedMethodInfo = new Dictionary<Type, Dictionary<Type, MethodInfo>>();
+            CollisionRecords = new List<CollisionRecord>(1024);
         }
 
         public void Initialize(Vector2 center)
@@ -66,6 +76,8 @@ namespace Galaxy
                     Entities[row][col].Clear();
                 }
             }
+
+            CollisionRecords.Clear();
         }
 
         public void Insert(List<CEntity> entities)
@@ -127,7 +139,7 @@ namespace Galaxy
             }
         }
 
-        public void Collide()
+        public void CollectCollisions()
         {
             CacheTypes[0] = null;
             CacheParameters[0] = null;
@@ -175,18 +187,32 @@ namespace Galaxy
                                 if (method == null)
                                     continue;
 
-                                try
-                                {
-                                    CacheParameters[0] = inner;
-                                    method.Invoke(outer, CacheParameters);
-                                }
-                                catch (Exception exception)
-                                {
-                                    throw exception.InnerException;
-                                }
+                                CollisionRecord record = new CollisionRecord() {
+                                     Method = method,
+                                     Inner = inner,
+                                     Outer = outer,
+                                };
+
+                                CollisionRecords.Add(record);
                             }
                         }
                     }
+                }
+            }
+        }
+
+        public void ResolveCollisions()
+        {
+            foreach (CollisionRecord record in CollisionRecords)
+            {
+                try
+                {
+                    CacheParameters[0] = record.Inner;
+                    record.Method.Invoke(record.Outer, CacheParameters);
+                }
+                catch (Exception exception)
+                {
+                    throw exception.InnerException;
                 }
             }
         }
@@ -232,6 +258,5 @@ namespace Galaxy
             }
 
         }
-
     }
 }
