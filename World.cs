@@ -49,6 +49,9 @@ namespace Galaxy
         public CWorld ReturnWorld { get; set; }
         public bool IsSecretWorld { get; set; }
         public float ScrollSpeed { get; set; }
+        public Thread CollisionThread { get; set; }
+        public Mutex CollisionMutex { get; set; }
+        public bool CollisionThreadRun { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -70,6 +73,14 @@ namespace Galaxy
             {
                 Stage = new CStage(this, stage_definition);
             }
+
+#if XBOX360
+            CollisionMutex = new Mutex(false);
+#else
+            CollisionMutex = new Mutex(false, "CWorld.CollisionMutex");
+#endif
+
+            CollisionGrid.Initialize(Vector2.Zero);
         }
 
         // TODO: stage definition param
@@ -102,6 +113,9 @@ namespace Galaxy
             Stats.Initialize(this);
 
             CollisionGrid.Initialize(GameCamera.Position.ToVector2());
+
+            CollisionThread = new Thread(CollectEntityCollisionsImpl);
+            CollisionThread.Start();
         }
 
         public void Stop()
@@ -118,6 +132,17 @@ namespace Galaxy
             Entities.Clear();
             EntitiesToAdd.Clear();
             EntitiesToDelete.Clear();
+
+            // ignore failure from aborting non-started thread
+            // 360 does not have ThreadState or IsAlive
+            try
+            {
+                if (CollisionThread != null)
+                    CollisionThread.Abort();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void Update()
@@ -143,14 +168,20 @@ namespace Galaxy
 
             UpdatePauseInput();
             UpdateInput();
-            UpdateEntities();
+
+            // resolve previous frame collisions
+            ResolveEntityCollisions();
+            // delete entities removed as a result of collision
+            ProcessEntityDelete();
+
             UpdateHuds();
-
-            CollisionGrid.Clear(GameCamera.Position.ToVector2());
-            CollisionGrid.Insert(Entities);
-
-            // TODO: can be threaded
             ParticleEffects.Update();
+
+            // delete entities as a result of update
+            ProcessEntityDelete();
+
+            // kick new collision thread
+            UpdateEntitiesThreadedCollision();
 
             UpdateStageEnd();
             UpdateSecretStageEntry();
@@ -202,8 +233,17 @@ namespace Galaxy
         {
             ProcessEntityAdd();
             ProcessEntityUpdates();
-            ProcessEntityCollisions();
+            CollectEntityCollisions();
+            //ResolveEntityCollisions();
             ProcessEntityDelete();
+        }
+
+        public void UpdateEntitiesThreadedCollision()
+        {
+            ProcessEntityAdd();
+            ProcessEntityUpdates();
+            CollectEntityCollisions();
+            //ProcessEntityDelete();
         }
 
         public void UpdateHuds()
@@ -766,9 +806,39 @@ namespace Galaxy
             }
         }
 
-        private void ProcessEntityCollisions()
+        private void CollectEntityCollisions()
         {
-            CollisionGrid.Collide();
+            lock (CollisionMutex)
+            {
+                CollisionThreadRun = true;
+            }
+        }
+
+        private void CollectEntityCollisionsImpl()
+        {
+            while (true)
+            {
+                while (!CollisionThreadRun)
+                {
+                    Thread.Sleep(0);
+                }
+
+                lock (CollisionMutex)
+                {
+                    CollisionGrid.Clear(GameCamera.Position.ToVector2());
+                    CollisionGrid.Insert(Entities);
+                    CollisionGrid.CollectCollisions();
+                    CollisionThreadRun = false;
+                }
+            }
+        }
+
+        private void ResolveEntityCollisions()
+        {
+            lock (CollisionMutex)
+            {
+                CollisionGrid.ResolveCollisions();
+            }
         }
 
         public void ProcessEntityAdd()

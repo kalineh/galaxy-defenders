@@ -295,12 +295,6 @@ namespace Galaxy
                 weapon.Update();
             foreach (CWeapon weapon in WeaponSidekickRight)
                 weapon.Update();
-
-            // TODO: de-linq
-            WeaponPrimary.ForEach(weapon => weapon.Update());
-            WeaponSecondary.ForEach(weapon => weapon.Update());
-            WeaponSidekickLeft.ForEach(weapon => weapon.Update());
-            WeaponSidekickRight.ForEach(weapon => weapon.Update());
         }
 
         public void UpdateShields()
