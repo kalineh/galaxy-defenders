@@ -36,8 +36,10 @@ namespace Galaxy
 
             if (Fader.IsComplete())
             {
+                Source.OnExit();
                 Source = null;
                 System.GC.Collect();
+                Target.OnEnter();
                 Game.State = Target;
             }
         }

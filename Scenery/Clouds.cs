@@ -48,6 +48,8 @@ namespace Galaxy
             RandomLerp = random_lerp;
             Clouds = new List<Cloud>();
             BaseCount = base_count;
+            Visual.Scale = new Vector2(Scale);
+            Visual.Update();
             UpdateCloudCount();
         }
 
@@ -71,7 +73,7 @@ namespace Galaxy
 
             foreach (Cloud cloud in Clouds)
             {
-                if (World.GameCamera.IsOffBottom(cloud.Position, 1.0f))
+                if (!World.GameCamera.IsInside(cloud.Position, 64.0f))
                 {
                     cloud.Position = RandomRespawnPosition();
                     cloud.Velocity = Velocity;
@@ -105,7 +107,7 @@ namespace Galaxy
             Vector2 tl = World.GameCamera.GetTopLeft();
             Vector2 br = World.GameCamera.GetBottomRight();
             Vector2 range = br - tl;
-            return tl + new Vector2(World.Random.NextFloat() * range.X, -100.0f);
+            return tl + new Vector2(World.Random.NextFloat() * range.X, -32.0f);
         }
 
         private Vector2 RandomLerpVelocity()

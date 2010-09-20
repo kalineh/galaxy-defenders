@@ -2,6 +2,349 @@
 // Map.cs
 //
 
+/* 
+ * Content Checklist
+ * 
+ * PRIMARY WEAPONS
+ * + Front
+ * + Spread
+ * + Plasma
+ * - Fire
+ * - Shock
+ * - Swirl
+ * - Beam
+ * - Lightning
+ * 
+ * SECONDARY WEAPONS
+ * + Missile
+ * + Seek Bomb
+ * - ?
+ * - ?
+ * - ?
+ * - ?
+ * - ?
+ * - ?
+ * 
+ * SIDEKICK WEAPONS
+ * + Mini Shot
+ * - Side Wave
+ * - Shield Balls
+ * - Bomblets
+ * - Rear Spread Shot
+ * - Blade
+ * - Sonic Wave
+ * - Rear Guard
+ * 
+ * ENEMIES
+ * + Ball
+ * + Shoot Ball
+ * + Isosceles
+ * + Down Turret
+ * + Aim Turret
+ * + Raid Turret
+ * + Rotate Turret
+ * + Missile Pod
+ * + Beamer
+ * + Triple Shot
+ * + Fence Beam
+ * + Cutter
+ * + Airship
+ * + Spike
+ * + Pyramid
+ * + Black Hole
+ * + Glob
+ * - Swirl
+ * - Dango
+ * - Cannon
+ * - Splitter
+ * - Teleporter
+ * 
+ * BOSSES
+ * - FlyingOverCarrier
+ * - ForgottenWaters
+ * - DistantPlanet
+ * - SpaceStationRX4
+ * - StrikeInversion
+ * - GraniteLocation
+ * - TempestNebula
+ * - MysteriousClouds
+ * - RelentLess
+ * - InvasiveAction
+ * - ShadowOfTears
+ * - LaminationX
+ * 
+ * DECORATIONS
+ * - Square Platform
+ * 
+ * BUILDINGS
+ * - Building 1
+ * - Building 2
+ * - Building 3
+ * - Building 4
+ * - Building 5
+ * - Building 6
+ * - Building 7
+ * - Building 8
+ * - Building 9
+ * - Building 10
+ * - Building 11
+ * - Building 12
+ * - Building 13
+ * - Building 14
+ * - Building 15
+ * - Building 16
+ * - Building 17
+ * - Building 18
+ * - Building 19
+ * - Building 20
+ * 
+ * SCENERY
+ * - FlyingOverCarrierBG
+ * - FlyingOverCarrierFG
+ * - ForgottenWatersBG
+ * - ForgottenWatersFG
+ * - DistantPlanetBG
+ * - DistantPlanetFG
+ * - SpaceStationRX4BG
+ * - SpacestationRX4FG
+ * - StrikeInversionBG
+ * - StrikeInversionFG
+ * - GraniteLocationBG
+ * - GraniteLocationFG
+ * - TempestNebulaBG
+ * - TempestNebulaFG
+ * - MysteriousCloudsBG
+ * - MysteriousCloudsFG
+ * - RelentLessBG
+ * - RelentLessFG
+ * - InvasiveActionBG
+ * - InvasiveActionFG
+ * - ShadowOfTearsBG
+ * - ShadowOfTearsFG
+ * - LaminationXBG
+ * - LaminationXFG
+ * 
+ * SHOP ICONS
+ * - Primary Weapons
+ * - Secondary Weapons
+ * - Sidekick Weapons
+ * 
+ * CHASSIS
+ * - Rookie
+ * - Eagle
+ * - Crusher
+ * - Interceptor
+ * - Phoenix
+ * - Lightning
+ * - Dragon
+ * - Demon
+ * - Ace
+ * - Ultima
+ * 
+ * GENERATORS
+ * - Basic Mk 1
+ * - Basic Mk 2
+ * - Basic Mk 3
+ * - Impulse Mk 1
+ * - Impulse Mk 2
+ * - Impulse Mk 3
+ * - Capacitor Mk 1
+ * - Capacitor Mk 2
+ * - Capacitor Mk 3
+ * - Kinetic // regen on hit
+ * - Magnetic // regen on coin
+ * - Fusion
+ * 
+ * SHIELDS
+ * - Light Shield
+ * - Fiber Shield
+ * - Magnetic Shield
+ * - Electric Shield
+ * - Advanced Shield
+ * - Transport Shield
+ * - Fusion Shield
+ * - Micro Shield
+ * - Disruptor Shield
+ * - Power Shield
+ * - Tank Shield
+ * - Ultimate Shield
+ * 
+ * PORTRAITS
+ * - Kazuki
+ * - Rabbit
+ * - Gunthor
+ * - Mystery
+ * 
+ * 
+ * Major Task Checklist
+ * 
+ * - Main Menus
+ * - Shop System
+ * - Bosses
+ * - Remaining Enemies
+ * - Primary Weapons
+ * - Secondary Weapons
+ * - Sidekick Weapons
+ * - Icons
+ * - Chassis assets
+ * - Building assets
+ * - Scenery
+ * - Stage Layouts
+ * - Secret Stages
+ * - 360 profile/save data
+ * - Optimization
+ * - Secret Character
+ * - Thread Effects
+ * - Polish!
+ * 
+ */
+
+/*
+ * Enemy Introduction
+ * 
+ * FLYING OVER CARRIER
+ * - Ball
+ * - DownTurret
+ * - Turret
+ * 
+ * FORGOTTEN WATERS
+ * - ShootBall
+ * - Isosceles
+ * 
+ * DISTANT PLANET
+ * - Spike
+ * - RaidTurret
+ * 
+ * SPACE STATION RX4
+ * - RotateTurret
+ * - Splitter
+ * 
+ * STRIKE INVERSION
+ * - TripleShot
+ * - Beamer
+ * 
+ * GRANITE LOCATION
+ * - Glob
+ * - Swirl
+ * 
+ * TEMPEST NEBULA
+ * - MissilePod
+ * - BlackHole
+ * 
+ * MYSTERIOUS CLOUDS
+ * - FenceBeam
+ * - Airship
+ * 
+ * RELENT LESS
+ * - Cutter
+ * - Dango
+ * 
+ * INVASIVE ACTION
+ * - Pyramid
+ * - Teleporter
+ * 
+ * SHADOW OF TEARS
+ * - Cannon
+ * 
+ * LAMINATION X
+ * 
+ */
+
+/*
+ * Theme
+ * 
+ * FLYING OVER CARRIER
+ * - SKY: Light Blue
+ * - BG: None
+ * - FG: Circle Clouds
+ * 
+ * FORGOTTEN WATERS
+ * - SKY: Dark Blue
+ * - BG: Water Ripples
+ * - FG: Sky Clouds
+ * 
+ * DISTANT PLANET
+ * - SKY: GreenAqua
+ * - BG: Drops
+ * - FG: None
+ * 
+ * SPACE STATION RX4
+ * - SKY: Black
+ * - BG: Stars
+ * - FG: Stars
+ * 
+ * STRIKE INVERSION
+ * - SKY: Dark Blue
+ * - BG: Diagonal Moving Blocks
+ * - FG: None
+ * 
+ * GRANITE LOCATION
+ * - SKY: Black
+ * - BG: Vertical Lines
+ * - FG: Stars
+ * 
+ * TEMPEST NEBULA
+ * - SKY: Gradient: Blue, Green
+ * - BG: Snow
+ * - FG: Snow
+ * 
+ * MYSTERIOUS CLOUDS
+ * - SKY: Light Blue
+ * - BG: None
+ * - FG: Sky Clouds
+ * 
+ * RELENT LESS
+ * - SKY: Dark Grey
+ * - BG: Vertical Lines
+ * - FG: None
+ * 
+ * INVASIVE ACTION
+ * - SKY: Light Blue
+ * - BG: Water Ripples
+ * - FG: Drops
+ * 
+ * SHADOW OF TEARS
+ * - SKY: Dark Blue
+ * - BG: Snow
+ * - FG: Snow
+ * 
+ * LAMINATION X
+ * - SKY: Black
+ * - BG: Water Ripples
+ * - FG: None
+ * 
+ */
+
+/*
+ * Decorations
+ * 
+ * FLYING OVER CARRIER
+ * 
+ * FORGOTTEN WATERS
+ * 
+ * DISTANT PLANET
+ * 
+ * SPACE STATION RX4
+ * 
+ * STRIKE INVERSION
+ * 
+ * GRANITE LOCATION
+ * 
+ * TEMPEST NEBULA
+ * 
+ * MYSTERIOUS CLOUDS
+ * 
+ * RELENT LESS
+ * 
+ * INVASIVE ACTION
+ * 
+ * SHADOW OF TEARS
+ * 
+ * LAMINATION X
+ * 
+ */
+
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 

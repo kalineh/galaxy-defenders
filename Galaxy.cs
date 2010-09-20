@@ -148,6 +148,7 @@ namespace Galaxy
         {
             // TODO: Unload any non ContentManager content here
 
+            State.OnExit();
             CAudio.Shutdown();
         }
 

@@ -3,13 +3,12 @@
 //
 namespace Galaxy {
 namespace Stages {
-public class Stage8 {
+public class OldStage8 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage8");
 stage.ScrollSpeed = 3.0f;
-    stage.DisplayName = "MYSTERIOUS CLOUDS";
-stage.BackgroundSceneryName = "MysteriousCloudsBG";
-stage.ForegroundSceneryName = "MysteriousCloudsFG";
+stage.BackgroundSceneryName = "OceanCloudsBG";
+stage.ForegroundSceneryName = "OceanCloudsFG";
 stage.MusicName = "B";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {

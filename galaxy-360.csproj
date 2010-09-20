@@ -65,6 +65,7 @@
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
+    <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />
     <Compile Include="Enemy\Cutter.cs" />
@@ -77,6 +78,18 @@
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage1.cs" />
+    <Compile Include="StageDefinitions\OldStage10.cs" />
+    <Compile Include="StageDefinitions\OldStage11.cs" />
+    <Compile Include="StageDefinitions\OldStage12.cs" />
+    <Compile Include="StageDefinitions\OldStage2.cs" />
+    <Compile Include="StageDefinitions\OldStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage4.cs" />
+    <Compile Include="StageDefinitions\OldStage5.cs" />
+    <Compile Include="StageDefinitions\OldStage6.cs" />
+    <Compile Include="StageDefinitions\OldStage7.cs" />
+    <Compile Include="StageDefinitions\OldStage8.cs" />
+    <Compile Include="StageDefinitions\OldStage9.cs" />
     <Compile Include="StageDefinitions\Stage10.cs" />
     <Compile Include="StageDefinitions\Stage11.cs" />
     <Compile Include="StageDefinitions\Stage12.cs" />
