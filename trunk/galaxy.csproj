@@ -30,7 +30,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>17</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -114,6 +114,7 @@
     <Compile Include="Enemy\Glob.cs" />
     <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
+    <Compile Include="NaturalSorter.cs" />
     <Compile Include="Pilot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
@@ -174,6 +175,18 @@
     <Compile Include="StageDefinitions\BonusStage1.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage1.cs" />
+    <Compile Include="StageDefinitions\OldStage10.cs" />
+    <Compile Include="StageDefinitions\OldStage11.cs" />
+    <Compile Include="StageDefinitions\OldStage12.cs" />
+    <Compile Include="StageDefinitions\OldStage2.cs" />
+    <Compile Include="StageDefinitions\OldStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage4.cs" />
+    <Compile Include="StageDefinitions\OldStage5.cs" />
+    <Compile Include="StageDefinitions\OldStage6.cs" />
+    <Compile Include="StageDefinitions\OldStage7.cs" />
+    <Compile Include="StageDefinitions\OldStage8.cs" />
+    <Compile Include="StageDefinitions\OldStage9.cs" />
     <Compile Include="StageDefinitions\Stage12.cs" />
     <Compile Include="StageDefinitions\Stage11.cs" />
     <Compile Include="StageDefinitions\Stage10.cs" />

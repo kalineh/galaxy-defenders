@@ -1,16 +1,15 @@
 //
-// Stage11.cs
+// Stage10.cs
 //
 namespace Galaxy {
 namespace Stages {
-public class Stage11 {
+public class OldStage10 {
 public static CStageDefinition GenerateDefinition() {
-CStageDefinition stage = new CStageDefinition("Stage11");
+CStageDefinition stage = new CStageDefinition("Stage10");
 stage.ScrollSpeed = 3.0f;
-    stage.DisplayName = "SHADOW OF TEARS";
-stage.BackgroundSceneryName = "ShadowOfTearsBG";
-stage.ForegroundSceneryName = "ShadowOfTearsFG";
-stage.MusicName = "A";
+stage.BackgroundSceneryName = "SimpleSpace";
+stage.ForegroundSceneryName = "Empty";
+stage.MusicName = "B";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
@@ -23,7 +22,7 @@ new Galaxy.CStageElementStageFinish() {
 World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
-Y = -18864.0f,
+Y = -18952.0f,
 },
 });
 

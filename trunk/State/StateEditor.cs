@@ -67,8 +67,10 @@ namespace Galaxy
             GridSize = 8.0f;
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
+            bg_method = bg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
+            fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -300,6 +302,13 @@ namespace Galaxy
             if (state.RightButton == ButtonState.Pressed)
             {
                 World.GameCamera.Position -= new Vector3(delta, 0.0f) * 1.0f / World.GameCamera.Zoom;
+            }
+
+            if (state.ScrollWheelValue != 0)
+            {
+                float apply = state.ScrollWheelValue * 0.005f;
+                World.GameCamera.Zoom += apply;
+                World.GameCamera.Zoom = MathHelper.Clamp(World.GameCamera.Zoom, 0.05f, 1.75f);
             }
         }
 
@@ -544,8 +553,10 @@ namespace Galaxy
             CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
+            bg_method = bg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
+            fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
 
@@ -559,6 +570,7 @@ namespace Galaxy
             CStageDefinition new_definition = CStageGenerate.GenerateDefinitionFromWorld(World, StageDefinition.Name);
 
             // rollover existing stage properties
+            new_definition.DisplayName = StageDefinition.DisplayName;
             new_definition.ScrollSpeed = StageDefinition.ScrollSpeed;
             new_definition.BackgroundSceneryName = StageDefinition.BackgroundSceneryName;
             new_definition.ForegroundSceneryName = StageDefinition.ForegroundSceneryName;
@@ -573,8 +585,10 @@ namespace Galaxy
                 CAudio.PlayMusic("Title");
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
+            bg_method = bg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             BackgroundScenery = bg_method.Invoke(null, new object[] { World }) as CScenery;
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
+            fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
         }
     }

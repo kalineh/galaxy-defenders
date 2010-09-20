@@ -7,8 +7,9 @@ public class Stage9 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage9");
 stage.ScrollSpeed = 3.0f;
-stage.BackgroundSceneryName = "SimpleSpace";
-stage.ForegroundSceneryName = "Empty";
+    stage.DisplayName = "RELENT LESS";
+stage.BackgroundSceneryName = "RelentLessBG";
+stage.ForegroundSceneryName = "RelentLessFG";
 stage.MusicName = "A";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {

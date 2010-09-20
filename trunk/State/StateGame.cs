@@ -32,6 +32,14 @@ namespace Galaxy
             World.ReturnFromSecret();
         }
 
+        public override void OnExit()
+        {
+            if (World != null)
+            {
+                World.Stop(); 
+            }
+        }
+
         public override void Update()
         {
             World.Update();

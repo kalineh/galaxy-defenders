@@ -4,11 +4,12 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
+using Galaxy;
 
 namespace StageEditor
 {
-
-    public partial class MainForm : Form
+    public partial class MainForm
+        : Form
     {
         public MainForm()
         {
@@ -17,10 +18,14 @@ namespace StageEditor
             // put all stages into dropdown
             Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
             IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages", StringComparison.Ordinal));
-            foreach (Type type in types)
+            List<string> typenames = new List<String>(from t in types select t.Name);
+            List<string> sorted = Galaxy.CNaturalSorter.NaturalSort(typenames);
+
+            foreach (string name in sorted)
             {
-                StageSelectDropdown.Items.Add(type.Name);
+                StageSelectDropdown.Items.Add(name);
             }
+
             // TODO: last selected stage
             StageSelectDropdown.Text = "EditorStage";
             StageSelectDropdown.DropDownStyle = ComboBoxStyle.DropDownList;

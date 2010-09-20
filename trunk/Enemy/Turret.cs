@@ -24,7 +24,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Turret");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 2.5f;
+            HealthMax = 2.0f;
 
             FireDelay = 1.5f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());

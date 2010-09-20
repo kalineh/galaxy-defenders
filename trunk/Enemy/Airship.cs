@@ -28,9 +28,9 @@ namespace Galaxy
 
             CollisionOffset = new Vector2(-32.0f, -48.0f);
 
-            FireDelay = 1.5f;
+            FireDelay = 0.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;
-            FireDamage = 2.0f;
+            FireDamage = 3.0f;
             FireSpeed = 14.0f;
         }
 
