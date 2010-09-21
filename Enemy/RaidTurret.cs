@@ -26,10 +26,10 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 3.5f;
 
-            FireDelay = 0.3f;
+            FireDelay = 0.4f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 1.5f;
-            FireSpeed = 3.0f;
+            FireSpeed = 2.5f;
         }
 
         public override void UpdateAI()

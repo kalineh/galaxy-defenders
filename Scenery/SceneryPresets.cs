@@ -77,15 +77,14 @@ namespace Galaxy
                 ),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f),
                 new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.0f, Vector2.UnitY * 9.0f)
             );
         }
 
         public static CScenery ForgottenWatersFG(CWorld world)
         {
-            return new CSceneryChain(world,
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Cloud"), 1.0f, Vector2.UnitY * 9.0f)
-            );
+            return Empty(world);
         }
 
         public static CScenery DistantPlanetBG(CWorld world)
@@ -104,8 +103,7 @@ namespace Galaxy
 
         public static CScenery DistantPlanetFG(CWorld world)
         {
-            return new CSceneryChain(world);
-
+            return Empty(world);
         }
 
         public static CScenery SpaceStationRX4BG(CWorld world)
