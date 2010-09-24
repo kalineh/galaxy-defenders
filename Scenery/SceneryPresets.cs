@@ -115,9 +115,9 @@ namespace Galaxy
             );
         }
 
-        public static CScenery SpacestationRX4FG(CWorld world)
+        public static CScenery SpaceStationRX4FG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return Empty(world);
         }
 
         public static CScenery StrikeInversionBG(CWorld world)

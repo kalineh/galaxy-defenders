@@ -37,11 +37,11 @@ namespace Galaxy
             TurretVisual.Recache();
             HealthMax = 4.0f;
 
-            FireDelay = 1.25f;
+            FireDelay = 0.75f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 3.0f;
             FireSpeed = 10.0f;
-            TripleShotDelay = 0.25f;
+            TripleShotDelay = 0.15f;
         }
 
         public override void UpdateAI()
@@ -110,8 +110,9 @@ namespace Galaxy
 
         public override void UpdateCollision()
         {
+            Vector2 offset = new Vector2(21.0f, 21.0f);
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.PositionPhysics.Position;
+            aabb.Position = Physics.PositionPhysics.Position - offset;
         }
 
         protected override bool DoesGenerateCorpse()
