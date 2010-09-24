@@ -71,6 +71,7 @@ namespace Galaxy
             typeof(CRotateTurret),
             typeof(CShootBall),
             typeof(CSpike),
+            typeof(CSplitter),
             typeof(CTurret),
             typeof(CTripleShot),
         };
