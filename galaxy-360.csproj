@@ -66,6 +66,8 @@
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
     <Compile Include="Enemy\Splitter.cs" />
+    <Compile Include="Enemy\Swirl.cs" />
+    <Compile Include="Enemy\SwirlBall.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />
