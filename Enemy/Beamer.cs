@@ -56,6 +56,8 @@ namespace Galaxy
 
             CEnemyLaser laser = CEnemyLaser.Spawn(World, fire_position, rotation, FireSpeed, FireDamage);
             FireCooldown = Time.ToFrames(FireDelay);
+
+            CAudio.PlaySound("EnemyShoot");
         }
 
         public override void Update()
