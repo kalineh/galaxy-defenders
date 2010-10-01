@@ -154,7 +154,16 @@ namespace Galaxy
         {
             Health -= 1;
             if (Health <= 0)
+            {
+                CAudio.PlaySound("WeaponHitMissile", 1.0f);
                 Die();
+            }
+        }
+
+        protected override void OnDie()
+        {
+            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.5f, CEnemy.EnemyOrangeColor);
+            base.OnDie();
         }
     }
 }
