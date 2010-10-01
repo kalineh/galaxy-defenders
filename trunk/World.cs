@@ -149,6 +149,9 @@ namespace Galaxy
         {
             if (Paused)
             {
+                // NOTE: hack! frame time should be on world?
+                Game.GameFrame -= 1;
+
                 UpdatePauseInput();
                 return;
             }
