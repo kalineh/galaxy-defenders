@@ -153,7 +153,7 @@
  * - Capacitor Mk 3
  * - Kinetic // regen on hit
  * - Magnetic // regen on coin
- * - Fusion
+ * - Fusion // low storage, fast regen
  * 
  * SHIELDS
  * - Light Shield
