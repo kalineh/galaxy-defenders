@@ -15,6 +15,7 @@ namespace Galaxy
         public CState Target { get; private set; }
         public CFader Fader { get; private set; }
         private SpriteBatch SpriteBatch { get; set; }
+        public bool NoExitSource { get; set; }
 
         public CStateFadeTo(CGalaxy game, CState source, CState target)
         {
@@ -36,8 +37,12 @@ namespace Galaxy
 
             if (Fader.IsComplete())
             {
-                Source.OnExit();
-                Source = null;
+                if (!NoExitSource)
+                {
+                    Source.OnExit();
+                    Source = null;
+                }
+
                 System.GC.Collect();
                 Target.OnEnter();
                 Game.State = Target;

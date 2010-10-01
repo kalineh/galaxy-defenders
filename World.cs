@@ -400,7 +400,10 @@ namespace Galaxy
                 bonus_stage.World.ReturnWorld = this;
                 bonus_stage.World.IsSecretWorld = true;
 
-                Game.State = new CStateFadeTo(Game, Game.State, bonus_stage);
+                CStateFadeTo fader = new CStateFadeTo(Game, Game.State, bonus_stage);
+                fader.NoExitSource = true;
+                Game.State = fader;
+                
                 StageEndText.Clear();
                 return;
             }
