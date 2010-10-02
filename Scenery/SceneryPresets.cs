@@ -19,29 +19,6 @@ namespace Galaxy
             );
         }
 
- /* 
- * 
- //* RELENT LESS
- //* - SKY: Dark Grey
- ////* - BG: Vertical Lines
- //* - FG: None
- //* 
- //* INVASIVE ACTION
- //* - SKY: Light Blue
- //* - BG: Water Ripples
- //* - FG: Drops
- //* 
- //* SHADOW OF TEARS
- //* - SKY: Dark Blue
- //* - BG: Snow
- //* - FG: Snow
- //* 
- //* LAMINATION X
- //* - SKY: Black
- //* - BG: Water Ripples
- //* - FG: None
-  * */
-
         public static CScenery Empty(CWorld world)
         {
             return new CSceneryChain(world);
@@ -221,7 +198,12 @@ namespace Galaxy
 
         public static CScenery RelentLessBG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CBackground(world, new Color(48, 48, 48)),
+                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Vertical"), 1.0f, 6.0f),
+                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Vertical"), 1.0f, 9.0f),
+                new CStars(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Vertical"), 1.0f, 12.0f)
+            );
         }
 
         public static CScenery RelentLessFG(CWorld world)
@@ -231,27 +213,54 @@ namespace Galaxy
 
         public static CScenery InvasiveActionBG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CGradientBackground(world,
+                    new Color(5, 5, 98),
+                    new Color(5, 5, 98),
+                    new Color(5, 5, 98),
+                    new Color(5, 5, 98)
+                ),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Water"), 1.0f, Vector2.UnitY * 1.0f)
+            );
         }
 
         public static CScenery InvasiveActionFG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 0.6f, Vector2.UnitY * 12.0f, 0.0f, 7)
+            );
         }
 
         public static CScenery ShadowOfTearsBG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CGradientBackground(world,
+                    new Color(92, 120, 196),
+                    new Color(92, 120, 196),
+                    new Color(92, 120, 196),
+                    new Color(92, 120, 196)
+                )
+            );
         }
 
         public static CScenery ShadowOfTearsFG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 1.0f, new Vector2(3.0f, 11.0f), 0.0f, 8),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, new Vector2(2.0f, 14.0f), 0.0f, 8),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Snow"), 0.8f, new Vector2(3.0f, 12.0f), 2.0f, 8)
+            );
         }
 
         public static CScenery LaminationXBG(CWorld world)
         {
-            return new CSceneryChain(world);
+            return new CSceneryChain(world,
+                new CBackground(world, new Color(0, 0, 0)),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Star"), 1.2f, new Vector2(0.0f, 6.0f), 3.0f, 12),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Star"), 0.8f, new Vector2(0.0f, 9.0f), 2.0f, 15)
+            );
         }
 
         public static CScenery LaminationXFG(CWorld world)
