@@ -178,10 +178,12 @@
  * 
  * Major Task Checklist
  * 
- * - Main Menus
+ * - Stage Layouts
+ * - Secret Stages
+ * + Remaining Enemies
  * - Shop System
+ * - Main Menus
  * - Bosses
- * - Remaining Enemies
  * - Primary Weapons
  * - Secondary Weapons
  * - Sidekick Weapons
@@ -189,12 +191,12 @@
  * - Chassis assets
  * - Building assets
  * - Scenery
- * - Stage Layouts
- * - Secret Stages
  * - 360 profile/save data
  * - Optimization
  * - Secret Character
  * - Thread Effects
+ * - Special ability fixing special cases
+ * - Stats recording special cases (swirl-ball, etc)
  * - Polish!
  * 
  */
@@ -203,33 +205,33 @@
  * Enemy Introduction
  * 
  * FLYING OVER CARRIER
- * - Ball
- * - DownTurret
- * - Turret
+ * + Ball
+ * + DownTurret
+ * + Turret
  * 
  * FORGOTTEN WATERS
- * - ShootBall
- * - Isosceles
+ * + ShootBall
+ * + Isosceles
  * 
  * DISTANT PLANET
- * - Spike
- * - RaidTurret
+ * + Spike
+ * + RaidTurret
  * 
  * SPACE STATION RX4
- * - RotateTurret
- * - Splitter
+ * + RotateTurret
+ * + Splitter
  * 
  * STRIKE INVERSION
- * - TripleShot
- * - Beamer
+ * + TripleShot
+ * + Beamer
  * 
  * GRANITE LOCATION
- * - Glob
- * - Swirl
+ * + Glob
+ * + Swirl
  * 
  * TEMPEST NEBULA
- * - MissilePod
- * - BlackHole
+ * + MissilePod
+ * + BlackHole
  * 
  * MYSTERIOUS CLOUDS
  * - FenceBeam
@@ -237,7 +239,7 @@
  * 
  * RELENT LESS
  * - Cutter
- * - Dango
+ * X Dango
  * 
  * INVASIVE ACTION
  * - Pyramid
