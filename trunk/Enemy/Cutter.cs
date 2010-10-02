@@ -32,9 +32,9 @@ namespace Galaxy
             BeamVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             //BeamVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
 
-            //Physics.AnglePhysics.AngularVelocity = 0.03f * World.Random.RandomSign();
+            //Physics.AnglePhysics.AngularVelocity = 0.03f * World.Random.NextSign();
             BeamRotation = 0.0f;
-            BeamRotationSpeed = 0.03f * World.Random.RandomSign();
+            BeamRotationSpeed = 0.03f * World.Random.NextSign();
 
             HealthMax = 14.0f;
         }

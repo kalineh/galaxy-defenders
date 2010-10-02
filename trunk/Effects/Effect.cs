@@ -168,6 +168,18 @@ namespace Galaxy
             spawner.Spawn(world.ParticleEffects);
         }
 
+        public static void TeleportOut(CWorld world, Vector2 position)
+        {
+            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportOutEffect(position);
+            spawner.Spawn(world.ParticleEffects);
+        }
+
+        public static void TeleportIn(CWorld world, Vector2 position)
+        {
+            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportInEffect(position);
+            spawner.Spawn(world.ParticleEffects);
+        }
+
         public static CEntity DashBurstEffect(CWorld world, Vector2 position, float scale, Color color)
         {
             COneShotAnimation animation = new COneShotAnimation();

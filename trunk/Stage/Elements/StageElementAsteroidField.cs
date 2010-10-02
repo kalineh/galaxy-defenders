@@ -29,7 +29,7 @@ namespace Galaxy
         {
             float x_base = 0.1f;
             float x_random = 0.3f * world.Random.NextFloat();
-            float x_sign = world.Random.RandomSign();
+            float x_sign = world.Random.NextSign();
             float x = x_base + x_random * x_sign;
 
             float y_base = 1.0f;
@@ -42,7 +42,7 @@ namespace Galaxy
         private float GetRandomSpawnAngularVelocity(CWorld world)
         {
             float angular_velocity_base = 0.05f;
-            float angular_velocity_random = 0.1f * world.Random.NextFloat() * world.Random.RandomSign();
+            float angular_velocity_random = 0.1f * world.Random.NextFloat() * world.Random.NextSign();
 
             return angular_velocity_base + angular_velocity_random;
         }
@@ -52,7 +52,7 @@ namespace Galaxy
             float bigness_base = 1.0f;
             float bigness_random = 0.15f * world.Random.NextFloat();
 
-            return bigness_base + bigness_random * world.Random.RandomSign();
+            return bigness_base + bigness_random * world.Random.NextSign();
         }
     }
 

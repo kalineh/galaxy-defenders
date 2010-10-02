@@ -20,7 +20,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Pyramid");
             HealthMax = 13.0f;
 
-            Physics.AnglePhysics.AngularVelocity = 0.005f * World.Random.RandomSign();
+            Physics.AnglePhysics.AngularVelocity = 0.005f * World.Random.NextSign();
         }
 
         public override void UpdateCollision()

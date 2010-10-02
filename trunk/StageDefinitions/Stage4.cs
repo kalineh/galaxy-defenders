@@ -186,16 +186,6 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 325.51f,
-Y = -16555.24f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
 TextureName = "Building5",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,

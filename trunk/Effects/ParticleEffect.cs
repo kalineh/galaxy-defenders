@@ -345,6 +345,53 @@ namespace Galaxy
             };
         }
 
+        public static CParticleGroupSpawner MakeTeleportOutEffect(Vector2 position)
+        {
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 20,
+                Position = position,
+                PositionVariation = new Vector2(2.8f, 2.8f),
+                PositionDelta = new Vector2(-0.3f, -0.3f),
+                PositionDeltaVariation = new Vector2(0.6f, 0.6f),
+                Alpha = 1.0f,
+                AngleVariation = MathHelper.TwoPi,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(3.5f, 0.3f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.1f, -0.1f),
+                ScaleDeltaVariation = new Vector2(0.1f, 0.1f),
+                Lifetime = 15,
+                Color = CEnemy.EnemyOrangeColor,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeTeleportInEffect(Vector2 position)
+        {
+            // TODO: not crap
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Dot,
+                Count = 20,
+                Position = position,
+                PositionVariation = new Vector2(1.5f, 1.5f),
+                PositionDelta = new Vector2(0.0f, 0.0f),
+                PositionDeltaVariation = new Vector2(1.0f, 1.0f),
+                Alpha = 1.0f,
+                AngleVariation = MathHelper.TwoPi,
+                AngleDelta = 0.0f,
+                AngleDeltaVariation = 0.0f,
+                Scale = new Vector2(2.5f, 2.5f),
+                ScaleVariation = new Vector2(-0.1f, -0.1f),
+                ScaleDelta = new Vector2(-0.002f, -0.002f),
+                ScaleDeltaVariation = new Vector2(0.0f, 0.0f),
+                Lifetime = 12,
+                Color = CEnemy.EnemyOrangeColor,
+            };
+        }
+
     }
 }
 

@@ -103,6 +103,7 @@
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />
+    <Compile Include="Enemy\Teleporter.cs" />
     <Compile Include="Enemy\Swirl.cs" />
     <Compile Include="Enemy\SwirlBall.cs" />
     <Compile Include="Enemy\Splitter.cs" />

@@ -16,7 +16,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.AnglePhysics.AngularVelocity = 0.015f * world.Random.RandomSign();
+            Physics.AnglePhysics.AngularVelocity = 0.015f * world.Random.NextSign();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Splitter");
             HealthMax = 2.5f;

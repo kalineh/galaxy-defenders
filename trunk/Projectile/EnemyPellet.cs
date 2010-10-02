@@ -21,7 +21,7 @@ namespace Galaxy
             pellet.Physics.PositionPhysics.Position = position;
             pellet.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
             pellet.Physics.AnglePhysics.Rotation = rotation;
-            pellet.Physics.AnglePhysics.AngularVelocity = 0.45f * world.Random.RandomSign();
+            pellet.Physics.AnglePhysics.AngularVelocity = 0.45f * world.Random.NextSign();
             pellet.Damage = damage;
 
             world.EntityAdd(pellet);
