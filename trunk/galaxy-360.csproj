@@ -65,6 +65,7 @@
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
+    <Compile Include="Enemy\Cannon.cs" />
     <Compile Include="Enemy\Splitter.cs" />
     <Compile Include="Enemy\Swirl.cs" />
     <Compile Include="Enemy\SwirlBall.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="Enemy\RaidTurret.cs" />
     <Compile Include="Enemy\RotateTurret.cs" />
+    <Compile Include="Projectile\EnemyCannonShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />

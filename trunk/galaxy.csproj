@@ -103,6 +103,7 @@
     <Compile Include="Enemy\BonusShip.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />
+    <Compile Include="Enemy\Cannon.cs" />
     <Compile Include="Enemy\Teleporter.cs" />
     <Compile Include="Enemy\Swirl.cs" />
     <Compile Include="Enemy\SwirlBall.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Mover\MoverIgnoreCamera.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Pilot.cs" />
+    <Compile Include="Projectile\EnemyCannonShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="Projectile\Projectile.cs" />

@@ -432,7 +432,12 @@ namespace Galaxy
             if (!SnapToGrid)
                 return position;
 
-            return position - new Vector2(position.X % GridSize, position.Y % GridSize);
+            // TODO: fix grid calculation to work around 0.0f mark
+            Vector2 hack = new Vector2(5000.0f, 1000.0f);
+            Vector2 snapped = position + hack;
+            snapped = snapped - new Vector2(snapped.X % GridSize, snapped.Y % GridSize);
+            snapped -= hack;
+            return snapped;
         }
 
         public void UpdateInteractionZoomCamera(Vector2 mouse, Vector2 delta, Vector2 world)
