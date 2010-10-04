@@ -898,7 +898,7 @@ namespace Galaxy
 
         private void GotoLobby()
         {
-            Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateDebugShop(Game));
         }
 
         public void StartStageEnd()

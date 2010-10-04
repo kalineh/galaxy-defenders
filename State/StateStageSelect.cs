@@ -26,7 +26,7 @@ namespace Galaxy
             EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 70.0f, 350.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
@@ -43,7 +43,7 @@ namespace Galaxy
                     IEnumerable<Type> types_filtered = types.Where(t => selectable_stages.Contains(t.Name) == false);
                     foreach (Type type in types_filtered)
                     {
-                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name });
+                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name, PanelType = CMenu.PanelType.None });
                     }
                 }
                 else
@@ -66,7 +66,7 @@ namespace Galaxy
 #endif
             }
 
-            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true });
+            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
 
@@ -112,7 +112,7 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateDebugShop(Game));
         }
     }
 }

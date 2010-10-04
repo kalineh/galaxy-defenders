@@ -11,7 +11,7 @@ using System;
 
 namespace Galaxy
 {
-    public class CStateStateShop
+    public class CStateDebugShop
         : CState
     {
         public CGalaxy Game { get; set; }
@@ -33,7 +33,7 @@ namespace Galaxy
         private SProfile WorkingProfile;
         private SProfile LockedProfile;
 
-        public CStateStateShop(CGalaxy game)
+        public CStateDebugShop(CGalaxy game)
         {
             Game = game;
             EmptyWorld = new CWorld(game, null);
@@ -53,7 +53,7 @@ namespace Galaxy
             //
             MenuBase = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 230.0f, 350.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 90.0f, 350.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
@@ -125,7 +125,6 @@ namespace Galaxy
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
-                        IconName = "Shop/DefaultIcon",
                         Data = weapon_part,
                         Select = SelectPrimaryWeapon,
                         SelectValidate = SelectValidatePrimaryWeapon,
@@ -136,14 +135,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption()
-                                              {
-                                                  Text = "Done",
-                                                  Select = ReturnToUpgradeShip,
-                                                  Highlight = RevertWorkingProfile,
-                                                  CancelOption = true,
-                                                  PanelType = CMenu.PanelType.Small
-                                              });
+            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Secondary Weapon
@@ -178,14 +170,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption()
-                                                {
-                                                    Text = "Done",
-                                                    Select = ReturnToUpgradeShip,
-                                                    Highlight = RevertWorkingProfile,
-                                                    CancelOption = true,
-                                                    PanelType = CMenu.PanelType.Small
-                                                });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Sidekick Left
@@ -218,14 +203,7 @@ namespace Galaxy
                 );
             }
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption()
-                                             {
-                                                 Text = "Done",
-                                                 Select = ReturnToUpgradeShip,
-                                                 Highlight = RevertWorkingProfile,
-                                                 CancelOption = true,
-                                                 PanelType = CMenu.PanelType.Small
-                                             });
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Sidekick Right

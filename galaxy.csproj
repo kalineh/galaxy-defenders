@@ -216,6 +216,7 @@
     <Compile Include="Stage\Elements\StageElementDecoration.cs" />
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
     <Compile Include="Stage\StageCompiler.cs" />
+    <Compile Include="State\StateDebugShop.cs" />
     <Compile Include="State\StateDifficultySelect.cs" />
     <Compile Include="State\StatePilotSelect.cs" />
     <Compile Include="State\StateStageSelect.cs" />

@@ -95,6 +95,11 @@ namespace Galaxy
             }
         }
 
+        public static CVisual MakeSpriteFromGame(Game game, string texture_name, Vector2 size, Color color)
+        {
+            return new CVisual(null, CContent.LoadTexture2D(game, texture_name), color) { Scale = size };
+        }
+
         private static SpriteFont DebugFont { get; set; }
 
         public CWorld World { get; set; }

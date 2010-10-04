@@ -25,14 +25,14 @@ namespace Galaxy
             EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Easy", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Easy },
                     new CMenu.MenuOption() { Text = "Normal", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Normal },
                     new CMenu.MenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
                     new CMenu.MenuOption() { Text = "LOL", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.LOL },
-                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true },
+                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
             Menu.Cursor = 1;
@@ -84,7 +84,7 @@ namespace Galaxy
             EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
-            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 200.0f), Color.White);
+            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
@@ -98,7 +98,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
             CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateDebugShop(Game));
         }
 
         private void Back(object tag)

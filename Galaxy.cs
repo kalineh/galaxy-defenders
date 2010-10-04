@@ -136,6 +136,9 @@ namespace Galaxy
             // Frame rate display.
             FrameRateDisplay = new CFrameRateDisplay(this);
 
+            // Menu textures.
+            CMenu.LoadMenuTextures(this);
+
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
         }
