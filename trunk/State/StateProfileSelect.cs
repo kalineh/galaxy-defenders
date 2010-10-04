@@ -23,7 +23,7 @@ namespace Galaxy
             EmptyWorld = new CWorld(game, null);
             Menu = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 90.0f, 350.0f),
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "* New Profile", Select = NewProfile },
@@ -35,7 +35,7 @@ namespace Galaxy
                 Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = profile.Name, Select = SelectProfile, Data = profile } );
             }
 
-            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true } );
+            Menu.MenuOptions.Add( new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small } );
         }
 
         public override void Update()
@@ -49,7 +49,7 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin();
 
-            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 200.0f), Color.White);
+            Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();

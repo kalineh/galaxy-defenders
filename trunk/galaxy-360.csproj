@@ -102,6 +102,7 @@
     <Compile Include="StageDefinitions\Stage8.cs" />
     <Compile Include="StageDefinitions\Stage9.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
+    <Compile Include="State\StateDebugShop.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Pilot.cs" />

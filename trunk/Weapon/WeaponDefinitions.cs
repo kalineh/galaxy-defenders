@@ -126,6 +126,7 @@ namespace Galaxy
         {
             public int BasePrice;
             public string Sound;
+            public string DisplayName;
             public List<List<SWeaponData>> Data;
         }
 
@@ -144,6 +145,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 750,
+                    DisplayName = "Front\nLaser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -445,6 +447,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 750,
+                    DisplayName = "Spread\nLaser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -745,6 +748,7 @@ namespace Galaxy
             { "Plasma", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootPlasma",
+                    DisplayName = "Plasma\nShot",
                     BasePrice = 1250,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -982,6 +986,7 @@ namespace Galaxy
             { "Missile", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
+                    DisplayName = "Missile\nRack",
                     BasePrice = 1000,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1125,6 +1130,7 @@ namespace Galaxy
             { "SeekBomb", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootSeekBomb",
+                    DisplayName = "Seek\nBomb",
                     BasePrice = 500,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1347,6 +1353,7 @@ namespace Galaxy
             { "MiniShot", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMiniShot",
+                    DisplayName = "Mini\nShot",
                     BasePrice = 2500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
