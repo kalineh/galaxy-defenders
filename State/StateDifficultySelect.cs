@@ -98,7 +98,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
             CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStateDebugShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
         }
 
         private void Back(object tag)

@@ -396,6 +396,7 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = new List<string>() {
                     "FrontLaser",
                     "SpreadLaser",
+                    "Plasma",
                 },
                 AvailableSecondaryWeaponParts = new List<string>() {
                     "Missile",

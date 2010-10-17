@@ -15,6 +15,7 @@ namespace Galaxy
     {
         public bool Primary { get; set; }
         public CWorld World { get; set; }
+        public string NameText { get; set; }
         public float Energy { get; set; }
         public float Shield { get; set; }
         public float Armor { get; set; }
@@ -28,6 +29,8 @@ namespace Galaxy
 
         private CVisual LeftPanelVisual { get; set; }
         private CVisual RightPanelVisual { get; set; }
+        private CVisual LeftPanelFramesVisual { get; set; }
+        private CVisual RightPanelFramesVisual { get; set; }
         private CVisual EnergyVisual { get; set; }
         private CVisual ShieldVisual { get; set; }
         private CVisual ArmorVisual { get; set; }
@@ -43,6 +46,7 @@ namespace Galaxy
         private Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
         private Vector2 RightPanelPosition { get; set; }
+        public Vector2 NameTextPosition { get; set; }
         private Vector2 EnergyPosition { get; set; }
         private Vector2 ShieldPosition { get; set; }
         private Vector2 ArmorPosition { get; set; }
@@ -65,8 +69,12 @@ namespace Galaxy
             World = world;
             BasePosition = base_position;
 
-            LeftPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/LeftPanel");
-            RightPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/RightPanel");
+            NameText = "Profile";
+
+            LeftPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelBackground");
+            RightPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelBackground");
+            LeftPanelFramesVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelFrames");
+            RightPanelFramesVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelFrames");
             EnergyVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Energy");
             ShieldVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Shield");
             ArmorVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Armor");
@@ -82,33 +90,44 @@ namespace Galaxy
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
 
-            MoneyTextPosition = BasePosition + new Vector2(156.0f, -280.0f - 40.0f);
-            EnergyPosition = BasePosition + new Vector2(140.0f, -220.0f);
-            ShieldPosition = BasePosition + new Vector2(140.0f, -160.0f);
-            ArmorPosition = BasePosition + new Vector2(140.0f, -100.0f);
-            MoneyIconPosition = BasePosition + new Vector2(70.0f, -280.0f);
-            EnergyIconPosition = BasePosition + new Vector2(70.0f, -220.0f);
-            ShieldIconPosition = BasePosition + new Vector2(70.0f, -160.0f);
-            ArmorIconPosition = BasePosition + new Vector2(70.0f, -100.0f);
-            PortraitIconPosition = BasePosition + new Vector2(240.0f, -600.0f);
-            Ability0IconPosition = BasePosition + new Vector2(160.0f, -450.0f);
-            Ability1IconPosition = BasePosition + new Vector2(240.0f, -450.0f);
-            Ability2IconPosition = BasePosition + new Vector2(320.0f, -450.0f);
+            NameTextPosition = BasePosition + new Vector2(80.0f, -964.0f);
+            MoneyTextPosition = BasePosition + new Vector2(100.0f, -888.0f);
+            EnergyPosition = BasePosition + new Vector2(140.0f, -266.0f);
+            ShieldPosition = BasePosition + new Vector2(140.0f, -183.0f);
+            ArmorPosition = BasePosition + new Vector2(140.0f, -107.0f);
+            MoneyIconPosition = BasePosition + new Vector2(70.0f, -800.0f);
+            EnergyIconPosition = BasePosition + new Vector2(70.0f, -266.0f);
+            ShieldIconPosition = BasePosition + new Vector2(70.0f, -183.0f);
+            ArmorIconPosition = BasePosition + new Vector2(70.0f, -107.0f);
+            PortraitIconPosition = BasePosition + new Vector2(238.0f, -608.0f);
+            Ability0IconPosition = BasePosition + new Vector2(158.0f, -458.0f);
+            Ability1IconPosition = BasePosition + new Vector2(238.0f, -458.0f);
+            Ability2IconPosition = BasePosition + new Vector2(318.0f, -458.0f);
 
-            EnergyVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            ShieldVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            ArmorVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            EnergyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            ShieldIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            LeftPanelVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 0.0f;
+            RightPanelVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 0.0f;
+            LeftPanelFramesVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            RightPanelFramesVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            EnergyVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            ShieldVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            ArmorVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            EnergyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            ShieldIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+
+            EnergyVisual.Scale = new Vector2(1.1f, 1.15f);
+            ShieldVisual.Scale = new Vector2(1.1f, 1.15f);
+            ArmorVisual.Scale = new Vector2(1.1f, 1.15f);
 
             LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
             RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
+            LeftPanelFramesVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
+            RightPanelFramesVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
             EnergyVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             ShieldVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             ArmorVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
@@ -120,6 +139,8 @@ namespace Galaxy
             // TODO: force a recache, need to handle non-entity visuals better
             LeftPanelVisual.Update();
             RightPanelVisual.Update();
+            LeftPanelFramesVisual.Update();
+            RightPanelFramesVisual.Update();
             EnergyVisual.Update();
             ShieldVisual.Update();
             ArmorVisual.Update();
@@ -142,9 +163,9 @@ namespace Galaxy
             Shield = ship == null ? 0.0f : ship.CurrentShield / ship.Shield.Shield;
             Armor = ship == null ? 0.0f : ship.CurrentArmor / ship.Chassis.Armor;
 
-            EnergyVisual.Scale = new Vector2(Energy, 1.0f);
-            ShieldVisual.Scale = new Vector2(Shield, 1.0f);
-            ArmorVisual.Scale = new Vector2(Armor, 1.0f);
+            EnergyVisual.Scale = new Vector2(Energy * 1.1f, 1.15f);
+            ShieldVisual.Scale = new Vector2(Shield * 1.1f, 1.15f);
+            ArmorVisual.Scale = new Vector2(Armor * 1.1f, 1.15f);
 
             CanUseAbility0 = ship.Pilot.Ability0.CanEnable();
             CanUseAbility1 = ship.Pilot.Ability1.CanEnable();
@@ -161,6 +182,11 @@ namespace Galaxy
             {
                 LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
                 RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
+                LeftPanelFramesVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
+            }
+            else
+            {
+                RightPanelFramesVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
             }
 
             EnergyVisual.Draw(sprite_batch, EnergyPosition, 0.0f);
@@ -189,8 +215,11 @@ namespace Galaxy
 
             if (Primary)
             {
-                MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
-                int money = CSaveData.GetCurrentProfile().Money + World.Score;
+                // TODO: just not show?
+                //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
+
+                SProfile profile = CSaveData.GetCurrentProfile();
+                int money = profile.Money + World.Score;
 
                 if (MoneyOverride != null)
                     money = (int)MoneyOverride;
@@ -200,7 +229,11 @@ namespace Galaxy
                     CachedMoneyString = money.ToString();
                     LastMoney = money;
                 }
-                sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement);
+
+                Color color = new Color(160, 160, 160);
+                sprite_batch.DrawString(World.Game.DefaultFont, profile.Name, CMenu.CenteredText(World.Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(World.Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                //sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
             }
         }
 
