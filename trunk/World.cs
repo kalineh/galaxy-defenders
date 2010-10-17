@@ -227,7 +227,7 @@ namespace Galaxy
                     ship2.PlayerIndex = PlayerIndex.Two;
                     EntityAdd(ship2);
                     Players.Add(ship2);
-                    Huds.Add(new CHud(this, new Vector2(Game.GraphicsDevice.Viewport.Width - 490.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), false));
+                    Huds.Add(new CHud(this, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), false));
                 }
             }
         }
@@ -898,7 +898,7 @@ namespace Galaxy
 
         private void GotoLobby()
         {
-            Game.State = new CStateFadeTo(Game, Game.State, new CStateDebugShop(Game));
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateStateShop(Game));
         }
 
         public void StartStageEnd()

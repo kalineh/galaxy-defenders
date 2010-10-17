@@ -158,7 +158,7 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            float Spacing = 36.0f;
+            float Spacing = 40.0f;
             Vector2 position = Position;
             foreach (MenuOption option in MenuOptions)
             {
@@ -254,6 +254,13 @@ namespace Galaxy
             Cursor = Cursor + offset;
             Cursor = Math.Max(Cursor, 0);
             Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
+        }
+
+        public void ForceRefresh()
+        {
+            MenuOption option = MenuOptions[Cursor];
+            option.Highlight(option.Data);
+            option.Axis(option.Data, option.AxisValue);
         }
 
         public CVisual GetIcon(MenuOption option)

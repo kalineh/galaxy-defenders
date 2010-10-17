@@ -112,7 +112,7 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateDebugShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
         }
     }
 }

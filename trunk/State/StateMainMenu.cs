@@ -30,11 +30,11 @@ namespace Galaxy
                 {
                     new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
                     new CMenu.MenuOption() { Text = "Select Profile", Select = SelectProfile },
-                    new CMenu.MenuOption() { Text = "Quit Qame", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
+                    new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 }
             };
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
+            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 250.0f);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
