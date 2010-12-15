@@ -26,7 +26,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.AnglePhysics.AngularVelocity = 0.005f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Teleporter");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Teleporter");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 5.0f;
 

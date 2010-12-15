@@ -12,13 +12,14 @@ namespace Galaxy
 {
     public class CMenu
     {
+        public bool Visible { get; set; }
         public static Texture2D MenuItemTexture { get; set; }
         public static Texture2D MenuItemTextureSmall { get; set; }
         public static Texture2D MenuItemSelectedTexture { get; set; }
         public static Texture2D MenuItemSelectedTextureSmall { get; set; }
         public static Texture2D MenuItemInvalidTexture { get; set; }
 
-        public static void LoadMenuTextures(Game game)
+        public static void LoadMenuTextures(CGalaxy game)
         {
             MenuItemTexture = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItem");
             MenuItemTextureSmall = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemSmall");
@@ -88,10 +89,14 @@ namespace Galaxy
             Cursor = 0;
             MenuOptions = new List<MenuOption>();
             Position = Vector2.Zero;
+            Visible = true;
         }
 
         public void Update()
         {
+            if (!Visible)
+                return;
+
             if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed(PlayerIndex.One))
             {
                 foreach (MenuOption cancel_option in MenuOptions)
@@ -158,6 +163,9 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
+            if (!Visible)
+                return;
+
             float Spacing = 40.0f;
             Vector2 position = Position;
             foreach (MenuOption option in MenuOptions)

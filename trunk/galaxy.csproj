@@ -91,6 +91,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\HudProfileSelect.cs" />
+    <Compile Include="SampleShipManager.cs" />
     <Compile Include="Guide.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Content.cs" />

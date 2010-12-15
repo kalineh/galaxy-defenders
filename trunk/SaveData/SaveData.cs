@@ -23,6 +23,7 @@ namespace Galaxy
         public bool Ability0;
         public bool Ability1;
         public bool Ability2;
+        public int Score;
         public int Money;
         public int Difficulty;
         public string CurrentStage;
@@ -106,7 +107,6 @@ namespace Galaxy
                 Ability1 = false,
                 Ability2 = false,
                 Difficulty = 1,
-                CurrentStage = "Start",
                 ChassisType = "BasicShip",
                 GeneratorType = "BasicGenerator",
                 ShieldType = "BasicShield",

@@ -17,14 +17,14 @@ namespace Galaxy
 
             if (damage < 0.4f)
             {
-                Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/Laser", index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Laser", index);
                 Visual.Color = CShip.GetPlayerColor(index);
                 Visual.UpdateColor();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             }
             else
             {
-                Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/BigLaser", index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigLaser", index);
                 Visual.Color = CShip.GetPlayerColor(index);
                 Visual.UpdateColor();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));

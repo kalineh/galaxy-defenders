@@ -35,7 +35,7 @@ namespace Galaxy
             SpawnCount = 1;
             Frequency = 0.001f;
 
-            Visual = CVisual.MakeLabel(world, "Asteroid Field", Color.Blue);
+            Visual = CVisual.MakeLabel(world.Game, "Asteroid Field", Color.Blue);
         }
 
         public CEditorEntityAsteroidField(CWorld world, Vector2 position)

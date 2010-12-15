@@ -34,7 +34,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Weapons/EnemyLaser");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyLaser");
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
         }
 

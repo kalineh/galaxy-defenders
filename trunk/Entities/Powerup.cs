@@ -14,7 +14,7 @@ namespace Galaxy
         {
             base.Initialize(world);
 
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Entity/Powerup");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Entity/Powerup");
         }
 
         public new void OnCollide(CShip ship)

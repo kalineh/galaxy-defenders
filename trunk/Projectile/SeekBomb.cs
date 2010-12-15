@@ -36,7 +36,7 @@ namespace Galaxy
             base.Initialize(world, index, damage);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/SeekBomb", index);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SeekBomb", index);
             Visual.Color = CShip.GetPlayerColor(index);
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);

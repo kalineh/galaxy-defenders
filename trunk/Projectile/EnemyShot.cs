@@ -34,7 +34,7 @@ namespace Galaxy
             base.Initialize(world, index, damage);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Weapons/EnemyShot");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyShot");
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
         }
 

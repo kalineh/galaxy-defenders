@@ -71,6 +71,8 @@
     <Compile Include="Enemy\SwirlBall.cs" />
     <Compile Include="Enemy\Teleporter.cs" />
     <Compile Include="Guide.cs" />
+    <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\HudProfileSelect.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="SampleShip.cs" />
+    <Compile Include="SampleShipManager.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
     <Compile Include="StageDefinitions\OldStage1.cs" />

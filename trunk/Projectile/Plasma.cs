@@ -17,7 +17,7 @@ namespace Galaxy
             if (damage < 1.0f)
             {
                 Physics = new CPhysics();
-                Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/SmallPlasma", index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SmallPlasma", index);
                 Visual.Color = CShip.GetPlayerColor(index);
                 Visual.Update();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
@@ -25,7 +25,7 @@ namespace Galaxy
             else
             {
                 Physics = new CPhysics();
-                Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/BigPlasma", index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigPlasma", index);
                 Visual.Color = CShip.GetPlayerColor(index);
                 Visual.Update();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));

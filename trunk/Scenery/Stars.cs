@@ -31,7 +31,7 @@ namespace Galaxy
         public CStars(CWorld world, Texture2D texture, float scale, float speed)
             : base(world)
         {
-            Visual = new CVisual(world, texture, Color.White);
+            Visual = new CVisual(world.Game, texture, Color.White);
             Scale = scale;
             Speed = Vector2.UnitY * speed;
             Stars = new List<Star>();

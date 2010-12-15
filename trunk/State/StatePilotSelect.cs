@@ -80,7 +80,6 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
-            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);
@@ -105,7 +104,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Pilot = (string)tag ?? "";
             CSaveData.SetCurrentProfileData(profile);
-            EmptyWorld.Huds[0].UpdatePilot();
+            //EmptyWorld.Huds[0].UpdatePilot();
         }
 
         private bool ValidatePilot(object tag)

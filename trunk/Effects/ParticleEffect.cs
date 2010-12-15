@@ -21,8 +21,8 @@ namespace Galaxy
         public CParticleEffectManager(CWorld world)
         {
             World = world;
-            Dot = CVisual.MakeSpriteUncached(world, "Textures/Effects/DotParticle");
-            Triangle = CVisual.MakeSpriteUncached(world, "Textures/Effects/TriangleParticle");
+            Dot = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/DotParticle");
+            Triangle = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/TriangleParticle");
             Dot.Recache();
             Triangle.Recache();
             Particles = new List<CParticle>();

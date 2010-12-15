@@ -16,7 +16,7 @@ namespace Galaxy
             
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/BonusShip");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/BonusShip");
             HealthMax = 3.0f;
         }
 

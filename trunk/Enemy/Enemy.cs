@@ -72,9 +72,9 @@ namespace Galaxy
 
         public virtual void TakeDamage(float damage)
         {
-            if (World.Players.Count > 1)
+            if (World.Ships.Count > 1)
             {
-                damage *= 0.5f + 0.5f / World.Players.Count;
+                damage *= 0.5f + 0.5f / World.Ships.Count;
             }
 
             Health -= damage;
@@ -229,7 +229,7 @@ namespace Galaxy
                 CDecoration corpse = new CDecoration();
                 corpse.Initialize(World);
                 corpse.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
-                corpse.Visual = CVisual.MakeSpriteCached1(World, Visual.Texture.Name + "Dead");
+                corpse.Visual = CVisual.MakeSpriteCached1(World.Game, Visual.Texture.Name + "Dead");
                 World.EntityAdd(corpse);
             }
         }

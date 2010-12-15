@@ -65,8 +65,8 @@ namespace Galaxy
 
         private void UpdateTexture()
         {
-            Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration/" + TextureName);
-            Visual = Visual ?? CVisual.MakeLabel(World, TextureName);
+            Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
+            Visual = Visual ?? CVisual.MakeLabel(World.Game, TextureName);
         }
     }
 }

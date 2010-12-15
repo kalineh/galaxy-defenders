@@ -26,9 +26,9 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(64.0f, 64.0f));
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Cutter");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Cutter");
 
-            BeamVisual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/CutterBeam");
+            BeamVisual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/CutterBeam");
             BeamVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             //BeamVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
 

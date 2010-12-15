@@ -40,7 +40,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Weapons/EnemyMissile");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyMissile");
             Collision = new CollisionCircle(Vector2.Zero, 10.0f);
 
             Health = 4;

@@ -16,7 +16,7 @@ namespace Galaxy
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
         public CMenu Menu { get; set; }
-        public CShip SampleShip { get; set; }
+        public CSampleShipManager SampleShipManager { get; set; }
 
         public CStateDifficultySelect(CGalaxy game)
         {
@@ -33,12 +33,11 @@ namespace Galaxy
                     new CMenu.MenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
                     new CMenu.MenuOption() { Text = "LOL", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.LOL },
                     new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
-                }
+                },
             };
             Menu.Cursor = 1;
 
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
+            SampleShipManager = new CSampleShipManager(EmptyWorld);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
@@ -51,17 +50,7 @@ namespace Galaxy
         {
             Menu.Update();
 
-            // sample display
-            SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
-            SampleShip.Physics.AnglePhysics.AngularVelocity = 0.025f;
-            SampleShip.Physics.AnglePhysics.Solve();
-            SampleShip.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(SampleShip.Physics.AnglePhysics.Rotation) * 1.5f;
-            SampleShip.Physics.PositionPhysics.Solve();
-            SampleShip.Visual.Update();
-
-            if (EmptyWorld.Random.NextFloat() < 0.09f)
-                SampleShip.FireAllWeapons();
-            SampleShip.UpdateWeapons();
+            SampleShipManager.Update();
 
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
@@ -76,12 +65,9 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            SampleShip.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
+            SampleShipManager.Draw();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
-            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);

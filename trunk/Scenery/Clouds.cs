@@ -42,7 +42,7 @@ namespace Galaxy
         public CClouds(CWorld world, Texture2D texture, float scale, Vector2 velocity, float random_lerp, int base_count)
             : base(world)
         {
-            Visual = new CVisual(world, texture, Color.White);
+            Visual = new CVisual(world.Game, texture, Color.White);
             Scale = scale;
             Velocity = velocity;
             RandomLerp = random_lerp;

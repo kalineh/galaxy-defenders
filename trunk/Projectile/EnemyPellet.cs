@@ -36,7 +36,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Weapons/EnemyPellet");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyPellet");
             Collision = new CollisionCircle(Vector2.Zero, 14.0f);
 
             Health = 3;

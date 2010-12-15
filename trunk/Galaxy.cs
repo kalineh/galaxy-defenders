@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.GamerServices;
 using System.Threading;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Galaxy
 {
@@ -25,6 +27,7 @@ namespace Galaxy
         public CState State { get; set; }
         public Vector2 PlayerSpawnPosition { get; set; }
         public bool EditorMode { get; set; }
+        public CHudManager HudManager { get; set; }
 
         public CGalaxy()
         {
@@ -154,6 +157,9 @@ namespace Galaxy
             // Menu textures.
             CMenu.LoadMenuTextures(this);
 
+            // Hud management.
+            HudManager = new CHudManager(this);
+
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
         }
@@ -178,6 +184,7 @@ namespace Galaxy
         protected override void Update(GameTime game_time)
         {
             State.Update();
+            HudManager.Update();
 
             GamePadState input = GamePad.GetState(PlayerIndex.One);
 
@@ -203,11 +210,43 @@ namespace Galaxy
 
             base.Draw(game_time);
             State.Draw();
+
+            HudManager.Draw();
+
             FrameRateDisplay.Draw(DefaultSpriteBatch);
             CDebugRender.Render(this);
 
             //while (GraphicsDevice.RasterStatus.InVerticalBlank)
                 //Thread.Sleep(0);
+        }
+
+        public Vector2 TryGetCameraTopLeft()
+        {
+            CCamera camera = TryGetGameCamera();
+            if (camera == null)
+                return Vector2.Zero;
+
+            return camera.GetTopLeft();
+        }
+
+        public Vector2 TryGetCameraBottomRight()
+        {
+            CCamera camera = TryGetGameCamera();
+            if (camera == null)
+                return Vector2.Zero;
+            
+            return camera.GetBottomRight();
+        }
+
+        private CCamera TryGetGameCamera()
+        {
+            if (State == null)
+                return null;
+
+            if (State.GetType() == typeof(CStateGame))
+                return (State as CStateGame).World.GameCamera;
+
+            return null;
         }
     }
 }

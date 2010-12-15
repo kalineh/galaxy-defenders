@@ -20,7 +20,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Physics.PositionPhysics.Friction = 0.98f;
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Spike");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Spike");
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
             HealthMax = 3.5f;

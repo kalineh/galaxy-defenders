@@ -22,7 +22,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.AnglePhysics.Rotation = world.Random.NextAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Glob");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Glob");
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
             HealthMax = 4.5f;
             SelfDestructTimer = 90;
