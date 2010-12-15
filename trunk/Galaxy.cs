@@ -68,6 +68,14 @@ namespace Galaxy
             PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
         }
 
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            if (State != null)
+                State.OnExit();
+
+            base.OnExiting(sender, args);
+        }
+
         public void SwitchGraphicsDevice(GraphicsDevice graphics_device)
         {
             GraphicsDevice.Dispose();

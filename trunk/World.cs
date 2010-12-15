@@ -52,6 +52,7 @@ namespace Galaxy
         public Thread CollisionThread { get; set; }
         public Mutex CollisionMutex { get; set; }
         public bool CollisionThreadRun { get; set; }
+        public volatile bool CollisionThreadTerminate;
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -81,6 +82,12 @@ namespace Galaxy
 #endif
 
             CollisionGrid.Initialize(Vector2.Zero);
+        }
+
+        ~CWorld()
+        {
+            if (CollisionThread != null)
+                CollisionThread.Abort();    
         }
 
         // TODO: stage definition param
@@ -137,8 +144,7 @@ namespace Galaxy
             // 360 does not have ThreadState or IsAlive
             try
             {
-                if (CollisionThread != null)
-                    CollisionThread.Abort();
+                CollisionThreadTerminate = true;
             }
             catch (Exception)
             {
@@ -822,10 +828,13 @@ namespace Galaxy
 
         private void CollectEntityCollisionsImpl()
         {
-            while (true)
+            while (!CollisionThreadTerminate)
             {
                 while (!CollisionThreadRun)
                 {
+                    if (CollisionThreadTerminate)
+                        return;
+
                     Thread.Sleep(0);
                 }
 
