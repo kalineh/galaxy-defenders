@@ -35,7 +35,7 @@ namespace Galaxy
             AudioCategory music = AudioEngine.GetCategory("Music");
 
             sfx.SetVolume(0.25f);
-            music.SetVolume(1.0f);
+            music.SetVolume(0.1f);
         }
 
         public static void Update()

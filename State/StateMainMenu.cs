@@ -16,7 +16,8 @@ namespace Galaxy
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
         public CMenu Menu { get; set; }
-        public CShip SampleShip { get; set; }
+        public List<CSampleShip> SampleShips { get; set; }
+        public int Players { get; set; }
 
         public CStateMainMenu(CGalaxy game)
         {
@@ -28,13 +29,17 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
-                    new CMenu.MenuOption() { Text = "Select Profile", Select = SelectProfile },
+                    new CMenu.MenuOption() { Text = "One Player", Select = StartGame, Highlight = HighlightStartGame, Data = 1 },
+                    new CMenu.MenuOption() { Text = "Two Player!", Select = StartGame, Highlight = HighlightStartGame, Data = 2 },
                     new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 }
             };
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 250.0f);
+
+            Players = 1;
+            SampleShips = new List<CSampleShip>() {
+                new CSampleShip(game, EmptyWorld, new Vector2(-50.0f, 250.0f), PlayerIndex.One),
+                new CSampleShip(game, EmptyWorld, new Vector2(0.0f, 150.0f), PlayerIndex.Two),
+            };
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
@@ -58,17 +63,11 @@ namespace Galaxy
             if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Q))
                 Game.Exit();
 
-            // sample display
-            SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
-            SampleShip.Physics.AnglePhysics.AngularVelocity = 0.025f;
-            SampleShip.Physics.AnglePhysics.Solve();
-            SampleShip.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(SampleShip.Physics.AnglePhysics.Rotation) * 1.5f;
-            SampleShip.Physics.PositionPhysics.Solve();
-            SampleShip.Visual.Update();
-
-            if (EmptyWorld.Random.NextFloat() < 0.09f)
-                SampleShip.FireAllWeapons();
-            SampleShip.UpdateWeapons();
+            for (int i = 0; i < Players; ++i)
+            {
+                CSampleShip sample = SampleShips[i];
+                sample.Update();
+            }
 
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
@@ -83,9 +82,11 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            SampleShip.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
+            for (int i = 0; i < Players; ++i)
+            {
+                CSampleShip sample = SampleShips[i];
+                sample.Draw();
+            }
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
             EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
@@ -103,6 +104,11 @@ namespace Galaxy
         private void StartGame(object tag)
         {
             Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
+        }
+
+        private void HighlightStartGame(object tag)
+        {
+            Players = (int)tag;
         }
 
         private void SelectProfile(object tag)
