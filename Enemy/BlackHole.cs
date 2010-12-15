@@ -21,7 +21,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 300.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Blackhole");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Blackhole");
             Visual.Depth = CLayers.Weapons + CLayers.SubLayerIncrement * 1.0f;
             Visual.Recache();
             HealthMax = 0.0f;

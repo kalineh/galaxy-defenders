@@ -21,7 +21,7 @@ namespace Galaxy
         public CEditorEntityStageFinish(CWorld world, Vector2 position)
             : base(world, position)
         {
-            Visual = CVisual.MakeLabel(world, "Stage Finish", Color.Blue);
+            Visual = CVisual.MakeLabel(world.Game, "Stage Finish", Color.Blue);
         }
 
         public CEditorEntityStageFinish(CWorld world, CStageElement element)

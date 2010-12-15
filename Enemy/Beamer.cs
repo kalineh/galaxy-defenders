@@ -21,7 +21,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Beamer");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Beamer");
             HealthMax = 4.0f;
 
             FireDelay = 1.5f;

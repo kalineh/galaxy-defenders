@@ -20,19 +20,19 @@ namespace Galaxy
             VisualCache2 = new Dictionary<string, CVisual>();
         }
 
-        public static CVisual MakeLabel(CWorld world, string text)
+        public static CVisual MakeLabel(CGalaxy game, string text)
         {
-            return MakeLabel(world, text, Color.Blue);
+            return MakeLabel(game, text, Color.Blue);
         }
 
-        public static CVisual MakeLabel(CWorld world, Vector2 size, Color color)
+        public static CVisual MakeLabel(CGalaxy game, Vector2 size, Color color)
         {
-            return new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color) { Scale = size };
+            return new CVisual(game, CContent.LoadTexture2D(game, "Textures/Top/Pixel"), color) { Scale = size };
         }
 
-        public static CVisual MakeLabel(CWorld world, string text, Color color)
+        public static CVisual MakeLabel(CGalaxy game, string text, Color color)
         {
-            CVisual result = new CVisual(world, CContent.LoadTexture2D(world.Game, "Textures/Top/Pixel"), color);
+            CVisual result = new CVisual(game, CContent.LoadTexture2D(game, "Textures/Top/Pixel"), color);
             Vector2 size = result.GetDebugFont().MeasureString(text);
             result.Scale = size + Vector2.One * 4.0f; ;
             result.DebugText = text;
@@ -40,54 +40,54 @@ namespace Galaxy
             return result;
         }
 
-        public static CVisual MakeSpriteCachedForPlayer(CWorld world, string texture_name, PlayerIndex index)
+        public static CVisual MakeSpriteCachedForPlayer(CGalaxy game, string texture_name, PlayerIndex index)
         {
             Dictionary<string, CVisual> cache = index == 0 ? VisualCache1 : VisualCache2;
 
             CVisual result;
             if (!cache.TryGetValue(texture_name, out result))
             {
-                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                result = MakeSpriteUncached(game, texture_name, Vector2.One, Color.White);
                 cache[texture_name] = result;
             }
 
             return result;
         }
 
-        public static CVisual MakeSpriteCached1(CWorld world, string texture_name)
+        public static CVisual MakeSpriteCached1(CGalaxy game, string texture_name)
         {
             CVisual result;
             if (!VisualCache1.TryGetValue(texture_name, out result))
             {
-                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                result = MakeSpriteUncached(game, texture_name, Vector2.One, Color.White);
                 VisualCache1[texture_name] = result;
             }
 
             return result;
         }
 
-        public static CVisual MakeSpriteCached2(CWorld world, string texture_name)
+        public static CVisual MakeSpriteCached2(CGalaxy game, string texture_name)
         {
             CVisual result;
             if (!VisualCache2.TryGetValue(texture_name, out result))
             {
-                result = MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+                result = MakeSpriteUncached(game, texture_name, Vector2.One, Color.White);
                 VisualCache2[texture_name] = result;
             }
 
             return result;
         }
 
-        public static CVisual MakeSpriteUncached(CWorld world, string texture_name)
+        public static CVisual MakeSpriteUncached(CGalaxy game, string texture_name)
         {
-            return MakeSpriteUncached(world, texture_name, Vector2.One, Color.White);
+            return MakeSpriteUncached(game, texture_name, Vector2.One, Color.White);
         }
 
-        public static CVisual MakeSpriteUncached(CWorld world, string texture_name, Vector2 size, Color color)
+        public static CVisual MakeSpriteUncached(CGalaxy game, string texture_name, Vector2 size, Color color)
         {
             try
             {
-                return new CVisual(world, CContent.LoadTexture2D(world.Game, texture_name), color) { Scale = size };
+                return new CVisual(game, CContent.LoadTexture2D(game, texture_name), color) { Scale = size };
             }
             catch
             {
@@ -95,14 +95,14 @@ namespace Galaxy
             }
         }
 
-        public static CVisual MakeSpriteFromGame(Game game, string texture_name, Vector2 size, Color color)
+        public static CVisual MakeSpriteFromGame(CGalaxy game, string texture_name, Vector2 size, Color color)
         {
             return new CVisual(null, CContent.LoadTexture2D(game, texture_name), color) { Scale = size };
         }
 
         private static SpriteFont DebugFont { get; set; }
 
-        public CWorld World { get; set; }
+        public CGalaxy Game { get; set; }
 
         private bool _Dirty;
         private int _TileX;
@@ -200,9 +200,9 @@ namespace Galaxy
         public Vector2 _CacheOrigin;
         private Color _CacheColor;
 
-        public CVisual(CWorld world, Texture2D texture, Color color)
+        public CVisual(CGalaxy game, Texture2D texture, Color color)
         {
-            World = world;
+            Game = game;
             TileX = 1;
             TileY = 1;
             FrameCounter = 0.0f;
@@ -270,8 +270,8 @@ namespace Galaxy
 
                 if (DebugTextClampToScreen)
                 {
-                    Vector2 tl = World.GameCamera.GetTopLeft();
-                    Vector2 br = World.GameCamera.GetBottomRight();
+                    Vector2 tl = Game.TryGetCameraTopLeft();
+                    Vector2 br = Game.TryGetCameraBottomRight();
                     center = new Vector2(
                         MathHelper.Clamp(center.X, tl.X, br.X - size.X),
                         MathHelper.Clamp(center.Y, tl.Y, br.Y - size.Y * 2.0f)
@@ -298,7 +298,7 @@ namespace Galaxy
 
         public SpriteFont GetDebugFont()
         {
-            DebugFont = DebugFont ?? World.Game.Content.Load<SpriteFont>("Fonts/DefaultFont");
+            DebugFont = DebugFont ?? Game.Content.Load<SpriteFont>("Fonts/DefaultFont");
             return DebugFont;
         }
 

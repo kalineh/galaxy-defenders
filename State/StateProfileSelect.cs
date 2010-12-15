@@ -53,8 +53,6 @@ namespace Galaxy
             Menu.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
-
-            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
         }
 
         public void NewProfile(object tag)

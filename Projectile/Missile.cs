@@ -37,7 +37,7 @@ namespace Galaxy
             base.Initialize(world, index, damage);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world, "Textures/Weapons/Missile", index);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", index);
             Visual.Color = CShip.GetPlayerColor(index);
             Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));

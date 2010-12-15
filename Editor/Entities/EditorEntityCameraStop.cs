@@ -18,7 +18,7 @@ namespace Galaxy
         public CEditorEntityCameraStop(CWorld world, Vector2 position)
             : base(world, position)
         {
-            Visual = CVisual.MakeLabel(world, "Camera Stop", Color.Blue);
+            Visual = CVisual.MakeLabel(world.Game, "Camera Stop", Color.Blue);
         }
 
         public CEditorEntityCameraStop(CWorld world, CStageElement element)

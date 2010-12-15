@@ -31,8 +31,8 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(42.0f, 42.0f));
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/RotateTurretBase");
-            TurretVisual = CVisual.MakeSpriteUncached(world, "Textures/Enemy/RotateTurret");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/RotateTurretBase");
+            TurretVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/RotateTurret");
             TurretVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 1.0f;
             TurretVisual.Recache();
             HealthMax = 4.0f;

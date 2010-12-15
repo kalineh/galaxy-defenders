@@ -93,11 +93,11 @@ namespace Galaxy
             Physics.PositionPhysics.Friction = chassis.Friction;
             Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f); // NOTE: radius updated per-frame below
-            Visual = CVisual.MakeSpriteUncached(world, chassis.Texture);
+            Visual = CVisual.MakeSpriteUncached(world.Game, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
             Visual.Color = PlayerColor;
             Visual.Update();
-            SidekickVisual = CVisual.MakeSpriteUncached(world, "Textures/Player/Sidekick");
+            SidekickVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Player/Sidekick");
             SidekickVisual.Color = PlayerColor;
             SidekickVisual.Update();
 

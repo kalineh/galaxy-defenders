@@ -29,11 +29,11 @@ namespace Galaxy
                 //Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration" + TextureName);
                 if (DepthOffset != 0.0f)
                 {
-                    Visual = CVisual.MakeSpriteUncached(World, "Textures/Decoration/" + TextureName);
+                    Visual = CVisual.MakeSpriteUncached(World.Game, "Textures/Decoration/" + TextureName);
                 }
                 else
                 {
-                    Visual = CVisual.MakeSpriteCached1(World, "Textures/Decoration/" + TextureName);
+                    Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
                 }
 
                 Visual.Depth += DepthOffset;

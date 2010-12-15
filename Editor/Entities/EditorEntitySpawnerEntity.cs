@@ -27,7 +27,7 @@ namespace Galaxy
         {
             Type = type;
             CEntity visual_get = Activator.CreateInstance(type, new object[] { world, Vector2.Zero }) as CEntity;
-            Visual = new CVisual(world, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
+            Visual = new CVisual(world.Game, CContent.LoadTexture2D(world.Game, visual_get.Visual.Texture.Name), visual_get.Visual.Color);
         }
 
         public CEditorEntitySpawnerEntity(CWorld world, Vector2 position)

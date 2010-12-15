@@ -25,8 +25,8 @@ namespace Galaxy
         public CScenery BackgroundScenery { get; set; }
         public CScenery ForegroundScenery { get; set; }
         public CCamera GameCamera { get; set; }
-        public List<CHud> Huds { get; set; }
-        public List<CShip> Players { get; set; }
+        public List<CShip> Ships { get; set; }
+        public List<CShip> ShipsByPlayerIndex { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
@@ -63,8 +63,8 @@ namespace Galaxy
             EntitiesToDelete = new List<CEntity>();
             GameCamera = new CCamera(game);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
-            Huds = new List<CHud>() { new CHud(this, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), true) };
-            Players = new List<CShip>();
+            Ships = new List<CShip>();
+            ShipsByPlayerIndex = new List<CShip>() { null, null };
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
             ParticleEffects = new CParticleEffectManager(this);
             StageEndText = new List<string>();
@@ -96,13 +96,6 @@ namespace Galaxy
             CCollision.ClearCache();
 
             Entities = new List<CEntity>();
-
-            // TODO: load ship from profile
-            SProfile profile = CSaveData.GetCurrentProfile();
-            CShip ship = CShipFactory.GenerateShip(this, profile, PlayerIndex.One);
-            ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
-            EntityAdd(ship);
-            Players.Add(ship);
 
             ScrollSpeed = Stage.Definition.ScrollSpeed;
             Stage.Start();
@@ -183,7 +176,6 @@ namespace Galaxy
             // delete entities removed as a result of collision
             ProcessEntityDelete();
 
-            UpdateHuds();
             ParticleEffects.Update();
 
             // delete entities as a result of update
@@ -222,18 +214,25 @@ namespace Galaxy
 
         public void UpdateInput()
         {
-            // TODO: just allow in-game setting instead?
-            if (Players.Count <= 1)
+            // TODO: load ship from per-person profile
+            for (int i = 0; i< Game.HudManager.Players.Count; ++i)
             {
-                if (Game.Input.IsPadStartPressed(PlayerIndex.Two) || Game.Input.IsKeyDown(Keys.RightShift))
+                bool active = Game.HudManager.Players[i];
+                CShip ship = ShipsByPlayerIndex[i];
+                if (active && ship == null)
                 {
                     SProfile profile = CSaveData.GetCurrentProfile();
-                    CShip ship2 = CShipFactory.GenerateShip(this, profile, PlayerIndex.Two);
-                    ship2.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition + Vector2.UnitX * 64.0f;
-                    ship2.PlayerIndex = PlayerIndex.Two;
-                    EntityAdd(ship2);
-                    Players.Add(ship2);
-                    Huds.Add(new CHud(this, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), false));
+                    CShip newship = CShipFactory.GenerateShip(this, profile, (PlayerIndex)i);
+                    newship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
+                    EntityAdd(newship);
+                    Ships.Add(newship);
+                    ShipsByPlayerIndex[i] = newship;
+                }
+                else if (!active && ship != null)
+                {
+                    ShipsByPlayerIndex[i] = null;
+                    Ships.Remove(ship);
+                    ship.Die();
                 }
             }
         }
@@ -255,12 +254,6 @@ namespace Galaxy
             //ProcessEntityDelete();
         }
 
-        public void UpdateHuds()
-        {
-            for (int index = 0; index < Players.Count; ++index)
-                Huds[index].Update(Players[index]);
-        }
-
         public void UpdateStageEnd()
         {
             if (StageEndCounter <= 0)
@@ -275,7 +268,7 @@ namespace Galaxy
             const int AllowExit = 340;
             const int UpperClamp = AllowExit + 60;
 
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
@@ -356,7 +349,7 @@ namespace Galaxy
 
             StageEnd = true;
 
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
@@ -379,7 +372,7 @@ namespace Galaxy
                 SecretEntryFader.StopAtFullFadeOut();
             }
 
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 SecretEntryPosition *= new Vector2(1.01f, 1.0f);
                 Vector2 ofs = SecretEntryPosition - ship.Physics.PositionPhysics.Position;
@@ -426,7 +419,7 @@ namespace Galaxy
             if (IsSecretWorld)
             {
                 // TODO: faster implementation
-                if (Players.Count == 0)
+                if (Ships.Count == 0)
                 {
                     SecretFinishCounter = Math.Max(SecretFinishCounter, 1);
                 }
@@ -519,9 +512,6 @@ namespace Galaxy
                 Game.DefaultSpriteBatch.End();
             }
 
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
-            DrawHuds(GameCamera);
-
 #if DEBUG
             if (CInput.IsRawKeyDown(Keys.Q))
             {
@@ -553,26 +543,6 @@ namespace Galaxy
             {
                 entity.Draw(Game.DefaultSpriteBatch);
             }
-
-            Game.DefaultSpriteBatch.End();
-        }
-
-        public void DrawHuds(CCamera camera)
-        {
-            // NOTE: no side panels in editor mode!
-            if (Game.EditorMode)
-            {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-                foreach (CHud hud in Huds)
-                    hud.DrawEditor(Game.DefaultSpriteBatch);
-                Game.DefaultSpriteBatch.End();
-                return;
-            }
-
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-
-            foreach (CHud hud in Huds)
-                hud.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
         }
@@ -679,7 +649,7 @@ namespace Galaxy
         {
             CShip result = null;
             float nearest = float.MaxValue;
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 // died
                 if (ship.Physics == null)
@@ -706,7 +676,7 @@ namespace Galaxy
         {
             CShip result = null;
             float nearest = float.MaxValue;
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 // died
                 if (ship.Physics == null)
@@ -940,7 +910,7 @@ namespace Galaxy
             if (!Game.EditorMode)
                 CAudio.PlayMusic(Stage.Definition.MusicName);
 
-            foreach (CShip ship in Players)
+            foreach (CShip ship in Ships)
             {
                 Vector2 to_center = GameCamera.GetCenter().ToVector2() - ship.Physics.PositionPhysics.Position;
                 Vector2 clamped_entry = GameCamera.ClampInside(SecretEntryPosition, 32.0f);

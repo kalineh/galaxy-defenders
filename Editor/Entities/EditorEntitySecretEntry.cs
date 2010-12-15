@@ -20,7 +20,7 @@ namespace Galaxy
         public CEditorEntitySecretEntry(CWorld world, Vector2 position)
             : base(world, position)
         {
-            Visual = CVisual.MakeLabel(world, "SECRET", Color.Blue);
+            Visual = CVisual.MakeLabel(world.Game, "SECRET", Color.Blue);
             SecretStage = "BonusStage1";
         }
 

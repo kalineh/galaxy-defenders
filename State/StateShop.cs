@@ -35,6 +35,7 @@ namespace Galaxy
         private Texture2D ShopPanelTexture { get; set; }
         private Texture2D ShopUpgradePanelTexture { get; set; }
         private CVisual ShopUpgradeBarsVisual { get; set; }
+        private PlayerIndex ShoppingPlayer { get; set; }
 
         public CStateStateShop(CGalaxy game)
         {
@@ -368,8 +369,10 @@ namespace Galaxy
         {
             MenuUpdateHighlights();
             Menu.Update();
-            EmptyWorld.Huds[0].MoneyOverride = (int)LockedProfile.Money;
-            EmptyWorld.Huds[0].Update(SampleShip);
+            // TODO: active hud per players
+            // TODO: l1/r1 to toggle active player
+            Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
+            Game.HudManager.Huds[(int)ShoppingPlayer].Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
@@ -393,8 +396,6 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
-
-            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(928.0f, 0.0f), Color.White);
@@ -491,7 +492,8 @@ namespace Galaxy
             if (diff > 0)
                 color = Color.LightGreen;
 
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), EmptyWorld.Huds[0].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            // TODO: money display
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), Game.HudManager.Huds[(int)ShoppingPlayer].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
         }
 
         private void RefreshSampleDisplay()

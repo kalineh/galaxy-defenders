@@ -13,8 +13,9 @@ namespace Galaxy
 {
     public class CHud
     {
-        public bool Primary { get; set; }
-        public CWorld World { get; set; }
+        public PlayerIndex PlayerIndex { get; set; }
+        public CGalaxy Game { get; set; }
+        public CShip Ship { get; set; }
         public string NameText { get; set; }
         public float Energy { get; set; }
         public float Shield { get; set; }
@@ -63,32 +64,32 @@ namespace Galaxy
         private string CachedMoneyString { get; set; }
         private int LastMoney { get; set; }
 
-        public CHud(CWorld world, Vector2 base_position, bool primary)
+        public CHud(CGalaxy game, Vector2 base_position, PlayerIndex player_index)
         {
-            Primary = primary;
-            World = world;
+            PlayerIndex = player_index;
+            Game = game;
             BasePosition = base_position;
 
             NameText = "Profile";
 
-            LeftPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelBackground");
-            RightPanelVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelBackground");
-            LeftPanelFramesVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelFrames");
-            RightPanelFramesVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/PanelFrames");
-            EnergyVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Energy");
-            ShieldVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Shield");
-            ArmorVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/Armor");
-            MoneyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/MoneyIcon");
-            EnergyIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/EnergyIcon");
-            ShieldIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ShieldIcon");
-            ArmorIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/ArmorIcon");
-            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
-            Ability0IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
+            LeftPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
+            RightPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
+            LeftPanelFramesVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelFrames");
+            RightPanelFramesVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelFrames");
+            EnergyVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Energy");
+            ShieldVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Shield");
+            ArmorVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Armor");
+            MoneyIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/MoneyIcon");
+            EnergyIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/EnergyIcon");
+            ShieldIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/ShieldIcon");
+            ArmorIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/ArmorIcon");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
-            RightPanelPosition = new Vector2(World.Game.GraphicsDevice.Viewport.Width, 0.0f);
+            RightPanelPosition = new Vector2(Game.GraphicsDevice.Viewport.Width, 0.0f);
 
             NameTextPosition = BasePosition + new Vector2(80.0f, -964.0f);
             MoneyTextPosition = BasePosition + new Vector2(100.0f, -888.0f);
@@ -157,31 +158,65 @@ namespace Galaxy
             CachedMoneyString = "0";
         }
 
-        public void Update(CShip ship)
+        public void Update()
         {
-            Energy = ship == null ? 0.0f : ship.CurrentEnergy / ship.Generator.Energy;
-            Shield = ship == null ? 0.0f : ship.CurrentShield / ship.Shield.Shield;
-            Armor = ship == null ? 0.0f : ship.CurrentArmor / ship.Chassis.Armor;
+            if (!Game.HudManager.Players[(int)PlayerIndex])
+                return;
 
-            EnergyVisual.Scale = new Vector2(Energy * 1.1f, 1.15f);
-            ShieldVisual.Scale = new Vector2(Shield * 1.1f, 1.15f);
-            ArmorVisual.Scale = new Vector2(Armor * 1.1f, 1.15f);
+            if (Ship == null)
+            {
+                Energy = 1.0f;
+                Shield = 1.0f;
+                Armor = 1.0f;
 
-            CanUseAbility0 = ship.Pilot.Ability0.CanEnable();
-            CanUseAbility1 = ship.Pilot.Ability1.CanEnable();
-            CanUseAbility2 = ship.Pilot.Ability2.CanEnable();
+                EnergyVisual.Scale = new Vector2(Energy * 1.1f, 1.15f);
+                ShieldVisual.Scale = new Vector2(Shield * 1.1f, 1.15f);
+                ArmorVisual.Scale = new Vector2(Armor * 1.1f, 1.15f);
 
-            IsActiveAbility0 = ship.Pilot.Ability0.Active > 0.0f;
-            IsActiveAbility1 = ship.Pilot.Ability1.Active > 0.0f;
-            IsActiveAbility2 = ship.Pilot.Ability2.Active > 0.0f;
+                CanUseAbility0 = false;
+                CanUseAbility1 = false;
+                CanUseAbility2 = false;
+
+                IsActiveAbility0 = false;
+                IsActiveAbility1 = false;
+                IsActiveAbility2 = false;
+            }
+            else
+            {
+                Energy = Ship.CurrentEnergy / Ship.Generator.Energy;
+                Shield = Ship.CurrentShield / Ship.Shield.Shield;
+                Armor = Ship.CurrentArmor / Ship.Chassis.Armor;
+
+                EnergyVisual.Scale = new Vector2(Energy * 1.1f, 1.15f);
+                ShieldVisual.Scale = new Vector2(Shield * 1.1f, 1.15f);
+                ArmorVisual.Scale = new Vector2(Armor * 1.1f, 1.15f);
+
+                CanUseAbility0 = Ship.Pilot.Ability0.CanEnable();
+                CanUseAbility1 = Ship.Pilot.Ability1.CanEnable();
+                CanUseAbility2 = Ship.Pilot.Ability2.CanEnable();
+
+                IsActiveAbility0 = Ship.Pilot.Ability0.Active > 0.0f;
+                IsActiveAbility1 = Ship.Pilot.Ability1.Active > 0.0f;
+                IsActiveAbility2 = Ship.Pilot.Ability2.Active > 0.0f;
+            }
         }
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            if (Primary)
+            if (PlayerIndex == PlayerIndex.One)
             {
                 LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
+            }
+            else
+            {
                 RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
+            }
+
+            if (!Game.HudManager.Players[(int)PlayerIndex])
+                return;
+
+            if (PlayerIndex == PlayerIndex.One)
+            {
                 LeftPanelFramesVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
             }
             else
@@ -213,13 +248,20 @@ namespace Galaxy
             Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
             Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
 
-            if (Primary)
+            // TODO: show money for both players? seperate moneys?
+            if (PlayerIndex == PlayerIndex.One)
             {
                 // TODO: just not show?
                 //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
 
                 SProfile profile = CSaveData.GetCurrentProfile();
-                int money = profile.Money + World.Score;
+
+                int money = profile.Money;
+
+                // TODO: score needs to be maintained across secret stages?
+                // add current stage score if valid
+                if (Ship != null)
+                    money += Ship.World.Score;
 
                 if (MoneyOverride != null)
                     money = (int)MoneyOverride;
@@ -231,27 +273,27 @@ namespace Galaxy
                 }
 
                 Color color = new Color(160, 160, 160);
-                sprite_batch.DrawString(World.Game.DefaultFont, profile.Name, CMenu.CenteredText(World.Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-                sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(World.Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-                //sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
             }
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)
         {
-            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
-            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
-            sprite_batch.DrawString(World.Game.DefaultFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
+            sprite_batch.DrawString(Game.DefaultFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
+            sprite_batch.DrawString(Game.DefaultFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
+            sprite_batch.DrawString(Game.DefaultFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
         }
 
         public void UpdatePilot()
         {
-            PortraitIconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
-            Ability0IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(World, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
             Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;

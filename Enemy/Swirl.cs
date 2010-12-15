@@ -22,7 +22,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Swirl");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Swirl");
 
             HealthMax = 5.0f;
         }

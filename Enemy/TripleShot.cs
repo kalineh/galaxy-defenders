@@ -27,7 +27,7 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/TripleShot");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/TripleShot");
             HealthMax = 4.0f;
 
             FireDelay = 2.5f;

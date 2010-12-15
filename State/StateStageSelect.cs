@@ -93,7 +93,6 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
 
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
-            EmptyWorld.DrawHuds(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin();
             Menu.Draw(Game.DefaultSpriteBatch);

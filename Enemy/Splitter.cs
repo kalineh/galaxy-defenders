@@ -18,7 +18,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Physics.AnglePhysics.AngularVelocity = 0.015f * world.Random.NextSign();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
-            Visual = CVisual.MakeSpriteCached1(world, "Textures/Enemy/Splitter");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Splitter");
             HealthMax = 2.5f;
         }
 
@@ -47,7 +47,7 @@ namespace Galaxy
         public void CustomInitialize(CWorld world, bool left, CSplitter parent)
         {
             Initialize(world); 
-            Visual = CVisual.MakeSpriteCached1(world, left ? "Textures/Enemy/SplitterFragmentLeft" : "Textures/Enemy/SplitterFragmentRight");
+            Visual = CVisual.MakeSpriteCached1(world.Game, left ? "Textures/Enemy/SplitterFragmentLeft" : "Textures/Enemy/SplitterFragmentRight");
             Physics.AnglePhysics.AngularVelocity = 0.1f * (left ? 1.0f : -1.0f);
             Physics.PositionPhysics.Position = parent.Physics.PositionPhysics.Position + Vector2.UnitX * 4.0f * (left ? -1.0f : 1.0f);
             Physics.PositionPhysics.Velocity = parent.Physics.PositionPhysics.Velocity;
