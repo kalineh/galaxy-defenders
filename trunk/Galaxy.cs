@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.GamerServices;
 using System.Threading;
 using System;
 
@@ -48,6 +49,12 @@ namespace Galaxy
 
             GraphicsDeviceManager.PreferMultiSampling = false;
             GraphicsDeviceManager.ApplyChanges();
+
+#if XBOX360
+            // user management
+            // note: this is games for windows live when run on PC
+            //Components.Add(new GamerServicesComponent(this));
+#endif
 
             Debug = new CDebug(this);
             Input = new CInput(this);
