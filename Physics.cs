@@ -36,9 +36,8 @@ namespace Galaxy
 
         public void Solve()
         {
-            // TODO: optimize
-            Position += Velocity;
-            Velocity *= Friction;
+            Position = Vector2.Add(Position, Velocity);
+            Velocity = Vector2.Multiply(Velocity, Friction);
             Rotation = Rotation + AngularVelocity;
             Rotation = MathHelper.WrapAngle(Rotation);
             AngularVelocity *= AngularFriction;
