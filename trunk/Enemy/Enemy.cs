@@ -66,7 +66,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
             circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
         }
 
@@ -89,7 +89,7 @@ namespace Galaxy
         public void OnCollide(CShip source)
         {
             World.Stats.CollisionDamageReceived += 2.5f;
-            source.TakeCollideDamage(Physics.PositionPhysics.Position, 2.5f);
+            source.TakeCollideDamage(Physics.Position, 2.5f);
 
             World.Stats.CollisionDamageDealt += 0.5f;
             TakeDamage(0.5f, source);
@@ -180,14 +180,14 @@ namespace Galaxy
         protected override void OnDie()
         {
             // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
-            CEffect.EnemyExplosion(World, Physics.PositionPhysics.Position, 1.5f);
+            CEffect.EnemyExplosion(World, Physics.Position, 1.5f);
 
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)
             {
                 CBigBonus bonus = new CBigBonus();
                 bonus.Initialize(World);
-                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                bonus.Physics.Position = Physics.Position;
                 World.EntityAdd(bonus);
             }
 
@@ -196,7 +196,7 @@ namespace Galaxy
             {
                 CBonus bonus = new CBonus();
                 bonus.Initialize(World);
-                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                bonus.Physics.Position = Physics.Position;
                 World.EntityAdd(bonus);
             }
 
@@ -204,7 +204,7 @@ namespace Galaxy
             {
                 CPowerup powerup = new CPowerup();
                 powerup.Initialize(World);
-                powerup.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                powerup.Physics.Position = Physics.Position;
                 World.EntityAdd(powerup);
             }
 
@@ -229,7 +229,7 @@ namespace Galaxy
             {
                 CDecoration corpse = new CDecoration();
                 corpse.Initialize(World);
-                corpse.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                corpse.Physics.Position = Physics.Position;
                 corpse.Visual = CVisual.MakeSpriteCached1(World.Game, Visual.Texture.Name + "Dead");
                 World.EntityAdd(corpse);
             }

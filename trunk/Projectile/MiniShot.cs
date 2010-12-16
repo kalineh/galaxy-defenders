@@ -15,9 +15,9 @@ namespace Galaxy
             CMiniShot mini_shot = new CMiniShot();
             mini_shot.Initialize(owner.World, owner, damage);
 
-            mini_shot.Physics.AnglePhysics.Rotation = rotation;
-            mini_shot.Physics.PositionPhysics.Position = position;
-            mini_shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            mini_shot.Physics.Rotation = rotation;
+            mini_shot.Physics.Position = position;
+            mini_shot.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             owner.World.EntityAdd(mini_shot);
 
@@ -49,7 +49,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         protected override void OnDie()

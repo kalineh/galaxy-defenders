@@ -28,10 +28,10 @@ namespace Galaxy
 
         public void UpdateAttachment(CFence owner)
         {
-            Physics.PositionPhysics.Position = owner.Physics.PositionPhysics.Position + owner.FenceOffset;
+            Physics.Position = owner.Physics.Position + owner.FenceOffset;
 
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.PositionPhysics.Position - owner.FenceOffset;
+            aabb.Position = Physics.Position - owner.FenceOffset;
             aabb.Size = new Vector2(owner.FenceOffset.X * 2.0f, 8.0f); 
         }
 
@@ -43,8 +43,8 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Stats.CollisionDamageReceived += 2.0f;
-            Vector2 collision_point = Physics.PositionPhysics.Position;
-            collision_point.X = ship.Physics.PositionPhysics.Position.X;
+            Vector2 collision_point = Physics.Position;
+            collision_point.X = ship.Physics.Position.X;
             ship.TakeCollideDamage(collision_point, 2.0f);
         }
     }

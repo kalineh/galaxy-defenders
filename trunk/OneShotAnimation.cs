@@ -28,8 +28,8 @@ namespace Galaxy
         public void ApplySettings(Settings settings)
         {
             Physics = new CPhysics();
-            Physics.PositionPhysics.Position = settings.Position;
-            Physics.AnglePhysics.Rotation = settings.Rotation;
+            Physics.Position = settings.Position;
+            Physics.Rotation = settings.Rotation;
             Visual = new CVisual(World.Game, CContent.LoadTexture2D(World.Game, settings.TextureName), Color.White);
             Visual.TileX = settings.TileX;
             Visual.TileY = settings.TileY;
@@ -44,7 +44,7 @@ namespace Galaxy
             base.Update();
 
             if (AttachToEntity != null && AttachToEntity.Physics != null)
-                Physics.PositionPhysics.Position = AttachToEntity.Physics.PositionPhysics.Position;
+                Physics.Position = AttachToEntity.Physics.Position;
 
             if (Visual.Frame >= Visual.TileX * Visual.TileY)
                 Die();

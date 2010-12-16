@@ -121,7 +121,7 @@ namespace Galaxy
             for (int i = 0; i < players; ++i)
             {
                 CShip ship = CShipFactory.GenerateShip(this, profile.Game.Pilots[i], (PlayerIndex)i);
-                ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
+                ship.Physics.Position = Game.PlayerSpawnPosition;
                 Game.HudManager.Huds[i].Ship = ship;
                 EntityAdd(ship);
                 ShipEntitiesCache.Add(ship);
@@ -260,10 +260,10 @@ namespace Galaxy
 
             foreach (CShip ship in ShipEntitiesCache)
             {
-                ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
+                ship.Physics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
                 CEffect.StageEndFlyEffect(this,
-                                          ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
+                                          ship.Physics.Position + Random.NextVector2Variable() * 16.0f,
                                           0.5f,
                                           ship.Visual.Color);
             }
@@ -345,10 +345,10 @@ namespace Galaxy
 
             foreach (CShip ship in ShipEntitiesCache)
             {
-                ship.Physics.PositionPhysics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
+                ship.Physics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
 
                 CEffect.StageEndFlyEffect(this,
-                                          ship.Physics.PositionPhysics.Position + Random.NextVector2Variable() * 16.0f,
+                                          ship.Physics.Position + Random.NextVector2Variable() * 16.0f,
                                           0.5f,
                                           ship.Visual.Color);
             }
@@ -369,8 +369,8 @@ namespace Galaxy
             foreach (CShip ship in ShipEntitiesCache)
             {
                 SecretEntryPosition *= new Vector2(1.01f, 1.0f);
-                Vector2 ofs = SecretEntryPosition - ship.Physics.PositionPhysics.Position;
-                ship.Physics.PositionPhysics.Position += ofs * 0.25f;
+                Vector2 ofs = SecretEntryPosition - ship.Physics.Position;
+                ship.Physics.Position += ofs * 0.25f;
                 ship.IsInvincible += 1;
             }
 
@@ -568,7 +568,7 @@ namespace Galaxy
             foreach (CEntity entity in Entities)
             {
                 // TODO: dont create so many objects
-                CollisionCircle collide = CCollision.GetCacheCircle(this, entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CollisionCircle collide = CCollision.GetCacheCircle(this, entity.Physics.Position, entity.GetRadius());
                 if (collide.Intersects(box))
                     results.Add(entity);
             }
@@ -591,7 +591,7 @@ namespace Galaxy
                 if (entity.Physics == null)
                     continue;
 
-                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(this, entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(this, entity.Physics.Position, entity.GetRadius());
                 if (find.Intersects(collision))
                     return entity;
             }
@@ -616,7 +616,7 @@ namespace Galaxy
                 if (entity.Physics == null)
                     continue;
 
-                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(entity, entity.Physics.PositionPhysics.Position, entity.GetRadius());
+                CCollision collision = entity.Collision ?? CCollision.GetCacheCircle(entity, entity.Physics.Position, entity.GetRadius());
                 if (!find.Intersects(collision))
                     continue;
 
@@ -652,7 +652,7 @@ namespace Galaxy
                 if (ship.IsDead)
                     continue;
 
-                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 ship_position = ship.Physics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
 
@@ -676,7 +676,7 @@ namespace Galaxy
                 if (ship.Physics == null)
                     continue;
 
-                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 ship_position = ship.Physics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
 
@@ -700,7 +700,7 @@ namespace Galaxy
                 if (ship == null)
                     continue;
 
-                Vector2 ship_position = ship.Physics.PositionPhysics.Position;
+                Vector2 ship_position = ship.Physics.Position;
                 Vector2 offset = ship_position - position;
                 float length = offset.Length();
 
@@ -725,7 +725,7 @@ namespace Galaxy
                     continue;
 
                 CEnemy enemy = entity as CEnemy;
-                Vector2 enemy_position = enemy.Physics.PositionPhysics.Position;
+                Vector2 enemy_position = enemy.Physics.Position;
                 Vector2 offset = enemy_position - position;
                 float length = offset.Length();
 
@@ -759,7 +759,7 @@ namespace Galaxy
                 if (enemy.IsInScreen() == false)
                     continue;
 
-                Vector2 enemy_position = enemy.Physics.PositionPhysics.Position;
+                Vector2 enemy_position = enemy.Physics.Position;
                 Vector2 offset = enemy_position - position;
                 float length = offset.Length();
 
@@ -904,10 +904,10 @@ namespace Galaxy
 
             foreach (CShip ship in ShipEntitiesCache)
             {
-                Vector2 to_center = GameCamera.GetCenter().ToVector2() - ship.Physics.PositionPhysics.Position;
+                Vector2 to_center = GameCamera.GetCenter().ToVector2() - ship.Physics.Position;
                 Vector2 clamped_entry = GameCamera.ClampInside(SecretEntryPosition, 32.0f);
-                ship.Physics.PositionPhysics.Position = clamped_entry;
-                ship.Physics.PositionPhysics.Velocity = to_center.Normal() * 40.0f;
+                ship.Physics.Position = clamped_entry;
+                ship.Physics.Velocity = to_center.Normal() * 40.0f;
             }
         }
     }

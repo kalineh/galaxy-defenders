@@ -72,7 +72,7 @@ namespace Galaxy
         {
             if (TripleShotCounter < 3)
             {
-                Vector2 position = Physics.PositionPhysics.Position;
+                Vector2 position = Physics.Position;
                 Vector2 dir = Vector2.UnitX.Rotate(TurretRotation + TurretShotOffset);
                 float rotation = dir.ToAngle();
 
@@ -105,14 +105,14 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             base.Draw(sprite_batch);
-            TurretVisual.Draw(sprite_batch, Physics.PositionPhysics.Position, TurretRotation);
+            TurretVisual.Draw(sprite_batch, Physics.Position, TurretRotation);
         }
 
         public override void UpdateCollision()
         {
             Vector2 offset = new Vector2(21.0f, 21.0f);
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.PositionPhysics.Position - offset;
+            aabb.Position = Physics.Position - offset;
         }
 
         protected override bool DoesGenerateCorpse()

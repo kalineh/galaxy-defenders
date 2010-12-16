@@ -92,8 +92,8 @@ namespace Galaxy
             SidekickRight = sidekick_right;
 
             Physics = new CPhysics();
-            Physics.PositionPhysics.Friction = chassis.Friction;
-            Physics.AnglePhysics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
+            Physics.Friction = chassis.Friction;
+            Physics.Rotation = new Vector2(0.0f, -1.0f).ToAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f); // NOTE: radius updated per-frame below
             Visual = CVisual.MakeSpriteUncached(world.Game, chassis.Texture);
             Visual.Scale = new Vector2(chassis.VisualScale);
@@ -145,7 +145,7 @@ namespace Galaxy
 
                 ClampInsideScreen();
 
-                float ship_x = Physics.PositionPhysics.Position.X;
+                float ship_x = Physics.Position.X;
                 float pan = World.GameCamera.PanLimit / 2.0f;
                 float width = World.GameCamera.GetVisibleWidth() / 2.0f;
                 float x = ship_x / width * pan;
@@ -167,7 +167,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
             circle.Radius = CurrentShield > 0.0f ? 24.0f : 16.0f;
         }
 
@@ -176,9 +176,9 @@ namespace Galaxy
             base.Draw(sprite_batch);
 
             if (WeaponSidekickLeft.Count > 0)
-                SidekickVisual.Draw(sprite_batch, Physics.PositionPhysics.Position + Physics.AnglePhysics.GetDir().Perp() * -32.0f, Physics.AnglePhysics.GetDir().Perp().ToAngle());
+                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * -32.0f, Physics.GetDir().Perp().ToAngle());
             if (WeaponSidekickRight.Count > 0)
-                SidekickVisual.Draw(sprite_batch, Physics.PositionPhysics.Position + Physics.AnglePhysics.GetDir().Perp() * 32.0f, Physics.AnglePhysics.GetDir().Perp().ToAngle());
+                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * 32.0f, Physics.GetDir().Perp().ToAngle());
         }
 
         public List<CWeapon> UpgradeWeapon(CWeaponPart weapon_part)
@@ -203,7 +203,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.Explosion(World, Physics.Position, 1.0f);
             World.ShipEntitiesCache.Remove(this);
         }
 
@@ -241,11 +241,11 @@ namespace Galaxy
             GamePadDPad dpad = state.DPad;
 
             Vector2 force = GetInputVector();
-            Physics.PositionPhysics.Velocity += force;
+            Physics.Velocity += force;
 
             // TODO: remove eventually
-            //if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.AnglePhysics.Rotation -= 0.1f; }
-            //if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.AnglePhysics.Rotation += 0.1f; }
+            //if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.Rotation -= 0.1f; }
+            //if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.Rotation += 0.1f; }
 
             // TEST: weapon upgrade
             bool lctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
@@ -348,12 +348,12 @@ namespace Galaxy
 
         public void TakeCollideDamage(Vector2 source, float damage)
         {
-            Vector2 offset = Physics.PositionPhysics.Position - source;
+            Vector2 offset = Physics.Position - source;
             if (!offset.IsEffectivelyZero() && IsInvincible <= 0)
             {
                 Vector2 dir = offset.Normal();
-                Physics.PositionPhysics.Velocity *= 0.8f;
-                Physics.PositionPhysics.Velocity += dir * 7.0f * damage;
+                Physics.Velocity *= 0.8f;
+                Physics.Velocity += dir * 7.0f * damage;
             }
             ApplyDamage(damage, true);
 
@@ -385,7 +385,7 @@ namespace Galaxy
                 if (CurrentShield > 0.0f)
                 {
                     if (effects)
-                        CEffect.PlayerTakeShieldDamage(this, Physics.PositionPhysics.Position, 3.0f, PlayerColor);
+                        CEffect.PlayerTakeShieldDamage(this, Physics.Position, 3.0f, PlayerColor);
                     return;
                 }
 
@@ -404,7 +404,7 @@ namespace Galaxy
                 return;
 
             if (effects)
-                CEffect.PlayerTakeDamage(this, Physics.PositionPhysics.Position, 1.5f);
+                CEffect.PlayerTakeDamage(this, Physics.Position, 1.5f);
         }
 
         public void AbsorbBullet(CEnemyShot shot)

@@ -23,9 +23,9 @@ namespace Galaxy
             CEnemyMissile missile = new CEnemyMissile();
 
             missile.Initialize(world);
-            missile.Physics.PositionPhysics.Position = position;
-            missile.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
-            missile.Physics.AnglePhysics.Rotation = rotation;
+            missile.Physics.Position = position;
+            missile.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            missile.Physics.Rotation = rotation;
             missile.Damage = damage;
             missile.Speed = speed;
 
@@ -53,7 +53,7 @@ namespace Galaxy
         {
             base.Update();
 
-            TrailEffect.Position = Physics.PositionPhysics.Position + GetEffectOffset();
+            TrailEffect.Position = Physics.Position + GetEffectOffset();
             TrailEffect.Spawn(World.ParticleEffects);
 
             UpdateTargeting();
@@ -65,7 +65,7 @@ namespace Galaxy
 
         private Vector2 GetEffectOffset()
         {
-            return Physics.AnglePhysics.GetDir() * -10.0f;
+            return Physics.GetDir() * -10.0f;
         }
 
         private void UpdateTargeting()
@@ -79,7 +79,7 @@ namespace Galaxy
             if (Target != null)
                 return;
 
-            CShip nearest = World.GetNearestShip(Physics.PositionPhysics.Position, 2000.0f);
+            CShip nearest = World.GetNearestShip(Physics.Position, 2000.0f);
             Target = nearest;
         }
 
@@ -88,17 +88,17 @@ namespace Galaxy
             if (Target == null)
                 return;
 
-            Vector2 ofs = Target.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
-            Vector2 fwd = Physics.AnglePhysics.GetDir();
+            Vector2 ofs = Target.Physics.Position - Physics.Position;
+            Vector2 fwd = Physics.GetDir();
             float dot = Vector2.Dot(ofs, fwd.Perp());
-            Physics.AnglePhysics.AngularVelocity = Math.Sign(dot) * 0.01f;
-            Physics.PositionPhysics.Velocity = Physics.AnglePhysics.GetDir() * Speed;
+            Physics.AngularVelocity = Math.Sign(dot) * 0.01f;
+            Physics.Velocity = Physics.GetDir() * Speed;
         }
 
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public void OnCollide(CShip ship)
@@ -112,7 +112,7 @@ namespace Galaxy
             World.Stats.ShotDamageReceived += Damage;
             ship.TakeDamage(Damage);
 
-            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.5f, CEnemy.EnemyOrangeColor);
+            CEffect.MissileExplosion(World, Physics.Position, 2.5f, CEnemy.EnemyOrangeColor);
             Die();
         }
 
@@ -163,7 +163,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.5f, CEnemy.EnemyOrangeColor);
+            CEffect.MissileExplosion(World, Physics.Position, 2.5f, CEnemy.EnemyOrangeColor);
             base.OnDie();
         }
     }

@@ -18,9 +18,9 @@ namespace Galaxy
 
             seek_bomb.Speed = speed;
 
-            seek_bomb.Physics.AnglePhysics.Rotation = owner.World.Random.NextAngle();
-            seek_bomb.Physics.PositionPhysics.Position = position;
-            seek_bomb.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            seek_bomb.Physics.Rotation = owner.World.Random.NextAngle();
+            seek_bomb.Physics.Position = position;
+            seek_bomb.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             owner.World.EntityAdd(seek_bomb);
 
@@ -62,28 +62,28 @@ namespace Galaxy
                 }
             }
 
-            Vector2 target_position = Physics.PositionPhysics.Position + Vector2.UnitY * -100.0f;
+            Vector2 target_position = Physics.Position + Vector2.UnitY * -100.0f;
             if (Target != null)
             {
-                target_position = Target.Physics.PositionPhysics.Position;
+                target_position = Target.Physics.Position;
             }
 
 
             SeekFramesRemaining = Math.Max(0, SeekFramesRemaining - 1);
             if (SeekFramesRemaining > 0)
             {
-                Vector2 offset = target_position - Physics.PositionPhysics.Position;
+                Vector2 offset = target_position - Physics.Position;
                 Vector2 dir = offset.Normal();
-                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, dir * Speed, 0.15f);
+                Physics.Velocity = Vector2.Lerp(Physics.Velocity, dir * Speed, 0.15f);
             }
             else
             {
-                Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, Physics.PositionPhysics.Velocity.Normal() * Speed, 0.15f);
+                Physics.Velocity = Vector2.Lerp(Physics.Velocity, Physics.Velocity.Normal() * Speed, 0.15f);
             }
 
-            Physics.AnglePhysics.Rotation += 0.1f;
+            Physics.Rotation += 0.1f;
 
-                    //CDebugRender.Text(World.GameCamera.WorldMatrix, Physics.PositionPhysics.Position, ((this as CShootBall).IsSeekerTarget).ToString(), Color.White);
+                    //CDebugRender.Text(World.GameCamera.WorldMatrix, Physics.Position, ((this as CShootBall).IsSeekerTarget).ToString(), Color.White);
 
             if (!IsInScreen())
                 Delete();
@@ -94,7 +94,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             ClearTarget();
-            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.0f, Visual.Color);
+            CEffect.MissileExplosion(World, Physics.Position, 2.0f, Visual.Color);
             CAudio.PlaySound("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }
@@ -103,14 +103,14 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         private void FindTarget()
         {
             CEnemy enemy =
-                World.GetNearestEnemySeekable(Physics.PositionPhysics.Position, true) ??
-                World.GetNearestEnemySeekable(Physics.PositionPhysics.Position, false);
+                World.GetNearestEnemySeekable(Physics.Position, true) ??
+                World.GetNearestEnemySeekable(Physics.Position, false);
 
             Target = enemy;
             if (Target != null)

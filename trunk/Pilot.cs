@@ -154,7 +154,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     CEffect.DashBurstEffect(Pilot.Ship.World,
-                                         Pilot.Ship.Physics.PositionPhysics.Position + Pilot.Ship.World.Random.NextVector2Variable() * 16.0f,
+                                         Pilot.Ship.Physics.Position + Pilot.Ship.World.Random.NextVector2Variable() * 16.0f,
                                          1.5f,
                                          Pilot.Ship.Visual.Color);
                 }
@@ -223,7 +223,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     CEffect.AbsorbBulletEffect(Pilot.Ship, 
-                                         Pilot.Ship.Physics.PositionPhysics.Position,
+                                         Pilot.Ship.Physics.Position,
                                          3.0f,
                                          Pilot.Ship.Visual.Color);
                 }
@@ -258,7 +258,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     CEffect.ReflectBulletEffect(Pilot.Ship, 
-                                         Pilot.Ship.Physics.PositionPhysics.Position,
+                                         Pilot.Ship.Physics.Position,
                                          3.0f,
                                          Pilot.Ship.Visual.Color);
                 }
@@ -285,35 +285,35 @@ namespace Galaxy
                         CEnemyShot shot = entity as CEnemyShot;
                         if (shot != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship, shot.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, shot.Physics.Position);
                             shot.Die();
                         }
 
                         CEnemyLaser laser = entity as CEnemyLaser;
                         if (laser != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship, laser.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, laser.Physics.Position);
                             laser.Die();
                         }
 
                         CEnemyCannonShot cannon_shot = entity as CEnemyCannonShot;
                         if (cannon_shot != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship, cannon_shot.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, cannon_shot.Physics.Position);
                             cannon_shot.Die();
                         }
 
                         CEnemyMissile missile = entity as CEnemyMissile;
                         if (missile != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship, missile.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, missile.Physics.Position);
                             missile.Die();
                         }
 
                         CEnemyPellet pellet = entity as CEnemyPellet;
                         if (pellet != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship, pellet.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, pellet.Physics.Position);
                             pellet.Die();
                         }
                     }
@@ -343,7 +343,7 @@ namespace Galaxy
                         {
                             CBonus bonus = new CBonus();
                             bonus.Initialize(Pilot.Ship.World);
-                            bonus.Physics.PositionPhysics.Position = shot.Physics.PositionPhysics.Position;
+                            bonus.Physics.Position = shot.Physics.Position;
                             Pilot.Ship.World.EntityAdd(bonus);
                             shot.Die();
                         }
@@ -353,7 +353,7 @@ namespace Galaxy
                         {
                             CBonus bonus = new CBonus();
                             bonus.Initialize(Pilot.Ship.World);
-                            bonus.Physics.PositionPhysics.Position = laser.Physics.PositionPhysics.Position;
+                            bonus.Physics.Position = laser.Physics.Position;
                             Pilot.Ship.World.EntityAdd(bonus);
                             laser.Die();
                         }
@@ -382,7 +382,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Vector2 hit_location = Pilot.Ship.Physics.PositionPhysics.Position + Vector2.UnitY * -100.0f;
+                    Vector2 hit_location = Pilot.Ship.Physics.Position + Vector2.UnitY * -100.0f;
                     CEffect.Explosion(Pilot.Ship.World, hit_location, 4.0f);
 
                     const float Range = 150.0f;
@@ -391,12 +391,12 @@ namespace Galaxy
                         CBuilding building = entity as CBuilding;
                         if (building != null)
                         {
-                            Vector2 offset = hit_location - building.Physics.PositionPhysics.Position;
+                            Vector2 offset = hit_location - building.Physics.Position;
                             float length = offset.Length();
                             if (length > Range)
                                 continue;
 
-                            CEffect.BuildingExplosion(Pilot.Ship.World, building.Physics.PositionPhysics.Position, 4.0f);
+                            CEffect.BuildingExplosion(Pilot.Ship.World, building.Physics.Position, 4.0f);
                             building.TakeDamage(1000.0f, Pilot.Ship);
                         }
 
@@ -404,12 +404,12 @@ namespace Galaxy
                         CEnemy enemy = entity as CEnemy;
                         if (enemy is CTurret || enemy is CDownTurret)
                         {
-                            Vector2 offset = hit_location - enemy.Physics.PositionPhysics.Position;
+                            Vector2 offset = hit_location - enemy.Physics.Position;
                             float length = offset.Length();
                             if (length > Range)
                                 continue;
 
-                            CEffect.BuildingExplosion(Pilot.Ship.World, enemy.Physics.PositionPhysics.Position, 4.0f);
+                            CEffect.BuildingExplosion(Pilot.Ship.World, enemy.Physics.Position, 4.0f);
                             enemy.TakeDamage(1000.0f, Pilot.Ship);
                         }
                     }
@@ -435,7 +435,7 @@ namespace Galaxy
             {
                 Pilot.Ship.IsInvincible += 1;
 
-                Vector2 position = Pilot.Ship.Physics.PositionPhysics.Position;
+                Vector2 position = Pilot.Ship.Physics.Position;
                 foreach (CEntity entity in Pilot.Ship.World.GetEntities())
                 {
                     CEnemy enemy = entity as CEnemy;
@@ -445,7 +445,7 @@ namespace Galaxy
                     if (enemy is CTurret || enemy is CDownTurret)
                         continue;
 
-                    Vector2 offset = position - enemy.Physics.PositionPhysics.Position;
+                    Vector2 offset = position - enemy.Physics.Position;
                     float length = offset.Length();
                     if (length > 400.0f)
                         continue;
@@ -467,15 +467,15 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Vector2 position = Pilot.Ship.Physics.PositionPhysics.Position;
+                    Vector2 position = Pilot.Ship.Physics.Position;
                     foreach (CEntity entity in SuctionList)
                     {
                         CEnemy enemy = entity as CEnemy;
                         if (enemy == null)
                             continue;
 
-                        Vector2 offset = position - enemy.Physics.PositionPhysics.Position;
-                        enemy.Physics.PositionPhysics.Position += offset * 0.3f;
+                        Vector2 offset = position - enemy.Physics.Position;
+                        enemy.Physics.Position += offset * 0.3f;
                     }
                 }
                 base.Update();
@@ -509,7 +509,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     CEffect.ArmorRepairEffect(Pilot.Ship.World, 
-                                         Pilot.Ship.Physics.PositionPhysics.Position,
+                                         Pilot.Ship.Physics.Position,
                                          1.5f,
                                          Pilot.Ship.Visual.Color);
 

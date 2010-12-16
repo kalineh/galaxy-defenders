@@ -16,8 +16,8 @@ namespace Galaxy
         {
             CAsteroid asteroid = entity as CAsteroid;
 
-            asteroid.Physics.PositionPhysics.Velocity = GetRandomSpawnVelocity(entity.World);
-            asteroid.Physics.AnglePhysics.AngularVelocity = GetRandomSpawnAngularVelocity(entity.World);
+            asteroid.Physics.Velocity = GetRandomSpawnVelocity(entity.World);
+            asteroid.Physics.AngularVelocity = GetRandomSpawnAngularVelocity(entity.World);
 
             float bigness = GetRandomSpawnBigness(entity.World);
             asteroid.Visual.Scale = new Vector2(bigness);
@@ -65,7 +65,7 @@ namespace Galaxy
             base.Customize(entity);
 
             float bigger = 3.0f + 0.2f * entity.World.Random.NextFloat();
-            asteroid.Physics.AnglePhysics.AngularVelocity *= 0.2f;
+            asteroid.Physics.AngularVelocity *= 0.2f;
             asteroid.Visual.Scale *= bigger;
             asteroid.Cracks.Scale *= bigger;
             asteroid.HealthMax *= bigger * 3.0f;

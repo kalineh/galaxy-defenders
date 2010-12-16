@@ -33,23 +33,23 @@ namespace Galaxy
         public override void UpdateAI()
         {
             base.UpdateAI();
-            CenterEffect.Position = Physics.PositionPhysics.Position;
+            CenterEffect.Position = Physics.Position;
             CenterEffect.Spawn(World.ParticleEffects);
 
-            PullEffect.Position = Physics.PositionPhysics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f;
+            PullEffect.Position = Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f;
             PullEffect.Spawn(World.ParticleEffects);
         }
 
         private void PullEntity(CEntity entity, float scale)
         {
-            Vector2 offset = Physics.PositionPhysics.Position - entity.Physics.PositionPhysics.Position;
+            Vector2 offset = Physics.Position - entity.Physics.Position;
             float length = offset.Length();
             float inverse = Math.Max( 0.0f, 300.0f - length );
             float square_inverse = inverse * inverse;
             Vector2 pull = offset * square_inverse * 0.0000025f * scale;
-            entity.Physics.PositionPhysics.Velocity += pull;
-            entity.Physics.PositionPhysics.Velocity *= 0.99f;
-            PullEffect.Position = Physics.PositionPhysics.Position - offset.Normal() * 58.0f;
+            entity.Physics.Velocity += pull;
+            entity.Physics.Velocity *= 0.99f;
+            PullEffect.Position = Physics.Position - offset.Normal() * 58.0f;
             PullEffect.Spawn(World.ParticleEffects);
 
             if (length < 42.0f)
@@ -63,7 +63,7 @@ namespace Galaxy
         {
             float scale = 0.3f;
 
-            Vector2 offset = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 offset = Physics.Position - ship.Physics.Position;
             Vector2 force = ship.GetInputVector();
 
             float dot = Vector2.Dot(offset, force);
@@ -125,7 +125,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
     }
 }

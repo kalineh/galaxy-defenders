@@ -21,16 +21,15 @@ namespace Galaxy
             Game = game;
             World = world;
             Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[(int)player_index], player_index);
-            Ship.Physics.PositionPhysics.Position = position;
+            Ship.Physics.Position = position;
         }
 
         public override void Update()
         {
-            Ship.Physics.AnglePhysics.AngularFriction = 0.01f;
-            Ship.Physics.AnglePhysics.AngularVelocity = 0.025f;
-            Ship.Physics.AnglePhysics.Solve();
-            Ship.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(Ship.Physics.AnglePhysics.Rotation) * 1.5f;
-            Ship.Physics.PositionPhysics.Solve();
+            Ship.Physics.Velocity = Vector2.UnitX.Rotate(Ship.Physics.Rotation) * 1.5f;
+            Ship.Physics.AngularFriction = 0.01f;
+            Ship.Physics.AngularVelocity = 0.025f;
+            Ship.Physics.Solve();
             Ship.Visual.Update();
 
             if (World.Random.NextFloat() < 0.09f)

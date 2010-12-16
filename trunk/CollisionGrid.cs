@@ -96,7 +96,7 @@ namespace Galaxy
                 if (entity.Collision.Enabled == false)
                     continue;
 
-                Vector2 local = entity.Physics.PositionPhysics.Position - upper + half_grid;
+                Vector2 local = entity.Physics.Position - upper + half_grid;
 
                 float x = 0.0f;
                 float y = 0.0f;

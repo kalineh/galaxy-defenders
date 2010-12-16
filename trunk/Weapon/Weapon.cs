@@ -71,16 +71,16 @@ namespace Galaxy
         {
             // TODO: this math is weird and broken
             // TODO: replace with matrices
-            Vector2 position = Owner.Physics.PositionPhysics.Position;
-            float base_rotation = Owner.Physics.AnglePhysics.Rotation;
+            Vector2 position = Owner.Physics.Position;
+            float base_rotation = Owner.Physics.Rotation;
             float rotation = base_rotation + Rotation;
-            Vector2 dir = Owner.Physics.AnglePhysics.GetDir();
+            Vector2 dir = Owner.Physics.GetDir();
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;
 
             Instantiate(Owner, fire_position, rotation, Speed, Damage);
 
-            Owner.Physics.PositionPhysics.Velocity += Kickback(Owner.Physics.AnglePhysics.Rotation);
+            Owner.Physics.Velocity += Kickback(Owner.Physics.Rotation);
 
             Cooldown = ReloadTime;
 

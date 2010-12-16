@@ -22,7 +22,7 @@ namespace Galaxy
 
             if (Paused)
             {
-                entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
+                entity.Physics.Velocity = Vector2.Zero;
                 return;
             }
 
@@ -31,7 +31,7 @@ namespace Galaxy
             float x = (float)Math.Cos(t) * Amplitude;
             float y = Down * SpeedMultiplier;
 
-            entity.Physics.PositionPhysics.Velocity = new Vector2(x, y);
+            entity.Physics.Velocity = new Vector2(x, y);
         }
     }
 }

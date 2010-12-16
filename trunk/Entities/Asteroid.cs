@@ -44,48 +44,48 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             base.Draw(sprite_batch);
-            Cracks.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
+            Cracks.Draw(sprite_batch, Physics.Position, Physics.Rotation);
         }
 
         // TODO: better system
         public void OnCollide(CShip ship)
         {
             World.Stats.CollisionDamageReceived += 1.0f;
-            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
+            ship.TakeCollideDamage(Physics.Position, 1.0f);
             TakeDamage(1.0f, ship);
         }
 
         public void OnCollide(CLaser laser)
         {
-            Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
+            Physics.Velocity += laser.Physics.GetDir() * laser.Damage;
             TakeDamage(laser.Damage, laser.Owner);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
-            Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
+            Physics.Velocity += missile.Physics.GetDir() * missile.Damage;
             TakeDamage(missile.Damage, missile.Owner);
             missile.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
-            Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
+            Physics.Velocity += plasma.Physics.GetDir() * plasma.Damage;
             TakeDamage(plasma.Damage, plasma.Owner);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
-            Physics.PositionPhysics.Velocity += minishot.Physics.AnglePhysics.GetDir() * minishot.Damage;
+            Physics.Velocity += minishot.Physics.GetDir() * minishot.Damage;
             TakeDamage(minishot.Damage, minishot.Owner);
             minishot.Die();
         }
 
         protected override void OnDie()
         {
-            CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
+            CEffect.Explosion(World, Physics.Position, 1.0f);
             base.OnDie();
         }
 

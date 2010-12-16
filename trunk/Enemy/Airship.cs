@@ -50,9 +50,9 @@ namespace Galaxy
 
         private void Fire()
         {
-            Vector2 position = Physics.PositionPhysics.Position;
+            Vector2 position = Physics.Position;
             float rotation = Vector2.UnitY.ToAngle();
-            Vector2 dir = Physics.AnglePhysics.GetDir();
+            Vector2 dir = Physics.GetDir();
             Vector2 left_fire_offset = dir * -41.0f;
             Vector2 right_fire_offset = dir * 38.0f;
             Vector2 left_fire_position = position + left_fire_offset;
@@ -68,13 +68,13 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.PositionPhysics.Position + CollisionOffset;
+            aabb.Position = Physics.Position + CollisionOffset;
         }
 
         protected override void OnDie()
         {
             // TODO: new explosion effect
-            CEffect.EnemyExplosion(World, Physics.PositionPhysics.Position, 3.0f);
+            CEffect.EnemyExplosion(World, Physics.Position, 3.0f);
 
             base.OnDie();
         }

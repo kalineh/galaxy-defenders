@@ -15,9 +15,9 @@ namespace Galaxy
 
             plasma.Initialize(owner.World, owner, damage);
 
-            plasma.Physics.PositionPhysics.Position = position;
-            plasma.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
-            plasma.Physics.AnglePhysics.Rotation = rotation;
+            plasma.Physics.Position = position;
+            plasma.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            plasma.Physics.Rotation = rotation;
 
             owner.World.EntityAdd(plasma);
         }

@@ -20,9 +20,9 @@ namespace Galaxy
             CEnemyCannonShot shot = new CEnemyCannonShot();
             shot.Initialize(world, null, damage);
 
-            shot.Physics.AnglePhysics.Rotation = rotation;
-            shot.Physics.PositionPhysics.Position = position;
-            shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            shot.Physics.Rotation = rotation;
+            shot.Physics.Position = position;
+            shot.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             world.EntityAdd(shot);
 
@@ -54,7 +54,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB box = Collision as CollisionAABB;
-            box.Position = Physics.PositionPhysics.Position - new Vector2(6.0f, 21.0f);
+            box.Position = Physics.Position - new Vector2(6.0f, 21.0f);
         }
 
         public void OnCollide(CShip ship)
@@ -77,11 +77,11 @@ namespace Galaxy
             World.Stats.ShotDamageReceived += Damage;
             ship.TakeDamage(Damage);
 
-            Vector2 ofs = ship.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
+            Vector2 ofs = ship.Physics.Position - Physics.Position;
             Vector2 dir = ofs.Normal();
             Vector2 force = dir * 5.0f;
 
-            ship.Physics.PositionPhysics.Velocity += force;
+            ship.Physics.Velocity += force;
 
             CanCollideWait = 3;
         }

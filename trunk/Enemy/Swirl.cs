@@ -58,16 +58,16 @@ namespace Galaxy
                     continue;
 
                 Vector2 offset = Vector2.UnitX.Rotate(start + step * i) * 36.0f;
-                Vector2 target = Physics.PositionPhysics.Position + offset;
+                Vector2 target = Physics.Position + offset;
 
-                Balls[i].Physics.PositionPhysics.Position = target;
+                Balls[i].Physics.Position = target;
             }
         }
 
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         protected override void OnDie()
@@ -83,7 +83,7 @@ namespace Galaxy
                 Vector2 dir = Vector2.UnitX.Rotate(start + step * i + MathHelper.PiOver2 + 0.1f);
                 Vector2 velocity = dir * 4.0f;
 
-                Balls[i].Physics.PositionPhysics.Velocity = velocity;
+                Balls[i].Physics.Velocity = velocity;
             }
 
             base.OnDie();

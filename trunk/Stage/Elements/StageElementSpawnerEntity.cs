@@ -54,7 +54,7 @@ namespace Galaxy
                 // TODO: cleaner implementation?
                 if (entity.Physics != null)
                 {
-                    entity.Physics.PositionPhysics.Position = spawn_position;
+                    entity.Physics.Position = spawn_position;
                 }
 
                 if (MoverPresetName != "")

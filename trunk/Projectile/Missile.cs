@@ -21,11 +21,11 @@ namespace Galaxy
 
             missile.Speed = speed;
 
-            missile.Physics.AnglePhysics.Rotation = rotation - MathHelper.Pi;
+            missile.Physics.Rotation = rotation - MathHelper.Pi;
             missile.FireVector = Vector2.UnitX.Rotate(rotation);
 
-            missile.Physics.PositionPhysics.Position = position;
-            missile.Physics.PositionPhysics.Velocity = missile.FireVector * 6.0f;
+            missile.Physics.Position = position;
+            missile.Physics.Velocity = missile.FireVector * 6.0f;
 
             owner.World.EntityAdd(missile);
 
@@ -48,9 +48,9 @@ namespace Galaxy
 
         public override void Update()
         {
-            Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, -FireVector * Speed, 0.05f);
+            Physics.Velocity = Vector2.Lerp(Physics.Velocity, -FireVector * Speed, 0.05f);
 
-            TrailEffect.Position = Physics.PositionPhysics.Position;
+            TrailEffect.Position = Physics.Position;
             TrailEffect.Spawn(World.ParticleEffects);
 
             base.Update();
@@ -63,12 +63,12 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB box = Collision as CollisionAABB;
-            box.Position = Physics.PositionPhysics.Position;
+            box.Position = Physics.Position;
         }
 
         protected override void OnDie()
         {
-            CEffect.MissileExplosion(World, Physics.PositionPhysics.Position, 2.5f, Visual.Color);
+            CEffect.MissileExplosion(World, Physics.Position, 2.5f, Visual.Color);
             base.OnDie();
         }
     }

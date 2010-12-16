@@ -48,9 +48,9 @@ namespace Galaxy
         {
             // TODO: this math is weird and broken
             // TODO: replace with matrices
-            Vector2 position = Physics.PositionPhysics.Position;
+            Vector2 position = Physics.Position;
             float rotation = Vector2.UnitY.ToAngle();
-            Vector2 dir = Physics.AnglePhysics.GetDir();
+            Vector2 dir = Physics.GetDir();
             Vector2 fire_offset = dir * 2.0f + dir.Perp() * 16.0f;
             Vector2 fire_position = position + fire_offset;
 
@@ -71,7 +71,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         protected override bool DoesGenerateCorpse()

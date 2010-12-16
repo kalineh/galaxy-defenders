@@ -98,7 +98,7 @@ namespace Galaxy
 
             CShip player = World.GetNearestShipEditor(Vector2.Zero);
             if (player != null)
-                Game.PlayerSpawnPosition = player.Physics.PositionPhysics.Position;
+                Game.PlayerSpawnPosition = player.Physics.Position;
 
             World.GameCamera.Update();
             BackgroundScenery.Update();
@@ -157,7 +157,7 @@ namespace Galaxy
                 Vector2 total = Vector2.Zero;
                 foreach (CEntity entity in CopyEntities)
                 {
-                    total += entity.Physics.PositionPhysics.Position;
+                    total += entity.Physics.Position;
                 }
                 Vector2 average = total / CopyEntities.Count;
                 Vector2 offset = world - average;
@@ -167,7 +167,7 @@ namespace Galaxy
                     // TODO: move this somewhere gooderer
                     CEditorEntityBase editor_entity = entity as CEditorEntityBase;
                     Type type = editor_entity.GetType();
-                    Vector2 position = editor_entity.Physics.PositionPhysics.Position;
+                    Vector2 position = editor_entity.Physics.Position;
                     CStageElement element = editor_entity.GenerateStageElement();
                     CEditorEntityBase new_entity = Activator.CreateInstance(type, new object[] { World, element }) as CEditorEntityBase;
                     new_entity.Position += offset;
@@ -268,7 +268,7 @@ namespace Galaxy
                             InteractionState = EditorInteractionState.DragEntity;
                             foreach (CEntity selected in SelectedEntities)
                             {
-                                SelectedEntitiesOffset[selected] = selected.Physics.PositionPhysics.Position - world;
+                                SelectedEntitiesOffset[selected] = selected.Physics.Position - world;
                             }
                             DragEntityStart = mouse;
                         }
@@ -281,7 +281,7 @@ namespace Galaxy
 
                             InteractionState = EditorInteractionState.DragEntity;
                             SelectedEntitiesOffset.Clear();
-                            SelectedEntitiesOffset[entity] = entity.Physics.PositionPhysics.Position - world;
+                            SelectedEntitiesOffset[entity] = entity.Physics.Position - world;
                             DragEntityStart = mouse;
                         }
                     }
@@ -290,7 +290,7 @@ namespace Galaxy
 
             if (state.LeftButton == ButtonState.Pressed && left_ctrl_down)
             {
-                SampleShip.Physics.PositionPhysics.Position = world;
+                SampleShip.Physics.Position = world;
             }
 
             if (state.MiddleButton == ButtonState.Pressed)
@@ -370,7 +370,7 @@ namespace Galaxy
         private CEntity SpawnEntity(Vector2 position)
         {
             CEditorEntityBase editor_entity = Activator.CreateInstance(SpawnEntityType, new object[] { World, position }) as CEditorEntityBase;
-            editor_entity.Physics.PositionPhysics.Position = position;
+            editor_entity.Physics.Position = position;
             return editor_entity;
         }
         
@@ -416,8 +416,8 @@ namespace Galaxy
 
             Vector2 snapped = SnapPositionToGrid(world);
 
-            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = snapped + SelectedEntitiesOffset[entity]);
-            SelectedEntities.ForEach(entity => entity.Physics.PositionPhysics.Position = SnapPositionToGrid(entity.Physics.PositionPhysics.Position));
+            SelectedEntities.ForEach(entity => entity.Physics.Position = snapped + SelectedEntitiesOffset[entity]);
+            SelectedEntities.ForEach(entity => entity.Physics.Position = SnapPositionToGrid(entity.Physics.Position));
 
             // TODO: is this a bad hack?
             foreach (CEntity entity in SelectedEntities)
@@ -485,14 +485,14 @@ namespace Galaxy
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
-                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
             }
 
             foreach (CEntity entity in SelectedEntities)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
-                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.PositionPhysics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
             }
 
             World.DrawEntities(World.GameCamera);
@@ -510,7 +510,7 @@ namespace Galaxy
             SampleShip = World.GetNearestShipEditor(Vector2.Zero);
             if (SampleShip != null)
             {
-                CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.PositionPhysics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);
+                CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);
             }
 
             // render debug
