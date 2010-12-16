@@ -76,8 +76,16 @@ namespace Galaxy
             {
                 if (Visual != null)
                 {
-                    Visual.DebugText = GetType().ToString().Replace("Galaxy.", "");
-                    Visual.DebugTextClampToScreen = true;
+                    if (CInput.IsRawKeyDown(Keys.LeftShift))
+                    {
+                        Visual.DebugText = null;
+                        Visual.DebugTextClampToScreen = false;
+                    }
+                    else
+                    {
+                        Visual.DebugText = GetType().ToString().Replace("Galaxy.", "");
+                        Visual.DebugTextClampToScreen = true;
+                    }
                 }
             }
 #endif

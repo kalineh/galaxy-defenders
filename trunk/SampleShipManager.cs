@@ -26,9 +26,10 @@ namespace Galaxy
 
         public void Update()
         {
-            for (int i = 0; i < World.Game.HudManager.Players.Count; ++i)
+            int players = CSaveData.GetCurrentProfile().Game.Players;
+            for (int i = 0; i < players; ++i)
             {
-                if (!World.Game.HudManager.Players[i])
+                if (!World.Game.HudManager.IsPilotSelectComplete(i))
                     continue;
 
                 CSampleShip sample = SampleShips[i];
@@ -38,9 +39,10 @@ namespace Galaxy
 
         public void Draw()
         {
-            for (int i = 0; i < World.Game.HudManager.Players.Count; ++i)
+            int players = CSaveData.GetCurrentProfile().Game.Players;
+            for (int i = 0; i < players; ++i)
             {
-                if (!World.Game.HudManager.Players[i])
+                if (!World.Game.HudManager.IsPilotSelectComplete(i))
                     continue;
 
                 CSampleShip sample = SampleShips[i];

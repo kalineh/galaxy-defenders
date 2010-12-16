@@ -12,15 +12,12 @@ namespace Galaxy
     public class CHudManager
     {
         public CGalaxy Game { get; private set; }
-
-        public List<bool> Players { get; set; }
         public List<CHud> Huds { get; set; }
         public List<CHudProfileSelect> HudsProfileSelect { get; set; }
 
         public CHudManager(CGalaxy game)
         {
             Game = game;
-            Players = new List<bool>() { false, false };
             Huds = new List<CHud>() {
                 new CHud(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
                 new CHud(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
@@ -45,24 +42,37 @@ namespace Galaxy
             Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
         }
 
-        public void ResetPlayers()
+        public void ActivatePilotSelect()
         {
-        
+            foreach (CHudProfileSelect hud in HudsProfileSelect)
+                hud.Deactivate();
+
+            int players = CSaveData.GetCurrentProfile().Game.Players;
+            for (int i = 0; i < players; ++i)
+                HudsProfileSelect[i].Activate();
         }
 
-        public void ToggleProfileActive(PlayerIndex index)
+        public void DeactivatePilotSelect()
         {
-            Players[(int)index] = !Players[(int)index];
+            foreach (CHudProfileSelect hud in HudsProfileSelect)
+                hud.Deactivate();
         }
 
-        public int GetActivePlayerCount()
+        public bool IsPilotSelectComplete(int index)
         {
-            int count = 0;
-            foreach (bool active in Players)
-            {
-                count += active ? 1 : 0; 
-            }
-            return count;
+            if (HudsProfileSelect[index].State == CHudProfileSelect.EState.Locked)
+                return true;
+            return false;
+        }
+
+        public bool IsPilotSelectCompleteAll()
+        {
+            int players = CSaveData.GetCurrentProfile().Game.Players;
+            for (int i = 0; i < players; ++i)
+                if (!IsPilotSelectComplete(i))
+                    return false;
+
+            return true;
         }
 
         private void UpdateHuds()

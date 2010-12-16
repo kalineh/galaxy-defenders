@@ -29,7 +29,7 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame, SelectValidate = ValidateStartGame },
+                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
                     new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
@@ -43,9 +43,16 @@ namespace Galaxy
                 CAudio.PlayMusic("Title");
         }
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            Game.HudManager.ActivatePilotSelect();
+        }
+
         public override void Update()
         {
-            Menu.Update();
+            if (Game.HudManager.IsPilotSelectCompleteAll())
+                Menu.Update();
 
             SampleShipManager.Update();
 
@@ -62,9 +69,7 @@ namespace Galaxy
             Game.GraphicsDevice.Clear(Color.Black);
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             SampleShipManager.Draw();
-            Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
@@ -78,14 +83,6 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        private bool ValidateStartGame(object tag)
-        {
-            // TODO: are all players ready?
-            // TODO: check hud status
-            // TODO: careful of 2nd controller only
-            return false;
-        }
-
         private void StartGame(object tag)
         {
             Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
@@ -93,6 +90,7 @@ namespace Galaxy
 
         private void Back(object tag)
         {
+            Game.HudManager.DeactivatePilotSelect();
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
     }
