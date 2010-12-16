@@ -149,6 +149,32 @@ namespace Galaxy
             return down;
         }
 
+        public bool IsPadL1Pressed(PlayerIndex player_index)
+        {
+            bool is_down = IsPadL1DownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadL1DownImpl(PreviousFrameGamePadState[(int)player_index]);
+            return is_down && !was_down;
+        }
+
+        public bool IsPadR1Pressed(PlayerIndex player_index)
+        {
+            bool is_down = IsPadR1DownImpl(GamePad.GetState(player_index));
+            bool was_down = IsPadR1DownImpl(PreviousFrameGamePadState[(int)player_index]);
+            return is_down && !was_down;
+        }
+
+        public bool IsPadL1PressedAny()
+        {
+            return IsPadL1Pressed(PlayerIndex.One) ||
+                   IsPadL1Pressed(PlayerIndex.Two);
+        }
+
+        public bool IsPadR1PressedAny()
+        {
+            return IsPadR1Pressed(PlayerIndex.One) ||
+                   IsPadR1Pressed(PlayerIndex.Two);
+        }
+
         private bool IsPadLeftDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Left == ButtonState.Pressed;
@@ -176,6 +202,19 @@ namespace Galaxy
             bool stick = state.ThumbSticks.Left.Y < 0.0f;
             return dpad || stick;
         }
+
+        private bool IsPadL1DownImpl(GamePadState state)
+        {
+            bool down = state.Buttons.LeftShoulder == ButtonState.Pressed;
+            return down;
+        }
+
+        private bool IsPadR1DownImpl(GamePadState state)
+        {
+            bool down = state.Buttons.RightShoulder == ButtonState.Pressed;
+            return down;
+        }
+
 
         //public  
 

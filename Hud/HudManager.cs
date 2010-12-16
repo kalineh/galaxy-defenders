@@ -13,7 +13,7 @@ namespace Galaxy
     {
         public CGalaxy Game { get; private set; }
         public List<CHud> Huds { get; set; }
-        public List<CHudProfileSelect> HudsProfileSelect { get; set; }
+        public List<HudPilotSelect> HudsProfileSelect { get; set; }
 
         public CHudManager(CGalaxy game)
         {
@@ -22,9 +22,9 @@ namespace Galaxy
                 new CHud(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
                 new CHud(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
             };
-            HudsProfileSelect = new List<CHudProfileSelect>() {
-                new CHudProfileSelect(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
-                new CHudProfileSelect(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
+            HudsProfileSelect = new List<HudPilotSelect>() {
+                new HudPilotSelect(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
+                new HudPilotSelect(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
             };
         }
 
@@ -44,7 +44,7 @@ namespace Galaxy
 
         public void ActivatePilotSelect()
         {
-            foreach (CHudProfileSelect hud in HudsProfileSelect)
+            foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Deactivate();
 
             int players = CSaveData.GetCurrentProfile().Game.Players;
@@ -54,13 +54,13 @@ namespace Galaxy
 
         public void DeactivatePilotSelect()
         {
-            foreach (CHudProfileSelect hud in HudsProfileSelect)
+            foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Deactivate();
         }
 
         public bool IsPilotSelectComplete(int index)
         {
-            if (HudsProfileSelect[index].State == CHudProfileSelect.EState.Locked)
+            if (HudsProfileSelect[index].State == HudPilotSelect.EState.Locked)
                 return true;
             return false;
         }
@@ -83,7 +83,7 @@ namespace Galaxy
 
         private void UpdateHudsProfileSelect()
         {
-            foreach (CHudProfileSelect hud in HudsProfileSelect)
+            foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Update();
         }
 
@@ -113,7 +113,7 @@ namespace Galaxy
             if (Game.EditorMode)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-                foreach (CHudProfileSelect hud in HudsProfileSelect)
+                foreach (HudPilotSelect hud in HudsProfileSelect)
                     hud.DrawEditor(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
                 return;
@@ -121,7 +121,7 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
-            foreach (CHudProfileSelect hud in HudsProfileSelect)
+            foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();

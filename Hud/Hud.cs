@@ -250,35 +250,31 @@ namespace Galaxy
             Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
             Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
 
-            // TODO: show money for both players? seperate moneys?
-            if (PlayerIndex == PlayerIndex.One)
+            // TODO: just not show?
+            //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
+
+            // TODO: not copy the profile around so much
+            SProfile profile = CSaveData.GetCurrentProfile();
+            int money = profile.Game.Pilots[(int)PlayerIndex].Money;
+
+            // TODO: score needs to be maintained across secret stages?
+            // add current stage score if valid
+            if (Ship != null)
+                money += Ship.Score;
+
+            if (MoneyOverride != null)
+                money = (int)MoneyOverride;
+
+            if (money != LastMoney)
             {
-                // TODO: just not show?
-                //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
-
-                SProfile profile = CSaveData.GetCurrentProfile();
-
-                int money = profile.Game.Pilots[(int)PlayerIndex].Money;
-
-                // TODO: score needs to be maintained across secret stages?
-                // add current stage score if valid
-                if (Ship != null)
-                    money += Ship.Score;
-
-                if (MoneyOverride != null)
-                    money = (int)MoneyOverride;
-
-                if (money != LastMoney)
-                {
-                    CachedMoneyString = money.ToString();
-                    LastMoney = money;
-                }
-
-                Color color = new Color(160, 160, 160);
-                sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-                sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-                //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+                CachedMoneyString = money.ToString();
+                LastMoney = money;
             }
+
+            Color color = new Color(160, 160, 160);
+            sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)

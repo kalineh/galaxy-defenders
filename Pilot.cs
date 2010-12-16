@@ -541,9 +541,9 @@ namespace Galaxy
         public class Rabbit
             : CPilot
         {
-            public static string AbilityName0 = "Reflect";
-            public static string AbilityName1 = "Detonate";
-            public static string AbilityName2 = "Alchemy";
+            public static string AbilityName0 = "BulletReflect";
+            public static string AbilityName1 = "BulletDetonate";
+            public static string AbilityName2 = "BulletAlchemy";
 
             public Rabbit()
             {
