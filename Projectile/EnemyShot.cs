@@ -19,9 +19,9 @@ namespace Galaxy
             CEnemyShot shot = new CEnemyShot();
             shot.Initialize(world, null, damage);
 
-            shot.Physics.AnglePhysics.Rotation = rotation;
-            shot.Physics.PositionPhysics.Position = position;
-            shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            shot.Physics.Rotation = rotation;
+            shot.Physics.Position = position;
+            shot.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             world.EntityAdd(shot);
 
@@ -51,7 +51,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle box = Collision as CollisionCircle;
-            box.Position = Physics.PositionPhysics.Position;
+            box.Position = Physics.Position;
         }
 
         public void OnCollide(CShip ship)
@@ -82,10 +82,10 @@ namespace Galaxy
 
         private void Reflect(CShip ship)
         {
-            Vector2 from_ship = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 from_ship = Physics.Position - ship.Physics.Position;
             Vector2 reflect = from_ship.Normal();
-            Vector2 new_velocity = reflect * Physics.PositionPhysics.Velocity.Length();
-            Physics.PositionPhysics.Velocity = new_velocity;
+            Vector2 new_velocity = reflect * Physics.Velocity.Length();
+            Physics.Velocity = new_velocity;
             IsReflected = true;
             WhoReflected = ship;
         }

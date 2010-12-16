@@ -18,9 +18,9 @@ namespace Galaxy
             CEnemyLaser laser = new CEnemyLaser();
 
             laser.Initialize(world);
-            laser.Physics.PositionPhysics.Position = position;
-            laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
-            laser.Physics.AnglePhysics.Rotation = rotation;
+            laser.Physics.Position = position;
+            laser.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            laser.Physics.Rotation = rotation;
             laser.Damage = damage;
 
             world.EntityAdd(laser);
@@ -51,7 +51,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB box = Collision as CollisionAABB;
-            box.Position = Physics.PositionPhysics.Position;
+            box.Position = Physics.Position;
         }
 
         public void OnCollide(CShip ship)
@@ -72,12 +72,12 @@ namespace Galaxy
 
         private void Reflect(CShip ship)
         {
-            Vector2 from_ship = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 from_ship = Physics.Position - ship.Physics.Position;
             Vector2 reflect = from_ship.Normal();
-            Vector2 new_velocity = reflect * Physics.PositionPhysics.Velocity.Length();
-            Physics.PositionPhysics.Velocity = new_velocity;
+            Vector2 new_velocity = reflect * Physics.Velocity.Length();
+            Physics.Velocity = new_velocity;
             IsReflected = true;
-            Physics.AnglePhysics.Rotation = new_velocity.ToAngle();
+            Physics.Rotation = new_velocity.ToAngle();
         }
     }
 }

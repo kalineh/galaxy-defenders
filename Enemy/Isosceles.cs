@@ -46,7 +46,7 @@ namespace Galaxy
 
         private void Fire()
         {
-            Vector2 position = Physics.PositionPhysics.Position;
+            Vector2 position = Physics.Position;
             Vector2 dir = GetDirToShip();
             float rotation = Vector2.UnitY.ToAngle();
 
@@ -59,7 +59,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
     }
 }

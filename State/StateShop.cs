@@ -517,7 +517,7 @@ namespace Galaxy
         {
             EmptyWorld.Stop();
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-190.0f, 100.0f);
+            SampleShip.Physics.Position = new Vector2(-190.0f, 100.0f);
         }
 
         private void RevertWorkingProfile(object tag)

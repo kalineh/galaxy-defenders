@@ -20,9 +20,9 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.PositionPhysics.Velocity = world.Random.NextVector2(2.0f);
-            Physics.PositionPhysics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
-            Physics.AnglePhysics.AngularVelocity = 0.1f;
+            Physics.Velocity = world.Random.NextVector2(2.0f);
+            Physics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
+            Physics.AngularVelocity = 0.1f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Entity/Bonus");
             Mover = new CMoverIgnoreCamera();
@@ -37,26 +37,26 @@ namespace Galaxy
             LerpGravity();
             LerpToPlayers();
 
-            if (!IsInScreen() && Physics.PositionPhysics.Position.Y > 0.0f)
+            if (!IsInScreen() && Physics.Position.Y > 0.0f)
                 Delete();
         }
 
         private void LerpGravity()
         {
-            Physics.PositionPhysics.Velocity = Vector2.Lerp(Physics.PositionPhysics.Velocity, Vector2.UnitY * 2.0f, 0.03f);
+            Physics.Velocity = Vector2.Lerp(Physics.Velocity, Vector2.UnitY * 2.0f, 0.03f);
         }
 
         private void LerpToPlayers()
         {
-            CShip ship = World.GetNearestShip(Physics.PositionPhysics.Position);
+            CShip ship = World.GetNearestShip(Physics.Position);
             if (ship == null)
             {
                 GotoPlayer = false;
                 return;
             }
 
-            Vector2 target = ship.Physics.PositionPhysics.Position;
-            Vector2 offset = target - Physics.PositionPhysics.Position;
+            Vector2 target = ship.Physics.Position;
+            Vector2 offset = target - Physics.Position;
             Vector2 dir = offset.Normal();
             float length = offset.Length();
 
@@ -71,7 +71,7 @@ namespace Galaxy
                 GotoForce += 2.5f;
                 float power = Math.Max(GotoForce, MaxLength - length);
                 float power_multiplier = 0.02f;
-                Physics.PositionPhysics.Velocity += dir * power * power_multiplier;
+                Physics.Velocity += dir * power * power_multiplier;
             }
         }
 

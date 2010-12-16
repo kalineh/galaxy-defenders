@@ -30,7 +30,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public override void TakeDamage(float damage, CShip source)

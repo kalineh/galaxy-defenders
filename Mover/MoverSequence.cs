@@ -25,7 +25,7 @@ namespace Galaxy
         {
             if (Paused)
             {
-                entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
+                entity.Physics.Velocity = Vector2.Zero;
                 return;
             }
 
@@ -33,19 +33,19 @@ namespace Galaxy
 
             if (entity.AliveTime == 0)
             {
-                entity.Physics.PositionPhysics.Velocity = velocity;
+                entity.Physics.Velocity = velocity;
                 return;
             }
 
             if (AlwaysMaxSpeed)
             {
                 float speed = velocity.Length();
-                Vector2 target = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
-                entity.Physics.PositionPhysics.Velocity = target.Normal() * speed * SpeedMultiplier;
+                Vector2 target = Vector2.Lerp(entity.Physics.Velocity, velocity, VelocityLerpRate);
+                entity.Physics.Velocity = target.Normal() * speed * SpeedMultiplier;
             }
             else
             {
-                entity.Physics.PositionPhysics.Velocity = Vector2.Lerp(entity.Physics.PositionPhysics.Velocity, velocity, VelocityLerpRate);
+                entity.Physics.Velocity = Vector2.Lerp(entity.Physics.Velocity, velocity, VelocityLerpRate);
             }
         }
 

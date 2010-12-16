@@ -21,7 +21,7 @@ namespace Galaxy
             CBuilding building = new CBuilding();
 
             building.Initialize(world);
-            building.Physics.PositionPhysics.Position = Position;
+            building.Physics.Position = Position;
             building.Coins = Coins;
             building.Powerup = Powerup;
             building.TextureName = TextureName;

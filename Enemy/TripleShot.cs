@@ -57,7 +57,7 @@ namespace Galaxy
             // TODO: make sure the last shot isnt fired so we get a nice delay after shot before moving again
             if (TripleShotCounter < 3)
             {
-                Vector2 position = Physics.PositionPhysics.Position;
+                Vector2 position = Physics.Position;
                 Vector2 dir = GetDirToShip();
                 float rotation = dir.ToAngle();
 
@@ -90,7 +90,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         protected override bool DoesGenerateCorpse()

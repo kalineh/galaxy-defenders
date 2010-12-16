@@ -19,7 +19,7 @@ namespace Galaxy
         {
             CDecoration decoration = new CDecoration();
             decoration.Initialize(world);
-            decoration.Physics.PositionPhysics.Position = Position;
+            decoration.Physics.Position = Position;
             decoration.TextureName = TextureName;
             decoration.DepthOffset = DepthOffset;
 

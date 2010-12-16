@@ -20,8 +20,8 @@ namespace Galaxy
         [CategoryAttribute("Core")]
         public Vector2 Position
         {
-            get { return Physics.PositionPhysics.Position; }
-            set { Physics.PositionPhysics.Position = value; }
+            get { return Physics.Position; }
+            set { Physics.Position = value; }
         }
 
         public bool EditorDirty { get; set; }

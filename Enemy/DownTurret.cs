@@ -48,7 +48,7 @@ namespace Galaxy
 
         private void Fire()
         {
-            Vector2 position = Physics.PositionPhysics.Position;
+            Vector2 position = Physics.Position;
             Vector2 dir = Vector2.UnitY;
             float rotation = MathHelper.PiOver2;
 
@@ -61,7 +61,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         protected override bool DoesGenerateCorpse()

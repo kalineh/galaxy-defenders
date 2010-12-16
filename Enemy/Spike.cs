@@ -19,7 +19,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.PositionPhysics.Friction = 0.98f;
+            Physics.Friction = 0.98f;
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Spike");
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
@@ -51,34 +51,34 @@ namespace Galaxy
             if (Target != null)
                 return;
 
-            if (Physics.AnglePhysics.AngularVelocity > 0.0f)
+            if (Physics.AngularVelocity > 0.0f)
                 return; 
 
-            Target = World.GetNearestShip(Physics.PositionPhysics.Position, 900.0f);
+            Target = World.GetNearestShip(Physics.Position, 900.0f);
         }
 
         public void UpdateSeek()
         {
-            Physics.AnglePhysics.AngularVelocity = MathHelper.Min(0.275f, Physics.AnglePhysics.AngularVelocity + 0.0075f);
+            Physics.AngularVelocity = MathHelper.Min(0.275f, Physics.AngularVelocity + 0.0075f);
 
-            if (Physics.AnglePhysics.AngularVelocity > 0.25f)
+            if (Physics.AngularVelocity > 0.25f)
             {
-                Vector2 offset = Target.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
+                Vector2 offset = Target.Physics.Position - Physics.Position;
                 float length = offset.Length();
                 const float limit = 900.0f;
                 if (offset.Length() < limit)
                 {
                     float t = 0.2f;
                     Vector2 force = offset.Normal() * t;
-                    Physics.PositionPhysics.Velocity += force;
+                    Physics.Velocity += force;
                 }
             }
         }
 
         public void UpdateStop()
         {
-            Physics.AnglePhysics.AngularVelocity = MathHelper.Max(0.0f, Physics.AnglePhysics.AngularVelocity - 0.01f);
-            Physics.PositionPhysics.Position += CMoverPresets.AntiCamera * 0.9f;
+            Physics.AngularVelocity = MathHelper.Max(0.0f, Physics.AngularVelocity - 0.01f);
+            Physics.Position += CMoverPresets.AntiCamera * 0.9f;
         }
 
         public void UpdateScreenEdgeHit()
@@ -92,12 +92,12 @@ namespace Galaxy
                 return;
             }
 
-            if (!World.GameCamera.IsInside(Physics.PositionPhysics.Position, 0.0f))
+            if (!World.GameCamera.IsInside(Physics.Position, 0.0f))
             {
-                Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - Physics.PositionPhysics.Position;
-                Physics.PositionPhysics.Velocity = to_center.Normal() * Physics.PositionPhysics.Velocity.Length();
-                Physics.PositionPhysics.Position -= CMoverPresets.AntiCamera;
-                Physics.PositionPhysics.Position = World.GameCamera.ClampInside(Physics.PositionPhysics.Position, 0.0f);
+                Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - Physics.Position;
+                Physics.Velocity = to_center.Normal() * Physics.Velocity.Length();
+                Physics.Position -= CMoverPresets.AntiCamera;
+                Physics.Position = World.GameCamera.ClampInside(Physics.Position, 0.0f);
                 ScreenEdgeHitCount += 1;
                 ScreenEdgeIgnoreTime = 6;
             }
@@ -107,14 +107,14 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public new void OnCollide(CShip ship)
         {
             base.OnCollide(ship);
-            Physics.PositionPhysics.Velocity = -Physics.PositionPhysics.Velocity;
-            Physics.PositionPhysics.Velocity *= 0.5f;
+            Physics.Velocity = -Physics.Velocity;
+            Physics.Velocity *= 0.5f;
             Target = null;
         }
 

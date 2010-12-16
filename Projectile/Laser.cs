@@ -43,12 +43,12 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB box = Collision as CollisionAABB;
-            box.Position = Physics.PositionPhysics.Position;
+            box.Position = Physics.Position;
         }
 
         protected override void OnDie()
         {
-            CEffect.LaserHit(World, Physics.PositionPhysics.Position, Physics.PositionPhysics.Velocity.Normal(), 1.0f, Visual.Color);
+            CEffect.LaserHit(World, Physics.Position, Physics.Velocity.Normal(), 1.0f, Visual.Color);
             base.OnDie();
         }
     }

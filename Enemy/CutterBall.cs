@@ -28,7 +28,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public override void TakeDamage(float damage, CShip source)
@@ -36,7 +36,7 @@ namespace Galaxy
             // NOTE: ball absorbs damage entirely
             //Owner.TakeDamage(damage);
 
-            CEffect.CutterBallAbsorb(World, Physics.PositionPhysics.Position, Vector2.Zero, 0.5f, CEnemy.EnemyOrangeColor);
+            CEffect.CutterBallAbsorb(World, Physics.Position, Vector2.Zero, 0.5f, CEnemy.EnemyOrangeColor);
         }
     }
 }

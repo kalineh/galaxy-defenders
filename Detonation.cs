@@ -12,7 +12,7 @@ namespace Galaxy
         {
             CDetonation result = new CDetonation();
             result.Initialize(owner);
-            result.Physics.PositionPhysics.Position = position;
+            result.Physics.Position = position;
             owner.World.EntityAdd(result);
             return result;
         }
@@ -30,7 +30,7 @@ namespace Galaxy
         public override void Update()
         {
             if (AliveTime <= 0)
-                CEffect.DetonationEffect(World, Physics.PositionPhysics.Position);
+                CEffect.DetonationEffect(World, Physics.Position);
 
             base.Update();
 
@@ -41,7 +41,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
             circle.Radius = 128.0f;
         }
     }

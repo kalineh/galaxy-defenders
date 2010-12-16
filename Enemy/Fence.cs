@@ -44,7 +44,7 @@ namespace Galaxy
                 if (fence == this)
                     continue;
 
-                Vector2 offset = fence.Physics.PositionPhysics.Position - Physics.PositionPhysics.Position;
+                Vector2 offset = fence.Physics.Position - Physics.Position;
                 
                 if (Math.Abs(offset.Y) > 16.0f)
                     continue;
@@ -61,7 +61,7 @@ namespace Galaxy
                 FenceOffset = offset * 0.5f;
                 FenceBeam = new CFenceBeam();
                 FenceBeam.Initialize(World);
-                FenceBeam.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position + FenceOffset;
+                FenceBeam.Physics.Position = Physics.Position + FenceOffset;
                 FenceBeam.UpdateAttachment(this);
                 World.EntityAdd(FenceBeam);
                 break;
@@ -94,7 +94,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public override void Draw(SpriteBatch sprite_batch)

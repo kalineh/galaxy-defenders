@@ -25,7 +25,7 @@ namespace Galaxy
             if (ship.Physics == null)
                 return;
 
-            Vector2 ofs = ship.Physics.PositionPhysics.Position - Position;
+            Vector2 ofs = ship.Physics.Position - Position;
             float len = ofs.LengthSquared();
             if (len < 32.0f * 32.0f)
             {

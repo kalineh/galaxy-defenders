@@ -21,8 +21,8 @@ namespace Galaxy
 
             Parent = parent;
             Physics = new CPhysics();
-            BasePosition = parent.Physics.PositionPhysics.Position;
-            Physics.PositionPhysics.Position = BasePosition;
+            BasePosition = parent.Physics.Position;
+            Physics.Position = BasePosition;
             Visual = parent.Visual;
         }
 

@@ -39,8 +39,7 @@ namespace Galaxy
 
             if (Physics != null)
             {
-                Physics.PositionPhysics.Solve();
-                Physics.AnglePhysics.Solve();
+                Physics.Solve();
             }
 
             if (Collision != null)
@@ -60,7 +59,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
             circle.Radius = GetRadius() * 0.75f;
         }
 
@@ -68,7 +67,7 @@ namespace Galaxy
         {
             if (Visual != null)
             {
-                Visual.Draw(sprite_batch, Physics.PositionPhysics.Position, Physics.AnglePhysics.Rotation);
+                Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation);
             }
 
 #if DEBUG
@@ -93,12 +92,12 @@ namespace Galaxy
 
         public void ClampInsideScreen()
         {
-            Physics.PositionPhysics.Position = World.GameCamera.ClampInside(Physics.PositionPhysics.Position, GetRadius());
+            Physics.Position = World.GameCamera.ClampInside(Physics.Position, GetRadius());
         }
 
         public bool IsInScreen(float buffer)
         {
-            return World.GameCamera.IsInside(Physics.PositionPhysics.Position, GetRadius() + buffer);
+            return World.GameCamera.IsInside(Physics.Position, GetRadius() + buffer);
         }
 
         public bool IsInScreen()
@@ -113,10 +112,10 @@ namespace Galaxy
                 return false;
 
             // some enemies travel up after appearing!
-            if (World.GameCamera.IsAboveActiveRegionForDeath(Physics.PositionPhysics.Position))
+            if (World.GameCamera.IsAboveActiveRegionForDeath(Physics.Position))
                 return true;
 
-            if (World.GameCamera.IsAboveActiveRegion(Physics.PositionPhysics.Position))
+            if (World.GameCamera.IsAboveActiveRegion(Physics.Position))
                 return false;
 
             // TODO: bottom check stricter than 150 side check
@@ -130,19 +129,19 @@ namespace Galaxy
 
         public bool IsOffScreenBottom()
         {
-            return World.GameCamera.IsOffBottom(Physics.PositionPhysics.Position, GetRadius());
+            return World.GameCamera.IsOffBottom(Physics.Position, GetRadius());
         }
 
         public Vector2 GetDirToShip()
         {
-            Vector2 position = Physics.PositionPhysics.Position;
+            Vector2 position = Physics.Position;
             CShip ship = World.GetNearestShip(position);
             if (ship == null)
             {
                 return Vector2.UnitY;
             }
 
-            Vector2 offset = ship.Physics.PositionPhysics.Position - position;
+            Vector2 offset = ship.Physics.Position - position;
             Vector2 dir = offset.Normal();
 
             return dir;

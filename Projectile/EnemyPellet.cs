@@ -19,10 +19,10 @@ namespace Galaxy
             CEnemyPellet pellet = new CEnemyPellet();
 
             pellet.Initialize(world);
-            pellet.Physics.PositionPhysics.Position = position;
-            pellet.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
-            pellet.Physics.AnglePhysics.Rotation = rotation;
-            pellet.Physics.AnglePhysics.AngularVelocity = 0.45f * world.Random.NextSign();
+            pellet.Physics.Position = position;
+            pellet.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            pellet.Physics.Rotation = rotation;
+            pellet.Physics.AngularVelocity = 0.45f * world.Random.NextSign();
             pellet.Damage = damage;
 
             world.EntityAdd(pellet);
@@ -54,7 +54,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
 
         public void OnCollide(CShip ship)
@@ -117,12 +117,12 @@ namespace Galaxy
 
         private void Reflect(CShip ship)
         {
-            Vector2 from_ship = Physics.PositionPhysics.Position - ship.Physics.PositionPhysics.Position;
+            Vector2 from_ship = Physics.Position - ship.Physics.Position;
             Vector2 reflect = from_ship.Normal();
-            Vector2 new_velocity = reflect * Physics.PositionPhysics.Velocity.Length();
-            Physics.PositionPhysics.Velocity = new_velocity;
+            Vector2 new_velocity = reflect * Physics.Velocity.Length();
+            Physics.Velocity = new_velocity;
             IsReflected = true;
-            Physics.AnglePhysics.Rotation = new_velocity.ToAngle();
+            Physics.Rotation = new_velocity.ToAngle();
         }
     }
 }

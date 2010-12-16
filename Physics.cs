@@ -15,98 +15,38 @@ using System;
 
 namespace Galaxy
 {
-    public class CSimplePositionPhysics
+    public class CPhysics
     {
-        public Vector2 Position { get; set; }
-        public Vector2 Velocity { get; set; }
+        public Vector2 Position;
+        public Vector2 Velocity;
+        public float Friction;
+        public float Rotation;
+        public float AngularVelocity;
+        public float AngularFriction;
 
-        public CSimplePositionPhysics()
+        public CPhysics()
         {
-            Position = new Vector2(0.0f, 0.0f);
-            Velocity = new Vector2(0.0f, 0.0f);
-        }
-
-        public virtual void Solve()
-        {
-            Position += Velocity;
-        }
-    }
-
-    public class CNewtonPositionPhysics
-        : CSimplePositionPhysics
-    {
-        public float Friction { get; set; }
-
-        public CNewtonPositionPhysics()
-        {
+            Position = new Vector2();
+            Velocity = new Vector2();
             Friction = 1.0f;
-        }
-
-        public override void Solve()
-        {
-            Position += Velocity;
-            Velocity *= Friction;
-        }
-    }
-
-    public class CSimpleAnglePhysics 
-    {
-        public float Rotation { get; set; }
-        public float AngularVelocity { get; set; }
-
-        public CSimpleAnglePhysics()
-        {
             Rotation = 0.0f;
             AngularVelocity = 0.0f;
+            AngularFriction = 1.0f;
         }
 
-        public virtual void Solve()
+        public void Solve()
         {
-            Rotation += AngularVelocity;
-            Wrap();
+            // TODO: optimize
+            Position += Velocity;
+            Velocity *= Friction;
+            Rotation = Rotation + AngularVelocity;
+            Rotation = MathHelper.WrapAngle(Rotation);
+            AngularVelocity *= AngularFriction;
         }
 
         public Vector2 GetDir()
         {
             return Vector2.UnitX.Rotate(Rotation);
-        }
-
-        protected void Wrap()
-        {
-            Rotation = MathHelper.WrapAngle(Rotation);
-        }
-    }
-
-    public class CNewtonAnglePhysics
-        : CSimpleAnglePhysics
-    {
-        public float AngularFriction { get; set; }
-
-        public CNewtonAnglePhysics()
-        {
-            AngularFriction = 1.0f;
-        }
-
-        public override void Solve()
-        {
-            if (AngularVelocity == 0.0f)
-                return;
-
-            Rotation += AngularVelocity;
-            AngularVelocity *= AngularFriction;
-            Wrap();
-        }
-    }
-
-    public class CPhysics
-    {
-        public CNewtonPositionPhysics PositionPhysics { get; set; }
-        public CNewtonAnglePhysics AnglePhysics { get; set; }
-
-        public CPhysics()
-        {
-            PositionPhysics = new CNewtonPositionPhysics();
-            AnglePhysics = new CNewtonAnglePhysics();
         }
     };
 }

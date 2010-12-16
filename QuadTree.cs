@@ -54,7 +54,7 @@ namespace Galaxy
             if (entity.Collision == null)
                 return false;
 
-            return Box.Contains(entity.Physics.PositionPhysics.Position, entity.GetRadius());
+            return Box.Contains(entity.Physics.Position, entity.GetRadius());
         }
 
         private void MakeChildren()
@@ -216,7 +216,7 @@ namespace Galaxy
                 if (entity.Physics == null || entity.Collision == null)
                     continue;
 
-                CDebugRender.Box(transform, entity.Physics.PositionPhysics.Position, Vector2.One * entity.GetRadius(), 1.0f, Color.White);
+                CDebugRender.Box(transform, entity.Physics.Position, Vector2.One * entity.GetRadius(), 1.0f, Color.White);
             }
 
             foreach (CQuadTreeNode child in Children)

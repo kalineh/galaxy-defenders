@@ -15,11 +15,11 @@ namespace Galaxy
         {
             if (Paused)
             {
-                entity.Physics.PositionPhysics.Velocity = Vector2.Zero;
+                entity.Physics.Velocity = Vector2.Zero;
                 return;
             }
 
-            entity.Physics.PositionPhysics.Velocity = Velocity * SpeedMultiplier;
+            entity.Physics.Velocity = Velocity * SpeedMultiplier;
         }
     }
 }

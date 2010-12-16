@@ -20,7 +20,7 @@ namespace Galaxy
             base.Initialize(world);
             
             Physics = new CPhysics();
-            Physics.AnglePhysics.Rotation = world.Random.NextAngle();
+            Physics.Rotation = world.Random.NextAngle();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Glob");
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
@@ -49,13 +49,13 @@ namespace Galaxy
                     return;
                 }
 
-                Vector2 target = ChaseTarget.Physics.PositionPhysics.Position;
-                Vector2 offset = target - Physics.PositionPhysics.Position;
-                Vector2 velocity = Physics.PositionPhysics.Velocity;
+                Vector2 target = ChaseTarget.Physics.Position;
+                Vector2 offset = target - Physics.Position;
+                Vector2 velocity = Physics.Velocity;
                 float speed = Math.Max(velocity.Length(), 5.0f);
                 Vector2 new_velocity = velocity + offset * 0.005f;
-                Physics.PositionPhysics.Velocity = new_velocity.Normal() * speed;
-                Physics.PositionPhysics.Position += Vector2.UnitY * -World.ScrollSpeed;
+                Physics.Velocity = new_velocity.Normal() * speed;
+                Physics.Position += Vector2.UnitY * -World.ScrollSpeed;
             }
             else if (AttachTarget != null)
             {
@@ -69,10 +69,10 @@ namespace Galaxy
                     return;
                 }
 
-                Physics.PositionPhysics.Position = AttachTarget.Physics.PositionPhysics.Position;
+                Physics.Position = AttachTarget.Physics.Position;
                 World.Stats.CollisionDamageReceived += 0.05f;
                 AttachTarget.TakeDirectArmorDamage(0.05f);
-                AttachTarget.Physics.PositionPhysics.Velocity *= 0.60f;
+                AttachTarget.Physics.Velocity *= 0.60f;
                 Health += 0.5f;
                 SelfDestructTimer -= 1;
                 if (SelfDestructTimer <= 0)
@@ -83,7 +83,7 @@ namespace Galaxy
             }
             else if (AttachTarget == null && ChaseTarget == null)
             {
-                CShip nearest = World.GetNearestShip(Physics.PositionPhysics.Position, 2000.0f);
+                CShip nearest = World.GetNearestShip(Physics.Position, 2000.0f);
                 ChaseTarget = nearest;
             }
         }
@@ -98,7 +98,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
-            circle.Position = Physics.PositionPhysics.Position;
+            circle.Position = Physics.Position;
         }
     }
 }

@@ -25,9 +25,9 @@ namespace Galaxy
 
             laser.Initialize(owner.World, owner, damage);
 
-            laser.Physics.AnglePhysics.Rotation = rotation;
-            laser.Physics.PositionPhysics.Position = position;
-            laser.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            laser.Physics.Rotation = rotation;
+            laser.Physics.Position = position;
+            laser.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             // TODO: what if this is on the entity delete list?!
             // TODO: it will be added (a second instance), then deleted at the end of the frame

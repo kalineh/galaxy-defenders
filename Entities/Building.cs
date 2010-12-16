@@ -125,7 +125,7 @@ namespace Galaxy
 
         private void OnDestroyed(CShip source)
         {
-            CEffect.BuildingExplosion(World, Physics.PositionPhysics.Position, HealthMax);
+            CEffect.BuildingExplosion(World, Physics.Position, HealthMax);
             source.Score += CalculateScoreFromHealth();
             Visual = VisualDestroyed;
             Collision = null;
@@ -134,7 +134,7 @@ namespace Galaxy
             {
                 CBonus bonus = new CBonus();
                 bonus.Initialize(World);
-                bonus.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                bonus.Physics.Position = Physics.Position;
                 World.EntityAdd(bonus);
             }
 
@@ -142,7 +142,7 @@ namespace Galaxy
             {
                 CPowerup powerup = new CPowerup();
                 powerup.Initialize(World);
-                powerup.Physics.PositionPhysics.Position = Physics.PositionPhysics.Position;
+                powerup.Physics.Position = Physics.Position;
                 World.EntityAdd(powerup);
             }
         }
@@ -161,7 +161,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.PositionPhysics.Position - aabb.Size * 0.5f;
+            aabb.Position = Physics.Position - aabb.Size * 0.5f;
         }
 
         private void SetDefaultHealth()
