@@ -30,7 +30,7 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().CurrentStage).Next;
+            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).Next;
             foreach (string stage in selectable_stages)
             {
                 // DEBUG: add all stages

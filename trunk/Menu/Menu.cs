@@ -67,6 +67,7 @@ namespace Galaxy
             public bool CancelOption;
             public object Data;
             public int AxisValue;
+            public bool Visible;
 
             public MenuOption()
             {
@@ -76,9 +77,24 @@ namespace Galaxy
                 Axis = (tag, axis) => { };
                 AxisValidate = (tag, axis) => { return false; };
                 PanelType = PanelType.Normal;
+                Visible = true;
             }
         }
         public List<MenuOption> MenuOptions { get; set; }
+        public IEnumerable<MenuOption> VisibleMenuOptions
+        {
+            get
+            {
+                foreach (MenuOption option in MenuOptions)
+                {
+                    if (option.Visible)
+                        continue;
+
+                    yield return option;
+                }
+            }     
+        }
+
         public int Cursor { get; set; }
         public Vector2 Position { get; set; }
         public bool Centered { get; set; }
@@ -99,7 +115,7 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed(PlayerIndex.One))
             {
-                foreach (MenuOption cancel_option in MenuOptions)
+                foreach (MenuOption cancel_option in VisibleMenuOptions)
                 {
                     if (cancel_option.CancelOption)
                     {
@@ -168,7 +184,7 @@ namespace Galaxy
 
             float Spacing = 40.0f;
             Vector2 position = Position;
-            foreach (MenuOption option in MenuOptions)
+            foreach (MenuOption option in VisibleMenuOptions)
             {
                 if (option != null)
                 {

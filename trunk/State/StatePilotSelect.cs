@@ -17,7 +17,7 @@ namespace Galaxy
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
         public CMenu Menu { get; set; }
-        public CShip SampleShip { get; set; }
+        public CSampleShipManager SampleShipManager { get; set; }
 
         public CStatePilotSelect(CGalaxy game)
         {
@@ -29,15 +29,12 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Kazuki", Select = SelectPilot, Highlight = HighlightPilot, Data = "Kazuki" },
-                    new CMenu.MenuOption() { Text = "Rabbit", Select = SelectPilot, Highlight = HighlightPilot, Data = "Rabbit" },
-                    new CMenu.MenuOption() { Text = "Gunthor", Select = SelectPilot, Highlight = HighlightPilot, Data = "Gunthor" },
-                    //new CMenu.MenuOption() { Text = "???", Highlight = HighlightPilot, SelectValidate = ValidatePilot, Data = "Mystery" },
+                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame, SelectValidate = ValidateStartGame },
+                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
 
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, CSaveData.GetCurrentProfile(), PlayerIndex.One);
-            SampleShip.Physics.PositionPhysics.Position = new Vector2(-50.0f, 150.0f);
+            SampleShipManager = new CSampleShipManager(EmptyWorld);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
@@ -50,17 +47,7 @@ namespace Galaxy
         {
             Menu.Update();
 
-            // sample display
-            SampleShip.Physics.AnglePhysics.AngularFriction = 0.01f;
-            SampleShip.Physics.AnglePhysics.AngularVelocity = 0.025f;
-            SampleShip.Physics.AnglePhysics.Solve();
-            SampleShip.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(SampleShip.Physics.AnglePhysics.Rotation) * 1.5f;
-            SampleShip.Physics.PositionPhysics.Solve();
-            SampleShip.Visual.Update();
-
-            if (EmptyWorld.Random.NextFloat() < 0.09f)
-                SampleShip.FireAllWeapons();
-            SampleShip.UpdateWeapons();
+            SampleShipManager.Update();
 
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
@@ -76,7 +63,7 @@ namespace Galaxy
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            SampleShip.Draw(Game.DefaultSpriteBatch);
+            SampleShipManager.Draw();
             Game.DefaultSpriteBatch.End();
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
@@ -91,30 +78,22 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        private void SelectPilot(object tag)
+        private bool ValidateStartGame(object tag)
         {
-            SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Pilot = (string)tag ?? "";
-            CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+            // TODO: are all players ready?
+            // TODO: check hud status
+            // TODO: careful of 2nd controller only
+            return false;
         }
 
-        private void HighlightPilot(object tag)
+        private void StartGame(object tag)
         {
-            SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Pilot = (string)tag ?? "";
-            CSaveData.SetCurrentProfileData(profile);
-            //EmptyWorld.Huds[0].UpdatePilot();
-        }
-
-        private bool ValidatePilot(object tag)
-        {
-            return CSaveData.GetCurrentProfile().HasClearedGame;
+            Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
         }
 
         private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateProfileSelect(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
     }
 }

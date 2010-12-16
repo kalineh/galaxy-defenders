@@ -25,7 +25,7 @@ namespace Galaxy
             get { return _HealthMax; }
             set
             { 
-                _HealthMax = value * CDifficulty.HealthScale[CSaveData.GetCurrentProfile().Difficulty];
+                _HealthMax = value * CDifficulty.HealthScale[CSaveData.GetCurrentProfile().Game.Difficulty];
                 Health = _HealthMax;
             }
         }
@@ -70,28 +70,29 @@ namespace Galaxy
             circle.Radius = Visual.GetScaledTextureSize().Length() * 0.2f;
         }
 
-        public virtual void TakeDamage(float damage)
+        public virtual void TakeDamage(float damage, CShip source)
         {
             if (World.Ships.Count > 1)
             {
-                damage *= 0.5f + 0.5f / World.Ships.Count;
+                damage *= 0.5f + 0.5f / World.ShipsByPlayerIndex.Count;
             }
 
             Health -= damage;
             if (Health <= 0.0f)
             {
                 World.Stats.EnemyKills += 1;
+                source.Score += CalculateScoreFromHealth();
                 Die();
             }
         }
 
-        public void OnCollide(CShip ship)
+        public void OnCollide(CShip source)
         {
             World.Stats.CollisionDamageReceived += 2.5f;
-            ship.TakeCollideDamage(Physics.PositionPhysics.Position, 2.5f);
+            source.TakeCollideDamage(Physics.PositionPhysics.Position, 2.5f);
 
             World.Stats.CollisionDamageDealt += 0.5f;
-            TakeDamage(0.5f);
+            TakeDamage(0.5f, source);
         }
 
         // TODO: need to handle IsSubClassOf in the collision system
@@ -99,14 +100,14 @@ namespace Galaxy
         public void OnCollide(CLaser laser)
         {
             World.Stats.ShotDamageDealt += laser.Damage;
-            TakeDamage(laser.Damage);
+            TakeDamage(laser.Damage, laser.Owner);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
             World.Stats.ShotDamageDealt += missile.Damage;
-            TakeDamage(missile.Damage);
+            TakeDamage(missile.Damage, missile.Owner);
             missile.Die();
         }
 
@@ -116,27 +117,27 @@ namespace Galaxy
                 return;
 
             World.Stats.ShotDamageDealt += seek_bomb.Damage;
-            TakeDamage(seek_bomb.Damage);
+            TakeDamage(seek_bomb.Damage, seek_bomb.Owner);
             seek_bomb.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
             World.Stats.ShotDamageDealt += plasma.Damage;
-            TakeDamage(plasma.Damage);
+            TakeDamage(plasma.Damage, plasma.Owner);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;
-            TakeDamage(minishot.Damage);
+            TakeDamage(minishot.Damage, minishot.Owner);
             minishot.Die();
         }
 
         public void OnCollide(CDetonation detonation)
         {
-            TakeDamage(5.0f);
+            TakeDamage(5.0f, detonation.Owner);
         }
 
         public void OnCollide(CEnemyShot shot)
@@ -144,7 +145,7 @@ namespace Galaxy
             if (!shot.IsReflected)
                 return;
 
-            TakeDamage(shot.Damage);
+            TakeDamage(shot.Damage, shot.WhoReflected);
             shot.Die();
         }
 
@@ -153,23 +154,25 @@ namespace Galaxy
             if (!laser.IsReflected)
                 return;
 
-            TakeDamage(laser.Damage);
+            TakeDamage(laser.Damage, laser.WhoReflected);
             laser.Die();
         }
+        
+        // NOTE: design-wise, no missile reflection? 
 
         public void OnCollide(CEnemyPellet pellet)
         {
             if (!pellet.IsReflected)
                 return;
 
-            TakeDamage(pellet.Damage);
+            TakeDamage(pellet.Damage, pellet.WhoReflected);
             pellet.Die();
         }
 
         private int CalculateScoreFromHealth()
         {
             float s = (float)BaseScore * HealthMax;
-            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Difficulty];
+            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Game.Difficulty];
             int score = (int)d;
             return score - score % 10;
         }
@@ -178,8 +181,6 @@ namespace Galaxy
         {
             // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
             CEffect.EnemyExplosion(World, Physics.PositionPhysics.Position, 1.5f);
-
-            World.Score += CalculateScoreFromHealth();
 
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)

@@ -11,6 +11,7 @@ namespace Galaxy
         : CEntity
     {
         public bool IsReflected { get; set; }
+        public CShip WhoReflected { get; set; }
 
         public static CEnemyLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {

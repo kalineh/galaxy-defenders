@@ -9,6 +9,10 @@ using System;
 // TODO: mass
 // TODO: max speed
 
+// TODO-OPT: structify me
+// TODO-OPT: remove layers
+// TODO-OPT: replace vector math with memberwise calculations
+
 namespace Galaxy
 {
     public class CSimplePositionPhysics

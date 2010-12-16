@@ -78,7 +78,7 @@ namespace Galaxy
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;
 
-            Instantiate(Owner.World, fire_position, rotation, Speed, Damage);
+            Instantiate(Owner, fire_position, rotation, Speed, Damage);
 
             Owner.Physics.PositionPhysics.Velocity += Kickback(Owner.Physics.AnglePhysics.Rotation);
 
@@ -90,7 +90,7 @@ namespace Galaxy
             }
         }
 
-        protected abstract void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage);
+        protected abstract void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage);
     };
 
 }

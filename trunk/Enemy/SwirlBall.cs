@@ -33,15 +33,15 @@ namespace Galaxy
             circle.Position = Physics.PositionPhysics.Position;
         }
 
-        public override void TakeDamage(float damage)
+        public override void TakeDamage(float damage, CShip source)
         {
             if (!Owner.IsDead)
             {
-                Owner.TakeDamage(damage);
+                Owner.TakeDamage(damage, source);
                 return;
             }
 
-            base.TakeDamage(damage);
+            base.TakeDamage(damage, source);
         }
     }
 }

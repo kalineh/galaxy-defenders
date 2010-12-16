@@ -45,6 +45,11 @@ namespace Galaxy
             Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
         }
 
+        public void ResetPlayers()
+        {
+        
+        }
+
         public void ToggleProfileActive(PlayerIndex index)
         {
             Players[(int)index] = !Players[(int)index];

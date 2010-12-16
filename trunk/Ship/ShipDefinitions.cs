@@ -13,9 +13,9 @@ namespace Galaxy
 {
     public class CShipFactory
     {
-        public static CShip GenerateShip(CWorld world, SProfile profile, PlayerIndex index)
+        public static CShip GenerateShip(CWorld world, SProfilePilotState profile, PlayerIndex index)
         {
-            CPilot pilot = CPilot.MakePilot(profile.Pilot);
+            CPilot pilot = CPilot.MakePilot(profile);
             CChassisPart chassis = ChassisDefinitions.GetPart(profile.ChassisType);
             CGeneratorPart generator = GeneratorDefinitions.GetPart(profile.GeneratorType);
             CShieldPart shield = ShieldDefinitions.GetPart(profile.ShieldType);

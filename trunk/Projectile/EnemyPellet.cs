@@ -12,6 +12,7 @@ namespace Galaxy
     {
         private int Health { get; set; }
         public bool IsReflected { get; set; }
+        public CShip WhoReflected { get; set; }
 
         public static CEnemyPellet Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {

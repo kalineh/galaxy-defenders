@@ -19,11 +19,11 @@ namespace Galaxy
             Cache = new CProjectileCache<CLaser>(owner.World);
         }
 
-        protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
             CLaser laser = Cache.GetProjectileInstance(Owner.PlayerIndex);
 
-            laser.Initialize(world, Owner.PlayerIndex, damage);
+            laser.Initialize(owner.World, owner, damage);
 
             laser.Physics.AnglePhysics.Rotation = rotation;
             laser.Physics.PositionPhysics.Position = position;
@@ -31,7 +31,7 @@ namespace Galaxy
 
             // TODO: what if this is on the entity delete list?!
             // TODO: it will be added (a second instance), then deleted at the end of the frame
-            world.EntityAdd(laser);
+            owner.World.EntityAdd(laser);
         }
     }
 

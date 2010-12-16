@@ -17,11 +17,6 @@ namespace Galaxy
     {
         public static void GenerateWorldFromStageDefinition(CWorld world, CStageDefinition definition)
         {
-            // TODO: there shouldnt be a ship really (replace with player spawn? (should always be center-bottom though really))
-            CShip ship = CShipFactory.GenerateShip(world, CSaveData.GetCurrentProfile(), PlayerIndex.One);
-            ship.Physics.PositionPhysics.Position = world.Game.PlayerSpawnPosition;
-            world.EntityAdd(ship);
-
             foreach (KeyValuePair<int, List<CStageElement>> time_element in definition.Elements)
             {
                 foreach (CStageElement element in time_element.Value)

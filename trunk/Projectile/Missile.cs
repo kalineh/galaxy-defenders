@@ -14,10 +14,10 @@ namespace Galaxy
         public float Speed { get; set; }
         public CParticleGroupSpawner TrailEffect { get; set; }
 
-        public static CMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
+        public static CMissile Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
             CMissile missile = new CMissile();
-            missile.Initialize(world, index, damage);
+            missile.Initialize(owner.World, owner, damage);
 
             missile.Speed = speed;
 
@@ -27,22 +27,23 @@ namespace Galaxy
             missile.Physics.PositionPhysics.Position = position;
             missile.Physics.PositionPhysics.Velocity = missile.FireVector * 6.0f;
 
-            world.EntityAdd(missile);
+            owner.World.EntityAdd(missile);
 
             return missile;
         }
 
-        public override void Initialize(CWorld world, PlayerIndex index, float damage)
+        public override void Initialize(CWorld world, CShip owner, float damage)
         {
-            base.Initialize(world, index, damage);
+            base.Initialize(world, owner, damage);
 
+            Owner = Owner;
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", index);
-            Visual.Color = CShip.GetPlayerColor(index);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", owner.PlayerIndex);
+            Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
 
-            TrailEffect = CParticleGroupSpawner.MakeMissileTrail(Vector2.Zero, Vector2.UnitY, CShip.GetPlayerColor(index));
+            TrailEffect = CParticleGroupSpawner.MakeMissileTrail(Vector2.Zero, Vector2.UnitY, CShip.GetPlayerColor(owner.PlayerIndex));
         }
 
         public override void Update()

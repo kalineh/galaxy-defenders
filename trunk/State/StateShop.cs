@@ -30,8 +30,8 @@ namespace Galaxy
         private delegate void DrawMenuErrataFunction();
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
-        private SProfile WorkingProfile;
-        private SProfile LockedProfile;
+        private SProfilePilotState WorkingProfile;
+        private SProfilePilotState LockedProfile;
         private Texture2D ShopPanelTexture { get; set; }
         private Texture2D ShopUpgradePanelTexture { get; set; }
         private CVisual ShopUpgradeBarsVisual { get; set; }
@@ -49,7 +49,7 @@ namespace Galaxy
             );
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
-            WorkingProfile = CSaveData.GetCurrentProfile();
+            WorkingProfile = GetShoppingPilotData();
             LockedProfile = WorkingProfile;
 
             ShopPanelTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopPanel");
@@ -102,7 +102,7 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            string pilot = CSaveData.GetCurrentProfile().Pilot;
+            string pilot = GetShoppingPilotData().Pilot;
             for (int i = 0; i < 3; ++i)
             {
                 MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = CAbility.GetAbilityName(pilot, i), Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = i, });
@@ -124,8 +124,8 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
-            IEnumerable<string> primary_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponPrimaryType };
-            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailablePrimaryWeaponParts);
+            IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
+            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailablePrimaryWeaponParts);
             IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct();
             foreach (string weapon_part in primary_weapon_parts)
             {
@@ -164,8 +164,8 @@ namespace Galaxy
             };
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
-            IEnumerable<string> secondary_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSecondaryType };
-            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSecondaryWeaponParts);
+            IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
+            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSecondaryWeaponParts);
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct();
             foreach (string weapon_part in secondary_weapon_parts)
             {
@@ -206,8 +206,8 @@ namespace Galaxy
             };
 
             MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
-            IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSidekickLeftType };
-            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickLeftType };
+            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct();
             foreach (string weapon_part in sidekick_left_weapon_parts)
             {
@@ -246,8 +246,8 @@ namespace Galaxy
             };
 
             MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
-            IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { CSaveData.GetCurrentProfile().WeaponSidekickRightType };
-            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickRightType };
+            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct();
             foreach (string weapon_part in sidekick_right_weapon_parts)
             {
@@ -277,8 +277,8 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            IEnumerable<string> chassis_parts_own = new List<string>() { CSaveData.GetCurrentProfile().ChassisType };
-            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableChassisParts);
+            IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
+            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableChassisParts);
             IEnumerable<string> chassis_parts = chassis_parts_all.Distinct();
             foreach (string chassis_part in chassis_parts)
             {
@@ -305,8 +305,8 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            IEnumerable<string> generator_parts_own = new List<string>() { CSaveData.GetCurrentProfile().GeneratorType };
-            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableGeneratorParts);
+            IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
+            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableGeneratorParts);
             IEnumerable<string> generator_parts = generator_parts_all.Distinct();
             foreach (string generator_part in generator_parts)
             {
@@ -334,8 +334,8 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
 
-            IEnumerable<string> shield_parts_own = new List<string>() { CSaveData.GetCurrentProfile().ShieldType };
-            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(WorkingProfile.CurrentStage).AvailableShieldParts);
+            IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
+            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableShieldParts);
             IEnumerable<string> shield_parts = shield_parts_all.Distinct();
             foreach (string shield_part in shield_parts)
             {
@@ -435,6 +435,11 @@ namespace Galaxy
                         option.SpecialHighlight = HasAbilityWithLockedProfile(option.Data);
         }
 
+        private SProfilePilotState GetShoppingPilotData()
+        {
+            return CSaveData.GetCurrentProfile().Game.Pilots[(int)ShoppingPlayer];
+        }
+
         private void DrawShipStats()
         {
             Vector2 KeysBase = new Vector2(10.0f, 10.0f);
@@ -499,7 +504,7 @@ namespace Galaxy
         private void RefreshSampleDisplay()
         {
             EmptyWorld.Stop();
-            SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, PlayerIndex.One);
+            SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
             SampleShip.Physics.PositionPhysics.Position = new Vector2(-190.0f, 100.0f);
         }
 
@@ -723,7 +728,9 @@ namespace Galaxy
 
         private void StageSelect(object tag)
         {
-            CSaveData.SetCurrentProfileData(LockedProfile);
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
+            CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
         }
@@ -790,7 +797,9 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            CSaveData.SetCurrentProfileData(LockedProfile);
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
+            CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
@@ -1218,9 +1227,9 @@ namespace Galaxy
 
         private void TrainAbility(object tag)
         {
-            string ability_name = string.Format("Ability{0}", tag.ToString());
-            FieldInfo field = typeof(SProfile).GetField(ability_name);
-            bool has_ability = (bool)field.GetValue(CSaveData.GetCurrentProfile());
+            string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
+            FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
+            bool has_ability = (bool)field.GetValue(LockedProfile);
             if (has_ability)
                 return;
 
@@ -1232,7 +1241,7 @@ namespace Galaxy
             LockedProfile.Money -= price;
             object reference = (object)LockedProfile;
             field.SetValue(reference, true);
-            LockedProfile = (SProfile)reference;
+            LockedProfile = (SProfilePilotState)reference;
 
             RevertWorkingProfile(null);
             MenuUpdateHighlights();
@@ -1240,8 +1249,8 @@ namespace Galaxy
 
         private void HighlightAbility(object tag)
         {
-            string ability_name = string.Format("Ability{0}", tag.ToString());
-            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
+            FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
             if (has_ability)
                 return;
@@ -1256,10 +1265,10 @@ namespace Galaxy
             MenuUpdateHighlights();
         }
 
-        private bool ValidateAbility(object tag, SProfile profile)
+        private bool ValidateAbility(object tag, SProfilePilotState profile)
         {
             string ability_name = string.Format("Ability{0}", tag.ToString());
-            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
             if (has_ability)
                 return true;

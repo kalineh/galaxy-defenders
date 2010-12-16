@@ -31,9 +31,11 @@ namespace Galaxy
             circle.Position = Physics.PositionPhysics.Position;
         }
 
-        public override void TakeDamage(float damage)
+        public override void TakeDamage(float damage, CShip source)
         {
+            // NOTE: ball absorbs damage entirely
             //Owner.TakeDamage(damage);
+
             CEffect.CutterBallAbsorb(World, Physics.PositionPhysics.Position, Vector2.Zero, 0.5f, CEnemy.EnemyOrangeColor);
         }
     }
