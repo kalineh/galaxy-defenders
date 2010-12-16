@@ -67,34 +67,34 @@ namespace Galaxy
         public void OnCollide(CLaser laser)
         {
             World.Stats.ShotDamageDealt += laser.Damage;
-            TakeDamage(laser.Damage);
+            TakeDamage(laser.Damage, laser.Owner);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
             World.Stats.ShotDamageDealt += missile.Damage;
-            TakeDamage(missile.Damage);
+            TakeDamage(missile.Damage, missile.Owner);
             missile.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
             World.Stats.ShotDamageDealt += plasma.Damage;
-            TakeDamage(plasma.Damage);
+            TakeDamage(plasma.Damage, plasma.Owner);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;
-            TakeDamage(minishot.Damage);
+            TakeDamage(minishot.Damage, minishot.Owner);
             minishot.Die();
         }
 
         public void OnCollide(CDetonation detonation)
         {
-            TakeDamage(5.0f);
+            TakeDamage(5.0f, detonation.Owner);
         }
 
         public void OnCollide(CEnemyShot shot)
@@ -102,7 +102,7 @@ namespace Galaxy
             if (!shot.IsReflected)
                 return;
 
-            TakeDamage(shot.Damage);
+            TakeDamage(shot.Damage, shot.WhoReflected);
             shot.Die();
         }
 
@@ -111,22 +111,22 @@ namespace Galaxy
             if (!laser.IsReflected)
                 return;
 
-            TakeDamage(laser.Damage);
+            TakeDamage(laser.Damage, laser.WhoReflected);
             laser.Die();
         }
 
         private int CalculateScoreFromHealth()
         {
             float s = HealthMax * 15.0f;
-            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Difficulty];
+            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Game.Difficulty];
             int score = (int)d;
             return score - score % 10;
         }
 
-        private void OnDestroyed()
+        private void OnDestroyed(CShip source)
         {
             CEffect.BuildingExplosion(World, Physics.PositionPhysics.Position, HealthMax);
-            World.Score += CalculateScoreFromHealth();
+            source.Score += CalculateScoreFromHealth();
             Visual = VisualDestroyed;
             Collision = null;
 
@@ -147,13 +147,13 @@ namespace Galaxy
             }
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, CShip source)
         {
             Health -= damage;
             if (Health < 0.0f)
             {
                 World.Stats.BuildingKills += 1;
-                OnDestroyed();
+                OnDestroyed(source);
             }
         }
 

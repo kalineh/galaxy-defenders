@@ -11,18 +11,18 @@ namespace Galaxy
     public class CSeekBomb
         : CProjectile
     {
-        public static CSeekBomb Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
+        public static CSeekBomb Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
             CSeekBomb seek_bomb = new CSeekBomb();
-            seek_bomb.Initialize(world, index, damage);
+            seek_bomb.Initialize(owner.World, owner, damage);
 
             seek_bomb.Speed = speed;
 
-            seek_bomb.Physics.AnglePhysics.Rotation = world.Random.NextAngle();
+            seek_bomb.Physics.AnglePhysics.Rotation = owner.World.Random.NextAngle();
             seek_bomb.Physics.PositionPhysics.Position = position;
             seek_bomb.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
-            world.EntityAdd(seek_bomb);
+            owner.World.EntityAdd(seek_bomb);
 
             return seek_bomb;
         }
@@ -31,13 +31,13 @@ namespace Galaxy
         public int SeekFramesRemaining { get; set; }
         public CEnemy Target { get; set; }
 
-        public override void Initialize(CWorld world, PlayerIndex index, float damage)
+        public override void Initialize(CWorld world, CShip owner, float damage)
         {
-            base.Initialize(world, index, damage);
+            base.Initialize(world, owner, damage);
 
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SeekBomb", index);
-            Visual.Color = CShip.GetPlayerColor(index);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SeekBomb", owner.PlayerIndex);
+            Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;

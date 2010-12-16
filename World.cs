@@ -20,7 +20,6 @@ namespace Galaxy
         private List<CEntity> Entities { get; set; }
         private List<CEntity> EntitiesToAdd { get; set; }
         private List<CEntity> EntitiesToDelete { get; set; }
-        public int Score { get; set; }
         public CStage Stage { get; set; }
         public CScenery BackgroundScenery { get; set; }
         public CScenery ForegroundScenery { get; set; }
@@ -222,7 +221,7 @@ namespace Galaxy
                 if (active && ship == null)
                 {
                     SProfile profile = CSaveData.GetCurrentProfile();
-                    CShip newship = CShipFactory.GenerateShip(this, profile, (PlayerIndex)i);
+                    CShip newship = CShipFactory.GenerateShip(this, profile.Game.Pilots[i], (PlayerIndex)i);
                     newship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
                     EntityAdd(newship);
                     Ships.Add(newship);
@@ -312,7 +311,11 @@ namespace Galaxy
                 {
                     CStats.SAward award = Stats.GetAward(i);
                     StageEndAwardText.Add(String.Format("{0}: +{1}{2}", award.Text, award.Bonus, '￥'));
-                    Score += award.Bonus;
+
+                    foreach (CShip ship in ShipsByPlayerIndex)
+                    {
+                        ship.Score += award.Bonus;
+                    }
                 }
             }
 
@@ -850,26 +853,24 @@ namespace Galaxy
             // TODO: 2p
             // TODO: secret stage
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Money += Score;
-            Score = 0;
 
-            // TODO: not this, but save current ship upgrades to profile
-            // TODO: we can remove this if we decide to never have powerups in-game
-            CShip ship = GetNearestShip(Vector2.Zero);
-            if (ship != null)
+            foreach (CShip ship in ShipsByPlayerIndex)
             {
-                profile.WeaponPrimaryType = ship.PrimaryWeapon.Type;
-                profile.WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
-                profile.WeaponSecondaryType = ship.SecondaryWeapon.Type;
-                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
-                profile.WeaponSidekickLeftType = ship.SidekickLeft.Type;
-                profile.WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
-                profile.WeaponSidekickRightType = ship.SidekickRight.Type;
-                profile.WeaponSidekickRightLevel = ship.SidekickRight.Level;
-                profile.WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.PlayerIndex].Money += ship.Score;
+                
+                // NOTE: this is just to support mid-game upgrades if we add powerup items
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponPrimaryType = ship.PrimaryWeapon.Type;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryType = ship.SecondaryWeapon.Type;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickLeftType = ship.SidekickLeft.Type;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickRightType = ship.SidekickRight.Type;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickRightLevel = ship.SidekickRight.Level;
+                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
             }
 
-            profile.CurrentStage = Stage.Definition.Name;
+            profile.Game.Stage = Stage.Definition.Name;
 
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();

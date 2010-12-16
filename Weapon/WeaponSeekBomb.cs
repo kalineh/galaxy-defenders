@@ -14,9 +14,9 @@ namespace Galaxy
             base.Initialize(owner);
         }
 
-        protected override void Instantiate(CWorld world, Vector2 position, float rotation, float speed, float damage)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CSeekBomb seek_bomb = CSeekBomb.Spawn(world, position, rotation, Speed, Damage, Owner.PlayerIndex);
+            CSeekBomb seek_bomb = CSeekBomb.Spawn(owner, position, rotation, Speed, Damage);
         }
     };
 

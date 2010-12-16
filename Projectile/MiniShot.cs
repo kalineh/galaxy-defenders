@@ -10,27 +10,28 @@ namespace Galaxy
     public class CMiniShot
         : CProjectile
     {
-        public static CMiniShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage, PlayerIndex index)
+        public static CMiniShot Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
             CMiniShot mini_shot = new CMiniShot();
-            mini_shot.Initialize(world, index, damage);
+            mini_shot.Initialize(owner.World, owner, damage);
 
             mini_shot.Physics.AnglePhysics.Rotation = rotation;
             mini_shot.Physics.PositionPhysics.Position = position;
             mini_shot.Physics.PositionPhysics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
-            world.EntityAdd(mini_shot);
+            owner.World.EntityAdd(mini_shot);
 
             return mini_shot;
         }
 
-        public override void Initialize(CWorld world, PlayerIndex index, float damage)
+        public override void Initialize(CWorld world, CShip owner, float damage)
         {
             base.Initialize(world);
 
+            Owner = Owner;
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/MiniShot", index);
-            Visual.Color = CShip.GetPlayerColor(index);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/MiniShot", owner.PlayerIndex);
+            Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;

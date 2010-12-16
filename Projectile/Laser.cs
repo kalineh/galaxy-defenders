@@ -11,21 +11,21 @@ namespace Galaxy
     public class CLaser
         : CProjectile
     {
-        public override void Initialize(CWorld world, PlayerIndex index, float damage)
+        public override void Initialize(CWorld world, CShip owner, float damage)
         {
-            base.Initialize(world, index, damage);
+            base.Initialize(world, owner, damage);
 
             if (damage < 0.4f)
             {
-                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Laser", index);
-                Visual.Color = CShip.GetPlayerColor(index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Laser", owner.PlayerIndex);
+                Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
                 Visual.UpdateColor();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             }
             else
             {
-                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigLaser", index);
-                Visual.Color = CShip.GetPlayerColor(index);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigLaser", owner.PlayerIndex);
+                Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
                 Visual.UpdateColor();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             }

@@ -12,6 +12,7 @@ namespace Galaxy
         : CEntity
     {
         public bool IsReflected { get; set; }
+        public CShip WhoReflected { get; set; }
         public CShip Target { get; set; }
         public float Speed { get; set; }
         public int Health { get; set; }

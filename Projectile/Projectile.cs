@@ -11,15 +11,17 @@ namespace Galaxy
         : CEntity
         , ICacheableProjectile
     {
+        public CShip Owner { get; set; }
         public float Damage { get; set; }
 
         protected CProjectile()
         {
         }
 
-        public virtual void Initialize(CWorld world, PlayerIndex player_index, float damage)
+        public virtual void Initialize(CWorld world, CShip owner, float damage)
         {
             base.Initialize(world);
+            Owner = owner;
             Physics = new CPhysics();
             Damage = damage;
         }

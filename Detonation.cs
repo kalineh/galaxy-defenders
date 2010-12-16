@@ -6,20 +6,23 @@ namespace Galaxy
     public class CDetonation
         : CEntity
     {
-        public static CDetonation MakeDetonation(CWorld world, Vector2 position)
+        public CShip Owner { get; set; }
+
+        public static CDetonation MakeDetonation(CShip owner, Vector2 position)
         {
             CDetonation result = new CDetonation();
-            result.Initialize(world);
+            result.Initialize(owner);
             result.Physics.PositionPhysics.Position = position;
-            world.EntityAdd(result);
+            owner.World.EntityAdd(result);
             return result;
         }
 
-        public override void Initialize(CWorld world)
+        public void Initialize(CShip owner)
         {
-            base.Initialize(world);
-            
-            World = world;
+            base.Initialize(owner.World);
+
+            Owner = owner;
+            World = owner.World;
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 128.0f);
         }

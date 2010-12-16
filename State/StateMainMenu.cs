@@ -2,6 +2,14 @@
 // StateMainMenu.cs
 //
 
+//
+// TODO:
+// * specify the 1p or 2p game type from the main menu
+// * change profile accesses of player/pilot to use player-index
+// * update all regular profile read places to read from current profile (based on profile username - User for PC, username for 360)
+// * change start game to read 1p/2p
+//
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,15 +36,11 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "New Game", Select = NewGame },
-                    new CMenu.MenuOption() { Text = "Continue", Select = Continue },
+                    new CMenu.MenuOption() { Text = "Solo Game", Select = NewGame1P },
+                    new CMenu.MenuOption() { Text = "Coop Game", Select = NewGame2P },
                     new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 },
-                Visible = false,
             };
-
-            if (CSaveData.GetCurrentProfile().CurrentStage != "Start")
-                Menu.Cursor = 1;
 
             SampleShipManager = new CSampleShipManager(EmptyWorld);
 
@@ -79,22 +83,45 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.End();
 
-            // TODO: display some 'Waiting for Ships' message?
-            Menu.Visible = Game.HudManager.GetActivePlayerCount() > 0;
-
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
         }
 
-        private void NewGame(object tag)
+        private void NewGame1P(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
+            string username = "User";
+
+#if XBOX360
+            // TODO: get current primary profile username
+            username = null;
+#endif
+
+            CSaveData.AddNewProfile(username);
+            CSaveData.SetCurrentProfile(username);
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Name = username;
+            profile.Game.Players = 1;
+            CSaveData.SetCurrentProfileData(profile);
+            Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
         }
 
-        private void Continue(object tag)
+        private void NewGame2P(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
+            string username = "User";
+
+#if XBOX360
+            // TODO: get current primary profile username
+            username = null;
+#endif
+
+            CSaveData.AddNewProfile(username);
+            CSaveData.SetCurrentProfile(username);
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Name = username;
+            profile.Game.Players = 1;
+            CSaveData.SetCurrentProfileData(profile);
+            Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
         }
 
         private void QuitGame(object tag)

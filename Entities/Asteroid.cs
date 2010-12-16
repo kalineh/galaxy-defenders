@@ -52,50 +52,50 @@ namespace Galaxy
         {
             World.Stats.CollisionDamageReceived += 1.0f;
             ship.TakeCollideDamage(Physics.PositionPhysics.Position, 1.0f);
-            Health -= 1.0f;
+            TakeDamage(1.0f, ship);
         }
 
         public void OnCollide(CLaser laser)
         {
             Physics.PositionPhysics.Velocity += laser.Physics.AnglePhysics.GetDir() * laser.Damage;
-            TakeDamage(laser.Damage);
+            TakeDamage(laser.Damage, laser.Owner);
             laser.Die();
         }
 
         public void OnCollide(CMissile missile)
         {
             Physics.PositionPhysics.Velocity += missile.Physics.AnglePhysics.GetDir() * missile.Damage;
-            TakeDamage(missile.Damage);
+            TakeDamage(missile.Damage, missile.Owner);
             missile.Die();
         }
 
         public void OnCollide(CPlasma plasma)
         {
             Physics.PositionPhysics.Velocity += plasma.Physics.AnglePhysics.GetDir() * plasma.Damage;
-            TakeDamage(plasma.Damage);
+            TakeDamage(plasma.Damage, plasma.Owner);
             plasma.Die();
         }
 
         public void OnCollide(CMiniShot minishot)
         {
             Physics.PositionPhysics.Velocity += minishot.Physics.AnglePhysics.GetDir() * minishot.Damage;
-            TakeDamage(minishot.Damage);
+            TakeDamage(minishot.Damage, minishot.Owner);
             minishot.Die();
         }
 
         protected override void OnDie()
         {
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
-            World.Score += 100;
             base.OnDie();
         }
 
-        private void TakeDamage(float damage)
+        private void TakeDamage(float damage, CShip source)
         {
             Health -= damage;
             Cracks.Alpha = 1.0f - Health / HealthMax;
             if (Health < 0.0f)
             {
+                source.Score += 100;
                 Die();
             }
         }

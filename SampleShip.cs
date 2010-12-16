@@ -20,7 +20,7 @@ namespace Galaxy
         {
             Game = game;
             World = world;
-            Ship = CShipFactory.GenerateShip(World, CSaveData.GetCurrentProfile(), player_index);
+            Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[(int)player_index], player_index);
             Ship.Physics.PositionPhysics.Position = position;
         }
 

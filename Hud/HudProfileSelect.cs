@@ -44,6 +44,7 @@ namespace Galaxy
 
         private enum EState
         {
+            Disabled, // main menu, not used yet
             Inactive, // no player
             Active,   // selecting profile
             Locked,   // profile selected
@@ -65,7 +66,7 @@ namespace Galaxy
             RightPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
             LeftPanelFramesVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelFrames");
             RightPanelFramesVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelFrames");
-            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(Game.GraphicsDevice.Viewport.Width, 0.0f);
@@ -97,6 +98,9 @@ namespace Galaxy
         {
             switch (State)
             {
+                case EState.Disabled:
+                    break;
+
                 case EState.Inactive:
                     if (Game.Input.IsPadStartPressed(PlayerIndex) || Game.Input.IsKeyPressed(StartKey))
                     {
@@ -105,6 +109,7 @@ namespace Galaxy
                     break;
 
                 case EState.Active:
+                    // TODO: up/down control for profile select
                     if (Game.Input.IsPadConfirmPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
                     {
                         Game.HudManager.ToggleProfileActive(PlayerIndex);
@@ -113,23 +118,23 @@ namespace Galaxy
                     break;
 
                 case EState.Locked:
-                    if (Game.Input.IsPadStartPressed(PlayerIndex) || Game.Input.IsKeyPressed(StartKey))
-                    {
-                        Game.HudManager.ToggleProfileActive(PlayerIndex);
-                        State = EState.Inactive;
-                    }
+                    // NOTE: no more disabling mid-game
+                    //if (Game.Input.IsPadStartPressed(PlayerIndex) || Game.Input.IsKeyPressed(StartKey))
+                    //{
+                        //Game.HudManager.ToggleProfileActive(PlayerIndex);
+                        //State = EState.Inactive;
+                    //}
                     break;
             }
         }
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            // regular hud is active
-            if (State == EState.Locked)
-                return;
-
             switch (State)
             {
+                case EState.Disabled:
+                    break;
+
                 case EState.Inactive:
                     float t = (float)Math.Sin(Game.GameFrame * 0.15f);
                     float c = 0.7f + t * 0.3f;
@@ -142,21 +147,10 @@ namespace Galaxy
                     PortraitIconVisual.Draw(sprite_batch, PortraitIconPosition, 0.0f);
                     // TODO: score display
                     break;
+
+                case EState.Locked:
+                    break;
             }
-
-            // TODO: show money for both players? seperate moneys?
-            //if (PlayerIndex == PlayerIndex.One)
-            //{
-                // TODO: just not show?
-                //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
-
-                //SProfile profile = CSaveData.GetCurrentProfile();
-                //int money = profile.Money + World.Score;
-
-                //Color color = new Color(160, 160, 160);
-                //sprite_batch.DrawString(World.Game.DefaultFont, profile.Name, CMenu.CenteredText(World.Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-                //sprite_batch.DrawString(World.Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(World.Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-            //}
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)

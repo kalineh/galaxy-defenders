@@ -12,12 +12,13 @@ namespace Galaxy
         : CProjectile
     {
         public bool IsReflected { get; set; }
+        public CShip WhoReflected { get; set; }
         public int CanCollideWait { get; set; }
 
         public static CEnemyCannonShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
             CEnemyCannonShot shot = new CEnemyCannonShot();
-            shot.Initialize(world, PlayerIndex.One, damage);
+            shot.Initialize(world, null, damage);
 
             shot.Physics.AnglePhysics.Rotation = rotation;
             shot.Physics.PositionPhysics.Position = position;
@@ -30,9 +31,9 @@ namespace Galaxy
             return shot;
         }
 
-        public override void Initialize(CWorld world, PlayerIndex index, float damage)
+        public override void Initialize(CWorld world, CShip owner, float damage)
         {
-            base.Initialize(world, index, damage);
+            base.Initialize(world, owner, damage);
 
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyCannonShot");

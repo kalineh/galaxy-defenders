@@ -13,20 +13,23 @@ using Microsoft.Xna.Framework.Storage;
 namespace Galaxy
 {
     [Serializable]
-    public struct SProfile
+    public struct SProfileGameData
     {
-        public static int CurrentVersion = 1;
-        public int Version;
-        public string Name;
+        public string Stage;
+        public int Players;
+        public int Difficulty;
+        public SProfilePilotState[] Pilots;
+    }
+
+    [Serializable]
+    public struct SProfilePilotState
+    {
         public string Pilot;
-        public bool HasClearedGame;
-        public bool Ability0;
-        public bool Ability1;
-        public bool Ability2;
+        public bool AbilityUnlocked0;
+        public bool AbilityUnlocked1;
+        public bool AbilityUnlocked2;
         public int Score;
         public int Money;
-        public int Difficulty;
-        public string CurrentStage;
         public string ChassisType;
         public string GeneratorType;
         public string ShieldType;
@@ -40,6 +43,18 @@ namespace Galaxy
         public int WeaponSidekickRightLevel;
     }
 
+    // single xbox user profile
+    [Serializable]
+    public struct SProfile
+    {
+        public static int CurrentVersion = 1;
+        public int Version;
+        public string Name;
+        public bool[] HasClearedGame; // per-pilot
+        public SProfileGameData Game;
+    }
+
+    // all profiles save data
     [Serializable]
     public struct SSaveData
     {
@@ -100,24 +115,52 @@ namespace Galaxy
             {
                 Version = SProfile.CurrentVersion,
                 Name = name,
-                Pilot = "Kazuki",
-                HasClearedGame = false,
-                Money = 5000,
-                Ability0 = false,
-                Ability1 = false,
-                Ability2 = false,
-                Difficulty = 1,
-                ChassisType = "BasicShip",
-                GeneratorType = "BasicGenerator",
-                ShieldType = "BasicShield",
-                WeaponPrimaryType = "FrontLaser",
-                WeaponPrimaryLevel = 1,
-                WeaponSecondaryType = "",
-                WeaponSecondaryLevel = 0,
-                WeaponSidekickLeftType = "",
-                WeaponSidekickLeftLevel = 0,
-                WeaponSidekickRightType = "",
-                WeaponSidekickRightLevel = 0
+                HasClearedGame = new bool[] { false, false, false, false },
+                Game = new SProfileGameData() {
+                    Stage = "Start",
+                    Players = 1,
+                    Difficulty = 1,
+                    Pilots = new SProfilePilotState[] {
+                        new SProfilePilotState() {
+                            Pilot = "Kazuki",
+                            AbilityUnlocked0 = false,
+                            AbilityUnlocked1 = false,
+                            AbilityUnlocked2 = false,
+                            Score = 0,
+                            Money = 5000,
+                            ChassisType = "BasicShip",
+                            GeneratorType = "BasicGenerator",
+                            ShieldType = "BasicShield",
+                            WeaponPrimaryType = "FrontLaser",
+                            WeaponPrimaryLevel = 1,
+                            WeaponSecondaryType = "",
+                            WeaponSecondaryLevel = 0,
+                            WeaponSidekickLeftType = "",
+                            WeaponSidekickLeftLevel = 0,
+                            WeaponSidekickRightType = "",
+                            WeaponSidekickRightLevel = 0,
+                        },
+                        new SProfilePilotState() {
+                            Pilot = "Rabbit",
+                            AbilityUnlocked0 = false,
+                            AbilityUnlocked1 = false,
+                            AbilityUnlocked2 = false,
+                            Score = 0,
+                            Money = 5000,
+                            ChassisType = "BasicShip",
+                            GeneratorType = "BasicGenerator",
+                            ShieldType = "BasicShield",
+                            WeaponPrimaryType = "FrontLaser",
+                            WeaponPrimaryLevel = 1,
+                            WeaponSecondaryType = "",
+                            WeaponSecondaryLevel = 0,
+                            WeaponSidekickLeftType = "",
+                            WeaponSidekickLeftLevel = 0,
+                            WeaponSidekickRightType = "",
+                            WeaponSidekickRightLevel = 0,
+                        },
+                    },
+                },
             };
         }
 
@@ -176,9 +219,15 @@ namespace Galaxy
         {
 #if XBOX360
             data = new SSaveData();
+            return;
+
+            /*
+            // TODO: proper save data!
+            data = new SSaveData();
             data.Profiles = new List<SProfile>() { CreateDefaultProfile("Default") };
             data.CurrentProfile = "Default";
 
+            // TODO: profile loading import
             // TODO: remove debug data when load/save is fixed on 360
             data.Profiles = new List<SProfile>() {
                 new SProfile()
@@ -209,8 +258,8 @@ namespace Galaxy
             // end debug
 
             return;
-#endif
-
+            */
+#else
             AccessMutex.WaitOne();
 
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
@@ -248,6 +297,7 @@ namespace Galaxy
             }
 
             AccessMutex.ReleaseMutex();
+#endif
         }
 
         private static void Export(SSaveData data, string filename)

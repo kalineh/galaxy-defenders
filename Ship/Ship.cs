@@ -60,6 +60,8 @@ namespace Galaxy
         public int IsAbsorbBullets { get; set; }
         public float SpeedEnhancement { get; set; }
 
+        public int Score { get; set; }
+
         public void Initialize(
             CWorld world,
             PlayerIndex index,

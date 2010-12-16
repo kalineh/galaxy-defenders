@@ -14,15 +14,10 @@ namespace Galaxy
     {
         public static string GetAbilityName(string pilot, int index)
         {
-            // TODO: cleanup ability data
-            CPilot mock_pilot = CPilot.MakePilot(pilot);
-            List<string> abilities = new List<string>()
-            {
-                mock_pilot.Ability0.GetType().Name,
-                mock_pilot.Ability1.GetType().Name,
-                mock_pilot.Ability2.GetType().Name,
-            };
-            return abilities[index];
+            Type pilot_type = Assembly.GetAssembly(typeof(CPilot)).GetType("Pilots." + pilot);
+            FieldInfo field = pilot_type.GetField("AbilityName" + index, BindingFlags.Static);
+            string value = field.GetValue(null) as string;
+            return value;
         }
 
         public CPilot Pilot { get; set; }
@@ -101,12 +96,12 @@ namespace Galaxy
             Ability2.Update();
         }
 
-        public static CPilot MakePilot(string pilot)
+        public static CPilot MakePilot(SProfilePilotState profile)
         {
-            if (pilot == "" || pilot == null)
+            if (profile.Pilot == "" || profile.Pilot == null)
                 return new Pilots.Kazuki();
 
-            Type type = Type.GetType("Galaxy.Pilots." + pilot);
+            Type type = Type.GetType("Galaxy.Pilots." + profile.Pilot);
             CPilot result = Activator.CreateInstance(type) as CPilot;
             return result;
         }
@@ -290,15 +285,36 @@ namespace Galaxy
                         CEnemyShot shot = entity as CEnemyShot;
                         if (shot != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship.World, shot.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, shot.Physics.PositionPhysics.Position);
                             shot.Die();
                         }
 
                         CEnemyLaser laser = entity as CEnemyLaser;
                         if (laser != null)
                         {
-                            CDetonation.MakeDetonation(Pilot.Ship.World, laser.Physics.PositionPhysics.Position);
+                            CDetonation.MakeDetonation(Pilot.Ship, laser.Physics.PositionPhysics.Position);
                             laser.Die();
+                        }
+
+                        CEnemyCannonShot cannon_shot = entity as CEnemyCannonShot;
+                        if (cannon_shot != null)
+                        {
+                            CDetonation.MakeDetonation(Pilot.Ship, cannon_shot.Physics.PositionPhysics.Position);
+                            cannon_shot.Die();
+                        }
+
+                        CEnemyMissile missile = entity as CEnemyMissile;
+                        if (missile != null)
+                        {
+                            CDetonation.MakeDetonation(Pilot.Ship, missile.Physics.PositionPhysics.Position);
+                            missile.Die();
+                        }
+
+                        CEnemyPellet pellet = entity as CEnemyPellet;
+                        if (pellet != null)
+                        {
+                            CDetonation.MakeDetonation(Pilot.Ship, pellet.Physics.PositionPhysics.Position);
+                            pellet.Die();
                         }
                     }
                 }
@@ -381,7 +397,7 @@ namespace Galaxy
                                 continue;
 
                             CEffect.BuildingExplosion(Pilot.Ship.World, building.Physics.PositionPhysics.Position, 4.0f);
-                            building.TakeDamage(1000.0f);
+                            building.TakeDamage(1000.0f, Pilot.Ship);
                         }
 
                         // TODO: not a duplicate of above
@@ -394,7 +410,7 @@ namespace Galaxy
                                 continue;
 
                             CEffect.BuildingExplosion(Pilot.Ship.World, enemy.Physics.PositionPhysics.Position, 4.0f);
-                            enemy.TakeDamage(1000.0f);
+                            enemy.TakeDamage(1000.0f, Pilot.Ship);
                         }
                     }
                 }
@@ -510,34 +526,45 @@ namespace Galaxy
         public class Kazuki
             : CPilot
         {
+            public static string AbilityName0 = "DashBurst";
+            public static string AbilityName1 = "Shimmer";
+            public static string AbilityName2 = "AbsorbEnergy";
+
             public Kazuki()
             {
-                Ability0 = new Abilities.DashBurst(this, CSaveData.GetCurrentProfile().Ability0);
-                Ability1 = new Abilities.Shimmer(this, CSaveData.GetCurrentProfile().Ability1);
-                Ability2 = new Abilities.AbsorbEnergy(this, CSaveData.GetCurrentProfile().Ability2);
+                Ability0 = new Abilities.DashBurst(this, false);
+                Ability1 = new Abilities.Shimmer(this, false);
+                Ability2 = new Abilities.AbsorbEnergy(this, false);
             }
         }
 
         public class Rabbit
             : CPilot
         {
+            public static string AbilityName0 = "Reflect";
+            public static string AbilityName1 = "Detonate";
+            public static string AbilityName2 = "Alchemy";
+
             public Rabbit()
             {
-                Ability0 = new Abilities.BulletReflect(this, CSaveData.GetCurrentProfile().Ability0);
-                Ability1 = new Abilities.BulletDetonate(this, CSaveData.GetCurrentProfile().Ability1);
-                Ability2 = new Abilities.BulletAlchemy(this, CSaveData.GetCurrentProfile().Ability2);
+                Ability0 = new Abilities.BulletReflect(this, false);
+                Ability1 = new Abilities.BulletDetonate(this, false);
+                Ability2 = new Abilities.BulletAlchemy(this, false);
             }
         }
 
         public class Gunthor
             : CPilot
         {
+            public static string AbilityName0 = "GroundSmash";
+            public static string AbilityName1 = "SuctionCrusher";
+            public static string AbilityName2 = "ArmorRepair";
+
             public Gunthor()
             {
-                Ability0 = new Abilities.GroundSmash(this, CSaveData.GetCurrentProfile().Ability0);
-                Ability1 = new Abilities.SuctionCrusher(this, CSaveData.GetCurrentProfile().Ability1);
-                Ability2 = new Abilities.ArmorRepair(this, CSaveData.GetCurrentProfile().Ability2);
-                ;
+                Ability0 = new Abilities.GroundSmash(this, false);
+                Ability1 = new Abilities.SuctionCrusher(this, false);
+                Ability2 = new Abilities.ArmorRepair(this, false);
             }
         }
     }

@@ -83,10 +83,12 @@ namespace Galaxy
             EnergyIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/EnergyIcon");
             ShieldIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/ShieldIcon");
             ArmorIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/ArmorIcon");
-            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
-            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
+
+            // TODO: less crappiness
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(Game.GraphicsDevice.Viewport.Width, 0.0f);
@@ -256,12 +258,12 @@ namespace Galaxy
 
                 SProfile profile = CSaveData.GetCurrentProfile();
 
-                int money = profile.Money;
+                int money = profile.Game.Pilots[(int)PlayerIndex].Money;
 
                 // TODO: score needs to be maintained across secret stages?
                 // add current stage score if valid
                 if (Ship != null)
-                    money += Ship.World.Score;
+                    money += Ship.Score;
 
                 if (MoneyOverride != null)
                     money = (int)MoneyOverride;
@@ -288,12 +290,12 @@ namespace Galaxy
 
         public void UpdatePilot()
         {
-            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Pilot + "Portrait");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot + "Portrait");
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
-            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Pilot, 2) + "Icon");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 2) + "Icon");
             Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
