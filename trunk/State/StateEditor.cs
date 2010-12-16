@@ -30,7 +30,6 @@ namespace Galaxy
         public CGalaxy Game { get; private set; }
         public CWorld World { get; private set; }
         private Vector2 LastMouseInput { get; set; }
-        // TODO: remove me! shouldnt need a sample ship in the editor world
         private CShip SampleShip { get; set; }
         private SProfile WorkingProfile;
         private CScenery BackgroundScenery { get; set; }
@@ -58,7 +57,6 @@ namespace Galaxy
             ClearStage();
             StageDefinition = stage_definition ?? CStageDefinition.GetStageDefinitionByName("EditorStage");
             CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
-            SampleShip = World.GetNearestShipEditor(Vector2.Zero);
             SelectedEntities = new List<CEntity>();
             SelectedEntitiesPreview = new List<CEntity>();
             SelectedEntitiesOffset = new Dictionary<CEntity, Vector2>();
@@ -72,6 +70,8 @@ namespace Galaxy
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
+
+            RecreateSampleShip();
         }
 
         public override void Update()
@@ -532,6 +532,8 @@ namespace Galaxy
                 World.GameCamera.Position = old_world.GameCamera.Position;
                 World.GameCamera.Zoom = old_world.GameCamera.Zoom;
             }
+
+            RecreateSampleShip();
         }
 
         public void DeleteSelectedEntities()
@@ -542,7 +544,9 @@ namespace Galaxy
                 // TODO: delete previews? (for all world entities, if is preview and parent is entity)
                 var previews = from e in World.GetEntities() where e is CEditorEntityPreview && ((CEditorEntityPreview)e).Parent == entity select e;
                 foreach (CEntity preview in previews)
+                {
                     World.EntityDelete(entity);
+                }
             }
 
             SelectedEntities.Clear();
@@ -595,6 +599,12 @@ namespace Galaxy
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
+        }
+
+        public void RecreateSampleShip()
+        {
+            SampleShip = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[0], PlayerIndex.One);
+            World.EntityAdd(SampleShip);
         }
     }
 }
