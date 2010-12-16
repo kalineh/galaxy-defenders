@@ -2,14 +2,6 @@
 // StateMainMenu.cs
 //
 
-//
-// TODO:
-// * specify the 1p or 2p game type from the main menu
-// * change profile accesses of player/pilot to use player-index
-// * update all regular profile read places to read from current profile (based on profile username - User for PC, username for 360)
-// * change start game to read 1p/2p
-//
-
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -119,7 +111,7 @@ namespace Galaxy
             CSaveData.SetCurrentProfile(username);
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Name = username;
-            profile.Game.Players = 1;
+            profile.Game.Players = 2;
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
         }

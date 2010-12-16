@@ -87,7 +87,7 @@ namespace Galaxy
             {
                 foreach (MenuOption option in MenuOptions)
                 {
-                    if (option.Visible)
+                    if (!option.Visible)
                         continue;
 
                     yield return option;

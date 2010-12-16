@@ -14,8 +14,8 @@ namespace Galaxy
     {
         public static string GetAbilityName(string pilot, int index)
         {
-            Type pilot_type = Assembly.GetAssembly(typeof(CPilot)).GetType("Pilots." + pilot);
-            FieldInfo field = pilot_type.GetField("AbilityName" + index, BindingFlags.Static);
+            Type pilot_type = Assembly.GetAssembly(typeof(CPilot)).GetType("Galaxy.Pilots." + pilot);
+            FieldInfo field = pilot_type.GetField("AbilityName" + index, BindingFlags.Public | BindingFlags.Static);
             string value = field.GetValue(null) as string;
             return value;
         }
