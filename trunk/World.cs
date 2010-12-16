@@ -122,6 +122,7 @@ namespace Galaxy
             {
                 CShip ship = CShipFactory.GenerateShip(this, profile.Game.Pilots[i], (PlayerIndex)i);
                 ship.Physics.PositionPhysics.Position = Game.PlayerSpawnPosition;
+                Game.HudManager.Huds[i].Ship = ship;
                 EntityAdd(ship);
                 ShipEntitiesCache.Add(ship);
                 Ships.Add(ship);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -365,12 +366,23 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            Game.HudManager.Huds[0].MoneyOverride = null;
+            Game.HudManager.Huds[1].MoneyOverride = null;
+        }
+
         public override void Update()
         {
+            if (Game.Input.IsPadL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
+                ChangeShoppingPlayer(PlayerIndex.One);
+            if (Game.Input.IsPadR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
+                ChangeShoppingPlayer(PlayerIndex.Two);
+
             MenuUpdateHighlights();
             Menu.Update();
-            // TODO: active hud per players
-            // TODO: l1/r1 to toggle active player
             Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
             EmptyWorld.UpdateEntities();
@@ -517,6 +529,14 @@ namespace Galaxy
         private void LockWorkingProfile()
         {
             LockedProfile = WorkingProfile;
+        }
+
+        private void SaveLockedProfile()
+        {
+            SProfile profile = CSaveData.GetCurrentProfile();
+            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
+            CSaveData.SetCurrentProfileData(profile);
+            CSaveData.Save();
         }
 
         private void DrawMenuBaseErrata()
@@ -728,10 +748,7 @@ namespace Galaxy
 
         private void StageSelect(object tag)
         {
-            SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
-            CSaveData.SetCurrentProfileData(profile);
-            CSaveData.Save();
+            SaveLockedProfile();
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
         }
 
@@ -797,10 +814,7 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
-            CSaveData.SetCurrentProfileData(profile);
-            CSaveData.Save();
+            SaveLockedProfile();
             Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
         }
 
@@ -1292,6 +1306,20 @@ namespace Galaxy
             FieldInfo field = typeof(SProfile).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
             return has_ability;
+        }
+
+        private void ChangeShoppingPlayer(PlayerIndex player_index)
+        {
+            if (ShoppingPlayer == player_index)
+                return;
+
+            SaveLockedProfile();
+
+            ShoppingPlayer = player_index;
+            WorkingProfile = GetShoppingPilotData();
+            LockedProfile = WorkingProfile;
+
+            RefreshSampleDisplay();
         }
     }
 }

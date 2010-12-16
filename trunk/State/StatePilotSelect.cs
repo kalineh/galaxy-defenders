@@ -52,7 +52,17 @@ namespace Galaxy
         public override void Update()
         {
             if (Game.HudManager.IsPilotSelectCompleteAll())
+            {
                 Menu.Update();
+            }
+            else
+            {
+                if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Escape))
+                {
+                    Back(null);
+                    return;
+                }
+            }
 
             SampleShipManager.Update();
 

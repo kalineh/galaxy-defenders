@@ -1,5 +1,5 @@
 ﻿//
-// HudProfileSelect.cs
+// HudPilotSelect.cs
 //
 
 using System;
@@ -12,12 +12,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Galaxy
 {
-    public class CHudProfileSelect
+    public class HudPilotSelect
     {
         public PlayerIndex PlayerIndex { get; set; }
         public CGalaxy Game { get; set; }
         public string NameText { get; set; }
         public string MoneyText { get; set; }
+        public int Cursor { get; set; }
 
         private CVisual LeftPanelVisual { get; set; }
         private CVisual RightPanelVisual { get; set; }
@@ -38,6 +39,7 @@ namespace Galaxy
         public Vector2 NameTextPosition { get; set; }
         public Vector2 MoneyTextPosition { get; set; }
         private Vector2 MoneyIconPosition { get; set; }
+        private Vector2 TextDisplayPosition { get; set; }
         private Vector2 PortraitIconPosition { get; set; }
 
         private Keys StartKey { get; set; }
@@ -50,7 +52,7 @@ namespace Galaxy
         }
         public EState State { get; set; }
 
-        public CHudProfileSelect(CGalaxy game, Vector2 base_position, PlayerIndex player_index)
+        public HudPilotSelect(CGalaxy game, Vector2 base_position, PlayerIndex player_index)
         {
             PlayerIndex = player_index;
             Game = game;
@@ -60,6 +62,8 @@ namespace Galaxy
 
             NameText = "Profile";
             MoneyText = null;
+
+            Cursor = (int)PlayerIndex;
 
             LeftPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
             RightPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
@@ -77,6 +81,7 @@ namespace Galaxy
 
             NameTextPosition = BasePosition + new Vector2(80.0f, -964.0f);
             MoneyTextPosition = BasePosition + new Vector2(100.0f, -888.0f);
+            TextDisplayPosition = BasePosition + new Vector2(238.0f, -720.0f);
             PortraitIconPosition = BasePosition + new Vector2(238.0f, -608.0f);
 
             LeftPanelVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 0.0f;
@@ -115,6 +120,44 @@ namespace Galaxy
                     {
                         Lock();
                     }
+
+                    PortraitIconVisuals[Cursor].Scale = Vector2.One;
+
+                    int other_player = PlayerIndex == PlayerIndex.One ? 1 : 0;
+                    int other_cursor = Game.HudManager.HudsProfileSelect[other_player].Cursor;
+                    if (Game.Input.IsPadUpPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Up))
+                    {
+                        int next_valid = Cursor;
+
+                        for (int i = Cursor - 1; i >= 0; --i)
+                        {
+                            if (i == other_cursor)
+                                continue;
+
+                            next_valid = i;
+                            break;
+                        }
+
+                        Cursor = next_valid;
+                    }
+
+                    if (Game.Input.IsPadDownPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Down))
+                    {
+                        int next_valid = Cursor;
+
+                        for (int i = Cursor + 1; i < PortraitIconVisuals.Count; ++i)
+                        {
+                            if (i == other_cursor)
+                                continue;
+
+                            next_valid = i;
+                            break;
+                        }
+
+                        Cursor = next_valid;
+                    }
+
+                    PortraitIconVisuals[Cursor].Scale = Vector2.One + Vector2.One * 0.025f * (float)Math.Sin(Game.GameFrame * 0.1f);
                     break;
 
                 case EState.Locked:
@@ -136,7 +179,7 @@ namespace Galaxy
                     break;
 
                 case EState.Active:
-                    Vector2 offset = new Vector2(0.0f, 256.0f);
+                    Vector2 offset = new Vector2(0.0f, 210.0f);
                     Vector2 position = PortraitIconPosition;
                     foreach (CVisual portrait in PortraitIconVisuals)
                     {
@@ -169,6 +212,21 @@ namespace Galaxy
         public void Lock()
         {
             State = EState.Locked;    
+
+            // TODO: correct mapping somewhere
+            string pilot = "";
+            switch (Cursor)
+            {
+                case 0: pilot = "Kazuki"; break;
+                case 1: pilot = "Rabbit"; break;
+                case 2: pilot = "Gunthor"; break;
+                //case 3: pilot = "Mystery"; break;
+                default:
+                    break;
+            }
+
+            CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot = pilot;
+            Game.HudManager.Huds[(int)PlayerIndex].UpdatePilot();
         }
     }
 }

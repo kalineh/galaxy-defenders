@@ -204,6 +204,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             CEffect.Explosion(World, Physics.PositionPhysics.Position, 1.0f);
+            World.ShipEntitiesCache.Remove(this);
         }
 
         public Vector2 GetInputVector()

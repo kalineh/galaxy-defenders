@@ -72,7 +72,7 @@
     <Compile Include="Enemy\Teleporter.cs" />
     <Compile Include="Guide.cs" />
     <Compile Include="Hud\HudManager.cs" />
-    <Compile Include="Hud\HudProfileSelect.cs" />
+    <Compile Include="Hud\HudPilotSelect.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />

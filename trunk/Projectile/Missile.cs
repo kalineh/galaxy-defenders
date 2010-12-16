@@ -36,7 +36,7 @@ namespace Galaxy
         {
             base.Initialize(world, owner, damage);
 
-            Owner = Owner;
+            Owner = owner;
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", owner.PlayerIndex);
             Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
