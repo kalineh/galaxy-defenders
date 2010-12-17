@@ -272,7 +272,11 @@ namespace Galaxy
             }
 
             Color color = new Color(160, 160, 160);
-            sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+
+            // using single profile per-game, so display pilot name instead
+            //sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            sprite_batch.DrawString(Game.DefaultFont, profile.Game.Pilots[(int)GameControllerIndex].Pilot, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Game.Pilots[(int)GameControllerIndex].Pilot), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+
             sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
             //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
         }

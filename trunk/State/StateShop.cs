@@ -383,7 +383,7 @@ namespace Galaxy
 
             MenuUpdateHighlights();
             Menu.Update();
-            Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
+            Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)WorkingProfile.Money;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();

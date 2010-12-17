@@ -134,6 +134,10 @@ namespace Galaxy
             // TODO: should this have ever been here?
             //Game.Music.StopImmediate();
 
+            // clear runtime ship info from hud
+            Game.HudManager.Huds[0].Ship = null;
+            Game.HudManager.Huds[1].Ship = null;
+
             // TODO: clean up
             if (Stage != null)
             {

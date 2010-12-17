@@ -175,6 +175,30 @@ namespace Galaxy
             return is_down && !was_down;
         }
 
+        public bool IsPadLeftPressedAny()
+        {
+            return IsPadLeftPressed(GameControllerIndex.One) ||
+                   IsPadLeftPressed(GameControllerIndex.Two);
+        }
+
+        public bool IsPadRightPressedAny()
+        {
+            return IsPadRightPressed(GameControllerIndex.One) ||
+                   IsPadRightPressed(GameControllerIndex.Two);
+        }
+
+        public bool IsPadUpPressedAny()
+        {
+            return IsPadUpPressed(GameControllerIndex.One) ||
+                   IsPadUpPressed(GameControllerIndex.Two);
+        }
+
+        public bool IsPadDownPressedAny()
+        {
+            return IsPadDownPressed(GameControllerIndex.One) ||
+                   IsPadDownPressed(GameControllerIndex.Two);
+        }
+
         public bool IsPadConfirmPressed(GameControllerIndex game_controller_index)
         {
             bool is_down = CurrentFrameGamePadState[(int)game_controller_index].Buttons.B == ButtonState.Pressed;

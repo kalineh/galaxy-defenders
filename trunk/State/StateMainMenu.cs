@@ -49,17 +49,17 @@ namespace Galaxy
 
         public override void Update()
         {
-            switch (Game.Input.CountConnectedControllers())
+            if (Game.Input.CountConnectedControllers() == 0)
             {
-                case 0:
-                    // wait
-                    Game.HudManager.ActivatePressStart();
-                    break;
-
-                default:
+                Game.HudManager.ActivatePressStart();
+            }
+            else
+            {
+                if (GuideUtil.StorageDeviceReady)
+                {
                     Menu.Visible = true;
                     Menu.Update();
-                    break;
+                }
             }
 
             DebugInput();
@@ -109,17 +109,15 @@ namespace Galaxy
 
         private void NewGame1P(object tag)
         {
-            string username = "User";
-
 #if XBOX360
-            // TODO: get current primary profile username
-            username = null;
-#endif
-
+            // handled in Guide.cs
+#else
+            string username = "galaxy";
             CSaveData.AddNewProfile(username);
             CSaveData.SetCurrentProfile(username);
+#endif
+
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Name = username;
             profile.Game.Players = 1;
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
@@ -127,17 +125,15 @@ namespace Galaxy
 
         private void NewGame2P(object tag)
         {
-            string username = "User";
-
 #if XBOX360
-            // TODO: get current primary profile username
-            username = null;
-#endif
-
+            // handled in Guide.cs
+#else
+            string username = "galaxy";
             CSaveData.AddNewProfile(username);
             CSaveData.SetCurrentProfile(username);
+#endif
+
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Name = username;
             profile.Game.Players = 2;
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));

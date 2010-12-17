@@ -71,9 +71,9 @@ namespace Galaxy
         static CSaveData()
         {
             DefaultSaveData = new SSaveData() {
-                CurrentProfile = "User",
+                CurrentProfile = "galaxy",
                 Profiles = new List<SProfile>() {
-                    CreateDefaultProfile("User"),
+                    CreateDefaultProfile("galaxy"),
                 }
             };
             SaveData = DefaultSaveData;
@@ -92,21 +92,6 @@ namespace Galaxy
         public static void Save()
         {
             CSaveData.Export(SaveData, "profiles.xml");
-        }
-
-        // TODO: think of a better name for this (CreateProfilesXMLIfItDoesntExistAlready)
-        public static void VerifyProfilesExist()
-        {
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, "profiles.xml");
-
-            bool exists = File.Exists(fullpath);
-            if (!exists)
-            {
-                // save default data
-                Save();
-            }
-
-            Load();
         }
 
         public static SProfile CreateDefaultProfile(string name)
@@ -188,9 +173,15 @@ namespace Galaxy
 
         public static void AddNewProfile(string name)
         {
-            SProfile profile = CreateDefaultProfile(name);
+            foreach (SProfile profile in SaveData.Profiles)
+            {
+                if (profile.Name == name) 
+                    return;
+            }
+
+            SProfile new_profile = CreateDefaultProfile(name);
             SaveData.Profiles.RemoveAll(existing => existing.Name == name);
-            SaveData.Profiles.Add(profile);
+            SaveData.Profiles.Add(new_profile);
         }
 
         public static void SetCurrentProfile(string name)
@@ -220,18 +211,22 @@ namespace Galaxy
 #if XBOX360
             if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
             {
-                data = new SSaveData();
-                data.Profiles.Add(CreateDefaultProfile("default"));
+                data = DefaultSaveData;
                 return;
             }
+
+            StorageContainer container = GuideUtil.StorageDevice.OpenContainer("galaxy");
+            string fullpath = Path.Combine(container.Path, "profiles.xml");
+#else
+            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
 #endif
 
             AccessMutex.WaitOne();
 
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
-            FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Read);
+            FileStream stream = null;
             try
             {
+                stream = File.Open(fullpath, FileMode.Open, FileAccess.Read);
                 XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
                 data = (SSaveData)serializer.Deserialize(stream);
                 
@@ -259,7 +254,12 @@ namespace Galaxy
             }
             finally
             {
-                stream.Close();
+                if (stream != null)
+                    stream.Close();   
+
+#if XBOX360
+                container.Dispose();
+#endif
             }
 
             AccessMutex.ReleaseMutex();
@@ -278,9 +278,13 @@ namespace Galaxy
 #if XBOX360
             if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
                 return;
+
+            StorageContainer container = GuideUtil.StorageDevice.OpenContainer("galaxy");
+            string fullpath = Path.Combine(container.Path, "profiles.xml");
+#else
+            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
 #endif
 
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
             FileStream stream = File.Open(fullpath, FileMode.Create, FileAccess.Write);
             try
             {
@@ -294,6 +298,10 @@ namespace Galaxy
             finally
             {
                 stream.Close();
+
+#if XBOX360
+                container.Dispose();
+#endif
             }
         }
     }
