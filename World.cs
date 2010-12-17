@@ -120,7 +120,7 @@ namespace Galaxy
             int players = CSaveData.GetCurrentProfile().Game.Players;
             for (int i = 0; i < players; ++i)
             {
-                CShip ship = CShipFactory.GenerateShip(this, profile.Game.Pilots[i], (PlayerIndex)i);
+                CShip ship = CShipFactory.GenerateShip(this, profile.Game.Pilots[i], (GameControllerIndex)i);
                 ship.Physics.Position = Game.PlayerSpawnPosition;
                 Game.HudManager.Huds[i].Ship = ship;
                 EntityAdd(ship);
@@ -847,18 +847,18 @@ namespace Galaxy
 
             foreach (CShip ship in Ships)
             {
-                profile.Game.Pilots[(int)ship.PlayerIndex].Money += ship.Score;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].Money += ship.Score;
                 
                 // NOTE: this is just to support mid-game upgrades if we add powerup items
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponPrimaryType = ship.PrimaryWeapon.Type;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryType = ship.SecondaryWeapon.Type;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickLeftType = ship.SidekickLeft.Type;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickRightType = ship.SidekickRight.Type;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSidekickRightLevel = ship.SidekickRight.Level;
-                profile.Game.Pilots[(int)ship.PlayerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponPrimaryType = ship.PrimaryWeapon.Type;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSecondaryType = ship.SecondaryWeapon.Type;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSidekickLeftType = ship.SidekickLeft.Type;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSidekickRightType = ship.SidekickRight.Type;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSidekickRightLevel = ship.SidekickRight.Level;
+                profile.Game.Pilots[(int)ship.GameControllerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
             }
 
             profile.Game.Stage = Stage.Definition.Name;

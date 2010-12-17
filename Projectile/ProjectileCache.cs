@@ -15,8 +15,8 @@ namespace Galaxy
     public class CProjectileCache<P>
         where P : ICacheableProjectile, new()
     {
-        public Dictionary<PlayerIndex, List<P>> Instances { get; set; }
-        private Dictionary<PlayerIndex, int> Counters { get; set; }
+        public Dictionary<GameControllerIndex, List<P>> Instances { get; set; }
+        private Dictionary<GameControllerIndex, int> Counters { get; set; }
 
         public CProjectileCache(CWorld world)
         {
@@ -25,8 +25,8 @@ namespace Galaxy
 
         public void ResetAll(int count)
         {
-            Instances = new Dictionary<PlayerIndex, List<P>>();
-            Counters = new Dictionary<PlayerIndex, int>();
+            Instances = new Dictionary<GameControllerIndex, List<P>>();
+            Counters = new Dictionary<GameControllerIndex, int>();
 
             List<P> one = new List<P>(count);
             List<P> two = new List<P>(count);
@@ -37,20 +37,20 @@ namespace Galaxy
                 two.Add(new P());
             }
 
-            Instances.Add(PlayerIndex.One, one);
-            Instances.Add(PlayerIndex.Two, two);
+            Instances.Add(GameControllerIndex.One, one);
+            Instances.Add(GameControllerIndex.Two, two);
 
-            Counters.Add(PlayerIndex.One, 0);
-            Counters.Add(PlayerIndex.Two, 0);
+            Counters.Add(GameControllerIndex.One, 0);
+            Counters.Add(GameControllerIndex.Two, 0);
         }
 
-        public P GetProjectileInstance(PlayerIndex player_index)
+        public P GetProjectileInstance(GameControllerIndex game_controller_index)
         {
-            int counter = Counters[player_index];
+            int counter = Counters[game_controller_index];
             counter += 1;
-            counter %= Instances[player_index].Count;
-            Counters[player_index] = counter;
-            P instance = Instances[player_index][counter];
+            counter %= Instances[game_controller_index].Count;
+            Counters[game_controller_index] = counter;
+            P instance = Instances[game_controller_index][counter];
             return instance;
         }
     }

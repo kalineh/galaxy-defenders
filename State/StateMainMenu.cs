@@ -2,6 +2,7 @@
 // StateMainMenu.cs
 //
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,10 +30,13 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
                     new CMenu.MenuOption() { Text = "Solo Game", Select = NewGame1P },
-                    new CMenu.MenuOption() { Text = "Coop Game", Select = NewGame2P },
+                    new CMenu.MenuOption() { Text = "Coop Game", Select = NewGame2P, SelectValidate = CheckPlayers2P },
                     new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 },
             };
+
+            // must wait for controllers to start
+            Menu.Visible = false;
 
             SampleShipManager = new CSampleShipManager(EmptyWorld);
 
@@ -45,12 +49,30 @@ namespace Galaxy
 
         public override void Update()
         {
-            Menu.Update();
+            switch (Game.Input.CountConnectedControllers())
+            {
+                case 0:
+                    // wait
+                    Game.HudManager.ActivatePressStart();
+                    break;
+
+                default:
+                    Menu.Visible = true;
+                    Menu.Update();
+                    break;
+            }
+
             DebugInput();
 
-            // allow application exit from main menu
-            if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Q))
+            // allow application exit from main menu (even without controllers bound)
+            if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Back) ||
+                GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Back) ||
+                GamePad.GetState(PlayerIndex.Three).IsButtonDown(Buttons.Back) ||
+                GamePad.GetState(PlayerIndex.Four).IsButtonDown(Buttons.Back) ||
+                Game.Input.IsKeyPressed(Keys.Q))
+            {
                 Game.Exit();
+            }
 
             SampleShipManager.Update();
             EmptyWorld.UpdateEntities();
@@ -72,6 +94,11 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
+
+            if (Game.Input.CountConnectedControllers() == 0)
+            {
+                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Press Start", new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 20.0f, 650.0f), Color.White, 0.0f, new Vector2(60.0f, 10.0f), 1.5f + (float)Math.Sin(Game.GameFrame * 0.05f) * 0.05f, SpriteEffects.None, 0.0f);
+            }
 
             Game.DefaultSpriteBatch.End();
 
@@ -114,6 +141,11 @@ namespace Galaxy
             profile.Game.Players = 2;
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
+        }
+
+        private bool CheckPlayers2P(object tag)
+        {
+            return Game.Input.CountConnectedControllers() > 1;
         }
 
         private void QuitGame(object tag)

@@ -17,16 +17,16 @@ namespace Galaxy
             if (damage < 1.0f)
             {
                 Physics = new CPhysics();
-                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SmallPlasma", owner.PlayerIndex);
-                Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SmallPlasma", owner.GameControllerIndex);
+                Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             }
             else
             {
                 Physics = new CPhysics();
-                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigPlasma", owner.PlayerIndex);
-                Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
+                Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigPlasma", owner.GameControllerIndex);
+                Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
                 Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
             }

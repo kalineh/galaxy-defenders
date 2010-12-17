@@ -12,12 +12,17 @@ namespace Galaxy
 {
     public abstract class CAbility
     {
+        public static Dictionary<string, List<string>> PilotAbilityNames = new Dictionary<string, List<string>>()
+        {
+            { "Kazuki", new List<string>() { "DashBurst", "Shimmer", "AbsorbEnergy" } },
+            { "Rabbit", new List<string>() { "BulletReflect", "BulletDetonate", "BulletAlchemy" } },
+            { "Gunthor", new List<string>() { "GroundSmash", "SuctionCrusher", "ArmorRepair" } },
+            { "Mystery", new List<string>() { "", "", "" } },
+        };
+
         public static string GetAbilityName(string pilot, int index)
         {
-            Type pilot_type = Assembly.GetAssembly(typeof(CPilot)).GetType("Galaxy.Pilots." + pilot);
-            FieldInfo field = pilot_type.GetField("AbilityName" + index, BindingFlags.Public | BindingFlags.Static);
-            string value = field.GetValue(null) as string;
-            return value;
+            return PilotAbilityNames[pilot][index];
         }
 
         public CPilot Pilot { get; set; }
@@ -526,10 +531,6 @@ namespace Galaxy
         public class Kazuki
             : CPilot
         {
-            public static string AbilityName0 = "DashBurst";
-            public static string AbilityName1 = "Shimmer";
-            public static string AbilityName2 = "AbsorbEnergy";
-
             public Kazuki()
             {
                 Ability0 = new Abilities.DashBurst(this, false);
@@ -541,10 +542,6 @@ namespace Galaxy
         public class Rabbit
             : CPilot
         {
-            public static string AbilityName0 = "BulletReflect";
-            public static string AbilityName1 = "BulletDetonate";
-            public static string AbilityName2 = "BulletAlchemy";
-
             public Rabbit()
             {
                 Ability0 = new Abilities.BulletReflect(this, false);
@@ -556,10 +553,6 @@ namespace Galaxy
         public class Gunthor
             : CPilot
         {
-            public static string AbilityName0 = "GroundSmash";
-            public static string AbilityName1 = "SuctionCrusher";
-            public static string AbilityName2 = "ArmorRepair";
-
             public Gunthor()
             {
                 Ability0 = new Abilities.GroundSmash(this, false);

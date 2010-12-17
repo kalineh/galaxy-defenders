@@ -36,7 +36,7 @@ namespace Galaxy
         private Texture2D ShopPanelTexture { get; set; }
         private Texture2D ShopUpgradePanelTexture { get; set; }
         private CVisual ShopUpgradeBarsVisual { get; set; }
-        private PlayerIndex ShoppingPlayer { get; set; }
+        private GameControllerIndex ShoppingPlayer { get; set; }
 
         public CStateStateShop(CGalaxy game)
         {
@@ -377,9 +377,9 @@ namespace Galaxy
         public override void Update()
         {
             if (Game.Input.IsPadL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
-                ChangeShoppingPlayer(PlayerIndex.One);
+                ChangeShoppingPlayer(GameControllerIndex.One);
             if (Game.Input.IsPadR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
-                ChangeShoppingPlayer(PlayerIndex.Two);
+                ChangeShoppingPlayer(GameControllerIndex.Two);
 
             MenuUpdateHighlights();
             Menu.Update();
@@ -1308,14 +1308,14 @@ namespace Galaxy
             return has_ability;
         }
 
-        private void ChangeShoppingPlayer(PlayerIndex player_index)
+        private void ChangeShoppingPlayer(GameControllerIndex game_controller_index)
         {
-            if (ShoppingPlayer == player_index)
+            if (ShoppingPlayer == game_controller_index)
                 return;
 
             SaveLockedProfile();
 
-            ShoppingPlayer = player_index;
+            ShoppingPlayer = game_controller_index;
             WorkingProfile = GetShoppingPilotData();
             LockedProfile = WorkingProfile;
 

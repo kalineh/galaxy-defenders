@@ -19,8 +19,8 @@ namespace Galaxy
             World = world;    
 
             SampleShips = new List<CSampleShip>() {
-                new CSampleShip(world.Game, world, new Vector2(-50.0f, 250.0f), PlayerIndex.One),
-                new CSampleShip(world.Game, world, new Vector2(0.0f, 150.0f), PlayerIndex.Two),
+                new CSampleShip(world.Game, world, new Vector2(-50.0f, 250.0f), GameControllerIndex.One),
+                new CSampleShip(world.Game, world, new Vector2(0.0f, 150.0f), GameControllerIndex.Two),
             };
         }
 

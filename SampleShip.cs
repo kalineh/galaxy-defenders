@@ -16,11 +16,11 @@ namespace Galaxy
         private CWorld World { get; set; }
         public CShip Ship { get; set; }
 
-        public CSampleShip(CGalaxy game, CWorld world, Vector2 position, PlayerIndex player_index)
+        public CSampleShip(CGalaxy game, CWorld world, Vector2 position, GameControllerIndex game_controller_index)
         {
             Game = game;
             World = world;
-            Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[(int)player_index], player_index);
+            Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[(int)game_controller_index], game_controller_index);
             Ship.Physics.Position = position;
         }
 

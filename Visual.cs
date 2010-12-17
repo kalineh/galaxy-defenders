@@ -40,7 +40,7 @@ namespace Galaxy
             return result;
         }
 
-        public static CVisual MakeSpriteCachedForPlayer(CGalaxy game, string texture_name, PlayerIndex index)
+        public static CVisual MakeSpriteCachedForPlayer(CGalaxy game, string texture_name, GameControllerIndex index)
         {
             Dictionary<string, CVisual> cache = index == 0 ? VisualCache1 : VisualCache2;
 

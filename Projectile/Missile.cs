@@ -38,12 +38,12 @@ namespace Galaxy
 
             Owner = owner;
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", owner.PlayerIndex);
-            Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Missile", owner.GameControllerIndex);
+            Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
 
-            TrailEffect = CParticleGroupSpawner.MakeMissileTrail(Vector2.Zero, Vector2.UnitY, CShip.GetPlayerColor(owner.PlayerIndex));
+            TrailEffect = CParticleGroupSpawner.MakeMissileTrail(Vector2.Zero, Vector2.UnitY, CShip.GetPlayerColor(owner.GameControllerIndex));
         }
 
         public override void Update()

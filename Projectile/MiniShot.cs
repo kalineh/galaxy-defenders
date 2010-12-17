@@ -30,8 +30,8 @@ namespace Galaxy
 
             Owner = owner;
             Physics = new CPhysics();
-            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/MiniShot", owner.PlayerIndex);
-            Visual.Color = CShip.GetPlayerColor(owner.PlayerIndex);
+            Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/MiniShot", owner.GameControllerIndex);
+            Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
