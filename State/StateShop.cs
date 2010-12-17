@@ -125,8 +125,9 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.MenuOption>(),
             };
+
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
-            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailablePrimaryWeaponParts);
+            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts);
             IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct();
             foreach (string weapon_part in primary_weapon_parts)
             {
@@ -166,7 +167,7 @@ namespace Galaxy
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
-            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSecondaryWeaponParts);
+            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct();
             foreach (string weapon_part in secondary_weapon_parts)
             {
@@ -208,7 +209,7 @@ namespace Galaxy
 
             MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickLeftType };
-            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct();
             foreach (string weapon_part in sidekick_left_weapon_parts)
             {
@@ -248,7 +249,7 @@ namespace Galaxy
 
             MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
             IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickRightType };
-            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct();
             foreach (string weapon_part in sidekick_right_weapon_parts)
             {
@@ -279,7 +280,7 @@ namespace Galaxy
             };
 
             IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
-            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableChassisParts);
+            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts);
             IEnumerable<string> chassis_parts = chassis_parts_all.Distinct();
             foreach (string chassis_part in chassis_parts)
             {
@@ -307,7 +308,7 @@ namespace Galaxy
             };
 
             IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
-            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableGeneratorParts);
+            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts);
             IEnumerable<string> generator_parts = generator_parts_all.Distinct();
             foreach (string generator_part in generator_parts)
             {
@@ -336,7 +337,7 @@ namespace Galaxy
             };
 
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
-            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentProfile().Game.Stage).AvailableShieldParts);
+            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
             IEnumerable<string> shield_parts = shield_parts_all.Distinct();
             foreach (string shield_part in shield_parts)
             {
@@ -449,7 +450,7 @@ namespace Galaxy
 
         private SProfilePilotState GetShoppingPilotData()
         {
-            return CSaveData.GetCurrentProfile().Game.Pilots[(int)ShoppingPlayer];
+            return CSaveData.GetCurrentGameData(Game).Pilots[(int)ShoppingPlayer];
         }
 
         private void DrawShipStats()
@@ -534,7 +535,7 @@ namespace Galaxy
         private void SaveLockedProfile()
         {
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Pilots[(int)ShoppingPlayer] = LockedProfile;
+            profile.Game[Game.PlayersInGame - 1].Pilots[(int)ShoppingPlayer] = LockedProfile;
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.Save();
         }

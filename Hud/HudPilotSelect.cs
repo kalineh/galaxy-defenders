@@ -124,6 +124,7 @@ namespace Galaxy
                     // TODO: up/down control for profile select
                     if (Game.Input.IsPadConfirmPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
                     {
+                        ChoosePilotFromCursor();
                         Lock();
                     }
 
@@ -223,7 +224,11 @@ namespace Galaxy
         public void Lock()
         {
             State = EState.Locked;    
+            Game.HudManager.Huds[(int)GameControllerIndex].UpdatePilot();
+        }
 
+        public void ChoosePilotFromCursor()
+        {
             // TODO: correct mapping somewhere
             string pilot = "";
             switch (Cursor)
@@ -236,8 +241,7 @@ namespace Galaxy
                     break;
             }
 
-            CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot = pilot;
-            Game.HudManager.Huds[(int)GameControllerIndex].UpdatePilot();
+            CSaveData.GetCurrentProfile().Game[Game.PlayersInGame - 1].Pilots[(int)GameControllerIndex].Pilot = pilot;
         }
     }
 }

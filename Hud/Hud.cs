@@ -254,8 +254,8 @@ namespace Galaxy
             //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
 
             // TODO: not copy the profile around so much
-            SProfile profile = CSaveData.GetCurrentProfile();
-            int money = profile.Game.Pilots[(int)GameControllerIndex].Money;
+            SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
+            int money = profile.Pilots[(int)GameControllerIndex].Money;
 
             // TODO: score needs to be maintained across secret stages?
             // add current stage score if valid
@@ -273,12 +273,8 @@ namespace Galaxy
 
             Color color = new Color(160, 160, 160);
 
-            // using single profile per-game, so display pilot name instead
-            //sprite_batch.DrawString(Game.DefaultFont, profile.Name, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Name), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-            sprite_batch.DrawString(Game.DefaultFont, profile.Game.Pilots[(int)GameControllerIndex].Pilot, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Game.Pilots[(int)GameControllerIndex].Pilot), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-
+            sprite_batch.DrawString(Game.DefaultFont, profile.Pilots[(int)GameControllerIndex].Pilot, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Pilots[(int)GameControllerIndex].Pilot), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
             sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-            //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, MoneyTextPosition, new Color(170, 177, 115), 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)
@@ -290,12 +286,13 @@ namespace Galaxy
 
         public void UpdatePilot()
         {
-            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot + "Portrait");
+            SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + profile.Pilots[(int)GameControllerIndex].Pilot + "Portrait");
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
-            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 2) + "Icon");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 2) + "Icon");
             Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;

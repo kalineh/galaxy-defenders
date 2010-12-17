@@ -48,12 +48,22 @@ namespace Galaxy
                 hud.PressStart();
         }
 
+        public void LockHuds()
+        {
+            foreach (HudPilotSelect hud in HudsProfileSelect)
+                hud.Deactivate();
+
+            int players = Game.PlayersInGame;
+            for (int i = 0; i < players; ++i)
+                HudsProfileSelect[i].Lock();
+        }
+
         public void ActivatePilotSelect()
         {
             foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Deactivate();
 
-            int players = CSaveData.GetCurrentProfile().Game.Players;
+            int players = Game.PlayersInGame;
             for (int i = 0; i < players; ++i)
                 HudsProfileSelect[i].Activate();
         }
@@ -73,7 +83,7 @@ namespace Galaxy
 
         public bool IsPilotSelectCompleteAll()
         {
-            int players = CSaveData.GetCurrentProfile().Game.Players;
+            int players = Game.PlayersInGame;
             for (int i = 0; i < players; ++i)
                 if (!IsPilotSelectComplete(i))
                     return false;

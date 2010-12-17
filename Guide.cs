@@ -69,6 +69,7 @@ namespace Galaxy
                     }
 
                     string tag = SignedInGamer.SignedInGamers[0].Gamertag;
+                    CSaveData.Load();
                     CSaveData.AddNewProfile(tag);
                     CSaveData.SetCurrentProfile(tag);
 

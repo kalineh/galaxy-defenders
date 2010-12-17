@@ -16,7 +16,7 @@ namespace Galaxy
     public struct SProfileGameData
     {
         public string Stage;
-        public int Players;
+        public bool InProgress;
         public int Difficulty;
         public SProfilePilotState[] Pilots;
     }
@@ -41,6 +41,30 @@ namespace Galaxy
         public int WeaponSidekickLeftLevel;
         public string WeaponSidekickRightType;
         public int WeaponSidekickRightLevel;
+
+        public static SProfilePilotState MakeDefaultPilot(int index)
+        {
+            return new SProfilePilotState()
+            {
+                Pilot = index == 0 ? "Kazuki" : "Rabbit",
+                AbilityUnlocked0 = false,
+                AbilityUnlocked1 = false,
+                AbilityUnlocked2 = false,
+                Score = 0,
+                Money = 5000,
+                ChassisType = "BasicShip",
+                GeneratorType = "BasicGenerator",
+                ShieldType = "BasicShield",
+                WeaponPrimaryType = "FrontLaser",
+                WeaponPrimaryLevel = 1,
+                WeaponSecondaryType = "",
+                WeaponSecondaryLevel = 0,
+                WeaponSidekickLeftType = "",
+                WeaponSidekickLeftLevel = 0,
+                WeaponSidekickRightType = "",
+                WeaponSidekickRightLevel = 0,
+            };
+        }
     }
 
     // single xbox user profile
@@ -51,7 +75,7 @@ namespace Galaxy
         public int Version;
         public string Name;
         public bool[] HasClearedGame; // per-pilot
-        public SProfileGameData Game;
+        public SProfileGameData[] Game;
     }
 
     // all profiles save data
@@ -101,48 +125,21 @@ namespace Galaxy
                 Version = SProfile.CurrentVersion,
                 Name = name,
                 HasClearedGame = new bool[] { false, false, false, false },
-                Game = new SProfileGameData() {
-                    Stage = "Start",
-                    Players = 1,
-                    Difficulty = 1,
-                    Pilots = new SProfilePilotState[] {
-                        new SProfilePilotState() {
-                            Pilot = "Kazuki",
-                            AbilityUnlocked0 = false,
-                            AbilityUnlocked1 = false,
-                            AbilityUnlocked2 = false,
-                            Score = 0,
-                            Money = 5000,
-                            ChassisType = "BasicShip",
-                            GeneratorType = "BasicGenerator",
-                            ShieldType = "BasicShield",
-                            WeaponPrimaryType = "FrontLaser",
-                            WeaponPrimaryLevel = 1,
-                            WeaponSecondaryType = "",
-                            WeaponSecondaryLevel = 0,
-                            WeaponSidekickLeftType = "",
-                            WeaponSidekickLeftLevel = 0,
-                            WeaponSidekickRightType = "",
-                            WeaponSidekickRightLevel = 0,
+                Game = new SProfileGameData[2] {
+                    new SProfileGameData() {
+                        Stage = "",
+                        Difficulty = 1,
+                        Pilots = new SProfilePilotState[] {
+                            SProfilePilotState.MakeDefaultPilot(0),
+                            SProfilePilotState.MakeDefaultPilot(1),
                         },
-                        new SProfilePilotState() {
-                            Pilot = "Rabbit",
-                            AbilityUnlocked0 = false,
-                            AbilityUnlocked1 = false,
-                            AbilityUnlocked2 = false,
-                            Score = 0,
-                            Money = 5000,
-                            ChassisType = "BasicShip",
-                            GeneratorType = "BasicGenerator",
-                            ShieldType = "BasicShield",
-                            WeaponPrimaryType = "FrontLaser",
-                            WeaponPrimaryLevel = 1,
-                            WeaponSecondaryType = "",
-                            WeaponSecondaryLevel = 0,
-                            WeaponSidekickLeftType = "",
-                            WeaponSidekickLeftLevel = 0,
-                            WeaponSidekickRightType = "",
-                            WeaponSidekickRightLevel = 0,
+                    },
+                    new SProfileGameData() {
+                        Stage = "",
+                        Difficulty = 1,
+                        Pilots = new SProfilePilotState[] {
+                            SProfilePilotState.MakeDefaultPilot(0),
+                            SProfilePilotState.MakeDefaultPilot(1),
                         },
                     },
                 },
@@ -169,6 +166,19 @@ namespace Galaxy
             }
 
             return new SProfile();
+        }
+
+        public static SProfileGameData GetCurrentGameData(CGalaxy game)
+        {
+            foreach (SProfile profile in SaveData.Profiles)
+            {
+                if (profile.Name == SaveData.CurrentProfile)
+                {
+                    return profile.Game[game.PlayersInGame - 1];
+                }
+            }
+
+            return new SProfileGameData();
         }
 
         public static void AddNewProfile(string name)

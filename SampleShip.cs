@@ -2,6 +2,7 @@
 // SampleShip.cs
 //
 
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +21,13 @@ namespace Galaxy
         {
             Game = game;
             World = world;
-            Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[(int)game_controller_index], game_controller_index);
+
+            // NOTE: too confusing as to what is being shown
+            //int controllers = Game.Input.CountConnectedControllers();
+            //SProfileGameData profile = CSaveData.GetCurrentProfile().Game[controllers - 1];
+            //Ship = CShipFactory.GenerateShip(World, profile.Pilots[(int)game_controller_index], game_controller_index);
+
+            Ship = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("sample").Game[0].Pilots[(int)game_controller_index], game_controller_index);
             Ship.Physics.Position = position;
         }
 

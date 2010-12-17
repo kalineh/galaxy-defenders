@@ -82,7 +82,7 @@ namespace Galaxy
         private void SelectDifficulty(object tag)
         {
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
+            profile.Game[Game.PlayersInGame - 1].Difficulty = (int)((CDifficulty.DifficultyLevel)tag);
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
         }

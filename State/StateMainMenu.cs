@@ -17,6 +17,8 @@ namespace Galaxy
         public Texture2D TitleTexture { get; set; }
         private CWorld EmptyWorld { get; set; }
         public CMenu Menu { get; set; }
+        public CMenu MenuMain { get; set; }
+        public CMenu MenuNewGameContinue { get; set; }
         public CSampleShipManager SampleShipManager { get; set; }
 
         public CStateMainMenu(CGalaxy game)
@@ -24,18 +26,31 @@ namespace Galaxy
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
             EmptyWorld = new CWorld(game, null);
-            Menu = new CMenu(game)
+            MenuMain = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.MenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Solo Game", Select = NewGame1P },
-                    new CMenu.MenuOption() { Text = "Coop Game", Select = NewGame2P, SelectValidate = CheckPlayers2P },
+                    new CMenu.MenuOption() { Text = "Solo Game", Select = GotoNewGameContinue, Data = 1 },
+                    new CMenu.MenuOption() { Text = "Coop Game", Select = GotoNewGameContinue, SelectValidate = CheckPlayers2P, Data = 2 },
                     new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 },
             };
 
-            // must wait for controllers to start
+            MenuNewGameContinue = new CMenu(game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.MenuOption>()
+                {
+                    new CMenu.MenuOption() { Text = "Continue", Select = ContinueGame, SelectValidate = CheckContinue },
+                    new CMenu.MenuOption() { Text = "New Game", Select = NewGame },
+                    new CMenu.MenuOption() { Text = "Back", CancelOption = true, Select = BackToMainMenu, PanelType = CMenu.PanelType.Small, },
+                },
+            };
+
+            Menu = MenuMain;
+
+            // must wait for savedata/controllers to show main menu
             Menu.Visible = false;
 
             SampleShipManager = new CSampleShipManager(EmptyWorld);
@@ -43,8 +58,15 @@ namespace Galaxy
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
+            Game.HudManager.ActivatePressStart();
+
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Title");
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
         }
 
         public override void Update()
@@ -107,8 +129,11 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
         }
 
-        private void NewGame1P(object tag)
+        private void GotoNewGameContinue(object tag)
         {
+            Game.PlayersInGame = (int)tag;
+            Menu = MenuNewGameContinue;
+
 #if XBOX360
             // handled in Guide.cs
 #else
@@ -116,32 +141,39 @@ namespace Galaxy
             CSaveData.AddNewProfile(username);
             CSaveData.SetCurrentProfile(username);
 #endif
+        }
 
+        private void NewGame(object tag)
+        {
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Players = 1;
+            profile.Game[Game.PlayersInGame - 1].Stage = "Start";
+            profile.Game[Game.PlayersInGame - 1].Pilots = new SProfilePilotState[2] {
+                SProfilePilotState.MakeDefaultPilot(0),
+                SProfilePilotState.MakeDefaultPilot(1),
+            };
             CSaveData.SetCurrentProfileData(profile);
             Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
         }
 
-        private void NewGame2P(object tag)
+        private void ContinueGame(object tag)
         {
-#if XBOX360
-            // handled in Guide.cs
-#else
-            string username = "galaxy";
-            CSaveData.AddNewProfile(username);
-            CSaveData.SetCurrentProfile(username);
-#endif
-
-            SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game.Players = 2;
-            CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
+            Game.HudManager.LockHuds();
+            Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
         }
 
         private bool CheckPlayers2P(object tag)
         {
             return Game.Input.CountConnectedControllers() > 1;
+        }
+
+        private bool CheckContinue(object tag)
+        {
+            return CSaveData.GetCurrentGameData(Game).Stage != "";
+        }
+
+        private void BackToMainMenu(object tag)
+        {
+            Menu = MenuMain;    
         }
 
         private void QuitGame(object tag)
