@@ -22,12 +22,12 @@ namespace Galaxy
             new Color(195, 150, 255, 255),
         };
 
-        public static Color GetPlayerColor(PlayerIndex index)
+        public static Color GetPlayerColor(GameControllerIndex index)
         {
             return PlayerColors[(int)index];
         }
 
-        public PlayerIndex PlayerIndex { get; set; }
+        public GameControllerIndex GameControllerIndex { get; set; }
         public Color PlayerColor { get; set; }
 
         public CChassisPart Chassis { get; set; }
@@ -64,7 +64,7 @@ namespace Galaxy
 
         public void Initialize(
             CWorld world,
-            PlayerIndex index,
+            GameControllerIndex index,
             CPilot pilot,
             CChassisPart chassis,
             CGeneratorPart generator,
@@ -77,8 +77,8 @@ namespace Galaxy
         {
             base.Initialize(world);
 
-            PlayerIndex = index;
-            PlayerColor = GetPlayerColor(PlayerIndex);
+            GameControllerIndex = index;
+            PlayerColor = GetPlayerColor(GameControllerIndex);
 
             Pilot = pilot;
             Pilot.Ship = this;
@@ -159,8 +159,9 @@ namespace Galaxy
                 );
             }
 
-            GamePad.SetVibration(PlayerIndex, Vibrate, Vibrate);
-            Vibrate = Math.Max(0.0f, Vibrate - 0.1f);
+            // TODO: player index/controller index; move to Input.cs
+            //GamePad.SetVibration(GameControllerIndex, Vibrate, Vibrate);
+            //Vibrate = Math.Max(0.0f, Vibrate - 0.1f);
         }
 
         public override void UpdateCollision()
@@ -209,7 +210,7 @@ namespace Galaxy
 
         public Vector2 GetInputVector()
         {
-            GamePadState state = GamePad.GetState(PlayerIndex);
+            GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
@@ -221,7 +222,7 @@ namespace Galaxy
             if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left)) { force.X -= Speed; }
             if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right)) { force.X += Speed; }
 
-            force += GamePad.GetState(PlayerIndex).ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
+            force += state.ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
 
             if (force.LengthSquared() > 0.0f)
                 force = force.Normal() * Math.Min(force.Length(), Speed);
@@ -236,7 +237,7 @@ namespace Galaxy
                 return;
 
             // TODO: entity/physics input controller?
-            GamePadState state = GamePad.GetState(PlayerIndex);
+            GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.Threading;
 using System;
@@ -38,7 +39,6 @@ namespace Galaxy
 #endif
 
             Content.RootDirectory = "Content";
-
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
 
             // TODO: this needs to be done so we have a valid device by the time we get to Initialize()
@@ -54,9 +54,7 @@ namespace Galaxy
             GraphicsDeviceManager.ApplyChanges();
 
 #if XBOX360
-            // user management
-            // note: this is games for windows live when run on PC
-            //Components.Add(new GamerServicesComponent(this));
+            Components.Add(new GamerServicesComponent(this));
 #endif
 
             Debug = new CDebug(this);
@@ -136,6 +134,11 @@ namespace Galaxy
             base.Initialize();
         }
 
+        public void StorageCallback()
+        {
+            
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -146,6 +149,26 @@ namespace Galaxy
             DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
             DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
+
+#if XBOX360
+            GuideUtil.StorageDeviceResult = Guide.BeginShowStorageDeviceSelector(null, null);
+
+            while (!GuideUtil.StorageDeviceResult.IsCompleted)
+            {
+                Thread.Sleep(50);    
+            }
+
+            // Retrieve selected storage device.
+            GuideUtil.StorageDevice = Guide.EndShowStorageDeviceSelector(GuideUtil.StorageDeviceResult);
+            if (GuideUtil.StorageDevice == null)
+            {
+                Guide.BeginShowMessageBox("Unable To Save", "Storage device selection was cancelled.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Alert, null, null);
+            }
+            else if (GuideUtil.StorageDevice.IsConnected == false)
+            {
+                Guide.BeginShowMessageBox("Unable To Save", "Storage device is not connected.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Warning, null, null);
+            }
+#endif
 
             // Import profiles.
             CSaveData.VerifyProfilesExist();
@@ -183,12 +206,11 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime game_time)
         {
+            Input.Update();
+
             State.Update();
             HudManager.Update();
 
-            GamePadState input = GamePad.GetState(PlayerIndex.One);
-
-            Input.Update();
             CAudio.Update();
             FrameRateDisplay.Update(game_time);
 

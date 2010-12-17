@@ -53,11 +53,11 @@
  * + Pyramid
  * + Black Hole
  * + Glob
- * - Swirl
+ * + Swirl
  * - Dango
- * - Cannon
- * - Splitter
- * - Teleporter
+ * + Cannon
+ * + Splitter
+ * + Teleporter
  * 
  * BOSSES
  * - FlyingOverCarrier

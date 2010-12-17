@@ -113,7 +113,7 @@ namespace Galaxy
             if (!Visible)
                 return;
 
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressed(GameControllerIndex.One))
             {
                 foreach (MenuOption cancel_option in VisibleMenuOptions)
                 {
@@ -146,13 +146,13 @@ namespace Galaxy
                 option.Axis(option.Data, option.AxisValue);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressed(GameControllerIndex.One))
             {
                 CAudio.PlaySound("MenuSelect");
                 option.Select(option.Data);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressed(GameControllerIndex.One))
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -164,7 +164,7 @@ namespace Galaxy
                     option.AxisValue += 1;
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressed(GameControllerIndex.One))
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -254,13 +254,13 @@ namespace Galaxy
         public int GetCursorInputOffset()
         {
             int offset = 0;
-            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressed(GameControllerIndex.One))
             {
                 offset += 1;
                 while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
                     offset += 1;
             }
-            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed(PlayerIndex.One))
+            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressed(GameControllerIndex.One))
             {
                 offset -= 1;
                 while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))

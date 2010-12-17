@@ -3,14 +3,15 @@
 //
 
 using System;
+using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
 
 namespace Galaxy
 {
-    public class CGuide
+    public class GuideUtil
     {
-        // TODO: handle sign in
-        // TODO: handle sign out
+        public static IAsyncResult StorageDeviceResult { get; set; }
+        public static StorageDevice StorageDevice { get; set; }
     }
 }

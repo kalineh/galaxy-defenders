@@ -603,7 +603,7 @@ namespace Galaxy
 
         public void RecreateSampleShip()
         {
-            SampleShip = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[0], PlayerIndex.One);
+            SampleShip = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game.Pilots[0], GameControllerIndex.One);
             World.EntityAdd(SampleShip);
         }
     }

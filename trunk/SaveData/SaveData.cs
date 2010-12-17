@@ -218,48 +218,14 @@ namespace Galaxy
         private static void ImportImpl(out SSaveData data, string filename)
         {
 #if XBOX360
-            data = new SSaveData();
-            return;
+            if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
+            {
+                data = new SSaveData();
+                data.Profiles.Add(CreateDefaultProfile("default"));
+                return;
+            }
+#endif
 
-            /*
-            // TODO: proper save data!
-            data = new SSaveData();
-            data.Profiles = new List<SProfile>() { CreateDefaultProfile("Default") };
-            data.CurrentProfile = "Default";
-
-            // TODO: profile loading import
-            // TODO: remove debug data when load/save is fixed on 360
-            data.Profiles = new List<SProfile>() {
-                new SProfile()
-                {
-                    Version = SProfile.CurrentVersion,
-                    Name = "Default",
-                    Pilot = "Kazuki",
-                    HasClearedGame = false,
-                    Money = 5000,
-                    Ability0 = false,
-                    Ability1 = false,
-                    Ability2 = false,
-                    Difficulty = 1,
-                    CurrentStage = "Start",
-                    ChassisType = "BasicShip",
-                    GeneratorType = "BasicGenerator",
-                    ShieldType = "BasicShield",
-                    WeaponPrimaryType = "FrontLaser",
-                    WeaponPrimaryLevel = 1,
-                    WeaponSecondaryType = "",
-                    WeaponSecondaryLevel = 0,
-                    WeaponSidekickLeftType = "",
-                    WeaponSidekickLeftLevel = 0,
-                    WeaponSidekickRightType = "",
-                    WeaponSidekickRightLevel = 0
-                }
-            };
-            // end debug
-
-            return;
-            */
-#else
             AccessMutex.WaitOne();
 
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
@@ -297,7 +263,6 @@ namespace Galaxy
             }
 
             AccessMutex.ReleaseMutex();
-#endif
         }
 
         private static void Export(SSaveData data, string filename)
@@ -311,7 +276,8 @@ namespace Galaxy
         private static void ExportImpl(SSaveData data, string filename)
         {
 #if XBOX360
-            return;
+            if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
+                return;
 #endif
 
             string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);

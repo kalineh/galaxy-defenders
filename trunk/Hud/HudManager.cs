@@ -19,12 +19,12 @@ namespace Galaxy
         {
             Game = game;
             Huds = new List<CHud>() {
-                new CHud(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
-                new CHud(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
+                new CHud(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.One),
+                new CHud(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.Two),
             };
             HudsProfileSelect = new List<HudPilotSelect>() {
-                new HudPilotSelect(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.One),
-                new HudPilotSelect(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), PlayerIndex.Two),
+                new HudPilotSelect(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.One),
+                new HudPilotSelect(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.Two),
             };
         }
 
@@ -40,6 +40,12 @@ namespace Galaxy
             DrawHuds();
             DrawHudsProfileSelect();
             Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
+        }
+
+        public void ActivatePressStart()
+        {
+            foreach (HudPilotSelect hud in HudsProfileSelect)
+                hud.PressStart();
         }
 
         public void ActivatePilotSelect()

@@ -14,7 +14,7 @@ namespace Galaxy
 {
     public class HudPilotSelect
     {
-        public PlayerIndex PlayerIndex { get; set; }
+        public GameControllerIndex GameControllerIndex { get; set; }
         public CGalaxy Game { get; set; }
         public string NameText { get; set; }
         public string MoneyText { get; set; }
@@ -46,24 +46,23 @@ namespace Galaxy
 
         public enum EState
         {
-            Inactive, // no player
-            Active,   // selecting profile
-            Locked,   // profile selected
+            PressStart, // display press start
+            Inactive,   // no player
+            Active,     // selecting profile
+            Locked,     // profile selected
         }
         public EState State { get; set; }
 
-        public HudPilotSelect(CGalaxy game, Vector2 base_position, PlayerIndex player_index)
+        public HudPilotSelect(CGalaxy game, Vector2 base_position, GameControllerIndex game_controller_index)
         {
-            PlayerIndex = player_index;
+            GameControllerIndex = game_controller_index;
             Game = game;
             BasePosition = base_position;
-
-            StartKey = player_index == PlayerIndex.One ? Keys.F1 : Keys.F2;
 
             NameText = "Profile";
             MoneyText = null;
 
-            Cursor = (int)PlayerIndex;
+            Cursor = (int)GameControllerIndex;
 
             LeftPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
             RightPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
@@ -111,21 +110,28 @@ namespace Galaxy
         {
             switch (State)
             {
+                case EState.PressStart:
+                    if (Game.Input.PollGameControllerConnected(GameControllerIndex))
+                    {
+                        State = EState.Inactive;
+                    }
+                    break;
+
                 case EState.Inactive:
                     break;
 
                 case EState.Active:
                     // TODO: up/down control for profile select
-                    if (Game.Input.IsPadConfirmPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
+                    if (Game.Input.IsPadConfirmPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
                     {
                         Lock();
                     }
 
                     PortraitIconVisuals[Cursor].Scale = Vector2.One;
 
-                    int other_player = PlayerIndex == PlayerIndex.One ? 1 : 0;
+                    int other_player = GameControllerIndex == GameControllerIndex.One ? 1 : 0;
                     int other_cursor = Game.HudManager.HudsProfileSelect[other_player].Cursor;
-                    if (Game.Input.IsPadUpPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Up))
+                    if (Game.Input.IsPadUpPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Up))
                     {
                         int next_valid = Cursor;
 
@@ -141,7 +147,7 @@ namespace Galaxy
                         Cursor = next_valid;
                     }
 
-                    if (Game.Input.IsPadDownPressed(PlayerIndex) || Game.Input.IsKeyPressed(Keys.Down))
+                    if (Game.Input.IsPadDownPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Down))
                     {
                         int next_valid = Cursor;
 
@@ -162,9 +168,9 @@ namespace Galaxy
 
                 case EState.Locked:
                     // NOTE: no more disabling mid-game
-                    //if (Game.Input.IsPadStartPressed(PlayerIndex) || Game.Input.IsKeyPressed(StartKey))
+                    //if (Game.Input.IsPadStartPressed(GameControllerIndex) || Game.Input.IsKeyPressed(StartKey))
                     //{
-                        //Game.HudManager.ToggleProfileActive(PlayerIndex);
+                        //Game.HudManager.ToggleProfileActive(GameControllerIndex);
                         //State = EState.Inactive;
                     //}
                     break;
@@ -199,6 +205,11 @@ namespace Galaxy
             sprite_batch.DrawString(Game.DefaultFont, String.Format("todo"), new Vector2(8.0f, 1020.0f), Color.White);
         }
 
+        public void PressStart()
+        {
+            State = EState.PressStart;
+        }
+
         public void Deactivate()
         {
             State = EState.Inactive;    
@@ -225,8 +236,8 @@ namespace Galaxy
                     break;
             }
 
-            CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot = pilot;
-            Game.HudManager.Huds[(int)PlayerIndex].UpdatePilot();
+            CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot = pilot;
+            Game.HudManager.Huds[(int)GameControllerIndex].UpdatePilot();
         }
     }
 }

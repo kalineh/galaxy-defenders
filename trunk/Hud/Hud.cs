@@ -13,7 +13,7 @@ namespace Galaxy
 {
     public class CHud
     {
-        public PlayerIndex PlayerIndex { get; set; }
+        public GameControllerIndex GameControllerIndex { get; set; }
         public CGalaxy Game { get; set; }
         public CShip Ship { get; set; }
         public string NameText { get; set; }
@@ -64,9 +64,9 @@ namespace Galaxy
         private string CachedMoneyString { get; set; }
         private int LastMoney { get; set; }
 
-        public CHud(CGalaxy game, Vector2 base_position, PlayerIndex player_index)
+        public CHud(CGalaxy game, Vector2 base_position, GameControllerIndex game_controller_index)
         {
-            PlayerIndex = player_index;
+            GameControllerIndex = game_controller_index;
             Game = game;
             BasePosition = base_position;
 
@@ -162,7 +162,7 @@ namespace Galaxy
 
         public void Update()
         {
-            if (!Game.HudManager.IsPilotSelectComplete((int)PlayerIndex))
+            if (!Game.HudManager.IsPilotSelectComplete((int)GameControllerIndex))
                 return;
 
             if (Ship == null)
@@ -205,7 +205,7 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
-            if (PlayerIndex == PlayerIndex.One)
+            if (GameControllerIndex == GameControllerIndex.One)
             {
                 LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
             }
@@ -214,10 +214,10 @@ namespace Galaxy
                 RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
             }
 
-            if (!Game.HudManager.IsPilotSelectComplete((int)PlayerIndex))
+            if (!Game.HudManager.IsPilotSelectComplete((int)GameControllerIndex))
                 return;
 
-            if (PlayerIndex == PlayerIndex.One)
+            if (GameControllerIndex == GameControllerIndex.One)
             {
                 LeftPanelFramesVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
             }
@@ -255,7 +255,7 @@ namespace Galaxy
 
             // TODO: not copy the profile around so much
             SProfile profile = CSaveData.GetCurrentProfile();
-            int money = profile.Game.Pilots[(int)PlayerIndex].Money;
+            int money = profile.Game.Pilots[(int)GameControllerIndex].Money;
 
             // TODO: score needs to be maintained across secret stages?
             // add current stage score if valid
@@ -286,12 +286,12 @@ namespace Galaxy
 
         public void UpdatePilot()
         {
-            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot + "Portrait");
+            PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot + "Portrait");
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
-            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)PlayerIndex].Pilot, 2) + "Icon");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(CSaveData.GetCurrentProfile().Game.Pilots[(int)GameControllerIndex].Pilot, 2) + "Icon");
             Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
