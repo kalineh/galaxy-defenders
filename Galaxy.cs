@@ -151,28 +151,13 @@ namespace Galaxy
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
 #if XBOX360
-            GuideUtil.StorageDeviceResult = Guide.BeginShowStorageDeviceSelector(null, null);
-
-            while (!GuideUtil.StorageDeviceResult.IsCompleted)
-            {
-                Thread.Sleep(50);    
-            }
-
-            // Retrieve selected storage device.
-            GuideUtil.StorageDevice = Guide.EndShowStorageDeviceSelector(GuideUtil.StorageDeviceResult);
-            if (GuideUtil.StorageDevice == null)
-            {
-                Guide.BeginShowMessageBox("Unable To Save", "Storage device selection was cancelled.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Alert, null, null);
-            }
-            else if (GuideUtil.StorageDevice.IsConnected == false)
-            {
-                Guide.BeginShowMessageBox("Unable To Save", "Storage device is not connected.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Warning, null, null);
-            }
-#endif
-
-            // Import profiles.
-            CSaveData.VerifyProfilesExist();
+            SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
+            GuideUtil.Game = this;
+            GuideUtil.Start();
+#else
             CSaveData.Load();
+            GuideUtil.StorageDeviceReady = true;
+#endif
 
             // Frame rate display.
             FrameRateDisplay = new CFrameRateDisplay(this);
@@ -269,6 +254,13 @@ namespace Galaxy
                 return (State as CStateGame).World.GameCamera;
 
             return null;
+        }
+
+        private void OnGamerSignOut(object sender, SignedOutEventArgs args)
+        {
+            HudManager = new CHudManager(this);
+            State = new CStateMainMenu(this);
+            GC.Collect();
         }
     }
 }

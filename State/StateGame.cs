@@ -46,10 +46,6 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressedAny())
             {
-                // TODO: is this a good place?
-                // TODO: dont want to save here? this should be a cancel, not a save-quit
-                //CSaveData.Save();
-
                 CAudio.StopMusic();
                 Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
             }
