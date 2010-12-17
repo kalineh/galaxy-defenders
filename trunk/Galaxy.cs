@@ -29,10 +29,10 @@ namespace Galaxy
         public Vector2 PlayerSpawnPosition { get; set; }
         public bool EditorMode { get; set; }
         public CHudManager HudManager { get; set; }
+        public int PlayersInGame { get; set; }
 
         public CGalaxy()
         {
-
 #if XBOX360
             // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
             this.IsFixedTimeStep = false;

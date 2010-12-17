@@ -24,8 +24,9 @@ namespace Galaxy
         {
             get { return _HealthMax; }
             set
-            { 
-                _HealthMax = value * CDifficulty.HealthScale[CSaveData.GetCurrentProfile().Game.Difficulty];
+            {
+                int difficulty = CSaveData.GetCurrentGameData(World.Game).Difficulty;
+                _HealthMax = value * CDifficulty.HealthScale[difficulty];
                 Health = _HealthMax;
             }
         }
@@ -171,8 +172,9 @@ namespace Galaxy
 
         private int CalculateScoreFromHealth()
         {
+            int difficulty = CSaveData.GetCurrentGameData(World.Game).Difficulty;
             float s = (float)BaseScore * HealthMax;
-            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentProfile().Game.Difficulty];
+            float d = s * CDifficulty.MoneyScale[difficulty];
             int score = (int)d;
             return score - score % 10;
         }
