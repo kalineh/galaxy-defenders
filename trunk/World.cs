@@ -82,7 +82,7 @@ namespace Galaxy
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame },
+                    new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame, CancelOption = true },
                     new CMenu.CMenuOption() { Text = "Options", Select = OptionsMenu },
                     new CMenu.CMenuOption() { Text = "Quit", Select = GotoQuitConfirm, PanelType = CMenu.PanelType.Small },
                 },
@@ -95,7 +95,7 @@ namespace Galaxy
                 {
                     // looks kind of crap
                     //new CMenu.CMenuOption() { Text = " * Quit To Menu? *", SelectValidate = (tag) => { return false; }, PanelType = CMenu.PanelType.None },
-                    new CMenu.CMenuOption() { Text = "Cancel", Select = BackToMainPauseMenu },
+                    new CMenu.CMenuOption() { Text = "Cancel", Select = BackToMainPauseMenu, CancelOption = true },
                     new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small },
                 },
             };
@@ -266,10 +266,12 @@ namespace Galaxy
             if (StageEnd)
                 return;
 
-            if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P))
+            if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P) || Game.Input.IsKeyPressed(Keys.Escape))
             {
                 DebugPaused = false;
                 Paused = !Paused;      
+                if (!Paused)
+                    ResumeGame(null);
             }
 
             if (Game.Input.IsKeyPressed(Keys.T))
@@ -589,7 +591,6 @@ namespace Galaxy
                     Game.DefaultSpriteBatch.Begin();
                     Vector2 pause_text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, Game.GraphicsDevice.Viewport.Height / 2.0f - 250.0f);
                     Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(0, 0, 0, 92));
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Paused", pause_text_position, Color.White, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
                     PauseMenu.Draw(Game.DefaultSpriteBatch);
                     Game.DefaultSpriteBatch.End();
                 }
