@@ -57,6 +57,8 @@ namespace Galaxy
         public CMenu PauseMenuBase { get; set; }
         public CMenu PauseMenuQuitConfirm { get; set; }
         public COptionsMenu PauseMenuOptions { get; set; }
+        public int GameOverCounter { get; set; }
+        public CFader GameOverFader { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -73,6 +75,7 @@ namespace Galaxy
             ParticleEffects = new CParticleEffectManager(this);
             StageEndText = new List<string>();
             StageEndAwardText = new List<string>();
+            GameOverCounter = -1;
 
             PauseMenuBase = new CMenu(Game)
             {
@@ -214,6 +217,8 @@ namespace Galaxy
                 UpdatePauseInput();
                 return;
             }
+
+            CheckGameOverConditions();
 
             Stage.Update();
             BackgroundScenery.Update();
@@ -514,6 +519,13 @@ namespace Galaxy
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
             DrawForeground(GameCamera);
+
+            if (GameOverFader != null)
+            {
+                Game.DefaultSpriteBatch.Begin();
+                GameOverFader.Draw(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
+            }
 
             if (StageEndFader != null)
             {
@@ -903,6 +915,30 @@ namespace Galaxy
             EntitiesToDelete.Clear();
         }
 
+        private void CheckGameOverConditions()
+        {
+            if (ShipEntitiesCache.Count == 0)
+            {
+                if (GameOverCounter == -1)
+                {
+                    GameOverCounter = 180;
+                    GameOverFader = new CFader(Game);
+                    // TODO: game over song
+                    //CAudio.PlayMusic("GameOver")
+                }
+
+                GameOverCounter -= 1;
+                if (GameOverCounter == 0)
+                    GotoLobby();
+            }
+
+            if (GameOverFader != null)
+            {
+                GameOverFader.Update();
+                GameOverFader.StopAtHalfFadeOut();
+            }
+        }
+
         private void SaveAndExit()
         {
             // TODO: is this a good place to add score to money?
@@ -930,7 +966,7 @@ namespace Galaxy
             profile.Game[players_index].Stage = Stage.Definition.Name;
 
             CSaveData.SetCurrentProfileData(profile);
-            CSaveData.Save();
+            CSaveData.SaveRequest();
         }
 
         private void GotoLobby()

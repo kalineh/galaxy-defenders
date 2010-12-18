@@ -30,6 +30,7 @@ namespace Galaxy
         public bool EditorMode { get; set; }
         public CHudManager HudManager { get; set; }
         public int PlayersInGame { get; set; }
+        public CVisual SaveIcon { get; set; }
 
         public CGalaxy()
         {
@@ -73,6 +74,9 @@ namespace Galaxy
         {
             if (State != null)
                 State.OnExit();
+
+            CAudio.StopMusic();
+            CSaveData.StopSaveThread();
 
             base.OnExiting(sender, args);
         }
@@ -164,11 +168,17 @@ namespace Galaxy
             GuideUtil.StorageDeviceReady = true;
 #endif
 
+            // Save thread.
+            CSaveData.StartSaveThread();
+
             // Frame rate display.
             FrameRateDisplay = new CFrameRateDisplay(this);
 
             // Menu textures.
             CMenu.LoadMenuTextures(this);
+
+            // Save Icon
+            SaveIcon = CVisual.MakeSpriteUncached(this, "Textures/UI/SaveIcon");
 
             // Hud management.
             HudManager = new CHudManager(this);
@@ -184,9 +194,9 @@ namespace Galaxy
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-
             State.OnExit();
             CAudio.Shutdown();
+            CSaveData.StopSaveThread();
         }
 
         /// <summary>
@@ -226,6 +236,19 @@ namespace Galaxy
             HudManager.Draw();
 
             FrameRateDisplay.Draw(DefaultSpriteBatch);
+
+            if (CSaveData.SaveIconVisible)
+            {
+                DefaultSpriteBatch.Begin();
+                float step = 1.0f / 8.0f;
+                float rotation = step * ((GameFrame / 4) % 8);
+                // title safe area sucks :(
+                Vector2 position = new Vector2(520.0f, GraphicsDevice.Viewport.TitleSafeArea.Top + 38.0f);
+                //Vector2 position = new Vector2(520.0f, GraphicsDevice.Viewport.Top + 38.0f);
+                SaveIcon.Draw(DefaultSpriteBatch, position, rotation * MathHelper.TwoPi);
+                DefaultSpriteBatch.End();
+            }
+
             CDebugRender.Render(this);
 
             //while (GraphicsDevice.RasterStatus.InVerticalBlank)
