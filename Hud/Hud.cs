@@ -44,7 +44,7 @@ namespace Galaxy
         private CVisual Ability1IconVisual { get; set; }
         private CVisual Ability2IconVisual { get; set; }
 
-        private Vector2 BasePosition { get; set; }
+        public Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
         private Vector2 RightPanelPosition { get; set; }
         public Vector2 NameTextPosition { get; set; }

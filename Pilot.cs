@@ -108,6 +108,9 @@ namespace Galaxy
 
             Type type = Type.GetType("Galaxy.Pilots." + profile.Pilot);
             CPilot result = Activator.CreateInstance(type) as CPilot;
+            result.Ability0.HasPurchased = profile.AbilityUnlocked0;
+            result.Ability1.HasPurchased = profile.AbilityUnlocked1;
+            result.Ability2.HasPurchased = profile.AbilityUnlocked2;
             return result;
         }
     }

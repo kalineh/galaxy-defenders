@@ -416,9 +416,16 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin();
             Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(928.0f, 0.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
-            //DrawShipStats();
+
             DrawMoney();
             DrawMenuErrata();
+
+            //if (Game.PlayersInGame > 1)
+            //{
+                //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "L1", new Vector2(328.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+                //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "R1", new Vector2(1600.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+            //}
+
             Game.DefaultSpriteBatch.End();
         }
 
@@ -684,7 +691,13 @@ namespace Galaxy
                 "WELCOME TO SHOP",
                 "PURCHASE UPGRADES",
                 "AND TRAINING HERE",
+                "",
             };
+
+            if (Game.PlayersInGame > 1)
+            {
+                strings[3] = "L1/R1 TO CHANGE PLAYER";
+            }
 
             if (Menu == MenuUpgradeShip)
             {
@@ -745,9 +758,11 @@ namespace Galaxy
                 strings[2] = "NON-REFUNDABLE!";
             }
 
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[0], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 40.0f), new Vector2(512.0f, 64.0f), strings[0]), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[1], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 120.0f), new Vector2(512.0f, 64.0f), strings[1]), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[2], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 150.0f), new Vector2(512.0f, 64.0f), strings[2]), Color.White);
+            float offset = Game.PlayersInGame == 1 ? 20.0f : 0.0f;
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[0], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 30.0f + offset), new Vector2(512.0f, 64.0f), strings[0]), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[1], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 100.0f + offset), new Vector2(512.0f, 64.0f), strings[1]), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[2], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 130.0f + offset), new Vector2(512.0f, 64.0f), strings[2]), Color.White);
+            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[3], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 190.0f + offset), new Vector2(512.0f, 64.0f), strings[3]), Color.White);
         }
 
         private void StageSelect(object tag)
@@ -1247,7 +1262,7 @@ namespace Galaxy
         {
             string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
-            bool has_ability = (bool)field.GetValue(LockedProfile);
+            bool has_ability = (bool)field.GetValue(WorkingProfile);
             if (has_ability)
                 return;
 
@@ -1269,7 +1284,7 @@ namespace Galaxy
         {
             string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
-            bool has_ability = (bool)field.GetValue(LockedProfile);
+            bool has_ability = (bool)field.GetValue(WorkingProfile);
             if (has_ability)
                 return;
 
@@ -1285,11 +1300,11 @@ namespace Galaxy
 
         private bool ValidateAbility(object tag, SProfilePilotState profile)
         {
-            string ability_name = string.Format("Ability{0}", tag.ToString());
+            string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
             if (has_ability)
-                return true;
+                return false;
 
             // TODO: price cleanup
             int price = 10000 + (int)tag * 5000;
@@ -1306,8 +1321,8 @@ namespace Galaxy
 
         private bool HasAbilityWithLockedProfile(object tag)
         {
-            string ability_name = string.Format("Ability{0}", tag.ToString());
-            FieldInfo field = typeof(SProfile).GetField(ability_name);
+            string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
+            FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
             return has_ability;
         }
