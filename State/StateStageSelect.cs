@@ -27,7 +27,7 @@ namespace Galaxy
             Menu = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 350.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
@@ -43,30 +43,33 @@ namespace Galaxy
                     IEnumerable<Type> types_filtered = types.Where(t => selectable_stages.Contains(t.Name) == false);
                     foreach (Type type in types_filtered)
                     {
-                        Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name, PanelType = CMenu.PanelType.None });
+                        Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name, PanelType = CMenu.PanelType.None });
                     }
                 }
                 else
                 {
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
                 }
 #else // XBOX360
-                Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = stage, Select = StartGame, Data = stage });
+                if (stage != "*")
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
+#if DEBUG
                 // TODO: find a way to automate this on 360
                 if (stage == "*")
                 {
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* BonusStage1", Select = StartGame, Data = "BonusStage1" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
-                    Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* BonusStage1", Select = StartGame, Data = "BonusStage1" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
                 }
+#endif
 #endif
             }
 
-            Menu.MenuOptions.Add(new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small });
+            Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small });
             EmptyWorld.GameCamera.Position = Vector3.Zero;
             EmptyWorld.GameCamera.Update();
 
@@ -111,7 +114,7 @@ namespace Galaxy
 
         private void Back(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
         }
     }
 }

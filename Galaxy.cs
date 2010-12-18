@@ -156,6 +156,11 @@ namespace Galaxy
             GuideUtil.Start();
 #else
             CSaveData.Load();
+
+            SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
+            CAudio.SetSFXVolume(options.SFXVolume);
+            CAudio.SetMusicVolume(options.MusicVolume);
+
             GuideUtil.StorageDeviceReady = true;
 #endif
 

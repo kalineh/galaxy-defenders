@@ -30,6 +30,7 @@ namespace Galaxy
         public CParticleEffectManager ParticleEffects { get; set; }
         public Thread ParticleUpdateThread { get; set; }
         public bool Paused { get; set; }
+        public bool DebugPaused { get; set; }
         public bool WasStepped { get; set; }
         public bool StageEnd { get; set; }
         public int StageEndCounter { get; set; }
@@ -52,6 +53,9 @@ namespace Galaxy
         public Mutex CollisionMutex { get; set; }
         public bool CollisionThreadRun { get; set; }
         public volatile bool CollisionThreadTerminate;
+        public CMenu PauseMenu { get; set; }
+        public CMenu PauseMenuBase { get; set; }
+        public COptionsMenu PauseMenuOptions { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -68,6 +72,25 @@ namespace Galaxy
             ParticleEffects = new CParticleEffectManager(this);
             StageEndText = new List<string>();
             StageEndAwardText = new List<string>();
+
+            PauseMenuBase = new CMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame },
+                    new CMenu.CMenuOption() { Text = "Options", Select = OptionsMenu },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small },
+                },
+            };
+
+            PauseMenuOptions = new COptionsMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                OnBack = LeaveOptionsMenu,
+            };
+
+            PauseMenu = PauseMenuBase;
 
             if (stage_definition != null)
             {
@@ -161,11 +184,20 @@ namespace Galaxy
 
         public void Update()
         {
+            if (!Game.IsActive)
+            {
+                Paused = true;     
+            }
+
+            if (Paused && !DebugPaused)
+            {
+                PauseMenu.Update();
+            }
+
             if (Paused)
             {
                 // NOTE: hack! frame time should be on world?
                 Game.GameFrame -= 1;
-
                 UpdatePauseInput();
                 return;
             }
@@ -206,6 +238,7 @@ namespace Galaxy
             if (WasStepped)
             {
                 Paused = true;
+                DebugPaused = true;
                 WasStepped = false;
             }
         }
@@ -217,12 +250,14 @@ namespace Galaxy
 
             if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P))
             {
+                DebugPaused = false;
                 Paused = !Paused;      
             }
 
             if (Game.Input.IsKeyPressed(Keys.T))
             {
                 Paused = false;
+                DebugPaused = false;
                 WasStepped = true;
             }
         }
@@ -521,6 +556,19 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
             ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
+
+            if (Paused)
+            {
+                if (!DebugPaused)
+                {
+                    Game.DefaultSpriteBatch.Begin();
+                    Vector2 pause_text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, Game.GraphicsDevice.Viewport.Height / 2.0f - 250.0f);
+                    Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(0, 0, 0, 92));
+                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Paused", pause_text_position, Color.White, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+                    PauseMenu.Draw(Game.DefaultSpriteBatch);
+                    Game.DefaultSpriteBatch.End();
+                }
+            }
         }
 
         public void DrawBackground(CCamera camera)
@@ -874,7 +922,7 @@ namespace Galaxy
 
         private void GotoLobby()
         {
-            Game.State = new CStateFadeTo(Game, Game.State, new CStateStateShop(Game));
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
         }
 
         public void StartStageEnd()
@@ -914,6 +962,28 @@ namespace Galaxy
                 ship.Physics.Position = clamped_entry;
                 ship.Physics.Velocity = to_center.Normal() * 40.0f;
             }
+        }
+
+        public void ResumeGame(object tag)
+        {
+            Paused = false;    
+        }
+
+        public void QuitGame(object tag)
+        {
+            CAudio.StopMusic();
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
+        }
+
+        public void OptionsMenu(object tag)
+        {
+            PauseMenu = PauseMenuOptions;
+            PauseMenuOptions.RefreshVolumes();
+        }
+
+        public void LeaveOptionsMenu()
+        {
+            PauseMenu = PauseMenuBase;
         }
     }
 }

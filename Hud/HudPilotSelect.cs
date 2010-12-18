@@ -132,6 +132,11 @@ namespace Galaxy
 
                     int other_player = GameControllerIndex == GameControllerIndex.One ? 1 : 0;
                     int other_cursor = Game.HudManager.HudsProfileSelect[other_player].Cursor;
+
+                    // just force a value which will be skipped for 1p mode
+                    if (Game.PlayersInGame == 1)
+                        other_cursor = -1;
+
                     if (Game.Input.IsPadUpPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Up))
                     {
                         int next_valid = Cursor;
@@ -188,10 +193,19 @@ namespace Galaxy
                 case EState.Active:
                     Vector2 offset = new Vector2(0.0f, 210.0f);
                     Vector2 position = PortraitIconPosition;
+
+                    Vector2 text_offset = new Vector2(-120.0f, -240.0f);
+                    sprite_batch.DrawString(Game.DefaultFont, "Select Pilot", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
+
+                    int i = 0;
                     foreach (CVisual portrait in PortraitIconVisuals)
                     {
+                        if (i == Cursor)
+                            sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+
                         portrait.Draw(sprite_batch, position, 0.0f);
                         position += offset;
+                        i++;
                     }
 
                     break;

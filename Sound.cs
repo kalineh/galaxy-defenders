@@ -20,6 +20,13 @@ namespace Galaxy
 
         private static Cue CurrentMusic { get; set; }
 
+        private static AudioCategory SFXCategory { get; set; }
+        private static AudioCategory MusicCategory { get; set; }
+
+        // NOTE: no GetVolume in AudioCategory :(
+        private static float SFXVolume { get; set; }
+        private static float MusicVolume { get; set; }
+
         public static void Initialize()
         {
             AudioEngine = new AudioEngine("Content/XACT/galaxy.xgs");
@@ -31,11 +38,8 @@ namespace Galaxy
             // cannot play before first update, so just update in advance
             AudioEngine.Update();
 
-            AudioCategory sfx = AudioEngine.GetCategory("SFX");
-            AudioCategory music = AudioEngine.GetCategory("Music");
-
-            sfx.SetVolume(0.25f);
-            music.SetVolume(0.1f);
+            SFXCategory = AudioEngine.GetCategory("SFX");
+            MusicCategory = AudioEngine.GetCategory("Music");
         }
 
         public static void Update()
@@ -79,6 +83,28 @@ namespace Galaxy
 
             CurrentMusic.Stop(AudioStopOptions.AsAuthored);
             CurrentMusic = null;
+        }
+
+        public static void SetSFXVolume(float volume)
+        {
+            SFXVolume = volume;    
+            SFXCategory.SetVolume(volume);
+        }
+
+        public static void SetMusicVolume(float volume)
+        {
+            MusicVolume = volume;    
+            MusicCategory.SetVolume(volume);
+        }
+
+        public static float GetSFXVolume()
+        {
+            return SFXVolume;    
+        }
+
+        public static float GetMusicVolume()
+        {
+            return MusicVolume;    
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Galaxy
         public delegate void MenuHighlightFunction(object tag);
         public delegate void MenuAxisFunction(object tag, int axis);
         public delegate bool MenuAxisValidateFunction(object tag, int axis);
+        public delegate void MenuCustomRender(object tag, SpriteBatch sprite_batch, Vector2 position);
 
         public enum PanelType
         {
@@ -51,7 +52,7 @@ namespace Galaxy
             Small,
         };
 
-        public class MenuOption
+        public class CMenuOption
         {
             public string Text;
             public string SubText;
@@ -64,28 +65,30 @@ namespace Galaxy
             public MenuHighlightFunction Highlight;
             public MenuAxisFunction Axis;
             public MenuAxisValidateFunction AxisValidate;
+            public MenuCustomRender CustomRender;
             public bool CancelOption;
             public object Data;
             public int AxisValue;
             public bool Visible;
 
-            public MenuOption()
+            public CMenuOption()
             {
                 Select = (tag) => { };
                 SelectValidate = (tag) => { return true; };
                 Highlight = (tag) => { };
                 Axis = (tag, axis) => { };
                 AxisValidate = (tag, axis) => { return false; };
+                CustomRender = (tag, sprite_batch, position) => { };
                 PanelType = PanelType.Normal;
                 Visible = true;
             }
         }
-        public List<MenuOption> MenuOptions { get; set; }
-        public IEnumerable<MenuOption> VisibleMenuOptions
+        public List<CMenuOption> MenuOptions { get; set; }
+        public IEnumerable<CMenuOption> VisibleMenuOptions
         {
             get
             {
-                foreach (MenuOption option in MenuOptions)
+                foreach (CMenuOption option in MenuOptions)
                 {
                     if (!option.Visible)
                         continue;
@@ -103,7 +106,7 @@ namespace Galaxy
         {
             Game = game;
             Cursor = 0;
-            MenuOptions = new List<MenuOption>();
+            MenuOptions = new List<CMenuOption>();
             Position = Vector2.Zero;
             Visible = true;
         }
@@ -115,7 +118,7 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressedAny())
             {
-                foreach (MenuOption cancel_option in VisibleMenuOptions)
+                foreach (CMenuOption cancel_option in VisibleMenuOptions)
                 {
                     if (cancel_option.CancelOption)
                     {
@@ -136,7 +139,7 @@ namespace Galaxy
             if ((MenuOptions[Cursor] == null || MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data) == false))
                 MoveToFirstValid();
 
-            MenuOption option = MenuOptions[Cursor];
+            CMenuOption option = MenuOptions[Cursor];
 
             if (Cursor != previous)
             {
@@ -184,7 +187,7 @@ namespace Galaxy
 
             float Spacing = 40.0f;
             Vector2 position = Position;
-            foreach (MenuOption option in VisibleMenuOptions)
+            foreach (CMenuOption option in VisibleMenuOptions)
             {
                 if (option != null)
                 {
@@ -217,6 +220,8 @@ namespace Galaxy
                         sprite_batch.DrawString(Game.DefaultFont, option.Text, CenteredText(Game, position, size, option.Text) + new Vector2(+1.0f, +1.0f), Color.Black);
                         sprite_batch.DrawString(Game.DefaultFont, option.Text, CenteredText(Game, position, size, option.Text), color);
 
+                        option.CustomRender(option.Data, sprite_batch, position);
+
                         position += Vector2.UnitY * 26.0f;
                     }
                     else
@@ -238,6 +243,8 @@ namespace Galaxy
                             Color color = valid ? Color.White : Color.Gray;
                             sprite_batch.DrawString(Game.DefaultFont, option.Text, position, color);
                         }
+
+                        option.CustomRender(option.Data, sprite_batch, position);
 
                         if (option.SubText != null)
                         {
@@ -282,12 +289,12 @@ namespace Galaxy
 
         public void ForceRefresh()
         {
-            MenuOption option = MenuOptions[Cursor];
+            CMenuOption option = MenuOptions[Cursor];
             option.Highlight(option.Data);
             option.Axis(option.Data, option.AxisValue);
         }
 
-        public CVisual GetIcon(MenuOption option)
+        public CVisual GetIcon(CMenuOption option)
         {
             if (option.IconName == null)
                 return null;
@@ -298,7 +305,7 @@ namespace Galaxy
             return option.IconVisual;
         }
 
-        public void TryRenderMenuOption(MenuOption option, Vector2 position, SpriteBatch sprite_batch)
+        public void TryRenderMenuOption(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
         {
             CVisual icon = GetIcon(option);
             if (icon == null)

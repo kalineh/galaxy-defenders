@@ -67,6 +67,15 @@ namespace Galaxy
         }
     }
 
+    // profile options
+    [Serializable]
+    public struct SProfileOptionsData
+    {
+        public float SFXVolume;
+        public float MusicVolume;
+        //public int Language;
+    }
+
     // single xbox user profile
     [Serializable]
     public struct SProfile
@@ -76,6 +85,7 @@ namespace Galaxy
         public string Name;
         public bool[] HasClearedGame; // per-pilot
         public SProfileGameData[] Game;
+        public SProfileOptionsData Options;
     }
 
     // all profiles save data
@@ -142,6 +152,10 @@ namespace Galaxy
                             SProfilePilotState.MakeDefaultPilot(1),
                         },
                     },
+                },
+                Options = new SProfileOptionsData() {
+                    SFXVolume = 1.0f,
+                    MusicVolume = 1.0f,
                 },
             };
         }

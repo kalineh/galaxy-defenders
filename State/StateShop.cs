@@ -12,7 +12,7 @@ using System;
 
 namespace Galaxy
 {
-    public class CStateStateShop
+    public class CStateShop
         : CState
     {
         public CGalaxy Game { get; set; }
@@ -38,7 +38,7 @@ namespace Galaxy
         private CVisual ShopUpgradeBarsVisual { get; set; }
         private GameControllerIndex ShoppingPlayer { get; set; }
 
-        public CStateStateShop(CGalaxy game)
+        public CStateShop(CGalaxy game)
         {
             Game = game;
             EmptyWorld = new CWorld(game, null);
@@ -64,12 +64,12 @@ namespace Galaxy
             MenuBase = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
+                MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Play Next Stage", Select = StageSelect },
-                    new CMenu.MenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
-                    new CMenu.MenuOption() { Text = "Train Pilot", Select = TrainPilot },
-                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
+                    new CMenu.CMenuOption() { Text = "Play Next Stage", Select = StageSelect },
+                    new CMenu.CMenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
+                    new CMenu.CMenuOption() { Text = "Train Pilot", Select = TrainPilot },
+                    new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
 
@@ -79,18 +79,18 @@ namespace Galaxy
             MenuUpgradeShip = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
+                MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Chassis", Select = EditChassis },
-                    new CMenu.MenuOption() { Text = "Generator", Select = EditGenerator },
-                    new CMenu.MenuOption() { Text = "Shield", Select = EditShield },
-                    new CMenu.MenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon },
-                    new CMenu.MenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
-                    new CMenu.MenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
-                    new CMenu.MenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
-                    new CMenu.MenuOption() { Text = "* +10000$", Select = EditMoney, Data = 10000 },
-                    new CMenu.MenuOption() { Text = "* -10000$", Select = EditMoney, Data = -10000 },
-                    new CMenu.MenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
+                    new CMenu.CMenuOption() { Text = "Chassis", Select = EditChassis },
+                    new CMenu.CMenuOption() { Text = "Generator", Select = EditGenerator },
+                    new CMenu.CMenuOption() { Text = "Shield", Select = EditShield },
+                    new CMenu.CMenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon },
+                    new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
+                    new CMenu.CMenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
+                    new CMenu.CMenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
+                    new CMenu.CMenuOption() { Text = "* +10000$", Select = EditMoney, Data = 10000 },
+                    new CMenu.CMenuOption() { Text = "* -10000$", Select = EditMoney, Data = -10000 },
+                    new CMenu.CMenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
 
@@ -100,15 +100,15 @@ namespace Galaxy
             MenuTrainPilot = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             string pilot = GetShoppingPilotData().Pilot;
             for (int i = 0; i < 3; ++i)
             {
-                MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption() { Text = CAbility.GetAbilityName(pilot, i), Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = i, });
+                MenuTrainPilot.MenuOptions.Add(new CMenu.CMenuOption() { Text = CAbility.GetAbilityName(pilot, i), Select = TrainAbility, Highlight = HighlightAbility, SelectValidate = ValidateAbilityWithLockedProfile, Data = i, });
             }
-            MenuTrainPilot.MenuOptions.Add(new CMenu.MenuOption()
+            MenuTrainPilot.MenuOptions.Add(new CMenu.CMenuOption()
                                            {
                                                Text = "Done",
                                                Select = ReturnToBaseMenu,
@@ -123,7 +123,7 @@ namespace Galaxy
             MenuPrimaryWeapon = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
@@ -132,7 +132,7 @@ namespace Galaxy
             foreach (string weapon_part in primary_weapon_parts)
             {
                 MenuPrimaryWeapon.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
@@ -147,7 +147,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.MenuOption()
+            MenuPrimaryWeapon.MenuOptions.Add(new CMenu.CMenuOption()
                                               {
                                                   Text = "Done",
                                                   Select = ReturnToUpgradeShip,
@@ -162,10 +162,10 @@ namespace Galaxy
             MenuSecondaryWeapon = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
             IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct();
@@ -175,7 +175,7 @@ namespace Galaxy
                     continue;
 
                 MenuSecondaryWeapon.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
@@ -189,7 +189,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.MenuOption()
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption()
                                                 {
                                                     Text = "Done",
                                                     Select = ReturnToUpgradeShip,
@@ -204,10 +204,10 @@ namespace Galaxy
             MenuSidekickLeft = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickLeftType };
             IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct();
@@ -217,7 +217,7 @@ namespace Galaxy
                     continue;
 
                 MenuSidekickLeft.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
@@ -229,7 +229,7 @@ namespace Galaxy
                 );
             }
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.MenuOption()
+            MenuSidekickLeft.MenuOptions.Add(new CMenu.CMenuOption()
                                              {
                                                  Text = "Done",
                                                  Select = ReturnToUpgradeShip,
@@ -244,10 +244,10 @@ namespace Galaxy
             MenuSidekickRight = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
-            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
+            MenuSidekickRight.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
             IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickRightType };
             IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct();
@@ -257,7 +257,7 @@ namespace Galaxy
                     continue;
 
                 MenuSidekickRight.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
@@ -268,7 +268,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuSidekickRight.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
+            MenuSidekickRight.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Chassis
@@ -276,7 +276,7 @@ namespace Galaxy
             MenuChassis = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
@@ -285,7 +285,7 @@ namespace Galaxy
             foreach (string chassis_part in chassis_parts)
             {
                 MenuChassis.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = chassis_part,
                         SubText = "Cost: " + ChassisDefinitions.GetPart(chassis_part).Price,
@@ -296,7 +296,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuChassis.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
+            MenuChassis.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Generator
@@ -304,7 +304,7 @@ namespace Galaxy
             MenuGenerator = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
@@ -314,7 +314,7 @@ namespace Galaxy
             {
 
                 MenuGenerator.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = generator_part,
                         SubText = "Cost: " + GeneratorDefinitions.GetPart(generator_part).Price,
@@ -325,7 +325,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuGenerator.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
+            MenuGenerator.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Shield
@@ -333,7 +333,7 @@ namespace Galaxy
             MenuShield = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
-                MenuOptions = new List<CMenu.MenuOption>(),
+                MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
@@ -342,7 +342,7 @@ namespace Galaxy
             foreach (string shield_part in shield_parts)
             {
                 MenuShield.MenuOptions.Add(
-                    new CMenu.MenuOption()
+                    new CMenu.CMenuOption()
                     {
                         Text = shield_part,
                         SubText = "Cost: " + ShieldDefinitions.GetPart(shield_part).Price,
@@ -353,7 +353,7 @@ namespace Galaxy
                     }
                 );
             }
-            MenuShield.MenuOptions.Add(new CMenu.MenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
+            MenuShield.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
 
             Menu = MenuBase;
@@ -422,28 +422,28 @@ namespace Galaxy
         private void MenuUpdateHighlights()
         {
             if (Menu == MenuPrimaryWeapon)
-                foreach (CMenu.MenuOption option in MenuPrimaryWeapon.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuPrimaryWeapon.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponPrimaryType;
             if (Menu == MenuSecondaryWeapon)
-                foreach (CMenu.MenuOption option in MenuSecondaryWeapon.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuSecondaryWeapon.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSecondaryType;
             if (Menu == MenuSidekickLeft)
-                foreach (CMenu.MenuOption option in MenuSidekickLeft.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuSidekickLeft.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickLeftType;
             if (Menu == MenuSidekickRight)
-                foreach (CMenu.MenuOption option in MenuSidekickRight.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuSidekickRight.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickRightType;
             if (Menu == MenuChassis)
-                foreach (CMenu.MenuOption option in MenuChassis.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuChassis.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.ChassisType;
             if (Menu == MenuGenerator)
-                foreach (CMenu.MenuOption option in MenuGenerator.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuGenerator.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.GeneratorType;
             if (Menu == MenuShield)
-                foreach (CMenu.MenuOption option in MenuShield.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuShield.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.ShieldType;
             if (Menu == MenuTrainPilot)
-                foreach (CMenu.MenuOption option in MenuTrainPilot.MenuOptions)
+                foreach (CMenu.CMenuOption option in MenuTrainPilot.MenuOptions)
                     if (option.Data != null)
                         option.SpecialHighlight = HasAbilityWithLockedProfile(option.Data);
         }
@@ -555,7 +555,7 @@ namespace Galaxy
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType);
                 int level = WorkingProfile.WeaponPrimaryLevel;
 
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponPrimaryType != "")
                 {
                     Vector2 position = blank_position;
@@ -580,7 +580,7 @@ namespace Galaxy
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType);
                 int level = WorkingProfile.WeaponSecondaryLevel;
 
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSecondaryType != "")
                 {
                     Vector2 position = blank_position;
@@ -602,7 +602,7 @@ namespace Galaxy
             }
             else if (Menu == MenuSidekickLeft)
             {
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSidekickLeftType != "")
                 {
                     Vector2 position = blank_position;
@@ -613,7 +613,7 @@ namespace Galaxy
             }
             else if (Menu == MenuSidekickRight)
             {
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSidekickRightType != "")
                 {
                     Vector2 position = blank_position;
@@ -625,7 +625,7 @@ namespace Galaxy
             else if (Menu == MenuChassis)
             {
                 CChassisPart part = ChassisDefinitions.GetPart(WorkingProfile.ChassisType);
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
                     Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
@@ -640,7 +640,7 @@ namespace Galaxy
             else if (Menu == MenuGenerator)
             {
                 CGeneratorPart part = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType);
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
                     Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
@@ -655,7 +655,7 @@ namespace Galaxy
             else if (Menu == MenuShield)
             {
                 CShieldPart part = ShieldDefinitions.GetPart(WorkingProfile.ShieldType);
-                CMenu.MenuOption option = Menu.MenuOptions[Menu.Cursor];
+                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
                     Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
