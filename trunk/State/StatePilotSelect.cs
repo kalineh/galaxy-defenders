@@ -27,10 +27,10 @@ namespace Galaxy
             Menu = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
+                MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Start Game", Select = StartGame },
-                    new CMenu.MenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
+                    new CMenu.CMenuOption() { Text = "Start Game", Select = StartGame },
+                    new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
 

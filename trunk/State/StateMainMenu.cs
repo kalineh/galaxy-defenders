@@ -19,6 +19,7 @@ namespace Galaxy
         public CMenu Menu { get; set; }
         public CMenu MenuMain { get; set; }
         public CMenu MenuNewGameContinue { get; set; }
+        public COptionsMenu MenuOptions { get; set; }
         public CSampleShipManager SampleShipManager { get; set; }
 
         public CStateMainMenu(CGalaxy game)
@@ -29,23 +30,30 @@ namespace Galaxy
             MenuMain = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
+                MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Solo Game", Select = GotoNewGameContinue, Data = 1 },
-                    new CMenu.MenuOption() { Text = "Coop Game", Select = GotoNewGameContinue, SelectValidate = CheckPlayers2P, Data = 2 },
-                    new CMenu.MenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
+                    new CMenu.CMenuOption() { Text = "Solo Game", Select = GotoNewGameContinue, Data = 1 },
+                    new CMenu.CMenuOption() { Text = "Coop Game", Select = GotoNewGameContinue, SelectValidate = CheckPlayers2P, Data = 2 },
+                    new CMenu.CMenuOption() { Text = "Options", Select = GotoOptions },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
                 },
             };
 
             MenuNewGameContinue = new CMenu(game)
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
-                MenuOptions = new List<CMenu.MenuOption>()
+                MenuOptions = new List<CMenu.CMenuOption>()
                 {
-                    new CMenu.MenuOption() { Text = "Continue", Select = ContinueGame, SelectValidate = CheckContinue },
-                    new CMenu.MenuOption() { Text = "New Game", Select = NewGame },
-                    new CMenu.MenuOption() { Text = "Back", CancelOption = true, Select = BackToMainMenu, PanelType = CMenu.PanelType.Small, },
+                    new CMenu.CMenuOption() { Text = "Continue", Select = ContinueGame, SelectValidate = CheckContinue },
+                    new CMenu.CMenuOption() { Text = "New Game", Select = NewGame },
+                    new CMenu.CMenuOption() { Text = "Back", CancelOption = true, Select = BackToMainMenu, PanelType = CMenu.PanelType.Small, },
                 },
+            };
+
+            MenuOptions = new COptionsMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                OnBack = OptionsBack,
             };
 
             Menu = MenuMain;
@@ -143,6 +151,17 @@ namespace Galaxy
 #endif
         }
 
+        private void GotoOptions(object tag)
+        {
+            Menu = MenuOptions;
+            MenuOptions.RefreshVolumes();
+        }
+
+        private void OptionsBack()
+        {
+            Menu = MenuMain;    
+        }
+
         private void NewGame(object tag)
         {
             SProfile profile = CSaveData.GetCurrentProfile();
@@ -158,7 +177,7 @@ namespace Galaxy
         private void ContinueGame(object tag)
         {
             Game.HudManager.LockHuds();
-            Game.State = new CStateFadeTo(Game, this, new CStateStateShop(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
         }
 
         private bool CheckPlayers2P(object tag)

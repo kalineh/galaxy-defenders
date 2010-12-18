@@ -73,6 +73,10 @@ namespace Galaxy
                     CSaveData.AddNewProfile(tag);
                     CSaveData.SetCurrentProfile(tag);
 
+                    SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
+                    CAudio.SetSFXVolume(options.SFXVolume);
+                    CAudio.SetMusicVolume(options.MusicVolume);
+
                     StorageDeviceReady = true;
                 }
                 catch (Exception e)

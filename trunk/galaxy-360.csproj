@@ -83,6 +83,7 @@
     <Compile Include="Enemy\Pyramid.cs" />
     <Compile Include="Enemy\RaidTurret.cs" />
     <Compile Include="Enemy\RotateTurret.cs" />
+    <Compile Include="OptionsMenu.cs" />
     <Compile Include="Projectile\EnemyCannonShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />

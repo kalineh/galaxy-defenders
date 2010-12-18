@@ -44,11 +44,12 @@ namespace Galaxy
         {
             World.Update();
 
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressedAny())
-            {
-                CAudio.StopMusic();
-                Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
-            }
+            // NOTE: replaced by pause menu, don't need anymore?
+            //if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadBackPressedAny())
+            //{
+                //CAudio.StopMusic();
+                //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            //}
         }
 
         public override void Draw()

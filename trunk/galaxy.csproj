@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OptionsMenu.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Hud\HudManager.cs" />
     <Compile Include="Hud\HudPilotSelect.cs" />
