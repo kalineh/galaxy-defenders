@@ -55,6 +55,7 @@ namespace Galaxy
         public volatile bool CollisionThreadTerminate;
         public CMenu PauseMenu { get; set; }
         public CMenu PauseMenuBase { get; set; }
+        public CMenu PauseMenuQuitConfirm { get; set; }
         public COptionsMenu PauseMenuOptions { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
@@ -80,6 +81,18 @@ namespace Galaxy
                 {
                     new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame },
                     new CMenu.CMenuOption() { Text = "Options", Select = OptionsMenu },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = GotoQuitConfirm, PanelType = CMenu.PanelType.Small },
+                },
+            };
+
+            PauseMenuQuitConfirm = new CMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    // looks kind of crap
+                    //new CMenu.CMenuOption() { Text = " * Quit To Menu? *", SelectValidate = (tag) => { return false; }, PanelType = CMenu.PanelType.None },
+                    new CMenu.CMenuOption() { Text = "Cancel", Select = BackToMainPauseMenu },
                     new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small },
                 },
             };
@@ -969,6 +982,11 @@ namespace Galaxy
             Paused = false;    
         }
 
+        public void GotoQuitConfirm(object tag)
+        {
+            PauseMenu = PauseMenuQuitConfirm;
+        }
+
         public void QuitGame(object tag)
         {
             CAudio.StopMusic();
@@ -982,6 +1000,11 @@ namespace Galaxy
         }
 
         public void LeaveOptionsMenu()
+        {
+            PauseMenu = PauseMenuBase;
+        }
+
+        public void BackToMainPauseMenu(object tag)
         {
             PauseMenu = PauseMenuBase;
         }

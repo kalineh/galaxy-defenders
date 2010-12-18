@@ -20,6 +20,7 @@ namespace Galaxy
         public CMenu MenuMain { get; set; }
         public CMenu MenuNewGameContinue { get; set; }
         public COptionsMenu MenuOptions { get; set; }
+        public CMenu MenuQuitConfirm { get; set; }
         public CSampleShipManager SampleShipManager { get; set; }
 
         public CStateMainMenu(CGalaxy game)
@@ -35,7 +36,7 @@ namespace Galaxy
                     new CMenu.CMenuOption() { Text = "Solo Game", Select = GotoNewGameContinue, Data = 1 },
                     new CMenu.CMenuOption() { Text = "Coop Game", Select = GotoNewGameContinue, SelectValidate = CheckPlayers2P, Data = 2 },
                     new CMenu.CMenuOption() { Text = "Options", Select = GotoOptions },
-                    new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small, },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = GotoQuitConfirm, PanelType = CMenu.PanelType.Small, },
                 },
             };
 
@@ -54,6 +55,16 @@ namespace Galaxy
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 OnBack = OptionsBack,
+            };
+
+            MenuQuitConfirm = new CMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Cancel", Select = BackToMainMenu },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small },
+                },
             };
 
             Menu = MenuMain;
@@ -193,6 +204,11 @@ namespace Galaxy
         private void BackToMainMenu(object tag)
         {
             Menu = MenuMain;    
+        }
+
+        private void GotoQuitConfirm(object tag)
+        {
+            Menu = MenuQuitConfirm;
         }
 
         private void QuitGame(object tag)
