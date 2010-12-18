@@ -101,6 +101,10 @@ namespace Galaxy
         private static SSaveData DefaultSaveData;
         public static SSaveData SaveData;
         public static Mutex AccessMutex;
+        public static Thread SaveThread;
+        public static bool SaveRequestFlag;
+        public static bool SaveIconVisible;
+        private static bool SaveThreadRunning;
 
         static CSaveData()
         {
@@ -118,14 +122,62 @@ namespace Galaxy
 #endif
         }
 
+        public static void StartSaveThread()
+        {
+            SaveThreadRunning = true;
+            ThreadStart start = new ThreadStart(SaveThreadLoop);
+            SaveThread = new Thread(start);
+            SaveThread.Start();
+        }
+
+        public static void StopSaveThread()
+        {
+            SaveThreadRunning = false;
+        }
+
+        public static void SaveThreadLoop()
+        {
+            while (SaveThreadRunning)
+            {
+                if (!SaveRequestFlag)
+                {
+                    Thread.Sleep(1000);
+                    continue; 
+                }
+
+                SSaveData copy;
+                lock (AccessMutex)
+                {
+                    copy = CSaveData.SaveData;
+                    SaveRequestFlag = false;
+                }
+
+                SaveIconVisible = true;
+                Save();
+#if !XBOX360
+                // simulate slow saving on pc
+                Thread.Sleep(2000);
+#endif
+                SaveIconVisible = false;
+            }
+        }
+
         public static void Load()
         {
             CSaveData.Import(out SaveData, "profiles.xml");
         }
 
-        public static void Save()
+        private static void Save()
         {
             CSaveData.Export(SaveData, "profiles.xml");
+        }
+
+        public static void SaveRequest()
+        {
+            lock (AccessMutex)
+            {
+                SaveRequestFlag = true;
+            }
         }
 
         public static SProfile CreateDefaultProfile(string name)

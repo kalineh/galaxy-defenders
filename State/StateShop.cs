@@ -377,10 +377,13 @@ namespace Galaxy
 
         public override void Update()
         {
-            if (Game.Input.IsPadL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
-                ChangeShoppingPlayer(GameControllerIndex.One);
-            if (Game.Input.IsPadR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
-                ChangeShoppingPlayer(GameControllerIndex.Two);
+            if (Game.PlayersInGame > 1)
+            {
+                if (Game.Input.IsPadL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
+                    ChangeShoppingPlayer(GameControllerIndex.One);
+                if (Game.Input.IsPadR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
+                    ChangeShoppingPlayer(GameControllerIndex.Two);
+            }
 
             MenuUpdateHighlights();
             Menu.Update();
@@ -537,7 +540,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Game[Game.PlayersInGame - 1].Pilots[(int)ShoppingPlayer] = LockedProfile;
             CSaveData.SetCurrentProfileData(profile);
-            CSaveData.Save();
+            CSaveData.SaveRequest();
         }
 
         private void DrawMenuBaseErrata()

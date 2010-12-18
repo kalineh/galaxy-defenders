@@ -87,7 +87,7 @@ namespace Galaxy
             profile.Options.SFXVolume = CAudio.GetSFXVolume();
             profile.Options.MusicVolume = CAudio.GetMusicVolume();
             CSaveData.SetCurrentProfileData(profile);
-            CSaveData.Save();
+            CSaveData.SaveRequest();
 
             OnBack();
         }
