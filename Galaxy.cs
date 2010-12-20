@@ -31,6 +31,9 @@ namespace Galaxy
         public CHudManager HudManager { get; set; }
         public int PlayersInGame { get; set; }
         public CVisual SaveIcon { get; set; }
+        public CVisual MusicIcon { get; set; }
+        public int MusicDisplayCounter { get; set; }
+        public string MusicDisplayName { get; set; }
 
         public CGalaxy()
         {
@@ -178,8 +181,15 @@ namespace Galaxy
             // Menu textures.
             CMenu.LoadMenuTextures(this);
 
-            // Save Icon
+            // Save icon
             SaveIcon = CVisual.MakeSpriteUncached(this, "Textures/UI/SaveIcon");
+
+            // Music icon.
+            MusicIcon = CVisual.MakeSpriteUncached(this, "Textures/UI/MusicIcon");
+            MusicIcon.NormalizedOrigin = new Vector2(0.0f, 0.0f);
+            MusicIcon.Color = Color.LightGray;
+            MusicIcon.Update();
+            CAudio.OnMusicChange += DisplayTrackChange;
 
             // Hud management.
             HudManager = new CHudManager(this);
@@ -250,6 +260,19 @@ namespace Galaxy
                 DefaultSpriteBatch.End();
             }
 
+            if (MusicDisplayCounter > 0)
+            {
+                MusicDisplayCounter -= 1;
+                //Vector2 position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Left, GraphicsDevice.Viewport.TitleSafeArea.Top);
+                Vector2 position = new Vector2(476.0f, GraphicsDevice.Viewport.TitleSafeArea.Bottom - 42.0f);
+                DefaultSpriteBatch.Begin();
+                float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
+                MusicIcon.Alpha = alpha;
+                MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);
+                DefaultSpriteBatch.DrawString(DefaultFont, MusicDisplayName, position + new Vector2(42.0f, 8.0f), new Color(Color.LightGray, alpha));
+                DefaultSpriteBatch.End();
+            }
+
             CDebugRender.Render(this);
 
             //while (GraphicsDevice.RasterStatus.InVerticalBlank)
@@ -290,6 +313,12 @@ namespace Galaxy
             HudManager = new CHudManager(this);
             State = new CStateMainMenu(this);
             GC.Collect();
+        }
+
+        private void DisplayTrackChange(string music_name)
+        {
+            MusicDisplayCounter = 300;
+            MusicDisplayName = "RushJet1 - " + music_name;
         }
     }
 }

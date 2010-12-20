@@ -139,7 +139,7 @@ namespace Galaxy
             Stage.Start();
 
             // TODO: should this be in the stage?
-            if (!Game.EditorMode)
+            //if (!Game.EditorMode)
                 CAudio.PlayMusic(Stage.Definition.MusicName);
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.BackgroundSceneryName);
@@ -1002,7 +1002,7 @@ namespace Galaxy
             SecretEntryFader = null;
             StageEnd = false;
 
-            if (!Game.EditorMode)
+            //if (!Game.EditorMode)
                 CAudio.PlayMusic(Stage.Definition.MusicName);
 
             foreach (CShip ship in ShipEntitiesCache)

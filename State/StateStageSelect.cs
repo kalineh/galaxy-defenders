@@ -37,14 +37,19 @@ namespace Galaxy
 #if !XBOX360
                 if (stage == "*")
                 {
-                    Assembly assembly = Assembly.GetAssembly(typeof(Galaxy.CEntity));
-                    IEnumerable<Type> types = assembly.GetTypes().Where(t => String.Equals(t.Namespace, "Galaxy.Stages"));
-                    IEnumerable<Type> types_sorted = types.OrderBy(t => t.Name.Length);
-                    IEnumerable<Type> types_filtered = types.Where(t => selectable_stages.Contains(t.Name) == false);
-                    foreach (Type type in types_filtered)
-                    {
-                        Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* " + type.Name, Select = StartGame, Data = type.Name, PanelType = CMenu.PanelType.None });
-                    }
+                    Menu.Position += new Vector2(0.0f, -250.0f);
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage7", Select = StartGame, Data = "Stage7" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage8", Select = StartGame, Data = "Stage8" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage9", Select = StartGame, Data = "Stage9" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage10", Select = StartGame, Data = "Stage10" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage11", Select = StartGame, Data = "Stage11" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage12", Select = StartGame, Data = "Stage12" });
                 }
                 else
                 {
@@ -57,6 +62,7 @@ namespace Galaxy
                 // TODO: find a way to automate this on 360
                 if (stage == "*")
                 {
+                    Menu.Position += new Vector2(0.0f, -250.0f);
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });

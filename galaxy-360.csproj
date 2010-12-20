@@ -65,6 +65,8 @@
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
+    <None Include="Editor\Entities\EditorEntityMusicChanger.cs" />
+    <Compile Include="Entities\MusicChanger.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Enemy\Cannon.cs" />
     <Compile Include="Enemy\Splitter.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="StageDefinitions\Stage12.cs" />
     <Compile Include="StageDefinitions\Stage8.cs" />
     <Compile Include="StageDefinitions\Stage9.cs" />
+    <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
