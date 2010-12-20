@@ -202,7 +202,7 @@ namespace Galaxy
         {
             if (!Game.IsActive && !Game.EditorMode)
             {
-                Paused = true;     
+                PauseGame();
             }
 
             if (Paused && !DebugPaused)
@@ -269,9 +269,10 @@ namespace Galaxy
             if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P) || Game.Input.IsKeyPressed(Keys.Escape))
             {
                 DebugPaused = false;
-                Paused = !Paused;      
-                if (!Paused)
+                if (Paused)
                     ResumeGame(null);
+                else
+                    PauseGame();
             }
 
             if (Game.Input.IsKeyPressed(Keys.T))
@@ -1014,9 +1015,16 @@ namespace Galaxy
             }
         }
 
+        public void PauseGame()
+        {
+            Paused = true;
+            CAudio.PlayPauseMusic("1-X-0");
+        }
+
         public void ResumeGame(object tag)
         {
-            Paused = false;    
+            Paused = false;
+            CAudio.StopPauseMusic();
         }
 
         public void GotoQuitConfirm(object tag)
