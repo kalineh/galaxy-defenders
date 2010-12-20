@@ -56,6 +56,7 @@ namespace Galaxy
         public CMenu PauseMenu { get; set; }
         public CMenu PauseMenuBase { get; set; }
         public CMenu PauseMenuQuitConfirm { get; set; }
+        public CMenu GameOverMenu { get; set; }
         public COptionsMenu PauseMenuOptions { get; set; }
         public int GameOverCounter { get; set; }
         public CFader GameOverFader { get; set; }
@@ -104,6 +105,16 @@ namespace Galaxy
             {
                 Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
                 OnBack = LeaveOptionsMenu,
+            };
+
+            GameOverMenu = new CMenu(Game)
+            {
+                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Retry!", Select = RetryGame },
+                    new CMenu.CMenuOption() { Text = "Quit", Select = QuitGame, PanelType = CMenu.PanelType.Small },
+                },
             };
 
             PauseMenu = PauseMenuBase;
@@ -170,8 +181,7 @@ namespace Galaxy
 
         public void Stop()
         {
-            // TODO: should this have ever been here?
-            //Game.Music.StopImmediate();
+            CAudio.StopPauseMusic();
 
             // clear runtime ship info from hud
             Game.HudManager.Huds[0].Ship = null;
@@ -200,7 +210,7 @@ namespace Galaxy
 
         public void Update()
         {
-            if (!Game.IsActive && !Game.EditorMode)
+            if (!Game.IsActive && !Game.EditorMode && !IsGameOverState())
             {
                 PauseGame();
             }
@@ -225,13 +235,18 @@ namespace Galaxy
             ForegroundScenery.Update();
 
             // DEBUG
+#if DEBUG
             if (!Game.EditorMode && Game.Input.IsKeyDown(Keys.O))
             {
-                GameCamera.Position += Vector3.UnitY * -16.0f;
+                GameCamera.Position += Vector3.UnitY * -32.0f;
             }
+#endif
 
-            GameCamera.Position += Vector3.UnitY * -ScrollSpeed;
-            GameCamera.Update();
+            if (!IsGameOverState())
+            {
+                GameCamera.Position += Vector3.UnitY * -ScrollSpeed;
+                GameCamera.Update();
+            }
 
             UpdatePauseInput();
             UpdateInput();
@@ -265,6 +280,15 @@ namespace Galaxy
         {
             if (StageEnd)
                 return;
+
+            if (IsGameOverState())
+            {
+                if (Paused)
+                    ResumeGame(null);
+
+                return;
+            }
+
 
             if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.P) || Game.Input.IsKeyPressed(Keys.Escape))
             {
@@ -527,6 +551,7 @@ namespace Galaxy
             {
                 Game.DefaultSpriteBatch.Begin();
                 GameOverFader.Draw(Game.DefaultSpriteBatch);
+                GameOverMenu.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
@@ -917,25 +942,29 @@ namespace Galaxy
             EntitiesToDelete.Clear();
         }
 
+        private bool IsGameOverState()
+        {
+            return GameOverCounter != -1;    
+        }
+
         private void CheckGameOverConditions()
         {
             if (ShipEntitiesCache.Count == 0)
             {
                 if (GameOverCounter == -1)
                 {
-                    GameOverCounter = 180;
+                    GameOverCounter = 120;
                     GameOverFader = new CFader(Game);
-                    // TODO: game over song
-                    //CAudio.PlayMusic("GameOver")
+                    CAudio.PlayMusic("Try_Harder");
                 }
 
-                GameOverCounter -= 1;
-                if (GameOverCounter == 0)
-                    GotoLobby();
+                GameOverCounter = Math.Max(0, GameOverCounter - 1);
+                GameOverMenu.Visible = GameOverCounter == 0;
             }
 
             if (GameOverFader != null)
             {
+                GameOverMenu.Update();
                 GameOverFader.Update();
                 GameOverFader.StopAtHalfFadeOut();
             }
@@ -1027,6 +1056,12 @@ namespace Galaxy
             CAudio.StopPauseMusic();
         }
 
+        public void RetryGame(object tag)
+        {
+            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(Stage.Definition.Name);
+            Game.State = new CStateFadeTo(Game, Game.State, new CStateGame(Game, definition));
+        }
+
         public void GotoQuitConfirm(object tag)
         {
             PauseMenu = PauseMenuQuitConfirm;
@@ -1034,7 +1069,6 @@ namespace Galaxy
 
         public void QuitGame(object tag)
         {
-            CAudio.StopMusic();
             Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
         }
 
