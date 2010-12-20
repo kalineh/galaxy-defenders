@@ -43,7 +43,7 @@ namespace Galaxy
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             if (!Game.EditorMode)
-                CAudio.PlayMusic("Title");
+                CAudio.PlayMusic("Konami's_Moon_Base");
         }
 
         public override void Update()

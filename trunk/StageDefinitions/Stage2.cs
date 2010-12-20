@@ -10,7 +10,7 @@ stage.DisplayName = "FORGOTTEN WATERS";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "ForgottenWatersBG";
 stage.ForegroundSceneryName = "ForgottenWatersFG";
-stage.MusicName = "B";
+stage.MusicName = "Alkali Earth";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

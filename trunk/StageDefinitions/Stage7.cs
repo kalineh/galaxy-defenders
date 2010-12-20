@@ -10,7 +10,7 @@ stage.DisplayName = "TEMPEST NEBULA";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "TempestNebulaBG";
 stage.ForegroundSceneryName = "TempestNebulaFG";
-stage.MusicName = "C";
+stage.MusicName = "Insurrection";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

@@ -10,7 +10,7 @@ stage.DisplayName = "SPACE STATION RX4";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "SpaceStationRX4BG";
 stage.ForegroundSceneryName = "SpaceStationRX4FG";
-stage.MusicName = "C";
+stage.MusicName = "Sirius";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

@@ -10,7 +10,7 @@ stage.DisplayName = "LAMINATION X";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "LaminationXBG";
 stage.ForegroundSceneryName = "LaminationXFG";
-stage.MusicName = "B";
+stage.MusicName = "Eye_of_the_Predator";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

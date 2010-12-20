@@ -591,7 +591,7 @@ namespace Galaxy
             CStageGenerate.GenerateWorldFromStageDefinition(World, StageDefinition);
 
             if (!Game.EditorMode)
-                CAudio.PlayMusic("Title");
+                CAudio.PlayMusic("Konami's_Moon_Base");
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.BackgroundSceneryName);
             bg_method = bg_method ?? typeof (CSceneryPresets).GetMethod("Empty");

@@ -10,7 +10,7 @@ stage.DisplayName = "MYSTERIOUS CLOUDS";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "MysteriousCloudsBG";
 stage.ForegroundSceneryName = "MysteriousCloudsFG";
-stage.MusicName = "B";
+stage.MusicName = "Troubled_Dreams";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

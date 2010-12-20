@@ -10,7 +10,7 @@ stage.DisplayName = "INVASIVE ACTION";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "InvasiveActionBG";
 stage.ForegroundSceneryName = "InvasiveActionFG";
-stage.MusicName = "B";
+stage.MusicName = "fighting_for_control";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

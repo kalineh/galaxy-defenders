@@ -62,6 +62,7 @@ namespace Galaxy
             Input = new CInput(this);
 
             GameFrame = 0;
+            PlayersInGame = 1;
 
             // default
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;

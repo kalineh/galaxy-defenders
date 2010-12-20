@@ -10,7 +10,7 @@ stage.DisplayName = "RELENT LESS";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "RelentLessBG";
 stage.ForegroundSceneryName = "RelentLessFG";
-stage.MusicName = "A";
+stage.MusicName = "Turbo";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

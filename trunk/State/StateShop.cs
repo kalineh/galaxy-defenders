@@ -362,7 +362,7 @@ namespace Galaxy
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
 
             if (!Game.EditorMode)
-                CAudio.PlayMusic("Title");
+                CAudio.PlayMusic("Konami's_Moon_Base");
 
             RefreshSampleDisplay();
         }

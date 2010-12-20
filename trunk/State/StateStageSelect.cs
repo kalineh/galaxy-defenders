@@ -60,10 +60,15 @@ namespace Galaxy
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* BonusStage1", Select = StartGame, Data = "BonusStage1" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage7", Select = StartGame, Data = "Stage7" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage8", Select = StartGame, Data = "Stage8" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage9", Select = StartGame, Data = "Stage9" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage10", Select = StartGame, Data = "Stage10" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage11", Select = StartGame, Data = "Stage11" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage12", Select = StartGame, Data = "Stage12" });
                 }
 #endif
 #endif
@@ -81,7 +86,7 @@ namespace Galaxy
             EmptyWorld.ForegroundScenery = CSceneryPresets.Empty(EmptyWorld);
 
             if (!Game.EditorMode)
-                CAudio.PlayMusic("Title");
+                CAudio.PlayMusic("Konami's_Moon_Base");
         }
 
         public override void Update()

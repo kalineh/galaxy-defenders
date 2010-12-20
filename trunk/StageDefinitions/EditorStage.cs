@@ -10,7 +10,7 @@ stage.DisplayName = "";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "MysteriousCloudsBG";
 stage.ForegroundSceneryName = "MysteriousCloudsFG";
-stage.MusicName = "A";
+stage.MusicName = "The_Voyage";
 stage.AddElement(0, 
 new Galaxy.CStageElementStageFinish() {
 World = null,

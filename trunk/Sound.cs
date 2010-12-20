@@ -18,6 +18,7 @@ namespace Galaxy
         private static WaveBank MusicWaveBank { get; set; }
         private static SoundBank MusicSoundBank { get; set; }
 
+        private static string CurrentMusicName { get; set; }
         private static Cue CurrentMusic { get; set; }
 
         private static AudioCategory SFXCategory { get; set; }
@@ -56,6 +57,7 @@ namespace Galaxy
             {
                 CurrentMusic.Dispose();
                 CurrentMusic = null;
+                CurrentMusicName = null;
             }
         }
 
@@ -72,6 +74,13 @@ namespace Galaxy
 
         public static void PlayMusic(string name)
         {
+            if (CurrentMusicName == name)
+                return;
+
+            if (CurrentMusic != null)
+                CurrentMusic.Stop(AudioStopOptions.AsAuthored);
+
+            CurrentMusicName = name;
             CurrentMusic = MusicSoundBank.GetCue(name);
             CurrentMusic.Play();
         }
@@ -83,6 +92,7 @@ namespace Galaxy
 
             CurrentMusic.Stop(AudioStopOptions.AsAuthored);
             CurrentMusic = null;
+            CurrentMusicName = null;
         }
 
         public static void SetSFXVolume(float volume)
