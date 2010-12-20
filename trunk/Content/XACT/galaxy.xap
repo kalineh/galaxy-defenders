@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 1311103671;
-    Last Modified High = 30122001;
+    Last Modified Low = 3971784561;
+    Last Modified High = 30122014;
 
     Category
     {
@@ -117,6 +117,32 @@ Global Settings
             {
                 Fade In = 0;
                 Fade Out = 0;
+                Crossfade Type = 0;
+            }
+        }
+    }
+
+    Category
+    {
+        Name = PauseMusic;
+        Public = 1;
+        Background Music = 0;
+        Volume = 0;
+
+        Category Entry
+        {
+            Name = Global;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 4;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 1000;
                 Crossfade Type = 0;
             }
         }
@@ -930,34 +956,10 @@ Wave Bank
     Compression Preset Name = Music Compression;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 4177492706;
-    PC Bank Last Modified High = 30122004;
-    Bank Last Revised Low = 3824192498;
-    Bank Last Revised High = 30122004;
-
-    Wave
-    {
-        Name = 1-X-0;
-        File = ..\Music\1-X-0.wav;
-        Build Settings Last Modified Low = 3824152496;
-        Build Settings Last Modified High = 30122004;
-        Compression Preset Name = Music Compression;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 1;
-            Sampling Rate = 48000;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 16169254;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 2197045810;
-            Last Modified High = 30121994;
-        }
-    }
+    PC Bank Last Modified Low = 2022414874;
+    PC Bank Last Modified High = 30122019;
+    Bank Last Revised Low = 1530746752;
+    Bank Last Revised High = 30122019;
 
     Wave
     {
@@ -1342,6 +1344,71 @@ Wave Bank
             Last Modified High = 30121996;
         }
     }
+
+    Wave
+    {
+        Name = Try_Harder;
+        File = ..\Music\Try_Harder.wav;
+        Build Settings Last Modified Low = 3509079733;
+        Build Settings Last Modified High = 30122013;
+        Compression Preset Name = Music Compression;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 18941132;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2968578819;
+            Last Modified High = 30122013;
+        }
+    }
+}
+
+Wave Bank
+{
+    Name = PauseMusic;
+    Xbox File = Xbox\PauseMusic.xwb;
+    Windows File = Win\PauseMusic.xwb;
+    Xbox Bank Path Edited = 0;
+    Windows Bank Path Edited = 0;
+    Streaming = 1;
+    Seek Tables = 1;
+    Compression Preset Name = Music Compression;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 2854857573;
+    PC Bank Last Modified High = 30122022;
+    Bank Last Revised Low = 2833966378;
+    Bank Last Revised High = 30122022;
+
+    Wave
+    {
+        Name = 1-X-0;
+        File = ..\Music\1-X-0.wav;
+        Build Settings Last Modified Low = 2624694408;
+        Build Settings Last Modified High = 30122022;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 16169254;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2197045810;
+            Last Modified High = 30121994;
+        }
+    }
 }
 
 Sound Bank
@@ -1351,8 +1418,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 692368109;
-    Bank Last Modified High = 30121995;
+    Bank Last Modified Low = 3995317545;
+    Bank Last Modified High = 30122013;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -3604,8 +3671,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 315970201;
-    Bank Last Modified High = 30122005;
+    Bank Last Modified Low = 2492681771;
+    Bank Last Modified High = 30122019;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -3648,7 +3715,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Turbo;
-                    Entry Index = 15;
+                    Entry Index = 14;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3675,6 +3742,7 @@ Sound Bank
 
             Play Wave Event
             {
+                Loop Count = 255;
                 Break Loop = 0;
                 Use Speaker Position = 0;
                 Use Center Speaker = 1;
@@ -3692,8 +3760,8 @@ Sound Bank
 
                 Wave Entry
                 {
-                    Bank Name = Music;
-                    Bank Index = 1;
+                    Bank Name = PauseMusic;
+                    Bank Index = 2;
                     Entry Name = 1-X-0;
                     Entry Index = 0;
                     Weight = 255;
@@ -3742,7 +3810,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Aerial_Assault;
-                    Entry Index = 1;
+                    Entry Index = 0;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3790,7 +3858,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Afraid_of_Darkness;
-                    Entry Index = 2;
+                    Entry Index = 1;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3838,7 +3906,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Alkali Earth;
-                    Entry Index = 3;
+                    Entry Index = 2;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3886,7 +3954,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Boss 9;
-                    Entry Index = 4;
+                    Entry Index = 3;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3934,7 +4002,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = fighting_for_control;
-                    Entry Index = 5;
+                    Entry Index = 4;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3982,7 +4050,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Insurrection;
-                    Entry Index = 6;
+                    Entry Index = 5;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4030,7 +4098,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Konami's_Moon_Base;
-                    Entry Index = 7;
+                    Entry Index = 6;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4078,7 +4146,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Luminosity_and_Viscosity;
-                    Entry Index = 8;
+                    Entry Index = 7;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4126,7 +4194,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Math_Party;
-                    Entry Index = 9;
+                    Entry Index = 8;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4174,7 +4242,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Sirius;
-                    Entry Index = 10;
+                    Entry Index = 9;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4222,7 +4290,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Still_Afraid_of_Darkness;
-                    Entry Index = 11;
+                    Entry Index = 10;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4270,7 +4338,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = The_Hidden_Answer;
-                    Entry Index = 12;
+                    Entry Index = 11;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4318,7 +4386,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = The_Voyage;
-                    Entry Index = 13;
+                    Entry Index = 12;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4366,7 +4434,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Troubled_Dreams;
-                    Entry Index = 14;
+                    Entry Index = 13;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4414,6 +4482,54 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Eye_of_the_Predator;
+                    Entry Index = 15;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Try_Harder;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Music;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Try_Harder;
                     Entry Index = 16;
                     Weight = 255;
                     Weight Min = 0;
@@ -4459,6 +4575,19 @@ Sound Bank
             Index = 1;
             Weight Min = 0;
             Weight Max = 255;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 4;
+
+            Crossfade
+            {
+                Fade In = 1000;
+                Fade Out = 1000;
+                Crossfade Type = 0;
+            }
         }
     }
 
@@ -4757,6 +4886,107 @@ Sound Bank
         {
             Name = Eye_of_the_Predator;
             Index = 16;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Try_Harder;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Try_Harder;
+            Index = 17;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+}
+
+Sound Bank
+{
+    Name = PauseMusic;
+    Xbox File = Xbox\PauseMusic.xsb;
+    Windows File = Win\PauseMusic.xsb;
+    Xbox Bank Path Edited = 0;
+    Windows Bank Path Edited = 0;
+    Bank Last Modified Low = 1906233315;
+    Bank Last Modified High = 30122022;
+    Header Last Modified High = 0;
+    Header Last Modified Low = 0;
+
+    Sound
+    {
+        Name = 1-X-0;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = PauseMusic;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = PauseMusic;
+                    Bank Index = 2;
+                    Entry Name = 1-X-0;
+                    Entry Index = 0;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Cue
+    {
+        Name = 1-X-0;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = 1-X-0;
+            Index = 0;
             Weight Min = 0;
             Weight Max = 255;
         }
