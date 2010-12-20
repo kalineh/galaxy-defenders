@@ -2257,6 +2257,14 @@ X = 96.0f,
 Y = -14120.0f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementMusicChanger() {
+MusicName = "Boss 9",
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 456.0f,
+Y = -17168.0f,
+},
+});
 
 return stage;
 }

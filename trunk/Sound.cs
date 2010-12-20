@@ -28,6 +28,9 @@ namespace Galaxy
         private static float SFXVolume { get; set; }
         private static float MusicVolume { get; set; }
 
+        public delegate void MusicChangeDelegate(string music_name);
+        public static MusicChangeDelegate OnMusicChange { get; set; }
+
         public static void Initialize()
         {
             AudioEngine = new AudioEngine("Content/XACT/galaxy.xgs");
@@ -77,12 +80,14 @@ namespace Galaxy
             if (CurrentMusicName == name)
                 return;
 
-            if (CurrentMusic != null)
-                CurrentMusic.Stop(AudioStopOptions.AsAuthored);
+            //if (CurrentMusic != null)
+                //CurrentMusic.Stop(AudioStopOptions.AsAuthored);
 
             CurrentMusicName = name;
             CurrentMusic = MusicSoundBank.GetCue(name);
             CurrentMusic.Play();
+
+            OnMusicChange(name);
         }
 
         public static void StopMusic()

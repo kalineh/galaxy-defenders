@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 4229242045;
-    Last Modified High = 30121994;
+    Last Modified Low = 1311103671;
+    Last Modified High = 30122001;
 
     Category
     {
@@ -89,7 +89,7 @@ Global Settings
 
             Crossfade
             {
-                Fade In = 1000;
+                Fade In = 1500;
                 Fade Out = 1000;
                 Crossfade Type = 0;
             }
@@ -930,17 +930,18 @@ Wave Bank
     Compression Preset Name = Music Compression;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 117231938;
-    PC Bank Last Modified High = 30121997;
-    Bank Last Revised Low = 4289962242;
-    Bank Last Revised High = 30121996;
+    PC Bank Last Modified Low = 4177492706;
+    PC Bank Last Modified High = 30122004;
+    Bank Last Revised Low = 3824192498;
+    Bank Last Revised High = 30122004;
 
     Wave
     {
         Name = 1-X-0;
         File = ..\Music\1-X-0.wav;
-        Build Settings Last Modified Low = 2349194512;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824152496;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -962,8 +963,9 @@ Wave Bank
     {
         Name = Aerial_Assault;
         File = ..\Music\Aerial_Assault.wav;
-        Build Settings Last Modified Low = 2349194512;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824162496;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -985,8 +987,9 @@ Wave Bank
     {
         Name = Afraid_of_Darkness;
         File = ..\Music\Afraid_of_Darkness.wav;
-        Build Settings Last Modified Low = 2349194512;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824162496;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1008,8 +1011,9 @@ Wave Bank
     {
         Name = Alkali Earth;
         File = ..\Music\Alkali Earth.wav;
-        Build Settings Last Modified Low = 2349204513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824162496;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1031,8 +1035,9 @@ Wave Bank
     {
         Name = Boss 9;
         File = ..\Music\Boss 9.wav;
-        Build Settings Last Modified Low = 2349204513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824162496;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1054,8 +1059,9 @@ Wave Bank
     {
         Name = fighting_for_control;
         File = ..\Music\fighting_for_control.wav;
-        Build Settings Last Modified Low = 2349204513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824172497;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1077,8 +1083,9 @@ Wave Bank
     {
         Name = Insurrection;
         File = ..\Music\Insurrection.wav;
-        Build Settings Last Modified Low = 2349214513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824172497;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1100,8 +1107,9 @@ Wave Bank
     {
         Name = Konami's_Moon_Base;
         File = ..\Music\Konami's_Moon_Base.wav;
-        Build Settings Last Modified Low = 2349214513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824172497;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1123,8 +1131,9 @@ Wave Bank
     {
         Name = Luminosity_and_Viscosity;
         File = ..\Music\Luminosity_and_Viscosity.wav;
-        Build Settings Last Modified Low = 2349214513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824172497;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1146,8 +1155,9 @@ Wave Bank
     {
         Name = Math_Party;
         File = ..\Music\Math_Party.wav;
-        Build Settings Last Modified Low = 2349214513;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824172497;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1169,8 +1179,9 @@ Wave Bank
     {
         Name = Sirius;
         File = ..\Music\Sirius.wav;
-        Build Settings Last Modified Low = 2352394695;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1192,8 +1203,9 @@ Wave Bank
     {
         Name = Still_Afraid_of_Darkness;
         File = ..\Music\Still_Afraid_of_Darkness.wav;
-        Build Settings Last Modified Low = 2352394695;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1215,8 +1227,9 @@ Wave Bank
     {
         Name = The_Hidden_Answer;
         File = ..\Music\The_Hidden_Answer.wav;
-        Build Settings Last Modified Low = 2352394695;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1238,8 +1251,9 @@ Wave Bank
     {
         Name = The_Voyage;
         File = ..\Music\The_Voyage.wav;
-        Build Settings Last Modified Low = 2352404696;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1261,8 +1275,9 @@ Wave Bank
     {
         Name = Troubled_Dreams;
         File = ..\Music\Troubled_Dreams.wav;
-        Build Settings Last Modified Low = 2352404696;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1284,8 +1299,9 @@ Wave Bank
     {
         Name = Turbo;
         File = ..\Music\Turbo.wav;
-        Build Settings Last Modified Low = 2352404696;
-        Build Settings Last Modified High = 30121994;
+        Build Settings Last Modified Low = 3824182498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -1307,8 +1323,9 @@ Wave Bank
     {
         Name = Eye_of_the_Predator;
         File = ..\Music\Eye_of_the_Predator.wav;
-        Build Settings Last Modified Low = 4191956636;
-        Build Settings Last Modified High = 30121996;
+        Build Settings Last Modified Low = 3824192498;
+        Build Settings Last Modified High = 30122004;
+        Compression Preset Name = Music Compression;
 
         Cache
         {
@@ -3587,6 +3604,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
+    Bank Last Modified Low = 315970201;
+    Bank Last Modified High = 30122005;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -3599,7 +3618,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3646,7 +3665,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3693,7 +3712,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3740,7 +3759,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3788,7 +3807,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3836,7 +3855,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3884,7 +3903,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3932,7 +3951,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -3980,7 +3999,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4028,7 +4047,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4076,7 +4095,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4124,7 +4143,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4172,7 +4191,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4220,7 +4239,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4268,7 +4287,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4316,7 +4335,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -4364,7 +4383,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track

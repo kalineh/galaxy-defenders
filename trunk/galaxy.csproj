@@ -91,6 +91,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editor\Entities\EditorEntityMusicChanger.cs" />
+    <Compile Include="Entities\MusicChanger.cs" />
     <Compile Include="OptionsMenu.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Hud\HudManager.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="StageDefinitions\Stage7.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="Stage\Elements\StageElementCameraStop.cs" />
     <Compile Include="Stage\Elements\StageElementBuilding.cs" />

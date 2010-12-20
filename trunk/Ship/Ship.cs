@@ -316,6 +316,7 @@ namespace Galaxy
 
         private void Fire(List<CWeapon> weapons)
         {
+            // TODO: cache me
             float required_energy = 0.0f;
             foreach (CWeapon weapon in weapons)
             {

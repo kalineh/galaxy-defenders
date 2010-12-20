@@ -24,6 +24,7 @@ namespace Galaxy
             { typeof(CStageElementBuilding), typeof(CEditorEntityBuilding) },
             { typeof(CStageElementCameraStop), typeof(CEditorEntityCameraStop) },
             { typeof(CStageElementDecoration), typeof(CEditorEntityDecoration) },
+            { typeof(CStageElementMusicChanger), typeof(CEditorEntityMusicChanger) },
             { typeof(CStageElementSecretEntry), typeof(CEditorEntitySecretEntry) },
             { typeof(CStageElementSpawnerEntity), typeof(CEditorEntitySpawnerEntity) },
             { typeof(CStageElementSpawnerEnemy), typeof(CEditorEntitySpawnerEnemy) },
