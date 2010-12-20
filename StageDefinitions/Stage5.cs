@@ -10,7 +10,7 @@ stage.DisplayName = "STRIKE INVERSION";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "StrikeInversionBG";
 stage.ForegroundSceneryName = "StrikeInversionFG";
-stage.MusicName = "B";
+stage.MusicName = "Aerial_Assault";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

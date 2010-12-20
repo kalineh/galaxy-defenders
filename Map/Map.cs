@@ -176,6 +176,49 @@
  * - Mystery
  * 
  * 
+ * MUSIC
+ * 
+ * 
+ * stage 1 - the voyage
+ * stage 2 - alkali earth
+ * stage 3 - luminosity
+ * stage 4 - sirius
+ * stage 5 - aerial assault
+ * stage 6 - afraid of darkness
+ * stage 7 - insurrection
+ * stage 8 - troubled dreams
+ * stage 9 - turbo
+ * stage 10 - fighting for control
+ * stage 11 - math party
+ * stage 12 - eye of the predator
+ * 
+ * boss: boss 9
+ * stage clear: ?? :(
+ * shop: - title?
+ * title - konamis moon base
+ * secret stage: the hidden answer
+ * puase: 1-X-0
+ * 
+ * - Stage 1 - the voyage
+ * - Stage 2
+ * - Stage 3
+ * - Stage 4
+ * - Stage 5
+ * - Stage 6
+ * - Stage 7
+ * - Stage 8
+ * - Stage 9
+ * - Stage 10
+ * - Stage 11
+ * - Stage 12 - eye of the predator
+ * - Boss
+ * - Title - konami's moon base
+ * - Shop - 
+ * - Game Over
+ * - Stage Clear
+ * - Secret Stage
+ * - Pause: 1-X-0
+ * 
  * Major Task Checklist
  * 
  * - Stage Layouts
@@ -628,6 +671,7 @@ namespace Galaxy
             new CMapNode() {
                 Current = "Stage7",
                 Next = new List<string>() {
+                    "Stage8",
                     "*",
                 },
                 AvailablePrimaryWeaponParts = new List<string>() {
@@ -658,6 +702,33 @@ namespace Galaxy
                     "EnhancedShield",
                     "UltraShield",
                 },
+            },
+            new CMapNode() {
+                Current = "Stage8",
+                Next = new List<string>() {
+                    "Stage9",
+                },
+            },
+            new CMapNode() {
+                Current = "Stage9",
+                Next = new List<string>() {
+                    "Stage10",
+                },
+            },
+            new CMapNode() {
+                Current = "Stage10",
+                Next = new List<string>() {
+                    "Stage11",
+                },
+            },
+            new CMapNode() {
+                Current = "Stage11",
+                Next = new List<string>() {
+                    "Stage12",
+                },
+            },
+            new CMapNode() {
+                Current = "Stage12",
             },
         };
 

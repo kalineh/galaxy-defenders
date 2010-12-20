@@ -10,7 +10,7 @@ stage.DisplayName = "GRANITE LOCATION";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "GraniteLocationBG";
 stage.ForegroundSceneryName = "GraniteLocationFG";
-stage.MusicName = "A";
+stage.MusicName = "Afraid_of_Darkness";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

@@ -9,7 +9,7 @@ CStageDefinition stage = new CStageDefinition("BonusStage1");
 stage.ScrollSpeed = 4.0f;
 stage.BackgroundSceneryName = "BonusStage1";
 stage.ForegroundSceneryName = "Empty";
-stage.MusicName = "C";
+stage.MusicName = "fighting_for_control";
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "WhiteBlock2",

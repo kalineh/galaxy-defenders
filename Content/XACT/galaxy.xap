@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 2166441132;
-    Last Modified High = 30097924;
+    Last Modified Low = 4229242045;
+    Last Modified High = 30121994;
 
     Category
     {
@@ -268,6 +268,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 2254308917;
     PC Bank Last Modified High = 30097904;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 2311693837;
     Bank Last Revised High = 30097903;
 
@@ -928,86 +930,109 @@ Wave Bank
     Compression Preset Name = Music Compression;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 3263630440;
-    PC Bank Last Modified High = 30097920;
-    Bank Last Revised Low = 3138623290;
-    Bank Last Revised High = 30097920;
+    PC Bank Last Modified Low = 117231938;
+    PC Bank Last Modified High = 30121997;
+    Bank Last Revised Low = 4289962242;
+    Bank Last Revised High = 30121996;
 
     Wave
     {
-        Name = A;
-        File = ..\Music\A.wav;
-        Build Settings Last Modified Low = 3138343274;
-        Build Settings Last Modified High = 30097920;
+        Name = 1-X-0;
+        File = ..\Music\1-X-0.wav;
+        Build Settings Last Modified Low = 2349194512;
+        Build Settings Last Modified High = 30121994;
 
         Cache
         {
             Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 44100;
+            Channels = 1;
+            Sampling Rate = 48000;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 25406396;
+            Play Region Length = 16169254;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2273993836;
-            Last Modified High = 30097920;
+            Last Modified Low = 2197045810;
+            Last Modified High = 30121994;
         }
     }
 
     Wave
     {
-        Name = B;
-        File = ..\Music\B.wav;
-        Build Settings Last Modified Low = 3138623290;
-        Build Settings Last Modified High = 30097920;
+        Name = Aerial_Assault;
+        File = ..\Music\Aerial_Assault.wav;
+        Build Settings Last Modified Low = 2349194512;
+        Build Settings Last Modified High = 30121994;
 
         Cache
         {
             Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 44100;
+            Channels = 1;
+            Sampling Rate = 48000;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 37271996;
+            Play Region Length = 13787566;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2281614272;
-            Last Modified High = 30097920;
+            Last Modified Low = 2198305882;
+            Last Modified High = 30121994;
         }
     }
 
     Wave
     {
-        Name = C;
-        File = ..\Music\C.wav;
-        Build Settings Last Modified Low = 3138623290;
-        Build Settings Last Modified High = 30097920;
+        Name = Afraid_of_Darkness;
+        File = ..\Music\Afraid_of_Darkness.wav;
+        Build Settings Last Modified Low = 2349194512;
+        Build Settings Last Modified High = 30121994;
 
         Cache
         {
             Format Tag = 0;
-            Channels = 2;
-            Sampling Rate = 44100;
+            Channels = 1;
+            Sampling Rate = 48000;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 44575676;
+            Play Region Length = 17702912;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2287464606;
-            Last Modified High = 30097920;
+            Last Modified Low = 2202836141;
+            Last Modified High = 30121994;
         }
     }
 
     Wave
     {
-        Name = Title;
-        File = ..\Music\Title.wav;
-        Build Settings Last Modified Low = 3138623290;
-        Build Settings Last Modified High = 30097920;
+        Name = Alkali Earth;
+        File = ..\Music\Alkali Earth.wav;
+        Build Settings Last Modified Low = 2349204513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 22999300;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2204466234;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Boss 9;
+        File = ..\Music\Boss 9.wav;
+        Build Settings Last Modified Low = 2349204513;
+        Build Settings Last Modified High = 30121994;
 
         Cache
         {
@@ -1016,12 +1041,288 @@ Wave Bank
             Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 34788284;
+            Play Region Length = 13658472;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 2280244193;
-            Last Modified High = 30097920;
+            Last Modified Low = 2195365714;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = fighting_for_control;
+        File = ..\Music\fighting_for_control.wav;
+        Build Settings Last Modified Low = 2349204513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 9512560;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2195575726;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Insurrection;
+        File = ..\Music\Insurrection.wav;
+        Build Settings Last Modified Low = 2349214513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 13119488;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2195835741;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Konami's_Moon_Base;
+        File = ..\Music\Konami's_Moon_Base.wav;
+        Build Settings Last Modified Low = 2349214513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 11141120;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2197375829;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Luminosity_and_Viscosity;
+        File = ..\Music\Luminosity_and_Viscosity.wav;
+        Build Settings Last Modified Low = 2349214513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 15208448;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2206376344;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Math_Party;
+        File = ..\Music\Math_Party.wav;
+        Build Settings Last Modified Low = 2349214513;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 14430208;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2206566354;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Sirius;
+        File = ..\Music\Sirius.wav;
+        Build Settings Last Modified Low = 2352394695;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 11390976;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2204886258;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Still_Afraid_of_Darkness;
+        File = ..\Music\Still_Afraid_of_Darkness.wav;
+        Build Settings Last Modified Low = 2352394695;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 8980490;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2202866143;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = The_Hidden_Answer;
+        File = ..\Music\The_Hidden_Answer.wav;
+        Build Settings Last Modified Low = 2352394695;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 8552448;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2204516237;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = The_Voyage;
+        File = ..\Music\The_Voyage.wav;
+        Build Settings Last Modified Low = 2352404696;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 10627980;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2207616415;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Troubled_Dreams;
+        File = ..\Music\Troubled_Dreams.wav;
+        Build Settings Last Modified Low = 2352404696;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 11894784;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2209626529;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Turbo;
+        File = ..\Music\Turbo.wav;
+        Build Settings Last Modified Low = 2352404696;
+        Build Settings Last Modified High = 30121994;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 16344056;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2211446634;
+            Last Modified High = 30121994;
+        }
+    }
+
+    Wave
+    {
+        Name = Eye_of_the_Predator;
+        File = ..\Music\Eye_of_the_Predator.wav;
+        Build Settings Last Modified Low = 4191956636;
+        Build Settings Last Modified High = 30121996;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 24801280;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 3935861989;
+            Last Modified High = 30121996;
         }
     }
 }
@@ -1033,8 +1334,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3935391793;
-    Bank Last Modified High = 30097906;
+    Bank Last Modified Low = 692368109;
+    Bank Last Modified High = 30121995;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -3286,21 +3587,19 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2166451133;
-    Bank Last Modified High = 30097924;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
     Sound
     {
-        Name = Title;
+        Name = Turbo;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
 
         Category Entry
         {
-            Name = Music;
+            Name = Default;
         }
 
         Track
@@ -3329,8 +3628,8 @@ Sound Bank
                 {
                     Bank Name = Music;
                     Bank Index = 1;
-                    Entry Name = Title;
-                    Entry Index = 3;
+                    Entry Name = Turbo;
+                    Entry Index = 15;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3340,14 +3639,14 @@ Sound Bank
 
     Sound
     {
-        Name = C;
+        Name = 1-X-0;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
 
         Category Entry
         {
-            Name = Music;
+            Name = Default;
         }
 
         Track
@@ -3376,8 +3675,8 @@ Sound Bank
                 {
                     Bank Name = Music;
                     Bank Index = 1;
-                    Entry Name = C;
-                    Entry Index = 2;
+                    Entry Name = 1-X-0;
+                    Entry Index = 0;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3387,14 +3686,14 @@ Sound Bank
 
     Sound
     {
-        Name = B;
+        Name = Aerial_Assault;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
 
         Category Entry
         {
-            Name = Music;
+            Name = Default;
         }
 
         Track
@@ -3423,7 +3722,7 @@ Sound Bank
                 {
                     Bank Name = Music;
                     Bank Index = 1;
-                    Entry Name = B;
+                    Entry Name = Aerial_Assault;
                     Entry Index = 1;
                     Weight = 255;
                     Weight Min = 0;
@@ -3434,14 +3733,14 @@ Sound Bank
 
     Sound
     {
-        Name = A;
+        Name = Afraid_of_Darkness;
         Volume = -1200;
         Pitch = 0;
         Priority = 0;
 
         Category Entry
         {
-            Name = Music;
+            Name = Default;
         }
 
         Track
@@ -3451,6 +3750,7 @@ Sound Bank
 
             Play Wave Event
             {
+                Loop Count = 255;
                 Break Loop = 0;
                 Use Speaker Position = 0;
                 Use Center Speaker = 1;
@@ -3470,8 +3770,632 @@ Sound Bank
                 {
                     Bank Name = Music;
                     Bank Index = 1;
-                    Entry Name = A;
-                    Entry Index = 0;
+                    Entry Name = Afraid_of_Darkness;
+                    Entry Index = 2;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Alkali Earth;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Alkali Earth;
+                    Entry Index = 3;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Boss 9;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Boss 9;
+                    Entry Index = 4;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = fighting_for_control;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = fighting_for_control;
+                    Entry Index = 5;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Insurrection;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Insurrection;
+                    Entry Index = 6;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Konami's_Moon_Base;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Konami's_Moon_Base;
+                    Entry Index = 7;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Luminosity_and_Viscosity;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Luminosity_and_Viscosity;
+                    Entry Index = 8;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Math_Party;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Math_Party;
+                    Entry Index = 9;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Sirius;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Sirius;
+                    Entry Index = 10;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Still_Afraid_of_Darkness;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Still_Afraid_of_Darkness;
+                    Entry Index = 11;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = The_Hidden_Answer;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = The_Hidden_Answer;
+                    Entry Index = 12;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = The_Voyage;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = The_Voyage;
+                    Entry Index = 13;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Troubled_Dreams;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Troubled_Dreams;
+                    Entry Index = 14;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Eye_of_the_Predator;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = Eye_of_the_Predator;
+                    Entry Index = 16;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -3481,7 +4405,7 @@ Sound Bank
 
     Cue
     {
-        Name = Title;
+        Name = Turbo;
 
         Variation
         {
@@ -3492,7 +4416,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = Title;
+            Name = Turbo;
             Index = 0;
             Weight Min = 0;
             Weight Max = 255;
@@ -3501,7 +4425,7 @@ Sound Bank
 
     Cue
     {
-        Name = C;
+        Name = 1-X-0;
 
         Variation
         {
@@ -3512,7 +4436,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = C;
+            Name = 1-X-0;
             Index = 1;
             Weight Min = 0;
             Weight Max = 255;
@@ -3521,7 +4445,7 @@ Sound Bank
 
     Cue
     {
-        Name = B;
+        Name = Aerial_Assault;
 
         Variation
         {
@@ -3532,7 +4456,7 @@ Sound Bank
 
         Sound Entry
         {
-            Name = B;
+            Name = Aerial_Assault;
             Index = 2;
             Weight Min = 0;
             Weight Max = 255;
@@ -3541,7 +4465,7 @@ Sound Bank
 
     Cue
     {
-        Name = A;
+        Name = Afraid_of_Darkness;
 
         Variation
         {
@@ -3552,8 +4476,268 @@ Sound Bank
 
         Sound Entry
         {
-            Name = A;
+            Name = Afraid_of_Darkness;
             Index = 3;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Alkali Earth;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Alkali Earth;
+            Index = 4;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Boss 9;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Boss 9;
+            Index = 5;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = fighting_for_control;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = fighting_for_control;
+            Index = 6;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Insurrection;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Insurrection;
+            Index = 7;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Konami's_Moon_Base;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Konami's_Moon_Base;
+            Index = 8;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Luminosity_and_Viscosity;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Luminosity_and_Viscosity;
+            Index = 9;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Math_Party;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Math_Party;
+            Index = 10;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Sirius;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Sirius;
+            Index = 11;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Still_Afraid_of_Darkness;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Still_Afraid_of_Darkness;
+            Index = 12;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = The_Hidden_Answer;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = The_Hidden_Answer;
+            Index = 13;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = The_Voyage;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = The_Voyage;
+            Index = 14;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Troubled_Dreams;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Troubled_Dreams;
+            Index = 15;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = Eye_of_the_Predator;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Eye_of_the_Predator;
+            Index = 16;
             Weight Min = 0;
             Weight Max = 255;
         }

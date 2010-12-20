@@ -29,7 +29,7 @@ namespace Galaxy
                 new CMenu.CMenuOption() { Text = "SFX Volume", Axis = SFXVolumeAxis, AxisValidate = SFXVolumeAxisValidate, CustomRender = SFXVolumeAxisRender },
                 new CMenu.CMenuOption() { Text = "Music Volume", Axis = MusicVolumeAxis, AxisValidate = MusicVolumeAxisValidate, CustomRender = MusicVolumeAxisRender },
                 //new CMenu.CMenuOption() { Text = "Language", Axis = LanguageAxis },
-                new CMenu.CMenuOption() { Text = "Back", Select = Back, PanelType = CMenu.PanelType.Small },
+                new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
             };
 
             OnBack = () => { };

@@ -48,7 +48,7 @@ namespace Galaxy
             ScrollSpeed = 3.0f;
             BackgroundSceneryName = "Black";
             ForegroundSceneryName = "Empty";
-            MusicName = "A";
+            MusicName = "fighting_for_control";
         }
 
         public string ToFilename()

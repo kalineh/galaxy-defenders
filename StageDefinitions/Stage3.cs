@@ -10,7 +10,7 @@ stage.DisplayName = "DISTANT PLANET";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "DistantPlanetBG";
 stage.ForegroundSceneryName = "DistantPlanetFG";
-stage.MusicName = "A";
+stage.MusicName = "Luminosity_and_Viscosity";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {

@@ -204,6 +204,8 @@ namespace StageEditor
             GameControl game_control = this.Game;
             Galaxy.EditorGame game = game_control.Game;
             Galaxy.CStateEditor editor = game.State as Galaxy.CStateEditor;
+            if (editor == null)
+                return;
 
             game.AccessMutex.WaitOne();
             editor.PreviewAllEntities();

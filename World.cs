@@ -200,7 +200,7 @@ namespace Galaxy
 
         public void Update()
         {
-            if (!Game.IsActive)
+            if (!Game.IsActive && !Game.EditorMode)
             {
                 Paused = true;     
             }

@@ -10,7 +10,7 @@ stage.DisplayName = "FLYING OVER CARRIER";
 stage.ScrollSpeed = 3;
 stage.BackgroundSceneryName = "BlueSky";
 stage.ForegroundSceneryName = "Empty";
-stage.MusicName = "A";
+stage.MusicName = "fighting_for_control";
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "DarkBlue1",
