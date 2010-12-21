@@ -101,7 +101,7 @@ namespace Galaxy
         /// </summary>
         public new void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            base.UnloadContent();
         }
 
         /// <summary>

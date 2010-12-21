@@ -205,7 +205,9 @@ namespace Galaxy
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            State.OnExit();
+            if (State != null)
+                State.OnExit();
+
             CAudio.Shutdown();
             CSaveData.StopSaveThread();
         }
