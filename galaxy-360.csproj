@@ -66,6 +66,8 @@
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
     <None Include="Editor\Entities\EditorEntityMusicChanger.cs" />
+    <Compile Include="Effects\NewParticleEffect.cs" />
+    <Compile Include="Effects\ParticleEffectConfiguration.cs" />
     <Compile Include="Entities\MusicChanger.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Enemy\Cannon.cs" />

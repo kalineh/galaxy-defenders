@@ -166,17 +166,30 @@ namespace Galaxy
             {
                 CParticle particle = manager.GetCachedParticle();
 
-                particle.Visual = Visual;
-                particle.Position = Position - PositionVariation * 0.5f + random.NextVector2() * PositionVariation;
-                particle.PositionDelta = PositionDelta - PositionDeltaVariation * 0.5f + random.NextVector2Variable() * PositionDeltaVariation + ignore_camera;
+                particle.Position = Vector2.Add(Vector2.Subtract(Position, Vector2.Multiply(PositionVariation, 0.5f)), Vector2.Multiply(random.NextVector2(), PositionVariation));
+                particle.PositionDelta = Vector2.Add(Vector2.Add(Vector2.Subtract(PositionDelta, Vector2.Multiply(PositionDeltaVariation, 0.5f)), Vector2.Multiply(random.NextVector2Variable(), PositionDeltaVariation)), ignore_camera);
                 particle.Angle = Angle + -AngleDeltaVariation * 0.5f + AngleVariation * random.NextFloat();
                 particle.AngleDelta = AngleDelta - AngleDeltaVariation * 0.5f + AngleDeltaVariation * random.NextFloat();
-                particle.Scale = Scale - ScaleVariation * 0.5f + ScaleVariation * random.NextFloat();
-                particle.ScaleDelta = ScaleDelta - ScaleDeltaVariation * 0.5f + ScaleDeltaVariation * random.NextFloat();
+                particle.Scale = Vector2.Add(Vector2.Subtract(Scale, Vector2.Multiply(ScaleVariation, 0.5f)), Vector2.Multiply(ScaleVariation, random.NextFloat()));
+                particle.ScaleDelta = Vector2.Add(Vector2.Subtract(ScaleDelta, Vector2.Multiply(ScaleDeltaVariation, 0.5f)), Vector2.Multiply(ScaleDeltaVariation, random.NextFloat()));
                 particle.Color = Color;
                 particle.Alpha = Alpha - AlphaVariation * 0.5f + AlphaVariation * random.NextFloat();
                 particle.AlphaDelta = AlphaDelta - AlphaDeltaVariation * 0.5f + AlphaDeltaVariation * random.NextFloat();
                 particle.Lifetime = Lifetime + (int)(LifetimeVariation * -0.5f + LifetimeVariation * random.NextFloat());
+                particle.Frame = 0;
+
+
+                particle.Visual = Visual;
+                //particle.Position = Position - PositionVariation * 0.5f + random.NextVector2() * PositionVariation;
+                //particle.PositionDelta = PositionDelta - PositionDeltaVariation * 0.5f + random.NextVector2Variable() * PositionDeltaVariation + ignore_camera;
+                //particle.Angle = Angle + -AngleDeltaVariation * 0.5f + AngleVariation * random.NextFloat();
+                //particle.AngleDelta = AngleDelta - AngleDeltaVariation * 0.5f + AngleDeltaVariation * random.NextFloat();
+                //particle.Scale = Scale - ScaleVariation * 0.5f + ScaleVariation * random.NextFloat();
+                //particle.ScaleDelta = ScaleDelta - ScaleDeltaVariation * 0.5f + ScaleDeltaVariation * random.NextFloat();
+                //particle.Color = Color;
+                //particle.Alpha = Alpha - AlphaVariation * 0.5f + AlphaVariation * random.NextFloat();
+                //particle.AlphaDelta = AlphaDelta - AlphaDeltaVariation * 0.5f + AlphaDeltaVariation * random.NextFloat();
+                //particle.Lifetime = Lifetime + (int)(LifetimeVariation * -0.5f + LifetimeVariation * random.NextFloat());
                 particle.Frame = 0;
 
                 manager.Add(particle);
@@ -225,15 +238,15 @@ namespace Galaxy
             return new CParticleGroupSpawner()
             {
                 Visual = CParticleEffectManager.Triangle,
-                Count = 14,
+                Count = 24,
                 Position = position,
                 PositionDeltaVariation = new Vector2(8.0f, 8.0f),
                 Alpha = 0.8f,
                 AngleDeltaVariation = 0.1f,
-                Scale = new Vector2(0.4f, 0.4f),
-                ScaleVariation = new Vector2(-0.1f, -0.1f),
-                ScaleDeltaVariation = new Vector2(1.0f / 14.0f * -1.0f, 1.0f / 14.0f * -1.0f),
-                Lifetime = 14,
+                Scale = new Vector2(0.8f, 0.8f),
+                ScaleVariation = new Vector2(-0.15f, -0.15f),
+                ScaleDelta = new Vector2(-0.02f, -0.02f),
+                Lifetime = 18,
                 Color = color,
             };
         }
@@ -389,6 +402,25 @@ namespace Galaxy
                 ScaleDeltaVariation = new Vector2(0.0f, 0.0f),
                 Lifetime = 12,
                 Color = CEnemy.EnemyOrangeColor,
+            };
+        }
+
+        public static CParticleGroupSpawner MakeTestEffect(Vector2 position)
+        {
+            // TODO: not crap
+            return new CParticleGroupSpawner()
+            {
+                Visual = CParticleEffectManager.Triangle,
+                Count = 32,
+                Position = position,
+                PositionDeltaVariation = new Vector2(8.0f, 8.0f),
+                Alpha = 0.8f,
+                AngleDeltaVariation = 0.1f,
+                Scale = new Vector2(0.6f, 0.6f),
+                ScaleVariation = new Vector2(-0.15f, -0.15f),
+                ScaleDelta = new Vector2(-0.02f, -0.02f),
+                Lifetime = 22,
+                Color = Color.White,
             };
         }
 

@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -28,7 +29,6 @@ namespace Galaxy
         public List<CShip> Ships { get; set; }
         public CCollisionGrid CollisionGrid { get; set; }
         public CParticleEffectManager ParticleEffects { get; set; }
-        public Thread ParticleUpdateThread { get; set; }
         public bool Paused { get; set; }
         public bool DebugPaused { get; set; }
         public bool WasStepped { get; set; }
@@ -60,6 +60,8 @@ namespace Galaxy
         public COptionsMenu PauseMenuOptions { get; set; }
         public int GameOverCounter { get; set; }
         public CFader GameOverFader { get; set; }
+        public Stopwatch UpdateStopwatch { get; set; }
+        public Stopwatch DrawStopwatch { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -77,6 +79,8 @@ namespace Galaxy
             StageEndText = new List<string>();
             StageEndAwardText = new List<string>();
             GameOverCounter = -1;
+            UpdateStopwatch = new Stopwatch();
+            DrawStopwatch = new Stopwatch();
 
             PauseMenuBase = new CMenu(Game)
             {
@@ -163,8 +167,13 @@ namespace Galaxy
 
             CollisionGrid.Initialize(GameCamera.Position.ToVector2());
 
-            CollisionThread = new Thread(CollectEntityCollisionsImpl);
+            ThreadStart collision_thread_start = new ThreadStart(CollectEntityCollisionsImpl);
+            CollisionThread = new Thread(collision_thread_start);
             CollisionThread.Start();
+
+            //ThreadStart particle_thread_start = new ThreadStart(ParticleUpdate);
+            //ParticleUpdateThread = new Thread(particle_thread_start);
+            //ParticleUpdateThread.Start();
 
             SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
             int players = Game.PlayersInGame;
@@ -181,6 +190,9 @@ namespace Galaxy
 
         public void Stop()
         {
+            // allow threads to terminate naturally
+            CollisionThreadTerminate = true;
+
             CAudio.StopPauseMusic();
 
             // clear runtime ship info from hud
@@ -196,20 +208,13 @@ namespace Galaxy
             Entities.Clear();
             EntitiesToAdd.Clear();
             EntitiesToDelete.Clear();
-
-            // ignore failure from aborting non-started thread
-            // 360 does not have ThreadState or IsAlive
-            try
-            {
-                CollisionThreadTerminate = true;
-            }
-            catch (Exception)
-            {
-            }
         }
 
         public void Update()
         {
+            UpdateStopwatch.Reset();
+            UpdateStopwatch.Start();
+
             if (!Game.IsActive && !Game.EditorMode && !IsGameOverState())
             {
                 PauseGame();
@@ -253,13 +258,12 @@ namespace Galaxy
 
             // resolve previous frame collisions
             ResolveEntityCollisions();
+
             // delete entities removed as a result of collision
             ProcessEntityDelete();
 
+            // particle effects
             ParticleEffects.Update();
-
-            // delete entities as a result of update
-            ProcessEntityDelete();
 
             // kick new collision thread
             UpdateEntitiesThreadedCollision();
@@ -274,6 +278,8 @@ namespace Galaxy
                 DebugPaused = true;
                 WasStepped = false;
             }
+
+            UpdateStopwatch.Stop();
         }
 
         public void UpdatePauseInput()
@@ -529,6 +535,9 @@ namespace Galaxy
 
         public void Draw()
         {
+            DrawStopwatch.Reset();
+            DrawStopwatch.Start();
+
             Game.GraphicsDevice.Clear(Color.Black);
 
             Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
@@ -549,7 +558,7 @@ namespace Galaxy
 
             if (GameOverFader != null)
             {
-                Game.DefaultSpriteBatch.Begin();
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 GameOverFader.Draw(Game.DefaultSpriteBatch);
                 GameOverMenu.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
@@ -557,28 +566,28 @@ namespace Galaxy
 
             if (StageEndFader != null)
             {
-                Game.DefaultSpriteBatch.Begin();
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 StageEndFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretEntryFader != null)
             {
-                Game.DefaultSpriteBatch.Begin();
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 SecretEntryFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretFinishFader != null)
             {
-                Game.DefaultSpriteBatch.Begin();
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 SecretFinishFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (StageEndText.Count > 0)
             {
-                Game.DefaultSpriteBatch.Begin();
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 Vector2 text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, 150.0f);
                 Vector2 first_offset = new Vector2(100.0f, 0.0f);
                 foreach (string text in StageEndText)
@@ -606,6 +615,9 @@ namespace Galaxy
             }
 #endif
 
+
+
+            // 27ms (sorted), 7ms (immediate)
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
             ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
@@ -614,13 +626,20 @@ namespace Galaxy
             {
                 if (!DebugPaused)
                 {
-                    Game.DefaultSpriteBatch.Begin();
+                    Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                     Vector2 pause_text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, Game.GraphicsDevice.Viewport.Height / 2.0f - 250.0f);
                     Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(0, 0, 0, 92));
                     PauseMenu.Draw(Game.DefaultSpriteBatch);
                     Game.DefaultSpriteBatch.End();
                 }
             }
+
+            // simple profiling
+            //Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
+            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 0.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 32.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //Game.DefaultSpriteBatch.End();
+
         }
 
         public void DrawBackground(CCamera camera)
@@ -896,6 +915,11 @@ namespace Galaxy
 
         private void CollectEntityCollisionsImpl()
         {
+#if XBOX360
+            int[] threads = new int[] { 4 };
+            CollisionThread.SetProcessorAffinity(threads);
+#endif
+
             while (!CollisionThreadTerminate)
             {
                 while (!CollisionThreadRun)
@@ -1046,6 +1070,8 @@ namespace Galaxy
 
         public void PauseGame()
         {
+            if (Paused)
+                return;
             Paused = true;
             CAudio.PlayPauseMusic("1-X-0");
         }

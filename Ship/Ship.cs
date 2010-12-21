@@ -270,6 +270,7 @@ namespace Galaxy
             {
                 Pilot.Ability0.TryEnable();
             }
+            // TODO: this key isnt working?
             if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
             {
                 Pilot.Ability1.TryEnable();

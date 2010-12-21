@@ -137,6 +137,11 @@ namespace Galaxy
 
         public static void SaveThreadLoop()
         {
+#if XBOX360
+            int[] threads = new int[] { 3 };
+            SaveThread.SetProcessorAffinity(threads);
+#endif
+
             while (SaveThreadRunning)
             {
                 if (!SaveRequestFlag)

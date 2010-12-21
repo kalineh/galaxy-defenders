@@ -58,7 +58,7 @@ namespace Galaxy
 #else // XBOX360
                 if (stage != "*")
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
-#if DEBUG
+//#if DEBUG
                 // TODO: find a way to automate this on 360
                 if (stage == "*")
                 {
@@ -76,7 +76,7 @@ namespace Galaxy
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage11", Select = StartGame, Data = "Stage11" });
                     Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage12", Select = StartGame, Data = "Stage12" });
                 }
-#endif
+//#endif
 #endif
             }
 
@@ -108,7 +108,7 @@ namespace Galaxy
 
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin();
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
