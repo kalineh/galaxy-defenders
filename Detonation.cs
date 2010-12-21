@@ -30,7 +30,7 @@ namespace Galaxy
         public override void Update()
         {
             if (AliveTime <= 0)
-                CEffect.DetonationEffect(World, Physics.Position);
+                World.ParticleEffects.Spawn(EParticleType.SkillDetonationExplosion, Physics.Position);
 
             base.Update();
 

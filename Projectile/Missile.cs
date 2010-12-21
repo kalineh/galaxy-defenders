@@ -12,7 +12,6 @@ namespace Galaxy
     {
         public Vector2 FireVector { get; set; }
         public float Speed { get; set; }
-        public CParticleGroupSpawner TrailEffect { get; set; }
 
         public static CMissile Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
@@ -42,16 +41,12 @@ namespace Galaxy
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(1.0f, 0.5f));
-
-            TrailEffect = CParticleGroupSpawner.MakeMissileTrail(Vector2.Zero, Vector2.UnitY, CShip.GetPlayerColor(owner.GameControllerIndex));
         }
 
         public override void Update()
         {
             Physics.Velocity = Vector2.Lerp(Physics.Velocity, -FireVector * Speed, 0.05f);
-
-            TrailEffect.Position = Physics.Position;
-            TrailEffect.Spawn(World.ParticleEffects);
+            World.ParticleEffects.Spawn(EParticleType.WeaponMissileTrail, Physics.Position, Visual.Color, null, Physics.Velocity.Normal());
 
             base.Update();
 
@@ -68,7 +63,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.MissileExplosion(World, Physics.Position, 2.5f, Visual.Color);
+            World.ParticleEffects.Spawn(EParticleType.WeaponMissileHit, Physics.Position, Visual.Color, null, null);
             base.OnDie();
         }
     }

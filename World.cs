@@ -351,11 +351,7 @@ namespace Galaxy
             foreach (CShip ship in ShipEntitiesCache)
             {
                 ship.Physics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
-
-                CEffect.StageEndFlyEffect(this,
-                                          ship.Physics.Position + Random.NextVector2Variable() * 16.0f,
-                                          0.5f,
-                                          ship.Visual.Color);
+                ParticleEffects.Spawn(EParticleType.PlayerStageEndShipTrail, ship.Physics.Position, ship.Visual.Color, null, null);
             }
 
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
@@ -436,11 +432,7 @@ namespace Galaxy
             foreach (CShip ship in ShipEntitiesCache)
             {
                 ship.Physics.Velocity += Vector2.UnitY * -0.1f * StageEndCounter;
-
-                CEffect.StageEndFlyEffect(this,
-                                          ship.Physics.Position + Random.NextVector2Variable() * 16.0f,
-                                          0.5f,
-                                          ship.Visual.Color);
+                ParticleEffects.Spawn(EParticleType.PlayerStageEndShipTrail, ship.Physics.Position, ship.Visual.Color, null, null);
             }
 
 
@@ -615,8 +607,6 @@ namespace Galaxy
             }
 #endif
 
-
-
             // 27ms (sorted), 7ms (immediate)
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
             ParticleEffects.Draw(Game.DefaultSpriteBatch);
@@ -639,7 +629,6 @@ namespace Galaxy
             //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 0.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 32.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //Game.DefaultSpriteBatch.End();
-
         }
 
         public void DrawBackground(CCamera camera)

@@ -13,6 +13,7 @@ namespace Galaxy
         : CEntity
     {
         public static Color EnemyOrangeColor { get; set; }
+        public static string[] EnemyDeathSoundStrings = new string[] { "EnemyDie1", "EnemyDie2", "EnemyDie3" };
 
         static CEnemy()
         {
@@ -181,8 +182,8 @@ namespace Galaxy
         
         protected override void OnDie()
         {
-            // TODO: texture offset is not centered nicely? (enemy textures just offset maybe?
-            CEffect.EnemyExplosion(World, Physics.Position, 1.5f);
+            string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+            CAudio.PlaySound(death_sound);
 
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)

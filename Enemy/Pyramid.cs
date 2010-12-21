@@ -33,7 +33,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             // TODO: new explosion effect
-            CEffect.EnemyExplosion(World, Physics.Position, 3.0f);
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, null, 3.0f, null);
 
             CEnemy a = new CIsosceles();
             CEnemy b = new CIsosceles();

@@ -16,7 +16,6 @@ namespace Galaxy
         public CShip Target { get; set; }
         public float Speed { get; set; }
         public int Health { get; set; }
-        public CParticleGroupSpawner TrailEffect { get; set; }
 
         public static CEnemyMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
@@ -45,16 +44,13 @@ namespace Galaxy
             Collision = new CollisionCircle(Vector2.Zero, 10.0f);
 
             Health = 4;
-
-            TrailEffect = CParticleGroupSpawner.MakeEnemyMissileTrail(Vector2.Zero, Vector2.UnitY, CEnemy.EnemyOrangeColor);
         }
 
         public override void Update()
         {
             base.Update();
 
-            TrailEffect.Position = Physics.Position + GetEffectOffset();
-            TrailEffect.Spawn(World.ParticleEffects);
+            World.ParticleEffects.Spawn(EParticleType.EnemyMissileTrail, Physics.Position + GetEffectOffset());
 
             UpdateTargeting();
             UpdateTrajectory();
@@ -112,7 +108,6 @@ namespace Galaxy
             World.Stats.ShotDamageReceived += Damage;
             ship.TakeDamage(Damage);
 
-            CEffect.MissileExplosion(World, Physics.Position, 2.5f, CEnemy.EnemyOrangeColor);
             Die();
         }
 
@@ -163,7 +158,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.MissileExplosion(World, Physics.Position, 2.5f, CEnemy.EnemyOrangeColor);
+            World.ParticleEffects.Spawn(EParticleType.WeaponMissileHit, Physics.Position);
             base.OnDie();
         }
     }

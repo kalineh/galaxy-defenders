@@ -161,10 +161,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    CEffect.DashBurstEffect(Pilot.Ship.World,
-                                         Pilot.Ship.Physics.Position + Pilot.Ship.World.Random.NextVector2Variable() * 16.0f,
-                                         1.5f,
-                                         Pilot.Ship.Visual.Color);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillDashBurst, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
                 }
 
                 base.Update();
@@ -230,10 +227,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    CEffect.AbsorbBulletEffect(Pilot.Ship, 
-                                         Pilot.Ship.Physics.Position,
-                                         3.0f,
-                                         Pilot.Ship.Visual.Color);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillAbsorbBullet, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
                 }
                 base.Update();
             }
@@ -265,10 +259,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    CEffect.ReflectBulletEffect(Pilot.Ship, 
-                                         Pilot.Ship.Physics.Position,
-                                         3.0f,
-                                         Pilot.Ship.Visual.Color);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillReflectBullet, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
                 }
                 base.Update();
             }
@@ -391,7 +382,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     Vector2 hit_location = Pilot.Ship.Physics.Position + Vector2.UnitY * -100.0f;
-                    CEffect.Explosion(Pilot.Ship.World, hit_location, 4.0f);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillGroundSmash, hit_location);
 
                     const float Range = 150.0f;
                     foreach (CEntity entity in Pilot.Ship.World.GetEntities())
@@ -404,7 +395,6 @@ namespace Galaxy
                             if (length > Range)
                                 continue;
 
-                            CEffect.BuildingExplosion(Pilot.Ship.World, building.Physics.Position, 4.0f);
                             building.TakeDamage(1000.0f, Pilot.Ship);
                         }
 
@@ -417,7 +407,6 @@ namespace Galaxy
                             if (length > Range)
                                 continue;
 
-                            CEffect.BuildingExplosion(Pilot.Ship.World, enemy.Physics.Position, 4.0f);
                             enemy.TakeDamage(1000.0f, Pilot.Ship);
                         }
                     }
@@ -516,11 +505,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    CEffect.ArmorRepairEffect(Pilot.Ship.World, 
-                                         Pilot.Ship.Physics.Position,
-                                         1.5f,
-                                         Pilot.Ship.Visual.Color);
-
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillArmorRepair, Pilot.Ship.Physics.Position);
                     Pilot.Ship.CurrentArmor += 0.05f;
                     Pilot.Ship.CurrentArmor = Math.Min(Pilot.Ship.CurrentArmor, Pilot.Ship.Chassis.Armor);
                 }
