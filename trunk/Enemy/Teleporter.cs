@@ -73,7 +73,7 @@ namespace Galaxy
 
         private void Teleport()
         {
-            CEffect.TeleportOut(World, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterAppear, Physics.Position);
 
             Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - Physics.Position;
             Vector2 direction = to_center.Rotate(World.Random.NextFloat() * 0.2f * World.Random.NextSign());

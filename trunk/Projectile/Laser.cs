@@ -48,7 +48,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.LaserHit(World, Physics.Position, Physics.Velocity.Normal(), 1.0f, Visual.Color);
+            World.ParticleEffects.Spawn(EParticleType.WeaponLaserHit, Physics.Position, Visual.Color, null, Physics.Velocity.Normal());
             base.OnDie();
         }
     }

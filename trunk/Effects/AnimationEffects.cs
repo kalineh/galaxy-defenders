@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    class CEffect
+    class CAnimationEffects
     {
         public static CEntity Explosion(CWorld world, Vector2 position, float scale)
         {
@@ -30,8 +30,8 @@ namespace Galaxy
 
             world.EntityAdd(animation);
 
-            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
-            light_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
+            //light_spawner.Spawn(world.ParticleEffects);
 
             return animation;
         }
@@ -56,8 +56,8 @@ namespace Galaxy
             CAudio.PlaySound("WeaponHitMissile", 1.0f);
             world.EntityAdd(animation);
 
-            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, color);
-            light_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, color);
+            //light_spawner.Spawn(world.ParticleEffects);
 
             return animation;
         }
@@ -66,10 +66,10 @@ namespace Galaxy
         {
             CAudio.PlaySound("BuildingExplode", 1.0f);
 
-            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBuildingExplosion(position, new Color(177, 167, 167), power);
-            light_spawner.Spawn(world.ParticleEffects);
-            CParticleGroupSpawner dark_spawner = CParticleGroupSpawner.MakeBuildingExplosion(position, new Color(102, 102, 102), power);
-            dark_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBuildingExplosion(position, new Color(177, 167, 167), power);
+            //light_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner dark_spawner = CParticleGroupSpawner.MakeBuildingExplosion(position, new Color(102, 102, 102), power);
+            //dark_spawner.Spawn(world.ParticleEffects);
         }
 
         public static CEntity EnemyExplosion(CWorld world, Vector2 position, float scale)
@@ -93,10 +93,10 @@ namespace Galaxy
             CAudio.PlaySound(death_sound);
             world.EntityAdd(animation);
 
-            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(252, 124, 85));
-            light_spawner.Spawn(world.ParticleEffects);
-            CParticleGroupSpawner dark_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(102, 102, 102));
-            dark_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(252, 124, 85));
+            //light_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner dark_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(102, 102, 102));
+            //dark_spawner.Spawn(world.ParticleEffects);
 
             return animation;
         }
@@ -123,8 +123,8 @@ namespace Galaxy
             CAudio.PlaySound("PlayerArmorHit", 1.0f);
             ship.World.EntityAdd(animation);
 
-            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallExplosion(position, new Color(252, 124, 85));
-            spawner.Spawn(ship.World.ParticleEffects);
+            //CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallExplosion(position, new Color(252, 124, 85));
+            //spawner.Spawn(ship.World.ParticleEffects);
 
             return animation;
         }
@@ -145,7 +145,6 @@ namespace Galaxy
                     Color = color,
                 }
             );
-
             animation.AttachToEntity = ship;
 
             CAudio.PlaySound("PlayerShieldHit", 1.0f);
@@ -157,27 +156,27 @@ namespace Galaxy
         public static void CutterBallAbsorb(CWorld world, Vector2 position, Vector2 direction, float scale, Color color)
         {
             CAudio.PlaySound("WeaponHitLaser", 1.0f);
-            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
-            spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
+            //spawner.Spawn(world.ParticleEffects);
         }
 
         public static void LaserHit(CWorld world, Vector2 position, Vector2 direction, float scale, Color color)
         {
             CAudio.PlaySound("WeaponHitLaser", 1.0f);
-            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
-            spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeSmallDirectionalExplosion(position, direction, color);
+            //spawner.Spawn(world.ParticleEffects);
         }
 
         public static void TeleportOut(CWorld world, Vector2 position)
         {
-            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportOutEffect(position);
-            spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportOutEffect(position);
+            //spawner.Spawn(world.ParticleEffects);
         }
 
         public static void TeleportIn(CWorld world, Vector2 position)
         {
-            CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportInEffect(position);
-            spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner spawner = CParticleGroupSpawner.MakeTeleportInEffect(position);
+            //spawner.Spawn(world.ParticleEffects);
         }
 
         public static CEntity DashBurstEffect(CWorld world, Vector2 position, float scale, Color color)
@@ -283,8 +282,8 @@ namespace Galaxy
 
             world.EntityAdd(animation);
 
-            CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
-            light_spawner.Spawn(world.ParticleEffects);
+            //CParticleGroupSpawner light_spawner = CParticleGroupSpawner.MakeBigExplosion(position, new Color(177, 167, 167));
+            //light_spawner.Spawn(world.ParticleEffects);
 
             return animation;
         }

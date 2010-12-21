@@ -94,7 +94,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             ClearTarget();
-            CEffect.MissileExplosion(World, Physics.Position, 2.0f, Visual.Color);
+            World.ParticleEffects.Spawn(EParticleType.WeaponSeekBombHit, Physics.Position, Visual.Color, null, null);
             CAudio.PlaySound("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }

@@ -76,7 +76,7 @@ namespace Galaxy
         public List<SParticle> Particles { get; set; }
         public List<SAddRequest> AddRequests { get; set; }
         public List<SAddRequest> ThreadLocalAddRequests { get; set; }
-        public List<SEffectConfiguration> Configuration { get; set; }
+        public List<SEffectDefinition> Definitions { get; set; }
         public List<SParticle> DrawList { get; set; }
         public Mutex AddRequestMutex { get; set; }
         public Mutex DrawMutex { get; set; }
@@ -99,7 +99,7 @@ namespace Galaxy
             DrawList = new List<SParticle>(8192);
             AddRequests = new List<SAddRequest>(256);
             ThreadLocalAddRequests = new List<SAddRequest>(256);
-            Configuration = new List<SEffectConfiguration>(256);
+            Definitions = new List<SEffectDefinition>(256);
             AddRequestMutex = new Mutex();
             DrawMutex = new Mutex();
             Random = new Random();
@@ -113,15 +113,15 @@ namespace Galaxy
 
             for (int i = 0; i < 256; ++i)
             {
-                Configuration.Add(SEffectConfiguration.MakeDefaultEffectConfiguration());        
+                Definitions.Add(SEffectDefinition.MakeDefaultEffectDefinition());        
             }
         }
 
-        public void Initialize(Dictionary<EParticleType, SEffectConfiguration> configurations)
+        public void Initialize(Dictionary<EParticleType, SEffectDefinition> definitions)
         {
-            foreach (KeyValuePair<EParticleType, SEffectConfiguration> kv in configurations)
+            foreach (KeyValuePair<EParticleType, SEffectDefinition> kv in definitions)
             {
-                Configuration[(int)kv.Key] = kv.Value;
+                Definitions[(int)kv.Key] = kv.Value;
             }
         }
 
@@ -142,11 +142,11 @@ namespace Galaxy
             {
                 SAddRequest request = ThreadLocalAddRequests[i];
                 EParticleType type = request.Type;
-                SEffectConfiguration configuration = Configuration[(int)type];
+                SEffectDefinition definition = Definitions[(int)type];
 
                 for (int request_count = 0; request_count < request.Count; ++request_count)
                 {
-                    for (int particle_count = 0; particle_count < configuration.Count; ++particle_count)
+                    for (int particle_count = 0; particle_count < definition.Count; ++particle_count)
                     {
                         if (Dead.Count > 0)
                         {
@@ -156,17 +156,17 @@ namespace Galaxy
                             {
                                 Type = type,
                                 Index = index,
-                                Visual = configuration.Visual,
-                                Position = request.Position - configuration.PositionVariation * 0.5f + Random.NextVector2() * configuration.PositionVariation,
-                                PositionDelta = configuration.PositionDelta - configuration.PositionDeltaVariation * 0.5f + Random.NextVector2Variable() * configuration.PositionDeltaVariation + ignore_camera,
-                                Angle = -configuration.AngleDeltaVariation * 0.5f + configuration.AngleVariation * Random.NextFloat(),
-                                AngleDelta = configuration.AngleDelta - configuration.AngleDeltaVariation * 0.5f + configuration.AngleDeltaVariation * Random.NextFloat(),
-                                Scale = request.Scale * (configuration.Scale - configuration.ScaleVariation * 0.5f + configuration.ScaleVariation * Random.NextFloat()),
-                                ScaleDelta = configuration.ScaleDelta - configuration.ScaleDeltaVariation * 0.5f + configuration.ScaleDeltaVariation * Random.NextFloat(),
-                                Color = configuration.Color,
-                                Alpha = configuration.Alpha - configuration.AlphaVariation * 0.5f + configuration.AlphaVariation * Random.NextFloat(),
-                                AlphaDelta = configuration.AlphaDelta - configuration.AlphaDeltaVariation * 0.5f + configuration.AlphaDeltaVariation * Random.NextFloat(),
-                                Lifetime = configuration.Lifetime + (int)(configuration.LifetimeVariation * -0.5f + configuration.LifetimeVariation * Random.NextFloat()),
+                                Visual = definition.Visual,
+                                Position = request.Position - definition.PositionVariation * 0.5f + Random.NextVector2() * definition.PositionVariation,
+                                PositionDelta = definition.PositionDelta - definition.PositionDeltaVariation * 0.5f + Random.NextVector2Variable() * definition.PositionDeltaVariation + ignore_camera,
+                                Angle = -definition.AngleDeltaVariation * 0.5f + definition.AngleVariation * Random.NextFloat(),
+                                AngleDelta = definition.AngleDelta - definition.AngleDeltaVariation * 0.5f + definition.AngleDeltaVariation * Random.NextFloat(),
+                                Scale = request.Scale * (definition.Scale - definition.ScaleVariation * 0.5f + definition.ScaleVariation * Random.NextFloat()),
+                                ScaleDelta = definition.ScaleDelta - definition.ScaleDeltaVariation * 0.5f + definition.ScaleDeltaVariation * Random.NextFloat(),
+                                Color = definition.Color,
+                                Alpha = definition.Alpha - definition.AlphaVariation * 0.5f + definition.AlphaVariation * Random.NextFloat(),
+                                AlphaDelta = definition.AlphaDelta - definition.AlphaDeltaVariation * 0.5f + definition.AlphaDeltaVariation * Random.NextFloat(),
+                                Lifetime = definition.Lifetime + (int)(definition.LifetimeVariation * -0.5f + definition.LifetimeVariation * Random.NextFloat()),
                                 Frame = 0,
                             };
                             Particles[index] = particle;

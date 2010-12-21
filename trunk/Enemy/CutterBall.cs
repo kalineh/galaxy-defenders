@@ -36,7 +36,7 @@ namespace Galaxy
             // NOTE: ball absorbs damage entirely
             //Owner.TakeDamage(damage);
 
-            CEffect.CutterBallAbsorb(World, Physics.Position, Vector2.Zero, 0.5f, CEnemy.EnemyOrangeColor);
+            World.ParticleEffects.Spawn(EParticleType.EnemyCutterAbsorb, Physics.Position);
         }
     }
 }

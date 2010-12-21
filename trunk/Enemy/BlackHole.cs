@@ -12,9 +12,6 @@ namespace Galaxy
     public class CBlackHole
         : CEnemy
     {
-        public CParticleGroupSpawner CenterEffect { get; set; }
-        public CParticleGroupSpawner PullEffect { get; set; }
-
         public override void Initialize(CWorld world)
         {
             base.Initialize(world);
@@ -25,19 +22,13 @@ namespace Galaxy
             Visual.Depth = CLayers.Weapons + CLayers.SubLayerIncrement * 1.0f;
             Visual.Recache();
             HealthMax = 0.0f;
-
-            CenterEffect = CParticleGroupSpawner.MakeBlackHoleCenter(Vector2.Zero, CEnemy.EnemyOrangeColor);
-            PullEffect = CParticleGroupSpawner.MakeBlackHolePull(Vector2.Zero, Color.Black);
         }
 
         public override void UpdateAI()
         {
             base.UpdateAI();
-            CenterEffect.Position = Physics.Position;
-            CenterEffect.Spawn(World.ParticleEffects);
-
-            PullEffect.Position = Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f;
-            PullEffect.Spawn(World.ParticleEffects);
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f);
         }
 
         private void PullEntity(CEntity entity, float scale)
@@ -49,8 +40,7 @@ namespace Galaxy
             Vector2 pull = offset * square_inverse * 0.0000025f * scale;
             entity.Physics.Velocity += pull;
             entity.Physics.Velocity *= 0.99f;
-            PullEffect.Position = Physics.Position - offset.Normal() * 58.0f;
-            PullEffect.Spawn(World.ParticleEffects);
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHolePull, Physics.Position - offset.Normal() * 58.0f);
 
             if (length < 42.0f)
             {

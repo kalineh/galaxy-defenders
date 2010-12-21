@@ -125,7 +125,7 @@ namespace Galaxy
 
         private void OnDestroyed(CShip source)
         {
-            CEffect.BuildingExplosion(World, Physics.Position, HealthMax);
+            World.ParticleEffects.Spawn(EParticleType.BuildingDestroyed, Physics.Position, null, HealthMax, null);
             source.Score += CalculateScoreFromHealth();
             Visual = VisualDestroyed;
             Collision = null;

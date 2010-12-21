@@ -204,7 +204,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            CEffect.Explosion(World, Physics.Position, 1.0f);
+            World.ParticleEffects.Spawn(EParticleType.PlayerShipDestroyed, Physics.Position);
             World.ShipEntitiesCache.Remove(this);
         }
 
@@ -388,7 +388,10 @@ namespace Galaxy
                 if (CurrentShield > 0.0f)
                 {
                     if (effects)
-                        CEffect.PlayerTakeShieldDamage(this, Physics.Position, 3.0f, PlayerColor);
+                    {
+                        CAnimationEffects.PlayerTakeShieldDamage(this, Physics.Position, 3.0f, PlayerColor);
+                        World.ParticleEffects.Spawn(EParticleType.PlayerShipShieldDamage, Physics.Position, PlayerColor, null, null);
+                    }
                     return;
                 }
 
@@ -407,7 +410,9 @@ namespace Galaxy
                 return;
 
             if (effects)
-                CEffect.PlayerTakeDamage(this, Physics.Position, 1.5f);
+            {
+                World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, Physics.Position, PlayerColor, null, null);
+            }
         }
 
         public void AbsorbBullet(CEnemyShot shot)
