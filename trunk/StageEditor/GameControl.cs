@@ -35,12 +35,18 @@ namespace StageEditor
             CachedHandle = (object)this.Handle;
             HandleDestroyed += (sender, event_args) => Dispose();
             Click += new EventHandler(GameControl_Click);
+            HandleDestroyed += new EventHandler(GameControl_Destroyed);
         }
 
         void GameControl_Click(object sender, EventArgs e)
         {
             this.FindForm().Focus();
             this.Focus();
+        }
+
+        void GameControl_Destroyed(object sender, EventArgs e)
+        {
+            Game.UnloadContent();
         }
 
         /// <summary>
