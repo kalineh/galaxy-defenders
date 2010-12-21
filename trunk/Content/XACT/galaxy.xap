@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3971784561;
-    Last Modified High = 30122014;
+    Last Modified Low = 1912786881;
+    Last Modified High = 30122191;
 
     Category
     {
@@ -101,7 +101,7 @@ Global Settings
         Name = SFX;
         Public = 1;
         Background Music = 0;
-        Volume = 0;
+        Volume = -1200;
 
         Category Entry
         {
@@ -958,6 +958,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 2022414874;
     PC Bank Last Modified High = 30122019;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 1530746752;
     Bank Last Revised High = 30122019;
 
@@ -1384,6 +1386,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 2854857573;
     PC Bank Last Modified High = 30122022;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 2833966378;
     Bank Last Revised High = 30122022;
 
@@ -1418,8 +1422,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3995317545;
-    Bank Last Modified High = 30122013;
+    Bank Last Modified Low = 1106442398;
+    Bank Last Modified High = 30122190;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -3671,8 +3675,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2492681771;
-    Bank Last Modified High = 30122019;
+    Bank Last Modified Low = 1106442398;
+    Bank Last Modified High = 30122190;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -4919,8 +4923,8 @@ Sound Bank
     Windows File = Win\PauseMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1906233315;
-    Bank Last Modified High = 30122022;
+    Bank Last Modified Low = 1106452399;
+    Bank Last Modified High = 30122190;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 

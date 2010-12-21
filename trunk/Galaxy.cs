@@ -252,7 +252,7 @@ namespace Galaxy
 
             if (CSaveData.SaveIconVisible)
             {
-                DefaultSpriteBatch.Begin();
+                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 float step = 1.0f / 8.0f;
                 float rotation = step * ((GameFrame / 4) % 8);
                 // title safe area sucks :(
@@ -267,7 +267,7 @@ namespace Galaxy
                 MusicDisplayCounter -= 1;
                 //Vector2 position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Left, GraphicsDevice.Viewport.TitleSafeArea.Top);
                 Vector2 position = new Vector2(476.0f, GraphicsDevice.Viewport.TitleSafeArea.Bottom - 42.0f);
-                DefaultSpriteBatch.Begin();
+                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
                 MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);

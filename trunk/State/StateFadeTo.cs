@@ -61,7 +61,7 @@ namespace Galaxy
                 Target.Draw();
             }
 
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
             Fader.Draw(SpriteBatch);
             SpriteBatch.End();
         }

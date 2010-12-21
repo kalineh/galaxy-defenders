@@ -83,7 +83,7 @@ namespace Galaxy
 
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin();
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();

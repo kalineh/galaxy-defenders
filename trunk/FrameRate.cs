@@ -48,10 +48,10 @@ namespace Galaxy
         {
             FrameCounter += 1;
 
-            sprite_batch.Begin();
+            sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
 
             Vector2 position = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
-            sprite_batch.DrawString(Game.DefaultFont, CachedFrameRateString, position, Color.White);
+            sprite_batch.DrawString(Game.DefaultFont, CachedFrameRateString, position, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             
             sprite_batch.End();
         }
