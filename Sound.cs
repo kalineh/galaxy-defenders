@@ -97,7 +97,8 @@ namespace Galaxy
             CurrentMusic = MusicSoundBank.GetCue(name);
             CurrentMusic.Play();
 
-            OnMusicChange(name);
+            if (OnMusicChange != null)
+                OnMusicChange(name);
         }
 
         public static void StopMusic()

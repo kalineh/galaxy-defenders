@@ -28,6 +28,14 @@ namespace Galaxy
             return instance.ToString();
         }
 
+        private static string EnumToString(object instance)
+        {
+            Type type = instance.GetType();
+            string typename = type.ToString();
+            string valuename = instance.ToString();
+            return String.Format("{0}.{1}", typename, valuename);
+        }
+
         private static string PropertyToString(PropertyInfo property, Object instance)
         {
             StringBuilder sb = new StringBuilder();
@@ -159,6 +167,10 @@ namespace Galaxy
             {
                 WritePrimitive(sb, instance);
             }
+            else if (type.IsEnum)
+            {
+                WriteEnum(sb, instance);
+            }
             else if (type.IsValueType)
             {
                 WriteValueGraph(sb, instance);
@@ -221,6 +233,13 @@ namespace Galaxy
             }
 
             sb.AppendLine("},");
+        }
+
+        public static void WriteEnum(StringBuilder sb, object instance)
+        {
+            string value = EnumToString(instance);
+            sb.Append(value);
+            sb.AppendLine(",");
         }
 
         public static void WritePrimitive(StringBuilder sb, object instance)
@@ -286,7 +305,7 @@ namespace Galaxy
 
             // properties
             sb.AppendLine(String.Format("stage.DisplayName = \"{0}\";", stage_definition.DisplayName));
-            sb.AppendLine(String.Format("stage.ScrollSpeed = {0};", stage_definition.ScrollSpeed));
+            sb.AppendLine(String.Format("stage.ScrollSpeed = {0:0.0#}f;", stage_definition.ScrollSpeed));
             sb.AppendLine(String.Format("stage.BackgroundSceneryName = \"{0}\";", stage_definition.BackgroundSceneryName));
             sb.AppendLine(String.Format("stage.ForegroundSceneryName = \"{0}\";", stage_definition.ForegroundSceneryName));
             sb.AppendLine(String.Format("stage.MusicName = \"{0}\";", stage_definition.MusicName));

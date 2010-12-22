@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
     <Compile Include="Editor\Entities\EditorEntityMusicChanger.cs" />
     <Compile Include="Effects\ParticleEffectDefinitions.cs" />
     <Compile Include="Effects\NewParticleEffect.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="StageDefinitions\Stage7.cs" />
     <Compile Include="StageDefinitions\StagePresets.cs" />
     <Compile Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
     <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="Stage\Elements\StageElementCameraStop.cs" />

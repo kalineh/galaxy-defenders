@@ -13,28 +13,28 @@ namespace Galaxy
     public enum EParticleType
     {
         None,
-        PlayerStageEndShipTrail,
-        PlayerShipShieldDamage,
-        PlayerShipArmorDamage,
-        PlayerShipDestroyed,
-        BuildingDestroyed,
-        EnemyMissileTrail,
-        EnemyDeathExplosion,
-        EnemyBlackHoleCenter,
-        EnemyBlackHolePull,
-        EnemyTeleporterAppear,
-        EnemyCutterAbsorb,
-        SkillDashBurst,
-        SkillAbsorbBullet,
-        SkillReflectBullet,
-        SkillGroundSmash,
-        SkillArmorRepair,
-        SkillDetonationExplosion,
-        WeaponLaserHit,
-        WeaponMissileHit,
-        WeaponMissileTrail,
-        WeaponPlasmaHit,
-        WeaponSeekBombHit,
+        PlayerStageEndShipTrail,        // TODO
+        PlayerShipShieldDamage,        // TODO
+        PlayerShipArmorDamage,        // TODO
+        PlayerShipDestroyed,        // TODO
+        BuildingDestroyed,        // TODO
+        EnemyMissileTrail,        // TODO
+        EnemyDeathExplosion,        // TODO
+        EnemyBlackHoleCenter,        // TODO
+        EnemyBlackHolePull,        // TODO
+        EnemyTeleporterAppear,        // TODO
+        EnemyCutterAbsorb,        // TODO
+        SkillDashBurst,        // TODO
+        SkillAbsorbBullet,        // TODO
+        SkillReflectBullet,        // TODO
+        SkillGroundSmash,        // TODO
+        SkillArmorRepair,        // TODO
+        SkillDetonationExplosion,        // TODO
+        WeaponLaserHit,        // TODO
+        WeaponMissileHit,        // TODO
+        WeaponMissileTrail,        // TODO
+        WeaponPlasmaHit,        // TODO
+        WeaponSeekBombHit,        // TODO
     }
 
     public struct SEffectDefinition
@@ -67,12 +67,12 @@ namespace Galaxy
             return new SEffectDefinition()
             {
                 Type = EParticleType.None,
-                Count = 0,
-                Visual = null,
+                Count = 1,
+                Visual = CParticleEffectManager.Dot,
                 Position = Vector2.Zero,
                 PositionVariation = Vector2.Zero,
                 PositionDelta = Vector2.Zero,
-                PositionDeltaVariation = Vector2.Zero,
+                PositionDeltaVariation = Vector2.One,
                 Scale = Vector2.One,
                 ScaleVariation = Vector2.Zero,
                 ScaleDelta = Vector2.Zero,
