@@ -27,7 +27,9 @@ namespace Galaxy
             Dot.Recache();
             Triangle.Recache();
             Particles = new List<CParticle>();
-            Cache = new List<CParticle>(new CParticle[8192]);
+            Cache = new List<CParticle>(8192);
+            for (int i = 0; i < 8192; ++i)
+                Cache.Add(new CParticle());
             Definitions = new List<SEffectDefinition>(256);
             for (int i = 0; i < 256; ++i)
                 Definitions.Add(SEffectDefinition.MakeDefaultEffectDefinition());
