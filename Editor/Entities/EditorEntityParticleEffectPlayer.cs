@@ -24,7 +24,8 @@ namespace Galaxy
             : base(world, position)
         {
             Type = EParticleType.None;
-            Visual = CVisual.MakeLabel(world.Game, Type.ToString());
+            //Visual = CVisual.MakeLabel(world.Game, Type.ToString());
+            Visual = CVisual.MakeLabel(world.Game, "PFX");
             Cycle = 1.0f;
         }
 
@@ -32,8 +33,15 @@ namespace Galaxy
         {
             base.Update();
 
-            if (Visual.DebugText != Type.ToString())
-                Visual = CVisual.MakeLabel(World.Game, Type.ToString());
+            //if (Visual.DebugText != Type.ToString())
+                //Visual = CVisual.MakeLabel(World.Game, Type.ToString());
+
+            int cycle_frame = (int)(Cycle * 60.0f);
+            if (cycle_frame != 0)
+            {
+                if (World.Game.GameFrame % cycle_frame == 0)
+                    World.ParticleEffects.Spawn(Type, Position);     
+            }
         }
 
         public CEditorEntityParticleEffectPlayer(CWorld world, CStageElement element)

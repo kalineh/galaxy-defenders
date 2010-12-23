@@ -31,8 +31,8 @@ namespace Galaxy
         private struct CollisionRecord
         {
             public MethodInfo Method;
-            public object Inner;
-            public object Outer;
+            public CEntity Inner;
+            public CEntity Outer;
         };
 
         private List<CollisionRecord> CollisionRecords { get; set; }
@@ -150,11 +150,11 @@ namespace Galaxy
                 {
                     foreach (CEntity outer in column)
                     {
+                        if (outer.Collision == null)
+                            continue;
+
                         foreach (CEntity inner in column)
                         {
-                            if (outer.Collision == null)
-                                continue;
-
                             if (inner.Collision == null)
                                 continue;
 
@@ -205,14 +205,10 @@ namespace Galaxy
         {
             foreach (CollisionRecord record in CollisionRecords)
             {
-                try
+                if (record.Inner.Collision != null && record.Outer.Collision != null)
                 {
                     CacheParameters[0] = record.Inner;
                     record.Method.Invoke(record.Outer, CacheParameters);
-                }
-                catch (Exception exception)
-                {
-                    throw exception.InnerException;
                 }
             }
         }

@@ -25,6 +25,7 @@ namespace Galaxy
             building.Coins = Coins;
             building.Powerup = Powerup;
             building.TextureName = TextureName;
+            building.UpdateDefinition();
 
             //building.UpdateTexture();
 

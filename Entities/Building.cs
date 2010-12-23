@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,23 +13,77 @@ namespace Galaxy
     public class CBuilding
         : CEntity
     {
-        private float _HealthMax;
-        public float HealthMax
+        public struct SBuildingDefinition
         {
-            get { return _HealthMax; }
-            set { _HealthMax = value; Health = value; }
-        }
+            public float HealthMax;
+            public EParticleType ExplosionType;
+        };
 
+        public Dictionary<string, SBuildingDefinition> BuildingDefinitions = new Dictionary<string, SBuildingDefinition>()
+        {
+            {   "Building1",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 4.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
+            {   "Building2",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 2.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "Building3",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 10.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
+            {   "Building4",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 6.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
+            {   "Building5",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 7.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
+            {   "Building6",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 6.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
+            {   "Building7",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 9.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "Building8",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 9.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+        };
+
+        public float HealthMax { get; set; }
         public float Health { get; private set; }
         public int Coins { get; set; }
         public bool Powerup { get; set; }
-
-        private string _TextureName = "Building1";
-        public string TextureName
-        {
-            get { return _TextureName; }
-            set { _TextureName = value; UpdateTexture(); }
-        }
+        public string TextureName { get; set; }
 
         public CVisual VisualNormal { get; private set; }
         public CVisual VisualDestroyed { get; private set; }
@@ -48,7 +103,7 @@ namespace Galaxy
                 Delete();
         }
 
-        private void UpdateTexture()
+        public void UpdateDefinition()
         {
             VisualNormal = CVisual.MakeSpriteCached1(World.Game, "Textures/Static/" + TextureName);
             VisualDestroyed = CVisual.MakeSpriteCached1(World.Game, "Textures/Static/Destroyed/" + TextureName);
@@ -60,7 +115,9 @@ namespace Galaxy
             CollisionAABB aabb = Collision as CollisionAABB;
             aabb.Size = texture * Visual.Scale * 0.75f;
 
-            SetDefaultHealth();
+            SBuildingDefinition definition = BuildingDefinitions[TextureName];
+            Health = definition.HealthMax;
+            HealthMax = definition.HealthMax;
         }
 
         // TODO: CWeapon OnCollide?
@@ -123,10 +180,14 @@ namespace Galaxy
             return score - score % 10;
         }
 
-        private void OnDestroyed(CShip source)
+        protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.BuildingDestroyed, Physics.Position, null, HealthMax, null);
-            source.Score += CalculateScoreFromHealth();
+            Vector2 center = Physics.Position;
+
+            SBuildingDefinition definition = BuildingDefinitions[TextureName];
+            EParticleType type = definition.ExplosionType;
+            World.ParticleEffects.Spawn(type, center, new Color(102, 102, 102), null, null);
+            World.ParticleEffects.Spawn(type, center, new Color(229, 214, 214), null, null);
             Visual = VisualDestroyed;
             Collision = null;
 
@@ -145,6 +206,15 @@ namespace Galaxy
                 powerup.Physics.Position = Physics.Position;
                 World.EntityAdd(powerup);
             }
+
+            // TODO: cache
+            CDecoration corpse = new CDecoration();
+            corpse.Initialize(World);
+            corpse.Physics.Position = Physics.Position;
+            corpse.Visual = VisualDestroyed;
+            World.EntityAdd(corpse);
+
+            base.OnDie();
         }
 
         public void TakeDamage(float damage, CShip source)
@@ -153,7 +223,8 @@ namespace Galaxy
             if (Health < 0.0f)
             {
                 World.Stats.BuildingKills += 1;
-                OnDestroyed(source);
+                source.Score += CalculateScoreFromHealth();
+                Die();
             }
         }
 
@@ -162,28 +233,6 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionAABB aabb = Collision as CollisionAABB;
             aabb.Position = Physics.Position - aabb.Size * 0.5f;
-        }
-
-        private void SetDefaultHealth()
-        {
-            // TODO: do this in a way that doesnt suck
-            // TODO: all use default health
-            //if (HealthMax > 0.0f)
-                //return;
-
-            switch (TextureName)
-            {
-                case "Building1": HealthMax = 4.0f; break;
-                case "Building2": HealthMax = 2.0f; break;
-                case "Building3": HealthMax = 10.0f; break;
-                case "Building4": HealthMax = 6.0f; break;
-                case "Building5": HealthMax = 7.0f; break;
-                case "Building6": HealthMax = 6.0f; break;
-                case "Building7": HealthMax = 9.0f; break;
-                case "Building8": HealthMax = 9.0f; break;
-            }
-
-            Health = HealthMax;
         }
     }
 }

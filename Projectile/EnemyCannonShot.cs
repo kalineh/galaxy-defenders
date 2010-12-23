@@ -75,7 +75,7 @@ namespace Galaxy
                 return;
 
             World.Stats.ShotDamageReceived += Damage;
-            ship.TakeDamage(Damage);
+            ship.TakeDamage(Physics.Position, Physics.Velocity, Damage);
 
             Vector2 ofs = ship.Physics.Position - Physics.Position;
             Vector2 dir = ofs.Normal();

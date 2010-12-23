@@ -31,13 +31,13 @@ namespace Galaxy
             for (int i = 0; i < 8192; ++i)
                 Cache.Add(new CParticle());
             Definitions = new List<SEffectDefinition>(256);
-            for (int i = 0; i < 256; ++i)
-                Definitions.Add(SEffectDefinition.MakeDefaultEffectDefinition());
         }
 
         public void Initialize(Dictionary<EParticleType, SEffectDefinition> definitions)
         {
             Definitions.Clear();
+            for (int i = 0; i < definitions.Count; ++i)
+                Definitions.Add(SEffectDefinition.MakeDefaultEffectDefinition());
             foreach (KeyValuePair<EParticleType, SEffectDefinition> kv in definitions)
                 Definitions[(int)kv.Key] = kv.Value;
         }
@@ -105,7 +105,7 @@ namespace Galaxy
             Random random = World.Random;
             Vector2 ignore_camera = World.ScrollSpeed * -Vector2.UnitY * 0.5f;
 
-            Vector2 HalfPositionVariation = d.PositionVariation * 0.5f;
+            Vector2 HalfPositionVariationBox = d.PositionVariationBox * 0.5f;
             Vector2 HalfPositionDeltaVariation = d.PositionDeltaVariation * 0.5f;
             float HalfAngleVariation = d.AngleVariation * 0.5f;
             float HalfAngleDeltaVariation = d.AngleDeltaVariation * 0.5f;
@@ -124,7 +124,7 @@ namespace Galaxy
                 CParticle particle = GetCachedParticle();
 
                 particle.Visual = d.Visual;
-                particle.Position = position - HalfPositionVariation + random.NextVector2() * d.PositionVariation;
+                particle.Position = position - HalfPositionVariationBox + random.NextVector2Variable() * d.PositionVariationBox + d.PositionVariationCircle * random.NextVector2() + d.Position;
                 particle.PositionDelta = position_delta - HalfPositionDeltaVariation + random.NextVector2Variable() * d.PositionDeltaVariation + ignore_camera;
                 particle.Angle = d.Angle - HalfAngleVariation + d.AngleVariation * random.NextFloat();
                 particle.AngleDelta = d.AngleDelta - HalfAngleDeltaVariation + d.AngleDeltaVariation * random.NextFloat();

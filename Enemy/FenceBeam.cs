@@ -45,7 +45,7 @@ namespace Galaxy
             World.Stats.CollisionDamageReceived += 2.0f;
             Vector2 collision_point = Physics.Position;
             collision_point.X = ship.Physics.Position.X;
-            ship.TakeCollideDamage(collision_point, 2.0f);
+            ship.TakeCollideDamage(collision_point, Vector2.Zero, 2.0f);
         }
     }
 }

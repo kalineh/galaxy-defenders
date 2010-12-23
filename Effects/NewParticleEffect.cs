@@ -157,7 +157,7 @@ namespace Galaxy
                                 Type = type,
                                 Index = index,
                                 Visual = definition.Visual,
-                                Position = request.Position - definition.PositionVariation * 0.5f + Random.NextVector2() * definition.PositionVariation,
+                                Position = request.Position - definition.PositionVariationBox * 0.5f + Random.NextVector2Variable() * definition.PositionVariationBox + definition.PositionVariationCircle * Random.NextVector2(),
                                 PositionDelta = definition.PositionDelta - definition.PositionDeltaVariation * 0.5f + Random.NextVector2Variable() * definition.PositionDeltaVariation + ignore_camera,
                                 Angle = -definition.AngleDeltaVariation * 0.5f + definition.AngleVariation * Random.NextFloat(),
                                 AngleDelta = definition.AngleDelta - definition.AngleDeltaVariation * 0.5f + definition.AngleDeltaVariation * Random.NextFloat(),

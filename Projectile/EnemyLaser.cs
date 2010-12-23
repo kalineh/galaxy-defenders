@@ -66,7 +66,7 @@ namespace Galaxy
             }
 
             World.Stats.ShotDamageReceived += Damage;
-            ship.TakeDamage(Damage);
+            ship.TakeDamage(Physics.Position, Physics.Velocity, Damage);
             Die();
         }
 
