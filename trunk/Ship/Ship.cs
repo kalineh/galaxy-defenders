@@ -204,7 +204,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.PlayerShipDestroyed, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.PlayerShipDestroyed, Physics.Position, PlayerColor, null, null);
             World.ShipEntitiesCache.Remove(this);
         }
 
@@ -344,12 +344,25 @@ namespace Galaxy
             Fire(WeaponSidekickRight);
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(Vector2 source, Vector2 velocity, float damage)
         {
-            ApplyDamage(damage, true);
+            ApplyDamage(damage);
+
+            Vector2 position = Physics.Position + (source - Physics.Position) * 0.35f;
+            Vector2 force = velocity.Normal() * -2.0f;
+            if (CurrentShield > 0.0f)
+            {
+                CAnimationEffects.PlayerTakeShieldDamage(this, Physics.Position, 1.5f, PlayerColor);
+                World.ParticleEffects.Spawn(EParticleType.PlayerShipShieldDamage, position, PlayerColor, null, null);
+            }
+            else
+            {
+                World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, position, PlayerColor, null, force);
+            }
+
         }
 
-        public void TakeCollideDamage(Vector2 source, float damage)
+        public void TakeCollideDamage(Vector2 source, Vector2 velocity, float damage)
         {
             Vector2 offset = Physics.Position - source;
             if (!offset.IsEffectivelyZero() && IsInvincible <= 0)
@@ -358,7 +371,8 @@ namespace Galaxy
                 Physics.Velocity *= 0.8f;
                 Physics.Velocity += dir * 7.0f * damage;
             }
-            ApplyDamage(damage, true);
+
+            TakeDamage(source, Physics.Velocity, damage);
 
             // TODO: find a way to be sure we can disable this in all cases so it doesnt get left on (particularly after program exit)
             //Vibrate = 0.4f;
@@ -366,18 +380,18 @@ namespace Galaxy
 
         public void TakeDirectDamage(float damage)
         {
-            ApplyDamage(damage, false);
+            ApplyDamage(damage);
         }
 
         public void TakeDirectArmorDamage(float damage)
         {
             float shield = CurrentShield;
             CurrentShield = 0.0f;
-            ApplyDamage(damage, false);
+            ApplyDamage(damage);
             CurrentShield = shield;
         }
 
-        private void ApplyDamage(float damage, bool effects)
+        private void ApplyDamage(float damage)
         {
             if (IsInvincible > 0)
                 return;
@@ -386,14 +400,7 @@ namespace Galaxy
             {
                 CurrentShield -= damage;
                 if (CurrentShield > 0.0f)
-                {
-                    if (effects)
-                    {
-                        CAnimationEffects.PlayerTakeShieldDamage(this, Physics.Position, 3.0f, PlayerColor);
-                        World.ParticleEffects.Spawn(EParticleType.PlayerShipShieldDamage, Physics.Position, PlayerColor, null, null);
-                    }
                     return;
-                }
 
                 damage = Math.Abs(CurrentShield);
                 CurrentShield = 0.0f;
@@ -404,14 +411,6 @@ namespace Galaxy
             {
                 Die();
                 return;
-            }
-
-            if (CurrentShield > 0.0f)
-                return;
-
-            if (effects)
-            {
-                World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, Physics.Position, PlayerColor, null, null);
             }
         }
 

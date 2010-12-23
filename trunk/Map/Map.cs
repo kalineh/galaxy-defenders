@@ -424,10 +424,12 @@ namespace Galaxy
                     "BasicGenerator",
                     "CoreGenerator",
                     "PowerGenerator",
+                    "UltraGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
+                    "UltraShield",
                 },
             },
             new CMapNode() {
@@ -456,10 +458,12 @@ namespace Galaxy
                     "BasicGenerator",
                     "CoreGenerator",
                     "PowerGenerator",
+                    "UltraGenerator",
                 },
                 AvailableShieldParts = new List<string>() {
                     "BasicShield",
                     "EnhancedShield",
+                    "UltraShield",
                 },
             },
             new CMapNode() {

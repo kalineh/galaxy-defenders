@@ -76,6 +76,7 @@ namespace Galaxy
             Ships = new List<CShip>();
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
             ParticleEffects = new CParticleEffectManager(this);
+            ParticleEffects.Initialize(CGalaxyEffects.MakeDefinitions());
             StageEndText = new List<string>();
             StageEndAwardText = new List<string>();
             GameOverCounter = -1;

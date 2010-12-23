@@ -91,7 +91,7 @@ namespace Galaxy
         public void OnCollide(CShip source)
         {
             World.Stats.CollisionDamageReceived += 2.5f;
-            source.TakeCollideDamage(Physics.Position, 2.5f);
+            source.TakeCollideDamage(Physics.Position, Physics.Velocity, 2.5f);
 
             World.Stats.CollisionDamageDealt += 0.5f;
             TakeDamage(0.5f, source);
@@ -230,6 +230,7 @@ namespace Galaxy
 
             if (Mover == null)
             {
+                // TODO: cache
                 CDecoration corpse = new CDecoration();
                 corpse.Initialize(World);
                 corpse.Physics.Position = Physics.Position;

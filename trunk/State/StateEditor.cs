@@ -104,6 +104,7 @@ namespace Galaxy
             BackgroundScenery.Update();
             ForegroundScenery.Update();
             World.UpdateEntities();
+            World.ParticleEffects.Update();
         }
 
         public void UpdateMouse()
@@ -512,6 +513,11 @@ namespace Galaxy
             {
                 CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);
             }
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+
+            World.ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
 
             // render debug
             CDebugRender.Render(Game);
