@@ -13,11 +13,13 @@ namespace Galaxy
         : CEntity
     {
         public static Color EnemyOrangeColor { get; set; }
+        public static Color EnemyGrayColor { get; set; }
         public static string[] EnemyDeathSoundStrings = new string[] { "EnemyDie1", "EnemyDie2", "EnemyDie3" };
 
         static CEnemy()
         {
             EnemyOrangeColor = new Color(252, 124, 85, 255);
+            EnemyGrayColor = new Color(102, 102, 102, 255);
         }
 
         private float _HealthMax;
@@ -184,6 +186,9 @@ namespace Galaxy
         {
             string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
             CAudio.PlaySound(death_sound);
+
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, null, World.ScrollSpeed * -Vector2.UnitY * 0.5f);
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, null, World.ScrollSpeed * -Vector2.UnitY * 0.5f);
 
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)

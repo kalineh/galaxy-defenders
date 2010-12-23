@@ -103,7 +103,7 @@ namespace Galaxy
         {
             SEffectDefinition d = Definitions[(int)type];
             Random random = World.Random;
-            Vector2 ignore_camera = World.ScrollSpeed * -Vector2.UnitY * 0.5f;
+            Vector2 ignore_camera = World.ScrollSpeed * -Vector2.UnitY * 0.0f;
 
             Vector2 HalfPositionVariationBox = d.PositionVariationBox * 0.5f;
             Vector2 HalfPositionDeltaVariation = d.PositionDeltaVariation * 0.5f;
