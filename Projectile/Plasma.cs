@@ -49,7 +49,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaHit, Physics.Position, Visual.Color, null, Physics.Velocity.Normal());
+            World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaHit, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
             base.OnDie();
         }
     }

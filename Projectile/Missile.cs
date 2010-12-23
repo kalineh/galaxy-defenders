@@ -46,7 +46,9 @@ namespace Galaxy
         public override void Update()
         {
             Physics.Velocity = Vector2.Lerp(Physics.Velocity, -FireVector * Speed, 0.05f);
-            World.ParticleEffects.Spawn(EParticleType.WeaponMissileTrail, Physics.Position, Visual.Color, null, Physics.Velocity.Normal());
+            Vector2 dir = Physics.Velocity.Normal();
+            if (dir.Y < 0.0f)
+                World.ParticleEffects.Spawn(EParticleType.WeaponMissileTrail, Physics.Position + dir * -8.0f, Visual.Color, null, -dir);
 
             base.Update();
 
