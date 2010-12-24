@@ -49,6 +49,8 @@ namespace Galaxy
         public List<CWeapon> WeaponSidekickRight { get; set; }
 
         public CVisual SidekickVisual { get; set; }
+        public CVisual ShieldHitVisual { get; set; }
+        public int ShieldHitDisplayFrames { get; set; }
 
         public float Vibrate { get; set; }
 
@@ -102,6 +104,11 @@ namespace Galaxy
             SidekickVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Player/Sidekick");
             SidekickVisual.Color = PlayerColor;
             SidekickVisual.Update();
+
+            ShieldHitVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/PlayerShieldHit");
+            ShieldHitVisual.Color = new Color(PlayerColor, 92);
+            ShieldHitVisual.Scale = new Vector2(1.25f, 1.25f);
+            ShieldHitVisual.Update();
 
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
@@ -180,6 +187,9 @@ namespace Galaxy
                 SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * -32.0f, Physics.GetDir().Perp().ToAngle());
             if (WeaponSidekickRight.Count > 0)
                 SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * 32.0f, Physics.GetDir().Perp().ToAngle());
+
+            if (ShieldHitDisplayFrames > 0)
+                ShieldHitVisual.Draw(sprite_batch, Physics.Position, Physics.Rotation);
         }
 
         public List<CWeapon> UpgradeWeapon(CWeaponPart weapon_part)
@@ -304,6 +314,8 @@ namespace Galaxy
 
         public void UpdateShields()
         {
+            ShieldHitDisplayFrames = Math.Max(0, ShieldHitDisplayFrames - 1);
+
             // shields never use the energy of the primary weapon
             // this forces the player to balance weapon usage with shields
             if (CurrentEnergy < SingleShotEnergyUsage * 2.0f)
@@ -352,7 +364,9 @@ namespace Galaxy
             Vector2 force = velocity.Normal() * -2.0f;
             if (CurrentShield > 0.0f)
             {
-                CAnimationEffects.PlayerTakeShieldDamage(this, Physics.Position, 1.5f, PlayerColor);
+                //CAnimationEffects.PlayerTakeShieldDamage(this, Physics.Position, 1.5f, PlayerColor);
+                CAudio.PlaySound("PlayerShieldHit", 1.0f);
+                ShieldHitDisplayFrames = 4;
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipShieldDamage, position, PlayerColor, null, null);
             }
             else

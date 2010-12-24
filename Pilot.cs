@@ -161,7 +161,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillDashBurst, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillDashBurst, Pilot.Ship.Physics.Position, Pilot.Ship.PlayerColor, null, null);
                 }
 
                 base.Update();
@@ -227,7 +227,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillAbsorbBullet, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillAbsorbBullet, Pilot.Ship.Physics.Position, Pilot.Ship.PlayerColor, null, null);
                 }
                 base.Update();
             }
@@ -259,7 +259,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillReflectBullet, Pilot.Ship.Physics.Position, Pilot.Ship.Visual.Color, null, null);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillReflectBullet, Pilot.Ship.Physics.Position, Pilot.Ship.PlayerColor, null, null);
                 }
                 base.Update();
             }
@@ -356,6 +356,16 @@ namespace Galaxy
                             Pilot.Ship.World.EntityAdd(bonus);
                             laser.Die();
                         }
+
+                        CEnemyPellet pellet = entity as CEnemyPellet;
+                        if (pellet != null)
+                        {
+                            CBonus bonus = new CBonus();
+                            bonus.Initialize(Pilot.Ship.World);
+                            bonus.Physics.Position = pellet.Physics.Position;
+                            Pilot.Ship.World.EntityAdd(bonus);
+                            pellet.Die();
+                        }
                     }
                 }
                 base.Update();
@@ -382,7 +392,7 @@ namespace Galaxy
                 if (Enabled)
                 {
                     Vector2 hit_location = Pilot.Ship.Physics.Position + Vector2.UnitY * -100.0f;
-                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillGroundSmash, hit_location);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillGroundSmash, hit_location, Pilot.Ship.PlayerColor, null, null);
 
                     const float Range = 150.0f;
                     foreach (CEntity entity in Pilot.Ship.World.GetEntities())
@@ -505,7 +515,7 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
-                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillArmorRepair, Pilot.Ship.Physics.Position);
+                    Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillArmorRepair, Pilot.Ship.Physics.Position, Pilot.Ship.PlayerColor, null, null);
                     Pilot.Ship.CurrentArmor += 0.05f;
                     Pilot.Ship.CurrentArmor = Math.Min(Pilot.Ship.CurrentArmor, Pilot.Ship.Chassis.Armor);
                 }

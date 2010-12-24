@@ -191,6 +191,8 @@ namespace Galaxy
             Visual = VisualDestroyed;
             Collision = null;
 
+            CAudio.PlaySound("BuildingExplode", 1.0f);
+
             for (int i = 0; i < Coins; i++)
             {
                 CBonus bonus = new CBonus();

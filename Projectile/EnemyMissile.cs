@@ -69,6 +69,7 @@ namespace Galaxy
             if (Target != null && Target.IsDead)
             {
                 Target = null;
+                Physics.AngularVelocity = 0.0f;
                 return;
             }
 
@@ -158,7 +159,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.WeaponMissileHit, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.WeaponMissileHit, Physics.Position, CEnemy.EnemyOrangeColor, null, null);
             base.OnDie();
         }
     }

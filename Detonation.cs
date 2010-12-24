@@ -24,13 +24,13 @@ namespace Galaxy
             Owner = owner;
             World = owner.World;
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 128.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
         }
 
         public override void Update()
         {
             if (AliveTime <= 0)
-                World.ParticleEffects.Spawn(EParticleType.SkillDetonationExplosion, Physics.Position);
+                World.ParticleEffects.Spawn(EParticleType.SkillDetonationExplosion, Physics.Position, Owner.PlayerColor, null, null);
 
             base.Update();
 
@@ -42,7 +42,7 @@ namespace Galaxy
         {
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.Position;
-            circle.Radius = 128.0f;
+            circle.Radius = 48.0f;
         }
     }
 }

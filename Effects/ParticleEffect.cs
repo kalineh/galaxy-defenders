@@ -136,6 +136,9 @@ namespace Galaxy
                 particle.Lifetime = d.Lifetime + (int)(-HalfLifetimeVariation + d.LifetimeVariation * random.NextFloat());
                 particle.Frame = 0;
 
+                Vector2 out_ = particle.Position - position;
+                particle.PositionDelta += out_.Normal() * d.OutDelta;
+
                 Add(particle);
             }
         }
