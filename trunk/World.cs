@@ -549,6 +549,11 @@ namespace Galaxy
             DrawEntities(GameCamera);
             DrawForeground(GameCamera);
 
+            // 27ms (sorted), 7ms (immediate)
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
+            ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
             if (GameOverFader != null)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
@@ -607,11 +612,6 @@ namespace Galaxy
                 CollisionGrid.Draw(GameCamera.WorldMatrix, Color.White);
             }
 #endif
-
-            // 27ms (sorted), 7ms (immediate)
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
-            ParticleEffects.Draw(Game.DefaultSpriteBatch);
-            Game.DefaultSpriteBatch.End();
 
             if (Paused)
             {

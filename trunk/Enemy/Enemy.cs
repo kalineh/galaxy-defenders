@@ -187,8 +187,12 @@ namespace Galaxy
             string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
             CAudio.PlaySound(death_sound);
 
-            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, null, World.ScrollSpeed * -Vector2.UnitY * 0.5f);
-            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, null, World.ScrollSpeed * -Vector2.UnitY * 0.5f);
+            Vector2 anti_camera = Vector2.Zero;
+            if (Mover != null)
+                anti_camera = World.ScrollSpeed * -Vector2.UnitY * 0.5f;
+
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, null, anti_camera);
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, null, anti_camera);
 
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)

@@ -80,6 +80,12 @@ namespace Galaxy
             Die();
         }
 
+        protected override void OnDie()
+        {
+            World.ParticleEffects.Spawn(EParticleType.EnemyShotHit, Physics.Position);
+            base.OnDie();
+        }
+
         private void Reflect(CShip ship)
         {
             Vector2 from_ship = Physics.Position - ship.Physics.Position;
