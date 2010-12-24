@@ -137,7 +137,8 @@ namespace Galaxy
                 particle.Frame = 0;
 
                 Vector2 out_ = particle.Position - position;
-                particle.PositionDelta += out_.Normal() * d.OutDelta;
+                if (!out_.IsEffectivelyZero())
+                    particle.PositionDelta += out_.Normal() * d.OutDelta;
 
                 Add(particle);
             }

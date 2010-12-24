@@ -35,8 +35,6 @@ namespace Galaxy
         {
             // NOTE: ball absorbs damage entirely
             //Owner.TakeDamage(damage);
-
-            World.ParticleEffects.Spawn(EParticleType.EnemyCutterAbsorb, Physics.Position);
         }
     }
 }

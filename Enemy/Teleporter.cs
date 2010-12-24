@@ -16,8 +16,8 @@ namespace Galaxy
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
 
-        public bool IsTeleporting { get; private set; }
         public int TeleportCountdown { get; set; }
+        public int InTeleportCountdown { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -43,37 +43,59 @@ namespace Galaxy
             UpdateTeleport();
         }
 
+        public override void Draw(SpriteBatch sprite_batch)
+        {
+            if (InTeleportCountdown > 0)
+                return;
+
+            base.Draw(sprite_batch);
+        }
+
         private void UpdateFire()
         {
-            if (IsTeleporting)
+            if (TeleportCountdown > 0)
+                return;
+
+            if (InTeleportCountdown > 0)
                 return;
 
             FireCooldown -= 1;
             if (FireCooldown <= 0)
             {
                 Fire();
-                IsTeleporting = true;
                 TeleportCountdown = 90;
             }
         }
 
         private void UpdateTeleport()
         {
-            if (!IsTeleporting)
-                return;
-
-            TeleportCountdown = Math.Max(0, TeleportCountdown - 1); 
-            Physics.AngularVelocity += 0.005f;
-            if (TeleportCountdown == 0)
+            if (TeleportCountdown > 0)
             {
-                Teleport();
-                Fire();
+                TeleportCountdown -= 1;
+                Physics.AngularVelocity += 0.005f;
+                if (TeleportCountdown == 0)
+                {
+                    Teleport();
+                    Fire();
+                }
+
+                return;
+            }
+
+            if (InTeleportCountdown > 0)
+            {
+                InTeleportCountdown -= 1;
+                if (InTeleportCountdown == 0)
+                    Collision.Enabled = true;
+
+                if (InTeleportCountdown == 25)
+                    World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterAppear, Physics.Position);
             }
         }
 
         private void Teleport()
         {
-            World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterAppear, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterVanish, Physics.Position);
 
             Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - Physics.Position;
             Vector2 direction = to_center.Rotate(World.Random.NextFloat() * 0.2f * World.Random.NextSign());
@@ -81,7 +103,8 @@ namespace Galaxy
             Physics.Position += to_target;
             Physics.Position += Vector2.UnitY * -300.0f;
             Physics.AngularVelocity = 0.005f;
-            IsTeleporting = false;
+            InTeleportCountdown = 90;
+            Collision.Enabled = false;
 
             // TODO: a not crap effect
             //CEffect.TeleportIn(World, Physics.Position);
