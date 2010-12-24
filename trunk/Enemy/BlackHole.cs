@@ -27,7 +27,7 @@ namespace Galaxy
         public override void UpdateAI()
         {
             base.UpdateAI();
-            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position);
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position, CEnemy.EnemyOrangeColor, null, null);
             World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f);
         }
 
@@ -35,7 +35,7 @@ namespace Galaxy
         {
             Vector2 offset = Physics.Position - entity.Physics.Position;
             float length = offset.Length();
-            float inverse = Math.Max( 0.0f, 300.0f - length );
+            float inverse = Math.Max(0.0f, 300.0f - length);
             float square_inverse = inverse * inverse;
             Vector2 pull = offset * square_inverse * 0.0000025f * scale;
             entity.Physics.Velocity += pull;
