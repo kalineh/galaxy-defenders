@@ -114,8 +114,8 @@ namespace Galaxy
             AccessMutex.WaitOne();
 
             base.Update(game_time);
+            HudManager.Update();
             UpdateEditor();
-
             AccessMutex.ReleaseMutex();
         }
 
@@ -166,6 +166,7 @@ namespace Galaxy
         {
             AccessMutex.WaitOne();
             base.State.Draw();
+            HudManager.Draw();
             AccessMutex.ReleaseMutex();
         }
     }

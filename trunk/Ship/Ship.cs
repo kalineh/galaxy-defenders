@@ -263,17 +263,30 @@ namespace Galaxy
             if (lctrl_down)
             {
                 if (CInput.IsRawKeyPressed(Keys.C))
+                {
                     WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
+                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
+                }
                 if (CInput.IsRawKeyPressed(Keys.V))
+                {
                     WeaponSecondary = DowngradeWeapon(SecondaryWeapon);
+                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
+                }
             }
             else
             {
                 if (CInput.IsRawKeyPressed(Keys.C))
+                {
                     WeaponPrimary = UpgradeWeapon(PrimaryWeapon);
+                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
+                }
                 if (CInput.IsRawKeyPressed(Keys.V))
+                {
                     WeaponSecondary = UpgradeWeapon(SecondaryWeapon);
+                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
+                }
             }
+
 
             // TODO: bind to functions?
             if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
