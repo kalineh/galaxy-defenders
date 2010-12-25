@@ -73,7 +73,13 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, null, 3.0f, null);
+            Vector2 anti_camera = Vector2.Zero;
+            if (Mover != null)
+                anti_camera = World.ScrollSpeed * -Vector2.UnitY * 0.5f;
+
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, 1.5f, anti_camera);
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, 1.5f, anti_camera);
+
             base.OnDie();
         }
     }
