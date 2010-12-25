@@ -70,6 +70,7 @@
     <Compile Include="Effects\AnimationEffects.cs" />
     <Compile Include="Effects\NewParticleEffect.cs" />
     <Compile Include="Effects\ParticleEffectDefinitions.cs" />
+    <Compile Include="Enemy\DoubleTurret.cs" />
     <Compile Include="Entities\MusicChanger.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Enemy\Cannon.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Guide.cs" />
     <Compile Include="Hud\HudManager.cs" />
     <Compile Include="Hud\HudPilotSelect.cs" />
+    <Compile Include="Mover\MoverSinHorizontal.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
     <Compile Include="Enemy\BlackHole.cs" />

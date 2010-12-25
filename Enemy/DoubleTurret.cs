@@ -1,5 +1,5 @@
 ﻿//
-// Turret.cs
+// DoubleTurret.cs
 //
 
 using System;
@@ -8,13 +8,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CTurret
+    public class CDoubleTurret
         : CEnemy
     {
         public float FireDelay { get; private set; }
         private int FireCooldown { get; set; }
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
+        private int FireCycle { get; set; }
+        private float LastFireAngle { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -22,9 +24,9 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Turret");
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/DoubleTurret");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 1.25f;
+            HealthMax = 2.0f;
 
             FireDelay = 0.75f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
@@ -49,14 +51,29 @@ namespace Galaxy
         private void Fire()
         {
             Vector2 position = Physics.Position;
-            Vector2 dir = GetDirToShip();
-            float rotation = dir.ToAngle();
 
-            rotation += World.Random.NextAngle() * 0.015f;
+            if (FireCycle == 0)
+            {
+                Vector2 dir = GetDirToShip();
+                float rotation = dir.ToAngle();
+                rotation += World.Random.NextAngle() * 0.01f * World.Random.NextSign();
+                LastFireAngle = rotation;
+            }
 
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, LastFireAngle, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");
-            FireCooldown = Time.ToFrames(FireDelay);
+
+            FireCycle += 1;
+
+            if (FireCycle == 1)
+            {
+                FireCooldown = 6;
+            }
+            else
+            {
+                FireCooldown = Time.ToFrames(FireDelay);
+                FireCycle = 0;
+            }
         }
 
         public override void UpdateCollision()

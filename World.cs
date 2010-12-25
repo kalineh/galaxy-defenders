@@ -805,26 +805,10 @@ namespace Galaxy
 
         public CShip GetNearestShipEditor(Vector2 position)
         {
-            CShip result = null;
-            float nearest = float.MaxValue;
-            foreach (CEntity entity in Entities)
-            {
-                CShip ship = entity as CShip;
-                if (ship == null)
-                    continue;
+            if (ShipEntitiesCache.Count == 0)
+                return null;
 
-                Vector2 ship_position = ship.Physics.Position;
-                Vector2 offset = ship_position - position;
-                float length = offset.Length();
-
-                if (length < nearest)
-                {
-                    result = ship;
-                    nearest = length;
-                }
-            }
-
-            return result;
+            return ShipEntitiesCache[0];
         }
 
         // TODO: generic implementation

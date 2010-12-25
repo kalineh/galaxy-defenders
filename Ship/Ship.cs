@@ -106,7 +106,7 @@ namespace Galaxy
             SidekickVisual.Update();
 
             ShieldHitVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/PlayerShieldHit");
-            ShieldHitVisual.Color = new Color(PlayerColor, 92);
+            ShieldHitVisual.Color = new Color(PlayerColor, 128);
             ShieldHitVisual.Scale = new Vector2(1.25f, 1.25f);
             ShieldHitVisual.Update();
 
@@ -372,6 +372,8 @@ namespace Galaxy
             else
             {
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, position, PlayerColor, null, force);
+                Physics.Velocity *= 0.15f;
+                Physics.Velocity += velocity * 0.20f * damage;
             }
 
         }

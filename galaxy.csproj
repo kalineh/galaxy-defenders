@@ -95,7 +95,9 @@
     <Compile Include="Editor\Entities\EditorEntityMusicChanger.cs" />
     <Compile Include="Effects\ParticleEffectDefinitions.cs" />
     <Compile Include="Effects\NewParticleEffect.cs" />
+    <Compile Include="Enemy\DoubleTurret.cs" />
     <Compile Include="Entities\MusicChanger.cs" />
+    <Compile Include="Mover\MoverSinHorizontal.cs" />
     <Compile Include="OptionsMenu.cs" />
     <Compile Include="GameControllerIndex.cs" />
     <Compile Include="Hud\HudManager.cs" />

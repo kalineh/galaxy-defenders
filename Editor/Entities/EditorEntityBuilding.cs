@@ -25,7 +25,7 @@ namespace Galaxy
         [CategoryAttribute("Bonus")]
         public bool Powerup { get; set; }
 
-        private string _TextureName = "Building1";
+        private string _TextureName = "Building2";
 
         [CategoryAttribute("Texture")]
         [EditorAttribute(typeof(CTextureSelector<CTextureSelectoryCategoryStatic>), typeof(UITypeEditor))]

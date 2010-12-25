@@ -70,7 +70,7 @@ namespace Galaxy
             MethodInfo fg_method = typeof(CSceneryPresets).GetMethod(StageDefinition.ForegroundSceneryName);
             fg_method = fg_method ?? typeof (CSceneryPresets).GetMethod("Empty");
             ForegroundScenery = fg_method.Invoke(null, new object[] { World }) as CScenery;
-
+            
             RecreateSampleShip();
         }
 
@@ -609,8 +609,12 @@ namespace Galaxy
 
         public void RecreateSampleShip()
         {
-            SampleShip = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game[0].Pilots[0], GameControllerIndex.One);
-            World.EntityAdd(SampleShip);
+            SampleShip = World.GetNearestShipEditor(Vector2.Zero);
+            if (SampleShip == null)
+            {
+                SampleShip = CShipFactory.GenerateShip(World, CSaveData.CreateDefaultProfile("Sample").Game[0].Pilots[0], GameControllerIndex.One);
+                World.EntityAdd(SampleShip);
+            }
         }
     }
 }

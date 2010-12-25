@@ -24,15 +24,15 @@ namespace Galaxy
             {   "Building1",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 4.0f,
-                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                    HealthMax = 1.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
                 }
             },
             {   "Building2",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 2.0f,
-                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                    HealthMax = 3.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
                 }
             },
             {   "Building3",
@@ -74,6 +74,41 @@ namespace Galaxy
                 new SBuildingDefinition()
                 {
                     HealthMax = 9.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding1",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 1.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding2",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 1.5f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding3",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 1.5f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding4",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 1.25f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding5",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 1.0f,
                     ExplosionType = EParticleType.BuildingDestroyedSmall,
                 }
             },
