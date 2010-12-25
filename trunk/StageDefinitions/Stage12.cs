@@ -20,7 +20,6 @@ Y = -17584.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementStageFinish() {
-World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -24.0f,
 Y = -18928.0f,

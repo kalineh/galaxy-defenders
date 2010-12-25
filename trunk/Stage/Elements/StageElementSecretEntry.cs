@@ -11,7 +11,7 @@ namespace Galaxy
     public class CStageElementSecretEntry
         : CStageElement
     {
-        public CWorld World { get; set; }
+        private CWorld World { get; set; }
         public string SecretStage { get; set; }
         public bool Expired { get; set; }
 
