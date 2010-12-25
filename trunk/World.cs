@@ -341,6 +341,7 @@ namespace Galaxy
                 return;
 
             // frame count of display operations
+            const int StageClearDestroyProjectiles = 1;
             const int StageClearShow = 60;
             const int StatsShow = 100;
             const int StatsInterval = 20;
@@ -357,6 +358,11 @@ namespace Galaxy
 
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
+
+            if (StageEndCounter == StageClearDestroyProjectiles)
+            {
+                DestroyAllProjectiles();
+            }
 
             if (StageEndCounter == StageClearShow)
             {
@@ -1086,6 +1092,17 @@ namespace Galaxy
         public void BackToMainPauseMenu(object tag)
         {
             PauseMenu = PauseMenuBase;
+        }
+
+        public void DestroyAllProjectiles()
+        {
+            foreach (CEntity entity in Entities)
+            {
+                if (entity.GetType().IsSubclassOf(typeof(CProjectile)))
+                {
+                    entity.Die();    
+                }
+            }
         }
     }
 }
