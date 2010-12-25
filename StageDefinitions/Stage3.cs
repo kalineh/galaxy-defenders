@@ -20,7 +20,6 @@ Y = -16280.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementStageFinish() {
-World = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,
 Y = -17472.0f,
@@ -1251,7 +1250,6 @@ Y = -6536.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSecretEntry() {
-World = null,
 SecretStage = "BonusStage3",
 Expired = false,
 Position = new Microsoft.Xna.Framework.Vector2() {

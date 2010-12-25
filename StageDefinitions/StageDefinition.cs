@@ -14,7 +14,7 @@ namespace Galaxy
     public class CStageDefinition
     {
         [Browsable(false)]
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public string DisplayName { get; set; }
         public float ScrollSpeed { get; set; }
         public string BackgroundSceneryName { get; set; }

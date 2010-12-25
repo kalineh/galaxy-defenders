@@ -116,6 +116,7 @@
     <Compile Include="StageDefinitions\Stage12.cs" />
     <Compile Include="StageDefinitions\Stage8.cs" />
     <Compile Include="StageDefinitions\Stage9.cs" />
+    <Compile Include="StageDefinitions\StageDefinitionSerializable.cs" />
     <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
     <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />

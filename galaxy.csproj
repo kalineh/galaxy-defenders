@@ -194,6 +194,7 @@
     <Compile Include="StageDefinitions\BonusStage1.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\StageDefinitionSerializable.cs" />
     <Compile Include="StageDefinitions\OldStage1.cs" />
     <Compile Include="StageDefinitions\OldStage10.cs" />
     <Compile Include="StageDefinitions\OldStage11.cs" />

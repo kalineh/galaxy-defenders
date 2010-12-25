@@ -11,7 +11,7 @@ namespace Galaxy
     public class CStageElementStageFinish
         : CStageElement
     {
-        public CWorld World { get; set; }
+        private CWorld World { get; set; }
 
         public override void Update(CWorld world)
         {

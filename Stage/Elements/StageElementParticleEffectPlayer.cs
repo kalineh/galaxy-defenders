@@ -15,7 +15,7 @@ namespace Galaxy
         public EParticleType Type { get; set; }
         public float Cycle { get; set; }
         public bool Expired { get; set; }
-        private int CycleFrame { get; set; }
+        public int CycleFrame { get; set; }
 
         public override void Update(CWorld world)
         {
