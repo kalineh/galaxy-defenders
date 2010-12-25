@@ -76,6 +76,9 @@ namespace Galaxy
 
         public bool IsPilotSelectComplete(int index)
         {
+            if (Game.EditorMode)
+                return true;
+
             if (HudsProfileSelect[index].State == HudPilotSelect.EState.Locked)
                 return true;
             return false;
@@ -109,8 +112,7 @@ namespace Galaxy
             if (Game.EditorMode)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-                foreach (CHud hud in Huds)
-                    hud.DrawEditor(Game.DefaultSpriteBatch);
+                Huds[0].DrawEditor(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
                 return;
             }
@@ -125,16 +127,6 @@ namespace Galaxy
 
         private void DrawHudsProfileSelect()
         {
-            // NOTE: no side panels in editor mode!
-            if (Game.EditorMode)
-            {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
-                foreach (HudPilotSelect hud in HudsProfileSelect)
-                    hud.DrawEditor(Game.DefaultSpriteBatch);
-                Game.DefaultSpriteBatch.End();
-                return;
-            }
-
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
 
             foreach (HudPilotSelect hud in HudsProfileSelect)
