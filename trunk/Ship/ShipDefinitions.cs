@@ -69,6 +69,17 @@ namespace Galaxy
                     Friction = 0.85f,
                     Armor = 40.0f,
                 }
+            },
+            {
+                "UltraShip",
+                new CChassisPart() {
+                    Price = 12000,
+                    Texture = "Textures/Player/StrongShip",
+                    VisualScale = 0.25f,
+                    Speed = 1.9f,
+                    Friction = 0.85f,
+                    Armor = 250.0f,
+                }
             }
         };
     }

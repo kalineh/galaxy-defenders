@@ -32,6 +32,15 @@ namespace Galaxy
         [CategoryAttribute("Texture")]
         public float DepthOffset { get; set; }
 
+        private float _Rotation = 0.0f;
+
+        [CategoryAttribute("Core")]
+        public float Rotation
+        {
+            get { return _Rotation; }
+            set { _Rotation = value; UpdateTexture(); }
+        }
+
         public CEditorEntityDecoration(CWorld world, Type type, Vector2 position)
             : base(world, position)
         {
@@ -49,6 +58,7 @@ namespace Galaxy
         {
             TextureName = ((CStageElementDecoration)element).TextureName;
             DepthOffset = ((CStageElementDecoration)element).DepthOffset;
+            Rotation = ((CStageElementDecoration)element).Rotation;
         }
 
         public override CStageElement GenerateStageElement()
@@ -56,6 +66,7 @@ namespace Galaxy
             CStageElementDecoration result = new CStageElementDecoration()
             {
                 Position = Position,
+                Rotation = Rotation,
                 TextureName = TextureName,
                 DepthOffset = DepthOffset,
             };
@@ -67,6 +78,7 @@ namespace Galaxy
         {
             Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
             Visual = Visual ?? CVisual.MakeLabel(World.Game, TextureName);
+            Physics.Rotation = MathHelper.ToRadians(Rotation);
         }
     }
 }

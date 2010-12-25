@@ -429,7 +429,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
 Y = -696.0f,
@@ -439,7 +439,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
 Y = -696.0f,
@@ -580,7 +580,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
 Y = -1912.0f,
@@ -590,7 +590,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -352.0f,
 Y = -1656.0f,
@@ -915,7 +915,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -4368.0f,
@@ -1005,7 +1005,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
 Y = -3368.0f,
@@ -1015,7 +1015,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
 Y = -3624.0f,
@@ -1198,7 +1198,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 256.0f,
 Y = -6536.0f,
@@ -1263,7 +1263,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 256.0f,
 Y = -6792.0f,
@@ -1366,7 +1366,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -352.0f,
 Y = -7048.0f,
@@ -1376,7 +1376,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
 Y = -7560.0f,
@@ -1542,7 +1542,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 352.0f,
 Y = -8584.0f,
@@ -1654,7 +1654,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -72.0f,
 Y = -9504.0f,
@@ -1713,7 +1713,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -360.0f,
 Y = -9000.0f,
@@ -1816,7 +1816,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building1",
+TextureName = "Building2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -128.0f,
 Y = -11000.0f,
@@ -2018,7 +2018,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 360.0f,
 Y = -12728.0f,
@@ -2046,7 +2046,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 360.0f,
 Y = -12920.0f,
@@ -2074,7 +2074,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 360.0f,
 Y = -13112.0f,
@@ -2381,7 +2381,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "Building2",
+TextureName = "Building1",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -14920.0f,

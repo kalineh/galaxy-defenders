@@ -48,6 +48,17 @@ namespace Galaxy
             };
         }
 
+        public static CMover SinHorizontal(float speed, float transition)
+        {
+            return new CMoverSinHorizontal()
+            {
+                Name = (new StackFrame(0, false)).GetMethod().Name,
+                Frequency = Time.SingleFrame * transition,
+                Amplitude = speed,
+                Right = speed,
+            };
+        }
+
         // down
         public static CMover Up(float speed, float transition)
         {

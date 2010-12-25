@@ -107,6 +107,8 @@ namespace StageEditor
             game_control.Game.State = editor_state;
             game_control.UpdateEditorPosition();
 
+            CAudio.StopMusic();
+
             StageSelectDropdown.Enabled = true;
             EntityTree.Enabled = true;
         }

@@ -453,6 +453,8 @@ namespace Galaxy
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
                     "FighterShip",
+                    "StrongShip",
+                    "UltraShip",
                 },
                 AvailableGeneratorParts = new List<string>() {
                     "BasicGenerator",

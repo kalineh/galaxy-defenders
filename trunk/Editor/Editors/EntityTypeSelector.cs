@@ -62,6 +62,7 @@ namespace Galaxy
             typeof(CBonusShip),
             typeof(CCannon),
             typeof(CCutter),
+            typeof(CDoubleTurret),
             typeof(CDownTurret),
             typeof(CFence),
             typeof(CGlob),
