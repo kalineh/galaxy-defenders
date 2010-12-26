@@ -9,7 +9,7 @@ CStageDefinition stage = new CStageDefinition("BonusStage3");
 stage.ScrollSpeed = 2.5f;
 stage.BackgroundSceneryName = "SimpleSpace";
 stage.ForegroundSceneryName = "Empty";
-stage.MusicName = "fighting_for_control";
+stage.MusicName = "The_Hidden_Answer";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
