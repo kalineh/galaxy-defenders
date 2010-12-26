@@ -97,7 +97,7 @@ namespace Galaxy
                 "BasicGenerator",
                 new CGeneratorPart() {
                     Energy = 10.0f,
-                    Regen = 0.04f,
+                    Regen = 0.05f,
                 }
             },
             {
@@ -105,7 +105,7 @@ namespace Galaxy
                 new CGeneratorPart() {
                     Price = 2000,
                     Energy = 12.0f,
-                    Regen = 0.06f,
+                    Regen = 0.08f,
                 }
             },
             {
@@ -113,7 +113,7 @@ namespace Galaxy
                 new CGeneratorPart() {
                     Price = 4000,
                     Energy = 14.0f,
-                    Regen = 0.09f,
+                    Regen = 0.13f,
                 }
             },
             {
@@ -121,7 +121,7 @@ namespace Galaxy
                 new CGeneratorPart() {
                     Price = 12000,
                     Energy = 20.0f,
-                    Regen = 0.15f,
+                    Regen = 0.25f,
                 }
             }
         };
@@ -140,7 +140,7 @@ namespace Galaxy
                 "BasicShield",
                 new CShieldPart() {
                     Shield = 20.0f,
-                    Regen = 0.05f,
+                    Regen = 0.03f,
                 }
             },
             {
@@ -148,7 +148,7 @@ namespace Galaxy
                 new CShieldPart() {
                     Price = 2500,
                     Shield = 26.0f,
-                    Regen = 0.08f,
+                    Regen = 0.06f,
                 }
             },
             {
@@ -156,7 +156,7 @@ namespace Galaxy
                 new CShieldPart() {
                     Price = 9000,
                     Shield = 40.0f,
-                    Regen = 0.13f,
+                    Regen = 0.11f,
                 }
             },
             {

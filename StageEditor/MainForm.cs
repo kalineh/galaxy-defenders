@@ -188,6 +188,9 @@ namespace StageEditor
             StagePropertyGrid.SelectedObject = editor.StageDefinition;
 
             game.AccessMutex.ReleaseMutex();
+
+            // NOTE: disable because reloading the stage will not use the recompiled file
+            StageSelectDropdown.Enabled = false;
         }
 
         private void EntityDeleteButton_Click(object sender, EventArgs e)
