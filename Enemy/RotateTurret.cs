@@ -40,7 +40,7 @@ namespace Galaxy
             FireDelay = 0.75f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 3.0f;
-            FireSpeed = 10.0f;
+            FireSpeed = CEnemy.TurretShotSpeed;
             TripleShotDelay = 0.15f;
         }
 

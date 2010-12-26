@@ -76,8 +76,9 @@ namespace Galaxy
 
         private void UpdateTexture()
         {
-            Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
+            Visual = CVisual.MakeSpriteUncached(World.Game, "Textures/Decoration/" + TextureName);
             Visual = Visual ?? CVisual.MakeLabel(World.Game, TextureName);
+            Visual.Depth += DepthOffset;
             Physics.Rotation = MathHelper.ToRadians(Rotation);
         }
     }

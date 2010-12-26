@@ -16,10 +16,13 @@ namespace Galaxy
         public static Color EnemyGrayColor { get; set; }
         public static string[] EnemyDeathSoundStrings = new string[] { "EnemyDie1", "EnemyDie2", "EnemyDie3" };
 
+        public static float TurretShotSpeed { get; set; }
+
         static CEnemy()
         {
             EnemyOrangeColor = new Color(252, 124, 85, 255);
             EnemyGrayColor = new Color(102, 102, 102, 255);
+            TurretShotSpeed = 9.0f;
         }
 
         private float _HealthMax;
