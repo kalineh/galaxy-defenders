@@ -514,6 +514,10 @@ namespace Galaxy
                 CDebugRender.Box(World.GameCamera.WorldMatrix, SampleShip.Physics.Position, World.GameCamera.ScreenSize, 2.0f, XnaColor.Red);
             }
 
+            // music end line
+            float music_time = CAudio.GetMusicDurationSeconds(StageDefinition.MusicName) * 60.0f;
+            CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, -music_time * 2.5f * 60.0f), new Vector2(game_width, 0.0f), 2.0f, XnaColor.Red);
+
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
 
             World.ParticleEffects.Draw(Game.DefaultSpriteBatch);

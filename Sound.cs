@@ -161,5 +161,31 @@ namespace Galaxy
         {
             return MusicVolume;    
         }
+
+        public static Dictionary<string, float> MusicDurations = new Dictionary<string, float>()
+        {
+            // NOTE: just rough approximations
+            { "The_Voyage", 2.0f },
+            { "Alkali Earth", 4.0f },
+            { "Luminosity_and_Viscosity", 2.6f },
+            { "Sirius", 2.0f },
+            { "Aerial_Assault", 2.4f },
+            { "Afraid_of_Darkness", 3.1f },
+            { "Insurrection", 2.3f },
+            { "Troubled_Dreams", 2.1f },
+            { "Turbo", 2.8f },
+            { "fighting_for_control", 1.8f },
+            { "Math_Party", 2.5f },
+            { "Eye_of_the_Predator", 4.3f },
+            { "The_Hidden_Answer", 1.5f },
+        };
+
+        public static float GetMusicDurationSeconds(string name)
+        {
+            // XACT doesnt seem to have any way to get this data :(
+            float result = 0.0f;
+            MusicDurations.TryGetValue(name, out result);
+            return result;
+        }
     }
 }
