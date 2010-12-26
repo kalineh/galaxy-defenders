@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Galaxy
 {
@@ -14,6 +15,23 @@ namespace Galaxy
     {
         private bool GotoPlayer { get; set; }
         private float GotoForce { get; set; }
+
+        public static List<CBonus> BonusCache { get; set; }
+        static CBonus()
+        {
+            BonusCache = new List<CBonus>(128);
+        }
+
+        public static CBonus GetCachedBonus(CWorld world)
+        {
+            if (BonusCache.Count == 0)
+                BonusCache.Add(new CBonus());
+
+            CBonus result = BonusCache[BonusCache.Count - 1];
+            BonusCache.RemoveAt(BonusCache.Count - 1);
+            result.Initialize(world);
+            return result;
+        }
 
         public override void Initialize(CWorld world)
         {
@@ -81,6 +99,12 @@ namespace Galaxy
             ship.Score += 50;
             CAudio.PlaySound("BonusGet", 1.0f);
             Die();
+        }
+
+        protected override void OnDie()
+        {
+            base.OnDie();
+            BonusCache.Add(this);
         }
     }
 

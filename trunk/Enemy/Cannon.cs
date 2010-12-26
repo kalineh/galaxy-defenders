@@ -29,7 +29,7 @@ namespace Galaxy
             FireDelay = 1.25f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 5.0f;
-            FireSpeed = 14.0f;
+            FireSpeed = 10.0f;
         }
 
         public override void UpdateAI()
