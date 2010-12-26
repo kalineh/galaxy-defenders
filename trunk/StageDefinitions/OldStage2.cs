@@ -6,7 +6,7 @@ namespace Stages {
 public class OldStage2 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage2");
-stage.ScrollSpeed = 3.0f;
+stage.ScrollSpeed = 2.5f;
 stage.BackgroundSceneryName = "SpaceCloudsBG";
 stage.ForegroundSceneryName = "SpaceCloudsFG";
 stage.MusicName = "fighting_for_control";

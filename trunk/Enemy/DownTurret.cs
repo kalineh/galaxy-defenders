@@ -26,7 +26,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 1.0f;
 
-            FireDelay = 0.75f;
+            FireDelay = 1.0f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 4.0f;
             FireSpeed = 12.0f;
