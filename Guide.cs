@@ -76,6 +76,7 @@ namespace Galaxy
                     SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
                     CAudio.SetSFXVolume(options.SFXVolume);
                     CAudio.SetMusicVolume(options.MusicVolume);
+                    Game.SetUserScaleValue(options.UserScale);
 
                     StorageDeviceReady = true;
                 }

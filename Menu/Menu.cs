@@ -220,7 +220,7 @@ namespace Galaxy
                         Color color = valid ? Color.White : Color.Gray;
 
                         Vector2 center = position + new Vector2(texture.Width, texture.Height) / 2.0f;
-                        sprite_batch.Draw(texture, position, Color.White);
+                        sprite_batch.Draw(texture, position, null, Color.White);
                         option.TextLabel.Draw(sprite_batch, Game.DefaultFont, center, color);
                         option.CustomRender(option.Data, sprite_batch, center);
 

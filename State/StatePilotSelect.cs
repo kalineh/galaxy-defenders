@@ -66,6 +66,7 @@ namespace Galaxy
 
             SampleShipManager.Update();
 
+            EmptyWorld.GameCamera.Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();

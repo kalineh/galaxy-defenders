@@ -28,6 +28,7 @@ namespace Galaxy
             {
                 new CMenu.CMenuOption() { Text = "SFX Volume", Axis = SFXVolumeAxis, AxisValidate = SFXVolumeAxisValidate, CustomRender = SFXVolumeAxisRender },
                 new CMenu.CMenuOption() { Text = "Music Volume", Axis = MusicVolumeAxis, AxisValidate = MusicVolumeAxisValidate, CustomRender = MusicVolumeAxisRender },
+                new CMenu.CMenuOption() { Text = "Screen Size", Axis = ScreenSizeAxis, AxisValidate = ScreenSizeAxisValidate, CustomRender = ScreenSizeAxisRender },
                 //new CMenu.CMenuOption() { Text = "Language", Axis = LanguageAxis },
                 new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
             };
@@ -69,15 +70,41 @@ namespace Galaxy
             DrawVolumeAxis(sprite_batch, position, music_volume);
         }
 
+        public void ScreenSizeAxis(object tag, int axis)
+        {
+            float user_scale = (float)axis / 10.0f;
+            float scale = 0.875f + user_scale * 0.125f;
+            Game.SetUserScaleValue(scale);
+        }
+
+        public bool ScreenSizeAxisValidate(object tag, int axis)
+        {
+            return axis >= 0 && axis <= 10;
+        }
+
+        public void ScreenSizeAxisRender(object tag, SpriteBatch sprite_batch, Vector2 position)
+        {
+            int user_scale = GetScreenSizeAsAxis();
+            DrawVolumeAxis(sprite_batch, position, user_scale);
+        }
+
+        public int GetScreenSizeAsAxis()
+        {
+            float editable_scale = Game.UserScaleValue - 0.875f;
+            int user_scale = (int)Math.Round(editable_scale / 0.125f * 10.0f);
+            user_scale = Math.Min(10, Math.Max(0, user_scale));
+            return user_scale;
+        }
+
         public void DrawVolumeAxis(SpriteBatch sprite_batch, Vector2 position, int volume)
         {
-            Vector2 base_ = position + new Vector2(30.0f, 48.0f);
+            Vector2 base_ = position + new Vector2(-96.0f, 14.0f);
             Vector2 step = new Vector2(20.0f, 0.0f);
             for (int i = 0; i < 10; ++i)
             {
                 Vector2 p = base_ + step * i;
                 Color c = volume > i ? Color.LightGray : Color.Gray;
-                sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)p.X, (int)p.Y, 16, 8), c);
+                sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)p.X, (int)p.Y, 16, 8), null, c, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
             }
         }
 
@@ -86,6 +113,7 @@ namespace Galaxy
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Options.SFXVolume = CAudio.GetSFXVolume();
             profile.Options.MusicVolume = CAudio.GetMusicVolume();
+            profile.Options.UserScale = Game.UserScaleValue;
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.SaveRequest();
 
@@ -98,6 +126,7 @@ namespace Galaxy
             int music_volume = (int)Math.Round(CAudio.GetMusicVolume() * 10.0f);
             MenuOptions[0].AxisValue = sfx_volume;
             MenuOptions[1].AxisValue = music_volume;
+            MenuOptions[2].AxisValue = GetScreenSizeAsAxis();
         }
     }
 }

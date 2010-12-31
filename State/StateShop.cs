@@ -428,6 +428,7 @@ namespace Galaxy
             Menu.Update();
             Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)WorkingProfile.Money;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
+            EmptyWorld.GameCamera.Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
