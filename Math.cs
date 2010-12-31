@@ -8,8 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public static class EnhanceVector2
+    public static class Vector2Extensions
     {
+        public static Vector2 Half(this Vector2 self)
+        {
+            return new Vector2(0.5f, 0.5f);     
+        }
+        
         public static Vector2 Rotate(this Vector2 self, float rotation)
         {
             Quaternion transform = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, rotation);

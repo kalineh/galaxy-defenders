@@ -28,15 +28,6 @@ namespace Galaxy
             MenuItemInvalidTexture = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemInvalid");
         }
 
-        public static Vector2 CenteredText(CGalaxy game, Vector2 position, Vector2 size, string text)
-        {
-            Vector2 measured = game.DefaultFont.MeasureString(text);
-            return new Vector2(
-                position.X + size.X * 0.5f - measured.X * 0.5f,
-                position.Y + size.Y * 0.5f - measured.Y * 0.5f
-            );
-        }
-
         public CGalaxy Game { get; set; }
         public delegate void MenuSelectFunction(object tag);
         public delegate bool MenuSelectValidateFunction(object tag);
@@ -54,8 +45,19 @@ namespace Galaxy
 
         public class CMenuOption
         {
-            public string Text;
-            public string SubText;
+            public string Text
+            {
+                get { return TextLabel.Text; }
+                set { TextLabel.Value = value; }
+            }
+            public string SubText
+            {
+                get { return SubTextLabel.Text; }
+                set { SubTextLabel.Value = value; }
+            }
+
+            public CTextLabel TextLabel;
+            public CTextLabel SubTextLabel;
             public PanelType PanelType;
             public string IconName;
             public CVisual IconVisual;
@@ -81,6 +83,8 @@ namespace Galaxy
                 CustomRender = (tag, sprite_batch, position) => { };
                 PanelType = PanelType.Normal;
                 Visible = true;
+                TextLabel = new CTextLabel();
+                SubTextLabel = new CTextLabel();
             }
         }
         public List<CMenuOption> MenuOptions { get; set; }
@@ -214,16 +218,15 @@ namespace Galaxy
                         }
 
                         Color color = valid ? Color.White : Color.Gray;
-                        Vector2 size = new Vector2(256.0f, 64.0f);
 
+                        Vector2 center = position + new Vector2(texture.Width, texture.Height) / 2.0f;
                         sprite_batch.Draw(texture, position, Color.White);
-                        sprite_batch.DrawString(Game.DefaultFont, option.Text, CenteredText(Game, position, size, option.Text) + new Vector2(+1.0f, +1.0f), Color.Black);
-                        sprite_batch.DrawString(Game.DefaultFont, option.Text, CenteredText(Game, position, size, option.Text), color);
-
-                        option.CustomRender(option.Data, sprite_batch, position);
+                        option.TextLabel.Draw(sprite_batch, Game.DefaultFont, center, color);
+                        option.CustomRender(option.Data, sprite_batch, center);
 
                         position += Vector2.UnitY * 26.0f;
                     }
+                    // NOTE: debug text menu! will not render with shadows or correct alignment
                     else
                     {
                         if (option == MenuOptions[Cursor])

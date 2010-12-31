@@ -66,8 +66,8 @@ namespace Galaxy
 
             PrimitiveBatch.Begin(PrimitiveType.TriangleList);
 
-            float screen_scale_x = World.GameCamera.ScreenSize.X / viewport.Width;
-            float screen_scale_y = World.GameCamera.ScreenSize.Y / viewport.Height;
+            float screen_scale_x = World.GameCamera.ScreenSize.X / World.Game.Resolution.X;
+            float screen_scale_y = World.GameCamera.ScreenSize.Y / World.Game.Resolution.Y;
 
             // TODO: determine why we lose a pixel when moving left/right!
             float magic_hack_x = 1.01f;

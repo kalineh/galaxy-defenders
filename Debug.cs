@@ -66,8 +66,8 @@ namespace Galaxy
             batch.AddVertex(Vector2.Transform(Position - half + Vector, Transform), Color);
             batch.AddVertex(Vector2.Transform(Position + half + Vector, Transform), Color);
 
-            float _width = game.GraphicsDevice.Viewport.Width;
-            float _height = game.GraphicsDevice.Viewport.Height;
+            float _width = game.Resolution.X;
+            float _height = game.Resolution.Y;
             Vector2 _half_x = Vector2.UnitX * _width * 0.5f * 2.0f;
             Vector2 _half_y = Vector2.UnitY * _height * 0.5f * 2.0f;
 
@@ -146,8 +146,8 @@ namespace Galaxy
             Vector3 translation_unused;
             Transform.Decompose(out scale, out rotation_unused, out translation_unused);
 
-            float width = game.GraphicsDevice.Viewport.Width;
-            float height = game.GraphicsDevice.Viewport.Height;
+            float width = game.Resolution.X;
+            float height = game.Resolution.Y;
             Vector2 half_x = Vector2.UnitX * width * 0.5f;
             Vector2 half_y = Vector2.UnitY * height * 0.5f;
 

@@ -91,7 +91,7 @@ namespace Galaxy
             Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
-            RightPanelPosition = new Vector2(Game.GraphicsDevice.Viewport.Width, 0.0f);
+            RightPanelPosition = new Vector2(Game.Resolution.X, 0.0f);
 
             NameTextPosition = BasePosition + new Vector2(80.0f, -964.0f);
             MoneyTextPosition = BasePosition + new Vector2(100.0f, -888.0f);
@@ -273,8 +273,10 @@ namespace Galaxy
 
             Color color = new Color(160, 160, 160);
 
-            sprite_batch.DrawString(Game.DefaultFont, profile.Pilots[(int)GameControllerIndex].Pilot, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Pilots[(int)GameControllerIndex].Pilot), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
-            sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            //sprite_batch.DrawString(Game.DefaultFont, profile.Pilots[(int)GameControllerIndex].Pilot, CMenu.CenteredText(Game, NameTextPosition, new Vector2(256.0f, 64.0f), profile.Pilots[(int)GameControllerIndex].Pilot), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            sprite_batch.DrawStringAlignCenter(Game.DefaultFont, NameTextPosition, profile.Pilots[(int)GameControllerIndex].Pilot, color);
+            //sprite_batch.DrawString(Game.DefaultFont, CachedMoneyString, CMenu.CenteredText(Game, MoneyTextPosition, new Vector2(256.0f, 64.0f), CachedMoneyString), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI + CLayers.SubLayerIncrement * 2.0f);
+            sprite_batch.DrawStringAlignCenter(Game.DefaultFont, MoneyTextPosition, CachedMoneyString, color);
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)

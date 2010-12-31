@@ -76,7 +76,7 @@ namespace Galaxy
             };
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
-            RightPanelPosition = new Vector2(Game.GraphicsDevice.Viewport.Width, 0.0f);
+            RightPanelPosition = new Vector2(Game.Resolution.X, 0.0f);
 
             NameTextPosition = BasePosition + new Vector2(80.0f, -964.0f);
             MoneyTextPosition = BasePosition + new Vector2(100.0f, -888.0f);

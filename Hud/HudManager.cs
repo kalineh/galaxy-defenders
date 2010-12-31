@@ -19,12 +19,12 @@ namespace Galaxy
         {
             Game = game;
             Huds = new List<CHud>() {
-                new CHud(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.One),
-                new CHud(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.Two),
+                new CHud(Game, new Vector2(0.0f, Game.Resolution.Y - 60.0f), GameControllerIndex.One),
+                new CHud(Game, new Vector2(Game.Resolution.X - 480.0f, Game.Resolution.Y - 60.0f), GameControllerIndex.Two),
             };
             HudsProfileSelect = new List<HudPilotSelect>() {
-                new HudPilotSelect(Game, new Vector2(0.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.One),
-                new HudPilotSelect(Game, new Vector2(Game.GraphicsDevice.Viewport.Width - 480.0f, Game.GraphicsDevice.Viewport.Height - 60.0f), GameControllerIndex.Two),
+                new HudPilotSelect(Game, new Vector2(0.0f, Game.Resolution.Y - 60.0f), GameControllerIndex.One),
+                new HudPilotSelect(Game, new Vector2(Game.Resolution.X - 480.0f, Game.Resolution.Y - 60.0f), GameControllerIndex.Two),
             };
         }
 
@@ -111,13 +111,13 @@ namespace Galaxy
             // NOTE: no side panels in editor mode!
             if (Game.EditorMode)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
                 Huds[0].DrawEditor(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
                 return;
             }
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
 
             foreach (CHud hud in Huds)
                 hud.Draw(Game.DefaultSpriteBatch);
@@ -127,7 +127,7 @@ namespace Galaxy
 
         private void DrawHudsProfileSelect()
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Matrix.Identity);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
 
             foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Draw(Game.DefaultSpriteBatch);

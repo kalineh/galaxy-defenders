@@ -76,7 +76,7 @@ namespace Galaxy
             for (int i = 0; i < 10; ++i)
             {
                 Vector2 p = base_ + step * i;
-                Color c = volume > i ? Color.Green : Color.Gray;
+                Color c = volume > i ? Color.LightGray : Color.Gray;
                 sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)p.X, (int)p.Y, 16, 8), c);
             }
         }

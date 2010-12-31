@@ -38,6 +38,43 @@ namespace Galaxy
         private CVisual ShopUpgradeBarsVisual { get; set; }
         private GameControllerIndex ShoppingPlayer { get; set; }
 
+        private struct SLabels
+        {
+            public CTextLabel BaseCostHeader;
+            public CTextLabel BaseCostPrice;
+            public CTextLabel NextUpgradeHeader;
+            public CTextLabel NextUpgradePrice;
+            public CTextLabel ArmorHeader;
+            public CTextLabel ArmorValue;
+            public CTextLabel SpeedHeader;
+            public CTextLabel SpeedValue;
+            public CTextLabel ShieldHeader;
+            public CTextLabel ShieldValue;
+            public CTextLabel RegenHeader;
+            public CTextLabel RegenValue;
+            public CTextLabel EnergyHeader;
+            public CTextLabel EnergyValue;
+
+            public SLabels(object unused)
+            {
+                BaseCostHeader = new CTextLabel();
+                BaseCostPrice = new CTextLabel();
+                NextUpgradeHeader = new CTextLabel();
+                NextUpgradePrice = new CTextLabel();
+                ArmorHeader = new CTextLabel();
+                ArmorValue = new CTextLabel();
+                SpeedHeader = new CTextLabel();
+                SpeedValue = new CTextLabel();
+                ShieldHeader = new CTextLabel();
+                ShieldValue = new CTextLabel();
+                RegenHeader = new CTextLabel();
+                RegenValue = new CTextLabel();
+                EnergyHeader = new CTextLabel();
+                EnergyValue = new CTextLabel();
+            }
+        };
+        private SLabels Labels { get; set; }
+
         public CStateShop(CGalaxy game)
         {
             Game = game;
@@ -58,12 +95,14 @@ namespace Galaxy
             ShopUpgradeBarsVisual = CVisual.MakeSpriteFromGame(game, "Textures/UI/Shop/ShopUpgradeBars", Vector2.One, Color.White);
             ShopUpgradeBarsVisual.TileY = 8;
 
+            Labels = new SLabels(null);
+
             //
             // Base
             //
             MenuBase = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Play Next Stage", Select = StageSelect },
@@ -78,7 +117,7 @@ namespace Galaxy
             //
             MenuUpgradeShip = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Chassis", Select = EditChassis },
@@ -99,7 +138,7 @@ namespace Galaxy
             //
             MenuTrainPilot = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -122,7 +161,7 @@ namespace Galaxy
             //
             MenuPrimaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -161,7 +200,7 @@ namespace Galaxy
             //
             MenuSecondaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -203,7 +242,7 @@ namespace Galaxy
             //
             MenuSidekickLeft = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -243,7 +282,7 @@ namespace Galaxy
             //
             MenuSidekickRight = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -275,7 +314,7 @@ namespace Galaxy
             //
             MenuChassis = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -303,7 +342,7 @@ namespace Galaxy
             //
             MenuGenerator = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -332,7 +371,7 @@ namespace Galaxy
             //
             MenuShield = new CMenu(game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f + 154.0f, 320.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -413,7 +452,7 @@ namespace Galaxy
             EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
             Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(928.0f, 0.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
 
@@ -526,6 +565,7 @@ namespace Galaxy
 
         private void RefreshSampleDisplay()
         {
+            // TODO: replace with simpler version (just clear entities and HUD)
             EmptyWorld.Stop();
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
             SampleShip.Physics.Position = new Vector2(-190.0f, 100.0f);
@@ -552,8 +592,9 @@ namespace Galaxy
 
         private void DrawMenuBaseErrata()
         {
-            Vector2 blank_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 442.0f, Game.GraphicsDevice.Viewport.Height - 362.0f);
-            Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, blank_position, Color.White);
+            Vector2 panel_position = new Vector2(Game.Resolution.X / 2.0f - 442.0f, Game.Resolution.Y - 362.0f);
+            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 180.0f, Game.Resolution.Y - 320.0f);
+            Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, panel_position, Color.White);
 
             // NOTE: this is totally gonna ship like this
             // HACK: bad hack time, fix me up
@@ -575,14 +616,23 @@ namespace Galaxy
 
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "BASE COST:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 0.0f), new Vector2(512.0f, 64.0f), "BASE COST:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 30.0f), new Vector2(512.0f, 64.0f), price.ToString()), Color.White);
 
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "NEXT UPGRADE:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 62.0f), new Vector2(512.0f, 64.0f), "NEXT UPGRADE:"), Color.White);
+                    Labels.BaseCostPrice.Value = price;
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 62.0f), Color.White);
                     if (level < max)
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, next_price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 90.0f), new Vector2(512.0f, 64.0f), next_price.ToString()), Color.White);
+                    {
+                        Labels.NextUpgradePrice.Value = next_price;
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                    }
                     else
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "-----", CMenu.CenteredText(Game, position + new Vector2(0.0f, 90.0f), new Vector2(512.0f, 64.0f), "-----"), Color.White);
+                    {
+                        // TODO: debug me to check that no strings are generated each time
+                        Labels.NextUpgradePrice.Value = "MAX";
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                    }
                 }
             }
             else if (Menu == MenuSecondaryWeapon)
@@ -600,14 +650,23 @@ namespace Galaxy
 
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "BASE COST:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 0.0f), new Vector2(512.0f, 64.0f), "BASE COST:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 30.0f), new Vector2(512.0f, 64.0f), price.ToString()), Color.White);
 
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "NEXT UPGRADE:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 62.0f), new Vector2(512.0f, 64.0f), "NEXT UPGRADE:"), Color.White);
+                    Labels.BaseCostPrice.Value = price;
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 62.0f), Color.White);
                     if (level < max)
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, next_price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 90.0f), new Vector2(512.0f, 64.0f), next_price.ToString()), Color.White);
+                    {
+                        Labels.NextUpgradePrice.Value = next_price;
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                    }
                     else
-                        Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "-----", CMenu.CenteredText(Game, position + new Vector2(0.0f, 90.0f), new Vector2(512.0f, 64.0f), "-----"), Color.White);
+                    {
+                        // TODO: debug me to check that no strings are generated each time
+                        Labels.NextUpgradePrice.Value = "MAX";
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                    }
                 }
             }
             else if (Menu == MenuSidekickLeft)
@@ -615,10 +674,12 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSidekickLeftType != "")
                 {
-                    Vector2 position = blank_position;
+                    Vector2 position = blank_position + new Vector2(0.0f, 30.0f);
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "BASE COST:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 30.0f), new Vector2(512.0f, 64.0f), "BASE COST:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 60.0f), new Vector2(512.0f, 64.0f), price.ToString()), Color.White);
+
+                    Labels.BaseCostPrice.Value = price;
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuSidekickRight)
@@ -626,10 +687,12 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSidekickRightType != "")
                 {
-                    Vector2 position = blank_position;
+                    Vector2 position = blank_position + new Vector2(0.0f, 30.0f);
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "BASE COST:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 30.0f), new Vector2(512.0f, 64.0f), "BASE COST:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, price.ToString(), CMenu.CenteredText(Game, position + new Vector2(0.0f, 60.0f), new Vector2(512.0f, 64.0f), price.ToString()), Color.White);
+
+                    Labels.BaseCostPrice.Value = price;
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuChassis)
@@ -638,13 +701,15 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
-                    string armor = Convert.ToInt32(part.Armor * 100.0f).ToString();
-                    string speed = Convert.ToInt32(part.Speed * 100.0f).ToString();
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ARMOR:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 10.0f), new Vector2(512.0f, 64.0f), "ARMOR:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, armor, CMenu.CenteredText(Game, position + new Vector2(0.0f, 40.0f), new Vector2(512.0f, 64.0f), armor), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "SPEED:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 80.0f), new Vector2(512.0f, 64.0f), "SPEED:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, speed, CMenu.CenteredText(Game, position + new Vector2(0.0f, 110.0f), new Vector2(512.0f, 64.0f), speed), Color.White);
+                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+
+                    Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
+                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
+                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuGenerator)
@@ -653,13 +718,15 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
-                    string energy = Convert.ToInt32(part.Energy * 100.0f).ToString();
-                    string regen = Convert.ToInt32(part.Regen * 100.0f).ToString();
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 10.0f), new Vector2(512.0f, 64.0f), "ENERGY:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, energy, CMenu.CenteredText(Game, position + new Vector2(0.0f, 40.0f), new Vector2(512.0f, 64.0f), energy), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 80.0f), new Vector2(512.0f, 64.0f), "REGEN:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, regen, CMenu.CenteredText(Game, position + new Vector2(0.0f, 110.0f), new Vector2(512.0f, 64.0f), regen), Color.White);
+                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+
+                    Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
+                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuShield)
@@ -668,13 +735,15 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 40.0f);
-                    string energy = Convert.ToInt32(part.Shield * 100.0f).ToString();
-                    string regen = Convert.ToInt32(part.Regen * 100.0f).ToString();
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "ENERGY:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 10.0f), new Vector2(512.0f, 64.0f), "ENERGY:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, energy, CMenu.CenteredText(Game, position + new Vector2(0.0f, 40.0f), new Vector2(512.0f, 64.0f), energy), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "REGEN:", CMenu.CenteredText(Game, position + new Vector2(0.0f, 80.0f), new Vector2(512.0f, 64.0f), "REGEN:"), Color.White);
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, regen, CMenu.CenteredText(Game, position + new Vector2(0.0f, 110.0f), new Vector2(512.0f, 64.0f), regen), Color.White);
+                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+
+                    Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
+                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else
@@ -686,7 +755,7 @@ namespace Galaxy
         private void ShowHelpInfo()
         {
             // TODO: less hack? more hack? more betterer hack?
-            Vector2 blank_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 442.0f, Game.GraphicsDevice.Viewport.Height - 362.0f);
+            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 220.0f, Game.Resolution.Y - 32.0f);
             string[] strings = {
                 "WELCOME TO SHOP",
                 "PURCHASE UPGRADES",
@@ -759,10 +828,10 @@ namespace Galaxy
             }
 
             float offset = Game.PlayersInGame == 1 ? 20.0f : 0.0f;
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[0], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 30.0f + offset), new Vector2(512.0f, 64.0f), strings[0]), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[1], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 100.0f + offset), new Vector2(512.0f, 64.0f), strings[1]), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[2], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 130.0f + offset), new Vector2(512.0f, 64.0f), strings[2]), Color.White);
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, strings[3], CMenu.CenteredText(Game, blank_position + new Vector2(0.0f, 190.0f + offset), new Vector2(512.0f, 64.0f), strings[3]), Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 30.0f + offset), strings[0], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 60.0f + offset), strings[1], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 90.0f + offset), strings[2], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 120.0f + offset), strings[3], Color.White);
         }
 
         private void StageSelect(object tag)

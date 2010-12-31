@@ -470,9 +470,9 @@ namespace Galaxy
                 return false;
             if (mouse.Y < viewport.Y)
                 return false;
-            if (mouse.X > viewport.X + viewport.Width)
+            if (mouse.X > viewport.X + World.Game.Resolution.X)
                 return false;
-            if (mouse.Y > viewport.Y + viewport.Height)
+            if (mouse.Y > viewport.Y + World.Game.Resolution.Y)
                 return false;
             return true;
         }
