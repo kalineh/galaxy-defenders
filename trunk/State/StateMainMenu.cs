@@ -116,6 +116,7 @@ namespace Galaxy
             }
 
             SampleShipManager.Update();
+            EmptyWorld.GameCamera.Update();
             EmptyWorld.UpdateEntities();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
@@ -127,13 +128,14 @@ namespace Galaxy
         public override void Draw()
         {
             Game.GraphicsDevice.Clear(Color.Black);
+
+            EmptyWorld.UpdateScissorRectangle();
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             SampleShipManager.Draw();
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
-            //Game.DefaultSpriteBatch.Begin(SpriteBlendMode.Additive, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.Resolution.X / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
 

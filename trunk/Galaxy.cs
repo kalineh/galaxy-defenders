@@ -36,6 +36,7 @@ namespace Galaxy
         public string MusicDisplayName { get; set; }
         public Vector2 Resolution { get; set; }
         public Matrix RenderScaleMatrix { get; set; }
+        public float UserScaleValue { get; set; }
 
         public CGalaxy()
         {
@@ -43,12 +44,16 @@ namespace Galaxy
             // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
             this.IsFixedTimeStep = false;
 #endif
+
             Content.RootDirectory = "Content";
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             // Game resolution.
             Resolution = new Vector2(1920.0f, 1080.0f);
+
+            // User scale value.
+            UserScaleValue = 1.0f;
 
             // Backbuffer resolution configuration.
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
@@ -91,7 +96,7 @@ namespace Galaxy
             //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
             //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
 
-            GraphicsDeviceManager.PreferMultiSampling = false;
+            GraphicsDeviceManager.PreferMultiSampling = true;
             GraphicsDeviceManager.ApplyChanges();
 
 #if XBOX360
@@ -181,19 +186,42 @@ namespace Galaxy
             
         }
 
+        public void SetUserScaleValue(float scale)
+        {
+            // NOTE: just to handle old save data
+            if (scale == 0.0f)
+                scale = 1.0f;
+
+            // NOTE: we cannot go larger than 1.0f, because it will break in 1080p (see http://forums.create.msdn.com/forums/p/22319/119886.aspx)
+            //scale = MathHelper.Clamp(scale, 0.875f, 1.0f);
+
+            UserScaleValue = scale; 
+            float width = GraphicsDevice.PresentationParameters.BackBufferWidth;
+            float height = GraphicsDevice.PresentationParameters.BackBufferHeight;
+            Vector3 scale_factor = new Vector3(width / Resolution.X * scale, height / Resolution.Y * scale, 1.0f);
+            Matrix scale_matrix = Matrix.CreateScale(scale_factor);
+
+            if (EditorMode)
+                scale_matrix = Matrix.CreateTranslation(new Vector3(width / -2.0f, 0.0f, 0.0f));
+
+            if (GraphicsDevice != null)
+            {
+                GraphicsDevice.RenderState.ScissorTestEnable = false;
+                GraphicsDevice.Clear(Color.Black);
+            }
+
+            Vector3 translation = new Vector3(Resolution.X - Resolution.X * scale_factor.X, Resolution.Y - Resolution.Y * scale_factor.Y, 0.0f);
+            Matrix translation_matrix = Matrix.CreateTranslation(translation * 0.5f);
+
+            RenderScaleMatrix = scale_matrix * translation_matrix;
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
         {
-            float width = GraphicsDevice.PresentationParameters.BackBufferWidth;
-            float height = GraphicsDevice.PresentationParameters.BackBufferHeight;
-            RenderScaleMatrix = Matrix.CreateScale(new Vector3(width / Resolution.X, height / Resolution.Y, 1.0f));
-
-            if (EditorMode)
-                RenderScaleMatrix = Matrix.CreateTranslation(new Vector3(width / -2.0f, 0.0f, 0.0f));
-
             // Graphics device does not exist during Initialize().
             DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
             DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
@@ -206,12 +234,14 @@ namespace Galaxy
             SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
             GuideUtil.Game = this;
             GuideUtil.Start();
+            SetUserScaleValue(0.875f);
 #else
             CSaveData.Load();
 
             SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
             CAudio.SetSFXVolume(options.SFXVolume);
             CAudio.SetMusicVolume(options.MusicVolume);
+            SetUserScaleValue(options.UserScale);
 
             GuideUtil.StorageDeviceReady = true;
 #endif

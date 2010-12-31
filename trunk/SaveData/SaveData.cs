@@ -73,6 +73,7 @@ namespace Galaxy
     {
         public float SFXVolume;
         public float MusicVolume;
+        public float UserScale;
         //public int Language;
     }
 
@@ -213,6 +214,7 @@ namespace Galaxy
                 Options = new SProfileOptionsData() {
                     SFXVolume = 1.0f,
                     MusicVolume = 1.0f,
+                    UserScale = 1.0f,
                 },
             };
         }

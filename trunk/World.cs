@@ -534,6 +534,40 @@ namespace Galaxy
             SecretFinishCounter += 1;
         }
 
+        public void UpdateScissorRectangle()
+        {
+            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
+
+            //
+            // NOTE: GameCamera.ScreenSize is the game area screensize (between the two hud elements)
+            //       GraphicsDevice.Viewport is the actual screen area
+            //
+
+            // Center on the real viewport, and then create a scissor rectangle of the scaled game screen size.
+            Viewport vp = Game.GraphicsDevice.Viewport;
+            Vector2 center = new Vector2(vp.Width / 2.0f, vp.Height / 2.0f);
+            Vector2 screen_size = GameCamera.ScreenSize * Game.UserScaleValue;
+
+            float half_width = screen_size.X / 2.0f;
+            float half_height = screen_size.Y / 2.0f;
+            float x = center.X - half_width;
+            float y = center.Y - half_height;
+
+            //
+            // NOTE: The 360 can break with scissor rectangles outside the screen!
+            //
+            Game.GraphicsDevice.ScissorRectangle = new Rectangle(
+                (int)(x),
+                (int)(y),
+                (int)(screen_size.X),
+                (int)(screen_size.Y)
+            );
+
+            // NOTE: no side panels in editor mode
+            if (Game.EditorMode)
+                Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
+        }
+
         public void Draw()
         {
             DrawStopwatch.Reset();
@@ -541,17 +575,7 @@ namespace Galaxy
 
             Game.GraphicsDevice.Clear(Color.Black);
 
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
-            Game.GraphicsDevice.ScissorRectangle = new Rectangle(
-                (int)((Game.GraphicsDevice.Viewport.Width - GameCamera.ScreenSize.X) / 2.0f),
-                (int)((Game.GraphicsDevice.Viewport.Height - GameCamera.ScreenSize.Y) / 2.0f),
-                (int)GameCamera.ScreenSize.X,
-                (int)GameCamera.ScreenSize.Y
-            );
-
-            // NOTE: no side panels in editor mode
-            if (Game.EditorMode)
-                Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
+            UpdateScissorRectangle();
 
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
