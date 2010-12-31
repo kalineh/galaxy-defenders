@@ -91,6 +91,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Menu\TextLabel.cs" />
+    <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
     <Compile Include="Editor\Entities\EditorEntityMusicChanger.cs" />
     <Compile Include="Effects\ParticleEffectDefinitions.cs" />

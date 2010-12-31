@@ -15,8 +15,8 @@ namespace Galaxy
     public class CProjectileCache<P>
         where P : ICacheableProjectile, new()
     {
-        public Dictionary<GameControllerIndex, List<P>> Instances { get; set; }
-        private Dictionary<GameControllerIndex, int> Counters { get; set; }
+        public List<List<P>> Instances { get; set; }
+        private List<int> Counters { get; set; }
 
         public CProjectileCache(CWorld world)
         {
@@ -25,8 +25,8 @@ namespace Galaxy
 
         public void ResetAll(int count)
         {
-            Instances = new Dictionary<GameControllerIndex, List<P>>();
-            Counters = new Dictionary<GameControllerIndex, int>();
+            Instances = new List<List<P>>();
+            Counters = new List<int>();
 
             List<P> one = new List<P>(count);
             List<P> two = new List<P>(count);
@@ -37,20 +37,19 @@ namespace Galaxy
                 two.Add(new P());
             }
 
-            Instances.Add(GameControllerIndex.One, one);
-            Instances.Add(GameControllerIndex.Two, two);
-
-            Counters.Add(GameControllerIndex.One, 0);
-            Counters.Add(GameControllerIndex.Two, 0);
+            Instances.Add(one);
+            Instances.Add(two);
+            Counters.Add(0);
+            Counters.Add(0);
         }
 
         public P GetProjectileInstance(GameControllerIndex game_controller_index)
         {
-            int counter = Counters[game_controller_index];
+            int counter = Counters[(int)game_controller_index];
             counter += 1;
-            counter %= Instances[game_controller_index].Count;
-            Counters[game_controller_index] = counter;
-            P instance = Instances[game_controller_index][counter];
+            counter %= Instances[(int)game_controller_index].Count;
+            Counters[(int)game_controller_index] = counter;
+            P instance = Instances[(int)game_controller_index][counter];
             return instance;
         }
     }

@@ -43,8 +43,8 @@ namespace Galaxy
             // TODO: this is not synced with CWorld.GameCamera
             Vector2 screen_size = new Vector2(1920.0f * 0.5f, 1080.0f);
             Rectangle destination = new Rectangle(
-                (int)((Game.GraphicsDevice.Viewport.Width - screen_size.X) / 2.0f),
-                (int)((Game.GraphicsDevice.Viewport.Height - screen_size.Y) / 2.0f),
+                (int)((Game.Resolution.X - screen_size.X) / 2.0f),
+                (int)((Game.Resolution.Y - screen_size.Y) / 2.0f),
                 (int)screen_size.X,
                 (int)screen_size.Y
             );

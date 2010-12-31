@@ -29,7 +29,8 @@ namespace Galaxy
             float len = ofs.LengthSquared();
             if (len < 32.0f * 32.0f)
             {
-                World.StartSecretStageEntry(SecretStage, Position);
+                // TODO: fix crash on stage exit
+                //World.StartSecretStageEntry(SecretStage, Position);
                 Expired = true;
             }
         }

@@ -36,13 +36,8 @@ namespace Galaxy
             SpawnBorder = 100.0f;
             PanLimit = 100.0f;
 
-#if XBOX360
-            ScreenSize = new Vector2(1920.0f * 0.5f, 1080.0f);
-#else
-            ScreenSize = new Vector2(1920.0f * 0.5f, 1080.0f);
-#endif
-
-            float aspect_ratio = (float)game.GraphicsDevice.Viewport.Width / (float)game.GraphicsDevice.Viewport.Height;
+            ScreenSize = new Vector2(game.Resolution.X * 0.5f, game.Resolution.Y);
+            float aspect_ratio = (float)game.Resolution.X / (float)game.Resolution.Y;
 
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(90.0f),
@@ -57,20 +52,19 @@ namespace Galaxy
         public void Update()
         {
             ViewMatrix = Matrix.CreateLookAt(Position, LookAt, Vector3.Up);
-            Viewport viewport = Game.GraphicsDevice.Viewport;
-            Vector3 viewport_ = new Vector3(viewport.Width, viewport.Height, 0.0f);
+            Vector3 viewport_ = new Vector3(Game.Resolution.X, Game.Resolution.Y, 0.0f);
             WorldMatrix =
                 Matrix.Identity *
                 Matrix.CreateTranslation(-Position) *
                 Matrix.CreateScale(Zoom, Zoom, 1.0f) *
                 Matrix.CreateRotationZ(Rotation) *
-                Matrix.CreateTranslation(viewport_ / 2.0f);
+                Matrix.CreateTranslation(viewport_ / 2.0f) *
+                Game.RenderScaleMatrix;
         }
 
         public Vector2 ScreenToWorld(Vector2 screen)
         {
-            Viewport viewport = Game.GraphicsDevice.Viewport;
-            Vector2 viewport_size = new Vector2(viewport.Width * 0.5f, viewport.Height * 0.5f);
+            Vector2 viewport_size = new Vector2(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f);
 
             Matrix translation = Matrix.CreateTranslation(Position);
             Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1.0f);
@@ -94,7 +88,7 @@ namespace Galaxy
         public Vector2 GetTopLeft()
         {
             //Viewport viewport = Game.GraphicsDevice.Viewport;
-            //Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            //Vector3 viewport_size = new Vector3(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
             //return (Position - viewport_size).ToVector2();
             return Position.ToVector2() - (ScreenSize * 1.0f / Zoom) * 0.5f;
         }
@@ -102,7 +96,7 @@ namespace Galaxy
         public Vector2 GetBottomRight()
         {
             //Viewport viewport = Game.GraphicsDevice.Viewport;
-            //Vector3 viewport_size = new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0.0f) * 1.0f / Zoom;
+            //Vector3 viewport_size = new Vector3(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
             //return (Position + viewport_size).ToVector2();
             return Position.ToVector2() + (ScreenSize * 1.0f / Zoom) * 0.5f;
         }

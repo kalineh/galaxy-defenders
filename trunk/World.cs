@@ -85,7 +85,7 @@ namespace Galaxy
 
             PauseMenuBase = new CMenu(Game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame, CancelOption = true },
@@ -96,7 +96,7 @@ namespace Galaxy
 
             PauseMenuQuitConfirm = new CMenu(Game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     // looks kind of crap
@@ -108,13 +108,13 @@ namespace Galaxy
 
             PauseMenuOptions = new COptionsMenu(Game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
                 OnBack = LeaveOptionsMenu,
             };
 
             GameOverMenu = new CMenu(Game)
             {
-                Position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 128.0f, 400.0f),
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Retry!", Select = RetryGame },
@@ -182,6 +182,8 @@ namespace Galaxy
             {
                 CShip ship = CShipFactory.GenerateShip(this, profile.Pilots[i], (GameControllerIndex)i);
                 ship.Physics.Position = Game.PlayerSpawnPosition;
+                if (players > 1)
+                    ship.Physics.Position += new Vector2(-40.0f + 40.0f * i, 0.0f);
                 Game.HudManager.Huds[i].Ship = ship;
                 EntityAdd(ship);
                 ShipEntitiesCache.Add(ship);
@@ -562,7 +564,7 @@ namespace Galaxy
 
             if (GameOverFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 GameOverFader.Draw(Game.DefaultSpriteBatch);
                 GameOverMenu.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
@@ -570,29 +572,29 @@ namespace Galaxy
 
             if (StageEndFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 StageEndFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretEntryFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 SecretEntryFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretFinishFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 SecretFinishFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (StageEndText.Count > 0)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
-                Vector2 text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, 150.0f);
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, 150.0f);
                 Vector2 first_offset = new Vector2(100.0f, 0.0f);
                 foreach (string text in StageEndText)
                 {
@@ -602,7 +604,7 @@ namespace Galaxy
                     first_offset = Vector2.Zero;
                 }
 
-                Vector2 award_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 140.0f, 500.0f);
+                Vector2 award_position = new Vector2(Game.Resolution.X / 2.0f - 140.0f, 500.0f);
                 foreach (string text in StageEndAwardText)
                 {
                     Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, award_position, Color.LightGreen);
@@ -623,9 +625,9 @@ namespace Galaxy
             {
                 if (!DebugPaused)
                 {
-                    Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
-                    Vector2 pause_text_position = new Vector2(Game.GraphicsDevice.Viewport.Width / 2.0f - 100.0f, Game.GraphicsDevice.Viewport.Height / 2.0f - 250.0f);
-                    Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height), new Color(0, 0, 0, 92));
+                    Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                    Vector2 pause_text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, Game.Resolution.Y / 2.0f - 250.0f);
+                    Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, (int)Game.Resolution.X, (int)Game.Resolution.Y), new Color(0, 0, 0, 92));
                     PauseMenu.Draw(Game.DefaultSpriteBatch);
                     Game.DefaultSpriteBatch.End();
                 }

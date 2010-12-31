@@ -82,6 +82,7 @@
     <Compile Include="Guide.cs" />
     <Compile Include="Hud\HudManager.cs" />
     <Compile Include="Hud\HudPilotSelect.cs" />
+    <Compile Include="Menu\TextLabel.cs" />
     <Compile Include="Mover\MoverSinHorizontal.cs" />
     <Compile Include="NaturalSorter.cs" />
     <Compile Include="Enemy\Airship.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
+    <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
     <Compile Include="StageDefinitions\OldStage1.cs" />

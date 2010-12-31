@@ -110,14 +110,22 @@ namespace Galaxy
             ShieldHitVisual.Scale = new Vector2(1.25f, 1.25f);
             ShieldHitVisual.Update();
 
+            InitializeEquipment();
+            Mover = new CMoverIgnoreCamera();
+
+            SpeedEnhancement = 1.0f;
+        }
+
+        public void InitializeEquipment()
+        {
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
             WeaponSidekickLeft = CWeaponFactory.GenerateWeapon(this, SidekickLeft);
             WeaponSidekickRight = CWeaponFactory.GenerateWeapon(this, SidekickRight);
 
-            CurrentArmor = chassis.Armor;
-            CurrentShield = shield.Shield;
-            CurrentEnergy = generator.Energy;
+            CurrentArmor = Chassis.Armor;
+            CurrentShield = Shield.Shield;
+            CurrentEnergy = Generator.Energy;
             SingleShotEnergyUsage = CalculateSingleShotEnergy();
 
             foreach (CWeapon weapon in WeaponPrimary)
@@ -126,10 +134,6 @@ namespace Galaxy
                 weapon.Offset = weapon.Offset + Vector2.UnitY * -32.0f;
             foreach (CWeapon weapon in WeaponSidekickRight)
                 weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
-
-            Mover = new CMoverIgnoreCamera();
-
-            SpeedEnhancement = 1.0f;
         }
 
         public override void Update()

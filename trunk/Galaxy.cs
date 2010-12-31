@@ -34,6 +34,8 @@ namespace Galaxy
         public CVisual MusicIcon { get; set; }
         public int MusicDisplayCounter { get; set; }
         public string MusicDisplayName { get; set; }
+        public Vector2 Resolution { get; set; }
+        public Matrix RenderScaleMatrix { get; set; }
 
         public CGalaxy()
         {
@@ -41,18 +43,53 @@ namespace Galaxy
             // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
             this.IsFixedTimeStep = false;
 #endif
-
             Content.RootDirectory = "Content";
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
+            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
-            // TODO: this needs to be done so we have a valid device by the time we get to Initialize()
-#if XBOX360
+            // Game resolution.
+            Resolution = new Vector2(1920.0f, 1080.0f);
+
+            // Backbuffer resolution configuration.
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
             GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
-#else
-            GraphicsDeviceManager.PreferredBackBufferWidth = 1920;
-            GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
+
+            //
+            // NOTE: on the 360, a SDTV resolution of 480i will crash on a requested 1920x1080 buffer
+            //       so we need to handle it specially. the 360 will autoscale a 1280x720 buffer to
+            //       any target resolution, so for any SD resolution we will use a buffer of that size
+            //       and let the 360 handle it
+            //
+            if (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height < 720)
+            {
+                GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
+                GraphicsDeviceManager.PreferredBackBufferHeight = 720;
+            }
+
+#if !XBOX360
+#if DEBUG
+            Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += new EventHandler(Window_ClientSizeChanged);
 #endif
+            // NOTE: for PC we will just scale to fit as much of the screen as possible
+            if (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height < 1080)
+            {
+                int width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 8;
+                int height = (int)(width * (1080.0f / 1920.0f));
+                GraphicsDeviceManager.PreferredBackBufferWidth = width;
+                GraphicsDeviceManager.PreferredBackBufferHeight = height;
+            }
+#endif
+            
+            //
+            // NOTE: this is the correct way to check widescreen, not using aspect ratio
+            //
+            //if (GraphicsAdapter.DefaultAdapter.IsWideScreen)
+            //{
+            //}
+
+            //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
+            //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
 
             GraphicsDeviceManager.PreferMultiSampling = false;
             GraphicsDeviceManager.ApplyChanges();
@@ -67,11 +104,18 @@ namespace Galaxy
             GameFrame = 0;
             PlayersInGame = 1;
 
-            // default
-            GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
-
-            // TODO: resolution
             PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
+        }
+
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            if (State != null)
+                State.OnExit();
+
+            CAudio.Shutdown();
+            CSaveData.StopSaveThread();
+
+            Initialize(); 
         }
 
         protected override void OnExiting(object sender, EventArgs args)
@@ -79,18 +123,10 @@ namespace Galaxy
             if (State != null)
                 State.OnExit();
 
-            CAudio.StopMusic();
+            CAudio.Shutdown();
             CSaveData.StopSaveThread();
 
             base.OnExiting(sender, args);
-        }
-
-        public void SwitchGraphicsDevice(GraphicsDevice graphics_device)
-        {
-            GraphicsDevice.Dispose();
-            GraphicsDevice = graphics_device;
-            LoadContent();
-            //Initialize();
         }
 
         /// <summary>
@@ -122,8 +158,8 @@ namespace Galaxy
             GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
             GraphicsDevice.PresentationParameters.BackBufferCount = 1;
             GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
-            GraphicsDevice.PresentationParameters.BackBufferHeight = 1920;
-            GraphicsDevice.PresentationParameters.BackBufferWidth = 1080;
+            GraphicsDevice.PresentationParameters.BackBufferWidth = 1920;
+            GraphicsDevice.PresentationParameters.BackBufferHeight = 1080;
             GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
             GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
             GraphicsDevice.PresentationParameters.IsFullScreen = false;
@@ -136,8 +172,6 @@ namespace Galaxy
 
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             GraphicsDeviceManager.ApplyChanges();
-
-            CAudio.Initialize();
 
             base.Initialize();
         }
@@ -153,10 +187,20 @@ namespace Galaxy
         /// </summary>
         protected override void LoadContent()
         {
+            float width = GraphicsDevice.PresentationParameters.BackBufferWidth;
+            float height = GraphicsDevice.PresentationParameters.BackBufferHeight;
+            RenderScaleMatrix = Matrix.CreateScale(new Vector3(width / Resolution.X, height / Resolution.Y, 1.0f));
+
+            if (EditorMode)
+                RenderScaleMatrix = Matrix.CreateTranslation(new Vector3(width / -2.0f, 0.0f, 0.0f));
+
             // Graphics device does not exist during Initialize().
             DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
             DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
+
+            // Audio.
+            CAudio.Initialize();
 
 #if XBOX360
             SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
@@ -252,7 +296,7 @@ namespace Galaxy
 
             if (CSaveData.SaveIconVisible)
             {
-                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
                 float step = 1.0f / 8.0f;
                 float rotation = step * ((GameFrame / 4) % 8);
                 // title safe area sucks :(
@@ -267,7 +311,7 @@ namespace Galaxy
                 MusicDisplayCounter -= 1;
                 //Vector2 position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Left, GraphicsDevice.Viewport.TitleSafeArea.Top);
                 Vector2 position = new Vector2(476.0f, GraphicsDevice.Viewport.TitleSafeArea.Bottom - 42.0f);
-                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
                 MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);
