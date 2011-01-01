@@ -66,4 +66,24 @@ namespace Galaxy
             SpriteBatch.End();
         }
     }
+
+    public class CStateChangeTo
+        : CState
+    {
+        public CStateChangeTo(CGalaxy game, CState source, CState target)
+        {
+            source.OnExit();
+            System.GC.Collect();
+            target.OnEnter();
+            game.State = target;
+        }
+
+        public override void Update()
+        {
+        }
+
+        public override void Draw()
+        {
+        }
+    }
 }

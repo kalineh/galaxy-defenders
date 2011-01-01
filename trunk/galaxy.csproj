@@ -236,7 +236,6 @@
     <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
     <Compile Include="Stage\StageCompiler.cs" />
     <Compile Include="SampleShip.cs" />
-    <Compile Include="State\StateDifficultySelect.cs" />
     <Compile Include="State\StatePilotSelect.cs" />
     <Compile Include="State\StateStageSelect.cs" />
     <Compile Include="State\StateEditor.cs" />

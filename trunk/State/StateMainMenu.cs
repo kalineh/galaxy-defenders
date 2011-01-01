@@ -21,7 +21,9 @@ namespace Galaxy
         public CMenu MenuNewGameContinue { get; set; }
         public COptionsMenu MenuOptions { get; set; }
         public CMenu MenuQuitConfirm { get; set; }
+        public CMenu MenuDifficultySelect { get; set; }
         public CSampleShipManager SampleShipManager { get; set; }
+        public bool IsSelectingPilot { get; set; }
 
         public CStateMainMenu(CGalaxy game)
         {
@@ -67,6 +69,19 @@ namespace Galaxy
                 },
             };
 
+            MenuDifficultySelect = new CMenu(game)
+            {
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Normal", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Normal },
+                    new CMenu.CMenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
+                    new CMenu.CMenuOption() { Text = "Extreme", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Extreme },
+                    new CMenu.CMenuOption() { Text = "Back", Select = BackToNewGameContinueMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
+                },
+            };
+
+
             Menu = MenuMain;
 
             // must wait for savedata/controllers to show main menu
@@ -99,6 +114,11 @@ namespace Galaxy
                 if (GuideUtil.StorageDeviceReady)
                 {
                     Menu.Visible = true;
+
+                    // special side-bar pilot selection, no menu needed here
+                    if (IsSelectingPilot)
+                        Menu.Visible = false;
+
                     Menu.Update();
                 }
             }
@@ -113,6 +133,13 @@ namespace Galaxy
                 Game.Input.IsKeyPressed(Keys.Q))
             {
                 Game.Exit();
+            }
+
+            // will only be true after pilot selection
+            if (Game.HudManager.IsPilotSelectCompleteAll())
+            {
+                Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                return;
             }
 
             SampleShipManager.Update();
@@ -176,14 +203,18 @@ namespace Galaxy
 
         private void NewGame(object tag)
         {
+            int game_index = Game.PlayersInGame - 1;
+
             SProfile profile = CSaveData.GetCurrentProfile();
-            profile.Game[Game.PlayersInGame - 1].Stage = "Start";
-            profile.Game[Game.PlayersInGame - 1].Pilots = new SProfilePilotState[2] {
+            profile.Game[game_index].Stage = "Start";
+            profile.Game[game_index].Pilots = new SProfilePilotState[2] {
                 SProfilePilotState.MakeDefaultPilot(0),
                 SProfilePilotState.MakeDefaultPilot(1),
             };
+
             CSaveData.SetCurrentProfileData(profile);
-            Game.State = new CStateFadeTo(Game, this, new CStatePilotSelect(Game));
+
+            Menu = MenuDifficultySelect;
         }
 
         private void ContinueGame(object tag)
@@ -207,6 +238,11 @@ namespace Galaxy
             Menu = MenuMain;    
         }
 
+        private void BackToNewGameContinueMenu(object tag)
+        {
+            Menu = MenuNewGameContinue;    
+        }
+
         private void GotoQuitConfirm(object tag)
         {
             Menu = MenuQuitConfirm;
@@ -215,6 +251,19 @@ namespace Galaxy
         private void QuitGame(object tag)
         {
             Game.Exit();
+        }
+
+        private void SelectDifficulty(object tag)
+        {
+            SProfile profile = CSaveData.GetCurrentProfile();
+            int difficulty = (int)((CDifficulty.DifficultyLevel)tag);
+            profile.Game[Game.PlayersInGame - 1].Difficulty = difficulty;
+            profile.Game[Game.PlayersInGame - 1].Pilots[0].Money = CDifficulty.StartingMoney[difficulty];
+            profile.Game[Game.PlayersInGame - 1].Pilots[1].Money = CDifficulty.StartingMoney[difficulty];
+            CSaveData.SetCurrentProfileData(profile);
+
+            Game.HudManager.ActivatePilotSelect();
+            IsSelectingPilot = true;
         }
 
         private void DebugInput()

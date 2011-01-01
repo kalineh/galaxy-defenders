@@ -145,7 +145,6 @@
     <Compile Include="StageDefinitions\Stage4.cs" />
     <Compile Include="StageDefinitions\Stage6.cs" />
     <Compile Include="StageDefinitions\Stage7.cs" />
-    <Compile Include="State\StateDifficultySelect.cs" />
     <Compile Include="State\StatePilotSelect.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />

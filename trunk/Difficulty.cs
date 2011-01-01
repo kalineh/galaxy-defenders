@@ -10,26 +10,30 @@ namespace Galaxy
     {
         public enum DifficultyLevel
         {
-            Easy = 0,
-            Normal = 1,
-            Hard = 2,
-            LOL = 3,
+            Normal,
+            Hard,
+            Extreme,
         }
 
-        public static float[] HealthScale = new float[4]
+        public static int[] StartingMoney = new int[3]
         {
-            0.7f,
-            1.0f,
-            1.2f,
-            2.0f,
+            5000,
+            7500,
+            10000,
         };
 
-        public static float[] MoneyScale = new float[4]
+        public static float[] HealthScale = new float[3]
         {
-            1.5f,
-            1.3f,
-            1.2f,
-            1.5f,
+            1.0f,
+            1.35f,
+            1.85f,
+        };
+
+        public static float[] MoneyScale = new float[3]
+        {
+            1.0f,
+            1.25f,
+            1.75f,
         };
     }
 }
