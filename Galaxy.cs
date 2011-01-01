@@ -93,10 +93,7 @@ namespace Galaxy
             //{
             //}
 
-            //GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
-            //GraphicsDeviceManager.PreferredBackBufferHeight = 720;
-
-            GraphicsDeviceManager.PreferMultiSampling = true;
+            GraphicsDeviceManager.PreferMultiSampling = false;
             GraphicsDeviceManager.ApplyChanges();
 
 #if XBOX360
@@ -210,7 +207,7 @@ namespace Galaxy
                 GraphicsDevice.Clear(Color.Black);
             }
 
-            Vector3 translation = new Vector3(Resolution.X - Resolution.X * scale_factor.X, Resolution.Y - Resolution.Y * scale_factor.Y, 0.0f);
+            Vector3 translation = new Vector3(width - Resolution.X * scale_factor.X, height - Resolution.Y * scale_factor.Y, 0.0f);
             Matrix translation_matrix = Matrix.CreateTranslation(translation * 0.5f);
 
             RenderScaleMatrix = scale_matrix * translation_matrix;
@@ -234,7 +231,7 @@ namespace Galaxy
             SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
             GuideUtil.Game = this;
             GuideUtil.Start();
-            SetUserScaleValue(0.875f);
+            SetUserScaleValue(1.0f);
 #else
             CSaveData.Load();
 
@@ -318,6 +315,10 @@ namespace Galaxy
                 //Thread.Sleep(0);
 
             base.Draw(game_time);
+
+            GraphicsDevice.RenderState.ScissorTestEnable = false;
+            GraphicsDevice.Clear(Color.Black);
+
             State.Draw();
 
             HudManager.Draw();
@@ -339,8 +340,8 @@ namespace Galaxy
             if (MusicDisplayCounter > 0)
             {
                 MusicDisplayCounter -= 1;
-                //Vector2 position = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.Left, GraphicsDevice.Viewport.TitleSafeArea.Top);
-                Vector2 position = new Vector2(476.0f, GraphicsDevice.Viewport.TitleSafeArea.Bottom - 42.0f);
+                // NOTE: this is non-critical text, so not displaying on 480p wont be a fail
+                Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.12f);
                 DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;

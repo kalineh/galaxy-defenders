@@ -479,7 +479,6 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(Color.Black);
             BackgroundScenery.Draw(Game.DefaultSpriteBatch);
 
             foreach (CEntity entity in HoverEntities)

@@ -104,8 +104,6 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(Color.Black);
-
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);

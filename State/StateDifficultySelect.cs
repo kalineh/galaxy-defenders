@@ -63,7 +63,6 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(Color.Black);
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
             SampleShipManager.Draw();

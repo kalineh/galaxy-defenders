@@ -226,6 +226,7 @@ namespace Galaxy
             if (Paused && !DebugPaused)
             {
                 PauseMenu.Update();
+                GameCamera.Update();
             }
 
             if (Paused)
@@ -545,8 +546,9 @@ namespace Galaxy
 
             // Center on the real viewport, and then create a scissor rectangle of the scaled game screen size.
             Viewport vp = Game.GraphicsDevice.Viewport;
+            Vector2 size = new Vector2(vp.Width / 2.0f, vp.Height); // TODO: get vp scaled by screensize difference!
             Vector2 center = new Vector2(vp.Width / 2.0f, vp.Height / 2.0f);
-            Vector2 screen_size = GameCamera.ScreenSize * Game.UserScaleValue;
+            Vector2 screen_size = size * Game.UserScaleValue;
 
             float half_width = screen_size.X / 2.0f;
             float half_height = screen_size.Y / 2.0f;
@@ -572,8 +574,6 @@ namespace Galaxy
         {
             DrawStopwatch.Reset();
             DrawStopwatch.Start();
-
-            Game.GraphicsDevice.Clear(Color.Black);
 
             UpdateScissorRectangle();
 
