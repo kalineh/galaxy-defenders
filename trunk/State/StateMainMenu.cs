@@ -127,8 +127,6 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.GraphicsDevice.Clear(Color.Black);
-
             EmptyWorld.UpdateScissorRectangle();
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
 
