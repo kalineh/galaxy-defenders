@@ -51,7 +51,7 @@ namespace Galaxy
                 AbilityUnlocked1 = false,
                 AbilityUnlocked2 = false,
                 Score = 0,
-                Money = 5000,
+                Money = 0,
                 ChassisType = "BasicShip",
                 GeneratorType = "BasicGenerator",
                 ShieldType = "BasicShield",

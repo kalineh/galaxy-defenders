@@ -24,16 +24,6 @@ namespace Galaxy
             Game = game;
             TitleTexture = CContent.LoadTexture2D(Game, "Textures/UI/Title");
             EmptyWorld = new CWorld(game, null);
-            Menu = new CMenu(game)
-            {
-                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
-                MenuOptions = new List<CMenu.CMenuOption>()
-                {
-                    new CMenu.CMenuOption() { Text = "Start Game", Select = StartGame },
-                    new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
-                }
-            };
-
             SampleShipManager = new CSampleShipManager(EmptyWorld);
 
             EmptyWorld.BackgroundScenery = CSceneryPresets.BlueSky(EmptyWorld);
@@ -53,7 +43,8 @@ namespace Galaxy
         {
             if (Game.HudManager.IsPilotSelectCompleteAll())
             {
-                Menu.Update();
+                Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                return;
             }
             else
             {
@@ -85,7 +76,6 @@ namespace Galaxy
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.Resolution.X / 2.0f - 256.0f, 120.0f), Color.White);
-            Menu.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
@@ -95,7 +85,7 @@ namespace Galaxy
 
         private void StartGame(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateDifficultySelect(Game));
+            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
         }
 
         private void Back(object tag)

@@ -321,6 +321,8 @@ namespace Galaxy
 
             State.Draw();
 
+            GraphicsDevice.RenderState.ScissorTestEnable = false;
+
             HudManager.Draw();
 
             FrameRateDisplay.Draw(DefaultSpriteBatch);

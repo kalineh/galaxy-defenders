@@ -81,6 +81,7 @@ namespace Galaxy
 
             if (HudsProfileSelect[index].State == HudPilotSelect.EState.Locked)
                 return true;
+
             return false;
         }
 
