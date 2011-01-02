@@ -138,6 +138,7 @@ namespace Galaxy
             // will only be true after pilot selection
             if (Game.HudManager.IsPilotSelectCompleteAll())
             {
+                Game.HudManager.LockHuds();
                 Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
                 return;
             }
@@ -160,19 +161,25 @@ namespace Galaxy
             SampleShipManager.Draw();
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
             Game.DefaultSpriteBatch.Draw(TitleTexture, new Vector2(Game.Resolution.X / 2.0f - 256.0f, 120.0f), Color.White);
             Menu.Draw(Game.DefaultSpriteBatch);
+
+            // TODO: test removing controller during this state
+            if (IsSelectingPilot)
+            {
+                
+            }
 
             if (Game.Input.CountConnectedControllers() == 0)
             {
                 Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Press Start", new Vector2(Game.Resolution.X / 2.0f - 20.0f, 650.0f), Color.White, 0.0f, new Vector2(60.0f, 10.0f), 1.5f + (float)Math.Sin(Game.GameFrame * 0.05f) * 0.05f, SpriteEffects.None, 0.0f);
             }
 
-            Game.DefaultSpriteBatch.End();
-
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
-            EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
         }
 

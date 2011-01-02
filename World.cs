@@ -537,6 +537,10 @@ namespace Galaxy
 
         public void UpdateScissorRectangle()
         {
+            // NOTE: no side panels in editor mode
+            if (Game.EditorMode)
+                return;
+
             Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
 
             //
@@ -564,10 +568,6 @@ namespace Galaxy
                 (int)(screen_size.X),
                 (int)(screen_size.Y)
             );
-
-            // NOTE: no side panels in editor mode
-            if (Game.EditorMode)
-                Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
         }
 
         public void Draw()

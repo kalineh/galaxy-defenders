@@ -93,7 +93,7 @@ namespace Galaxy
             //{
             //}
 
-            GraphicsDeviceManager.PreferMultiSampling = false;
+            GraphicsDeviceManager.PreferMultiSampling = true;
             GraphicsDeviceManager.ApplyChanges();
 
 #if XBOX360
@@ -165,9 +165,9 @@ namespace Galaxy
             GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
             GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
             GraphicsDevice.PresentationParameters.IsFullScreen = false;
-            GraphicsDevice.PresentationParameters.MultiSampleQuality = 1;
-            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.NonMaskable;
-            GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.One;
+            GraphicsDevice.PresentationParameters.MultiSampleQuality = 0;
+            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
+            GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
             GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.DiscardDepthStencil;
             GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
             GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;

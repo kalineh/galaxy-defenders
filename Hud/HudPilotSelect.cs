@@ -32,6 +32,8 @@ namespace Galaxy
         private CVisual ShieldIconVisual { get; set; }
         private CVisual ArmorIconVisual { get; set; }
         private List<CVisual> PortraitIconVisuals { get; set; }
+        private CVisual PilotSelectArrowVisualLeft { get; set; }
+        private CVisual PilotSelectArrowVisualRight { get; set; }
 
         private Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
@@ -49,7 +51,8 @@ namespace Galaxy
             PressStart, // display press start
             Inactive,   // no player
             Active,     // selecting profile
-            Locked,     // profile selected
+            Selected,   // selected, waiting for players
+            Locked,     // locked, cannot change anymore
         }
         public EState State { get; set; }
 
@@ -74,6 +77,8 @@ namespace Galaxy
                 CVisual.MakeSpriteUncached(Game, "Textures/UI/GunthorPortrait"),
                 //CVisual.MakeSpriteUncached(Game, "Textures/UI/MysteryPortrait"),
             };
+            PilotSelectArrowVisualLeft = CVisual.MakeSpriteUncached(Game, "Textures/UI/PilotSelectArrow");
+            PilotSelectArrowVisualRight = CVisual.MakeSpriteUncached(Game, "Textures/UI/PilotSelectArrow");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(Game.Resolution.X, 0.0f);
@@ -93,6 +98,10 @@ namespace Galaxy
                 portrait.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
                 portrait.Update();
             }
+            PilotSelectArrowVisualLeft.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            PilotSelectArrowVisualRight.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            PilotSelectArrowVisualRight.SpriteEffects = SpriteEffects.FlipHorizontally;
+            PilotSelectArrowVisualRight.Update();
 
             LeftPanelVisual.NormalizedOrigin = new Vector2(0.0f, 0.0f);
             RightPanelVisual.NormalizedOrigin = new Vector2(1.0f, 0.0f);
@@ -125,7 +134,7 @@ namespace Galaxy
                     if (Game.Input.IsPadConfirmPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
                     {
                         ChoosePilotFromCursor();
-                        Lock();
+                        Selected();
                     }
 
                     PortraitIconVisuals[Cursor].Scale = Vector2.One;
@@ -137,7 +146,7 @@ namespace Galaxy
                     if (Game.PlayersInGame == 1)
                         other_cursor = -1;
 
-                    if (Game.Input.IsPadUpPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Up))
+                    if (Game.Input.IsPadLeftPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Left))
                     {
                         int next_valid = Cursor;
 
@@ -153,7 +162,7 @@ namespace Galaxy
                         Cursor = next_valid;
                     }
 
-                    if (Game.Input.IsPadDownPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Down))
+                    if (Game.Input.IsPadRightPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Right))
                     {
                         int next_valid = Cursor;
 
@@ -170,6 +179,17 @@ namespace Galaxy
                     }
 
                     PortraitIconVisuals[Cursor].Scale = Vector2.One + Vector2.One * 0.025f * (float)Math.Sin(Game.GameFrame * 0.1f);
+                    break;
+
+                case EState.Selected:
+                    if (Game.Input.IsPadCancelPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Escape))
+                    {
+                        State = EState.Active;
+                        break;
+                    }
+
+                    PortraitIconVisuals[Cursor].Scale = new Vector2(1.025f);
+
                     break;
 
                 case EState.Locked:
@@ -191,24 +211,31 @@ namespace Galaxy
                     break;
 
                 case EState.Active:
+                {
                     Vector2 offset = new Vector2(0.0f, 210.0f);
                     Vector2 position = PortraitIconPosition;
 
                     Vector2 text_offset = new Vector2(-120.0f, -240.0f);
                     sprite_batch.DrawString(Game.DefaultFont, "Select Pilot", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
 
-                    int i = 0;
-                    foreach (CVisual portrait in PortraitIconVisuals)
-                    {
-                        if (i == Cursor)
-                            sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                    sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                    CVisual portrait = PortraitIconVisuals[Cursor];
+                    portrait.Draw(sprite_batch, position, 0.0f);
 
-                        portrait.Draw(sprite_batch, position, 0.0f);
-                        position += offset;
-                        i++;
-                    }
+                    PilotSelectArrowVisualLeft.Draw(sprite_batch, position + new Vector2(-128.0f, 0.0f), 0.0f);
+                    PilotSelectArrowVisualRight.Draw(sprite_batch, position + new Vector2(+128.0f, 0.0f), 0.0f);
 
                     break;
+                }
+
+                case EState.Selected:
+                {
+                    Vector2 position = PortraitIconPosition;
+                    sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                    CVisual portrait = PortraitIconVisuals[Cursor];
+                    portrait.Draw(sprite_batch, position, 0.0f);
+                    break;
+                }
 
                 case EState.Locked:
                     break;
@@ -239,6 +266,11 @@ namespace Galaxy
         {
             State = EState.Locked;    
             Game.HudManager.Huds[(int)GameControllerIndex].UpdatePilot();
+        }
+
+        public void Selected()
+        {
+            State = EState.Selected;    
         }
 
         public void ChoosePilotFromCursor()

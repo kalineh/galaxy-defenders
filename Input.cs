@@ -10,6 +10,8 @@ namespace Galaxy
 {
     public class CInput
     {
+        public const float DeadZone = 0.025f;
+
         private CGalaxy Game { get; set; }
         private bool[] ConnectedPlayerIndex { get; set; }
         private PlayerIndex[] GameControllerIndexToPlayerIndex { get; set; }
@@ -292,28 +294,28 @@ namespace Galaxy
         private bool IsPadLeftDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Left == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.X < 0.0f;
+            bool stick = state.ThumbSticks.Left.X < DeadZone;
             return dpad || stick;
         }
 
         private bool IsPadRightDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Right == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.X > 0.0f;
+            bool stick = state.ThumbSticks.Left.X > DeadZone;
             return dpad || stick;
         }
 
         private bool IsPadUpDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Up == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.Y > 0.0f;
+            bool stick = state.ThumbSticks.Left.Y > DeadZone;
             return dpad || stick;
         }
 
         private bool IsPadDownDownImpl(GamePadState state)
         {
             bool dpad = state.DPad.Down == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.Y < 0.0f;
+            bool stick = state.ThumbSticks.Left.Y < DeadZone;
             return dpad || stick;
         }
 

@@ -64,7 +64,7 @@ namespace Galaxy
 
         public Vector2 ScreenToWorld(Vector2 screen)
         {
-            Vector2 viewport_size = new Vector2(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f);
+            Vector2 viewport_size = new Vector2(Game.Resolution.X * 0.25f, Game.Resolution.Y * 0.5f);
 
             Matrix translation = Matrix.CreateTranslation(Position);
             Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1.0f);
