@@ -42,7 +42,11 @@ namespace Galaxy
     {
         public static Vector2 AlignLeft(SpriteFont font, Vector2 position, string text)
         {
-            return position;
+            Vector2 measured = font.MeasureString(text);
+            return new Vector2(
+                position.X,
+                position.Y - measured.Y * 0.5f
+            );
         }
 
         public static Vector2 AlignRight(SpriteFont font, Vector2 position, string text)
@@ -50,7 +54,7 @@ namespace Galaxy
             Vector2 measured = font.MeasureString(text);
             return new Vector2(
                 position.X - measured.X,
-                position.Y - measured.Y
+                position.Y - measured.Y * 0.5f
             );
         }
 
