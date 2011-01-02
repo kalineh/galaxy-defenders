@@ -188,8 +188,7 @@ namespace Galaxy
                         break;
                     }
 
-                    PortraitIconVisuals[Cursor].Scale = new Vector2(1.025f);
-
+                    PortraitIconVisuals[Cursor].Scale = Vector2.One;
                     break;
 
                 case EState.Locked:
@@ -222,23 +221,107 @@ namespace Galaxy
                     CVisual portrait = PortraitIconVisuals[Cursor];
                     portrait.Draw(sprite_batch, position, 0.0f);
 
-                    PilotSelectArrowVisualLeft.Draw(sprite_batch, position + new Vector2(-128.0f, 0.0f), 0.0f);
-                    PilotSelectArrowVisualRight.Draw(sprite_batch, position + new Vector2(+128.0f, 0.0f), 0.0f);
+                    if (Cursor > 0)
+                        PilotSelectArrowVisualLeft.Draw(sprite_batch, position + new Vector2(-116.0f, 0.0f), 0.0f);
 
+                    if (Cursor < PortraitIconVisuals.Count - 1)
+                        PilotSelectArrowVisualRight.Draw(sprite_batch, position + new Vector2(+116.0f, 0.0f), 0.0f);
+
+                    DrawPilotInfo(sprite_batch, position + new Vector2(-32.0f, 128.0f));
                     break;
                 }
 
                 case EState.Selected:
                 {
                     Vector2 position = PortraitIconPosition;
+                    Vector2 text_offset = new Vector2(-120.0f, -240.0f);
+                    sprite_batch.DrawString(Game.DefaultFont, "Waiting...", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
+
                     sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
                     CVisual portrait = PortraitIconVisuals[Cursor];
                     portrait.Draw(sprite_batch, position, 0.0f);
+
+                    DrawPilotInfo(sprite_batch, position + new Vector2(-32.0f, 128.0f));
                     break;
                 }
 
                 case EState.Locked:
                     break;
+            }
+        }
+
+        public static List<List<string>> PilotInfo = new List<List<string>>()
+        {
+            new List<string>()
+            {
+                "Name: Kazuki",
+                "Country: Japan",
+                "Profession: Ace Pilot",
+                "Blood Type: B",
+                "",
+                "Bonus: Speed+",
+                "",
+                "Ability: Dash Burst",
+                "Ability: Shimmer",
+                "Ability: Absorb Energy",
+            },
+            new List<string>()
+            {
+                "Name: Rabbit",
+                "Country: Russia",
+                "Profession: Wpn Research",
+                "Blood Type: A",
+                "",
+                "Bonus: Money+",
+                "",
+                "Ability: Bullet Reflect",
+                "Ability: Bullet Detonate",
+                "Ability: Bullet Alchemy",
+            },
+            new List<string>()
+            {
+                "Name: Gunthor",
+                "Country: Norway",
+                "Profession: Demolitions",
+                "Blood Type: O",
+                "",
+                "Bonus: Damage+",
+                "",
+                "Ability: Ground Smash",
+                "Ability: Suction Crusher",
+                "Ability: Armor Repair",
+            },
+            new List<string>()
+            {
+                "Name: ???",
+                "Country: ???",
+                "Title: ???",
+                "Blood Type: AB",
+                "",
+                "Bonus: Speed+",
+                "Bonus: Damage+",
+                "",
+                "Ability: ???",
+                "Ability: ???",
+                "Ability: ???",
+            },
+        };
+        public void DrawPilotInfo(SpriteBatch sprite_batch, Vector2 position)
+        {
+            List<string> info = PilotInfo[Cursor];
+
+            foreach (string s in info)
+            {
+                position += new Vector2(0.0f, 32.0f);
+                if (String.IsNullOrEmpty(s))
+                    continue;
+
+                string[] split = s.Split(':');
+                string l = split[0];
+                string r = split[1];
+                sprite_batch.DrawStringAlignRight(Game.DefaultFont, position + new Vector2(-8.0f, 0.0f), l, Color.White);
+                sprite_batch.DrawStringAlignRight(Game.DefaultFont, position, ":", Color.White);
+                sprite_batch.DrawStringAlignLeft(Game.DefaultFont, position + new Vector2(+8.0f, 0.0f), r, Color.White);
             }
         }
 
