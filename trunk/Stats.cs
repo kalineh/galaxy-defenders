@@ -20,7 +20,7 @@ namespace Galaxy
             Shot0,
             Shot1000,
             Collision0,
-            Collision200,
+            Collision50,
             Coins100,
         }
 
@@ -35,16 +35,16 @@ namespace Galaxy
         static CStats()
         {
             AwardDefinitions = new Dictionary<AwardType, SAward>();
-            AwardDefinitions[AwardType.Enemy0] = new SAward { Text = "Pacifist", Bonus = 500 };
+            AwardDefinitions[AwardType.Enemy0] = new SAward { Text = "Pacifist", Bonus = 5000 };
             AwardDefinitions[AwardType.Enemy80] = new SAward { Text = "Killer", Bonus = 500 };
-            AwardDefinitions[AwardType.Enemy100] = new SAward { Text = "Annihilator", Bonus = 500 };
-            AwardDefinitions[AwardType.Building0] = new SAward { Text = "Precision", Bonus = 500 };
+            AwardDefinitions[AwardType.Enemy100] = new SAward { Text = "Annihilator", Bonus = 1500 };
+            AwardDefinitions[AwardType.Building0] = new SAward { Text = "Safety First", Bonus = 500 };
             AwardDefinitions[AwardType.Building80] = new SAward { Text = "Collateral Damage", Bonus = 500 };
-            AwardDefinitions[AwardType.Building100] = new SAward { Text = "Destroyer", Bonus = 500 };
-            AwardDefinitions[AwardType.Shot0] = new SAward { Text = "Evasive Action", Bonus = 500 };
+            AwardDefinitions[AwardType.Building100] = new SAward { Text = "Demolitions Expert", Bonus = 1500 };
+            AwardDefinitions[AwardType.Shot0] = new SAward { Text = "Evasive Action", Bonus = 1000 };
             AwardDefinitions[AwardType.Shot1000] = new SAward { Text = "Bullet Magnet", Bonus = 500 };
             AwardDefinitions[AwardType.Collision0] = new SAward { Text = "Untouchable", Bonus = 500 };
-            AwardDefinitions[AwardType.Collision200] = new SAward { Text = "Brute Force", Bonus = 500 };
+            AwardDefinitions[AwardType.Collision50] = new SAward { Text = "Brute Force", Bonus = 1000 };
             AwardDefinitions[AwardType.Coins100] = new SAward { Text = "Scrooge", Bonus = 500 };
         }
 
@@ -89,45 +89,30 @@ namespace Galaxy
         public string GetCoinsCollectedString()
         {
             float percent = CoinsTotal == 0 ? 0.0f : 100.0f / CoinsTotal * CoinsCollected;
-            string result = String.Format("Coins Collected: {0}% {1}/{2}", (int)percent, CoinsCollected, CoinsTotal);
+            string result = String.Format("COINS: {0}%", (int)percent);
             return result;
         }
 
         public string GetEnemyKillsString()
         {
             float percent = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
-            string result = String.Format("Enemy Kills: {0}% {1}/{2}", (int)percent, EnemyKills, EnemyTotal);
+            string result = String.Format("ENEMIES: {0}%", (int)percent);
             return result;
         }
 
         public string GetBuildingKillsString()
         {
             float percent = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
-            string result = String.Format("Building Kills: {0}% {1}/{2}", (int)percent, BuildingKills, BuildingTotal);
+            string result = String.Format("BUILDING: {0}%", (int)percent);
             return result;
         }
 
-        public string GetShotDamageDealtString()
+        public string GetTotalPercentString()
         {
-            string result = String.Format("Shot Damage Dealt: {0}", (int)ShotDamageDealt);
-            return result;
-        }
-
-        public string GetShotDamageReceivedString()
-        {
-            string result = String.Format("Shot Damage Received: {0}", (int)ShotDamageReceived);
-            return result;
-        }
-
-        public string GetCollisionDamageDealtString()
-        {
-            string result = String.Format("Collision Damage Dealt: {0}", (int)CollisionDamageDealt);
-            return result;
-        }
-
-        public string GetCollisionDamageReceivedString()
-        {
-            string result = String.Format("Collision Damage Received: {0}", (int)CollisionDamageReceived);
+            float coins = CoinsTotal == 0 ? 0.0f : 100.0f / CoinsTotal * CoinsCollected;
+            float enemy = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
+            float building = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
+            string result = String.Format("TOTAL: {0}%", (int)(coins + enemy + building));
             return result;
         }
 
@@ -166,8 +151,8 @@ namespace Galaxy
 
             if (CollisionDamageReceived == 0)
                 Awards.Add(AwardDefinitions[AwardType.Collision0]);
-            if (CollisionDamageReceived > 1000)
-                Awards.Add(AwardDefinitions[AwardType.Collision200]);
+            if (CollisionDamageReceived > 50)
+                Awards.Add(AwardDefinitions[AwardType.Collision50]);
 
             if (CoinsTotal > 0)
             {

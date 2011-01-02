@@ -13,6 +13,8 @@ namespace Galaxy
     public class CStageElementCameraStop
         : CStageElement
     {
+        private int StageEndCountdown { get; set; }
+
         private bool EnemiesExist(CWorld world)
         {
             foreach (CEntity entity in world.GetEntities())
@@ -38,7 +40,17 @@ namespace Galaxy
                 return;
             }
 
-            world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.015f);
+            StageEndCountdown += 1;
+            if (StageEndCountdown == 60)
+            {
+                world.DestroyAllProjectiles();
+                world.StartStageEnd();
+                world.StageEnd = true;
+            }
+
+            if (StageEndCountdown > 60)
+                world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.035f);
+
         }
 
         public override bool IsExpired()

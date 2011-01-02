@@ -23,8 +23,10 @@ namespace Galaxy
 
             if (World.IsSecretWorld)
                 World.StartSecretStageFinish();
-            else
-                World.StartStageEnd();
+            // NOTE: doing this in camerastop now for regular stage
+            // TODO: cleanup mess
+            //else
+                //World.StartStageEnd();
 
             World.StageEnd = true;
         }
