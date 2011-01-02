@@ -73,8 +73,8 @@ namespace Galaxy
                     new Color(47, 76, 87),
                     new Color(47, 76, 87)
                 ),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 1.0f, Vector2.UnitY * 11.0f),
-                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 1.0f, Vector2.UnitY * 12.0f)
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 1.0f, Vector2.UnitY * 6.0f),
+                new CClouds(world, CContent.LoadTexture2D(world.Game, "Textures/Background/Droplet"), 1.0f, Vector2.UnitY * 7.0f)
             );
         }
 

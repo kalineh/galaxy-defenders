@@ -18,6 +18,8 @@ namespace Galaxy
         public static Texture2D MenuItemSelectedTexture { get; set; }
         public static Texture2D MenuItemSelectedTextureSmall { get; set; }
         public static Texture2D MenuItemInvalidTexture { get; set; }
+        public static Texture2D MenuItemInvalidSelectedTexture { get; set; }
+        public bool AllowHighlightInvalid { get; set; }
 
         public static void LoadMenuTextures(CGalaxy game)
         {
@@ -26,6 +28,7 @@ namespace Galaxy
             MenuItemSelectedTexture = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemSelected");
             MenuItemSelectedTextureSmall = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemSelectedSmall");
             MenuItemInvalidTexture = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemInvalid");
+            MenuItemInvalidSelectedTexture = CContent.LoadTexture2D(game, "Textures/UI/Menu/MenuItemInvalidSelected");
         }
 
         public CGalaxy Game { get; set; }
@@ -113,6 +116,7 @@ namespace Galaxy
             MenuOptions = new List<CMenuOption>();
             Position = Vector2.Zero;
             Visible = true;
+            AllowHighlightInvalid = true;
         }
 
         public void Update()
@@ -140,8 +144,11 @@ namespace Galaxy
             Cursor = Math.Max(Cursor, 0);
             Cursor = Math.Min(Cursor, MenuOptions.Count - 1);
 
-            if ((MenuOptions[Cursor] == null || MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data) == false))
-                MoveToFirstValid();
+            if (!AllowHighlightInvalid)
+            {
+                if ((MenuOptions[Cursor] == null || MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data) == false))
+                    MoveToFirstValid();
+            }
 
             CMenuOption option = MenuOptions[Cursor];
 
@@ -155,8 +162,13 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressedAny())
             {
-                CAudio.PlaySound("MenuSelect");
-                option.Select(option.Data);
+                if (MenuOptions[Cursor] != null && MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data))
+                {
+                    CAudio.PlaySound("MenuSelect");
+                    option.Select(option.Data);
+                }
+                else
+                    CAudio.PlaySound("MenuCancel");
             }
 
             if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressedAny())
@@ -214,10 +226,22 @@ namespace Galaxy
                         }
                         else
                         {
-                            texture = MenuItemInvalidTexture;
+                            if (selected)
+                            {
+                                texture = MenuItemInvalidSelectedTexture;
+                            }
+                            else
+                            {
+                                texture = MenuItemInvalidTexture;
+                            }
                         }
 
                         Color color = valid ? Color.White : Color.Gray;
+
+                        if (option.SpecialHighlight)
+                        {
+                            color = Color.LightBlue;
+                        }
 
                         Vector2 center = position + new Vector2(texture.Width, texture.Height) / 2.0f;
                         sprite_batch.Draw(texture, position, null, Color.White);
@@ -267,14 +291,20 @@ namespace Galaxy
             if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressedAny())
             {
                 offset += 1;
-                while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
-                    offset += 1;
+                if (!AllowHighlightInvalid)
+                {
+                    while (Cursor + offset < MenuOptions.Count && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
+                        offset += 1;
+                }
             }
             if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressedAny())
             {
                 offset -= 1;
-                while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
-                    offset -= 1;
+                if (!AllowHighlightInvalid)
+                {
+                    while (Cursor + offset > 0 && (MenuOptions[Cursor + offset] == null || MenuOptions[Cursor + offset].SelectValidate(MenuOptions[Cursor + offset].Data) == false))
+                        offset -= 1;
+                }
             }
             return offset;
         }

@@ -227,6 +227,8 @@ namespace Galaxy
                         AxisValue = weapon_part == WorkingProfile.WeaponSecondaryType ? WorkingProfile.WeaponSecondaryLevel : 0,
                     }
                 );
+
+                MenuSecondaryWeapon.MenuOptions[0].SpecialHighlight = true;
             }
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption()
                                                 {
@@ -908,6 +910,11 @@ namespace Galaxy
 
         private void SelectPrimaryWeapon(object tag)
         {
+            if (WorkingProfile.WeaponPrimaryType == LockedProfile.WeaponPrimaryType && WorkingProfile.WeaponPrimaryLevel == LockedProfile.WeaponPrimaryLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
@@ -980,6 +987,11 @@ namespace Galaxy
 
         private void SelectSecondaryWeaponEmpty(object tag)
         {
+            if (WorkingProfile.WeaponSecondaryType == LockedProfile.WeaponSecondaryType && WorkingProfile.WeaponSecondaryLevel == LockedProfile.WeaponSecondaryLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel);
             LockedProfile.Money += sell;
             LockedProfile.WeaponSecondaryType = "";
@@ -990,6 +1002,11 @@ namespace Galaxy
 
         private void SelectSecondaryWeapon(object tag)
         {
+            if (WorkingProfile.WeaponSecondaryType == LockedProfile.WeaponSecondaryType && WorkingProfile.WeaponSecondaryLevel == LockedProfile.WeaponSecondaryLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
@@ -1076,12 +1093,22 @@ namespace Galaxy
 
         private void SelectSidekickLeft(object tag)
         {
+            if (WorkingProfile.WeaponSidekickLeftType == LockedProfile.WeaponSidekickLeftType && WorkingProfile.WeaponSidekickLeftLevel == LockedProfile.WeaponSidekickLeftLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
 
         private void SelectSidekickLeftEmpty(object tag)
         {
+            if (WorkingProfile.WeaponSidekickLeftType == LockedProfile.WeaponSidekickLeftType && WorkingProfile.WeaponSidekickLeftLevel == LockedProfile.WeaponSidekickLeftLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickLeftType, LockedProfile.WeaponSidekickLeftLevel);
             LockedProfile.Money += sell;
             LockedProfile.WeaponSidekickLeftType = "";
@@ -1142,12 +1169,22 @@ namespace Galaxy
 
         private void SelectSidekickRight(object tag)
         {
+            if (WorkingProfile.WeaponSidekickRightType == LockedProfile.WeaponSidekickRightType && WorkingProfile.WeaponSidekickRightLevel == LockedProfile.WeaponSidekickRightLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
 
         private void SelectSidekickRightEmpty(object tag)
         {
+            if (WorkingProfile.WeaponSidekickRightType == LockedProfile.WeaponSidekickRightType && WorkingProfile.WeaponSidekickRightLevel == LockedProfile.WeaponSidekickRightLevel)
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickRightType, LockedProfile.WeaponSidekickRightLevel);
             LockedProfile.Money += sell;
             LockedProfile.WeaponSidekickRightType = "";
@@ -1208,6 +1245,11 @@ namespace Galaxy
 
         private void SelectChassis(object tag)
         {
+            if (WorkingProfile.ChassisType == LockedProfile.ChassisType && WorkingProfile.ChassisType == LockedProfile.ChassisType) 
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
@@ -1245,6 +1287,11 @@ namespace Galaxy
 
         private void SelectGenerator(object tag)
         {
+            if (WorkingProfile.GeneratorType == LockedProfile.GeneratorType && WorkingProfile.GeneratorType == LockedProfile.GeneratorType) 
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
@@ -1282,6 +1329,11 @@ namespace Galaxy
 
         private void SelectShield(object tag)
         {
+            if (WorkingProfile.ShieldType == LockedProfile.ShieldType && WorkingProfile.ShieldType == LockedProfile.ShieldType) 
+                return;
+
+            CAudio.PlaySound("MenuBuy");
+
             LockWorkingProfile();
             RefreshSampleDisplay();
         }
