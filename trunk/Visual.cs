@@ -260,7 +260,7 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation)
         {
-            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, SpriteEffects.None, Depth);
+            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, _SpriteEffects, Depth);
 
 #if DEBUG
             if (DebugText != null)

@@ -466,14 +466,18 @@ namespace Galaxy
         public bool IsInGameViewport(Vector2 mouse)
         {
             Viewport viewport = World.Game.GraphicsDevice.Viewport;
+
+            mouse -= new Vector2(80.0f, 240.0f);
+
             if (mouse.X < viewport.X)
                 return false;
             if (mouse.Y < viewport.Y)
                 return false;
-            if (mouse.X > viewport.X + World.Game.Resolution.X)
+            if (mouse.X > viewport.X + World.Game.Resolution.X * 0.5f)
                 return false;
             if (mouse.Y > viewport.Y + World.Game.Resolution.Y)
                 return false;
+
             return true;
         }
 

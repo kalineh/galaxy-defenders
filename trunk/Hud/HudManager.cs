@@ -79,6 +79,14 @@ namespace Galaxy
             if (Game.EditorMode)
                 return true;
 
+            if (HudsProfileSelect[index].State == HudPilotSelect.EState.Selected)
+                return true;
+
+            return false;
+        }
+
+        public bool IsPilotLocked(int index)
+        {
             if (HudsProfileSelect[index].State == HudPilotSelect.EState.Locked)
                 return true;
 

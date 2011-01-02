@@ -162,7 +162,7 @@ namespace Galaxy
 
         public void Update()
         {
-            if (!Game.HudManager.IsPilotSelectComplete((int)GameControllerIndex))
+            if (!Game.HudManager.IsPilotLocked((int)GameControllerIndex))
                 return;
 
             if (Ship == null)
@@ -214,7 +214,7 @@ namespace Galaxy
                 RightPanelVisual.Draw(sprite_batch, RightPanelPosition, 0.0f);
             }
 
-            if (!Game.HudManager.IsPilotSelectComplete((int)GameControllerIndex))
+            if (!Game.HudManager.IsPilotLocked((int)GameControllerIndex))
                 return;
 
             if (GameControllerIndex == GameControllerIndex.One)
