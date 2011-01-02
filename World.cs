@@ -344,7 +344,6 @@ namespace Galaxy
                 return;
 
             // frame count of display operations
-            const int StageClearDestroyProjectiles = 1;
             const int StageClearShow = 60;
             const int StatsShow = 100;
             const int StatsInterval = 20;
@@ -362,11 +361,6 @@ namespace Galaxy
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
 
-            if (StageEndCounter == StageClearDestroyProjectiles)
-            {
-                DestroyAllProjectiles();
-            }
-
             if (StageEndCounter == StageClearShow)
             {
                 StageEndText.Add("STAGE CLEAR");
@@ -380,14 +374,12 @@ namespace Galaxy
                 StageEndText.Add(Stats.GetEnemyKillsString());
             if (StageEndCounter == StatsShow + StatsInterval * 2)
                 StageEndText.Add(Stats.GetBuildingKillsString());
-            if (StageEndCounter == StatsShow + StatsInterval * 3)
-                StageEndText.Add(Stats.GetShotDamageDealtString());
+
             if (StageEndCounter == StatsShow + StatsInterval * 4)
-                StageEndText.Add(Stats.GetShotDamageReceivedString());
-            if (StageEndCounter == StatsShow + StatsInterval * 5)
-                StageEndText.Add(Stats.GetCollisionDamageDealtString());
-            if (StageEndCounter == StatsShow + StatsInterval * 6)
-                StageEndText.Add(Stats.GetCollisionDamageReceivedString());
+            {
+                StageEndText.Add("");
+                StageEndText.Add(Stats.GetTotalPercentString());
+            }
 
             if (StageEndCounter == 1)
                 Stats.CheckAwards();
@@ -466,16 +458,6 @@ namespace Galaxy
                 ship.IsInvincible += 1;
             }
 
-            if (SecretEntryCounter == 20)
-            {
-                StageEndText.Add("SECRET WARP");
-            }
-
-            if (SecretEntryCounter == 120)
-            {
-                StageEndText.Clear();
-            }
-
             if (SecretEntryCounter > 120)
             {
                 IgnoreSecrets = true;
@@ -492,7 +474,6 @@ namespace Galaxy
                 fader.NoExitSource = true;
                 Game.State = fader;
                 
-                StageEndText.Clear();
                 return;
             }
 
@@ -615,11 +596,24 @@ namespace Galaxy
                 Game.DefaultSpriteBatch.End();
             }
 
-            if (StageEndText.Count > 0)
+            if (SecretEntryCounter > 20 && SecretEntryCounter < 120)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, 150.0f);
-                Vector2 first_offset = new Vector2(100.0f, 0.0f);
+                Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, text_position, "SECRET WARP", Color.LightGreen);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            if (StageEndText.Count > 0)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                
+                Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 75.0f, 150.0f);
+
+                Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle((int)text_position.X - 140, (int)text_position.Y - 35, 450, 570), null, new Color(76, 76, 76, 192), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle((int)text_position.X - 130, (int)text_position.Y - 25, 430, 550), null, new Color(30, 30, 30, 128), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+
+                Vector2 first_offset = new Vector2(40.0f, 0.0f);
                 foreach (string text in StageEndText)
                 {
                     Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, text_position, Color.White);
@@ -628,7 +622,7 @@ namespace Galaxy
                     first_offset = Vector2.Zero;
                 }
 
-                Vector2 award_position = new Vector2(Game.Resolution.X / 2.0f - 140.0f, 500.0f);
+                Vector2 award_position = new Vector2(Game.Resolution.X / 2.0f - 140.0f, 450.0f);
                 foreach (string text in StageEndAwardText)
                 {
                     Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, award_position, Color.LightGreen);

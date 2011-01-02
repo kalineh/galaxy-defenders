@@ -22,7 +22,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Isosceles");
-            HealthMax = 0.75f;
+            HealthMax = 0.5f;
 
             FireDelay = 1.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 3;
