@@ -7,7 +7,7 @@ public class Stage2 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage2");
 stage.DisplayName = "FORGOTTEN WATERS";
-stage.ScrollSpeed = 3.0f;
+stage.ScrollSpeed = 2.5f;
 stage.BackgroundSceneryName = "ForgottenWatersBG";
 stage.ForegroundSceneryName = "ForgottenWatersFG";
 stage.MusicName = "Alkali Earth";

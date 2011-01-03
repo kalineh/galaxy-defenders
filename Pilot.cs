@@ -44,6 +44,13 @@ namespace Galaxy
             Enabled = true;
             Active = ActiveTime;
             Cooldown = CooldownTime;
+
+            // TODO: Add SE!
+
+            float drain = Pilot.Ship.Generator.Energy;
+            float remaining = drain - Pilot.Ship.CurrentEnergy;
+            Pilot.Ship.CurrentEnergy -= drain;
+            Pilot.Ship.CurrentShield -= remaining;
         }
 
         public virtual void Disable()
