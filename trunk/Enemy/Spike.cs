@@ -23,7 +23,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Spike");
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
-            HealthMax = 3.5f;
+            HealthMax = 2.0f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
         }
 
@@ -113,10 +113,13 @@ namespace Galaxy
         public new void OnCollide(CShip ship)
         {
             base.OnCollide(ship);
-            Physics.Velocity = -Physics.Velocity;
-            Physics.Velocity *= 0.5f;
-            Target = null;
-        }
 
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, 1.25f, Physics.Velocity * 0.25f);
+            World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, 1.25f, Physics.Velocity * 0.25f);
+
+            ship.TakeDamage(Physics.Position, Physics.Velocity, 7.5f);
+
+            Die();
+        }
     }
 }

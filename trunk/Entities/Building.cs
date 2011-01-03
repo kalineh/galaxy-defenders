@@ -24,14 +24,14 @@ namespace Galaxy
             {   "Building1",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 3.0f,
+                    HealthMax = 2.5f,
                     ExplosionType = EParticleType.BuildingDestroyedBig,
                 }
             },
             {   "Building2",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 3.0f,
+                    HealthMax = 2.5f,
                     ExplosionType = EParticleType.BuildingDestroyedBig,
                 }
             },
