@@ -13,6 +13,8 @@ namespace Galaxy
     public class CBonus
         : CEntity
     {
+        static public int BonusValue = 20;
+
         private bool GotoPlayer { get; set; }
         private float GotoForce { get; set; }
 
@@ -96,7 +98,7 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Stats.CoinsCollected += 1;
-            ship.Score += 50;
+            ship.Score += BonusValue;
             CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }
@@ -111,6 +113,7 @@ namespace Galaxy
     public class CBigBonus
         : CBonus
     {
+        public new static int BonusValue = 250;
         public override void Initialize(CWorld world)
         {
             base.Initialize(world);
@@ -122,7 +125,7 @@ namespace Galaxy
         public new void OnCollide(CShip ship)
         {
             World.Stats.CoinsCollected += 10;
-            ship.Score += 500;
+            ship.Score += BonusValue;
             CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }

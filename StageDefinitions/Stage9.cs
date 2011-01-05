@@ -7,7 +7,7 @@ public class Stage9 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("Stage9");
 stage.DisplayName = "RELENT LESS";
-stage.ScrollSpeed = 3;
+stage.ScrollSpeed = 2.5f;
 stage.BackgroundSceneryName = "RelentLessBG";
 stage.ForegroundSceneryName = "RelentLessFG";
 stage.MusicName = "Turbo";
@@ -29,6 +29,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -1192.0f,
@@ -38,6 +39,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -936.0f,
@@ -47,6 +49,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 80.0f,
 Y = -936.0f,
@@ -56,6 +59,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -808.0f,
@@ -65,6 +69,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 464.0f,
 Y = -944.0f,
@@ -74,6 +79,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 464.0f,
 Y = -1192.0f,
@@ -83,6 +89,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -936.0f,
@@ -92,6 +99,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,
 Y = -936.0f,
@@ -101,6 +109,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -1064.0f,
@@ -110,6 +119,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 56.0f,
 Y = -3696.0f,
@@ -119,6 +129,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 440.0f,
 Y = -4208.0f,
@@ -128,6 +139,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -200.0f,
 Y = -3696.0f,
@@ -137,6 +149,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 56.0f,
 Y = -3824.0f,
@@ -146,6 +159,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
 Y = -6040.0f,
@@ -155,6 +169,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
 Y = -5912.0f,
@@ -164,6 +179,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
 Y = -5784.0f,
@@ -173,6 +189,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -5784.0f,
@@ -182,6 +199,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -5912.0f,
@@ -191,6 +209,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -6040.0f,
@@ -200,6 +219,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 144.0f,
 Y = -6040.0f,
@@ -209,6 +229,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 384.0f,
 Y = -11168.0f,
@@ -218,6 +239,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -10912.0f,
@@ -227,6 +249,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -32.0f,
 Y = -9528.0f,
@@ -236,6 +259,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 96.0f,
 Y = -9784.0f,
@@ -245,6 +269,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -392.0f,
 Y = -6936.0f,
@@ -254,6 +279,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -288.0f,
 Y = -9528.0f,
@@ -263,6 +289,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -376.0f,
 Y = -9568.0f,
@@ -272,6 +299,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -352.0f,
 Y = -12616.0f,
@@ -281,6 +309,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 256.0f,
 Y = -11168.0f,
@@ -290,6 +319,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -160.0f,
 Y = -9528.0f,
@@ -299,6 +329,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 96.0f,
 Y = -9528.0f,
@@ -308,6 +339,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -136.0f,
 Y = -12616.0f,
@@ -317,6 +349,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 384.0f,
 Y = -11424.0f,
@@ -326,6 +359,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -11168.0f,
@@ -335,6 +369,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -11296.0f,
@@ -344,6 +379,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -11424.0f,
@@ -353,6 +389,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 256.0f,
 Y = -11424.0f,
@@ -362,6 +399,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 128.0f,
 Y = -11040.0f,
@@ -371,6 +409,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
 Y = -14264.0f,
@@ -380,6 +419,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -216.0f,
 Y = -14264.0f,
@@ -389,6 +429,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.0f,
 Y = -14264.0f,
@@ -398,6 +439,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -216.0f,
 Y = -14136.0f,
@@ -407,6 +449,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -216.0f,
 Y = -14008.0f,
@@ -416,6 +459,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
 Y = -14008.0f,
@@ -425,6 +469,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
 Y = -14136.0f,
@@ -434,6 +479,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
 Y = -14264.0f,
@@ -443,6 +489,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
 Y = -14264.0f,
@@ -452,6 +499,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
 Y = -14136.0f,
@@ -461,6 +509,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -16032.0f,
@@ -470,6 +519,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -304.0f,
 Y = -16032.0f,
@@ -479,6 +529,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -176.0f,
 Y = -16032.0f,
@@ -488,6 +539,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -136.0f,
 Y = -12744.0f,
@@ -497,6 +549,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -480.0f,
 Y = -12616.0f,
@@ -506,6 +559,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 336.0f,
 Y = -1192.0f,
@@ -515,6 +569,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 208.0f,
 Y = -680.0f,
@@ -522,7 +577,7 @@ Y = -680.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -542,7 +597,7 @@ Y = -1376.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -562,7 +617,7 @@ Y = -936.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -582,7 +637,7 @@ Y = -1192.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -632,7 +687,7 @@ Y = -680.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -652,7 +707,7 @@ Y = -2208.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -672,7 +727,7 @@ Y = -1728.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -694,6 +749,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -2584.0f,
@@ -703,6 +759,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -344.0f,
 Y = -2200.0f,
@@ -712,6 +769,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -472.0f,
 Y = -2200.0f,
@@ -721,6 +779,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -88.0f,
 Y = -2200.0f,
@@ -730,6 +789,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 296.0f,
 Y = -2584.0f,
@@ -739,6 +799,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -216.0f,
 Y = -2200.0f,
@@ -748,6 +809,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -2456.0f,
@@ -757,6 +819,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 168.0f,
 Y = -2584.0f,
@@ -764,7 +827,7 @@ Y = -2584.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -784,7 +847,7 @@ Y = -2584.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -816,6 +879,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -88.0f,
 Y = -2328.0f,
@@ -825,6 +889,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -2328.0f,
@@ -834,6 +899,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -2200.0f,
@@ -843,6 +909,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -88.0f,
 Y = -2072.0f,
@@ -852,6 +919,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
 Y = -2072.0f,
@@ -901,6 +969,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -72.0f,
 Y = -3696.0f,
@@ -910,6 +979,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 56.0f,
 Y = -3952.0f,
@@ -919,6 +989,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 184.0f,
 Y = -3952.0f,
@@ -928,6 +999,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -3952.0f,
@@ -937,6 +1009,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -4080.0f,
@@ -946,6 +1019,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
 Y = -4208.0f,
@@ -955,6 +1029,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 568.0f,
 Y = -4208.0f,
@@ -964,6 +1039,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 440.0f,
 Y = -3952.0f,
@@ -973,6 +1049,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 568.0f,
 Y = -3952.0f,
@@ -982,6 +1059,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -456.0f,
 Y = -3696.0f,
@@ -991,6 +1069,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -328.0f,
 Y = -3696.0f,
@@ -1000,6 +1079,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -584.0f,
 Y = -3696.0f,
@@ -1017,7 +1097,7 @@ Y = -3952.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1037,7 +1117,7 @@ Y = -3960.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1057,7 +1137,7 @@ Y = -3696.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1077,7 +1157,7 @@ Y = -3264.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSwirl),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1097,7 +1177,7 @@ Y = -4952.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSwirl),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1127,7 +1207,7 @@ Y = -3696.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSwirl),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1157,7 +1237,7 @@ Y = -4208.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1177,7 +1257,7 @@ Y = -4200.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1199,6 +1279,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 272.0f,
 Y = -5656.0f,
@@ -1208,6 +1289,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -112.0f,
 Y = -6040.0f,
@@ -1217,6 +1299,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -240.0f,
 Y = -6040.0f,
@@ -1234,7 +1317,7 @@ Y = -6040.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1274,7 +1357,7 @@ Y = -6040.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1306,6 +1389,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -392.0f,
 Y = -7160.0f,
@@ -1315,6 +1399,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -520.0f,
 Y = -6936.0f,
@@ -1324,6 +1409,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -520.0f,
 Y = -7160.0f,
@@ -1333,6 +1419,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 400.0f,
 Y = -6936.0f,
@@ -1342,6 +1429,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 400.0f,
 Y = -7160.0f,
@@ -1351,6 +1439,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 528.0f,
 Y = -6936.0f,
@@ -1360,6 +1449,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 528.0f,
 Y = -7160.0f,
@@ -1367,7 +1457,7 @@ Y = -7160.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1387,7 +1477,7 @@ Y = -7160.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1427,7 +1517,7 @@ Y = -6936.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1447,7 +1537,7 @@ Y = -7048.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1476,7 +1566,7 @@ Y = -4864.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CAirship),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1496,7 +1586,7 @@ Y = -7912.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CAirship),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1516,7 +1606,7 @@ Y = -7912.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1536,7 +1626,7 @@ Y = -8032.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1558,6 +1648,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 96.0f,
 Y = -9656.0f,
@@ -1567,6 +1658,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -9696.0f,
@@ -1574,7 +1666,7 @@ Y = -9696.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1594,7 +1686,7 @@ Y = -9624.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1614,7 +1706,7 @@ Y = -8456.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1634,7 +1726,7 @@ Y = -8472.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1654,7 +1746,7 @@ Y = -8528.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CBall),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1684,7 +1776,7 @@ Y = -9528.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRaidTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1724,7 +1816,7 @@ Y = -9528.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1744,7 +1836,7 @@ Y = -9528.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1764,7 +1856,7 @@ Y = -9528.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1786,6 +1878,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 384.0f,
 Y = -11296.0f,
@@ -1793,7 +1886,7 @@ Y = -11296.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1813,7 +1906,7 @@ Y = -11384.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1833,7 +1926,7 @@ Y = -11424.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1883,7 +1976,7 @@ Y = -10912.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1905,6 +1998,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -224.0f,
 Y = -12616.0f,
@@ -1914,6 +2008,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -136.0f,
 Y = -12488.0f,
@@ -1941,7 +2036,7 @@ Y = -12488.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1961,7 +2056,7 @@ Y = -12616.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -1981,7 +2076,7 @@ Y = -12616.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2001,7 +2096,7 @@ Y = -13376.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2023,6 +2118,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
 Y = -14008.0f,
@@ -2032,6 +2128,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 536.0f,
 Y = -14000.0f,
@@ -2041,6 +2138,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 408.0f,
 Y = -14008.0f,
@@ -2068,7 +2166,7 @@ Y = -14008.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2088,7 +2186,7 @@ Y = -14008.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CRotateTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2108,7 +2206,7 @@ Y = -14008.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2128,7 +2226,7 @@ Y = -15208.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2148,7 +2246,7 @@ Y = -14824.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CCutter),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2168,7 +2266,7 @@ Y = -15056.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2188,7 +2286,7 @@ Y = -15456.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2208,7 +2306,7 @@ Y = -14264.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2228,7 +2326,7 @@ Y = -14264.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-Coins = 1,
+NoDropCoins = false,
 Powerup = false,
 Type = typeof(Galaxy.CSpike),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2250,6 +2348,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 368.0f,
 Y = -15744.0f,
@@ -2259,6 +2358,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block1",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
 Y = -15744.0f,
@@ -2268,6 +2368,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
+Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 240.0f,
 Y = -15744.0f,

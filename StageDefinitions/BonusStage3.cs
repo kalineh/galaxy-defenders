@@ -6,6 +6,7 @@ namespace Stages {
 public class BonusStage3 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("BonusStage3");
+stage.DisplayName = "";
 stage.ScrollSpeed = 2.5f;
 stage.BackgroundSceneryName = "SimpleSpace";
 stage.ForegroundSceneryName = "Empty";

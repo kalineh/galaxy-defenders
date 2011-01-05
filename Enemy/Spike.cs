@@ -25,6 +25,7 @@ namespace Galaxy
             Visual.AnimationSpeed = 0.05f;
             HealthMax = 2.0f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
+            ScreenEdgeIgnoreTime = 60;
         }
 
         public override void UpdateAI()

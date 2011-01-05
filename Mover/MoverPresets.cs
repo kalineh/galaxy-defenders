@@ -16,7 +16,7 @@ namespace Galaxy
 {
     public class CMoverPresets
     {
-        public static Vector2 AntiCamera = new Vector2(0.0f, -3.0f);
+        public static Vector2 AntiCamera = new Vector2(0.0f, -2.5f);
 
         public static CMover FromName(string name, float speed_multiplier, float transition_multiplier)
         {
