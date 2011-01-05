@@ -34,7 +34,7 @@ namespace Galaxy
         public float MoverTransitionMultiplier { get; set; }
 
         [CategoryAttribute("Bonus")]
-        public int Coins { get; set; }
+        public bool NoDropCoins { get; set; }
 
         [CategoryAttribute("Bonus")]
         public bool Powerup { get; set; }
@@ -43,7 +43,7 @@ namespace Galaxy
             : base(world, position)
         {
             Type = type;
-            Coins = 1;
+            NoDropCoins = false;
             CEntity sample_instance = Activator.CreateInstance(type) as CEntity;
             sample_instance.Initialize(world);
             sample_instance.Physics.Position = position;
@@ -71,7 +71,7 @@ namespace Galaxy
             MoverSpeedMultiplier = spawner.MoverSpeedMultiplier;
             MoverTransitionMultiplier = spawner.MoverTransitionMultiplier;
 
-            Coins = spawner.Coins;
+            NoDropCoins = spawner.NoDropCoins;
             Powerup = spawner.Powerup;
         }
 
@@ -105,7 +105,7 @@ namespace Galaxy
                 MoverSpeedMultiplier = MoverSpeedMultiplier,
                 MoverTransitionMultiplier = MoverTransitionMultiplier,
                 CustomElement = null,
-                Coins = Coins,
+                NoDropCoins = NoDropCoins,
                 Powerup = Powerup,
             };
 

@@ -361,6 +361,9 @@ namespace Galaxy
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
 
+            if (IsSecretWorld)
+                return;
+
             if (StageEndCounter == StageClearShow)
             {
                 StageEndText.Add("STAGE CLEAR");

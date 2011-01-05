@@ -10,6 +10,8 @@ namespace Galaxy
     public class CStateFadeTo
         : CState
     {
+        public static CStateFadeTo InProgress { get; set; }
+
         public CGalaxy Game { get; private set; }
         public CState Source { get; private set; }
         public CState Target { get; private set; }
@@ -24,6 +26,19 @@ namespace Galaxy
             Target = target;
             Fader = new CFader(Game);
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
+
+            if (InProgress != null)
+            {
+                // HACK: ensure that existing fadeout has OnExit called if we skip to a new state quickly
+                if (!InProgress.Fader.IsComplete())
+                {
+                    if (!InProgress.NoExitSource)
+                    {
+                        InProgress.Source.OnExit();
+                    }
+                }
+            }
+            InProgress = this;
         }
 
         public override void Update()
@@ -41,6 +56,7 @@ namespace Galaxy
                 {
                     Source.OnExit();
                     Source = null;
+                    InProgress = null;
                 }
 
                 System.GC.Collect();

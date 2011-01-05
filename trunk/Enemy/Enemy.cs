@@ -51,8 +51,9 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            BaseScore = 50;
+            BaseScore = 25;
             CanSeekerTarget = true;
+            Coins = 3;
         }
 
         public virtual void UpdateAI()
