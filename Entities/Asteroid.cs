@@ -83,6 +83,13 @@ namespace Galaxy
             minishot.Die();
         }
 
+        public void OnCollide(CChargeShot chargeshot)
+        {
+            Physics.Velocity += chargeshot.Physics.GetDir() * chargeshot.Damage;
+            TakeDamage(chargeshot.Damage, chargeshot.Owner);
+            chargeshot.Die();
+        }
+
         protected override void OnDie()
         {
             base.OnDie();

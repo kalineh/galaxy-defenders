@@ -39,8 +39,15 @@ namespace Galaxy
             Ship.Physics.Solve();
             Ship.Visual.Update();
 
+            Ship.ChargeSidekickLeft();
+            Ship.ChargeSidekickRight();
+
             if (World.Random.NextFloat() < 0.09f)
-                Ship.FireAllWeapons();
+            {
+                Ship.FirePrimarySecondaryWeapons();
+                Ship.FireSidekickLeft();
+                Ship.FireSidekickRight();
+            }
 
             Ship.UpdateWeapons();
         }

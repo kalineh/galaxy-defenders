@@ -436,7 +436,9 @@ namespace Galaxy
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.ParticleEffects.Update();
             SampleShip.UpdateGenerator();
-            SampleShip.FireAllWeapons();
+            SampleShip.FirePrimarySecondaryWeapons();
+            SampleShip.FireSidekickLeft();
+            SampleShip.FireSidekickRight();
             SampleShip.UpdateWeapons();
         }
 

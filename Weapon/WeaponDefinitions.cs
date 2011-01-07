@@ -120,6 +120,7 @@ namespace Galaxy
             public Vector2 Offset { get; set; }
             public float Rotation { get; set; }
             public float Energy { get; set; }
+            public float ChargeSpeed { get; set; }
         }
 
         public struct SWeaponDefinition
@@ -1164,6 +1165,27 @@ namespace Galaxy
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(0.0f),
                                 Energy = 0.015f,
+                            },
+                        },
+                    },
+                }
+            },
+            { "ChargeShot", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootLaser",
+                    DisplayName = "Charge\nShot",
+                    BasePrice = 5000,
+                    Data = new List<List<SWeaponData>>() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
+                                ReloadTime = 0.15f,
+                                Speed = 15.0f,
+                                Damage = 0.25f,
+                                KickbackForce = 0.0f,
+                                Offset = Vector2.Zero,
+                                Rotation = MathHelper.ToRadians(0.0f),
+                                Energy = 0.015f,
+                                ChargeSpeed = Time.ToSeconds(1),
                             },
                         },
                     },

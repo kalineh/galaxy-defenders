@@ -18,7 +18,10 @@ namespace Galaxy
         public Vector2 Offset { get; set; }
         public float Rotation { get; set; }
         public float Energy { get; private set; }
-        private float Cooldown { get; set; }
+        public bool IsCharge { get; set; }
+        public float ChargeSpeed { get; set; }
+        protected float Cooldown { get; set; }
+        protected int CurrentCharge { get; set; }
 
         public virtual void Initialize(CShip owner)
         {
@@ -26,6 +29,8 @@ namespace Galaxy
             Offset = Vector2.Zero;
             Cooldown = 0.0f;
             Rotation = 0.0f;
+            IsCharge = false;
+            CurrentCharge = 0;
         }
 
         public void Update()
@@ -44,9 +49,22 @@ namespace Galaxy
             Rotation = data.Rotation;
             Energy = data.Energy;
             Cooldown = Math.Min(Cooldown, ReloadTime);
+            IsCharge = data.ChargeSpeed > 0.0f;
+            ChargeSpeed = data.ChargeSpeed;
         }
 
         public bool CanFire()
+        {
+            if (IsCharge)
+            {
+                if (CurrentCharge == 0)
+                    return false;
+            }
+
+            return Cooldown <= 0.0f;
+        }
+
+        public bool CanCharge()
         {
             return Cooldown <= 0.0f;
         }
@@ -60,6 +78,17 @@ namespace Galaxy
             }
 
             return false;
+        }
+
+        public void Charge()
+        {
+            if (!IsCharge)
+                TryFire();
+
+            CurrentCharge += 1;
+
+            float charge = Math.Min(1.0f, Time.ToSeconds(CurrentCharge));
+            Owner.World.ParticleEffects.Spawn(EParticleType.WeaponCharge, Owner.Physics.Position + Offset.Rotate(-MathHelper.PiOver2), Owner.PlayerColor, charge, null);
         }
 
         private Vector2 Kickback(float rotation)
@@ -78,11 +107,14 @@ namespace Galaxy
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;
 
-            Instantiate(Owner, fire_position, rotation, Speed, Damage);
+            float normalized_charge = Math.Min(1.0f, Time.ToSeconds(CurrentCharge));
+
+            Instantiate(Owner, fire_position, rotation, Speed, Damage, normalized_charge);
 
             Owner.Physics.Velocity += Kickback(Owner.Physics.Rotation);
 
             Cooldown = ReloadTime;
+            CurrentCharge = 0;
 
             if (Sound != null)
             {
@@ -90,7 +122,7 @@ namespace Galaxy
             }
         }
 
-        protected abstract void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage);
+        protected abstract void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge);
     };
 
 }

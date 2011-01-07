@@ -94,6 +94,7 @@
     <Compile Include="Enemy\RaidTurret.cs" />
     <Compile Include="Enemy\RotateTurret.cs" />
     <Compile Include="OptionsMenu.cs" />
+    <Compile Include="Projectile\ChargeShot.cs" />
     <Compile Include="Projectile\EnemyCannonShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="Scenery\Stars.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\WeaponChargeShot.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
     <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />
