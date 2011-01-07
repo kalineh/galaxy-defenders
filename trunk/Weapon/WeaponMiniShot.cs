@@ -14,9 +14,9 @@ namespace Galaxy
             base.Initialize(owner);
         }
 
-        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge)
         {
-            CMiniShot minishot = CMiniShot.Spawn(owner, position, rotation, Speed, Damage);
+            CMiniShot minishot = CMiniShot.Spawn(owner, position, rotation, speed, damage);
         }
     };
 }

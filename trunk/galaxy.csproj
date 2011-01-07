@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Menu\TextLabel.cs" />
+    <Compile Include="Projectile\ChargeShot.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
     <Compile Include="Editor\Entities\EditorEntityMusicChanger.cs" />
@@ -282,6 +283,7 @@
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
     <Compile Include="Projectile\ProjectileCache.cs" />
+    <Compile Include="Weapon\WeaponChargeShot.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
     <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />

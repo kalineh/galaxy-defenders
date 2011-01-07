@@ -92,6 +92,11 @@ namespace Galaxy
             PullEntity(minishot, 1.0f);
         }
 
+        public new void OnCollide(CChargeShot chargeshot)
+        {
+            PullEntity(chargeshot, 1.0f);
+        }
+
         public new void OnCollide(CDetonation detonation)
         {
         }

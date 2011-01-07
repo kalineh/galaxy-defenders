@@ -415,6 +415,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -449,6 +450,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -484,6 +486,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -517,6 +520,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -550,6 +554,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "FighterShip",
@@ -584,6 +589,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -620,6 +626,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -656,6 +663,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",
@@ -691,6 +699,7 @@ namespace Galaxy
                 },
                 AvailableSidekickWeaponParts = new List<string>() {
                     "MiniShot",
+                    "ChargeShot",
                 },
                 AvailableChassisParts = new List<string>() {
                     "BasicShip",

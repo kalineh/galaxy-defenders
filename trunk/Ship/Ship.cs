@@ -258,10 +258,6 @@ namespace Galaxy
             Vector2 force = GetInputVector();
             Physics.Velocity += force;
 
-            // TODO: remove eventually
-            //if (World.Game.Input.IsKeyDown(Keys.Z)) { Physics.Rotation -= 0.1f; }
-            //if (World.Game.Input.IsKeyDown(Keys.X)) { Physics.Rotation += 0.1f; }
-
             // TEST: weapon upgrade
             bool lctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
             if (lctrl_down)
@@ -308,7 +304,25 @@ namespace Galaxy
             }
             if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.LeftShift))
             {
-                FireAllWeapons();
+                FirePrimarySecondaryWeapons();
+            }
+
+            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Z))
+            {
+                ChargeSidekickLeft();
+            }
+            else
+            {
+                FireSidekickLeft();
+            }
+
+            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.X))
+            {
+                ChargeSidekickRight();
+            }
+            else
+            {
+                FireSidekickRight();
             }
         }
 
@@ -365,12 +379,57 @@ namespace Galaxy
             }
         }
 
-        public void FireAllWeapons()
+        private void ChargeSidekick(List<CWeapon> weapons)
+        {
+            float cost = 0.0f;
+
+            foreach (CWeapon weapon in weapons)
+            {
+                if (!weapon.CanCharge())
+                    return;
+            }
+
+            foreach (CWeapon weapon in weapons)
+            {
+                weapon.Charge();
+                cost += weapon.Energy;
+            }
+
+            CurrentEnergy = Math.Max(0.0f, CurrentEnergy - cost);
+        }
+
+        private void FireSidekick(List<CWeapon> weapons)
+        {
+            foreach (CWeapon weapon in weapons)
+            {
+                weapon.TryFire();
+            }
+        }
+
+        public void FirePrimarySecondaryWeapons()
         {
             Fire(WeaponPrimary);
             Fire(WeaponSecondary);
-            Fire(WeaponSidekickLeft);
-            Fire(WeaponSidekickRight);
+        }
+
+        public void ChargeSidekickLeft()
+        {
+            ChargeSidekick(WeaponSidekickLeft);
+        }
+
+        public void ChargeSidekickRight()
+        {
+            ChargeSidekick(WeaponSidekickRight);
+        }
+
+        public void FireSidekickLeft()
+        {
+            FireSidekick(WeaponSidekickLeft);
+        }
+
+        public void FireSidekickRight()
+        {
+            FireSidekick(WeaponSidekickRight);
         }
 
         public void TakeDamage(Vector2 source, Vector2 velocity, float damage)

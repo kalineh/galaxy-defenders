@@ -14,9 +14,9 @@ namespace Galaxy
             base.Initialize(owner);
         }
 
-        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge)
         {
-            CMissile missile = CMissile.Spawn(owner, position, rotation, Speed, Damage);
+            CMissile missile = CMissile.Spawn(owner, position, rotation, speed, damage);
         }
     };
 

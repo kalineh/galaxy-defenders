@@ -143,6 +143,13 @@ namespace Galaxy
             minishot.Die();
         }
 
+        public void OnCollide(CChargeShot chargeshot)
+        {
+            World.Stats.ShotDamageDealt += chargeshot.Damage;
+            TakeDamage(chargeshot.Damage, chargeshot.Owner);
+            chargeshot.Die();
+        }
+
         public void OnCollide(CDetonation detonation)
         {
             TakeDamage(5.0f, detonation.Owner);
