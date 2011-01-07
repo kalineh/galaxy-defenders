@@ -45,7 +45,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.8f,
-                    Armor = 20.0f,
+                    Armor = 40.0f,
                 }
             },
             {
@@ -56,7 +56,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 2.25f,
                     Friction = 0.8f,
-                    Armor = 28.0f,
+                    Armor = 64.0f,
                 }
             },
             {
@@ -67,7 +67,7 @@ namespace Galaxy
                     VisualScale = 0.25f,
                     Speed = 1.9f,
                     Friction = 0.85f,
-                    Armor = 40.0f,
+                    Armor = 120.0f,
                 }
             },
             {
@@ -105,15 +105,15 @@ namespace Galaxy
                 new CGeneratorPart() {
                     Price = 2000,
                     Energy = 12.0f,
-                    Regen = 0.08f,
+                    Regen = 0.07f,
                 }
             },
             {
                 "PowerGenerator",
                 new CGeneratorPart() {
                     Price = 4000,
-                    Energy = 14.0f,
-                    Regen = 0.13f,
+                    Energy = 15.0f,
+                    Regen = 0.10f,
                 }
             },
             {
@@ -139,24 +139,24 @@ namespace Galaxy
             {
                 "BasicShield",
                 new CShieldPart() {
-                    Shield = 20.0f,
-                    Regen = 0.03f,
+                    Shield = 8.0f,
+                    Regen = 0.02f,
                 }
             },
             {
                 "EnhancedShield",
                 new CShieldPart() {
                     Price = 2500,
-                    Shield = 26.0f,
-                    Regen = 0.06f,
+                    Shield = 10.0f,
+                    Regen = 0.025f,
                 }
             },
             {
                 "PowerShield",
                 new CShieldPart() {
                     Price = 9000,
-                    Shield = 40.0f,
-                    Regen = 0.11f,
+                    Shield = 14.0f,
+                    Regen = 0.040f,
                 }
             },
             {
