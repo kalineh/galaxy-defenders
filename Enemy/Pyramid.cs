@@ -19,6 +19,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Pyramid");
             HealthMax = 13.0f;
+            Coins = 4;
 
             Physics.AngularVelocity = 0.005f * World.Random.NextSign();
         }

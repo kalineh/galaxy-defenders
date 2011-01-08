@@ -26,6 +26,7 @@ namespace Galaxy
             HealthMax = 2.0f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             ScreenEdgeIgnoreTime = 60;
+            Coins = 0;
         }
 
         public override void UpdateAI()

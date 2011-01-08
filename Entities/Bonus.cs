@@ -13,7 +13,7 @@ namespace Galaxy
     public class CBonus
         : CEntity
     {
-        static public int BonusValue = 20;
+        static public int BonusValue = 25;
 
         private bool GotoPlayer { get; set; }
         private float GotoForce { get; set; }
@@ -57,7 +57,7 @@ namespace Galaxy
             LerpGravity();
             LerpToPlayers();
 
-            if (!IsInScreen() && Physics.Position.Y > 0.0f)
+            if (IsOffScreenBottom())
                 Delete();
         }
 
@@ -80,7 +80,7 @@ namespace Galaxy
             Vector2 dir = offset.Normal();
             float length = offset.Length();
 
-            const float MaxLength = 120.0f;
+            const float MaxLength = 275.0f;
             if (length < MaxLength)
             {
                 GotoPlayer = true;
@@ -88,9 +88,9 @@ namespace Galaxy
 
             if (GotoPlayer)
             {
-                GotoForce += 2.5f;
+                GotoForce += 2.0f;
                 float power = Math.Max(GotoForce, MaxLength - length);
-                float power_multiplier = 0.02f;
+                float power_multiplier = 0.0125f;
                 Physics.Velocity += dir * power * power_multiplier;
             }
         }

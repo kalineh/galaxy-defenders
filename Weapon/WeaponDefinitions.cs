@@ -121,6 +121,7 @@ namespace Galaxy
             public float Rotation { get; set; }
             public float Energy { get; set; }
             public float ChargeSpeed { get; set; }
+            public int AutoDischarge { get; set; }
         }
 
         public struct SWeaponDefinition
@@ -1165,6 +1166,8 @@ namespace Galaxy
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(0.0f),
                                 Energy = 0.015f,
+                                ChargeSpeed = 1.0f,
+                                AutoDischarge = 1,
                             },
                         },
                     },
@@ -1180,7 +1183,7 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.15f,
                                 Speed = 15.0f,
-                                Damage = 0.25f,
+                                Damage = 1.25f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(0.0f),
