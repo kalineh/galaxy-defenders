@@ -26,6 +26,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
             HealthMax = 4.5f;
             SelfDestructTimer = 90;
+            Coins = 0;
         }
 
         public override void UpdateAI()

@@ -1119,11 +1119,26 @@ namespace Galaxy
 
         public void DestroyAllProjectiles()
         {
+            Type[] types = new Type[]
+            {
+                typeof(CProjectile), 
+                typeof(CEnemyCannonShot),
+                typeof(CEnemyLaser),
+                typeof(CEnemyMissile),
+                typeof(CEnemyPellet),
+                typeof(CEnemyShot),
+                typeof(CBonus),
+            };
+
             foreach (CEntity entity in Entities)
             {
-                if (entity.GetType().IsSubclassOf(typeof(CProjectile)))
+                foreach (Type type in types)
                 {
-                    entity.Die();    
+                    if (entity.GetType().IsSubclassOf(type) || entity.GetType() == type)
+                    {
+                        ParticleEffects.Spawn(EParticleType.ObjectDestroyed, entity.Physics.Position);
+                        entity.Die();
+                    }
                 }
             }
         }

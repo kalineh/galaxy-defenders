@@ -30,6 +30,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 10.0f;
             CanSeekerTarget = false;
+            Coins = 0;
         }
 
         public void FindNearestFence()

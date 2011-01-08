@@ -19,6 +19,7 @@ namespace Galaxy
         public float Rotation { get; set; }
         public float Energy { get; private set; }
         public bool IsCharge { get; set; }
+        public int AutoDischarge { get; set; }
         public float ChargeSpeed { get; set; }
         protected float Cooldown { get; set; }
         protected int CurrentCharge { get; set; }
@@ -30,6 +31,7 @@ namespace Galaxy
             Cooldown = 0.0f;
             Rotation = 0.0f;
             IsCharge = false;
+            AutoDischarge = 0;
             CurrentCharge = 0;
         }
 
@@ -51,6 +53,7 @@ namespace Galaxy
             Cooldown = Math.Min(Cooldown, ReloadTime);
             IsCharge = data.ChargeSpeed > 0.0f;
             ChargeSpeed = data.ChargeSpeed;
+            AutoDischarge = data.AutoDischarge;
         }
 
         public bool CanFire()
@@ -59,6 +62,9 @@ namespace Galaxy
             {
                 if (CurrentCharge == 0)
                     return false;
+
+                if (AutoDischarge > 0)
+                    return CurrentCharge >= AutoDischarge;
             }
 
             return Cooldown <= 0.0f;
@@ -86,6 +92,13 @@ namespace Galaxy
                 TryFire();
 
             CurrentCharge += 1;
+
+            // NOTE: 0 means not-auto-discharge, and will never trigger here
+            if (AutoDischarge == CurrentCharge)
+            {
+                TryFire();
+                return;
+            }
 
             float charge = Math.Min(1.0f, Time.ToSeconds(CurrentCharge));
             Owner.World.ParticleEffects.Spawn(EParticleType.WeaponCharge, Owner.Physics.Position + Offset.Rotate(-MathHelper.PiOver2), Owner.PlayerColor, charge, null);
