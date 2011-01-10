@@ -71,6 +71,14 @@ namespace Galaxy
                 RegenValue = new CTextLabel();
                 EnergyHeader = new CTextLabel();
                 EnergyValue = new CTextLabel();
+
+                BaseCostHeader.Value = "BASE COST";
+                NextUpgradeHeader.Value = "NEXT UPGRADE COST";
+                ArmorHeader.Value = "ARMOR";
+                SpeedHeader.Value = "SPEED";
+                ShieldHeader.Value = "SHIELD";
+                RegenHeader.Value = "REGEN";
+                EnergyHeader.Value = "ENERGY";
             }
         };
         private SLabels Labels { get; set; }
@@ -102,7 +110,7 @@ namespace Galaxy
             //
             MenuBase = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Play Next Stage", Select = StageSelect },
@@ -117,7 +125,7 @@ namespace Galaxy
             //
             MenuUpgradeShip = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Chassis", Select = EditChassis },
@@ -138,7 +146,7 @@ namespace Galaxy
             //
             MenuTrainPilot = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -161,7 +169,7 @@ namespace Galaxy
             //
             MenuPrimaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -200,7 +208,7 @@ namespace Galaxy
             //
             MenuSecondaryWeapon = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -244,7 +252,7 @@ namespace Galaxy
             //
             MenuSidekickLeft = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -284,7 +292,7 @@ namespace Galaxy
             //
             MenuSidekickRight = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -316,7 +324,7 @@ namespace Galaxy
             //
             MenuChassis = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -344,7 +352,7 @@ namespace Galaxy
             //
             MenuGenerator = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -373,7 +381,7 @@ namespace Galaxy
             //
             MenuShield = new CMenu(game)
             {
-                Position = new Vector2(Game.Resolution.X / 2.0f + 154.0f, 320.0f),
+                Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
@@ -445,7 +453,6 @@ namespace Galaxy
         public override void Draw()
         {
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
-
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
@@ -457,9 +464,11 @@ namespace Galaxy
             Game.DefaultSpriteBatch.End();
 
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
-            Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(928.0f, 0.0f), Color.White);
-            Menu.Draw(Game.DefaultSpriteBatch);
 
+            float panel_x = ShoppingPlayer == GameControllerIndex.One ? 928.0f : 480.0f;
+            SpriteEffects panel_effects = ShoppingPlayer == GameControllerIndex.One ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(panel_x, 0.0f), null, Color.White, 0.0f, Vector2.Zero, 1.0f, panel_effects, CLayers.UI);
+            Menu.Draw(Game.DefaultSpriteBatch);
             DrawMoney();
             DrawMenuErrata();
 
@@ -572,7 +581,9 @@ namespace Galaxy
             // TODO: replace with simpler version (just clear entities and HUD)
             EmptyWorld.Stop();
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
-            SampleShip.Physics.Position = new Vector2(-190.0f, 100.0f);
+
+            float x = ShoppingPlayer == GameControllerIndex.One ? -190.0f : 190.0f;
+            SampleShip.Physics.Position = new Vector2(x, 100.0f);
         }
 
         private void RevertWorkingProfile(object tag)
@@ -598,13 +609,15 @@ namespace Galaxy
         {
             Vector2 panel_position = new Vector2(Game.Resolution.X / 2.0f - 442.0f, Game.Resolution.Y - 362.0f);
             Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 180.0f, Game.Resolution.Y - 320.0f);
+
+            if (ShoppingPlayer == GameControllerIndex.Two)
+            {
+                panel_position = new Vector2(Game.Resolution.X / 2.0f - 70.0f, panel_position.Y);
+                blank_position = new Vector2(Game.Resolution.X / 2.0f + 202.0f, blank_position.Y);
+            }
+
             Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, panel_position, Color.White);
 
-            // NOTE: this is totally gonna ship like this
-            // HACK: bad hack time, fix me up
-            // TODO: put stuff in menu itself?
-            // TODO: check can upgrade
-            // TODO: nicer display of purchasable items
             if (Menu == MenuPrimaryWeapon)
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType);
@@ -616,7 +629,9 @@ namespace Galaxy
                     Vector2 position = blank_position;
                     ShopUpgradeBarsVisual.Frame = level;
                     ShopUpgradeBarsVisual.Recache();
-                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(256.0f, 218.0f), 0.0f);
+
+                    float upgrade_panel_offset = ShoppingPlayer == GameControllerIndex.One ? 128.0f : -128.0f;
+                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(upgrade_panel_offset, 218.0f), 0.0f);
 
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
@@ -705,15 +720,16 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
-                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
+                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
-                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
+                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuGenerator)
@@ -722,15 +738,16 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
-                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
+                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else if (Menu == MenuShield)
@@ -739,15 +756,16 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position = blank_position + new Vector2(0.0f, 50.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
-                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
+                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
             }
             else
@@ -758,8 +776,13 @@ namespace Galaxy
 
         private void ShowHelpInfo()
         {
-            // TODO: less hack? more hack? more betterer hack?
-            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 220.0f, Game.Resolution.Y - 32.0f);
+            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 190.0f, Game.Resolution.Y - 320.0f);
+
+            if (ShoppingPlayer == GameControllerIndex.Two)
+            {
+                blank_position = new Vector2(Game.Resolution.X / 2.0f + 192.0f, blank_position.Y);
+            }
+
             string[] strings = {
                 "WELCOME TO SHOP",
                 "PURCHASE UPGRADES",
@@ -835,7 +858,7 @@ namespace Galaxy
             Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 30.0f + offset), strings[0], Color.White);
             Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 60.0f + offset), strings[1], Color.White);
             Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 90.0f + offset), strings[2], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 120.0f + offset), strings[3], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 150.0f + offset), strings[3], Color.White);
         }
 
         private void StageSelect(object tag)
@@ -1461,7 +1484,26 @@ namespace Galaxy
             WorkingProfile = GetShoppingPilotData();
             LockedProfile = WorkingProfile;
 
+            Vector2 position = GetShoppingPlayerMenuPosition();
+            MenuBase.Position = position;
+            MenuUpgradeShip.Position = position;
+            MenuPrimaryWeapon.Position = position;
+            MenuSecondaryWeapon.Position = position;
+            MenuSidekickLeft.Position = position;
+            MenuSidekickRight.Position = position;
+            MenuChassis.Position = position;
+            MenuGenerator.Position = position;
+            MenuShield.Position = position;
+            MenuTrainPilot.Position = position;
+
+            Menu.ForceRefresh();
+
             RefreshSampleDisplay();
+        }
+        
+        private Vector2 GetShoppingPlayerMenuPosition()
+        {
+            return ShoppingPlayer == GameControllerIndex.One ? new Vector2(1114.0f, 320.0f) : new Vector2(550.0f, 320.0f);
         }
     }
 }
