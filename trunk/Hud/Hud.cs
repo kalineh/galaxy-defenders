@@ -119,7 +119,7 @@ namespace Galaxy
             MoneyIconPosition = BasePosition + new Vector2(70.0f, -800.0f);
             EnergyIconPosition = BasePosition + new Vector2(70.0f, -266.0f);
             ShieldIconPosition = BasePosition + new Vector2(70.0f, -183.0f);
-            ArmorIconPosition = BasePosition + new Vector2(70.0f, -107.0f);
+            ArmorIconPosition = BasePosition + new Vector2(70.0f + 32.0f, -107.0f);
             PortraitIconPosition = BasePosition + new Vector2(238.0f, -664.0f);
             FireIconPosition = BasePosition + new Vector2(182.0f, -468.0f);
             Ability0IconPosition = BasePosition + new Vector2(240.0f, -532.0f);
@@ -164,7 +164,7 @@ namespace Galaxy
             MoneyIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             EnergyIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             ShieldIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
-            ArmorIconVisual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            ArmorIconVisual.NormalizedOrigin = new Vector2(0.5f, 0.5f);
 
             // TODO: force a recache, need to handle non-entity visuals better
             LeftPanelVisual.Update();
@@ -267,7 +267,24 @@ namespace Galaxy
             ArmorVisual.Draw(sprite_batch, ArmorPosition, 0.0f);
             EnergyIconVisual.Draw(sprite_batch, EnergyIconPosition, 0.0f);
             ShieldIconVisual.Draw(sprite_batch, ShieldIconPosition, 0.0f);
+
+            if (Ship != null)
+            {
+                if (Ship.IsLowArmor())
+                {
+                    byte rgb = (byte)((Game.GameFrame % 30 < 6) ? 127 : 255);
+                    ArmorVisual.Color = new Color(rgb, rgb, rgb);
+                    ArmorVisual.UpdateColor();
+                }
+                else
+                {
+                    ArmorVisual.Color = Color.White;
+                    ArmorVisual.UpdateColor();
+                }
+            }
+
             ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
+
             PortraitIconVisual.Draw(sprite_batch, PortraitIconPosition, 0.0f);
 
             // TODO: active effect display?
