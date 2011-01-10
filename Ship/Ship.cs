@@ -142,6 +142,7 @@ namespace Galaxy
             UpdateGenerator();
             UpdateWeapons();
             UpdateShields();
+            UpdateArmor();
 
             base.Update();
 
@@ -358,6 +359,12 @@ namespace Galaxy
             CurrentEnergy -= used_energy;
         }
 
+        public void UpdateArmor()
+        {
+            if (IsLowArmor())
+                CAudio.PlaySound("PlayerArmorWarning");
+        }
+
         private void Fire(List<CWeapon> weapons)
         {
             // TODO: cache me
@@ -564,5 +571,13 @@ namespace Galaxy
             return usage;
         }
 
+        public bool IsLowArmor()
+        {
+            float threshold = Chassis.Armor * 0.2f;
+            if (CurrentArmor > 0.0f && CurrentArmor < threshold)
+                return true;
+
+            return false;
+        }
     };
 }

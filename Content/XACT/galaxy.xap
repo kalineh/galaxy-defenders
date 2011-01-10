@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 2503650420;
-    Last Modified High = 30124599;
+    Last Modified Low = 2524515935;
+    Last Modified High = 30126290;
 
     Category
     {
@@ -292,10 +292,10 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 2503680422;
-    PC Bank Last Modified High = 30124599;
-    Bank Last Revised Low = 2503670421;
-    Bank Last Revised High = 30124599;
+    PC Bank Last Modified Low = 2524775950;
+    PC Bank Last Modified High = 30126290;
+    Bank Last Revised Low = 2524775950;
+    Bank Last Revised High = 30126290;
 
     Wave
     {
@@ -426,12 +426,12 @@ Wave Bank
             Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 37968;
+            Play Region Length = 41526;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 1632510594;
-            Last Modified High = 30124599;
+            Last Modified Low = 15834447;
+            Last Modified High = 30124771;
         }
     }
 
@@ -561,15 +561,15 @@ Wave Bank
         {
             Format Tag = 0;
             Channels = 1;
-            Sampling Rate = 22050;
+            Sampling Rate = 44100;
             Bits Per Sample = 1;
             Play Region Offset = 44;
-            Play Region Length = 5672;
+            Play Region Length = 14706;
             Loop Region Offset = 0;
             Loop Region Length = 0;
             File Type = 1;
-            Last Modified Low = 1103725095;
-            Last Modified High = 30076591;
+            Last Modified Low = 1739421937;
+            Last Modified High = 30126286;
         }
     }
 
@@ -1420,8 +1420,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2503710423;
-    Bank Last Modified High = 30124599;
+    Bank Last Modified Low = 3446959902;
+    Bank Last Modified High = 30126294;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -1992,7 +1992,7 @@ Sound Bank
     Sound
     {
         Name = PlayerArmorWarning;
-        Volume = -1200;
+        Volume = -1100;
         Pitch = 0;
         Priority = 0;
 
@@ -3159,7 +3159,7 @@ Sound Bank
         Instance Limit
         {
             Max Instances = 1;
-            Behavior = 2;
+            Behavior = 0;
 
             Crossfade
             {
@@ -3673,8 +3673,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2503720424;
-    Bank Last Modified High = 30124599;
+    Bank Last Modified Low = 2524925953;
+    Bank Last Modified High = 30126290;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -4921,8 +4921,8 @@ Sound Bank
     Windows File = Win\PauseMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 2503720424;
-    Bank Last Modified High = 30124599;
+    Bank Last Modified Low = 2525025953;
+    Bank Last Modified High = 30126290;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 

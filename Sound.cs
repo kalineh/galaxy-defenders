@@ -82,6 +82,12 @@ namespace Galaxy
             cue.Play();
         }
 
+        public static Cue GetSFXCue(string name)
+        {
+            Cue cue = SoundBank.GetCue(name);
+            return cue;
+        }
+
         public static void PlayMusic(string name)
         {
             if (CurrentPauseMusic != null)
