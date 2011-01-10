@@ -71,6 +71,7 @@ namespace Galaxy
                 return;
             }
 
+            World.ParticleEffects.Spawn(EParticleType.EnemyShotHit, Physics.Position);
             World.Stats.ShotDamageReceived += Damage;
             ship.TakeDamage(Physics.Position, Physics.Velocity, Damage);
             Die();

@@ -141,7 +141,9 @@ namespace Galaxy
                     new CMenu.CMenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
                     new CMenu.CMenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
                     new CMenu.CMenuOption() { Text = "Pilot Training", Select = TrainPilot },
+#if DEBUG
                     new CMenu.CMenuOption() { Text = "* Money (L/R)", Axis = EditMoney, AxisValidate = (tag, axis) => { return true; } },
+#endif
                     new CMenu.CMenuOption() { Text = "Back", Select = ReturnToBaseMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
@@ -1613,7 +1615,7 @@ namespace Galaxy
             bool left = EmptyWorld.Random.NextBool();
             enemy.Mover = left ? CMoverPresets.DownRight(6.0f, 1.5f) : CMoverPresets.DownLeft(6.0f, 1.5f);
             float offset = left ? -120.0f : 120.0f;
-            enemy.Physics.Position = new Vector2(SampleShip.Physics.Position.X + offset, -550.0f);
+            enemy.Physics.Position = new Vector2(SampleShip.Physics.Position.X + offset, -570.0f);
             enemy.Coins = 0;
             EmptyWorld.EntityAdd(enemy);
 
