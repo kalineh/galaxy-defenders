@@ -37,6 +37,7 @@ namespace Galaxy
         private Texture2D ShopUpgradePanelTexture { get; set; }
         private CVisual ShopUpgradeBarsVisual { get; set; }
         private GameControllerIndex ShoppingPlayer { get; set; }
+        private int GenerateEnemyDelay { get; set; }
 
         private struct SLabels
         {
@@ -113,9 +114,8 @@ namespace Galaxy
                 Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
+                    new CMenu.CMenuOption() { Text = "Enter Shop", Select = UpgradeShip },
                     new CMenu.CMenuOption() { Text = "Play Next Stage", Select = StageSelect },
-                    new CMenu.CMenuOption() { Text = "Upgrade Ship", Select = UpgradeShip },
-                    new CMenu.CMenuOption() { Text = "Train Pilot", Select = TrainPilot },
                     new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
@@ -135,9 +135,9 @@ namespace Galaxy
                     new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
                     new CMenu.CMenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
                     new CMenu.CMenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
-                    new CMenu.CMenuOption() { Text = "* +10000$", Select = EditMoney, Data = 10000 },
-                    new CMenu.CMenuOption() { Text = "* -10000$", Select = EditMoney, Data = -10000 },
-                    new CMenu.CMenuOption() { Text = "Done", Select = ReturnToBaseMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
+                    new CMenu.CMenuOption() { Text = "Pilot Training", Select = TrainPilot },
+                    new CMenu.CMenuOption() { Text = "* Money (L/R)", Axis = EditMoney, AxisValidate = (tag, axis) => { return true; } },
+                    new CMenu.CMenuOption() { Text = "Back", Select = ReturnToBaseMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
 
@@ -157,8 +157,8 @@ namespace Galaxy
             }
             MenuTrainPilot.MenuOptions.Add(new CMenu.CMenuOption()
                                            {
-                                               Text = "Done",
-                                               Select = ReturnToBaseMenu,
+                                               Text = "Back",
+                                               Select = ReturnToUpgradeShip,
                                                Highlight = CancelHighlightAbility,
                                                CancelOption = true,
                                                PanelType = CMenu.PanelType.Small
@@ -438,8 +438,11 @@ namespace Galaxy
             Menu.Update();
             Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
+            UpdateGenerateEnemy();
             EmptyWorld.GameCamera.Update();
-            EmptyWorld.UpdateEntities();
+            EmptyWorld.UpdateEntitiesSingleThreadCollision();
+            EmptyWorld.ProcessEntityAdd();
+            EmptyWorld.ProcessEntityDelete();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.ParticleEffects.Update();
@@ -578,8 +581,8 @@ namespace Galaxy
 
         private void RefreshSampleDisplay()
         {
-            // TODO: replace with simpler version (just clear entities and HUD)
-            EmptyWorld.Stop();
+            EmptyWorld.EntityDelete(SampleShip);
+
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
 
             float x = ShoppingPlayer == GameControllerIndex.One ? -190.0f : 190.0f;
@@ -902,9 +905,18 @@ namespace Galaxy
             Menu.ForceRefresh();
         }
 
-        private void EditMoney(object tag)
+        private void EditMoney(object tag, int axis)
         {
-            WorkingProfile.Money += (int)tag;
+            if (axis == 0)
+                return;
+
+            Menu.MenuOptions[Menu.Cursor].AxisValue = 0;
+
+            if (axis < 0)
+                WorkingProfile.Money -= 10000;
+            else if (axis > 0)
+                WorkingProfile.Money += 10000;
+
             WorkingProfile.Money = Math.Max(0, WorkingProfile.Money);
             LockWorkingProfile();
         }
@@ -1504,6 +1516,31 @@ namespace Galaxy
         private Vector2 GetShoppingPlayerMenuPosition()
         {
             return ShoppingPlayer == GameControllerIndex.One ? new Vector2(1114.0f, 320.0f) : new Vector2(550.0f, 320.0f);
+        }
+
+        private void UpdateGenerateEnemy()
+        {
+            GenerateEnemyDelay += 1;
+            if (GenerateEnemyDelay < 60)
+                return;
+
+            CEnemy enemy = null;
+            int rand = EmptyWorld.Random.Next() % 3;
+            switch (rand)
+            {
+                case 0: enemy = new CBall(); break;
+                case 1: enemy = new CShootBall(); break;
+                case 2: enemy = new CIsosceles(); break;
+            }
+            enemy.Initialize(EmptyWorld);
+            bool left = EmptyWorld.Random.NextBool();
+            enemy.Mover = left ? CMoverPresets.DownRight(6.0f, 1.5f) : CMoverPresets.DownLeft(6.0f, 1.5f);
+            float offset = left ? -120.0f : 120.0f;
+            enemy.Physics.Position = new Vector2(SampleShip.Physics.Position.X + offset, -540.0f);
+            enemy.Coins = 0;
+            EmptyWorld.EntityAdd(enemy);
+
+            GenerateEnemyDelay = 0 - (int)(EmptyWorld.Random.NextFloat() * 120);
         }
     }
 }

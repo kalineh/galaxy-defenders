@@ -124,6 +124,9 @@ namespace Galaxy
 
             PauseMenu = PauseMenuBase;
 
+            // NOTE: we recreate in Start(), but shop needs a dummy version for enemy simulator
+            Stats = new CStats();
+
             if (stage_definition != null)
             {
                 Stage = new CStage(this, stage_definition);
@@ -270,7 +273,7 @@ namespace Galaxy
             ParticleEffects.Update();
 
             // kick new collision thread
-            UpdateEntitiesThreadedCollision();
+            UpdateEntitiesMultiThreadCollision();
 
             UpdateStageEnd();
             UpdateSecretStageEntry();
@@ -321,16 +324,18 @@ namespace Galaxy
         {
         }
 
-        public void UpdateEntities()
+        public void UpdateEntitiesSingleThreadCollision()
         {
             ProcessEntityAdd();
             ProcessEntityUpdates();
-            CollectEntityCollisions();
-            //ResolveEntityCollisions();
+            CollisionGrid.Clear(GameCamera.Position.ToVector2());
+            CollisionGrid.Insert(Entities);
+            CollisionGrid.CollectCollisions();
+            ResolveEntityCollisions();
             ProcessEntityDelete();
         }
 
-        public void UpdateEntitiesThreadedCollision()
+        public void UpdateEntitiesMultiThreadCollision()
         {
             ProcessEntityAdd();
             ProcessEntityUpdates();
@@ -943,7 +948,7 @@ namespace Galaxy
             }
         }
 
-        private void ResolveEntityCollisions()
+        public void ResolveEntityCollisions()
         {
             lock (CollisionMutex)
             {
@@ -960,7 +965,7 @@ namespace Galaxy
             EntitiesToAdd.Clear();
         }
 
-        private void ProcessEntityDelete()
+        public void ProcessEntityDelete()
         {
             foreach (CEntity entity in EntitiesToDelete)
             {

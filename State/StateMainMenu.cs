@@ -159,7 +159,7 @@ namespace Galaxy
 
             SampleShipManager.Update();
             EmptyWorld.GameCamera.Update();
-            EmptyWorld.UpdateEntities();
+            EmptyWorld.UpdateEntitiesSingleThreadCollision();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
