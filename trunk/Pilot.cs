@@ -153,14 +153,14 @@ namespace Galaxy
             public override void Enable()
             {
                 Pilot.Ship.IsInvincible += 1;
-                Pilot.Ship.SpeedEnhancement += 0.15f;
+                Pilot.Ship.SpeedEnhancement += 0.30f;
                 base.Enable();
             }
 
             public override void Disable()
             {
                 Pilot.Ship.IsInvincible -= 1;
-                Pilot.Ship.SpeedEnhancement -= 0.15f;
+                Pilot.Ship.SpeedEnhancement -= 0.30f;
                 base.Disable();
             }
 
@@ -181,7 +181,7 @@ namespace Galaxy
             public Shimmer(CPilot pilot, bool ability1)
                 : base(pilot, ability1)
             {
-                ActiveTime = 3.0f;
+                ActiveTime = 5.0f;
                 CooldownTime = 10.0f;
             }
 

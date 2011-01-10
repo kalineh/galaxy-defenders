@@ -14,6 +14,8 @@ namespace Galaxy
         : CStageElement
     {
         private int StageEndCountdown { get; set; }
+        private Vector2 StageEndCameraPosition { get; set; }
+        private int ExplosionSoundDelay { get; set; }
 
         private bool EnemiesExist(CWorld world)
         {
@@ -49,8 +51,49 @@ namespace Galaxy
             }
 
             if (StageEndCountdown > 60)
+            {
                 world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.035f);
+            }
 
+            if (StageEndCountdown == 1)
+                StageEndCameraPosition = world.GameCamera.Position.ToVector2();
+
+
+            if (StageEndCountdown < 90)
+            {
+                BossExplosionEffects(world);
+                BossExplosionSounds(world);
+            }
+        }
+
+        public void BossExplosionEffects(CWorld world)
+        {
+            EParticleType type = EParticleType.EnemyDeathExplosion;
+            Vector2 position = new Vector2(
+                world.Random.NextFloat() * world.Game.Resolution.X / 2.0f * world.Random.NextSign(),
+                world.Random.NextFloat() * world.Game.Resolution.Y / 2.0f * world.Random.NextSign()
+            );
+            world.ParticleEffects.Spawn(type, StageEndCameraPosition + position, null, 1.0f, null);
+        }
+
+        public void BossExplosionSounds(CWorld world)
+        {
+            if (ExplosionSoundDelay == 0)
+            {
+                if (world.Random.NextFloat() < 0.5f)
+                {
+                    string death_sound = CEnemy.EnemyDeathSoundStrings[world.Random.Next() % 3];
+                    CAudio.PlaySound(death_sound);
+                }
+                else
+                {
+                    CAudio.PlaySound("BuildingExplode");
+                }
+
+                ExplosionSoundDelay = 6 + (int)(world.Random.NextFloat() * 8.0f);
+            }
+
+            ExplosionSoundDelay -= 1;
         }
 
         public override bool IsExpired()
