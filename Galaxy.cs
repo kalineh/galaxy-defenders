@@ -16,6 +16,8 @@ namespace Galaxy
     public class CGalaxy
         : Microsoft.Xna.Framework.Game
     {
+        public static bool ApplicationFocusedFlag { get; set; }
+
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public new GraphicsDevice GraphicsDevice { get; private set; }
         public SpriteBatch DefaultSpriteBatch { get; private set; }
@@ -72,6 +74,10 @@ namespace Galaxy
             }
 
 #if !XBOX360
+
+            this.Activated += new EventHandler(NotifyActivated);
+            this.Deactivated += new EventHandler(NotifyDeactivated);
+
 #if DEBUG
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new EventHandler(Window_ClientSizeChanged);
@@ -398,6 +404,16 @@ namespace Galaxy
         {
             MusicDisplayCounter = 300;
             MusicDisplayName = "RushJet1 - " + music_name;
+        }
+
+        private void NotifyActivated(object sender, EventArgs e)
+        {
+            ApplicationFocusedFlag = true;
+        }
+
+        private void NotifyDeactivated(object sender, EventArgs e)
+        {
+            ApplicationFocusedFlag = false;
         }
     }
 }

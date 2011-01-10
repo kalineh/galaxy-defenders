@@ -367,6 +367,9 @@ namespace Galaxy
 #if XBOX360
             return false;
 #else
+            if (!IsFocused())
+                return false;
+
             int keycode = (int)key;
             int keystate = GetAsyncKeyState(keycode);
             int is_down = keystate & 0x8000;
@@ -380,12 +383,20 @@ namespace Galaxy
             return false;
 #else
 
+            if (!IsFocused())
+                return false;
+
             int keycode = (int)key;
             int keystate = GetAsyncKeyState(keycode);
             int is_down = keystate & 0x8000;
             int is_pressed = keystate & 0x0001;
             return is_down != 0 && is_pressed != 0;
 #endif
+        }
+
+        private static bool IsFocused()
+        {
+            return CGalaxy.ApplicationFocusedFlag;
         }
     }
 }
