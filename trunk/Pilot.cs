@@ -47,10 +47,10 @@ namespace Galaxy
 
             // TODO: Add SE!
 
-            float drain = Pilot.Ship.Generator.Energy;
-            float remaining = drain - Pilot.Ship.CurrentEnergy;
-            Pilot.Ship.CurrentEnergy -= drain;
-            Pilot.Ship.CurrentShield -= remaining;
+            float energy = Pilot.Ship.Generator.Energy;
+            float shield = Pilot.Ship.Shield.Shield * 0.5f;
+            Pilot.Ship.CurrentEnergy = Math.Max(0.0f, Pilot.Ship.CurrentEnergy - energy);
+            Pilot.Ship.CurrentShield = Math.Max(0.0f, Pilot.Ship.CurrentShield - shield);
         }
 
         public virtual void Disable()
@@ -147,7 +147,7 @@ namespace Galaxy
                 : base(pilot, ability0)
             {
                 ActiveTime = 3.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Enable()
@@ -182,7 +182,7 @@ namespace Galaxy
                 : base(pilot, ability1)
             {
                 ActiveTime = 3.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Enable()
@@ -215,7 +215,7 @@ namespace Galaxy
                 : base(pilot, ability2)
             {
                 ActiveTime = 3.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Enable()
@@ -247,7 +247,7 @@ namespace Galaxy
                 : base(pilot, ability0)
             {
                 ActiveTime = 6.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Enable()
@@ -279,7 +279,7 @@ namespace Galaxy
                 : base(pilot, ability1)
             {
                 ActiveTime = 0.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Update()
@@ -335,7 +335,7 @@ namespace Galaxy
                 : base(pilot, ability2)
             {
                 ActiveTime = 0.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Update()
@@ -391,7 +391,7 @@ namespace Galaxy
                 : base(pilot, ability0)
             {
                 ActiveTime = 0.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Update()
@@ -441,7 +441,7 @@ namespace Galaxy
                 : base(pilot, ability1)
             {
                 ActiveTime = 1.0f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
                 SuctionList = new List<CEntity>();
             }
 
@@ -503,7 +503,7 @@ namespace Galaxy
                 : base(pilot, ability2)
             {
                 ActiveTime = 1.5f;
-                CooldownTime = 15.0f;
+                CooldownTime = 10.0f;
             }
 
             public override void Enable()

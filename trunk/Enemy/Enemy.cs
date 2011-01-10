@@ -96,6 +96,9 @@ namespace Galaxy
 
         public void OnCollide(CShip source)
         {
+            if (source.IsIgnoreBullets > 0)
+                return;
+
             World.Stats.CollisionDamageReceived += 2.5f;
             source.TakeCollideDamage(Physics.Position, Physics.Velocity, 2.5f);
 
