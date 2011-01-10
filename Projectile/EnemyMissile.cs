@@ -100,6 +100,9 @@ namespace Galaxy
 
         public void OnCollide(CShip ship)
         {
+            if (ship.IsIgnoreBullets > 0)
+                return;
+
             if (ship.IsReflectBullets > 0)
             {
                 Die();

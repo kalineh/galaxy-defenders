@@ -576,47 +576,47 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\AbsorbEnergyIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\AbsorbEnergyIcon.png">
       <Name>AbsorbEnergyIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\ArmorRepairIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\ArmorRepairIcon.png">
       <Name>ArmorRepairIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\BulletAlchemyIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\BulletAlchemyIcon.png">
       <Name>BulletAlchemyIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\BulletDetonateIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\BulletDetonateIcon.png">
       <Name>BulletDetonateIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\BulletReflectIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\BulletReflectIcon.png">
       <Name>BulletReflectIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\DashBurstIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\DashBurstIcon.png">
       <Name>DashBurstIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\GroundSmashIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\GroundSmashIcon.png">
       <Name>GroundSmashIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\ShimmerIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\ShimmerIcon.png">
       <Name>ShimmerIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\UI\SuctionCrusherIcon.png">
+    <Compile Include="Textures\UI\AbilityIcons\SuctionCrusherIcon.png">
       <Name>SuctionCrusherIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -1269,6 +1269,52 @@
   <ItemGroup>
     <Compile Include="Textures\Weapons\ChargeShot.png">
       <Name>ChargeShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonA.tga">
+      <Name>xboxControllerButtonA</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonB.tga">
+      <Name>xboxControllerButtonB</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonX.tga">
+      <Name>xboxControllerButtonX</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonY.tga">
+      <Name>xboxControllerButtonY</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonAgreyscale.tga">
+      <Name>xboxControllerButtonAgreyscale</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonBgreyscale.tga">
+      <Name>xboxControllerButtonBgreyscale</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Xbox\xboxControllerButtonYgreyscale.tga">
+      <Name>xboxControllerButtonYgreyscale</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\AbilityIcons\FireIcon.png">
+      <Name>FireIcon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

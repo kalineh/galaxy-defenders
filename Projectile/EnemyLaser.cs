@@ -59,6 +59,9 @@ namespace Galaxy
             if (IsReflected)
                 return;
 
+            if (ship.IsIgnoreBullets > 0)
+                return;
+
             if (ship.IsReflectBullets > 0)
             {
                 Reflect(ship);

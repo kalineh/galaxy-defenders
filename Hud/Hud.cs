@@ -40,9 +40,17 @@ namespace Galaxy
         private CVisual ShieldIconVisual { get; set; }
         private CVisual ArmorIconVisual { get; set; }
         private CVisual PortraitIconVisual { get; set; }
+        private CVisual FireIconVisual { get; set; }
         private CVisual Ability0IconVisual { get; set; }
         private CVisual Ability1IconVisual { get; set; }
         private CVisual Ability2IconVisual { get; set; }
+        private CVisual FireButtonIconVisual { get; set; }
+        private CVisual Ability0IconButtonVisual { get; set; }
+        private CVisual Ability1IconButtonVisual { get; set; }
+        private CVisual Ability2IconButtonVisual { get; set; }
+        private CVisual Ability0IconGreyButtonVisual { get; set; }
+        private CVisual Ability1IconGreyButtonVisual { get; set; }
+        private CVisual Ability2IconGreyButtonVisual { get; set; }
 
         public Vector2 BasePosition { get; set; }
         private Vector2 LeftPanelPosition { get; set; }
@@ -57,6 +65,7 @@ namespace Galaxy
         private Vector2 ShieldIconPosition { get; set; }
         private Vector2 ArmorIconPosition { get; set; }
         private Vector2 PortraitIconPosition { get; set; }
+        private Vector2 FireIconPosition { get; set; }
         private Vector2 Ability0IconPosition { get; set; }
         private Vector2 Ability1IconPosition { get; set; }
         private Vector2 Ability2IconPosition { get; set; }
@@ -87,9 +96,17 @@ namespace Galaxy
 
             // TODO: less crappiness
             PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
+            FireIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
             Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
             Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
             Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/Top/Pixel");
+            FireButtonIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonX");
+            Ability0IconButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonY");
+            Ability1IconButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonB");
+            Ability2IconButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonA");
+            Ability0IconGreyButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonYgreyscale");
+            Ability1IconGreyButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonBgreyscale");
+            Ability2IconGreyButtonVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/Xbox/xboxControllerButtonAgreyscale");
 
             LeftPanelPosition = new Vector2(0.0f, 0.0f);
             RightPanelPosition = new Vector2(Game.Resolution.X, 0.0f);
@@ -103,10 +120,11 @@ namespace Galaxy
             EnergyIconPosition = BasePosition + new Vector2(70.0f, -266.0f);
             ShieldIconPosition = BasePosition + new Vector2(70.0f, -183.0f);
             ArmorIconPosition = BasePosition + new Vector2(70.0f, -107.0f);
-            PortraitIconPosition = BasePosition + new Vector2(238.0f, -608.0f);
-            Ability0IconPosition = BasePosition + new Vector2(158.0f, -458.0f);
-            Ability1IconPosition = BasePosition + new Vector2(238.0f, -458.0f);
-            Ability2IconPosition = BasePosition + new Vector2(318.0f, -458.0f);
+            PortraitIconPosition = BasePosition + new Vector2(238.0f, -664.0f);
+            FireIconPosition = BasePosition + new Vector2(182.0f, -468.0f);
+            Ability0IconPosition = BasePosition + new Vector2(240.0f, -532.0f);
+            Ability1IconPosition = BasePosition + new Vector2(298.0f, -468.0f);
+            Ability2IconPosition = BasePosition + new Vector2(240.0f, -404.0f);
 
             LeftPanelVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 0.0f;
             RightPanelVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 0.0f;
@@ -120,9 +138,17 @@ namespace Galaxy
             ArmorIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
             MoneyIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            FireIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
             Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
             Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
             Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            FireButtonIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability0IconButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability1IconButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability2IconButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability0IconGreyButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability1IconGreyButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
+            Ability2IconGreyButtonVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 3.0f;
 
             EnergyVisual.Scale = new Vector2(1.1f, 1.15f);
             ShieldVisual.Scale = new Vector2(1.1f, 1.15f);
@@ -153,9 +179,17 @@ namespace Galaxy
             ShieldIconVisual.Update();
             ArmorIconVisual.Update();
             PortraitIconVisual.Update();
+            FireIconVisual.Update();
             Ability0IconVisual.Update();
             Ability1IconVisual.Update();
             Ability2IconVisual.Update();
+            FireButtonIconVisual.Update();
+            Ability0IconButtonVisual.Update();
+            Ability1IconButtonVisual.Update();
+            Ability2IconButtonVisual.Update();
+            Ability0IconGreyButtonVisual.Update();
+            Ability1IconGreyButtonVisual.Update();
+            Ability2IconGreyButtonVisual.Update();
 
             MoneyOverride = null;
             CachedMoneyString = "￥0";
@@ -236,21 +270,21 @@ namespace Galaxy
             ArmorIconVisual.Draw(sprite_batch, ArmorIconPosition, 0.0f);
             PortraitIconVisual.Draw(sprite_batch, PortraitIconPosition, 0.0f);
 
-            Ability0IconVisual.Color = CanUseAbility0 ? Color.White : Color.Gray;
-            Ability1IconVisual.Color = CanUseAbility1 ? Color.White : Color.Gray;
-            Ability2IconVisual.Color = CanUseAbility2 ? Color.White : Color.Gray;
+            // TODO: active effect display?
 
-            Ability0IconVisual.Color = IsActiveAbility0 ? Color.Green : Ability0IconVisual.Color;
-            Ability1IconVisual.Color = IsActiveAbility1 ? Color.Green : Ability1IconVisual.Color;
-            Ability2IconVisual.Color = IsActiveAbility2 ? Color.Green : Ability2IconVisual.Color;
-
-            Ability0IconVisual.UpdateColor();
-            Ability1IconVisual.UpdateColor();
-            Ability2IconVisual.UpdateColor();
-
+            FireIconVisual.Draw(sprite_batch, FireIconPosition, 0.0f);
             Ability0IconVisual.Draw(sprite_batch, Ability0IconPosition, 0.0f);
             Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
             Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
+
+            CVisual button0 = CanUseAbility0 ? Ability0IconButtonVisual : Ability0IconGreyButtonVisual;
+            CVisual button1 = CanUseAbility1 ? Ability1IconButtonVisual : Ability1IconGreyButtonVisual;
+            CVisual button2 = CanUseAbility2 ? Ability2IconButtonVisual : Ability2IconGreyButtonVisual;
+
+            FireButtonIconVisual.Draw(sprite_batch, FireIconPosition + new Vector2(38.0f, 0.0f), 0.0f);
+            button0.Draw(sprite_batch, Ability0IconPosition + new Vector2(0.0f, 42.0f), 0.0f);
+            button1.Draw(sprite_batch, Ability1IconPosition + new Vector2(-38.0f, 0.0f), 0.0f);
+            button2.Draw(sprite_batch, Ability2IconPosition + new Vector2(0.0f, -42.0f), 0.0f);
 
             // TODO: just not show?
             //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
@@ -302,12 +336,15 @@ namespace Galaxy
             PortraitIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + profile.Pilots[(int)GameControllerIndex].Pilot + "Portrait");
             PortraitIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
             PortraitIconVisual.Update();
-            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 0) + "Icon");
-            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 1) + "Icon");
-            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 2) + "Icon");
-            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
-            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 1.0f;
+            FireIconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/AbilityIcons/FireIcon");
+            Ability0IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/AbilityIcons/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 0) + "Icon");
+            Ability1IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/AbilityIcons/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 1) + "Icon");
+            Ability2IconVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/AbilityIcons/" + CAbility.GetAbilityName(profile.Pilots[(int)GameControllerIndex].Pilot, 2) + "Icon");
+            FireIconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability0IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability1IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            Ability2IconVisual.Depth = CLayers.UI + CLayers.SubLayerIncrement * 2.0f;
+            FireIconVisual.Update();
             Ability0IconVisual.Update();
             Ability1IconVisual.Update();
             Ability2IconVisual.Update();
