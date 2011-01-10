@@ -72,23 +72,28 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch, SpriteFont font, Vector2 position, Color color)
         {
+            Draw(sprite_batch, font, position, color, 1.0f);
+        }
+
+        public void Draw(SpriteBatch sprite_batch, SpriteFont font, Vector2 position, Color color, float scale)
+        {
             Color drop_shadow_color = new Color(Color.Black, 0.35f);
             Vector2 drop_shadow_offset = new Vector2(2.0f, 2.0f);
             switch (Alignment)
             {
                 case EAlignment.Left:
-                    sprite_batch.DrawStringAlignLeft(font, position + drop_shadow_offset, Text, drop_shadow_color);
-                    sprite_batch.DrawStringAlignLeft(font, position, Text, color);
+                    sprite_batch.DrawStringAlignLeft(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
+                    sprite_batch.DrawStringAlignLeft(font, position, Text, color, scale);
                     break;
 
                 case EAlignment.Center:
-                    sprite_batch.DrawStringAlignCenter(font, position + drop_shadow_offset, Text, drop_shadow_color);
-                    sprite_batch.DrawStringAlignCenter(font, position, Text, color);
+                    sprite_batch.DrawStringAlignCenter(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
+                    sprite_batch.DrawStringAlignCenter(font, position, Text, color, scale);
                     break;
 
                 case EAlignment.Right:
-                    sprite_batch.DrawStringAlignRight(font, position + drop_shadow_offset, Text, drop_shadow_color);
-                    sprite_batch.DrawStringAlignRight(font, position, Text, color);
+                    sprite_batch.DrawStringAlignRight(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
+                    sprite_batch.DrawStringAlignRight(font, position, Text, color, scale);
                     break;
 
             }
