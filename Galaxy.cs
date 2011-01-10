@@ -93,7 +93,7 @@ namespace Galaxy
             //{
             //}
 
-            GraphicsDeviceManager.PreferMultiSampling = true;
+            GraphicsDeviceManager.PreferMultiSampling = false;
             GraphicsDeviceManager.ApplyChanges();
 
 #if XBOX360

@@ -307,7 +307,7 @@ namespace Galaxy
                 FirePrimarySecondaryWeapons();
             }
 
-            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Z))
+            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.Z))
             {
                 ChargeSidekickLeft();
             }
@@ -316,7 +316,7 @@ namespace Galaxy
                 FireSidekickLeft();
             }
 
-            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.X))
+            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.X))
             {
                 ChargeSidekickRight();
             }
@@ -391,8 +391,10 @@ namespace Galaxy
 
             foreach (CWeapon weapon in weapons)
             {
+                if (weapon.CurrentCharge < CWeapon.MaximumChargeFrames)
+                    cost += weapon.Energy;
+
                 weapon.Charge();
-                cost += weapon.Energy;
             }
 
             CurrentEnergy = Math.Max(0.0f, CurrentEnergy - cost);

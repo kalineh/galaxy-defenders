@@ -420,9 +420,9 @@ namespace Galaxy
         {
             if (Game.PlayersInGame > 1)
             {
-                if (Game.Input.IsPadL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
+                if (Game.Input.IsL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
                     ChangeShoppingPlayer(GameControllerIndex.One);
-                if (Game.Input.IsPadR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
+                if (Game.Input.IsR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
                     ChangeShoppingPlayer(GameControllerIndex.Two);
             }
 

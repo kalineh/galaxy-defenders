@@ -22,7 +22,10 @@ namespace Galaxy
         public int AutoDischarge { get; set; }
         public float ChargeSpeed { get; set; }
         protected float Cooldown { get; set; }
-        protected int CurrentCharge { get; set; }
+        public int CurrentCharge { get; set; }
+
+        static public int MaximumChargeFrames = 60;
+        static public float MaximumChargeSeconds = Time.ToSeconds(MaximumChargeFrames);
 
         public virtual void Initialize(CShip owner)
         {
@@ -100,7 +103,7 @@ namespace Galaxy
                 return;
             }
 
-            float charge = Math.Min(1.0f, Time.ToSeconds(CurrentCharge));
+            float charge = Math.Min(MaximumChargeSeconds, Time.ToSeconds(CurrentCharge));
             Owner.World.ParticleEffects.Spawn(EParticleType.WeaponCharge, Owner.Physics.Position + Offset.Rotate(-MathHelper.PiOver2), Owner.PlayerColor, charge, null);
         }
 
@@ -120,7 +123,7 @@ namespace Galaxy
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;
 
-            float normalized_charge = Math.Min(1.0f, Time.ToSeconds(CurrentCharge));
+            float normalized_charge = Math.Min(MaximumChargeSeconds, Time.ToSeconds(CurrentCharge));
 
             Instantiate(Owner, fire_position, rotation, Speed, Damage, normalized_charge);
 
