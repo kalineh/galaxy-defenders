@@ -38,6 +38,7 @@ namespace Galaxy
         private CVisual ShopUpgradeBarsVisual { get; set; }
         private GameControllerIndex ShoppingPlayer { get; set; }
         private int GenerateEnemyDelay { get; set; }
+        private int SampleShotDelay { get; set; }
 
         private struct SLabels
         {
@@ -436,6 +437,7 @@ namespace Galaxy
 
             MenuUpdateHighlights();
             Menu.Update();
+            Game.HudManager.Huds[(int)ShoppingPlayer].Ship = SampleShip;
             Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
             UpdateGenerateEnemy();
@@ -447,10 +449,15 @@ namespace Galaxy
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.ParticleEffects.Update();
             SampleShip.UpdateGenerator();
-            SampleShip.FirePrimarySecondaryWeapons();
-            SampleShip.FireSidekickLeft();
-            SampleShip.FireSidekickRight();
-            SampleShip.UpdateWeapons();
+
+            SampleShotDelay = Math.Max(0, SampleShotDelay - 1);
+            if (SampleShotDelay <= 0)
+            {
+                SampleShip.FirePrimarySecondaryWeapons();
+                SampleShip.ChargeAndFireFullSidekick(SampleShip.WeaponSidekickLeft);
+                SampleShip.ChargeAndFireFullSidekick(SampleShip.WeaponSidekickRight);
+                SampleShip.UpdateWeapons();
+            }
         }
 
         public override void Draw()
@@ -587,6 +594,8 @@ namespace Galaxy
 
             float x = ShoppingPlayer == GameControllerIndex.One ? -190.0f : 190.0f;
             SampleShip.Physics.Position = new Vector2(x, 100.0f);
+
+            SampleShotDelay = 15;
         }
 
         private void RevertWorkingProfile(object tag)

@@ -408,6 +408,27 @@ namespace Galaxy
             }
         }
 
+        public void ChargeAndFireFullSidekick(List<CWeapon> weapons)
+        {
+            foreach (CWeapon weapon in weapons)
+            {
+                if (weapon.CanCharge())
+                    weapon.Charge();
+            }
+
+            foreach (CWeapon weapon in weapons)
+            {
+                if (weapon.CurrentCharge < CWeapon.MaximumChargeFrames)
+                    return;
+            }
+
+            foreach (CWeapon weapon in weapons)
+            {
+                if (weapon.AutoDischarge == 0)
+                    weapon.TryFire();
+            }
+        }
+
         public void FirePrimarySecondaryWeapons()
         {
             Fire(WeaponPrimary);
