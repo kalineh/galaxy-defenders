@@ -15,20 +15,29 @@ namespace Galaxy
 
         public static void DrawStringAlignLeft(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color)
         {
-            Vector2 adjusted = StringMeasurement.AlignLeft(font, position, text);
-            self.DrawString(font, text, adjusted + DrawStringPixelOffset, color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, TextLabelDepth);
+            self.DrawStringAlignLeft(font, position, text, color, 1.0f);
+        }
+
+        public static void DrawStringAlignLeft(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color, float scale)
+        {
+            Vector2 adjusted = StringMeasurement.AlignLeft(font, position, text, scale);
+            self.DrawString(font, text, adjusted + DrawStringPixelOffset, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, TextLabelDepth);
         }
 
         public static void DrawStringAlignRight(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color)
         {
-            Vector2 adjusted = StringMeasurement.AlignRight(font, position, text);
-            self.DrawString(font, text, adjusted + DrawStringPixelOffset, color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, TextLabelDepth);
+            self.DrawStringAlignRight(font, position, text, color, 1.0f);
+        }
+
+        public static void DrawStringAlignRight(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color, float scale)
+        {
+            Vector2 adjusted = StringMeasurement.AlignRight(font, position, text, scale);
+            self.DrawString(font, text, adjusted + DrawStringPixelOffset, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, TextLabelDepth);
         }
 
         public static void DrawStringAlignCenter(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color)
         {
-            Vector2 adjusted = StringMeasurement.AlignCenter(font, position, text);
-            self.DrawString(font, text, adjusted + DrawStringPixelOffset, color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, TextLabelDepth);
+            self.DrawStringAlignCenter(font, position, text, color, 1.0f);
         }
 
         public static void DrawStringAlignCenter(this SpriteBatch self, SpriteFont font, Vector2 position, string text, Color color, float scale)
@@ -42,19 +51,29 @@ namespace Galaxy
     {
         public static Vector2 AlignLeft(SpriteFont font, Vector2 position, string text)
         {
+            return AlignLeft(font, position, text, 1.0f);
+        }
+
+        public static Vector2 AlignLeft(SpriteFont font, Vector2 position, string text, float scale)
+        {
             Vector2 measured = font.MeasureString(text);
             return new Vector2(
                 position.X,
-                position.Y - measured.Y * 0.5f
+                position.Y - measured.Y * 0.5f * scale
             );
         }
 
         public static Vector2 AlignRight(SpriteFont font, Vector2 position, string text)
         {
+            return AlignRight(font, position, text, 1.0f);
+        }
+
+        public static Vector2 AlignRight(SpriteFont font, Vector2 position, string text, float scale)
+        {
             Vector2 measured = font.MeasureString(text);
             return new Vector2(
                 position.X - measured.X,
-                position.Y - measured.Y * 0.5f
+                position.Y - measured.Y * 0.5f * scale
             );
         }
 

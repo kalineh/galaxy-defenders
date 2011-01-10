@@ -39,6 +39,8 @@ namespace Galaxy
         private GameControllerIndex ShoppingPlayer { get; set; }
         private int GenerateEnemyDelay { get; set; }
         private int SampleShotDelay { get; set; }
+        private Texture2D ShopPurchasePanelTexture { get; set; }
+        private CTextLabel ShopPurchaseTextLabel { get; set; }
 
         private struct SLabels
         {
@@ -104,6 +106,8 @@ namespace Galaxy
             ShopUpgradePanelTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopUpgradePanel");
             ShopUpgradeBarsVisual = CVisual.MakeSpriteFromGame(game, "Textures/UI/Shop/ShopUpgradeBars", Vector2.One, Color.White);
             ShopUpgradeBarsVisual.TileY = 8;
+            ShopPurchasePanelTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopPurchaseButtonPanel");
+            ShopPurchaseTextLabel = new CTextLabel() { Value = "Purchase" };
 
             Labels = new SLabels(null);
 
@@ -421,6 +425,8 @@ namespace Galaxy
         {
             base.OnExit();
 
+            EmptyWorld.Stop();
+
             Game.HudManager.Huds[0].MoneyOverride = null;
             Game.HudManager.Huds[1].MoneyOverride = null;
         }
@@ -641,9 +647,7 @@ namespace Galaxy
                     Vector2 position = blank_position;
                     ShopUpgradeBarsVisual.Frame = level;
                     ShopUpgradeBarsVisual.Recache();
-
-                    float upgrade_panel_offset = ShoppingPlayer == GameControllerIndex.One ? 128.0f : -128.0f;
-                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(upgrade_panel_offset, 218.0f), 0.0f);
+                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(-6.0f, 176.0f), 0.0f);
 
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
@@ -664,6 +668,9 @@ namespace Galaxy
                         Labels.NextUpgradePrice.Value = "MAX";
                         Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
+
+                    if (SelectValidatePrimaryWeapon(Menu.MenuOptions[Menu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None")
+                        DrawPurchasePanel();
                 }
             }
             else if (Menu == MenuSecondaryWeapon)
@@ -677,7 +684,7 @@ namespace Galaxy
                     Vector2 position = blank_position;
                     ShopUpgradeBarsVisual.Frame = level;
                     ShopUpgradeBarsVisual.Recache();
-                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(256.0f, 218.0f), 0.0f);
+                    ShopUpgradeBarsVisual.Draw(Game.DefaultSpriteBatch, position + new Vector2(-6.0f, 176.0f), 0.0f);
 
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
@@ -699,6 +706,20 @@ namespace Galaxy
                         Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
                 }
+
+                if (!option.CancelOption)
+                {
+                    if (WorkingProfile.WeaponSecondaryType == "")
+                    {
+                        Vector2 position = blank_position;
+                        Labels.BaseCostPrice.Value = 0;
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    }
+
+                    if (SelectValidateSecondaryWeapon(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
+                }
             }
             else if (Menu == MenuSidekickLeft)
             {
@@ -712,6 +733,20 @@ namespace Galaxy
                     Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
                     Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
+
+                if (!option.CancelOption)
+                {
+                    if (WorkingProfile.WeaponSidekickLeftType == "")
+                    {
+                        Vector2 position = blank_position;
+                        Labels.BaseCostPrice.Value = 0;
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    }
+
+                    if (SelectValidateSidekickLeft(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
+                }
             }
             else if (Menu == MenuSidekickRight)
             {
@@ -724,6 +759,20 @@ namespace Galaxy
                     Labels.BaseCostPrice.Value = price;
                     Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
                     Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                }
+
+                if (!option.CancelOption)
+                {
+                    if (WorkingProfile.WeaponSidekickRightType == "")
+                    {
+                        Vector2 position = blank_position;
+                        Labels.BaseCostPrice.Value = 0;
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    }
+
+                    if (SelectValidateSidekickRight(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
                 }
             }
             else if (Menu == MenuChassis)
@@ -743,6 +792,12 @@ namespace Galaxy
                     Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
                     Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
+
+                if (!option.CancelOption)
+                {
+                    if (SelectValidateChassis(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
+                }
             }
             else if (Menu == MenuGenerator)
             {
@@ -761,6 +816,12 @@ namespace Galaxy
                     Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
                     Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
+
+                if (!option.CancelOption)
+                {
+                    if (SelectValidateGenerator(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
+                }
             }
             else if (Menu == MenuShield)
             {
@@ -778,6 +839,12 @@ namespace Galaxy
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
                     Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
                     Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                }
+
+                if (!option.CancelOption)
+                {
+                    if (SelectValidateShield(Menu.MenuOptions[Menu.Cursor].Data))
+                        DrawPurchasePanel();
                 }
             }
             else
@@ -1530,26 +1597,37 @@ namespace Galaxy
         private void UpdateGenerateEnemy()
         {
             GenerateEnemyDelay += 1;
-            if (GenerateEnemyDelay < 60)
+            if (GenerateEnemyDelay < 30)
                 return;
 
             CEnemy enemy = null;
-            int rand = EmptyWorld.Random.Next() % 3;
+            int rand = EmptyWorld.Random.Next() % 4;
             switch (rand)
             {
                 case 0: enemy = new CBall(); break;
                 case 1: enemy = new CShootBall(); break;
                 case 2: enemy = new CIsosceles(); break;
+                case 3: enemy = new CBigBall(); break;
             }
             enemy.Initialize(EmptyWorld);
             bool left = EmptyWorld.Random.NextBool();
             enemy.Mover = left ? CMoverPresets.DownRight(6.0f, 1.5f) : CMoverPresets.DownLeft(6.0f, 1.5f);
             float offset = left ? -120.0f : 120.0f;
-            enemy.Physics.Position = new Vector2(SampleShip.Physics.Position.X + offset, -540.0f);
+            enemy.Physics.Position = new Vector2(SampleShip.Physics.Position.X + offset, -550.0f);
             enemy.Coins = 0;
             EmptyWorld.EntityAdd(enemy);
 
-            GenerateEnemyDelay = 0 - (int)(EmptyWorld.Random.NextFloat() * 120);
+            GenerateEnemyDelay = 0 - (int)(EmptyWorld.Random.NextFloat() * 60);
+        }
+
+        private void DrawPurchasePanel()
+        {
+            Vector2 panel_position = Menu.Position + new Vector2(20.0f, 564.0f);
+            Game.DefaultSpriteBatch.Draw(ShopPurchasePanelTexture, panel_position, Color.White);
+            ShopPurchaseTextLabel.Alignment = CTextLabel.EAlignment.Left;
+            float scale = 1.0f + (float)(Math.Abs(Math.Sin(EmptyWorld.Game.GameFrame * 0.1f))) * 0.015f;
+            ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, panel_position + new Vector2(60.0f, 42.0f), Color.White, scale);
+            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Purchase", panel_position + new Vector2(58.0f, 24.0f), Color.White);
         }
     }
 }
