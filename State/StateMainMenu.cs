@@ -19,6 +19,7 @@ namespace Galaxy
         public CMenu Menu { get; set; }
         public CMenu MenuMain { get; set; }
         public CMenu MenuNewGameContinue { get; set; }
+        public CMenu MenuConfirmNewGame { get; set; }
         public COptionsMenu MenuOptions { get; set; }
         public CMenu MenuQuitConfirm { get; set; }
         public CMenu MenuDifficultySelect { get; set; }
@@ -48,10 +49,23 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Continue", Select = ContinueGame, SelectValidate = CheckContinue },
-                    new CMenu.CMenuOption() { Text = "New Game", Select = NewGame },
+                    new CMenu.CMenuOption() { Text = "New Game", Select = ConfirmNewGame },
                     new CMenu.CMenuOption() { Text = "Back", CancelOption = true, Select = BackToMainMenu, PanelType = CMenu.PanelType.Small, },
                 },
             };
+
+            MenuConfirmNewGame = new CMenu(game)
+            {
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Overwrite Save?", SelectValidate = (tag) => { return false; }, },
+                    new CMenu.CMenuOption() { Text = "Overwrite", Select = NewGame },
+                    new CMenu.CMenuOption() { Text = "Cancel", CancelOption = true, Select = BackToNewGameContinueMenu, PanelType = CMenu.PanelType.Small, },
+                },
+            };
+
+            MenuConfirmNewGame.AllowHighlightInvalid = false;
 
             MenuOptions = new COptionsMenu(Game)
             {
@@ -208,12 +222,30 @@ namespace Galaxy
             Menu = MenuMain;    
         }
 
+        private void ConfirmNewGame(object tag)
+        {
+            int game_index = Game.PlayersInGame - 1;
+
+            SProfile profile = CSaveData.GetCurrentProfile();
+
+            if (profile.Game[game_index].InProgress)
+            {
+                Menu = MenuConfirmNewGame;
+                Menu.Cursor = 2;
+                return;
+            }
+
+            NewGame(tag);
+        }
+
         private void NewGame(object tag)
         {
             int game_index = Game.PlayersInGame - 1;
 
             SProfile profile = CSaveData.GetCurrentProfile();
+
             profile.Game[game_index].Stage = "Start";
+            profile.Game[game_index].InProgress = true;
             profile.Game[game_index].Pilots = new SProfilePilotState[2] {
                 SProfilePilotState.MakeDefaultPilot(0),
                 SProfilePilotState.MakeDefaultPilot(1),
