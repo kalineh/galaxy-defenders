@@ -470,6 +470,7 @@ namespace Galaxy
             }
             else
             {
+                CAudio.PlaySound("PlayerArmorHit", 1.0f);
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, position, PlayerColor, null, force);
                 Physics.Velocity *= 0.15f;
                 Physics.Velocity += velocity * 0.20f * damage;
