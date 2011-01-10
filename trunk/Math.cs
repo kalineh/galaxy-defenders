@@ -86,6 +86,11 @@ namespace Galaxy
 
     public static class EnhanceRandom
     {
+        public static bool NextBool(this Random self)
+        {
+            return (self.Next() & 1) == 0;
+        }
+
         public static float NextFloat(this Random self)
         {
             return (float)self.NextDouble();

@@ -235,11 +235,11 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 NoDropCoins = false,
 Powerup = false,
-Type = typeof(Galaxy.CDoubleTurret),
+Type = typeof(Galaxy.CBlackHole),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
-Y = -936.0f,
+X = 56.0f,
+Y = -400.0f,
 },
 },
 MoverPresetName = "Down",
@@ -247,8 +247,8 @@ MoverSpeedMultiplier = 4.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
-Y = -936.0f,
+X = 56.0f,
+Y = -400.0f,
 },
 });
 stage.AddElement(0, 

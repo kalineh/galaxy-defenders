@@ -103,7 +103,7 @@ namespace Galaxy
             World.GameCamera.Update();
             BackgroundScenery.Update();
             ForegroundScenery.Update();
-            World.UpdateEntities();
+            World.UpdateEntitiesSingleThreadCollision();
             World.ParticleEffects.Update();
         }
 
