@@ -44,14 +44,31 @@ namespace Galaxy
 
             if (length < 42.0f)
             {
-                // TODO: is this ok? no OnDie() is called!
                 entity.Delete();
             }
         }
 
+        private void PullEntityShip(CShip ship, float scale)
+        {
+            Vector2 offset = Physics.Position - ship.Physics.Position;
+            float length = offset.Length();
+            if (length > 350.0f)
+                return;
+
+            float inverse = Math.Max(0.0f, 350.0f - length);
+            Vector2 dir = offset.Normal();
+            Vector2 pull = dir * 1.5f * scale;
+            ship.Physics.Velocity += pull;
+            ship.Physics.Velocity *= 0.90f;
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHolePullShip, ship.Physics.Position, null, null, dir * 4.0f);
+
+            if (length < 1.0f)
+                ship.Die();
+        }
+
         public new void OnCollide(CShip ship)
         {
-            float scale = 0.3f;
+            float scale = 1.0f;
 
             Vector2 offset = Physics.Position - ship.Physics.Position;
             Vector2 force = ship.GetInputVector();
@@ -59,10 +76,10 @@ namespace Galaxy
             float dot = Vector2.Dot(offset, force);
             if (dot < 0.0f)
             {
-                scale = 0.05f;    
+                scale = 0.75f;    
             }
 
-            PullEntity(ship, scale);
+            PullEntityShip(ship, scale);
         }
 
         // TODO: need to handle IsSubClassOf in the collision system
