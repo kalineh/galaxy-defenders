@@ -119,6 +119,7 @@ namespace Galaxy
             this.Types = new List<string>(filepaths);
             this.Images = new List<Image>();
             this.BorderStyle = BorderStyle.None;
+            this.Size = new Size(128, 600);
 
             this.DrawMode = DrawMode.OwnerDrawVariable;
             this.DrawItem += DrawItemOverride;
@@ -153,7 +154,7 @@ namespace Galaxy
         private void MeasureItemOverride(object sender, MeasureItemEventArgs args)
         {
             args.ItemWidth = 32;
-            args.ItemHeight += 32;
+            args.ItemHeight += 20;
         }
     }
 

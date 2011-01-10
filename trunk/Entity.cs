@@ -147,6 +147,21 @@ namespace Galaxy
             return dir;
         }
 
+        public Vector2 GetDirToShipWithLead(float lead)
+        {
+            Vector2 position = Physics.Position;
+            CShip ship = World.GetNearestShip(position);
+            if (ship == null)
+            {
+                return Vector2.UnitY;
+            }
+
+            Vector2 ship_position = ship.Physics.Position + ship.Physics.Velocity * lead;
+            Vector2 offset = ship_position - position;
+            Vector2 dir = offset.Normal();
+
+            return dir;
+        }
 
         public virtual float GetRadius()
         {

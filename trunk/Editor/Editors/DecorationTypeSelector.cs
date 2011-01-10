@@ -72,6 +72,8 @@ namespace Galaxy
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
+            // NOTE: this is never used!
+
             if (provider == null)
                 return base.EditValue(context, provider, value);
 
