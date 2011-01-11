@@ -85,6 +85,8 @@ namespace StageEditor
             {
             }
             input_catcher.Visible = true;
+
+            CGalaxy.ApplicationFocusedFlag = true;
         }
 
         private void EditorModeButton_Click(object sender, EventArgs e)
@@ -111,6 +113,8 @@ namespace StageEditor
 
             StageSelectDropdown.Enabled = true;
             EntityTree.Enabled = true;
+
+            CGalaxy.ApplicationFocusedFlag = false;
         }
 
         public PropertyGrid GetEntityPropertyGrid()

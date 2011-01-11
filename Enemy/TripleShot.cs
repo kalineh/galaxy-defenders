@@ -38,7 +38,7 @@ namespace Galaxy
             FireSpeed = CEnemy.TurretShotSpeed;
             TripleShotDelay = 0.15f;
 
-            IgnoreCameraMover = new CMoverIgnoreCamera();
+            //IgnoreCameraMover = new CMoverIgnoreCamera();
         }
 
         public override void UpdateAI()
