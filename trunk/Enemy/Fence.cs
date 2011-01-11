@@ -28,7 +28,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Fence");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 10.0f;
+            HealthMax = 8.0f;
             CanSeekerTarget = false;
             Coins = 0;
         }

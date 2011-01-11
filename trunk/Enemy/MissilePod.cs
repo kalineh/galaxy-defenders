@@ -24,13 +24,12 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/MissilePod");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 5.0f;
+            HealthMax = 4.0f;
 
             FireDelay = 2.0f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 7.5f;
             FireSpeed = 2.5f;
-            Health = 5.0f;
         }
 
         public override void UpdateAI()

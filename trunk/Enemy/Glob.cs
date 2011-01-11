@@ -24,7 +24,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Glob");
             Visual.Depth = CLayers.Player + CLayers.SubLayerIncrement * 1.0f;
-            HealthMax = 4.5f;
+            HealthMax = 3.5f;
             SelfDestructTimer = 90;
             Coins = 0;
         }
@@ -54,7 +54,7 @@ namespace Galaxy
                 Vector2 offset = target - Physics.Position;
                 Vector2 velocity = Physics.Velocity;
                 float speed = Math.Max(velocity.Length(), 5.0f);
-                Vector2 new_velocity = velocity + offset * 0.005f;
+                Vector2 new_velocity = velocity + offset * 0.0075f;
                 Physics.Velocity = new_velocity.Normal() * speed;
                 Physics.Position += Vector2.UnitY * -World.ScrollSpeed;
             }

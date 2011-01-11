@@ -76,6 +76,9 @@ namespace Galaxy
 
         public override void Update()
         {
+            bool input_state = CGalaxy.ApplicationFocusedFlag;
+            CGalaxy.ApplicationFocusedFlag = true;
+
             Game.Input.Update();
 
             if (Game.Input.IsKeyPressed(Keys.Escape))
@@ -105,6 +108,8 @@ namespace Galaxy
             ForegroundScenery.Update();
             World.UpdateEntitiesSingleThreadCollision();
             World.ParticleEffects.Update();
+
+            CGalaxy.ApplicationFocusedFlag = input_state;
         }
 
         public void UpdateMouse()

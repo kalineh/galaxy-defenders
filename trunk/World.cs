@@ -246,9 +246,9 @@ namespace Galaxy
             BackgroundScenery.Update();
             ForegroundScenery.Update();
 
-            // DEBUG
 #if DEBUG
-            if (!Game.EditorMode && Game.Input.IsKeyDown(Keys.O))
+            // DEBUG
+            if (Game.Input.IsKeyDown(Keys.O))
             {
                 GameCamera.Position += Vector3.UnitY * -32.0f;
             }

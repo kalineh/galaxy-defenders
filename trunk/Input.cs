@@ -382,7 +382,6 @@ namespace Galaxy
 #if XBOX360
             return false;
 #else
-
             if (!IsFocused())
                 return false;
 

@@ -17,9 +17,9 @@ namespace Galaxy
 
         public static int[] StartingMoney = new int[3]
         {
+            2500,
             5000,
             7500,
-            10000,
         };
 
         public static float[] HealthScale = new float[3]
@@ -29,11 +29,14 @@ namespace Galaxy
             1.85f,
         };
 
+        // TODO: damage scale
+        // TODO: fire delay scale
+
         public static float[] MoneyScale = new float[3]
         {
             1.0f,
             1.25f,
-            1.75f,
+            1.5f,
         };
     }
 }

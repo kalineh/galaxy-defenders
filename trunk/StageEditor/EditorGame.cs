@@ -26,6 +26,8 @@ namespace Galaxy
             GraphicsDeviceManager.PreferredBackBufferWidth = 1920 / 2;
             GraphicsDeviceManager.PreferredBackBufferHeight = 1080;
             GraphicsDeviceManager.ApplyChanges();
+
+            ApplicationFocusedFlag = false;
         }
 
         /// <summary>
