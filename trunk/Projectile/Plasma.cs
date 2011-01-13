@@ -32,14 +32,6 @@ namespace Galaxy
             }
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (!IsInScreen())
-                Delete();
-        }
-
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these

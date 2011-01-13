@@ -54,9 +54,6 @@ namespace Galaxy
 
             UpdateTargeting();
             UpdateTrajectory();
-
-            if (!IsInScreen())
-                Delete();
         }
 
         private Vector2 GetEffectOffset()

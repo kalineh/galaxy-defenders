@@ -25,5 +25,13 @@ namespace Galaxy
             Physics = new CPhysics();
             Damage = damage;
         }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (!IsInScreen(16.0f))
+                Delete();
+        }
     }
 }

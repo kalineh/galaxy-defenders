@@ -83,10 +83,7 @@ namespace Galaxy
 
             Physics.Rotation += 0.1f;
 
-                    //CDebugRender.Text(World.GameCamera.WorldMatrix, Physics.Position, ((this as CShootBall).IsSeekerTarget).ToString(), Color.White);
-
-            if (!IsInScreen())
-                Delete();
+            //CDebugRender.Text(World.GameCamera.WorldMatrix, Physics.Position, ((this as CShootBall).IsSeekerTarget).ToString(), Color.White);
 
             base.Update();
         }
