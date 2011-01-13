@@ -39,14 +39,6 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (!IsInScreen())
-                Delete();
-        }
-
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these

@@ -43,14 +43,6 @@ namespace Galaxy
             Health = 3;
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (!IsInScreen())
-                Delete();
-        }
-
         public override void UpdateCollision()
         {
             CollisionCircle circle = Collision as CollisionCircle;

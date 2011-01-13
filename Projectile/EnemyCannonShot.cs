@@ -45,9 +45,6 @@ namespace Galaxy
             base.Update();
 
             CanCollideWait = Math.Max(0, CanCollideWait - 1);
-
-            if (!IsInScreen())
-                Delete();
         }
 
         public override void UpdateCollision()

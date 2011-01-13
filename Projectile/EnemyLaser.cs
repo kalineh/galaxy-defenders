@@ -39,14 +39,6 @@ namespace Galaxy
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
         }
 
-        public override void Update()
-        {
-            base.Update();
-
-            if (!IsInScreen())
-                Delete();
-        }
-
         public override void UpdateCollision()
         {
             // TODO: find a better way to sync these

@@ -51,9 +51,6 @@ namespace Galaxy
                 World.ParticleEffects.Spawn(EParticleType.WeaponMissileTrail, Physics.Position + dir * -8.0f, Visual.Color, null, -dir);
 
             base.Update();
-
-            if (!IsInScreen())
-                Delete();
         }
 
         public override void UpdateCollision()

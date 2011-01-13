@@ -102,7 +102,7 @@ namespace Galaxy
 
         public bool IsInScreen()
         {
-            return IsInScreen(0.0f);
+            return IsInScreen(GetRadius());
         }
 
         public bool IsInDieRegion()
