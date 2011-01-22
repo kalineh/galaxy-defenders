@@ -35,7 +35,7 @@ namespace Galaxy
             TurretVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/RotateTurret");
             TurretVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 1.0f;
             TurretVisual.Recache();
-            HealthMax = 2.5f;
+            HealthMax = 2.25f;
 
             FireDelay = 0.75f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());

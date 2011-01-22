@@ -139,23 +139,23 @@ namespace Galaxy
             {
                 "BasicShield",
                 new CShieldPart() {
-                    Shield = 8.0f,
-                    Regen = 0.02f,
+                    Shield = 4.0f,
+                    Regen = 0.015f,
                 }
             },
             {
                 "EnhancedShield",
                 new CShieldPart() {
                     Price = 2500,
-                    Shield = 10.0f,
-                    Regen = 0.025f,
+                    Shield = 6.0f,
+                    Regen = 0.020f,
                 }
             },
             {
                 "PowerShield",
                 new CShieldPart() {
                     Price = 9000,
-                    Shield = 14.0f,
+                    Shield = 13.0f,
                     Regen = 0.040f,
                 }
             },

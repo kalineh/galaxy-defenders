@@ -14,6 +14,7 @@ namespace Galaxy
         : CEntity
     {
         static public int BonusValue = 25;
+        static public int MagnetDelay = 20;
 
         private bool GotoPlayer { get; set; }
         private float GotoForce { get; set; }
@@ -55,7 +56,9 @@ namespace Galaxy
             base.Update();
             
             LerpGravity();
-            LerpToPlayers();
+
+            if (AliveTime > MagnetDelay)
+                LerpToPlayers();
 
             if (IsOffScreenBottom())
                 Delete();
