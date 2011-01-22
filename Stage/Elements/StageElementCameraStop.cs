@@ -50,7 +50,7 @@ namespace Galaxy
                 world.StageEnd = true;
             }
 
-            if (StageEndCountdown > 60)
+            if (StageEndCountdown > 90)
             {
                 world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.035f);
             }
