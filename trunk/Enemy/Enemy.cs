@@ -22,7 +22,7 @@ namespace Galaxy
         {
             EnemyOrangeColor = new Color(252, 124, 85, 255);
             EnemyGrayColor = new Color(102, 102, 102, 255);
-            TurretShotSpeed = 9.0f;
+            TurretShotSpeed = 8.0f;
         }
 
         private float _HealthMax;

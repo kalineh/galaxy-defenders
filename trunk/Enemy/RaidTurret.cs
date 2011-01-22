@@ -70,6 +70,12 @@ namespace Galaxy
         {
             return true;
         }
+
+        public override void TakeDamage(float damage, CShip source)
+        {
+            base.TakeDamage(damage, source);
+            FireCooldown = 16;
+        }
     }
 }
 
