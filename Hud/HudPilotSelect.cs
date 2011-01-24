@@ -215,7 +215,7 @@ namespace Galaxy
                     Vector2 position = PortraitIconPosition;
 
                     Vector2 text_offset = new Vector2(-120.0f, -240.0f);
-                    sprite_batch.DrawString(Game.DefaultFont, "Select Pilot", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
+                    sprite_batch.DrawString(Game.GameRegularFont, "Select Pilot", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
 
                     sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
                     CVisual portrait = PortraitIconVisuals[Cursor];
@@ -235,7 +235,7 @@ namespace Galaxy
                 {
                     Vector2 position = PortraitIconPosition;
                     Vector2 text_offset = new Vector2(-120.0f, -240.0f);
-                    sprite_batch.DrawString(Game.DefaultFont, "Waiting...", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
+                    sprite_batch.DrawString(Game.GameRegularFont, "Waiting...", position + text_offset, Color.White, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0.0f);
 
                     sprite_batch.Draw(Game.PixelTexture, new Rectangle((int)position.X - 77, (int)position.Y - 101, 159, 201), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
                     CVisual portrait = PortraitIconVisuals[Cursor];
@@ -319,15 +319,15 @@ namespace Galaxy
                 string[] split = s.Split(':');
                 string l = split[0];
                 string r = split[1];
-                sprite_batch.DrawStringAlignRight(Game.DefaultFont, position + new Vector2(-8.0f, 0.0f), l, Color.White);
-                sprite_batch.DrawStringAlignRight(Game.DefaultFont, position, ":", Color.White);
-                sprite_batch.DrawStringAlignLeft(Game.DefaultFont, position + new Vector2(+8.0f, 0.0f), r, Color.White);
+                sprite_batch.DrawStringAlignRight(Game.GameRegularFont, position + new Vector2(-8.0f, 0.0f), l, Color.White);
+                sprite_batch.DrawStringAlignRight(Game.GameRegularFont, position, ":", Color.White);
+                sprite_batch.DrawStringAlignLeft(Game.GameRegularFont, position + new Vector2(+8.0f, 0.0f), r, Color.White);
             }
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)
         {
-            sprite_batch.DrawString(Game.DefaultFont, String.Format("todo"), new Vector2(8.0f, 1020.0f), Color.White);
+            sprite_batch.DrawString(Game.GameRegularFont, String.Format("todo"), new Vector2(8.0f, 1020.0f), Color.White);
         }
 
         public void PressStart()

@@ -330,21 +330,21 @@ namespace Galaxy
             }
 
             Color color = new Color(160, 160, 160);
-            sprite_batch.DrawStringAlignCenter(Game.DefaultFont, NameTextPosition, profile.Pilots[(int)GameControllerIndex].Pilot, color, 1.5f);
+            sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, NameTextPosition, profile.Pilots[(int)GameControllerIndex].Pilot, color, 1.0f);
 
             float base_color = 160.0f / 255.0f;
             float c = base_color + (MoneyStringScale - 1.5f) * 1.25f;
             Color money_color = new Color(c, c, c);
-            sprite_batch.DrawStringAlignCenter(Game.DefaultFont, MoneyTextPosition, CachedMoneyString, money_color, MoneyStringScale);
+            sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, MoneyTextPosition, CachedMoneyString, money_color, MoneyStringScale);
 
             MoneyStringScale = MathHelper.Max(1.5f, MoneyStringScale - 0.01f);
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)
         {
-            sprite_batch.DrawString(Game.DefaultFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
-            sprite_batch.DrawString(Game.DefaultFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
-            sprite_batch.DrawString(Game.DefaultFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
+            sprite_batch.DrawString(Game.GameRegularFont, String.Format( "E: {0:00#}", (int)(Energy * 100.0f)), new Vector2(8.0f, 960.0f), Color.White);
+            sprite_batch.DrawString(Game.GameRegularFont, String.Format( "S: {0:00#}", (int)(Shield * 100.0f)), new Vector2(8.0f, 990.0f), Color.White);
+            sprite_batch.DrawString(Game.GameRegularFont, String.Format( "A: {0:00#}", (int)(Armor * 100.0f)), new Vector2(8.0f, 1020.0f), Color.White);
         }
 
         public void UpdatePilot()

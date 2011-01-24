@@ -25,6 +25,8 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/SwirlBall");
             HealthMax = 0.75f;
+
+            Coins = 1;
         }
 
         public override void UpdateCollision()

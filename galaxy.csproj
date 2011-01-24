@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="World.cs" />
     <Compile Include="Menu\TextLabel.cs" />
     <Compile Include="Projectile\ChargeShot.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
@@ -291,7 +292,7 @@
     <Compile Include="Weapon\WeaponLaser.cs" />
     <Compile Include="Weapon\WeaponMissile.cs" />
     <Compile Include="Weapon\Weapon.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="StageClearPanel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Galaxy.ico" />

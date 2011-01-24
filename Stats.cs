@@ -11,21 +11,16 @@ namespace Galaxy
     {
         public enum AwardType
         {
-            Enemy0,
-            Enemy80,
-            Enemy100,
-            Building0,
-            Building80,
-            Building100,
-            Shot0,
-            Shot1000,
-            Collision0,
-            Collision50,
-            Coins100,
+            StageClear,
+            BronzeMedal,
+            SilverMedal,
+            GoldMedal,
+            PlatinumMedal,
         }
 
         public struct SAward
         {
+            public AwardType Type;
             public string Text;
             public int Bonus;
         }
@@ -35,17 +30,11 @@ namespace Galaxy
         static CStats()
         {
             AwardDefinitions = new Dictionary<AwardType, SAward>();
-            AwardDefinitions[AwardType.Enemy0] = new SAward { Text = "Pacifist", Bonus = 5000 };
-            AwardDefinitions[AwardType.Enemy80] = new SAward { Text = "Killer", Bonus = 500 };
-            AwardDefinitions[AwardType.Enemy100] = new SAward { Text = "Annihilator", Bonus = 1500 };
-            AwardDefinitions[AwardType.Building0] = new SAward { Text = "Safety First", Bonus = 500 };
-            AwardDefinitions[AwardType.Building80] = new SAward { Text = "Collateral Damage", Bonus = 500 };
-            AwardDefinitions[AwardType.Building100] = new SAward { Text = "Demolitions Expert", Bonus = 1500 };
-            AwardDefinitions[AwardType.Shot0] = new SAward { Text = "Evasive Action", Bonus = 1000 };
-            AwardDefinitions[AwardType.Shot1000] = new SAward { Text = "Bullet Magnet", Bonus = 500 };
-            AwardDefinitions[AwardType.Collision0] = new SAward { Text = "Untouchable", Bonus = 500 };
-            AwardDefinitions[AwardType.Collision50] = new SAward { Text = "Brute Force", Bonus = 1000 };
-            AwardDefinitions[AwardType.Coins100] = new SAward { Text = "Scrooge", Bonus = 500 };
+            AwardDefinitions[AwardType.StageClear] = new SAward { Type = AwardType.StageClear, Text = "Stage Clear", Bonus = 5000 };
+            AwardDefinitions[AwardType.BronzeMedal] = new SAward { Type = AwardType.BronzeMedal, Text = "Bronze", Bonus = 100 };
+            AwardDefinitions[AwardType.SilverMedal] = new SAward { Type = AwardType.SilverMedal, Text = "Silver", Bonus = 250 };
+            AwardDefinitions[AwardType.GoldMedal] = new SAward { Type = AwardType.GoldMedal, Text = "Gold", Bonus = 750 };
+            AwardDefinitions[AwardType.PlatinumMedal] = new SAward { Type = AwardType.PlatinumMedal, Text = "Platinum", Bonus = 1500 };
         }
 
         public int CoinsTotal { get; set; }
@@ -54,10 +43,13 @@ namespace Galaxy
         public int EnemyKills { get; set; }
         public int BuildingTotal { get; set; }
         public int BuildingKills { get; set; }
+
+        // TODO: remove these if unused
         public float ShotDamageDealt { get; set; }
         public float ShotDamageReceived { get; set; }
         public float CollisionDamageDealt { get; set; }
         public float CollisionDamageReceived { get; set; }
+
         public List<SAward> Awards { get; set; }
 
         public void Initialize(CWorld world)
@@ -86,33 +78,36 @@ namespace Galaxy
             }
         }
 
-        public string GetCoinsCollectedString()
+        public int GetCoinsCollectedPercent()
         {
             float percent = CoinsTotal == 0 ? 0.0f : 100.0f / CoinsTotal * CoinsCollected;
-            string result = String.Format("COINS: {0}%", (int)percent);
-            return result;
+            return (int)Math.Round(percent);
         }
 
-        public string GetEnemyKillsString()
+        public int GetEnemyKillsPercent()
         {
             float percent = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
-            string result = String.Format("ENEMIES: {0}%", (int)percent);
-            return result;
+            return (int)Math.Round(percent);
         }
 
-        public string GetBuildingKillsString()
+        public int GetBuildingKillsPercent()
         {
             float percent = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
-            string result = String.Format("BUILDING: {0}%", (int)percent);
-            return result;
+            return (int)Math.Round(percent);
+        }
+
+        public int GetTotalPercent()
+        {
+            int coins = GetCoinsCollectedPercent();
+            int enemy = GetEnemyKillsPercent();
+            int building = GetBuildingKillsPercent();
+            return coins + enemy + building;
         }
 
         public string GetTotalPercentString()
         {
-            float coins = CoinsTotal == 0 ? 0.0f : 100.0f / CoinsTotal * CoinsCollected;
-            float enemy = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
-            float building = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
-            string result = String.Format("TOTAL: {0}%", (int)(coins + enemy + building));
+            int total = GetTotalPercent();
+            string result = String.Format("TOTAL: {0}%", total);
             return result;
         }
 
@@ -120,44 +115,25 @@ namespace Galaxy
         {
             Awards = new List<SAward>();
 
-            if (EnemyTotal > 0)
-            {
-                float percent = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
+            Awards.Add(AwardDefinitions[AwardType.StageClear]);
 
-                if (EnemyTotal > 0 && EnemyKills == 0)
-                    Awards.Add(AwardDefinitions[AwardType.Enemy0]);
-                if (percent > 80.0f)
-                    Awards.Add(AwardDefinitions[AwardType.Enemy80]);
-                if (EnemyKills == EnemyTotal)
-                    Awards.Add(AwardDefinitions[AwardType.Enemy100]);
+            int total = GetCoinsCollectedPercent() + GetEnemyKillsPercent() + GetBuildingKillsPercent(); 
+
+            if (total == 300)
+            {
+                Awards.Add(AwardDefinitions[AwardType.PlatinumMedal]);    
             }
-
-            if (BuildingTotal > 0)
+            else if (total >= 250)
             {
-                float percent = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
-
-                if (BuildingTotal > 0 && BuildingKills == 0)
-                    Awards.Add(AwardDefinitions[AwardType.Building0]);
-                if (percent > 80.0f)
-                    Awards.Add(AwardDefinitions[AwardType.Building80]);
-                if (BuildingKills == BuildingTotal)
-                    Awards.Add(AwardDefinitions[AwardType.Building100]);
+                Awards.Add(AwardDefinitions[AwardType.GoldMedal]);    
             }
-
-            if (ShotDamageReceived == 0)
-                Awards.Add(AwardDefinitions[AwardType.Shot0]);
-            if (ShotDamageReceived > 1000)
-                Awards.Add(AwardDefinitions[AwardType.Shot1000]);
-
-            if (CollisionDamageReceived == 0)
-                Awards.Add(AwardDefinitions[AwardType.Collision0]);
-            if (CollisionDamageReceived > 50)
-                Awards.Add(AwardDefinitions[AwardType.Collision50]);
-
-            if (CoinsTotal > 0)
+            else if (total >= 200)
             {
-                if (CoinsCollected == CoinsTotal)
-                    Awards.Add(AwardDefinitions[AwardType.Coins100]);
+                Awards.Add(AwardDefinitions[AwardType.SilverMedal]);    
+            }
+            else if (total >= 150)
+            {
+                Awards.Add(AwardDefinitions[AwardType.BronzeMedal]);    
             }
         }
 

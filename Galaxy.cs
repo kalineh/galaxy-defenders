@@ -21,7 +21,9 @@ namespace Galaxy
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public new GraphicsDevice GraphicsDevice { get; private set; }
         public SpriteBatch DefaultSpriteBatch { get; private set; }
-        public SpriteFont DefaultFont { get; private set; }
+        public SpriteFont DebugFont { get; private set; }
+        public SpriteFont GameLargeFont { get; private set; }
+        public SpriteFont GameRegularFont { get; private set; }
         public CDebug Debug { get; private set; }
         public CInput Input { get; private set; }
         public Texture2D PixelTexture { get; private set; }
@@ -227,7 +229,9 @@ namespace Galaxy
         {
             // Graphics device does not exist during Initialize().
             DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
-            DefaultFont = Content.Load<SpriteFont>("Fonts/DefaultFont");
+            DebugFont = Content.Load<SpriteFont>("Fonts/Debug");
+            GameLargeFont = Content.Load<SpriteFont>("Fonts/GameLarge");
+            GameRegularFont = Content.Load<SpriteFont>("Fonts/GameRegular");
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
             // Audio.
@@ -354,7 +358,7 @@ namespace Galaxy
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
                 MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);
-                DefaultSpriteBatch.DrawString(DefaultFont, MusicDisplayName, position + new Vector2(42.0f, 8.0f), new Color(Color.LightGray, alpha));
+                DefaultSpriteBatch.DrawString(GameRegularFont, MusicDisplayName, position + new Vector2(42.0f, 8.0f), new Color(Color.LightGray, alpha));
                 DefaultSpriteBatch.End();
             }
 

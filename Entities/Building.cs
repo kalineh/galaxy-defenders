@@ -225,11 +225,12 @@ namespace Galaxy
         protected override void OnDie()
         {
             Vector2 center = Physics.Position;
+            Vector2 directional = Vector2.UnitX.Rotate(World.Random.NextAngle()) * 0.75f;
 
             SBuildingDefinition definition = BuildingDefinitions[TextureName];
             EParticleType type = definition.ExplosionType;
-            World.ParticleEffects.Spawn(type, center, new Color(102, 102, 102), null, null);
-            World.ParticleEffects.Spawn(type, center, new Color(229, 214, 214), null, null);
+            World.ParticleEffects.Spawn(type, center, new Color(102, 102, 102), null, directional);
+            World.ParticleEffects.Spawn(type, center, new Color(229, 214, 214), null, directional);
             Visual = VisualDestroyed;
             Collision = null;
 

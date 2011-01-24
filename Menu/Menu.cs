@@ -245,7 +245,7 @@ namespace Galaxy
 
                         Vector2 center = position + new Vector2(texture.Width, texture.Height) / 2.0f;
                         sprite_batch.Draw(texture, position, null, Color.White);
-                        option.TextLabel.Draw(sprite_batch, Game.DefaultFont, center, color);
+                        option.TextLabel.Draw(sprite_batch, Game.GameRegularFont, center, color);
                         option.CustomRender(option.Data, sprite_batch, center);
 
                         position += Vector2.UnitY * 26.0f;
@@ -255,20 +255,20 @@ namespace Galaxy
                     {
                         if (option == MenuOptions[Cursor])
                         {
-                            sprite_batch.DrawString(Game.DefaultFont, ">", position - Vector2.UnitX * 25.0f, Color.White);
+                            sprite_batch.DrawString(Game.GameRegularFont, ">", position - Vector2.UnitX * 25.0f, Color.White);
                         }
 
                         if (option.SpecialHighlight)
                         {
-                            Vector2 measured = Game.DefaultFont.MeasureString(option.Text);
-                            sprite_batch.DrawString(Game.DefaultFont, ">", position - Vector2.UnitX * 20.0f, Color.Yellow);
-                            sprite_batch.DrawString(Game.DefaultFont, "<", position + Vector2.UnitX * (measured.X + 5.0f), Color.Yellow);
-                            sprite_batch.DrawString(Game.DefaultFont, option.Text, position, Color.Yellow);
+                            Vector2 measured = Game.GameRegularFont.MeasureString(option.Text);
+                            sprite_batch.DrawString(Game.GameRegularFont, ">", position - Vector2.UnitX * 20.0f, Color.Yellow);
+                            sprite_batch.DrawString(Game.GameRegularFont, "<", position + Vector2.UnitX * (measured.X + 5.0f), Color.Yellow);
+                            sprite_batch.DrawString(Game.GameRegularFont, option.Text, position, Color.Yellow);
                         }
                         else
                         {
                             Color color = valid ? Color.White : Color.Gray;
-                            sprite_batch.DrawString(Game.DefaultFont, option.Text, position, color);
+                            sprite_batch.DrawString(Game.GameRegularFont, option.Text, position, color);
                         }
 
                         option.CustomRender(option.Data, sprite_batch, position);
@@ -277,7 +277,7 @@ namespace Galaxy
                         {
                             position += Vector2.UnitY * Spacing;
                             Color color = valid ? Color.LightGray : Color.Gray;
-                            sprite_batch.DrawString(Game.DefaultFont, option.SubText, position + Vector2.UnitX * 10.0f, color);
+                            sprite_batch.DrawString(Game.GameRegularFont, option.SubText, position + Vector2.UnitX * 10.0f, color);
                         }
                     }
                 }

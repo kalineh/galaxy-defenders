@@ -25,6 +25,8 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Swirl");
 
             HealthMax = 3.0f;
+
+            Coins = 1;
         }
 
         public void MakeBalls()

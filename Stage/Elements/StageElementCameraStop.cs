@@ -42,15 +42,26 @@ namespace Galaxy
                 return;
             }
 
+            // no ships! cannot end
+            if (world.ShipEntitiesCache.Count == 0)
+                return;
+
             StageEndCountdown += 1;
-            if (StageEndCountdown == 60)
+            if (StageEndCountdown == 220)
             {
                 world.DestroyAllProjectiles();
                 world.StartStageEnd();
+
+                foreach (CShip ship in world.ShipEntitiesCache)
+                {
+                    ship.IsInvincible += 1;    
+                }
+
                 world.StageEnd = true;
+                world.StageClearPanel.Start();
             }
 
-            if (StageEndCountdown > 90)
+            if (StageEndCountdown > 240)
             {
                 world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 32.0f, 0.035f);
             }
@@ -59,7 +70,7 @@ namespace Galaxy
                 StageEndCameraPosition = world.GameCamera.Position.ToVector2();
 
 
-            if (StageEndCountdown < 90)
+            if (StageEndCountdown < 240)
             {
                 BossExplosionEffects(world);
                 BossExplosionSounds(world);
