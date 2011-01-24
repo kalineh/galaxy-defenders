@@ -27,6 +27,8 @@ namespace Galaxy
         public CTextLabel LabelBuildingsValue { get; set; }
         public CTextLabel LabelTotal { get; set; }
         public CTextLabel LabelTotalValue { get; set; }
+        public CTextLabel LabelArmorRepair { get; set; }
+        public CTextLabel LabelArmorRepairValue { get; set; }
         public List<CTextLabel> LabelAwards { get; set; }
         public List<CTextLabel> LabelAwardValues { get; set; }
         public CVisual MedalClear { get; set; }
@@ -58,6 +60,8 @@ namespace Galaxy
             LabelBuildingsValue = new CTextLabel();
             LabelTotal = new CTextLabel();
             LabelTotalValue = new CTextLabel();
+            LabelArmorRepair = new CTextLabel();
+            LabelArmorRepairValue = new CTextLabel();
             LabelAwards = new List<CTextLabel>();
             LabelAwardValues = new List<CTextLabel>();
 
@@ -66,17 +70,20 @@ namespace Galaxy
             LabelEnemies.Value = "ENEMIES";
             LabelBuildings.Value = "BUILDINGS";
             LabelTotal.Value = "TOTAL";
+            LabelArmorRepair.Value = "REPAIR COST";
 
             LabelStageClear.Alignment = CTextLabel.EAlignment.Center;
             LabelCoins.Alignment = CTextLabel.EAlignment.Right;
             LabelEnemies.Alignment = CTextLabel.EAlignment.Right;
             LabelBuildings.Alignment = CTextLabel.EAlignment.Right;
             LabelTotal.Alignment = CTextLabel.EAlignment.Right;
+            LabelArmorRepair.Alignment = CTextLabel.EAlignment.Right;
 
             LabelCoinsValue.Alignment = CTextLabel.EAlignment.Left;
             LabelEnemiesValue.Alignment = CTextLabel.EAlignment.Left;
             LabelBuildingsValue.Alignment = CTextLabel.EAlignment.Left;
             LabelTotalValue.Alignment = CTextLabel.EAlignment.Left;
+            LabelArmorRepairValue.Alignment = CTextLabel.EAlignment.Left;
 
             MedalClear = CVisual.MakeSpriteCached1(World.Game, "Textures/UI/MedalClear");
             MedalBronze = CVisual.MakeSpriteCached1(World.Game, "Textures/UI/MedalBronze");
@@ -159,6 +166,19 @@ namespace Galaxy
                     }
                 }
             }
+
+            if (Counter == StatsShow + StatsInterval * 5)
+            {
+                int total_repair = 0;
+                foreach (CShip ship in World.Ships)
+                {
+                    float damage = ship.Chassis.Armor - ship.CurrentArmor;
+                    int repair_cost = (int)(50.0f * damage);
+                    ship.Score -= repair_cost;
+                    total_repair += repair_cost;
+                }
+                LabelArmorRepairValue.Value = String.Format("-{0}￥", total_repair);
+            }
         }
 
         public void Draw(SpriteBatch sprite_batch)
@@ -207,6 +227,12 @@ namespace Galaxy
                 LabelTotalValue.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, percent_base + spacing * 3.0f), Color.White);
             }
 
+            if (Counter >= StatsShow + StatsInterval * 5)
+            {
+                LabelArmorRepair.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-8.0f, percent_base + spacing * 4.5f), Color.White);
+                LabelArmorRepairValue.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, percent_base + spacing * 4.5f), Color.LightPink);
+            }
+
             for (int i = 0; i < LabelAwards.Count; ++i)
             {
                 CTextLabel label = LabelAwards[i];
@@ -214,8 +240,8 @@ namespace Galaxy
 
                 float offset = 30.0f * i;
 
-                label.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-8.0f, 300.0f + offset), Color.White);
-                value.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, 300.0f + offset), Color.LightGreen);
+                label.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-8.0f, 320.0f + offset), Color.White);
+                value.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, 320.0f + offset), Color.LightGreen);
             }
 
             if (Counter >= MedalShow)
@@ -232,8 +258,8 @@ namespace Galaxy
             if (Counter >= MedalShow + 60)
             {
                 float scale = 1.0f + (float)Math.Sin(World.Game.GameFrame * 0.1f) * 0.01f;
-                ContinueLabel.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(60.0f, 510.0f), Color.LightGray, scale);
-                ContinueButton.Draw(sprite_batch, base_ + new Vector2(40.0f, 510.0f), 0.0f);
+                ContinueLabel.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(60.0f, 520.0f), Color.LightGray, scale);
+                ContinueButton.Draw(sprite_batch, base_ + new Vector2(40.0f, 520.0f), 0.0f);
             }
         }
     }

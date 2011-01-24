@@ -287,6 +287,26 @@ namespace Galaxy
             }
         }
 
+        public int CalculateTotalMoney(SProfilePilotState pilot)
+        {
+            // TODO: cache/faster version
+            int item_value =
+                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponPrimaryType, pilot.WeaponPrimaryLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSecondaryType, pilot.WeaponSecondaryLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickLeftType, pilot.WeaponSidekickLeftLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickRightType, pilot.WeaponSidekickRightLevel) +
+                ChassisDefinitions.GetPart(pilot.ChassisType).Price +
+                ChassisDefinitions.GetPart(pilot.GeneratorType).Price +
+                ChassisDefinitions.GetPart(pilot.ShieldType).Price;
+
+            int skill_value = 
+                (pilot.AbilityUnlocked0 ? 10000 : 0) +
+                (pilot.AbilityUnlocked1 ? 20000 : 0) +
+                (pilot.AbilityUnlocked2 ? 30000 : 0);
+
+            return item_value + skill_value;
+        }
+
         private static void Import(out SSaveData data, string filename)
         {
             lock (AccessMutex)

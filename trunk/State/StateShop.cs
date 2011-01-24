@@ -47,6 +47,7 @@ namespace Galaxy
         private CVisual MoneyPoolFull { get; set; }
         private CVisual MoneyPoolBuy { get; set; }
         private CVisual MoneyPoolSell { get; set; }
+        private CVisual MoneyPoolBar { get; set; }
         private CTextLabel MoneyPoolLabel { get; set; }
 
         private struct SLabels
@@ -119,6 +120,7 @@ namespace Galaxy
             MoneyPoolFull = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolFull");
             MoneyPoolBuy = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolBuy");
             MoneyPoolSell = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolSell");
+            MoneyPoolBar = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolBar");
 
             MoneyPoolEmpty.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             MoneyPoolFull.NormalizedOrigin = new Vector2(0.0f, 0.5f);
@@ -545,6 +547,9 @@ namespace Galaxy
             DrawMoneyPoolBar(MoneyPoolFull.Texture, a, b, 1.0f);
             DrawMoneyPoolBar(MoneyPoolSell.Texture, b, c, alpha);
             DrawMoneyPoolBar(MoneyPoolBuy.Texture, c, d, alpha);
+            MoneyPoolBar.Draw(Game.DefaultSpriteBatch, new Vector2(502.0f + 920.0f * b, 972.0f), 0.0f);
+            MoneyPoolBar.Draw(Game.DefaultSpriteBatch, new Vector2(502.0f + 920.0f * c, 972.0f), 0.0f);
+            MoneyPoolBar.Draw(Game.DefaultSpriteBatch, new Vector2(502.0f + 920.0f * d, 972.0f), 0.0f);
 
             MoneyPoolLabel.Value = String.Format("{0}/{1}￥", used, total);
             MoneyPoolLabel.Draw(Game.DefaultSpriteBatch, Game.GameLargeFont, new Vector2(966.0f, 972.0f), Color.LightGray);
