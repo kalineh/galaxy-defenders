@@ -20,6 +20,8 @@ namespace Galaxy
             { "Mystery", new List<string>() { "", "", "" } },
         };
 
+        public static int AbilityPrice = 10000;
+
         public static string GetAbilityName(string pilot, int index)
         {
             return PilotAbilityNames[pilot][index];
@@ -146,7 +148,7 @@ namespace Galaxy
             public DashBurst(CPilot pilot, bool ability0)
                 : base(pilot, ability0)
             {
-                ActiveTime = 3.0f;
+                ActiveTime = 0.3f;
                 CooldownTime = 10.0f;
             }
 
@@ -168,7 +170,12 @@ namespace Galaxy
             {
                 if (Enabled)
                 {
+                    Pilot.Ship.Physics.Velocity = new Vector2(0.0f, -32.0f);
                     Pilot.Ship.World.ParticleEffects.Spawn(EParticleType.SkillDashBurst, Pilot.Ship.Physics.Position, Pilot.Ship.PlayerColor, null, null);
+
+                    Vector2 topleft = Pilot.Ship.World.GameCamera.GetTopLeft();
+                    if (Pilot.Ship.Physics.Position.Y < topleft.Y + 16.0f)
+                        Active -= Time.SingleFrame;
                 }
 
                 base.Update();

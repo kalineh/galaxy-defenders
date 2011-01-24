@@ -300,9 +300,9 @@ namespace Galaxy
                 ChassisDefinitions.GetPart(pilot.ShieldType).Price;
 
             int skill_value = 
-                (pilot.AbilityUnlocked0 ? 10000 : 0) +
-                (pilot.AbilityUnlocked1 ? 20000 : 0) +
-                (pilot.AbilityUnlocked2 ? 30000 : 0);
+                (pilot.AbilityUnlocked0 ? CAbility.AbilityPrice : 0) +
+                (pilot.AbilityUnlocked1 ? CAbility.AbilityPrice : 0) +
+                (pilot.AbilityUnlocked2 ? CAbility.AbilityPrice : 0);
 
             return item_value + skill_value;
         }

@@ -540,9 +540,13 @@ namespace Galaxy
             c /= total;
             d /= total;
             e /= total;
-            float delta_normalized = delta / total;
 
             float alpha = 0.5f + (float)(Math.Abs(Math.Sin(Game.GameFrame * 0.05f))) * 0.25f;
+
+            // TODO: better display somehow
+            if (WorkingProfile.Money < 0)
+                alpha *= 0.3f;
+
             DrawMoneyPoolBar(MoneyPoolEmpty.Texture, a, e, 1.0f);
             DrawMoneyPoolBar(MoneyPoolFull.Texture, a, b, 1.0f);
             DrawMoneyPoolBar(MoneyPoolSell.Texture, b, c, alpha);
@@ -642,8 +646,10 @@ namespace Galaxy
                 ChassisDefinitions.GetPart(LockedProfile.GeneratorType).Price +
                 ChassisDefinitions.GetPart(LockedProfile.ShieldType).Price;
 
-            // TODO: abilities!
-            int skill_value = 0;
+            int skill_value = 
+                (LockedProfile.AbilityUnlocked0 ? CAbility.AbilityPrice : 0) +
+                (LockedProfile.AbilityUnlocked1 ? CAbility.AbilityPrice : 0) +
+                (LockedProfile.AbilityUnlocked2 ? CAbility.AbilityPrice : 0);
 
             return item_value + skill_value;
         }
@@ -1048,8 +1054,8 @@ namespace Galaxy
             else if (Menu == MenuTrainPilot)
             {
                 strings[0] = "PILOT ABILITIES";
-                strings[1] = "TRAINING IS";
-                strings[2] = "NON-REFUNDABLE!";
+                strings[1] = "EQUIP FOR SPECIAL";
+                strings[2] = "ABILITIES!";
             }
 
             float offset = Game.PlayersInGame == 1 ? 20.0f : 0.0f;
@@ -1632,17 +1638,23 @@ namespace Galaxy
             string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(WorkingProfile);
-            if (has_ability)
-                return;
 
-            // TODO: price cleanup
-            int price = 10000 + (int)tag * 5000;
-            if (LockedProfile.Money < price)
-                return;
+            if (!has_ability)
+            {
+                if (LockedProfile.Money < CAbility.AbilityPrice)
+                    return;
 
-            LockedProfile.Money -= price;
+                LockedProfile.Money -= CAbility.AbilityPrice;
+            }
+            else
+            {
+                LockedProfile.Money += CAbility.AbilityPrice;
+            }
+
+            has_ability = !has_ability;
+
             object reference = (object)LockedProfile;
-            field.SetValue(reference, true);
+            field.SetValue(reference, has_ability);
             LockedProfile = (SProfilePilotState)reference;
 
             RevertWorkingProfile(null);
@@ -1654,11 +1666,11 @@ namespace Galaxy
             string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(WorkingProfile);
-            if (has_ability)
-                return;
 
-            int price = 10000 + (int)tag * 5000;
-            WorkingProfile.Money = LockedProfile.Money - price;
+            if (has_ability)
+                WorkingProfile.Money = LockedProfile.Money + CAbility.AbilityPrice;
+            else
+                WorkingProfile.Money = LockedProfile.Money - CAbility.AbilityPrice;
         }
 
         private void CancelHighlightAbility(object tag)
@@ -1672,13 +1684,12 @@ namespace Galaxy
             string ability_name = string.Format("AbilityUnlocked{0}", tag.ToString());
             FieldInfo field = typeof(SProfilePilotState).GetField(ability_name);
             bool has_ability = (bool)field.GetValue(LockedProfile);
-            if (has_ability)
-                return false;
 
-            // TODO: price cleanup
-            int price = 10000 + (int)tag * 5000;
-            if (profile.Money < price)
-                return false;
+            if (!has_ability)
+            {
+                if (profile.Money < CAbility.AbilityPrice)
+                    return false;
+            }
 
             return true;
         }
