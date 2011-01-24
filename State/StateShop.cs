@@ -43,6 +43,11 @@ namespace Galaxy
         private Texture2D ShopPurchasePanelTexture { get; set; }
         private CTextLabel ShopPurchaseTextLabel { get; set; }
         private CScorePanel ScorePanel { get; set; }
+        private CVisual MoneyPoolEmpty { get; set; }
+        private CVisual MoneyPoolFull { get; set; }
+        private CVisual MoneyPoolBuy { get; set; }
+        private CVisual MoneyPoolSell { get; set; }
+        private CTextLabel MoneyPoolLabel { get; set; }
 
         private struct SLabels
         {
@@ -110,6 +115,17 @@ namespace Galaxy
             ShopUpgradeBarsVisual.TileY = 8;
             ShopPurchasePanelTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopPurchaseButtonPanel");
             ShopPurchaseTextLabel = new CTextLabel() { Value = "Purchase" };
+            MoneyPoolEmpty = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolEmpty");
+            MoneyPoolFull = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolFull");
+            MoneyPoolBuy = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolBuy");
+            MoneyPoolSell = CVisual.MakeSpriteUncached(game, "Textures/UI/MoneyPoolSell");
+
+            MoneyPoolEmpty.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            MoneyPoolFull.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            MoneyPoolBuy.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+            MoneyPoolSell.NormalizedOrigin = new Vector2(0.0f, 0.5f);
+
+            MoneyPoolLabel = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
 
             Labels = new SLabels(null);
 
@@ -503,8 +519,41 @@ namespace Galaxy
 
             float panel_x = ShoppingPlayer == GameControllerIndex.One ? 928.0f : 480.0f;
             SpriteEffects panel_effects = ShoppingPlayer == GameControllerIndex.One ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(panel_x, 0.0f), null, Color.White, 0.0f, Vector2.Zero, 1.0f, panel_effects, CLayers.UI);
+            Game.DefaultSpriteBatch.Draw(ShopPanelTexture, new Vector2(panel_x, -90.0f), null, Color.White, 0.0f, Vector2.Zero, 1.0f, panel_effects, CLayers.UI);
             Menu.Draw(Game.DefaultSpriteBatch);
+
+            // TODO: cache!
+            float used = GetShoppingPilotTotalUsedMoney();
+            float total = used + LockedProfile.Money;
+
+            float delta = LockedProfile.Money - WorkingProfile.Money;
+            float a = 0.0f;         
+            float b = used + Math.Min(0.0f, delta); // negative
+            float c = used;
+            float d = used + Math.Max(0.0f, delta); // positive
+            float e = total;
+
+            a /= total;
+            b /= total;
+            c /= total;
+            d /= total;
+            e /= total;
+            float delta_normalized = delta / total;
+
+            float alpha = 0.5f + (float)(Math.Abs(Math.Sin(Game.GameFrame * 0.05f))) * 0.25f;
+            DrawMoneyPoolBar(MoneyPoolEmpty.Texture, a, e, 1.0f);
+            DrawMoneyPoolBar(MoneyPoolFull.Texture, a, b, 1.0f);
+            DrawMoneyPoolBar(MoneyPoolSell.Texture, b, c, alpha);
+            DrawMoneyPoolBar(MoneyPoolBuy.Texture, c, d, alpha);
+
+            MoneyPoolLabel.Value = String.Format("{0}/{1}￥", used, total);
+            MoneyPoolLabel.Draw(Game.DefaultSpriteBatch, Game.GameLargeFont, new Vector2(966.0f, 972.0f), Color.LightGray);
+
+            // TODO: garbage
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, (int)Math.Round(c * 100) + "%", new Vector2(960.0f, 962.0f), Color.LightGray, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "equipment usage", new Vector2(960.0f, 962.0f), Color.LightGray, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, (int)Math.Round(c * 100) + "%", new Vector2(960.0f, 962.0f), Color.LightGray, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+
             DrawMoney();
             DrawMenuErrata();
 
@@ -518,6 +567,29 @@ namespace Galaxy
                 ScorePanel.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
+        }
+
+        void DrawMoneyPoolBar(Texture2D texture, float from, float to, float alpha)
+        {
+            float x = from;
+            float fullness = to - from;
+            float width = 920.0f;
+            Vector2 pool_position = new Vector2(966.0f + width * x, 972.0f);
+
+            // NOTE: sprite scaling is completely broken, so we just hack it here
+            Rectangle dst = new Rectangle((int)(pool_position.X - width / 2.0f), (int)pool_position.Y - 64, (int)(fullness * width), 128);
+            Rectangle src = new Rectangle((int)(x * width), 0, (int)(fullness * width), 128);
+            Game.DefaultSpriteBatch.Draw(
+                texture,
+                dst,
+                src,
+                new Color(255, 255, 255, (byte)(alpha * 255.0f)),
+                0.0f,
+                new Vector2(0.0f, 0.5f),
+                SpriteEffects.None,
+                0.0f
+            );
+
         }
 
         private void MenuUpdateHighlights()
@@ -552,6 +624,23 @@ namespace Galaxy
         private SProfilePilotState GetShoppingPilotData()
         {
             return CSaveData.GetCurrentGameData(Game).Pilots[(int)ShoppingPlayer];
+        }
+
+        private int GetShoppingPilotTotalUsedMoney()
+        {
+            int item_value =
+                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponPrimaryType, LockedProfile.WeaponPrimaryLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickLeftType, LockedProfile.WeaponSidekickLeftLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickRightType, LockedProfile.WeaponSidekickRightLevel) +
+                ChassisDefinitions.GetPart(LockedProfile.ChassisType).Price +
+                ChassisDefinitions.GetPart(LockedProfile.GeneratorType).Price +
+                ChassisDefinitions.GetPart(LockedProfile.ShieldType).Price;
+
+            // TODO: abilities!
+            int skill_value = 0;
+
+            return item_value + skill_value;
         }
 
         private void DrawShipStats()
@@ -622,7 +711,7 @@ namespace Galaxy
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
 
             float x = ShoppingPlayer == GameControllerIndex.One ? -190.0f : 190.0f;
-            SampleShip.Physics.Position = new Vector2(x, 100.0f);
+            SampleShip.Physics.Position = new Vector2(x, 55.0f);
 
             SampleShotDelay = 15;
 
@@ -650,8 +739,8 @@ namespace Galaxy
 
         private void DrawMenuBaseErrata()
         {
-            Vector2 panel_position = new Vector2(Game.Resolution.X / 2.0f - 442.0f, Game.Resolution.Y - 362.0f);
-            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 180.0f, Game.Resolution.Y - 320.0f);
+            Vector2 panel_position = new Vector2(Game.Resolution.X / 2.0f - 442.0f, Game.Resolution.Y - 452.0f);
+            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 180.0f, Game.Resolution.Y - 410.0f);
 
             if (ShoppingPlayer == GameControllerIndex.Two)
             {
@@ -880,7 +969,7 @@ namespace Galaxy
 
         private void ShowHelpInfo()
         {
-            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 190.0f, Game.Resolution.Y - 320.0f);
+            Vector2 blank_position = new Vector2(Game.Resolution.X / 2.0f - 190.0f, Game.Resolution.Y - 400.0f);
 
             if (ShoppingPlayer == GameControllerIndex.Two)
             {
@@ -1632,7 +1721,7 @@ namespace Galaxy
         
         private Vector2 GetShoppingPlayerMenuPosition()
         {
-            return ShoppingPlayer == GameControllerIndex.One ? new Vector2(1114.0f, 320.0f) : new Vector2(550.0f, 320.0f);
+            return ShoppingPlayer == GameControllerIndex.One ? new Vector2(1114.0f, 230.0f) : new Vector2(550.0f, 230.0f);
         }
 
         private void UpdateGenerateEnemy()
@@ -1674,7 +1763,7 @@ namespace Galaxy
         private void SetScoreboardPosition()
         {
             if (ScorePanel != null && ScorePanel.IsVisible())
-                ScorePanel.BasePosition = new Vector2(ShoppingPlayer == GameControllerIndex.One ? 770.0f : 1148.0f, 216.0f);
+                ScorePanel.BasePosition = new Vector2(ShoppingPlayer == GameControllerIndex.One ? 774.0f : 1146.0f, 156.0f);
         }
     }
 }

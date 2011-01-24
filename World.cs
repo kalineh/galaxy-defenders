@@ -128,7 +128,6 @@ namespace Galaxy
 
             // TODO: dont create these unless needed? (they generate alot of garbage for the shop)
             StageClearPanel = new CStageClearPanel(this);
-            ScorePanel = new CScorePanel(Game);
 
             if (stage_definition != null)
             {
@@ -378,14 +377,18 @@ namespace Galaxy
                 return;
 
             StageClearPanel.Update();
-            ScorePanel.Update();
+
+            if (ScorePanel != null)
+                ScorePanel.Update();
 
             if (StageEndCounter > AllowExit)
             {
                 if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
                 {
-                    if (ScorePanel.IsVisible() == false)
+                    if (ScorePanel == null)
                     {
+                        SetScoreSaveData();
+                        ScorePanel = new CScorePanel(Game);
                         ScorePanel.SetVisible(true);
                         StageEndCounter = AllowExit - 20;
                     }
@@ -597,7 +600,7 @@ namespace Galaxy
             if (StageEndCounter > 0)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
-                if (ScorePanel.IsVisible())
+                if (ScorePanel != null && ScorePanel.IsVisible())
                     ScorePanel.Draw(Game.DefaultSpriteBatch);
                 else
                     StageClearPanel.Draw(Game.DefaultSpriteBatch);
@@ -1006,8 +1009,6 @@ namespace Galaxy
 
             foreach (CShip ship in Ships)
             {
-                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].Money += ship.Score;
-                
                 // NOTE: this is just to support mid-game upgrades if we add powerup items
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponPrimaryType = ship.PrimaryWeapon.Type;
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
@@ -1022,21 +1023,29 @@ namespace Galaxy
 
             profile.Game[players_index].Stage = Stage.Definition.Name;
 
-            // NOTE: cleaner way to get stage index?
-            // NOTE: better way to calc money? (is even correct?)
-            int stage_index = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
-
-            int total_score =
-                profile.Game[players_index].Pilots[0].Money +
-                profile.Game[players_index].Pilots[1].Money;
-
-            int earned = total_score - StartingScore;
-
-            profile.Game[players_index].StageScores[stage_index] = earned;
-            profile.Game[players_index].StageMedals[stage_index] = Stats.GetMedalTypeSaveIndex();
+            SetScoreSaveData();
 
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.SaveRequest();
+        }
+
+        private void SetScoreSaveData()
+        {
+            SProfile profile = CSaveData.GetCurrentProfile();
+            int players_index = Game.PlayersInGame - 1;
+
+            foreach (CShip ship in Ships)
+                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].Money += ship.Score;
+
+            int total_money =
+                profile.Game[players_index].Pilots[0].Money +
+                profile.Game[players_index].Pilots[1].Money;
+
+            int stage_index = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
+            int earned = total_money - StartingScore;
+
+            profile.Game[players_index].StageScores[stage_index] = earned;
+            profile.Game[players_index].StageMedals[stage_index] = Stats.GetMedalTypeSaveIndex();
         }
 
         private void GotoLobby()
