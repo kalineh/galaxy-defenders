@@ -871,7 +871,7 @@ namespace Galaxy
         public CShip GetNearestShip(Vector2 position, float radius)
         {
             CShip result = null;
-            float nearest = float.MaxValue;
+            float nearest = radius * radius;
             foreach (CShip ship in ShipEntitiesCache)
             {
                 // died
@@ -880,12 +880,12 @@ namespace Galaxy
 
                 Vector2 ship_position = ship.Physics.Position;
                 Vector2 offset = ship_position - position;
-                float length = offset.Length();
+                float length_squared = offset.LengthSquared();
 
-                if (length < nearest && length < radius)
+                if (length_squared < nearest)
                 {
                     result = ship;
-                    nearest = length;
+                    nearest = length_squared;
                 }
             }
 
