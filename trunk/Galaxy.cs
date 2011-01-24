@@ -353,7 +353,7 @@ namespace Galaxy
             {
                 MusicDisplayCounter -= 1;
                 // NOTE: this is non-critical text, so not displaying on 480p wont be a fail
-                Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.12f);
+                Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.07f);
                 DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > 240 ? 1.0f - (MusicDisplayCounter - 240) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;

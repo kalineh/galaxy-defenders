@@ -47,8 +47,7 @@ namespace Galaxy
                 return;
 
             StageEndCountdown += 1;
-            //if (StageEndCountdown == 220)
-            if (StageEndCountdown == 2)
+            if (StageEndCountdown == 220)
             {
                 world.DestroyAllProjectiles();
                 world.StartStageEnd();

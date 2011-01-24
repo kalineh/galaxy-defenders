@@ -1389,6 +1389,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\UI\MoneyPoolEmpty.png">
+      <Name>MoneyPoolEmpty</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\MoneyPoolFull.png">
+      <Name>MoneyPoolFull</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\MoneyPoolBuy.png">
+      <Name>MoneyPoolBuy</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\MoneyPoolSell.png">
+      <Name>MoneyPoolSell</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>
