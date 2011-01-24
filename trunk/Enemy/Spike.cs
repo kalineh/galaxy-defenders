@@ -56,7 +56,7 @@ namespace Galaxy
             if (Physics.AngularVelocity > 0.0f)
                 return; 
 
-            Target = World.GetNearestShip(Physics.Position, 900.0f);
+            Target = World.GetNearestShip(Physics.Position, 2000.0f);
         }
 
         public void UpdateSeek()
@@ -67,7 +67,7 @@ namespace Galaxy
             {
                 Vector2 offset = Target.Physics.Position - Physics.Position;
                 float length = offset.Length();
-                const float limit = 900.0f;
+                const float limit = 1200.0f;
                 if (offset.Length() < limit)
                 {
                     float t = 0.2f;

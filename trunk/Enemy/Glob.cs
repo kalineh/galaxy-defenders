@@ -14,6 +14,8 @@ namespace Galaxy
         private CShip ChaseTarget { get; set; }
         private CShip AttachTarget { get; set; }
         private int SelfDestructTimer { get; set; }
+        private float BurstOffset { get; set; }
+        private bool IsGripped { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -27,6 +29,7 @@ namespace Galaxy
             HealthMax = 3.5f;
             SelfDestructTimer = 90;
             Coins = 0;
+            BurstOffset = World.Random.NextAngle();
         }
 
         public override void UpdateAI()
@@ -53,7 +56,8 @@ namespace Galaxy
                 Vector2 target = ChaseTarget.Physics.Position;
                 Vector2 offset = target - Physics.Position;
                 Vector2 velocity = Physics.Velocity;
-                float speed = Math.Max(velocity.Length(), 5.0f);
+                float burst = (float)Math.Sin(World.Game.GameFrame * 0.075f + BurstOffset);
+                float speed = 3.5f + burst * 3.0f;
                 Vector2 new_velocity = velocity + offset * 0.0075f;
                 Physics.Velocity = new_velocity.Normal() * speed;
                 Physics.Position += Vector2.UnitY * -World.ScrollSpeed;
@@ -70,7 +74,15 @@ namespace Galaxy
                     return;
                 }
 
-                Physics.Position = AttachTarget.Physics.Position;
+                Vector2 offset = Physics.Position - AttachTarget.Physics.Position;
+                if (offset.LengthSquared() < 12.0f * 12.0f)
+                    IsGripped = true;
+
+                if (IsGripped)
+                    Physics.Position = AttachTarget.Physics.Position;
+                else
+                    Physics.Position = Vector2.Lerp(Physics.Position, AttachTarget.Physics.Position, 0.35f);
+
                 World.Stats.CollisionDamageReceived += 0.05f;
                 AttachTarget.TakeDirectArmorDamage(0.05f);
                 AttachTarget.Physics.Velocity *= 0.60f;
