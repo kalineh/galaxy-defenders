@@ -99,11 +99,14 @@ namespace Galaxy
             if (source.IsIgnoreBullets > 0)
                 return;
 
-            World.Stats.CollisionDamageReceived += 2.5f;
-            source.TakeCollideDamage(Physics.Position, Physics.Velocity, 2.5f);
+            float damage_recv = source.IsInvincible > 0 ? 10.0f : 0.5f;
+            float damage_send = 2.5f;
 
-            World.Stats.CollisionDamageDealt += 0.5f;
-            TakeDamage(0.5f, source);
+            World.Stats.CollisionDamageReceived += damage_send;
+            source.TakeCollideDamage(Physics.Position, Physics.Velocity, damage_send);
+
+            World.Stats.CollisionDamageDealt += damage_recv;
+            TakeDamage(damage_recv, source);
         }
 
         // TODO: need to handle IsSubClassOf in the collision system
