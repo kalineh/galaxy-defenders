@@ -44,7 +44,7 @@ namespace Galaxy
             Footer = CVisual.MakeSpriteCached1(Game, "Textures/UI/ScoreboardFooter");
 
             StageHeader = new CTextLabel() { Value = "Stage", Alignment = CTextLabel.EAlignment.Center };
-            ScoreHeader = new CTextLabel() { Value = "Score", Alignment = CTextLabel.EAlignment.Center };
+            ScoreHeader = new CTextLabel() { Value = "Best Score", Alignment = CTextLabel.EAlignment.Center };
             MedalHeader = new CTextLabel() { Value = "Rank", Alignment = CTextLabel.EAlignment.Center };
 
             Indexes = new List<CTextLabel>();

@@ -401,6 +401,7 @@ namespace Galaxy
         {
             new CMapNode() {
                 SaveIndex = 0,
+                StageName = "Editor Stage",
                 Current = "EditorStage",
                 Next = new List<string>() {
                     "*",
@@ -436,6 +437,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 0,
+                StageName = "Stat Stage",
                 Current = "Start",
                 Next = new List<string>() {
                     "Stage1",
@@ -474,6 +476,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 0,
+                StageName = "Flying Over Carrier",
                 Current = "Stage1",
                 Next = new List<string>() {
                     "Stage2",
@@ -509,6 +512,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 1,
+                StageName = "Forgotten Waters",
                 Current = "Stage2",
                 Next = new List<string>() {
                     "Stage3",
@@ -544,6 +548,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 2,
+                StageName = "Distant Planet",
                 Current = "Stage3",
                 Next = new List<string>() {
                     "Stage4",
@@ -579,6 +584,7 @@ namespace Galaxy
 
             new CMapNode() {
                 SaveIndex = 3,
+                StageName = "Space Station RX-4",
                 Current = "Stage4",
                 Next = new List<string>() {
                     "Stage5",
@@ -617,6 +623,7 @@ namespace Galaxy
 
             new CMapNode() {
                 SaveIndex = 4,
+                StageName = "Strike Inversion",
                 Current = "Stage5",
                 Next = new List<string>() {
                     "Stage6",
@@ -655,6 +662,7 @@ namespace Galaxy
 
             new CMapNode() {
                 SaveIndex = 5,
+                StageName = "Granite Location",
                 Current = "Stage6",
                 Next = new List<string>() {
                     "Stage7",
@@ -692,6 +700,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 6,
+                StageName = "Tempest Nebula",
                 Current = "Stage7",
                 Next = new List<string>() {
                     "Stage8",
@@ -729,6 +738,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 7,
+                StageName = "Mysterious Clouds",
                 Current = "Stage8",
                 Next = new List<string>() {
                     "Stage9",
@@ -736,6 +746,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 8,
+                StageName = "Relent Less",
                 Current = "Stage9",
                 Next = new List<string>() {
                     "Stage10",
@@ -743,6 +754,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 9,
+                StageName = "Invasive Action",
                 Current = "Stage10",
                 Next = new List<string>() {
                     "Stage11",
@@ -750,6 +762,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 10,
+                StageName = "Shadow of Tears",
                 Current = "Stage11",
                 Next = new List<string>() {
                     "Stage12",
@@ -757,6 +770,7 @@ namespace Galaxy
             },
             new CMapNode() {
                 SaveIndex = 11,
+                StageName = "Lamination X",
                 Current = "Stage12",
             },
         };
@@ -774,6 +788,7 @@ namespace Galaxy
         {
             SaveIndex = 0;
             Current = "";
+            StageName = "";
             Next = new List<string>();
             AvailablePrimaryWeaponParts = new List<string>();
             AvailableSecondaryWeaponParts = new List<string>();
@@ -784,6 +799,7 @@ namespace Galaxy
         }
 
         public int SaveIndex { get; set; }
+        public string StageName { get; set; }
         public string Current { get; set; }
         public List<string> Next { get; set; }
         public List<string> AvailablePrimaryWeaponParts { get; set; }
