@@ -106,11 +106,6 @@ namespace Galaxy
             LabelBuildingsValue.Value = String.Format("{0}%", World.Stats.GetBuildingKillsPercent());
             LabelTotalValue.Value = String.Format("{0}%", World.Stats.GetTotalPercent());
 
-            LabelCoinsValue.Value = "75%";
-            LabelEnemiesValue.Value = "100%";
-            LabelBuildingsValue.Value = "4%";
-            LabelTotalValue.Value = "250%";
-
             foreach (CStats.SAward award in World.Stats.Awards)
             {
                 if (award.Type == CStats.AwardType.BronzeMedal)

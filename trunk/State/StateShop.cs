@@ -28,6 +28,7 @@ namespace Galaxy
         private CMenu MenuGenerator { get; set; }
         private CMenu MenuShield { get; set; }
         private CMenu MenuTrainPilot { get; set; }
+        private CMenu MenuScoreboard { get; set; }
         private delegate void DrawMenuErrataFunction();
         private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
@@ -41,6 +42,7 @@ namespace Galaxy
         private int SampleShotDelay { get; set; }
         private Texture2D ShopPurchasePanelTexture { get; set; }
         private CTextLabel ShopPurchaseTextLabel { get; set; }
+        private CScorePanel ScorePanel { get; set; }
 
         private struct SLabels
         {
@@ -121,6 +123,7 @@ namespace Galaxy
                 {
                     new CMenu.CMenuOption() { Text = "Enter Shop", Select = UpgradeShip },
                     new CMenu.CMenuOption() { Text = "Play Next Stage", Select = StageSelect },
+                    new CMenu.CMenuOption() { Text = "View Scoreboard", Select = ShowScoreboard },
                     new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 }
             };
@@ -392,6 +395,18 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
+            //
+            // Scoreboard
+            //
+            MenuScoreboard = new CMenu(game)
+            {
+                Position = GetShoppingPlayerMenuPosition(),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Back", Select = CloseScoreboard, CancelOption = true, PanelType = CMenu.PanelType.Normal },
+                }
+            };
+
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
             IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
             IEnumerable<string> shield_parts = shield_parts_all.Distinct();
@@ -466,6 +481,9 @@ namespace Galaxy
                 SampleShip.ChargeAndFireFullSidekick(SampleShip.WeaponSidekickRight);
                 SampleShip.UpdateWeapons();
             }
+
+            if (ScorePanel != null && ScorePanel.IsVisible())
+                ScorePanel.Update();
         }
 
         public override void Draw()
@@ -495,6 +513,9 @@ namespace Galaxy
                 //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "L1", new Vector2(328.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
                 //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "R1", new Vector2(1600.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
             //}
+
+            if (ScorePanel != null && ScorePanel.IsVisible())
+                ScorePanel.Draw(Game.DefaultSpriteBatch);
 
             Game.DefaultSpriteBatch.End();
         }
@@ -604,6 +625,8 @@ namespace Galaxy
             SampleShip.Physics.Position = new Vector2(x, 100.0f);
 
             SampleShotDelay = 15;
+
+            SetScoreboardPosition();
         }
 
         private void RevertWorkingProfile(object tag)
@@ -946,6 +969,16 @@ namespace Galaxy
         {
             SaveLockedProfile();
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
+        }
+
+        private void ShowScoreboard(object tag)
+        {
+            SaveLockedProfile();
+            ScorePanel = new CScorePanel(Game);
+            ScorePanel.SetVisible(true);
+            ScorePanel.ShowContinue = false;
+            SetScoreboardPosition();
+            Menu = MenuScoreboard;
         }
 
         private void UpgradeShip(object tag)
@@ -1489,6 +1522,12 @@ namespace Galaxy
             Menu = MenuBase;
         }
 
+        private void CloseScoreboard(object tag)
+        {
+            Menu = MenuBase;
+            ScorePanel.SetVisible(false);
+        }
+
         private void ReturnToUpgradeShip(object tag)
         {
             Menu = MenuUpgradeShip;
@@ -1630,6 +1669,12 @@ namespace Galaxy
             float scale = 1.0f + (float)(Math.Abs(Math.Sin(EmptyWorld.Game.GameFrame * 0.1f))) * 0.015f;
             ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, panel_position + new Vector2(60.0f, 42.0f), Color.White, scale);
             //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "Purchase", panel_position + new Vector2(58.0f, 24.0f), Color.White);
+        }
+
+        private void SetScoreboardPosition()
+        {
+            if (ScorePanel != null && ScorePanel.IsVisible())
+                ScorePanel.BasePosition = new Vector2(ShoppingPlayer == GameControllerIndex.One ? 770.0f : 1148.0f, 216.0f);
         }
     }
 }
