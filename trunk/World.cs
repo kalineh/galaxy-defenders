@@ -53,6 +53,7 @@ namespace Galaxy
         public volatile bool CollisionThreadTerminate;
         public CMenu PauseMenu { get; set; }
         public CMenu PauseMenuBase { get; set; }
+        public CMenu PauseMenuRetryConfirm { get; set; }
         public CMenu PauseMenuQuitConfirm { get; set; }
         public CMenu GameOverMenu { get; set; }
         public COptionsMenu PauseMenuOptions { get; set; }
@@ -63,6 +64,9 @@ namespace Galaxy
         public CStageClearPanel StageClearPanel { get; set; }
         public CScorePanel ScorePanel { get; set; }
         public int StartingScore { get; set; }
+        public int StageTextDisplayCounter { get; set; }
+        public CTextLabel StageTextLabelStage { get; set; }
+        public CTextLabel StageTextLabelName { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -81,6 +85,8 @@ namespace Galaxy
             GameOverCounter = -1;
             UpdateStopwatch = new Stopwatch();
             DrawStopwatch = new Stopwatch();
+            StageTextLabelStage = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
+            StageTextLabelName = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
 
             PauseMenuBase = new CMenu(Game)
             {
@@ -88,8 +94,19 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Resume", Select = ResumeGame, CancelOption = true },
+                    new CMenu.CMenuOption() { Text = "Retry", Select = GotoRetryConfirm },
                     new CMenu.CMenuOption() { Text = "Options", Select = OptionsMenu },
                     new CMenu.CMenuOption() { Text = "Quit", Select = GotoQuitConfirm, PanelType = CMenu.PanelType.Small },
+                },
+            };
+
+            PauseMenuRetryConfirm = new CMenu(Game)
+            {
+                Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),
+                MenuOptions = new List<CMenu.CMenuOption>()
+                {
+                    new CMenu.CMenuOption() { Text = "Cancel", Select = BackToMainPauseMenu, CancelOption = true },
+                    new CMenu.CMenuOption() { Text = "Retry", Select = RetryGame },
                 },
             };
 
@@ -200,6 +217,9 @@ namespace Galaxy
                 ShipEntitiesCache.Add(ship);
                 Ships.Add(ship);
             }
+
+            StageTextLabelStage.Value = "Stage 1";
+            StageTextLabelName.Value = CMap.GetMapNodeByStageName(Stage.Definition.Name).StageName;
         }
 
         public void Stop()
@@ -279,6 +299,9 @@ namespace Galaxy
 
             // particle effects
             ParticleEffects.Update();
+
+            // stage text display
+            UpdateStageTextDisplay();
 
             // kick new collision thread
             UpdateEntitiesMultiThreadCollision();
@@ -509,6 +532,36 @@ namespace Galaxy
             SecretFinishCounter += 1;
         }
 
+        public void UpdateStageTextDisplay()
+        {
+            StageTextDisplayCounter += 1;
+        } 
+
+        public void DrawStageTextDisplay(SpriteBatch sprite_batch)
+        {
+            if (StageTextDisplayCounter > 175)
+                return;
+
+            if (StageTextDisplayCounter < 15)
+            {
+                float x = 1920.0f / 2.0f - 640.0f + 640.0f * StageTextDisplayCounter / 15.0f;
+                StageTextLabelStage.Draw(sprite_batch, Game.GameLargeFont, new Vector2(1920.0f - x, 320.0f), Color.White, 1.0f);
+                StageTextLabelName.Draw(sprite_batch, Game.GameLargeFont, new Vector2(x, 400.0f), Color.White, 1.0f);
+            }
+            else if (StageTextDisplayCounter < 160)
+            {
+                float x = 1920.0f / 2.0f;
+                StageTextLabelStage.Draw(sprite_batch, Game.GameLargeFont, new Vector2(1920.0f - x, 320.0f), Color.White, 1.0f);
+                StageTextLabelName.Draw(sprite_batch, Game.GameLargeFont, new Vector2(x, 400.0f), Color.White, 1.0f);
+            }
+            else
+            {
+                float x = 1920.0f / 2.0f + ((StageTextDisplayCounter - 160) / 15.0f) * 640.0f;
+                StageTextLabelStage.Draw(sprite_batch, Game.GameLargeFont, new Vector2(1920.0f - x, 320.0f), Color.White, 1.0f);
+                StageTextLabelName.Draw(sprite_batch, Game.GameLargeFont, new Vector2(x, 400.0f), Color.White, 1.0f);
+            }
+        } 
+
         public void UpdateScissorRectangle()
         {
             // NOTE: no side panels in editor mode
@@ -554,6 +607,11 @@ namespace Galaxy
             DrawBackground(GameCamera);
             DrawEntities(GameCamera);
             DrawForeground(GameCamera);
+
+            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+            DrawStageTextDisplay(Game.DefaultSpriteBatch);
+            Game.DefaultSpriteBatch.End();
+
 
             // 27ms (sorted), 7ms (immediate)
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
@@ -1119,6 +1177,11 @@ namespace Galaxy
         public void GotoQuitConfirm(object tag)
         {
             PauseMenu = PauseMenuQuitConfirm;
+        }
+
+        public void GotoRetryConfirm(object tag)
+        {
+            PauseMenu = PauseMenuRetryConfirm;
         }
 
         public void QuitGame(object tag)
