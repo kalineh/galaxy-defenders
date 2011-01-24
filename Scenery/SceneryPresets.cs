@@ -134,32 +134,32 @@ namespace Galaxy
         public static CScenery TempestNebulaBG(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBackground(world, new Color(16, 16, 160)),
+                new CBackground(world, new Color(92, 92, 120)),
                 new CBlendingGradientBackground(world, 1.0f,
                     new List<Color[]>() {
                         new Color[] {
-                            new Color(0, 196, 0, 128),
-                            new Color(0, 196, 0, 128),
-                            new Color(0, 0, 0, 64),
-                            new Color(0, 0, 0, 64)
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 0, 0, 16),
+                            new Color(0, 0, 0, 16)
                         },
                         new Color[] {
-                            new Color(0, 64, 0, 128),
-                            new Color(0, 64, 0, 128),
-                            new Color(0, 64, 0, 64),
-                            new Color(0, 64, 0, 64)
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16)
                         },
                         new Color[] {
-                            new Color(0, 64, 0, 64),
-                            new Color(0, 64, 0, 64),
-                            new Color(0, 196, 0, 128),
-                            new Color(0, 196, 0, 128)
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16)
                         },
                         new Color[] {
                             new Color(0, 0, 0, 0),
                             new Color(0, 0, 0, 0),
-                            new Color(0, 196, 0, 128),
-                            new Color(0, 196, 0, 128)
+                            new Color(0, 32, 0, 16),
+                            new Color(0, 32, 0, 16)
                         },
                     }
                 )
