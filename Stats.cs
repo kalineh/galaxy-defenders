@@ -18,6 +18,11 @@ namespace Galaxy
             PlatinumMedal,
         }
 
+        public const int RequirementBronze = 150;
+        public const int RequirementSilver = 200;
+        public const int RequirementGold = 250;
+        public const int RequirementPlatinum = 300;
+
         public struct SAward
         {
             public AwardType Type;
@@ -117,21 +122,21 @@ namespace Galaxy
 
             Awards.Add(AwardDefinitions[AwardType.StageClear]);
 
-            int total = GetCoinsCollectedPercent() + GetEnemyKillsPercent() + GetBuildingKillsPercent(); 
+            int total = GetTotalPercent();
 
-            if (total == 300)
+            if (total >= RequirementPlatinum)
             {
                 Awards.Add(AwardDefinitions[AwardType.PlatinumMedal]);    
             }
-            else if (total >= 250)
+            else if (total >= RequirementGold)
             {
                 Awards.Add(AwardDefinitions[AwardType.GoldMedal]);    
             }
-            else if (total >= 200)
+            else if (total >= RequirementSilver)
             {
                 Awards.Add(AwardDefinitions[AwardType.SilverMedal]);    
             }
-            else if (total >= 150)
+            else if (total >= RequirementBronze)
             {
                 Awards.Add(AwardDefinitions[AwardType.BronzeMedal]);    
             }
@@ -146,6 +151,22 @@ namespace Galaxy
         {
             SAward award = Awards[index];
             return award;
+        }
+
+        public int GetMedalTypeSaveIndex()
+        {
+            int total = GetTotalPercent();
+
+            if (total >= RequirementPlatinum)
+                return 5;
+            else if (total >= RequirementGold)
+                return 4;
+            else if (total >= RequirementSilver)
+                return 3;
+            else if (total >= RequirementBronze)
+                return 2;
+
+            return 1;
         }
     }
 }

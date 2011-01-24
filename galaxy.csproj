@@ -91,6 +91,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScorePanel.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Menu\TextLabel.cs" />
     <Compile Include="Projectile\ChargeShot.cs" />

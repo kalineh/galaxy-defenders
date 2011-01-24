@@ -400,6 +400,7 @@ namespace Galaxy
         public static List<CMapNode> Nodes = new List<CMapNode>()
         {
             new CMapNode() {
+                SaveIndex = 0,
                 Current = "EditorStage",
                 Next = new List<string>() {
                     "*",
@@ -434,6 +435,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 0,
                 Current = "Start",
                 Next = new List<string>() {
                     "Stage1",
@@ -471,6 +473,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 0,
                 Current = "Stage1",
                 Next = new List<string>() {
                     "Stage2",
@@ -505,6 +508,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 1,
                 Current = "Stage2",
                 Next = new List<string>() {
                     "Stage3",
@@ -539,6 +543,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 2,
                 Current = "Stage3",
                 Next = new List<string>() {
                     "Stage4",
@@ -573,6 +578,7 @@ namespace Galaxy
             },
 
             new CMapNode() {
+                SaveIndex = 3,
                 Current = "Stage4",
                 Next = new List<string>() {
                     "Stage5",
@@ -610,6 +616,7 @@ namespace Galaxy
             },
 
             new CMapNode() {
+                SaveIndex = 4,
                 Current = "Stage5",
                 Next = new List<string>() {
                     "Stage6",
@@ -647,6 +654,7 @@ namespace Galaxy
             },
 
             new CMapNode() {
+                SaveIndex = 5,
                 Current = "Stage6",
                 Next = new List<string>() {
                     "Stage7",
@@ -683,6 +691,7 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 6,
                 Current = "Stage7",
                 Next = new List<string>() {
                     "Stage8",
@@ -719,30 +728,35 @@ namespace Galaxy
                 },
             },
             new CMapNode() {
+                SaveIndex = 7,
                 Current = "Stage8",
                 Next = new List<string>() {
                     "Stage9",
                 },
             },
             new CMapNode() {
+                SaveIndex = 8,
                 Current = "Stage9",
                 Next = new List<string>() {
                     "Stage10",
                 },
             },
             new CMapNode() {
+                SaveIndex = 9,
                 Current = "Stage10",
                 Next = new List<string>() {
                     "Stage11",
                 },
             },
             new CMapNode() {
+                SaveIndex = 10,
                 Current = "Stage11",
                 Next = new List<string>() {
                     "Stage12",
                 },
             },
             new CMapNode() {
+                SaveIndex = 11,
                 Current = "Stage12",
             },
         };
@@ -758,6 +772,7 @@ namespace Galaxy
     {
         public CMapNode()
         {
+            SaveIndex = 0;
             Current = "";
             Next = new List<string>();
             AvailablePrimaryWeaponParts = new List<string>();
@@ -768,6 +783,7 @@ namespace Galaxy
             AvailableShieldParts = new List<string>();
         }
 
+        public int SaveIndex { get; set; }
         public string Current { get; set; }
         public List<string> Next { get; set; }
         public List<string> AvailablePrimaryWeaponParts { get; set; }

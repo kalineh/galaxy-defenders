@@ -19,6 +19,8 @@ namespace Galaxy
         public bool InProgress;
         public int Difficulty;
         public SProfilePilotState[] Pilots;
+        public int[] StageScores;
+        public int[] StageMedals;
     }
 
     [Serializable]
@@ -201,6 +203,8 @@ namespace Galaxy
                             SProfilePilotState.MakeDefaultPilot(0),
                             SProfilePilotState.MakeDefaultPilot(1),
                         },
+                        StageScores = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
+                        StageMedals = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
                     },
                     new SProfileGameData() {
                         Stage = "",
@@ -209,6 +213,8 @@ namespace Galaxy
                             SProfilePilotState.MakeDefaultPilot(0),
                             SProfilePilotState.MakeDefaultPilot(1),
                         },
+                        StageScores = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
+                        StageMedals = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
                     },
                 },
                 Options = new SProfileOptionsData() {
@@ -326,6 +332,12 @@ namespace Galaxy
                         string name = data.Profiles[index].Name;
                         data.Profiles[index] = CreateDefaultProfile(name);
                     }
+
+                    // NOTE: avoid old save data having empty scores
+                    data.Profiles[index].Game[0].StageScores = data.Profiles[index].Game[0].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                    data.Profiles[index].Game[0].StageMedals = data.Profiles[index].Game[0].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                    data.Profiles[index].Game[1].StageScores = data.Profiles[index].Game[1].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                    data.Profiles[index].Game[1].StageMedals = data.Profiles[index].Game[1].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 }
                 // ---
 

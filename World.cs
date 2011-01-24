@@ -61,6 +61,8 @@ namespace Galaxy
         public Stopwatch UpdateStopwatch { get; set; }
         public Stopwatch DrawStopwatch { get; set; }
         public CStageClearPanel StageClearPanel { get; set; }
+        public CScorePanel ScorePanel { get; set; }
+        public int StartingScore { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -123,7 +125,10 @@ namespace Galaxy
 
             // NOTE: we recreate in Start(), but shop needs a dummy version for enemy simulator
             Stats = new CStats();
+
+            // TODO: dont create these unless needed? (they generate alot of garbage for the shop)
             StageClearPanel = new CStageClearPanel(this);
+            ScorePanel = new CScorePanel(Game);
 
             if (stage_definition != null)
             {
@@ -137,6 +142,12 @@ namespace Galaxy
 #endif
 
             CollisionGrid.Initialize(Vector2.Zero);
+
+            SProfile profile = CSaveData.GetCurrentProfile();
+            int players_index = Game.PlayersInGame - 1;
+            StartingScore =
+                profile.Game[players_index].Pilots[0].Money +
+                profile.Game[players_index].Pilots[1].Money;
         }
 
         ~CWorld()
@@ -367,12 +378,21 @@ namespace Galaxy
                 return;
 
             StageClearPanel.Update();
+            ScorePanel.Update();
 
             if (StageEndCounter > AllowExit)
             {
                 if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
                 {
-                    StageFinalEndExitFlag = true;
+                    if (ScorePanel.IsVisible() == false)
+                    {
+                        ScorePanel.SetVisible(true);
+                        StageEndCounter = AllowExit - 20;
+                    }
+                    else
+                    {
+                        StageFinalEndExitFlag = true;
+                    }
                 }
             }
 
@@ -577,7 +597,10 @@ namespace Galaxy
             if (StageEndCounter > 0)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
-                StageClearPanel.Draw(Game.DefaultSpriteBatch);
+                if (ScorePanel.IsVisible())
+                    ScorePanel.Draw(Game.DefaultSpriteBatch);
+                else
+                    StageClearPanel.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
@@ -998,6 +1021,19 @@ namespace Galaxy
             }
 
             profile.Game[players_index].Stage = Stage.Definition.Name;
+
+            // NOTE: cleaner way to get stage index?
+            // NOTE: better way to calc money? (is even correct?)
+            int stage_index = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
+
+            int total_score =
+                profile.Game[players_index].Pilots[0].Money +
+                profile.Game[players_index].Pilots[1].Money;
+
+            int earned = total_score - StartingScore;
+
+            profile.Game[players_index].StageScores[stage_index] = earned;
+            profile.Game[players_index].StageMedals[stage_index] = Stats.GetMedalTypeSaveIndex();
 
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.SaveRequest();
