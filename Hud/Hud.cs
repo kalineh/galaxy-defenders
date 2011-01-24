@@ -193,7 +193,7 @@ namespace Galaxy
 
             MoneyOverride = null;
             CachedMoneyString = "￥0";
-            MoneyStringScale = 1.5f;
+            MoneyStringScale = 1.0f;
         }
 
         public void Update()
@@ -322,10 +322,9 @@ namespace Galaxy
             {
                 // TODO: move string scale to the score add place, so shop doesnt cause this
                 if (money > LastMoney)
-                    MoneyStringScale = 1.65f;
+                    MoneyStringScale = 1.15f;
 
-
-                CachedMoneyString = String.Format("￥{0}", money);
+                CachedMoneyString = String.Format("{0}", money);
                 LastMoney = money;
             }
 
@@ -333,11 +332,11 @@ namespace Galaxy
             sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, NameTextPosition, profile.Pilots[(int)GameControllerIndex].Pilot, color, 1.0f);
 
             float base_color = 160.0f / 255.0f;
-            float c = base_color + (MoneyStringScale - 1.5f) * 1.25f;
+            float c = base_color + (MoneyStringScale - 1.0f) * 1.25f;
             Color money_color = new Color(c, c, c);
             sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, MoneyTextPosition, CachedMoneyString, money_color, MoneyStringScale);
 
-            MoneyStringScale = MathHelper.Max(1.5f, MoneyStringScale - 0.01f);
+            MoneyStringScale = MathHelper.Max(1.0f, MoneyStringScale - 0.01f);
         }
 
         public void DrawEditor(SpriteBatch sprite_batch)
