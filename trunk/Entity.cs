@@ -127,6 +127,11 @@ namespace Galaxy
             return !IsInScreen(150.0f);
         }
 
+        public bool IsOffScreenBottom(float buffer)
+        {
+            return World.GameCamera.IsOffBottom(Physics.Position, GetRadius() + buffer);
+        }
+
         public bool IsOffScreenBottom()
         {
             return World.GameCamera.IsOffBottom(Physics.Position, GetRadius());

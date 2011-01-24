@@ -191,7 +191,7 @@ namespace Galaxy
 
             if (Game.Input.CountConnectedControllers() == 0)
             {
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Press Start", new Vector2(Game.Resolution.X / 2.0f - 20.0f, 650.0f), Color.White, 0.0f, new Vector2(60.0f, 10.0f), 1.5f + (float)Math.Sin(Game.GameFrame * 0.05f) * 0.05f, SpriteEffects.None, 0.0f);
+                Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "Press Start", new Vector2(Game.Resolution.X / 2.0f - 20.0f, 650.0f), Color.White, 0.0f, new Vector2(60.0f, 10.0f), 1.5f + (float)Math.Sin(Game.GameFrame * 0.05f) * 0.05f, SpriteEffects.None, 0.0f);
             }
 
             Game.DefaultSpriteBatch.End();

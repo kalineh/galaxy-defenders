@@ -24,7 +24,7 @@ namespace Galaxy
             FrameCounter = 0;
             CachedFrameRateString = "fps: 60";
             ElapsedTime = TimeSpan.Zero;
-            DrawPosition = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
+            DrawPosition = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.GameRegularFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
 
         }
 
@@ -50,8 +50,8 @@ namespace Galaxy
 
             sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
 
-            Vector2 position = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.DefaultFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
-            sprite_batch.DrawString(Game.DefaultFont, CachedFrameRateString, position, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            Vector2 position = new Vector2(Game.GraphicsDevice.Viewport.TitleSafeArea.Right - Game.GameRegularFont.MeasureString(CachedFrameRateString).X * 1.2f, 15.0f);
+            sprite_batch.DrawString(Game.GameRegularFont, CachedFrameRateString, position, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             
             sprite_batch.End();
         }

@@ -101,6 +101,7 @@
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
+    <Compile Include="StageClearPanel.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
     <Compile Include="StageDefinitions\OldStage1.cs" />

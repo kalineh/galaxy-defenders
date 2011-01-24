@@ -308,7 +308,7 @@ namespace Galaxy
 
         public SpriteFont GetDebugFont()
         {
-            DebugFont = DebugFont ?? Game.Content.Load<SpriteFont>("Fonts/DefaultFont");
+            DebugFont = DebugFont ?? Game.Content.Load<SpriteFont>("Fonts/Debug");
             return DebugFont;
         }
 

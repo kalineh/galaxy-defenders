@@ -36,8 +36,6 @@ namespace Galaxy
         public int StageEndCounter { get; set; }
         public CFader StageEndFader { get; set; }
         public bool StageFinalEndExitFlag { get; set; }
-        public List<string> StageEndText { get; set; }
-        public List<string> StageEndAwardText { get; set; }
         public CStats Stats { get; set; }
         public CFader SecretEntryFader { get; set; }
         public string SecretStageName { get; set; }
@@ -62,6 +60,7 @@ namespace Galaxy
         public CFader GameOverFader { get; set; }
         public Stopwatch UpdateStopwatch { get; set; }
         public Stopwatch DrawStopwatch { get; set; }
+        public CStageClearPanel StageClearPanel { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -77,8 +76,6 @@ namespace Galaxy
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
             ParticleEffects = new CParticleEffectManager(this);
             ParticleEffects.Initialize(CGalaxyEffects.MakeDefinitions());
-            StageEndText = new List<string>();
-            StageEndAwardText = new List<string>();
             GameOverCounter = -1;
             UpdateStopwatch = new Stopwatch();
             DrawStopwatch = new Stopwatch();
@@ -126,6 +123,7 @@ namespace Galaxy
 
             // NOTE: we recreate in Start(), but shop needs a dummy version for enemy simulator
             Stats = new CStats();
+            StageClearPanel = new CStageClearPanel(this);
 
             if (stage_definition != null)
             {
@@ -348,13 +346,12 @@ namespace Galaxy
             if (StageEndCounter <= 0)
                 return;
 
+            // no ships! cannot end, let game over occur
+            if (ShipEntitiesCache.Count == 0)
+                return;
+
             // frame count of display operations
-            const int StageClearShow = 60;
-            const int StatsShow = 100;
-            const int StatsInterval = 20;
-            const int AwardShow = 240;
-            const int AwardInterval = 20;
-            const int AllowExit = 340;
+            const int AllowExit = 380;
             const int UpperClamp = AllowExit + 60;
 
             foreach (CShip ship in ShipEntitiesCache)
@@ -369,42 +366,7 @@ namespace Galaxy
             if (IsSecretWorld)
                 return;
 
-            if (StageEndCounter == StageClearShow)
-            {
-                StageEndText.Add("STAGE CLEAR");
-                StageEndText.Add("");
-                StageEndText.Add("");
-            }
-
-            if (StageEndCounter == StatsShow + StatsInterval * 0)
-                StageEndText.Add(Stats.GetCoinsCollectedString());
-            if (StageEndCounter == StatsShow + StatsInterval * 1)
-                StageEndText.Add(Stats.GetEnemyKillsString());
-            if (StageEndCounter == StatsShow + StatsInterval * 2)
-                StageEndText.Add(Stats.GetBuildingKillsString());
-
-            if (StageEndCounter == StatsShow + StatsInterval * 4)
-            {
-                StageEndText.Add("");
-                StageEndText.Add(Stats.GetTotalPercentString());
-            }
-
-            if (StageEndCounter == 1)
-                Stats.CheckAwards();
-
-            for (int i = 0; i < Stats.GetAwardCount(); ++i)
-            {
-                if (StageEndCounter == AwardShow + AwardInterval * i)
-                {
-                    CStats.SAward award = Stats.GetAward(i);
-                    StageEndAwardText.Add(String.Format("{0}: +{1}{2}", award.Text, award.Bonus, '￥'));
-
-                    foreach (CShip ship in Ships)
-                    {
-                        ship.Score += award.Bonus;
-                    }
-                }
-            }
+            StageClearPanel.Update();
 
             if (StageEndCounter > AllowExit)
             {
@@ -608,10 +570,18 @@ namespace Galaxy
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, 150.0f);
-                Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, text_position, "SECRET WARP", Color.LightGreen);
+                Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, text_position, "SECRET WARP", Color.LightGreen);
                 Game.DefaultSpriteBatch.End();
             }
 
+            if (StageEndCounter > 0)
+            {
+                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                StageClearPanel.Draw(Game.DefaultSpriteBatch);
+                Game.DefaultSpriteBatch.End();
+            }
+
+            /*
             if (StageEndText.Count > 0)
             {
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
@@ -624,7 +594,7 @@ namespace Galaxy
                 Vector2 first_offset = new Vector2(40.0f, 0.0f);
                 foreach (string text in StageEndText)
                 {
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, text_position, Color.White);
+                    Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, text, text_position, Color.White);
                     text_position += Vector2.UnitY * 30.0f;
                     text_position -= first_offset;
                     first_offset = Vector2.Zero;
@@ -633,11 +603,12 @@ namespace Galaxy
                 Vector2 award_position = new Vector2(Game.Resolution.X / 2.0f - 140.0f, 450.0f);
                 foreach (string text in StageEndAwardText)
                 {
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, text, award_position, Color.LightGreen);
+                    Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, text, award_position, Color.LightGreen);
                     award_position += Vector2.UnitY * 30.0f;
                 }
                 Game.DefaultSpriteBatch.End();
             }
+             * */
 
 #if DEBUG
             if (CInput.IsRawKeyDown(Keys.Q))
@@ -661,8 +632,8 @@ namespace Galaxy
 
             // simple profiling
             //Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
-            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 0.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 32.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 0.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 32.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //Game.DefaultSpriteBatch.End();
         }
 
@@ -1080,6 +1051,10 @@ namespace Galaxy
         {
             if (Paused)
                 return;
+
+            if (StageEnd)
+                return;
+
             Paused = true;
             CAudio.PlayPauseMusic("1-X-0");
         }

@@ -13,7 +13,7 @@ namespace Galaxy
     public class CBonus
         : CEntity
     {
-        static public int BonusValue = 25;
+        static public int BonusValue = 15;
         static public int MagnetDelay = 20;
 
         private bool GotoPlayer { get; set; }
@@ -60,7 +60,7 @@ namespace Galaxy
             if (AliveTime > MagnetDelay)
                 LerpToPlayers();
 
-            if (IsOffScreenBottom())
+            if (IsOffScreenBottom(32.0f))
                 Delete();
         }
 

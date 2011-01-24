@@ -37,6 +37,8 @@ namespace Galaxy
             if (Mover != null)
                 anti_camera = World.ScrollSpeed * -Vector2.UnitY * 0.5f;
 
+            anti_camera += Vector2.UnitX.Rotate(World.Random.NextAngle()) * 1.5f;
+
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, 1.5f, anti_camera);
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, 1.5f, anti_camera);
 

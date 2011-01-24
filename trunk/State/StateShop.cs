@@ -492,8 +492,8 @@ namespace Galaxy
 
             //if (Game.PlayersInGame > 1)
             //{
-                //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "L1", new Vector2(328.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
-                //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "R1", new Vector2(1600.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+                //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "L1", new Vector2(328.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
+                //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "R1", new Vector2(1600.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
             //}
 
             Game.DefaultSpriteBatch.End();
@@ -564,15 +564,15 @@ namespace Galaxy
 
             foreach (int index in Enumerable.Range(0, keys.Length))
             {
-                Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, keys[index], KeysBase + Step * index, Color.White);
+                Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, keys[index], KeysBase + Step * index, Color.White);
             }
 
             foreach (int index in Enumerable.Range(0, values.Length))
             {
                 if (values[index] == "")
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "None", ValuesBase + Step * index, Color.White);
+                    Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "None", ValuesBase + Step * index, Color.White);
                 else
-                    Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, values[index], ValuesBase + Step * index, Color.White);
+                    Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, values[index], ValuesBase + Step * index, Color.White);
             }
         }
 
@@ -591,7 +591,7 @@ namespace Galaxy
                 color = Color.LightGreen;
 
             // TODO: money display
-            Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, WorkingProfile.Money.ToString(), Game.HudManager.Huds[(int)ShoppingPlayer].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, WorkingProfile.Money.ToString(), Game.HudManager.Huds[(int)ShoppingPlayer].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
         }
 
         private void RefreshSampleDisplay()
@@ -655,20 +655,20 @@ namespace Galaxy
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel + 1);
 
                     Labels.BaseCostPrice.Value = price;
-                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
 
-                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 62.0f), Color.White);
+                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 62.0f), Color.White);
                     if (level < max)
                     {
                         Labels.NextUpgradePrice.Value = next_price;
-                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
                     else
                     {
                         // TODO: debug me to check that no strings are generated each time
                         Labels.NextUpgradePrice.Value = "MAX";
-                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
 
                     if (SelectValidatePrimaryWeapon(Menu.MenuOptions[Menu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None")
@@ -692,20 +692,20 @@ namespace Galaxy
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
 
                     Labels.BaseCostPrice.Value = price;
-                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
 
-                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 62.0f), Color.White);
+                    Labels.NextUpgradeHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 62.0f), Color.White);
                     if (level < max)
                     {
                         Labels.NextUpgradePrice.Value = next_price;
-                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
                     else
                     {
                         // TODO: debug me to check that no strings are generated each time
                         Labels.NextUpgradePrice.Value = "MAX";
-                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 90.0f), Color.White);
+                        Labels.NextUpgradePrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 90.0f), Color.White);
                     }
                 }
 
@@ -715,8 +715,8 @@ namespace Galaxy
                     {
                         Vector2 position = blank_position;
                         Labels.BaseCostPrice.Value = 0;
-                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                     }
 
                     if (SelectValidateSecondaryWeapon(Menu.MenuOptions[Menu.Cursor].Data))
@@ -732,8 +732,8 @@ namespace Galaxy
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
 
                     Labels.BaseCostPrice.Value = price;
-                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -742,8 +742,8 @@ namespace Galaxy
                     {
                         Vector2 position = blank_position;
                         Labels.BaseCostPrice.Value = 0;
-                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                     }
 
                     if (SelectValidateSidekickLeft(Menu.MenuOptions[Menu.Cursor].Data))
@@ -759,8 +759,8 @@ namespace Galaxy
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
 
                     Labels.BaseCostPrice.Value = price;
-                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -769,8 +769,8 @@ namespace Galaxy
                     {
                         Vector2 position = blank_position;
                         Labels.BaseCostPrice.Value = 0;
-                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position, Color.White);
-                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                     }
 
                     if (SelectValidateSidekickRight(Menu.MenuOptions[Menu.Cursor].Data))
@@ -787,12 +787,12 @@ namespace Galaxy
                     Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
-                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
-                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
+                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
-                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
-                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
+                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -811,12 +811,12 @@ namespace Galaxy
                     Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
-                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
-                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
+                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -835,12 +835,12 @@ namespace Galaxy
                     Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
 
                     Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
-                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0, Color.White);
-                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
+                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -936,10 +936,10 @@ namespace Galaxy
             }
 
             float offset = Game.PlayersInGame == 1 ? 20.0f : 0.0f;
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 30.0f + offset), strings[0], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 60.0f + offset), strings[1], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 90.0f + offset), strings[2], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.DefaultFont, blank_position + new Vector2(0.0f, 150.0f + offset), strings[3], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, blank_position + new Vector2(0.0f, 30.0f + offset), strings[0], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, blank_position + new Vector2(0.0f, 60.0f + offset), strings[1], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, blank_position + new Vector2(0.0f, 90.0f + offset), strings[2], Color.White);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, blank_position + new Vector2(0.0f, 150.0f + offset), strings[3], Color.White);
         }
 
         private void StageSelect(object tag)
@@ -1628,8 +1628,8 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Draw(ShopPurchasePanelTexture, panel_position, Color.White);
             ShopPurchaseTextLabel.Alignment = CTextLabel.EAlignment.Left;
             float scale = 1.0f + (float)(Math.Abs(Math.Sin(EmptyWorld.Game.GameFrame * 0.1f))) * 0.015f;
-            ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.DefaultFont, panel_position + new Vector2(60.0f, 42.0f), Color.White, scale);
-            //Game.DefaultSpriteBatch.DrawString(Game.DefaultFont, "Purchase", panel_position + new Vector2(58.0f, 24.0f), Color.White);
+            ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, panel_position + new Vector2(60.0f, 42.0f), Color.White, scale);
+            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "Purchase", panel_position + new Vector2(58.0f, 24.0f), Color.White);
         }
     }
 }
