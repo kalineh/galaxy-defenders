@@ -91,6 +91,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enemy\Boss1.cs" />
+    <Compile Include="Enemy\MissileStorm.cs" />
+    <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Menu\TextLabel.cs" />

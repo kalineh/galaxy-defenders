@@ -43,7 +43,9 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyMissile");
             Collision = new CollisionCircle(Vector2.Zero, 10.0f);
 
-            Health = 4;
+            //Health = 4;
+            // NOTE: unkillable is maybe more fun
+            Health = 100;
         }
 
         public override void Update()
@@ -90,6 +92,8 @@ namespace Galaxy
             float dot = Vector2.Dot(ofs, fwd.Perp());
             Physics.AngularVelocity = Math.Sign(dot) * 0.01f;
             Physics.Velocity = Physics.GetDir() * Speed;
+
+            Speed += 0.075f;
         }
 
         public override void UpdateCollision()
