@@ -98,6 +98,15 @@ namespace Galaxy
             circle.Position = Physics.Position;
         }
 
+        public override void TakeDamage(float damage, CShip source)
+        {
+            base.TakeDamage(damage, source);
+
+            // fences should be ignored for kills
+            if (Health <= 0.0f)
+                World.Stats.EnemyKills -= 1;
+        }
+
         public override void Draw(SpriteBatch sprite_batch)
         {
             base.Draw(sprite_batch);
