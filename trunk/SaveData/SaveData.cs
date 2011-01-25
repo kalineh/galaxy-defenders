@@ -287,7 +287,7 @@ namespace Galaxy
             }
         }
 
-        public int CalculateTotalMoney(SProfilePilotState pilot)
+        public static int CalculateTotalMoney(SProfilePilotState pilot)
         {
             // TODO: cache/faster version
             int item_value =
@@ -304,7 +304,7 @@ namespace Galaxy
                 (pilot.AbilityUnlocked1 ? CAbility.AbilityPrice : 0) +
                 (pilot.AbilityUnlocked2 ? CAbility.AbilityPrice : 0);
 
-            return item_value + skill_value;
+            return item_value + skill_value + pilot.Money;
         }
 
         private static void Import(out SSaveData data, string filename)

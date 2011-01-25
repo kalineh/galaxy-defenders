@@ -212,7 +212,6 @@ namespace Galaxy
                 ship.Physics.Position = Game.PlayerSpawnPosition;
                 if (players > 1)
                     ship.Physics.Position += new Vector2(-40.0f + 40.0f * i, 0.0f);
-                Game.HudManager.Huds[i].Ship = ship;
                 EntityAdd(ship);
                 ShipEntitiesCache.Add(ship);
                 Ships.Add(ship);
@@ -248,6 +247,9 @@ namespace Galaxy
         {
             UpdateStopwatch.Reset();
             UpdateStopwatch.Start();
+
+            // HACK: must set every frame because some OnExit during fadeout will clear it after we set it in Start()
+            SetHudShips();
 
             if (!Game.IsActive && !Game.EditorMode && !IsGameOverState())
             {
@@ -413,6 +415,7 @@ namespace Galaxy
                         SetScoreSaveData();
                         ScorePanel = new CScorePanel(Game);
                         ScorePanel.SetVisible(true);
+                        ScorePanel.HighlightIndex = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
                         StageEndCounter = AllowExit - 20;
                     }
                     else
@@ -1081,7 +1084,8 @@ namespace Galaxy
 
             profile.Game[players_index].Stage = Stage.Definition.Name;
 
-            SetScoreSaveData();
+            // already saved for high score display!
+            //SetScoreSaveData();
 
             CSaveData.SetCurrentProfileData(profile);
             CSaveData.SaveRequest();
@@ -1229,6 +1233,12 @@ namespace Galaxy
                     }
                 }
             }
+        }
+
+        public void SetHudShips()
+        {
+            for (int i = 0; i < Ships.Count; ++i)
+                Game.HudManager.Huds[i].Ship = Ships[i];
         }
     }
 }

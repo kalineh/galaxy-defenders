@@ -462,8 +462,8 @@ namespace Galaxy
 
             EmptyWorld.Stop();
 
-            Game.HudManager.Huds[0].MoneyOverride = null;
-            Game.HudManager.Huds[1].MoneyOverride = null;
+            Game.HudManager.Huds[0].ShowMoney = true;
+            Game.HudManager.Huds[1].ShowMoney = true;
         }
 
         public override void Update()
@@ -479,7 +479,7 @@ namespace Galaxy
             MenuUpdateHighlights();
             Menu.Update();
             Game.HudManager.Huds[(int)ShoppingPlayer].Ship = SampleShip;
-            Game.HudManager.Huds[(int)ShoppingPlayer].MoneyOverride = (int)LockedProfile.Money;
+            Game.HudManager.Huds[(int)ShoppingPlayer].ShowMoney = false;
             Game.HudManager.Huds[(int)ShoppingPlayer].Update();
             UpdateGenerateEnemy();
             EmptyWorld.GameCamera.Update();
@@ -727,6 +727,8 @@ namespace Galaxy
             SampleShotDelay = 15;
 
             SetScoreboardPosition();
+
+            Game.HudManager.Huds[(int)ShoppingPlayer].ShowMoney = false;
         }
 
         private void RevertWorkingProfile(object tag)
