@@ -1,5 +1,5 @@
 ﻿//
-// MissilePod.cs
+// MissileStorm.cs
 //
 
 using System;
@@ -8,28 +8,31 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
-    public class CMissilePod
+    public class CMissileStorm
         : CEnemy
     {
         public float FireDelay { get; private set; }
         private int FireCooldown { get; set; }
         public float FireDamage { get; private set; }
         public float FireSpeed { get; private set; }
+        public int FireSequenceCountdown { get; set; }
+        public float LastFireRotation { get; set; }
 
         public override void Initialize(CWorld world)
         {
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
-            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/MissilePod");
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
+            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/MissileStorm");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 2.0f;
+            HealthMax = 5.0f;
 
-            FireDelay = 1.5f;
+            FireDelay = 0.05f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 7.5f;
             FireSpeed = 2.5f;
+            LastFireRotation = MathHelper.PiOver2;
         }
 
         public override void UpdateAI()
@@ -39,18 +42,28 @@ namespace Galaxy
 
         private void UpdateFire()
         {
+            if (FireSequenceCountdown < -30)
+            {
+                FireSequenceCountdown = 180;
+                LastFireRotation = World.Random.NextAngle();
+            }
+
+            FireSequenceCountdown -= 1;
+            if (FireSequenceCountdown > 0)
+                return;
+
             FireCooldown -= 1;
             if (FireCooldown <= 0)
-            {
                 Fire();
-            }
         }
 
         private void Fire()
         {
             Vector2 position = Physics.Position;
-            //Vector2 dir = GetDirToShip();
-            float rotation = MathHelper.PiOver2;
+            Vector2 dir = GetDirToShip();
+            float rotation = LastFireRotation;
+
+            LastFireRotation += MathHelper.Pi / 8.0f;
 
             CEnemyMissile.Spawn(World, position, rotation, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");

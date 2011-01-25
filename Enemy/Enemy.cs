@@ -34,13 +34,15 @@ namespace Galaxy
                 int difficulty = CSaveData.GetCurrentGameData(World.Game).Difficulty;
                 _HealthMax = value * CDifficulty.HealthScale[difficulty];
                 Health = _HealthMax;
+                KilledScoreValue = CalculateScoreFromHealth();
             }
         }
 
         public float Health { get; set; }
         public int Coins { get; set; }
         public bool Powerup { get; set; }
-        private int BaseScore { get; set; }
+        public int BaseScore { get; set; }
+        private int KilledScoreValue { get; set; }
 
         // TODO: not good in enemy class?
         public bool CanSeekerTarget { get; set; }
@@ -89,7 +91,8 @@ namespace Galaxy
             if (Health <= 0.0f)
             {
                 World.Stats.EnemyKills += 1;
-                source.Score += CalculateScoreFromHealth();
+                if (source != null)
+                    source.Score += KilledScoreValue;
                 Die();
             }
         }

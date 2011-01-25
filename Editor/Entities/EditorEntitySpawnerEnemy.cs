@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Galaxy
 {
@@ -47,10 +48,18 @@ namespace Galaxy
             CEntity sample_instance = Activator.CreateInstance(type) as CEntity;
             sample_instance.Initialize(world);
             sample_instance.Physics.Position = position;
-            Visual = new CVisual(world.Game, CContent.LoadTexture2D(world.Game, sample_instance.Visual.Texture.Name), sample_instance.Visual.Color);
-            Visual.TileX = sample_instance.Visual.TileX;
-            Visual.TileY = sample_instance.Visual.TileY;
-            Visual.AnimationSpeed = sample_instance.Visual.AnimationSpeed;
+
+            if (sample_instance.Visual != null)
+            {
+                Visual = new CVisual(world.Game, CContent.LoadTexture2D(world.Game, sample_instance.Visual.Texture.Name), sample_instance.Visual.Color);
+                Visual.TileX = sample_instance.Visual.TileX;
+                Visual.TileY = sample_instance.Visual.TileY;
+                Visual.AnimationSpeed = sample_instance.Visual.AnimationSpeed;
+            }
+            else
+            {
+                Visual = CVisual.MakeLabel(world.Game, sample_instance.GetType().ToString(), Color.Blue);
+            }
             
             MoverPresetName = "None";
             MoverSpeedMultiplier = 1.0f;
