@@ -299,6 +299,8 @@ namespace Galaxy
             profile.Game[Game.PlayersInGame - 1].Difficulty = difficulty;
             profile.Game[Game.PlayersInGame - 1].Pilots[0].Money = CDifficulty.StartingMoney[difficulty];
             profile.Game[Game.PlayersInGame - 1].Pilots[1].Money = CDifficulty.StartingMoney[difficulty];
+            profile.Game[Game.PlayersInGame - 1].Pilots[0].WeaponPrimaryLevel = CDifficulty.StartingWeaponLevel[difficulty];
+            profile.Game[Game.PlayersInGame - 1].Pilots[1].WeaponPrimaryLevel = CDifficulty.StartingWeaponLevel[difficulty];
             CSaveData.SetCurrentProfileData(profile);
 
             Game.HudManager.ActivatePilotSelect();

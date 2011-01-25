@@ -22,6 +22,7 @@ namespace Galaxy
         public CVisual Header { get; set; }
         public CVisual Item { get; set; }
         public CVisual Footer { get; set; }
+        public CVisual Highlight { get; set; }
         public CTextLabel StageHeader { get; set; }
         public CTextLabel ScoreHeader { get; set; }
         public CTextLabel MedalHeader { get; set; }
@@ -31,6 +32,7 @@ namespace Galaxy
         public CTextLabel ContinueLabel { get; set; }
         public CVisual ContinueButton { get; set; }
         public bool ShowContinue { get; set; }
+        public int HighlightIndex { get; set; }
 
         public const int DisplayInterval = 2;
 
@@ -38,10 +40,12 @@ namespace Galaxy
         {
             Game = game;
             Counter = -1;
+            HighlightIndex = -1;
 
             Header = CVisual.MakeSpriteCached1(Game, "Textures/UI/ScoreboardHeader");
             Item = CVisual.MakeSpriteCached1(Game, "Textures/UI/ScoreboardItem");
             Footer = CVisual.MakeSpriteCached1(Game, "Textures/UI/ScoreboardFooter");
+            Highlight = CVisual.MakeSpriteCached1(Game, "Textures/UI/ScoreboardHighlight");
 
             StageHeader = new CTextLabel() { Value = "Stage", Alignment = CTextLabel.EAlignment.Center };
             ScoreHeader = new CTextLabel() { Value = "Best Score", Alignment = CTextLabel.EAlignment.Center };
@@ -115,6 +119,9 @@ namespace Galaxy
             for (int i = 0; i < 12; ++i)
             {
                 Item.Draw(sprite_batch, base_ + new Vector2(0.0f, step * (i + 1)), 0.0f);
+
+                if (i == HighlightIndex && (Game.GameFrame % 30 > 10))
+                    Highlight.Draw(sprite_batch, base_ + new Vector2(0.0f, step * (i + 1)), 0.0f);
             }
 
             if (ShowContinue)

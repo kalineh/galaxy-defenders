@@ -22,6 +22,13 @@ namespace Galaxy
             7500,
         };
 
+        public static int[] StartingWeaponLevel = new int[3]
+        {
+            2,
+            2,
+            2,
+        };
+
         public static float[] HealthScale = new float[3]
         {
             1.0f,

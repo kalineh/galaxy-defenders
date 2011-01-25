@@ -20,7 +20,7 @@ namespace Galaxy
         public float Energy { get; set; }
         public float Shield { get; set; }
         public float Armor { get; set; }
-        public int? MoneyOverride { get; set; }
+        public bool ShowMoney { get; set; }
         public bool CanUseAbility0 { get; set; }
         public bool CanUseAbility1 { get; set; }
         public bool CanUseAbility2 { get; set; }
@@ -73,6 +73,7 @@ namespace Galaxy
         private string CachedMoneyString { get; set; }
         private float MoneyStringScale { get; set; }
         private int LastMoney { get; set; }
+        private int BaseMoney { get; set; }
 
         public CHud(CGalaxy game, Vector2 base_position, GameControllerIndex game_controller_index)
         {
@@ -80,7 +81,7 @@ namespace Galaxy
             Game = game;
             BasePosition = base_position;
 
-            NameText = "Profile";
+            NameText = CSaveData.GetCurrentGameData(Game).Pilots[(int)GameControllerIndex].Pilot;
 
             LeftPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
             RightPanelVisual = CVisual.MakeSpriteUncached(Game, "Textures/UI/PanelBackground");
@@ -191,9 +192,11 @@ namespace Galaxy
             Ability1IconGreyButtonVisual.Update();
             Ability2IconGreyButtonVisual.Update();
 
-            MoneyOverride = null;
-            CachedMoneyString = "￥0";
+            CachedMoneyString = "0";
             MoneyStringScale = 1.0f;
+
+            SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
+            BaseMoney = CSaveData.CalculateTotalMoney(profile.Pilots[(int)GameControllerIndex]);
         }
 
         public void Update()
@@ -303,20 +306,37 @@ namespace Galaxy
             button1.Draw(sprite_batch, Ability1IconPosition + new Vector2(-38.0f, 0.0f), 0.0f);
             button2.Draw(sprite_batch, Ability2IconPosition + new Vector2(0.0f, -42.0f), 0.0f);
 
+            Color color = new Color(160, 160, 160);
+            sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, NameTextPosition, NameText, color, 1.0f);
+
+            // NOTE: disabling money display for now
+            // NOTE: a bit too confusing with the money pool bar, it should be just Score
+            DrawMoney(sprite_batch);
+        }
+
+        public void DrawMoney(SpriteBatch sprite_batch)
+        {
+            //
+            // TODO: fix these before enabling money
+            // - non-override shows ship data wrong
+            // - show only score, not money
+            // - ideally should be 0 at game start, not StartingMoney
+            //
+
             // TODO: just not show?
             //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
 
-            // TODO: not copy the profile around so much
-            SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
-            int money = profile.Pilots[(int)GameControllerIndex].Money;
+            //int money = BaseMoney;
+
+            if (Ship == null)
+                return;
+
+            if (ShowMoney == false)
+                return;
 
             // TODO: score needs to be maintained across secret stages?
             // add current stage score if valid
-            if (Ship != null)
-                money += Ship.Score;
-
-            if (MoneyOverride != null)
-                money = (int)MoneyOverride;
+            int money = Ship.Score;
 
             if (money != LastMoney)
             {
@@ -328,12 +348,11 @@ namespace Galaxy
                 LastMoney = money;
             }
 
-            Color color = new Color(160, 160, 160);
-            sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, NameTextPosition, profile.Pilots[(int)GameControllerIndex].Pilot, color, 1.0f);
-
             float base_color = 160.0f / 255.0f;
             float c = base_color + (MoneyStringScale - 1.0f) * 1.25f;
             Color money_color = new Color(c, c, c);
+
+            // TODO: remove display altogether?
             sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, MoneyTextPosition, CachedMoneyString, money_color, MoneyStringScale);
 
             MoneyStringScale = MathHelper.Max(1.0f, MoneyStringScale - 0.01f);
