@@ -17,6 +17,7 @@ namespace Galaxy
         public float FireSpeed { get; private set; }
         public int FireSequenceCountdown { get; set; }
         public float LastFireRotation { get; set; }
+        public float FireRotationDirection { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -24,15 +25,17 @@ namespace Galaxy
 
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
-            Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/MissileStorm");
+            Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Enemy/MissileStorm");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 5.0f;
 
             FireDelay = 0.05f;
-            FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
+            FireCooldown = 0;
             FireDamage = 7.5f;
             FireSpeed = 2.5f;
-            LastFireRotation = MathHelper.PiOver2;
+            FireSequenceCountdown = 60;
+            FireRotationDirection = World.Random.NextSign();
+            LastFireRotation = MathHelper.PiOver2 + MathHelper.PiOver2 * -FireRotationDirection;
         }
 
         public override void UpdateAI()
@@ -42,10 +45,11 @@ namespace Galaxy
 
         private void UpdateFire()
         {
-            if (FireSequenceCountdown < -30)
+            if (FireSequenceCountdown < -26)
             {
-                FireSequenceCountdown = 180;
-                LastFireRotation = World.Random.NextAngle();
+                FireSequenceCountdown = 120;
+                FireRotationDirection = World.Random.NextSign();
+                LastFireRotation = MathHelper.PiOver2 + World.Random.NextFloat() * -FireRotationDirection;
             }
 
             FireSequenceCountdown -= 1;
@@ -63,7 +67,7 @@ namespace Galaxy
             Vector2 dir = GetDirToShip();
             float rotation = LastFireRotation;
 
-            LastFireRotation += MathHelper.Pi / 8.0f;
+            LastFireRotation += MathHelper.Pi / 8.0f * FireRotationDirection;
 
             CEnemyMissile.Spawn(World, position, rotation, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");

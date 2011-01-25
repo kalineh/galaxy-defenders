@@ -1058,10 +1058,10 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 NoDropCoins = false,
 Powerup = false,
-Type = typeof(Galaxy.CRaidTurret),
+Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -136.0f,
+X = -72.0f,
 Y = -15368.0f,
 },
 },
@@ -1070,7 +1070,7 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -136.0f,
+X = -72.0f,
 Y = -15368.0f,
 },
 });
@@ -2416,7 +2416,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 NoDropCoins = false,
 Powerup = false,
-Type = typeof(Galaxy.CRaidTurret),
+Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 40.0f,
@@ -2653,26 +2653,6 @@ Y = -14296.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
-Powerup = false,
-Type = typeof(Galaxy.CRaidTurret),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
-Y = -15368.0f,
-},
-},
-MoverPresetName = "None",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
-Y = -15368.0f,
-},
-});
-stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
 DepthOffset = 0.0f,
@@ -2696,10 +2676,10 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 NoDropCoins = false,
 Powerup = false,
-Type = typeof(Galaxy.CRaidTurret),
+Type = typeof(Galaxy.CMissilePod),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
+X = 120.0f,
 Y = -15368.0f,
 },
 },
@@ -2708,7 +2688,7 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
+X = 120.0f,
 Y = -15368.0f,
 },
 });
