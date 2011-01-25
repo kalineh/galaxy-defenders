@@ -43,9 +43,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyMissile");
             Collision = new CollisionCircle(Vector2.Zero, 10.0f);
 
-            //Health = 4;
-            // NOTE: unkillable is maybe more fun
-            Health = 100;
+            Health = 4;
         }
 
         public override void Update()
@@ -156,12 +154,13 @@ namespace Galaxy
 
         private void Hit()
         {
-            Health -= 1;
-            if (Health <= 0)
-            {
-                CAudio.PlaySound("WeaponHitMissile", 1.0f);
-                Die();
-            }
+            // NOTE: unkillable more fun, probably
+            //Health -= 1;
+            //if (Health <= 0)
+            //{
+                //CAudio.PlaySound("WeaponHitMissile", 1.0f);
+                //Die();
+            //}
         }
 
         protected override void OnDie()

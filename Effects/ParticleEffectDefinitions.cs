@@ -335,10 +335,10 @@ namespace Galaxy
                     new SEffectDefinition()
                     {
                         Type = EParticleType.None,
-                        Count = 2,
+                        Count = 1,
                         Visual = CParticleEffectManager.Dot,
                         Position = Vector2.Zero,
-                        PositionVariationCircle = new Vector2(2.0f, 2.0f),
+                        PositionVariationCircle = new Vector2(4.0f, 4.0f),
                         PositionVariationBox = Vector2.Zero,
                         PositionDelta = Vector2.Zero,
                         PositionDeltaVariation = new Vector2(0.5f, 0.5f),
