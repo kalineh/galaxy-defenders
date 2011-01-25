@@ -70,6 +70,16 @@ namespace Galaxy
 
                         if (enemy.Type == typeof(CFence))
                             continue;
+                        if (enemy.Type == typeof(CBlackHole))
+                            continue;
+
+                        // add spawned sub-enemies
+                        if (enemy.Type == typeof(CSwirl))
+                            EnemyTotal += 3;
+                        if (enemy.Type == typeof(CSplitter))
+                            EnemyTotal += 2;
+                        if (enemy.Type == typeof(CPyramid))
+                            EnemyTotal += 3;
 
                         EnemyTotal += 1;
                     }

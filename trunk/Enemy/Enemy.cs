@@ -193,7 +193,7 @@ namespace Galaxy
         private int CalculateScoreFromHealth()
         {
             int difficulty = CSaveData.GetCurrentGameData(World.Game).Difficulty;
-            float s = (float)BaseScore * HealthMax * 5.0f;
+            float s = (float)BaseScore * HealthMax * 2.0f;
             float d = s * CDifficulty.MoneyScale[difficulty];
             int score = (int)d;
             return score - score % 10;

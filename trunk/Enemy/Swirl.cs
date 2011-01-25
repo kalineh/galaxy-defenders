@@ -83,7 +83,7 @@ namespace Galaxy
                     continue;
 
                 Vector2 dir = Vector2.UnitX.Rotate(start + step * i + MathHelper.PiOver2 + 0.1f);
-                Vector2 velocity = dir * 4.0f;
+                Vector2 velocity = dir * 2.5f;
 
                 Balls[i].Physics.Velocity = velocity;
             }

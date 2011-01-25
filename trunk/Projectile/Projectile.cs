@@ -30,7 +30,7 @@ namespace Galaxy
         {
             base.Update();
 
-            if (!IsInScreen(16.0f))
+            if (!IsInScreen(32.0f))
                 Delete();
         }
     }
