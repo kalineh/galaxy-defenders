@@ -47,6 +47,7 @@ namespace Galaxy
         // TODO: not good in enemy class?
         public bool CanSeekerTarget { get; set; }
         public bool IsSeekerTarget { get; set; }
+        public CDecoration Corpse { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -56,6 +57,18 @@ namespace Galaxy
             BaseScore = 10;
             CanSeekerTarget = true;
             Coins = 3;
+        }
+
+        public void PreloadCorpse()
+        {
+            if (DoesGenerateCorpse() && Mover == null)
+            {
+                CDecoration corpse = new CDecoration();
+                corpse.Initialize(World);
+                corpse.Physics.Position = Physics.Position;
+                corpse.Visual = CVisual.MakeSpriteCached1(World.Game, Visual.Texture.Name + "Dead");
+                Corpse = corpse;
+            }                
         }
 
         public virtual void UpdateAI()
@@ -254,20 +267,8 @@ namespace Galaxy
 
         protected virtual void GenerateCorpse()
         {
-            if (!DoesGenerateCorpse())
-            {
-                return;
-            }
-
-            if (Mover == null)
-            {
-                // TODO: cache
-                CDecoration corpse = new CDecoration();
-                corpse.Initialize(World);
-                corpse.Physics.Position = Physics.Position;
-                corpse.Visual = CVisual.MakeSpriteCached1(World.Game, Visual.Texture.Name + "Dead");
-                World.EntityAdd(corpse);
-            }
+            if (DoesGenerateCorpse() && Mover == null)
+                World.EntityAdd(Corpse);
         }
     }
 }

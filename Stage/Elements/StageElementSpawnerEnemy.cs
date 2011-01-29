@@ -15,6 +15,13 @@ namespace Galaxy
         public bool NoDropCoins { get; set; }
         public bool Powerup { get; set; }
 
+        public override void Initialize(CWorld world)
+        {
+            base.Initialize(world);
+            CEnemy enemy = Preloaded as CEnemy;
+            enemy.PreloadCorpse();
+        }
+
         public override void Update(CWorld world)
         {
             base.Update(world);
