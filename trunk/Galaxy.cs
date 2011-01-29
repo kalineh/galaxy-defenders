@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.Threading;
 using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -43,6 +44,8 @@ namespace Galaxy
         public Vector2 Resolution { get; set; }
         public Matrix RenderScaleMatrix { get; set; }
         public float UserScaleValue { get; set; }
+        public Stopwatch UpdateStopwatch { get; set; }
+        public Stopwatch DrawStopwatch { get; set; }
 
         public CGalaxy()
         {
@@ -50,6 +53,8 @@ namespace Galaxy
             // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
             this.IsFixedTimeStep = false;
 #endif
+            UpdateStopwatch = new Stopwatch();
+            DrawStopwatch = new Stopwatch();
 
             Content.RootDirectory = "Content";
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -302,6 +307,9 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime game_time)
         {
+            UpdateStopwatch.Reset();
+            UpdateStopwatch.Start();
+
             Input.Update();
 
             State.Update();
@@ -313,6 +321,8 @@ namespace Galaxy
             base.Update(game_time);
 
             GameFrame += 1;
+
+            UpdateStopwatch.Stop();
         }
 
         /// <summary>
@@ -321,6 +331,9 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime game_time)
         {
+            DrawStopwatch.Reset();
+            DrawStopwatch.Start();
+
             // TODO: use for custom frame timing
             // wait till vsync
             //while (!GraphicsDevice.RasterStatus.InVerticalBlank)
@@ -368,6 +381,23 @@ namespace Galaxy
 
             //while (GraphicsDevice.RasterStatus.InVerticalBlank)
                 //Thread.Sleep(0);
+
+            DrawStopwatch.Start();
+
+            // simple profiling
+            // TODO: why doesnt depth work here :( HUD always renders on top
+            DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 0.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+
+#if !XBOX360
+            // NOTE: no GC.CollectionCount on 360
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(0): {0}", (int)(GC.CollectionCount(0))), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(1): {0}", (int)(GC.CollectionCount(1))), new Vector2(500.0f, 120.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+#endif
+
+            DefaultSpriteBatch.End();
         }
 
         public Vector2 TryGetCameraTopLeft()

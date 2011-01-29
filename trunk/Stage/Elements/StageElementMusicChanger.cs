@@ -13,13 +13,19 @@ namespace Galaxy
         : CStageElement
     {
         public string MusicName { get; set; }
+        private CMusicChanger Preloaded { get; set; }
 
-        public override void Update(CWorld world)
+        public override void Initialize(CWorld world)
         {
             CMusicChanger music_changer = new CMusicChanger();
             music_changer.Initialize(world);
             music_changer.MusicName = MusicName;
-            world.EntityAdd(music_changer);
+            Preloaded = music_changer;
+        }
+
+        public override void Update(CWorld world)
+        {
+            world.EntityAdd(Preloaded);
         }
     }
 }

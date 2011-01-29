@@ -17,7 +17,8 @@ namespace Galaxy
 
         public override void Update(CWorld world)
         {
-            CEnemy enemy = Spawn(world) as CEnemy;
+            base.Update(world);
+            CEnemy enemy = Preloaded as CEnemy;
             if (NoDropCoins)
                 enemy.Coins = 0;
             enemy.Powerup = Powerup;

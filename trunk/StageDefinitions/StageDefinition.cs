@@ -108,6 +108,17 @@ namespace Galaxy
 
             return Elements[time];
         }
+
+        public void PreloadElements(CWorld world)
+        {
+            foreach (KeyValuePair<int, List<CStageElement>> element in Elements)
+            {
+                foreach (CStageElement item in element.Value)
+                {
+                    item.Initialize(world);
+                }
+            }
+        }
     }
 }
 

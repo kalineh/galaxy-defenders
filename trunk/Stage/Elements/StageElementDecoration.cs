@@ -15,8 +15,9 @@ namespace Galaxy
         public string TextureName { get; set; }
         public float DepthOffset { get; set; }
         public float Rotation { get; set; }
+        private CDecoration Preloaded { get; set; }
 
-        public override void Update(CWorld world)
+        public override void Initialize(CWorld world)
         {
             CDecoration decoration = new CDecoration();
             decoration.Initialize(world);
@@ -25,9 +26,13 @@ namespace Galaxy
             decoration.TextureName = TextureName;
             decoration.DepthOffset = DepthOffset;
 
-            //decoration.UpdateTexture();
+            Preloaded = decoration;
+        }
 
-            world.EntityAdd(decoration);
+        public override void Update(CWorld world)
+        {
+            //decoration.UpdateTexture();
+            world.EntityAdd(Preloaded);
         }
     }
 }

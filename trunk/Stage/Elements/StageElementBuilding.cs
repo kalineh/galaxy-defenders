@@ -15,8 +15,9 @@ namespace Galaxy
         public int Coins { get; set; }
         public bool Powerup { get; set; }
         public string TextureName { get; set; }
+        private CBuilding Preloaded { get; set; }
 
-        public override void Update(CWorld world)
+        public override void Initialize(CWorld world)
         {
             CBuilding building = new CBuilding();
 
@@ -29,7 +30,12 @@ namespace Galaxy
 
             //building.UpdateTexture();
 
-            world.EntityAdd(building);
+            Preloaded = building;
+        }
+
+        public override void Update(CWorld world)
+        {
+            world.EntityAdd(Preloaded);
         }
     }
 }

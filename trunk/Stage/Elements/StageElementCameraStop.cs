@@ -32,6 +32,11 @@ namespace Galaxy
             return false;
         }
 
+        public override void Initialize(CWorld world)
+        {
+            // not needed
+        }
+
         public override void Update(CWorld world)
         {
             bool enemies = EnemiesExist(world);
