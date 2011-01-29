@@ -95,6 +95,8 @@
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="ScorePanel.cs" />
+    <Compile Include="StringBuilderExtFormat.cs" />
+    <Compile Include="StringBuilderExtNumeric.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Menu\TextLabel.cs" />
     <Compile Include="Projectile\ChargeShot.cs" />

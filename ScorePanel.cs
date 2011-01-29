@@ -61,7 +61,7 @@ namespace Galaxy
             {
                 int score = data.StageScores[i];
 
-                string medal_type = "";
+                string medal_type = null;
                 switch (data.StageMedals[i])
                 {
                     case 1: medal_type = "Clear"; break;
@@ -74,8 +74,10 @@ namespace Galaxy
                 Indexes.Add(new CTextLabel() { Value = String.Format("{0}", i + 1), Alignment = CTextLabel.EAlignment.Center });
                 Scores.Add(new CTextLabel() { Value = String.Format("{0}", score), Alignment = CTextLabel.EAlignment.Center });
 
-                // NOTE: will be null if medal type is empty
-                Medals.Add(CVisual.MakeSpriteUncached(Game, "Textures/UI/Medal" + medal_type));
+                if (String.IsNullOrEmpty(medal_type))
+                    Medals.Add(null);
+                else
+                    Medals.Add(CVisual.MakeSpriteUncached(Game, "Textures/UI/Medal" + medal_type));
             }
 
             ShowContinue = true;

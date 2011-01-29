@@ -15,6 +15,11 @@ namespace Galaxy
         public string SecretStage { get; set; }
         public bool Expired { get; set; }
 
+        public override void Initialize(CWorld world)
+        {
+            // nothing needed
+        }
+
         public override void Update(CWorld world)
         {
             World = world;

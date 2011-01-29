@@ -152,6 +152,8 @@
     <Compile Include="StageDefinitions\Stage6.cs" />
     <Compile Include="StageDefinitions\Stage7.cs" />
     <Compile Include="State\StatePilotSelect.cs" />
+    <Compile Include="StringBuilderExtFormat.cs" />
+    <Compile Include="StringBuilderExtNumeric.cs" />
     <Compile Include="Stubs360.cs" />
     <Compile Include="Content.cs" />
     <Compile Include="Camera.cs" />

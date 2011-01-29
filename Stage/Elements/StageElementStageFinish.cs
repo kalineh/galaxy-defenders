@@ -13,6 +13,11 @@ namespace Galaxy
     {
         private CWorld World { get; set; }
 
+        public override void Initialize(CWorld world)
+        {
+            // nothing needed
+        }
+
         public override void Update(CWorld world)
         {
             World = world;

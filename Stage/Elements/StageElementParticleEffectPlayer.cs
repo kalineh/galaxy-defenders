@@ -17,6 +17,11 @@ namespace Galaxy
         public bool Expired { get; set; }
         public int CycleFrame { get; set; }
 
+        public override void Initialize(CWorld world)
+        {
+            // nothing needed
+        }
+
         public override void Update(CWorld world)
         {
             Expired = world.GameCamera.IsOffBottom(Position, 128.0f);

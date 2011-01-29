@@ -68,7 +68,21 @@ namespace Galaxy
                         Thread.Sleep(0);    
                     }
 
-                    string tag = SignedInGamer.SignedInGamers[0].Gamertag;
+                    //
+                    // NOTE: this array may not be in order as expected
+                    //
+                    SignedInGamer gamer = null;
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        gamer = SignedInGamer.SignedInGamers[i];
+                        if (gamer != null)
+                            break;
+                    }
+
+                    string tag = "Default";
+                    if (gamer != null)
+                        tag = (string)gamer.Tag;
+
                     CSaveData.Load();
                     CSaveData.AddNewProfile(tag);
                     CSaveData.SetCurrentProfile(tag);

@@ -19,12 +19,18 @@ namespace Galaxy
         public float MoverSpeedMultiplier { get; set; }
         public float MoverTransitionMultiplier { get; set; }
         public CSpawnerCustomElement CustomElement { get; set; }
+        protected CEntity Preloaded { get; set; }
 
         public CStageElementSpawnerEntity()
         {
             MoverPresetName = "IgnoreCamera";
             MoverSpeedMultiplier = 1.0f;
             MoverTransitionMultiplier = 1.0f;
+        }
+
+        public override void Initialize(CWorld world)
+        {
+            Preloaded = Construct(world);
         }
 
         public override void Update(CWorld world)
@@ -37,7 +43,7 @@ namespace Galaxy
             return true;
         }
 
-        protected CEntity Spawn(CWorld world)
+        protected CEntity Construct(CWorld world)
         {
             Vector2 spawn_position = SpawnPosition.GetSpawnPosition(world);
 
@@ -67,14 +73,17 @@ namespace Galaxy
                     CustomElement.Customize(entity);
                 }
 
-                world.EntityAdd(entity);
-
                 return entity;
             }
             catch (Exception exception)
             {
                 throw exception.InnerException;
             }
+        }
+
+        protected void Spawn(CWorld world)
+        {
+            world.EntityAdd(Preloaded);    
         }
     }
 

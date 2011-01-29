@@ -59,8 +59,6 @@ namespace Galaxy
         public COptionsMenu PauseMenuOptions { get; set; }
         public int GameOverCounter { get; set; }
         public CFader GameOverFader { get; set; }
-        public Stopwatch UpdateStopwatch { get; set; }
-        public Stopwatch DrawStopwatch { get; set; }
         public CStageClearPanel StageClearPanel { get; set; }
         public CScorePanel ScorePanel { get; set; }
         public int StartingScore { get; set; }
@@ -83,8 +81,6 @@ namespace Galaxy
             ParticleEffects = new CParticleEffectManager(this);
             ParticleEffects.Initialize(CGalaxyEffects.MakeDefinitions());
             GameOverCounter = -1;
-            UpdateStopwatch = new Stopwatch();
-            DrawStopwatch = new Stopwatch();
             StageTextLabelStage = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
             StageTextLabelName = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
 
@@ -245,9 +241,6 @@ namespace Galaxy
 
         public void Update()
         {
-            UpdateStopwatch.Reset();
-            UpdateStopwatch.Start();
-
             // HACK: must set every frame because some OnExit during fadeout will clear it after we set it in Start()
             SetHudShips();
 
@@ -318,8 +311,6 @@ namespace Galaxy
                 DebugPaused = true;
                 WasStepped = false;
             }
-
-            UpdateStopwatch.Stop();
         }
 
         public void UpdatePauseInput()
@@ -602,9 +593,6 @@ namespace Galaxy
 
         public void Draw()
         {
-            DrawStopwatch.Reset();
-            DrawStopwatch.Start();
-
             UpdateScissorRectangle();
 
             DrawBackground(GameCamera);
@@ -716,12 +704,6 @@ namespace Galaxy
                     Game.DefaultSpriteBatch.End();
                 }
             }
-
-            // simple profiling
-            //Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
-            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 0.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(100.0f, 32.0f) + GameCamera.GetCenter().ToVector2(), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //Game.DefaultSpriteBatch.End();
         }
 
         public void DrawBackground(CCamera camera)
