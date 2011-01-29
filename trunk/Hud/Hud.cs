@@ -244,6 +244,11 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch)
         {
+#if DEBUG
+            float old_scale = CGalaxy.GlobalScale;
+            CGalaxy.GlobalScale = 1.0f;
+#endif
+
             if (GameControllerIndex == GameControllerIndex.One)
             {
                 LeftPanelVisual.Draw(sprite_batch, LeftPanelPosition, 0.0f);
@@ -312,6 +317,10 @@ namespace Galaxy
             // NOTE: disabling money display for now
             // NOTE: a bit too confusing with the money pool bar, it should be just Score
             DrawMoney(sprite_batch);
+
+#if DEBUG
+            CGalaxy.GlobalScale = old_scale;
+#endif
         }
 
         public void DrawMoney(SpriteBatch sprite_batch)

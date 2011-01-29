@@ -20,23 +20,22 @@ namespace Galaxy
             Physics = new CPhysics();
         }
 
-        public override void Update()
+        public void InitializeTexture()
         {
-            // TODO: this is kind of crappy
-            if (Visual == null && TextureName != null)
+            if (DepthOffset != 0.0f)
             {
-                if (DepthOffset != 0.0f)
-                {
-                    Visual = CVisual.MakeSpriteUncached(World.Game, "Textures/Decoration/" + TextureName);
-                }
-                else
-                {
-                    Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
-                }
-
-                Visual.Depth += DepthOffset;
+                Visual = CVisual.MakeSpriteUncached(World.Game, "Textures/Decoration/" + TextureName);
+            }
+            else
+            {
+                Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Decoration/" + TextureName);
             }
 
+            Visual.Depth += DepthOffset;
+        }
+
+        public override void Update()
+        {
             base.Update();
             if (IsOffScreenBottom())
                 Delete();

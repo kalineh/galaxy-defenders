@@ -46,6 +46,7 @@ namespace Galaxy
         public float UserScaleValue { get; set; }
         public Stopwatch UpdateStopwatch { get; set; }
         public Stopwatch DrawStopwatch { get; set; }
+        public static float GlobalScale { get; set; }
 
         public CGalaxy()
         {
@@ -307,6 +308,10 @@ namespace Galaxy
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime game_time)
         {
+#if DEBUG
+            GlobalScale = CInput.IsRawKeyDown(Microsoft.Xna.Framework.Input.Keys.S) ? 1.20f : 1.0f;
+#endif
+
             UpdateStopwatch.Reset();
             UpdateStopwatch.Start();
 

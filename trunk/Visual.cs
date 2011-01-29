@@ -260,13 +260,13 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation)
         {
-            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale, _SpriteEffects, Depth);
+            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale * CGalaxy.GlobalScale, _SpriteEffects, Depth);
             DrawDebug(sprite_batch, position, rotation, 1.0f);
         }
 
         public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation, float extra_scale)
         {
-            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale * extra_scale, _SpriteEffects, Depth);
+            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, Scale * extra_scale * CGalaxy.GlobalScale, _SpriteEffects, Depth);
             DrawDebug(sprite_batch, position, rotation, extra_scale);
         }
 

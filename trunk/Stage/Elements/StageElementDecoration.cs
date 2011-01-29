@@ -26,6 +26,9 @@ namespace Galaxy
             decoration.TextureName = TextureName;
             decoration.DepthOffset = DepthOffset;
 
+            // NOTE: must be called after DepthOffset is set
+            decoration.InitializeTexture();
+
             Preloaded = decoration;
         }
 
