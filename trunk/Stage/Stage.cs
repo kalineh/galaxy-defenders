@@ -21,6 +21,8 @@ namespace Galaxy
             Definition = definition;
             definition.PreloadElements(world);
             ActiveElements = new List<CStageElement>(512);
+
+            System.GC.Collect();
         }
 
         public void Preload()

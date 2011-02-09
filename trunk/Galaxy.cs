@@ -312,6 +312,7 @@ namespace Galaxy
             GlobalScale = CInput.IsRawKeyDown(Microsoft.Xna.Framework.Input.Keys.S) ? 1.20f : 1.0f;
 #endif
 
+
             UpdateStopwatch.Reset();
             UpdateStopwatch.Start();
 
@@ -392,14 +393,14 @@ namespace Galaxy
             // simple profiling
             // TODO: why doesnt depth work here :( HUD always renders on top
             DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
-            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 0.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
 
 #if !XBOX360
             // NOTE: no GC.CollectionCount on 360
-            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(0): {0}", (int)(GC.CollectionCount(0))), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(1): {0}", (int)(GC.CollectionCount(1))), new Vector2(500.0f, 120.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(0): {0}", (int)(GC.CollectionCount(0))), new Vector2(500.0f, 120.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(1): {0}", (int)(GC.CollectionCount(1))), new Vector2(500.0f, 150.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
 #endif
 
             DefaultSpriteBatch.End();
