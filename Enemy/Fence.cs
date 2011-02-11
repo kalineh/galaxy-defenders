@@ -25,7 +25,7 @@ namespace Galaxy
             base.Initialize(world);
             
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Fence");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 8.0f;
@@ -50,7 +50,7 @@ namespace Galaxy
                 if (Math.Abs(offset.Y) > 16.0f)
                     continue;
 
-                if (Math.Abs(offset.X) > 256.0f)
+                if (Math.Abs(offset.X) > 340.0f)
                     continue;
 
                 if (fence.Child != null)

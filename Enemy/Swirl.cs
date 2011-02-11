@@ -59,7 +59,7 @@ namespace Galaxy
                 if (ball.IsDead)
                     continue;
 
-                Vector2 offset = Vector2.UnitX.Rotate(start + step * i) * 36.0f;
+                Vector2 offset = Vector2.UnitX.Rotate(start + step * i) * 48.0f;
                 Vector2 target = Physics.Position + offset;
 
                 Balls[i].Physics.Position = target;

@@ -42,8 +42,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -224.0f,
-Y = -17464.0f,
+X = -240.0f,
+Y = -17456.0f,
 },
 },
 MoverPresetName = "None",
@@ -51,8 +51,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -224.0f,
-Y = -17464.0f,
+X = -240.0f,
+Y = -17456.0f,
 },
 });
 stage.AddElement(0, 
@@ -122,8 +122,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 192.0f,
-Y = -17464.0f,
+X = 184.0f,
+Y = -17456.0f,
 },
 },
 MoverPresetName = "None",
@@ -131,8 +131,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 192.0f,
-Y = -17464.0f,
+X = 184.0f,
+Y = -17456.0f,
 },
 });
 stage.AddElement(0, 
@@ -152,8 +152,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -17464.0f,
+X = -312.0f,
+Y = -17456.0f,
 },
 },
 MoverPresetName = "None",
@@ -161,8 +161,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -17464.0f,
+X = -312.0f,
+Y = -17456.0f,
 },
 });
 stage.AddElement(0, 
@@ -182,8 +182,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 296.0f,
-Y = -17464.0f,
+X = 256.0f,
+Y = -17456.0f,
 },
 },
 MoverPresetName = "None",
@@ -191,8 +191,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 296.0f,
-Y = -17464.0f,
+X = 256.0f,
+Y = -17456.0f,
 },
 });
 stage.AddElement(0, 
@@ -202,8 +202,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 296.0f,
-Y = -17504.0f,
+X = 280.0f,
+Y = -17520.0f,
 },
 },
 MoverPresetName = "None",
@@ -211,8 +211,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 296.0f,
-Y = -17504.0f,
+X = 280.0f,
+Y = -17520.0f,
 },
 });
 stage.AddElement(0, 
@@ -222,8 +222,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 192.0f,
-Y = -17504.0f,
+X = 160.0f,
+Y = -17520.0f,
 },
 },
 MoverPresetName = "None",
@@ -231,8 +231,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 192.0f,
-Y = -17504.0f,
+X = 160.0f,
+Y = -17520.0f,
 },
 });
 stage.AddElement(0, 
@@ -242,7 +242,7 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
+X = 56.0f,
 Y = -17504.0f,
 },
 },
@@ -251,7 +251,7 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 32.0f,
+X = 56.0f,
 Y = -17504.0f,
 },
 });
@@ -282,7 +282,7 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -64.0f,
+X = -88.0f,
 Y = -17504.0f,
 },
 },
@@ -291,7 +291,7 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -64.0f,
+X = -88.0f,
 Y = -17504.0f,
 },
 });
@@ -302,8 +302,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -224.0f,
-Y = -17504.0f,
+X = -208.0f,
+Y = -17520.0f,
 },
 },
 MoverPresetName = "None",
@@ -311,8 +311,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -224.0f,
-Y = -17504.0f,
+X = -208.0f,
+Y = -17520.0f,
 },
 });
 stage.AddElement(0, 
@@ -322,8 +322,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -17504.0f,
+X = -336.0f,
+Y = -17520.0f,
 },
 },
 MoverPresetName = "None",
@@ -331,8 +331,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -17504.0f,
+X = -336.0f,
+Y = -17520.0f,
 },
 });
 stage.AddElement(0, 
@@ -375,9 +375,9 @@ Y = -8152.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
 Y = -7984.0f,
@@ -395,9 +395,9 @@ Y = -8064.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
 Y = -8320.0f,
@@ -415,9 +415,9 @@ Y = -8240.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -296.0f,
 Y = -7992.0f,
@@ -435,9 +435,9 @@ Y = -8064.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -296.0f,
 Y = -8320.0f,
@@ -495,9 +495,9 @@ Y = -6144.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 440.0f,
 Y = -5976.0f,
@@ -515,9 +515,9 @@ Y = -6056.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 440.0f,
 Y = -6312.0f,
@@ -535,9 +535,9 @@ Y = -6232.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
 Y = -5984.0f,
@@ -555,9 +555,9 @@ Y = -6056.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
 Y = -6312.0f,
@@ -605,9 +605,9 @@ Y = -11960.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -11792.0f,
@@ -625,9 +625,9 @@ Y = -11872.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -48.0f,
 Y = -12128.0f,
@@ -645,9 +645,9 @@ Y = -12048.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -368.0f,
 Y = -11800.0f,
@@ -665,9 +665,9 @@ Y = -11872.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -368.0f,
 Y = -12128.0f,
@@ -715,12 +715,12 @@ Y = -15688.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
-Y = -15520.0f,
+X = 176.0f,
+Y = -15528.0f,
 },
 });
 stage.AddElement(0, 
@@ -729,15 +729,15 @@ TextureName = "LightBlue5",
 DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 112.0f,
+X = 104.0f,
 Y = -15600.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -160.0f,
 Y = -15528.0f,
@@ -955,9 +955,9 @@ Y = -3424.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 144.0f,
 Y = -3256.0f,
@@ -975,9 +975,9 @@ Y = -3336.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 144.0f,
 Y = -3592.0f,
@@ -995,9 +995,9 @@ Y = -3512.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -176.0f,
 Y = -3264.0f,
@@ -1015,9 +1015,9 @@ Y = -3336.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -176.0f,
 Y = -3592.0f,
@@ -1191,7 +1191,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -320.0f,
-Y = -5776.0f,
+Y = -5808.0f,
 },
 },
 MoverPresetName = "DownWaitUp",
@@ -1200,6 +1200,26 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -320.0f,
+Y = -5808.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+NoDropCoins = false,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -256.0f,
+Y = -5776.0f,
+},
+},
+MoverPresetName = "DownWaitUp",
+MoverSpeedMultiplier = 3.5f,
+MoverTransitionMultiplier = 3.0f,
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -256.0f,
 Y = -5776.0f,
 },
 });
@@ -1210,28 +1230,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -256.0f,
-Y = -5768.0f,
-},
-},
-MoverPresetName = "DownWaitUp",
-MoverSpeedMultiplier = 3.5f,
-MoverTransitionMultiplier = 3.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -256.0f,
-Y = -5768.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
-Powerup = false,
-Type = typeof(Galaxy.CBeamer),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
 X = -192.0f,
-Y = -5760.0f,
+Y = -5744.0f,
 },
 },
 MoverPresetName = "DownWaitUp",
@@ -1240,7 +1240,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -192.0f,
-Y = -5760.0f,
+Y = -5744.0f,
 },
 });
 stage.AddElement(0, 
@@ -1331,7 +1331,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4128.0f,
+Y = -4104.0f,
 },
 },
 MoverPresetName = "DownRight",
@@ -1340,7 +1340,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4128.0f,
+Y = -4104.0f,
 },
 });
 stage.AddElement(0, 
@@ -1351,7 +1351,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4168.0f,
+Y = -4160.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -1360,7 +1360,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4168.0f,
+Y = -4160.0f,
 },
 });
 stage.AddElement(0, 
@@ -1371,7 +1371,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4208.0f,
+Y = -4216.0f,
 },
 },
 MoverPresetName = "DownRight",
@@ -1380,7 +1380,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4208.0f,
+Y = -4216.0f,
 },
 });
 stage.AddElement(0, 
@@ -1391,7 +1391,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4248.0f,
+Y = -4272.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -1400,7 +1400,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
-Y = -4248.0f,
+Y = -4272.0f,
 },
 });
 stage.AddElement(0, 
@@ -1729,7 +1729,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "SmallBuilding2",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -176.0f,
+X = -232.0f,
 Y = -10104.0f,
 },
 });
@@ -1750,8 +1750,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -216.0f,
-Y = -5072.0f,
+X = -224.0f,
+Y = -5080.0f,
 },
 },
 MoverPresetName = "Down",
@@ -1759,8 +1759,8 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -216.0f,
-Y = -5072.0f,
+X = -224.0f,
+Y = -5080.0f,
 },
 });
 stage.AddElement(0, 
@@ -1770,8 +1770,8 @@ Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 216.0f,
-Y = -5072.0f,
+X = 224.0f,
+Y = -5080.0f,
 },
 },
 MoverPresetName = "Down",
@@ -1779,8 +1779,8 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 216.0f,
-Y = -5072.0f,
+X = 224.0f,
+Y = -5080.0f,
 },
 });
 stage.AddElement(0, 
@@ -2247,7 +2247,7 @@ stage.AddElement(0,
 new Galaxy.CStageElementBuilding() {
 Coins = 0,
 Powerup = false,
-TextureName = "SmallBuilding3",
+TextureName = "SmallBuilding2",
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 360.0f,
 Y = -8520.0f,
@@ -2341,7 +2341,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -336.0f,
-Y = -9392.0f,
+Y = -9432.0f,
 },
 },
 MoverPresetName = "DownRight",
@@ -2350,6 +2350,26 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -336.0f,
+Y = -9432.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSpawnerEnemy() {
+NoDropCoins = false,
+Powerup = false,
+Type = typeof(Galaxy.CBeamer),
+SpawnPosition = new Galaxy.CSpawnPositionFixed() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -272.0f,
+Y = -9392.0f,
+},
+},
+MoverPresetName = "DownRight",
+MoverSpeedMultiplier = 3.5f,
+MoverTransitionMultiplier = 3.0f,
+CustomElement = null,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -272.0f,
 Y = -9392.0f,
 },
 });
@@ -2360,28 +2380,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -272.0f,
-Y = -9384.0f,
-},
-},
-MoverPresetName = "DownRight",
-MoverSpeedMultiplier = 3.5f,
-MoverTransitionMultiplier = 3.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -272.0f,
-Y = -9384.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
-Powerup = false,
-Type = typeof(Galaxy.CBeamer),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
 X = -208.0f,
-Y = -9376.0f,
+Y = -9352.0f,
 },
 },
 MoverPresetName = "DownRight",
@@ -2390,7 +2390,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -208.0f,
-Y = -9376.0f,
+Y = -9352.0f,
 },
 });
 stage.AddElement(0, 
@@ -2411,7 +2411,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 288.0f,
-Y = -9608.0f,
+Y = -9592.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -2420,7 +2420,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 288.0f,
-Y = -9608.0f,
+Y = -9592.0f,
 },
 });
 stage.AddElement(0, 
@@ -2431,7 +2431,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 352.0f,
-Y = -9616.0f,
+Y = -9632.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -2440,7 +2440,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 352.0f,
-Y = -9616.0f,
+Y = -9632.0f,
 },
 });
 stage.AddElement(0, 
@@ -2451,7 +2451,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 416.0f,
-Y = -9624.0f,
+Y = -9672.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -2460,7 +2460,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 416.0f,
-Y = -9624.0f,
+Y = -9672.0f,
 },
 });
 stage.AddElement(0, 
@@ -2509,7 +2509,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "SmallBuilding3",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -112.0f,
+X = -144.0f,
 Y = -10104.0f,
 },
 });
@@ -2580,7 +2580,7 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 152.0f,
+X = 168.0f,
 Y = -11376.0f,
 },
 },
@@ -2589,7 +2589,7 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 3.5f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 152.0f,
+X = 168.0f,
 Y = -11376.0f,
 },
 });
@@ -2600,7 +2600,7 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -112.0f,
+X = -136.0f,
 Y = -11376.0f,
 },
 },
@@ -2609,7 +2609,7 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 3.5f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -112.0f,
+X = -136.0f,
 Y = -11376.0f,
 },
 });
@@ -2620,7 +2620,7 @@ Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -40.0f,
+X = -56.0f,
 Y = -11296.0f,
 },
 },
@@ -2629,7 +2629,7 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -40.0f,
+X = -56.0f,
 Y = -11296.0f,
 },
 });
@@ -2660,7 +2660,7 @@ Powerup = false,
 Type = typeof(Galaxy.CTripleShot),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 88.0f,
+X = 96.0f,
 Y = -11296.0f,
 },
 },
@@ -2669,7 +2669,7 @@ MoverSpeedMultiplier = 3.5f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 88.0f,
+X = 96.0f,
 Y = -11296.0f,
 },
 });
@@ -2685,9 +2685,9 @@ Y = -12456.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 424.0f,
 Y = -12288.0f,
@@ -2705,9 +2705,9 @@ Y = -12368.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 424.0f,
 Y = -12624.0f,
@@ -2725,9 +2725,9 @@ Y = -12544.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 104.0f,
 Y = -12296.0f,
@@ -2745,9 +2745,9 @@ Y = -12368.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 104.0f,
 Y = -12624.0f,
@@ -2775,9 +2775,9 @@ Y = -12968.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -64.0f,
 Y = -12800.0f,
@@ -2795,9 +2795,9 @@ Y = -12880.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -64.0f,
 Y = -13136.0f,
@@ -2815,9 +2815,9 @@ Y = -13056.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -12808.0f,
@@ -2835,9 +2835,9 @@ Y = -12880.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -384.0f,
 Y = -13136.0f,
@@ -2865,9 +2865,9 @@ Y = -13480.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 432.0f,
 Y = -13312.0f,
@@ -2885,9 +2885,9 @@ Y = -13392.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 432.0f,
 Y = -13648.0f,
@@ -2905,9 +2905,9 @@ Y = -13568.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 0.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
 Y = -13320.0f,
@@ -2925,9 +2925,9 @@ Y = -13392.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
-TextureName = "LightBlue3",
+TextureName = "LightBlue1",
 DepthOffset = 0.0f,
-Rotation = 90.0f,
+Rotation = 45.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 112.0f,
 Y = -13648.0f,
@@ -3301,7 +3301,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14480.0f,
+Y = -14432.0f,
 },
 },
 MoverPresetName = "DownRight",
@@ -3310,7 +3310,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14480.0f,
+Y = -14432.0f,
 },
 });
 stage.AddElement(0, 
@@ -3321,7 +3321,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14520.0f,
+Y = -14496.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -3330,7 +3330,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14520.0f,
+Y = -14496.0f,
 },
 });
 stage.AddElement(0, 
@@ -3361,7 +3361,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14600.0f,
+Y = -14624.0f,
 },
 },
 MoverPresetName = "DownLeft",
@@ -3370,7 +3370,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
-Y = -14600.0f,
+Y = -14624.0f,
 },
 });
 stage.AddElement(0, 
@@ -3619,7 +3619,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "SmallBuilding1",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 184.0f,
+X = 192.0f,
 Y = -16128.0f,
 },
 });
@@ -3651,7 +3651,7 @@ Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
-Y = -16208.0f,
+Y = -16224.0f,
 },
 },
 MoverPresetName = "None",
@@ -3660,7 +3660,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
-Y = -16208.0f,
+Y = -16224.0f,
 },
 });
 stage.AddElement(0, 
@@ -3671,7 +3671,7 @@ Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
-Y = -16072.0f,
+Y = -16048.0f,
 },
 },
 MoverPresetName = "None",
@@ -3680,7 +3680,7 @@ MoverTransitionMultiplier = 3.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
-Y = -16072.0f,
+Y = -16048.0f,
 },
 });
 stage.AddElement(0, 
@@ -3839,7 +3839,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building8",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 280.0f,
+X = 344.0f,
 Y = -17280.0f,
 },
 });
@@ -3849,7 +3849,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building8",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 168.0f,
+X = 200.0f,
 Y = -17280.0f,
 },
 });
@@ -3869,7 +3869,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building8",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -96.0f,
+X = -88.0f,
 Y = -17280.0f,
 },
 });
@@ -3879,7 +3879,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building8",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -208.0f,
+X = -232.0f,
 Y = -17280.0f,
 },
 });
@@ -3889,7 +3889,7 @@ Coins = 0,
 Powerup = false,
 TextureName = "Building8",
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -320.0f,
+X = -376.0f,
 Y = -17280.0f,
 },
 });
@@ -3921,7 +3921,7 @@ Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,
-Y = -17504.0f,
+Y = -17472.0f,
 },
 },
 MoverPresetName = "None",
@@ -3930,7 +3930,37 @@ MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -16.0f,
-Y = -17504.0f,
+Y = -17472.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+DepthOffset = 0.0f,
+Rotation = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -224.0f,
+Y = -10104.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+DepthOffset = 0.0f,
+Rotation = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -384.0f,
+Y = -17280.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+DepthOffset = 0.0f,
+Rotation = 0.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 352.0f,
+Y = -17280.0f,
 },
 });
 
