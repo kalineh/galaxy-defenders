@@ -16,7 +16,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 36.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Ball");
             HealthMax = 0.5f;
             Coins = 1;

@@ -25,7 +25,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(64.0f, 64.0f));
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(72.0f, 72.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Cutter");
 
             BeamVisual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/CutterBeam");
@@ -73,7 +73,7 @@ namespace Galaxy
         public override void UpdateCollision()
         {
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Position = Physics.Position - new Vector2(32.0f, 32.0f);
+            aabb.Position = Physics.Position - new Vector2(36.0f, 36.0f);
         }
 
         public override void Draw(SpriteBatch sprite_batch)

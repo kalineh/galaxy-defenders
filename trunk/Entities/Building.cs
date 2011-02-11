@@ -148,7 +148,7 @@ namespace Galaxy
 
             Vector2 texture = new Vector2(Visual.Texture.Width, Visual.Texture.Height);
             CollisionAABB aabb = Collision as CollisionAABB;
-            aabb.Size = texture * Visual.Scale * 0.75f;
+            aabb.Size = texture * Visual.Scale * 0.80f;
 
             SBuildingDefinition definition = BuildingDefinitions[TextureName];
             Health = definition.HealthMax;

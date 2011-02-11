@@ -30,7 +30,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(42.0f, 42.0f));
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(56.0f, 56.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/RotateTurretBase");
             TurretVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/RotateTurret");
             TurretVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 1.0f;
@@ -110,7 +110,7 @@ namespace Galaxy
 
         public override void UpdateCollision()
         {
-            Vector2 offset = new Vector2(21.0f, 21.0f);
+            Vector2 offset = new Vector2(28.0f, 28.0f);
             CollisionAABB aabb = Collision as CollisionAABB;
             aabb.Position = Physics.Position - offset;
         }

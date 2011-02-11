@@ -24,7 +24,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 48.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 58.0f);
             Visual = CVisual.MakeSpriteCached1(World.Game, "Textures/Enemy/MissileStorm");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 5.0f;

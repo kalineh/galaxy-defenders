@@ -129,11 +129,11 @@ namespace Galaxy
             SingleShotEnergyUsage = CalculateSingleShotEnergy();
 
             foreach (CWeapon weapon in WeaponPrimary)
-                weapon.Offset = weapon.Offset + Vector2.UnitX * 16.0f;
+                weapon.Offset = weapon.Offset + Vector2.UnitX * 20.0f;
             foreach (CWeapon weapon in WeaponSidekickLeft)
-                weapon.Offset = weapon.Offset + Vector2.UnitY * -32.0f;
+                weapon.Offset = weapon.Offset + Vector2.UnitY * -40.0f;
             foreach (CWeapon weapon in WeaponSidekickRight)
-                weapon.Offset = weapon.Offset + Vector2.UnitY * 32.0f;
+                weapon.Offset = weapon.Offset + Vector2.UnitY * 40.0f;
         }
 
         public override void Update()
@@ -189,9 +189,9 @@ namespace Galaxy
             base.Draw(sprite_batch);
 
             if (WeaponSidekickLeft.Count > 0)
-                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * -32.0f, Physics.GetDir().Perp().ToAngle());
+                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * -40.0f, Physics.GetDir().Perp().ToAngle());
             if (WeaponSidekickRight.Count > 0)
-                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * 32.0f, Physics.GetDir().Perp().ToAngle());
+                SidekickVisual.Draw(sprite_batch, Physics.Position + Physics.GetDir().Perp() * 40.0f, Physics.GetDir().Perp().ToAngle());
 
             if (ShieldHitDisplayFrames > 0)
                 ShieldHitVisual.Draw(sprite_batch, Physics.Position, Physics.Rotation);
