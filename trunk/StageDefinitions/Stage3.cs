@@ -32,8 +32,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 56.0f,
-Y = -19120.0f,
+X = 120.0f,
+Y = -19160.0f,
 },
 },
 MoverPresetName = "None",
@@ -41,8 +41,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 56.0f,
-Y = -19120.0f,
+X = 120.0f,
+Y = -19160.0f,
 },
 });
 stage.AddElement(0, 
@@ -92,8 +92,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBeamer),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -19120.0f,
+X = -64.0f,
+Y = -19160.0f,
 },
 },
 MoverPresetName = "None",
@@ -101,8 +101,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -19120.0f,
+X = -64.0f,
+Y = -19160.0f,
 },
 });
 stage.AddElement(0, 
@@ -228,7 +228,7 @@ Y = -952.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
@@ -258,7 +258,7 @@ Y = -952.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.0f,
@@ -278,7 +278,7 @@ Y = -696.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -358,7 +358,7 @@ Y = -1824.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 144.0f,
@@ -368,7 +368,7 @@ Y = -1824.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 16.0f,
@@ -418,7 +418,7 @@ Y = -2208.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
@@ -488,7 +488,7 @@ Y = -3512.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -136.0f,
@@ -498,7 +498,7 @@ Y = -3512.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -264.0f,
@@ -548,7 +548,7 @@ Y = -3768.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 376.0f,
@@ -678,7 +678,7 @@ Y = -4520.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 416.0f,
@@ -708,7 +708,7 @@ Y = -7048.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 416.0f,
@@ -728,7 +728,7 @@ Y = -7304.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 288.0f,
@@ -738,7 +738,7 @@ Y = -7176.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 544.0f,
@@ -748,7 +748,7 @@ Y = -7304.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 544.0f,
@@ -807,7 +807,7 @@ Y = -7048.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -224.0f,
@@ -817,7 +817,7 @@ Y = -7048.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
@@ -867,7 +867,7 @@ Y = -7560.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
@@ -897,7 +897,7 @@ Y = -7560.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -96.0f,
@@ -1037,7 +1037,7 @@ Y = -8656.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -104.0f,
@@ -1097,7 +1097,7 @@ Y = -9400.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 56.0f,
@@ -1127,7 +1127,7 @@ Y = -9656.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 56.0f,
@@ -1187,7 +1187,7 @@ Y = -9400.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -504.0f,
@@ -1357,7 +1357,7 @@ Y = -12752.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -480.0f,
@@ -1387,7 +1387,7 @@ Y = -12880.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -480.0f,
@@ -1417,7 +1417,7 @@ Y = -13008.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -480.0f,
@@ -1437,7 +1437,7 @@ Y = -13136.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -480.0f,
@@ -1627,7 +1627,7 @@ Y = -14424.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -248.0f,
@@ -1657,7 +1657,7 @@ Y = -14424.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 8.0f,
@@ -1695,7 +1695,7 @@ Y = -18944.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -104.0f,
@@ -1705,7 +1705,7 @@ Y = -952.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -112.0f,
@@ -1715,7 +1715,7 @@ Y = -1824.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -240.0f,
@@ -1725,7 +1725,7 @@ Y = -1824.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -368.0f,
@@ -1735,7 +1735,7 @@ Y = -1824.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -496.0f,
@@ -1775,7 +1775,7 @@ Y = -2464.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 504.0f,
@@ -1785,7 +1785,7 @@ Y = -3256.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 120.0f,
@@ -1795,7 +1795,7 @@ Y = -3256.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 248.0f,
@@ -1815,7 +1815,7 @@ Y = -3256.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 248.0f,
@@ -1845,7 +1845,7 @@ Y = -3000.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 248.0f,
@@ -1865,7 +1865,7 @@ Y = -3640.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -8.0f,
@@ -2025,7 +2025,7 @@ Y = -6184.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -392.0f,
@@ -2035,7 +2035,7 @@ Y = -3512.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -520.0f,
@@ -2045,7 +2045,7 @@ Y = -3512.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -2085,7 +2085,7 @@ Y = -1208.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block5",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.0f,
@@ -2165,7 +2165,7 @@ Y = -952.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
@@ -2305,7 +2305,7 @@ Y = -9400.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 312.0f,
@@ -2315,7 +2315,7 @@ Y = -9528.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 440.0f,
@@ -2325,7 +2325,7 @@ Y = -9528.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 568.0f,
@@ -2655,7 +2655,7 @@ Y = -14296.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
@@ -2665,7 +2665,7 @@ Y = -15368.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 152.0f,
@@ -2725,7 +2725,7 @@ Y = -15368.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
@@ -2735,7 +2735,7 @@ Y = -15496.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
@@ -2745,7 +2745,7 @@ Y = -15624.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
@@ -2755,7 +2755,7 @@ Y = -15752.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -232.0f,
@@ -2765,7 +2765,7 @@ Y = -15880.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -2775,7 +2775,7 @@ Y = -15496.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -2785,7 +2785,7 @@ Y = -15624.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -2795,7 +2795,7 @@ Y = -15752.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block4",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 280.0f,
@@ -3025,7 +3025,7 @@ Y = -19024.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -376.0f,
@@ -3045,7 +3045,7 @@ Y = -17520.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 392.0f,
@@ -3055,7 +3055,7 @@ Y = -17776.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 264.0f,
@@ -3065,7 +3065,7 @@ Y = -17648.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 520.0f,
@@ -3075,7 +3075,7 @@ Y = -17776.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -248.0f,
@@ -3115,7 +3115,7 @@ Y = -17520.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -248.0f,
@@ -3165,7 +3165,7 @@ Y = -17776.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -120.0f,
@@ -3245,7 +3245,7 @@ Y = -17776.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -504.0f,
@@ -3255,7 +3255,7 @@ Y = -17520.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block2",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = -504.0f,
@@ -3285,7 +3285,7 @@ Y = -17264.0f,
 stage.AddElement(0, 
 new Galaxy.CStageElementDecoration() {
 TextureName = "Block3",
-DepthOffset = 0.0f,
+DepthOffset = -0.01f,
 Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 264.0f,
@@ -3379,8 +3379,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 104.0f,
-Y = -19128.0f,
+X = 64.0f,
+Y = -19104.0f,
 },
 },
 MoverPresetName = "None",
@@ -3388,8 +3388,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 104.0f,
-Y = -19128.0f,
+X = 64.0f,
+Y = -19104.0f,
 },
 });
 stage.AddElement(0, 
@@ -3399,8 +3399,8 @@ Powerup = false,
 Type = typeof(Galaxy.CDownTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -40.0f,
-Y = -19128.0f,
+X = -8.0f,
+Y = -19104.0f,
 },
 },
 MoverPresetName = "None",
@@ -3408,8 +3408,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -40.0f,
-Y = -19128.0f,
+X = -8.0f,
+Y = -19104.0f,
 },
 });
 stage.AddElement(0, 
