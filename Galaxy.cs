@@ -309,7 +309,7 @@ namespace Galaxy
         protected override void Update(GameTime game_time)
         {
 #if DEBUG
-            GlobalScale = CInput.IsRawKeyDown(Microsoft.Xna.Framework.Input.Keys.S) ? 1.20f : 1.0f;
+            GlobalScale = CInput.IsRawKeyDown(Microsoft.Xna.Framework.Input.Keys.S) ? 1.30f : 1.0f;
 #endif
 
 

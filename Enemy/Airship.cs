@@ -22,11 +22,11 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(64.0f, 96.0f));
+            Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(72.0f, 104.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Airship");
             HealthMax = 9.0f;
 
-            CollisionOffset = new Vector2(-32.0f, -48.0f);
+            CollisionOffset = new Vector2(-36.0f, -52.0f);
 
             FireDelay = 0.5f;
             FireCooldown = Time.ToFrames(FireDelay) / 2;

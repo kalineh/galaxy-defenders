@@ -24,7 +24,7 @@ namespace Galaxy
             Visual.TileX = 2;
             Visual.AnimationSpeed = 0.05f;
             HealthMax = 2.0f;
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 34.0f);
             ScreenEdgeIgnoreTime = 60;
             Coins = 0;
         }
