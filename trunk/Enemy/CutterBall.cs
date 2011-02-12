@@ -21,7 +21,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 30.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/CutterBall");
         }
 

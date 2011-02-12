@@ -41,7 +41,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Physics.Velocity = world.Random.NextVector2(2.0f);
+            Physics.Velocity = world.Random.NextVector2(3.0f);
             Physics.Friction = 0.95f + world.Random.NextFloat() * 0.03f;
             Physics.AngularVelocity = 0.1f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);

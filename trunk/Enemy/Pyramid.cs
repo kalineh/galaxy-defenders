@@ -19,7 +19,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 56.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Pyramid");
             HealthMax = 8.0f;
-            Coins = 4;
+            Coins = 3;
 
             Physics.AngularVelocity = 0.005f * World.Random.NextSign();
         }
@@ -45,47 +45,38 @@ namespace Galaxy
             CEnemy a = new CIsosceles();
             CEnemy b = new CIsosceles();
             CEnemy c = new CIsosceles();
-            CEnemy d = new CIsosceles();
 
             a.Initialize(World);
             b.Initialize(World);
             c.Initialize(World);
-            d.Initialize(World);
 
             a.Physics.Position = Physics.Position + new Vector2(0.0f, -16.0f);
             b.Physics.Position = Physics.Position + new Vector2(-32.0f, 16.0f);
             c.Physics.Position = Physics.Position + new Vector2(0.0f, 16.0f);
-            d.Physics.Position = Physics.Position + new Vector2(32.0f, 16.0f);
 
             a.Physics.Velocity = new Vector2(0.0f, -0.2f);
             b.Physics.Velocity = new Vector2(-0.5f, 0.2f);
             c.Physics.Velocity = new Vector2(0.0f, 0.2f);
-            d.Physics.Velocity = new Vector2(0.5f, 0.2f);
 
             a.Physics.Velocity += World.Random.NextVector2(World.Random.NextFloat() * 0.5f);
             b.Physics.Velocity += World.Random.NextVector2(World.Random.NextFloat() * 0.5f);
             c.Physics.Velocity += World.Random.NextVector2(World.Random.NextFloat() * 0.5f);
-            d.Physics.Velocity += World.Random.NextVector2(World.Random.NextFloat() * 0.5f);
 
             a.Physics.Friction = 1.0f;
             b.Physics.Friction = 1.0f;
             c.Physics.Friction = 1.0f;
-            d.Physics.Friction = 1.0f;
 
             a.Physics.AngularVelocity = 0.025f;
             b.Physics.AngularVelocity = 0.025f;
             c.Physics.AngularVelocity = -0.025f;
-            d.Physics.AngularVelocity = -0.025f;
 
             a.HealthMax *= 1.5f;
             b.HealthMax *= 1.5f;
             c.HealthMax *= 1.5f;
-            d.HealthMax *= 1.5f;
 
             World.EntityAdd(a);
             World.EntityAdd(b);
             World.EntityAdd(c);
-            World.EntityAdd(d);
 
             base.OnDie();
         }

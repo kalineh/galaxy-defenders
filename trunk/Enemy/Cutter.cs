@@ -34,7 +34,7 @@ namespace Galaxy
 
             //Physics.AngularVelocity = 0.03f * World.Random.NextSign();
             BeamRotation = 0.0f;
-            BeamRotationSpeed = 0.03f * World.Random.NextSign();
+            BeamRotationSpeed = 0.0f;
 
             HealthMax = 7.0f;
 
@@ -56,6 +56,7 @@ namespace Galaxy
 
             base.Update();
             BeamVisual.Update();
+            BeamRotationSpeed = 0.03f * Math.Sign(Physics.Position.X);
             BeamRotation += BeamRotationSpeed;
         }
 
@@ -63,7 +64,7 @@ namespace Galaxy
         {
             Vector2 pos = Physics.Position;
             Vector2 dir = Vector2.UnitX.Rotate(BeamRotation);
-            Vector2 ofs = dir * 116.0f;
+            Vector2 ofs = dir * 126.0f;
             Left.Physics.Position = pos + ofs;
             Left.Physics.Rotation = BeamRotation * 3.0f;
             Right.Physics.Position = pos - ofs;
