@@ -54,8 +54,8 @@ namespace Galaxy
             Vector2 position = Physics.Position;
             float rotation = Vector2.UnitY.ToAngle();
             Vector2 dir = Physics.GetDir();
-            Vector2 left_fire_offset = dir * -41.0f;
-            Vector2 right_fire_offset = dir * 38.0f;
+            Vector2 left_fire_offset = dir * -50.0f;
+            Vector2 right_fire_offset = dir * 47.0f;
             Vector2 left_fire_position = position + left_fire_offset;
             Vector2 right_fire_position = position + right_fire_offset;
 
