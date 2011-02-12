@@ -30,7 +30,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             HealthMax = 4.0f;
 
-            FireDelay = 2.0f;
+            FireDelay = 0.25f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
             FireDamage = 7.5f;
             FireSpeed = 2.5f;
@@ -62,7 +62,6 @@ namespace Galaxy
             if (FireCooldown <= 0)
             {
                 Fire();
-                TeleportCountdown = 90;
             }
         }
 
@@ -71,11 +70,10 @@ namespace Galaxy
             if (TeleportCountdown > 0)
             {
                 TeleportCountdown -= 1;
-                Physics.AngularVelocity += 0.005f;
+                Physics.AngularVelocity += 0.010f;
                 if (TeleportCountdown == 0)
                 {
                     Teleport();
-                    Fire();
                 }
 
                 return;
@@ -87,7 +85,7 @@ namespace Galaxy
                 if (InTeleportCountdown == 0)
                     Collision.Enabled = true;
 
-                if (InTeleportCountdown == 25)
+                if (InTeleportCountdown == 15)
                     World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterAppear, Physics.Position);
             }
         }
@@ -101,12 +99,26 @@ namespace Galaxy
             Vector2 to_target = direction.Normal() * (200.0f + World.Random.NextFloat() * 100.0f);
             Physics.Position += to_target;
             Physics.Position += Vector2.UnitY * -300.0f;
+            Physics.Velocity = GetPerpToShip() * 2.0f + GetDirToCenter() * 2.0f;
+            Physics.Friction = 0.99f;
             Physics.AngularVelocity = 0.005f;
             InTeleportCountdown = 90;
             Collision.Enabled = false;
 
             // TODO: a not crap effect
             //CEffect.TeleportIn(World, Physics.Position);
+        }
+
+        private Vector2 GetPerpToShip()
+        {
+            Vector2 dir = GetDirToShip();
+            return dir.Perp() * World.Random.NextSign();
+        }
+
+        private Vector2 GetDirToCenter()
+        {
+            Vector2 ofs = World.GameCamera.GetCenter().ToVector2() - Physics.Position;
+            return ofs.Normal();
         }
 
         private void Fire()
@@ -120,6 +132,9 @@ namespace Galaxy
             CEnemyMissile missile = CEnemyMissile.Spawn(World, position, rotation, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");
             FireCooldown = Time.ToFrames(FireDelay);
+
+            if (World.Random.NextFloat() < 0.20f)
+                FireCooldown += Time.ToFrames(1.0f);
         }
 
         public override void UpdateCollision()
@@ -127,6 +142,14 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.Position;
+        }
+
+        public override void TakeDamage(float damage, CShip source)
+        {
+            base.TakeDamage(damage, source);
+
+            if (TeleportCountdown <= 0)
+                TeleportCountdown = 60;
         }
     }
 }

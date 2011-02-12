@@ -28,7 +28,7 @@ namespace Galaxy
         {
             base.UpdateAI();
             World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position, CEnemy.EnemyOrangeColor, null, null);
-            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 54.0f);
+            World.ParticleEffects.Spawn(EParticleType.EnemyBlackHoleCenter, Physics.Position - Vector2.UnitX.Rotate(World.Random.NextAngle()) * 72.0f);
         }
 
         private void PullEntity(CEntity entity, float scale)
