@@ -137,11 +137,11 @@ namespace Galaxy
 
     public static class Interpolation
     {
-        public static float LerpAngle(float from, float to, float amount)
+        public static float MoveToAngle(float from, float to, float amount)
         {
-            Quaternion a = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, from);
-            Quaternion b = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, to);
-            return Quaternion.Lerp(a, b, amount).Z;
+            float offset = MathHelper.WrapAngle(to - from);
+            float move = MathHelper.Clamp(offset, -amount, amount);
+            return MathHelper.WrapAngle(from + move);
         }
     }
 

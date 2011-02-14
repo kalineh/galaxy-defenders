@@ -19,6 +19,8 @@ namespace Galaxy
         public int TeleportCountdown { get; set; }
         public int InTeleportCountdown { get; set; }
 
+        private int FireWaves { get; set; }
+
         public override void Initialize(CWorld world)
         {
             base.Initialize(world);
@@ -27,13 +29,16 @@ namespace Galaxy
             Physics.AngularVelocity = 0.005f;
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 34.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Teleporter");
-            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
+            Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
+            Visual.Recache();
             HealthMax = 4.0f;
 
-            FireDelay = 0.25f;
+            FireDelay = 0.1f;
             FireCooldown = (int)(Time.ToFrames(FireDelay) * world.Random.NextFloat());
-            FireDamage = 7.5f;
-            FireSpeed = 2.5f;
+            FireDamage = 6.0f;
+            FireSpeed = 4.0f;
+
+            FireWaves = -1;
         }
 
         public override void UpdateAI()
@@ -56,6 +61,9 @@ namespace Galaxy
                 return;
 
             if (InTeleportCountdown > 0)
+                return;
+
+            if (FireWaves < 0)
                 return;
 
             FireCooldown -= 1;
@@ -94,15 +102,16 @@ namespace Galaxy
         {
             World.ParticleEffects.Spawn(EParticleType.EnemyTeleporterVanish, Physics.Position);
 
-            Vector2 to_center = World.GameCamera.GetCenter().ToVector2() - Physics.Position;
-            Vector2 direction = to_center.Rotate(World.Random.NextFloat() * 0.2f * World.Random.NextSign());
-            Vector2 to_target = direction.Normal() * (200.0f + World.Random.NextFloat() * 100.0f);
-            Physics.Position += to_target;
-            Physics.Position += Vector2.UnitY * -300.0f;
+            Physics.Position = new Vector2(
+                World.GameCamera.GetCenter().X + World.Random.NextFloat() * 300.0f * World.Random.NextSign(),
+                World.GameCamera.GetTopLeft().Y - 150.0f + World.Random.NextFloat() * 100.0f
+            );
             Physics.Velocity = GetPerpToShip() * 2.0f + GetDirToCenter() * 2.0f;
             Physics.Friction = 0.99f;
             Physics.AngularVelocity = 0.005f;
             InTeleportCountdown = 90;
+            FireWaves = -1;
+            FireCooldown = 0;
             Collision.Enabled = false;
 
             // TODO: a not crap effect
@@ -127,14 +136,23 @@ namespace Galaxy
             Vector2 dir = GetDirToShip();
             float rotation = dir.ToAngle();
 
-            rotation += World.Random.NextAngle() * 0.015f;
+            rotation += FireWaves * MathHelper.PiOver4;
 
-            CEnemyMissile missile = CEnemyMissile.Spawn(World, position, rotation, FireSpeed, FireDamage);
+            CEnemyMissile.Spawn(World, position, MathHelper.WrapAngle(rotation + MathHelper.PiOver2 * 0.0f), FireSpeed, FireDamage);
+            CEnemyMissile.Spawn(World, position, MathHelper.WrapAngle(rotation + MathHelper.PiOver2 * 1.0f), FireSpeed, FireDamage);
+            CEnemyMissile.Spawn(World, position, MathHelper.WrapAngle(rotation + MathHelper.PiOver2 * 2.0f), FireSpeed, FireDamage);
+            CEnemyMissile.Spawn(World, position, MathHelper.WrapAngle(rotation + MathHelper.PiOver2 * 3.0f), FireSpeed, FireDamage);
+
+            //CEnemyPellet pellet = CEnemyPellet.Spawn(World, position, rotation, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");
             FireCooldown = Time.ToFrames(FireDelay);
 
-            if (World.Random.NextFloat() < 0.20f)
-                FireCooldown += Time.ToFrames(1.0f);
+            FireWaves += 1;
+            if (FireWaves > 1)
+            {
+                TeleportCountdown = 30;
+                FireWaves = -1;
+            }
         }
 
         public override void UpdateCollision()
@@ -148,8 +166,8 @@ namespace Galaxy
         {
             base.TakeDamage(damage, source);
 
-            if (TeleportCountdown <= 0)
-                TeleportCountdown = 60;
+            if (FireWaves < 0)
+                FireWaves = 0;
         }
     }
 }

@@ -537,7 +537,7 @@ namespace Galaxy
             }
         }
 
-        public void AbsorbBullet(CEnemyShot shot)
+        public void AbsorbBullet(CProjectile shot)
         {
             float value = shot.Damage;
             float max_to_energy = Generator.Energy - CurrentEnergy;
