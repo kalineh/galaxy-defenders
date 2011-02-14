@@ -11,6 +11,10 @@ namespace Galaxy
     public class CPyramid
         : CEnemy
     {
+        private CVisual TurretVisual { get; set; }
+        private float TurretRotation { get; set; }
+        private int ShootSequence { get; set; }
+
         public override void Initialize(CWorld world)
         {
             base.Initialize(world);
@@ -21,7 +25,44 @@ namespace Galaxy
             HealthMax = 8.0f;
             Coins = 3;
 
+            // boring mode
             Physics.AngularVelocity = 0.005f * World.Random.NextSign();
+
+            // rad mode
+            TurretVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/PyramidTurret");
+            TurretVisual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 1.0f;
+            TurretVisual.Recache();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            ShootSequence += 1;
+
+            if (ShootSequence < 20)
+            {
+                Vector2 dir = GetDirToShipWithLead(5.0f);
+                float target = dir.ToAngle() - MathHelper.PiOver2;
+                TurretRotation = Interpolation.MoveToAngle(TurretRotation, target, 0.03f);
+            }
+            else if (ShootSequence < 40)
+            {
+                if (ShootSequence % 4 == 0)
+                {
+                    float adjusted = TurretRotation + MathHelper.PiOver2;
+                    Vector2 turret_offset = Vector2.UnitX.Rotate(adjusted) * 34.0f;
+                    CProjectile shot = CEnemyMiniShot.Spawn(World, Physics.Position + turret_offset, adjusted, 9.0f, 1.0f);
+                    shot.Physics.Velocity += World.ScrollSpeed * -Vector2.UnitY;
+                }
+            }
+            else if (ShootSequence < 60)
+            {
+            }
+            else
+            {
+                ShootSequence = 0;    
+            }
         }
 
         public override void UpdateCollision()
@@ -29,6 +70,12 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionCircle circle = Collision as CollisionCircle;
             circle.Position = Physics.Position;
+        }
+
+        public override void Draw(SpriteBatch sprite_batch)
+        {
+            base.Draw(sprite_batch);
+            TurretVisual.Draw(sprite_batch, Physics.Position, TurretRotation);
         }
 
         protected override void OnDie()

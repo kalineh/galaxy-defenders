@@ -99,6 +99,7 @@
     <Compile Include="OptionsMenu.cs" />
     <Compile Include="Projectile\ChargeShot.cs" />
     <Compile Include="Projectile\EnemyCannonShot.cs" />
+    <Compile Include="Projectile\EnemyMiniShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="SampleShip.cs" />
