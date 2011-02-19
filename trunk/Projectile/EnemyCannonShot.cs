@@ -14,6 +14,7 @@ namespace Galaxy
         public bool IsReflected { get; set; }
         public CShip WhoReflected { get; set; }
         public int CanCollideWait { get; set; }
+        public int Health { get; set; }
 
         public static CEnemyCannonShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
@@ -38,6 +39,8 @@ namespace Galaxy
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyCannonShot");
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(11.0f, 42.0f));
+
+            Health = 4;
         }
 
         public override void Update()
@@ -81,6 +84,10 @@ namespace Galaxy
             ship.Physics.Velocity += force;
 
             CanCollideWait = 3;
+
+            Health -= 1;
+            if (Health <= 0)
+                Die();
         }
     }
 }

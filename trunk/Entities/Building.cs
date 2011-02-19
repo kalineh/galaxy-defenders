@@ -77,6 +77,13 @@ namespace Galaxy
                     ExplosionType = EParticleType.BuildingDestroyedBig,
                 }
             },
+            {   "Building9",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 10.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedBig,
+                }
+            },
             {   "SmallBuilding1",
                 new SBuildingDefinition()
                 {
@@ -101,14 +108,28 @@ namespace Galaxy
             {   "SmallBuilding4",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 1.25f,
+                    HealthMax = 2.0f,
                     ExplosionType = EParticleType.BuildingDestroyedSmall,
                 }
             },
             {   "SmallBuilding5",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 1.0f,
+                    HealthMax = 2.5f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding6",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 5.0f,
+                    ExplosionType = EParticleType.BuildingDestroyedSmall,
+                }
+            },
+            {   "SmallBuilding7",
+                new SBuildingDefinition()
+                {
+                    HealthMax = 6.0f,
                     ExplosionType = EParticleType.BuildingDestroyedSmall,
                 }
             },
