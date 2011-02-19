@@ -50,7 +50,7 @@ namespace Galaxy
             Initialize(world); 
             Visual = CVisual.MakeSpriteCached1(world.Game, left ? "Textures/Enemy/SplitterFragmentLeft" : "Textures/Enemy/SplitterFragmentRight");
             Physics.AngularVelocity = 0.1f * (left ? 1.0f : -1.0f);
-            Physics.Position = parent.Physics.Position + Vector2.UnitX * 3.0f * (left ? -1.0f : 1.0f);
+            Physics.Position = parent.Physics.Position + Vector2.UnitX * 11.0f * (left ? -1.0f : 1.0f);
             Physics.Velocity = parent.Physics.Velocity;
             Physics.Velocity += Vector2.UnitX * (left ? -1.0f : 1.0f);
             Physics.Velocity += world.Random.NextVector2() * 0.5f;
@@ -61,7 +61,7 @@ namespace Galaxy
             base.Initialize(world);
 
             Physics = new CPhysics();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 30.0f);
             HealthMax = 1.0f;
         }
 

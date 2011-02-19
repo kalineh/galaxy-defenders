@@ -49,7 +49,7 @@ namespace Galaxy
             {
                 FireSequenceCountdown = 120;
                 FireRotationDirection = World.Random.NextSign();
-                LastFireRotation = MathHelper.PiOver2 + World.Random.NextFloat() * -FireRotationDirection;
+                LastFireRotation = MathHelper.PiOver2 + -FireRotationDirection * MathHelper.PiOver2;
             }
 
             FireSequenceCountdown -= 1;
