@@ -97,9 +97,9 @@ namespace Galaxy
             b.Initialize(World);
             c.Initialize(World);
 
-            a.Physics.Position = Physics.Position + new Vector2(0.0f, -16.0f);
-            b.Physics.Position = Physics.Position + new Vector2(-32.0f, 16.0f);
-            c.Physics.Position = Physics.Position + new Vector2(0.0f, 16.0f);
+            a.Physics.Position = Physics.Position + new Vector2(0.0f, -32.0f);
+            b.Physics.Position = Physics.Position + new Vector2(-48.0f, 32.0f);
+            c.Physics.Position = Physics.Position + new Vector2(0.0f, 32.0f);
 
             a.Physics.Velocity = new Vector2(0.0f, -0.2f);
             b.Physics.Velocity = new Vector2(-0.5f, 0.2f);
