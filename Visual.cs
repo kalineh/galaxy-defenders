@@ -198,7 +198,7 @@ namespace Galaxy
         private float _CacheTextureHeightScaled;
         private Rectangle _CacheFrameSourceRect;
         public Vector2 _CacheOrigin;
-        private Color _CacheColor;
+        public Color _CacheColor;
 
         public CVisual(CGalaxy game, Texture2D texture, Color color)
         {

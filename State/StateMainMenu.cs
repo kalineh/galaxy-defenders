@@ -314,15 +314,15 @@ namespace Galaxy
                 return;
 
             CStageDefinition definition = null;
-            if (Game.Input.IsKeyPressed(Keys.D0)) definition = CStageDefinition.GetStageDefinitionByName("Stage1");
-            if (Game.Input.IsKeyPressed(Keys.D1)) definition = CStageDefinition.GetStageDefinitionByName("Stage2");
-            if (Game.Input.IsKeyPressed(Keys.D2)) definition = CStageDefinition.GetStageDefinitionByName("Stage3");
-            if (Game.Input.IsKeyPressed(Keys.D3)) definition = CStageDefinition.GetStageDefinitionByName("Stage4");
-            if (Game.Input.IsKeyPressed(Keys.D4)) definition = CStageDefinition.GetStageDefinitionByName("Stage5");
-            if (Game.Input.IsKeyPressed(Keys.D5)) definition = CStageDefinition.GetStageDefinitionByName("Stage6");
-            if (Game.Input.IsKeyPressed(Keys.D6)) definition = CStageDefinition.GetStageDefinitionByName("Stage7");
+            if (Game.Input.IsKeyPressed(Keys.D1)) definition = CStageDefinition.GetStageDefinitionByName("Stage1");
+            if (Game.Input.IsKeyPressed(Keys.D2)) definition = CStageDefinition.GetStageDefinitionByName("Stage2");
+            if (Game.Input.IsKeyPressed(Keys.D3)) definition = CStageDefinition.GetStageDefinitionByName("Stage3");
+            if (Game.Input.IsKeyPressed(Keys.D4)) definition = CStageDefinition.GetStageDefinitionByName("Stage4");
+            if (Game.Input.IsKeyPressed(Keys.D5)) definition = CStageDefinition.GetStageDefinitionByName("Stage5");
+            if (Game.Input.IsKeyPressed(Keys.D6)) definition = CStageDefinition.GetStageDefinitionByName("Stage6");
+            if (Game.Input.IsKeyPressed(Keys.D7)) definition = CStageDefinition.GetStageDefinitionByName("Stage7");
             if (Game.Input.IsKeyPressed(Keys.D8)) definition = CStageDefinition.GetStageDefinitionByName("Stage8");
-            if (Game.Input.IsKeyPressed(Keys.D9)) definition = CStageDefinition.GetStageDefinitionByName("Stage9");
+            if (Game.Input.IsKeyPressed(Keys.D0)) definition = CStageDefinition.GetStageDefinitionByName("Stage9");
             if (definition != null)
             {
                 Game.State = new CStateGame(Game, definition);

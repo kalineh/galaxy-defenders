@@ -397,6 +397,61 @@ namespace Galaxy
 {
     public class CMap
     {
+        public static List<string> AllPrimaryWeapons()
+        {
+            return new List<string>() {
+                "FrontLaser",
+                "SpreadLaser",
+                "Plasma",
+                "Flame",
+            };
+        }
+
+        public static List<string> AllSecondaryWeapons()
+        {
+            return new List<string>() {
+                "Missile",
+                "SeekBomb",
+            };
+        }
+
+        public static List<string> AllSidekickWeapons()
+        {
+            return new List<string>() {
+                "MiniShot",
+                "ChargeShot",
+            };
+        }
+
+        public static List<string> AllChassisParts()
+        {
+            return new List<string>() {
+                "BasicShip",
+                "FighterShip",
+                "StrongShip",
+                "UltraShip",
+            };
+        }
+
+        public static List<string> AllGeneratorParts()
+        {
+            return new List<string>() {
+                "BasicGenerator",
+                "CoreGenerator",
+                "PowerGenerator",
+                "UltraGenerator",
+            };
+        }
+
+        public static List<string> AllShieldParts()
+        {
+            return new List<string>() {
+                "BasicShield",
+                "EnhancedShield",
+                "UltraShield",
+            };
+        }
+
         public static List<CMapNode> Nodes = new List<CMapNode>()
         {
             new CMapNode() {
@@ -406,73 +461,27 @@ namespace Galaxy
                 Next = new List<string>() {
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 0,
-                StageName = "Stat Stage",
+                StageName = "Start Stage",
                 Current = "Start",
                 Next = new List<string>() {
                     "Stage1",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                    "UltraShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 0,
@@ -482,33 +491,12 @@ namespace Galaxy
                     "Stage2",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "PowerShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 1,
@@ -518,33 +506,12 @@ namespace Galaxy
                     "Stage3",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "PowerShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 2,
@@ -554,32 +521,12 @@ namespace Galaxy
                     "Stage4",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "EnhancedShield",
-                    "PowerShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
 
             new CMapNode() {
@@ -590,35 +537,13 @@ namespace Galaxy
                     "Stage5",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+
             },
 
             new CMapNode() {
@@ -629,35 +554,13 @@ namespace Galaxy
                     "Stage6",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+
             },
 
             new CMapNode() {
@@ -668,35 +571,13 @@ namespace Galaxy
                     "Stage7",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+
             },
             new CMapNode() {
                 SaveIndex = 6,
@@ -706,35 +587,13 @@ namespace Galaxy
                     "Stage8",
                     "*",
                 },
-                AvailablePrimaryWeaponParts = new List<string>() {
-                    "FrontLaser",
-                    "SpreadLaser",
-                    "Plasma",
-                },
-                AvailableSecondaryWeaponParts = new List<string>() {
-                    "Missile",
-                    "SeekBomb",
-                },
-                AvailableSidekickWeaponParts = new List<string>() {
-                    "MiniShot",
-                    "ChargeShot",
-                },
-                AvailableChassisParts = new List<string>() {
-                    "BasicShip",
-                    "FighterShip",
-                    "StrongShip",
-                },
-                AvailableGeneratorParts = new List<string>() {
-                    "BasicGenerator",
-                    "CoreGenerator",
-                    "PowerGenerator",
-                    "UltraGenerator",
-                },
-                AvailableShieldParts = new List<string>() {
-                    "BasicShield",
-                    "EnhancedShield",
-                    "UltraShield",
-                },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+
             },
             new CMapNode() {
                 SaveIndex = 7,
@@ -743,6 +602,13 @@ namespace Galaxy
                 Next = new List<string>() {
                     "Stage9",
                 },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+
             },
             new CMapNode() {
                 SaveIndex = 8,
@@ -751,6 +617,12 @@ namespace Galaxy
                 Next = new List<string>() {
                     "Stage10",
                 },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 9,
@@ -759,6 +631,12 @@ namespace Galaxy
                 Next = new List<string>() {
                     "Stage11",
                 },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 10,
@@ -767,11 +645,23 @@ namespace Galaxy
                 Next = new List<string>() {
                     "Stage12",
                 },
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
             new CMapNode() {
                 SaveIndex = 11,
                 StageName = "Lamination X",
                 Current = "Stage12",
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
             },
         };
 

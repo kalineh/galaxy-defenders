@@ -69,7 +69,10 @@ namespace Galaxy
             {
                 Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation);
             }
+        }
 
+        public void DebugDraw(SpriteBatch sprite_batch)
+        {
 #if DEBUG
             if (CInput.IsRawKeyDown(Keys.L))
             {

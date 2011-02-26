@@ -122,6 +122,7 @@ namespace Galaxy
             public float Energy { get; set; }
             public float ChargeSpeed { get; set; }
             public int AutoDischarge { get; set; }
+            public object CustomData { get; set; }
         }
 
         public struct SWeaponDefinition
@@ -166,6 +167,36 @@ namespace Galaxy
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.15f,
+            };
+        }
+
+        public static SWeaponData MakeFlameData(float reload)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 30.0f,
+                Damage = 0.75f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * 0.0f,
+                Rotation = 0.0f,
+                Energy = 0.1f,
+                CustomData = new FlameCustomData() { Lifetime = 30, Friction = 0.95f, SprayAngle = 0.1f },
+            };
+        }
+
+        public static SWeaponData MakeBigFlameData(float offset)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.14f,
+                Speed = 30.0f,
+                Damage = 1.25f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * offset,
+                Rotation = 0.0f,
+                Energy = 0.15f,
+                CustomData = new FlameCustomData() { Lifetime = 40, Friction = 0.95f, SprayAngle = 0.05f },
             };
         }
 
@@ -783,6 +814,51 @@ namespace Galaxy
                     },
                 }
             },
+
+            { "Flame",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 750,
+                    DisplayName = "Flame\nThrower",
+                    Sound = "WeaponShootFlame",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeFlameData(0.15f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeFlameData(0.12f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeFlameData(0.10f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeFlameData(0.08f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeFlameData(0.05f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeBigFlameData(0.075f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeBigFlameData(0.05f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeBigFlameData(0.05f),
+                            MakeFlameData(0.075f),
+                        },
+                    },
+                }
+            },
+
 
             { "Missile", 
                 new SWeaponDefinition() {

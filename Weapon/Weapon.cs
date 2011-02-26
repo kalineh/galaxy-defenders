@@ -23,6 +23,7 @@ namespace Galaxy
         public float ChargeSpeed { get; set; }
         protected float Cooldown { get; set; }
         public int CurrentCharge { get; set; }
+        public object CustomData { get; set; }
 
         static public int MaximumChargeFrames = 60;
         static public float MaximumChargeSeconds = Time.ToSeconds(MaximumChargeFrames);
@@ -57,6 +58,7 @@ namespace Galaxy
             IsCharge = data.ChargeSpeed > 0.0f;
             ChargeSpeed = data.ChargeSpeed;
             AutoDischarge = data.AutoDischarge;
+            CustomData = data.CustomData;
         }
 
         public bool CanFire()
@@ -125,7 +127,7 @@ namespace Galaxy
 
             float normalized_charge = Math.Min(MaximumChargeSeconds, Time.ToSeconds(CurrentCharge));
 
-            Instantiate(Owner, fire_position, rotation, Speed, Damage, normalized_charge);
+            Instantiate(Owner, fire_position, rotation, Speed, Damage, normalized_charge, CustomData);
 
             Owner.Physics.Velocity += Kickback(Owner.Physics.Rotation);
 
@@ -138,7 +140,7 @@ namespace Galaxy
             }
         }
 
-        protected abstract void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge);
+        protected abstract void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data);
     };
 
 }
