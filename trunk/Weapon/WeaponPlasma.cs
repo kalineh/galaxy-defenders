@@ -9,7 +9,7 @@ namespace Galaxy
     public class CWeaponPlasma
         : CWeapon
     {
-        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
             CPlasma plasma = new CPlasma();
 

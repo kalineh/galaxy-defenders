@@ -102,6 +102,7 @@
     <Compile Include="Projectile\EnemyMiniShot.cs" />
     <Compile Include="Projectile\EnemyMissile.cs" />
     <Compile Include="Projectile\EnemyPellet.cs" />
+    <Compile Include="Projectile\Flame.cs" />
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
     <Compile Include="ScorePanel.cs" />
@@ -263,6 +264,7 @@
     <Compile Include="Time.cs" />
     <Compile Include="Visual.cs" />
     <Compile Include="Weapon\WeaponChargeShot.cs" />
+    <Compile Include="Weapon\WeaponFlame.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
     <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />

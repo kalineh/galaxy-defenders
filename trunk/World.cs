@@ -723,6 +723,7 @@ namespace Galaxy
             foreach (CEntity entity in Entities)
             {
                 entity.Draw(Game.DefaultSpriteBatch);
+                entity.DebugDraw(Game.DefaultSpriteBatch);
             }
 
             Game.DefaultSpriteBatch.End();

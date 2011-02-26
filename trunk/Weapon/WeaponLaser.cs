@@ -19,7 +19,7 @@ namespace Galaxy
             Cache = new CProjectileCache<CLaser>(owner.World);
         }
 
-        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge)
+        protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
             CLaser laser = Cache.GetProjectileInstance(Owner.GameControllerIndex);
 

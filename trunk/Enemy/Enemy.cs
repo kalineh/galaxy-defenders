@@ -158,6 +158,13 @@ namespace Galaxy
             plasma.Die();
         }
 
+        public void OnCollide(CFlame flame)
+        {
+            World.Stats.ShotDamageDealt += flame.Damage;
+            TakeDamage(flame.Damage, flame.Owner);
+            flame.Die();
+        }
+
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;
