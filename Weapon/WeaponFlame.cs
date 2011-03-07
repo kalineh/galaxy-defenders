@@ -17,6 +17,8 @@ namespace Galaxy
             base.Initialize(owner);
 
             Cache = new CProjectileCache<CFlame>(owner.World);
+
+            RandomReloadTime = 0.1f;
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
@@ -35,6 +37,7 @@ namespace Galaxy
             FlameCustomData custom = (FlameCustomData)custom_data;
             flame.Physics.Friction = custom.Friction;
             flame.Physics.Velocity = flame.Physics.Velocity.Rotate(owner.World.Random.NextFloat() * custom.SprayAngle * owner.World.Random.NextSign());
+            flame.Physics.AngularVelocity = owner.World.Random.NextAngle() * 0.05f;
             flame.Lifetime = custom.Lifetime;
 
             // TODO: what if this is on the entity delete list?!

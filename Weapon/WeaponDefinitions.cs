@@ -170,33 +170,33 @@ namespace Galaxy
             };
         }
 
-        public static SWeaponData MakeFlameData(float reload)
+        public static SWeaponData MakeFlameData(float reload, float offset)
         {
             return new SWeaponData()
             {
                 ReloadTime = reload,
-                Speed = 30.0f,
+                Speed = 15.0f,
                 Damage = 0.75f,
                 KickbackForce = 0.0f,
-                Offset = Vector2.UnitY * 0.0f,
+                Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.1f,
-                CustomData = new FlameCustomData() { Lifetime = 30, Friction = 0.95f, SprayAngle = 0.1f },
+                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.1f },
             };
         }
 
-        public static SWeaponData MakeBigFlameData(float offset)
+        public static SWeaponData MakeBigFlameData(float reload, float offset)
         {
             return new SWeaponData()
             {
-                ReloadTime = 0.14f,
-                Speed = 30.0f,
+                ReloadTime = reload,
+                Speed = 15.0f,
                 Damage = 1.25f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.15f,
-                CustomData = new FlameCustomData() { Lifetime = 40, Friction = 0.95f, SprayAngle = 0.05f },
+                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.05f },
             };
         }
 
@@ -824,36 +824,49 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeFlameData(0.15f),
+                            MakeFlameData(0.12f, -2.0f),
+                            MakeFlameData(0.12f, +2.0f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeFlameData(0.12f),
+                            MakeFlameData(0.10f, -2.0f),
+                            MakeFlameData(0.10f, +2.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeFlameData(0.10f),
+                            MakeFlameData(0.11f, -4.0f),
+                            MakeFlameData(0.11f, +0.0f),
+                            MakeFlameData(0.11f, +4.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeFlameData(0.08f),
+                            MakeFlameData(0.10f, -4.0f),
+                            MakeFlameData(0.10f, +0.0f),
+                            MakeFlameData(0.10f, +4.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeFlameData(0.05f),
+                            MakeFlameData(0.08f, -4.0f),
+                            MakeFlameData(0.08f, +0.0f),
+                            MakeFlameData(0.08f, +4.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeBigFlameData(0.075f),
+                            MakeFlameData(0.075f, -4.0f),
+                            MakeFlameData(0.075f, -4.0f),
+                            MakeBigFlameData(0.125f, 0.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeBigFlameData(0.05f),
+                            MakeFlameData(0.075f, -4.0f),
+                            MakeFlameData(0.075f, -4.0f),
+                            MakeBigFlameData(0.10f, 0.0f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeBigFlameData(0.05f),
-                            MakeFlameData(0.075f),
+                            MakeBigFlameData(0.10f, -4.0f),
+                            MakeBigFlameData(0.10f, -4.0f),
+                            MakeBigFlameData(0.10f, 0.0f),
                         },
                     },
                 }

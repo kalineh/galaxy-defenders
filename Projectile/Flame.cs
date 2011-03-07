@@ -30,14 +30,14 @@ namespace Galaxy
                 Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Flame", owner.GameControllerIndex);
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.UpdateColor();
-                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
+                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
             }
             else
             {
                 Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigFlame", owner.GameControllerIndex);
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.UpdateColor();
-                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 20.0f);
+                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 30.0f);
             }
 
             BaseDamage = damage;
@@ -57,8 +57,7 @@ namespace Galaxy
         public override void Draw(SpriteBatch sprite_batch)
         {
             float t = (float)AliveTime / (float)Lifetime;
-            Visual._CacheColor = new Color(Visual._CacheColor, 1.0f - t);
-            Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 1.0f + t * 0.1f);
+            Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.5f + t * 0.5f);
         }
 
         public override void UpdateCollision()

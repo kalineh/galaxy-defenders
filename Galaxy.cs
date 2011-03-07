@@ -310,7 +310,10 @@ namespace Galaxy
         {
 #if DEBUG
             GlobalScale = CInput.IsRawKeyDown(Microsoft.Xna.Framework.Input.Keys.S) ? 1.30f : 1.0f;
+#else
+            GlobalScale = 1.0f;
 #endif
+
 
 
             UpdateStopwatch.Reset();
