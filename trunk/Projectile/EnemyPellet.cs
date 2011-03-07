@@ -104,6 +104,12 @@ namespace Galaxy
             Die();
         }
 
+        public void OnCollide(CFlame flame)
+        {
+            flame.Die();
+            Hit();
+        }
+
         private void Hit()
         {
             Health -= 1;

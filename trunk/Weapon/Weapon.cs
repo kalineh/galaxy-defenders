@@ -24,6 +24,7 @@ namespace Galaxy
         protected float Cooldown { get; set; }
         public int CurrentCharge { get; set; }
         public object CustomData { get; set; }
+        public float RandomReloadTime { get; set; }
 
         static public int MaximumChargeFrames = 60;
         static public float MaximumChargeSeconds = Time.ToSeconds(MaximumChargeFrames);
@@ -37,6 +38,7 @@ namespace Galaxy
             IsCharge = false;
             AutoDischarge = 0;
             CurrentCharge = 0;
+            RandomReloadTime = 0.0f;
         }
 
         public void Update()
@@ -131,7 +133,7 @@ namespace Galaxy
 
             Owner.Physics.Velocity += Kickback(Owner.Physics.Rotation);
 
-            Cooldown = ReloadTime;
+            Cooldown = ReloadTime + Owner.World.Random.NextFloat() * RandomReloadTime;
             CurrentCharge = 0;
 
             if (Sound != null)
