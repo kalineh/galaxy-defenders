@@ -404,6 +404,7 @@ namespace Galaxy
                 "SpreadLaser",
                 "Plasma",
                 "Flame",
+                "Lightning",
             };
         }
 

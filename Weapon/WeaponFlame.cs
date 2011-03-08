@@ -45,14 +45,4 @@ namespace Galaxy
             owner.World.EntityAdd(flame);
         }
     }
-
-    public class CWeaponFrontFlame
-        : CWeaponFlame
-    {
-    }
-
-    public class CWeaponSpreadFlame
-        : CWeaponFlame
-    {
-    }
 }

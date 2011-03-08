@@ -110,6 +110,12 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CLightning lightning)
+        {
+            lightning.Die();
+            Hit();
+        }
+
         private void Hit()
         {
             Health -= 1;

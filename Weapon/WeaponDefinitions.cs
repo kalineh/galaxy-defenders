@@ -200,6 +200,21 @@ namespace Galaxy
             };
         }
 
+        public static SWeaponData MakeLightningData(float offset, int bounces)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.2f,
+                Speed = 16.0f,
+                Damage = 0.07f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * offset,
+                Rotation = 0.0f,
+                Energy = 0.20f,
+                CustomData = new LightningCustomData() { Bounces = bounces },
+            };
+        }
+
         public static Dictionary<string, SWeaponDefinition> Items = new Dictionary<string, SWeaponDefinition>()
         {
             { "FrontLaser",
@@ -867,6 +882,69 @@ namespace Galaxy
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, 0.0f),
+                        },
+                    },
+                }
+            },
+
+
+            { "Lightning",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 750,
+                    DisplayName = "Lightning\nGun",
+                    Sound = "WeaponShootLaser", // TODO: SFX
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeLightningData(+0.0f, 2),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeLightningData(-4.0f, 2),
+                            MakeLightningData(+4.0f, 2),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeLightningData(-8.0f, 2),
+                            MakeLightningData(+0.0f, 2),
+                            MakeLightningData(+8.0f, 2),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeLightningData(-8.0f, 2),
+                            MakeLightningData(+0.0f, 3),
+                            MakeLightningData(+8.0f, 2),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeLightningData(-12.0f, 2),
+                            MakeLightningData(-4.0f, 3),
+                            MakeLightningData(+4.0f, 3),
+                            MakeLightningData(+12.0f, 2),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeLightningData(-12.0f, 3),
+                            MakeLightningData(-4.0f, 3),
+                            MakeLightningData(+4.0f, 3),
+                            MakeLightningData(+12.0f, 3),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeLightningData(-16.0f, 3),
+                            MakeLightningData(-8.0f, 3),
+                            MakeLightningData(+0.0f, 3),
+                            MakeLightningData(+8.0f, 3),
+                            MakeLightningData(+16.0f, 3),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeLightningData(-16.0f, 3),
+                            MakeLightningData(-8.0f, 4),
+                            MakeLightningData(+0.0f, 4),
+                            MakeLightningData(+8.0f, 4),
+                            MakeLightningData(+16.0f, 3),
                         },
                     },
                 }
