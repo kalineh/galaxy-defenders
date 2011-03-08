@@ -36,6 +36,7 @@ namespace Galaxy
         SkillDetonationExplosion,
         WeaponLaserHit,
         WeaponFlameHit,
+        WeaponLightningHit,
         WeaponMissileHit,
         WeaponMissileTrail,
         WeaponPlasmaHit,
@@ -799,6 +800,37 @@ namespace Galaxy
 
                 {
                     EParticleType.WeaponFlameHit,
+                    new SEffectDefinition()
+                    {
+                        Type = EParticleType.None,
+                        Count = 2,
+                        Visual = CParticleEffectManager.Dot,
+                        Position = Vector2.Zero,
+                        PositionVariationCircle = new Vector2(3.0f, 3.0f),
+                        PositionVariationBox = Vector2.Zero,
+                        PositionDelta = Vector2.Zero,
+                        PositionDeltaVariation = Vector2.One,
+                        Scale = new Vector2(0.5f, 0.5f),
+                        ScaleVariation = Vector2.Zero,
+                        ScaleDelta = new Vector2(-0.015f, -0.015f),
+                        ScaleDeltaVariation = Vector2.Zero,
+                        OutDelta = 0.0f,
+                        Angle = 0.0f,
+                        AngleVariation = 0.0f,
+                        AngleDelta = 0.0f,
+                        AngleDeltaVariation = 0.0f,
+                        Color = Color.White,
+                        Alpha = 1.0f,
+                        AlphaVariation = 0.0f,
+                        AlphaDelta = 0.0f,
+                        AlphaDeltaVariation = 0.0f,
+                        Lifetime = 60,
+                        LifetimeVariation = 15,
+                    }
+                },
+
+                {
+                    EParticleType.WeaponLightningHit,
                     new SEffectDefinition()
                     {
                         Type = EParticleType.None,

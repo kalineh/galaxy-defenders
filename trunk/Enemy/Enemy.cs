@@ -165,6 +165,13 @@ namespace Galaxy
             flame.Die();
         }
 
+        public void OnCollideSimulation(CLightning lightning)
+        {
+            World.Stats.ShotDamageDealt += lightning.Damage;
+            TakeDamage(lightning.Damage, lightning.Owner);
+            lightning.Die();
+        }
+
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;
