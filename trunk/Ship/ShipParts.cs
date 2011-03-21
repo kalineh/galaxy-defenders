@@ -19,6 +19,8 @@ namespace Galaxy
         public float Armor { get; set; }
         public float Speed { get; set; }
         public float Friction { get; set; }
+        public float CollisionResistance { get; set; }
+        public string Description { get; set; }
     }
 
     public class CGeneratorPart
@@ -26,13 +28,17 @@ namespace Galaxy
         public int Price { get; set; }
         public float Energy { get; set; }
         public float Regen { get; set; }
+        public float RegenOnCollide { get; set; }
+        public float RegenOnCoin { get; set; }
+        public string Description { get; set; }
     }
 
     public class CShieldPart
     {
         public int Price { get; set; }
         public float Shield { get; set; }
-        public float Regen { get; set; }
+        public float EnergyDrain { get; set; }
+        public float Efficiency { get; set; }
     }
 
     public class CWeaponPart

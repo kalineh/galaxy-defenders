@@ -148,7 +148,7 @@ namespace Galaxy
         {
             return new SWeaponData()
             {
-                ReloadTime = 0.14f,
+                ReloadTime = 0.16f,
                 Speed = 17.0f,
                 Damage = 0.1f,
                 KickbackForce = 0.0f,
@@ -162,7 +162,7 @@ namespace Galaxy
         {
             return new SWeaponData()
             {
-                ReloadTime = 0.14f,
+                ReloadTime = 0.16f,
                 Speed = 17.0f,
                 Damage = 0.3f,
                 KickbackForce = 0.0f,
@@ -182,7 +182,7 @@ namespace Galaxy
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
-                Energy = 0.1f,
+                Energy = 0.15f,
                 CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.1f },
             };
         }
@@ -239,7 +239,7 @@ namespace Galaxy
             { "FrontLaser",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 750,
+                    BasePrice = 650,
                     DisplayName = "Front\nLaser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
@@ -312,7 +312,7 @@ namespace Galaxy
             { "SpreadLaser",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 750,
+                    BasePrice = 700,
                     DisplayName = "Spread\nLaser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
@@ -910,7 +910,7 @@ namespace Galaxy
             { "Lightning",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 650,
+                    BasePrice = 800,
                     DisplayName = "Lightning\nGun",
                     Sound = "WeaponShootLaser", // TODO: SFX
                     Data = new List<List<SWeaponData>>() {

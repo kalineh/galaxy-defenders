@@ -129,6 +129,7 @@ namespace Galaxy
         {
             World.Stats.CoinsCollected += 10;
             ship.Score += BonusValue;
+            ship.GetCoin();
             CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }

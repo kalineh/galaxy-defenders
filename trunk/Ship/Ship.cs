@@ -357,9 +357,10 @@ namespace Galaxy
             if (CurrentEnergy < SingleShotEnergyUsage * 2.0f)
                 return;
 
-            float used_energy = Math.Min(CurrentEnergy, Shield.Regen);
+            float used_energy = Math.Min(CurrentEnergy, Shield.EnergyDrain);
             used_energy = Math.Min(used_energy, Shield.Shield - CurrentShield);
-            CurrentShield += used_energy;
+            float regen_energy = used_energy * Shield.Efficiency;
+            CurrentShield += regen_energy;
             CurrentEnergy -= used_energy;
         }
 
@@ -510,15 +511,20 @@ namespace Galaxy
 
         public void TakeCollideDamage(Vector2 source, Vector2 velocity, float damage)
         {
+            CurrentEnergy += damage * Generator.RegenOnCollide;
+
+            float inverse_resistance = 1.0f - Chassis.CollisionResistance;
+            float adjusted = damage * inverse_resistance;
+
             Vector2 offset = Physics.Position - source;
             if (!offset.IsEffectivelyZero() && IsInvincible <= 0)
             {
                 Vector2 dir = offset.Normal();
                 Physics.Velocity *= 0.8f;
-                Physics.Velocity += dir * 7.0f * damage;
+                Physics.Velocity += dir * 7.0f * adjusted;
             }
 
-            TakeDamage(source, Physics.Velocity, damage);
+            TakeDamage(source, Physics.Velocity, adjusted);
 
             // TODO: find a way to be sure we can disable this in all cases so it doesnt get left on (particularly after program exit)
             //Vibrate = 0.4f;
@@ -602,5 +608,11 @@ namespace Galaxy
 
             return false;
         }
+
+        public void GetCoin()
+        {
+            CurrentEnergy += 1.0f * Generator.RegenOnCoin;
+        }
+
     };
 }

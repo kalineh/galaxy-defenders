@@ -60,12 +60,18 @@ namespace Galaxy
             public CTextLabel ArmorValue;
             public CTextLabel SpeedHeader;
             public CTextLabel SpeedValue;
+            public CTextLabel DensityHeader;
+            public CTextLabel DensityValue;
             public CTextLabel ShieldHeader;
             public CTextLabel ShieldValue;
             public CTextLabel RegenHeader;
             public CTextLabel RegenValue;
+            public CTextLabel EfficiencyHeader;
+            public CTextLabel EfficiencyValue;
             public CTextLabel EnergyHeader;
             public CTextLabel EnergyValue;
+            public CTextLabel DescHeader;
+            public CTextLabel DescValue;
 
             public SLabels(object unused)
             {
@@ -77,20 +83,29 @@ namespace Galaxy
                 ArmorValue = new CTextLabel();
                 SpeedHeader = new CTextLabel();
                 SpeedValue = new CTextLabel();
+                DensityHeader = new CTextLabel();
+                DensityValue = new CTextLabel();
                 ShieldHeader = new CTextLabel();
                 ShieldValue = new CTextLabel();
                 RegenHeader = new CTextLabel();
                 RegenValue = new CTextLabel();
+                EfficiencyHeader = new CTextLabel();
+                EfficiencyValue = new CTextLabel();
                 EnergyHeader = new CTextLabel();
                 EnergyValue = new CTextLabel();
+                DescHeader = new CTextLabel();
+                DescValue = new CTextLabel();
 
                 BaseCostHeader.Value = "BASE COST";
                 NextUpgradeHeader.Value = "NEXT UPGRADE COST";
                 ArmorHeader.Value = "ARMOR";
                 SpeedHeader.Value = "SPEED";
+                DensityHeader.Value = "DENSITY";
                 ShieldHeader.Value = "SHIELD";
                 RegenHeader.Value = "REGEN";
+                EfficiencyHeader.Value = "EFFICIENCY %";
                 EnergyHeader.Value = "ENERGY";
+                DescHeader.Value = "DESCRIPTION";
             }
         };
         private SLabels Labels { get; set; }
@@ -203,7 +218,7 @@ namespace Galaxy
 
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
             IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts);
-            IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct();
+            IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in primary_weapon_parts)
             {
                 MenuPrimaryWeapon.MenuOptions.Add(
@@ -243,7 +258,7 @@ namespace Galaxy
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
             IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
-            IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct();
+            IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in secondary_weapon_parts)
             {
                 if (weapon_part == "")
@@ -287,7 +302,7 @@ namespace Galaxy
             MenuSidekickLeft.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickLeftType };
             IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
-            IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct();
+            IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in sidekick_left_weapon_parts)
             {
                 if (weapon_part == "")
@@ -327,7 +342,7 @@ namespace Galaxy
             MenuSidekickRight.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
             IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickRightType };
             IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
-            IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct();
+            IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in sidekick_right_weapon_parts)
             {
                 if (weapon_part == "")
@@ -358,7 +373,7 @@ namespace Galaxy
 
             IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
             IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts);
-            IEnumerable<string> chassis_parts = chassis_parts_all.Distinct();
+            IEnumerable<string> chassis_parts = chassis_parts_all.Distinct().OrderBy(C => ChassisDefinitions.GetPart(C).Price);
             foreach (string chassis_part in chassis_parts)
             {
                 MenuChassis.MenuOptions.Add(
@@ -386,7 +401,7 @@ namespace Galaxy
 
             IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
             IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts);
-            IEnumerable<string> generator_parts = generator_parts_all.Distinct();
+            IEnumerable<string> generator_parts = generator_parts_all.Distinct().OrderBy(G => GeneratorDefinitions.GetPart(G).Price);
             foreach (string generator_part in generator_parts)
             {
 
@@ -427,7 +442,7 @@ namespace Galaxy
 
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
             IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
-            IEnumerable<string> shield_parts = shield_parts_all.Distinct();
+            IEnumerable<string> shield_parts = shield_parts_all.Distinct().OrderBy(S => ShieldDefinitions.GetPart(S).Price);
             foreach (string shield_part in shield_parts)
             {
                 MenuShield.MenuOptions.Add(
@@ -913,8 +928,9 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
-                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 10.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 80.0f);
+                    Vector2 position2 = blank_position + new Vector2(0.0f, 150.0f);
 
                     Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
                     Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
@@ -923,6 +939,10 @@ namespace Galaxy
                     Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
                     Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
                     Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
+                    Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
+                    Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -937,16 +957,24 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
-                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 10.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 80.0f);
+                    Vector2 position2 = blank_position + new Vector2(0.0f, 160.0f);
 
                     Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
                     Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
                     Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
-                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
+                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 10000.0f);
                     Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
                     Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+
+                    if (!String.IsNullOrEmpty(part.Description))
+                    {
+                        Labels.DescValue.Value = part.Description;
+                        Labels.DescHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
+                        Labels.DescValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
+                    }
                 }
 
                 if (!option.CancelOption)
@@ -961,16 +989,21 @@ namespace Galaxy
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = blank_position + new Vector2(0.0f, 40.0f);
-                    Vector2 position1 = blank_position + new Vector2(0.0f, 120.0f);
+                    Vector2 position0 = blank_position + new Vector2(0.0f, 10.0f);
+                    Vector2 position1 = blank_position + new Vector2(0.0f, 80.0f);
+                    Vector2 position2 = blank_position + new Vector2(0.0f, 150.0f);
 
                     Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
                     Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
                     Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
 
-                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 100.0f);
+                    Labels.RegenValue.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
                     Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
                     Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+
+                    Labels.EfficiencyValue.Value = Convert.ToInt32(part.Efficiency * 100.0f);
+                    Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
+                    Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
                 }
 
                 if (!option.CancelOption)
@@ -1176,9 +1209,6 @@ namespace Galaxy
 
         private bool SelectValidatePrimaryWeapon(object tag)
         {
-            if (WorkingProfile.WeaponPrimaryType == (string)tag)
-                return true;
-
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
             int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
             if (buy > WorkingProfile.Money + sell)
@@ -1198,8 +1228,6 @@ namespace Galaxy
                 int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
                 int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.WeaponPrimaryType = (string)tag;
@@ -1268,9 +1296,6 @@ namespace Galaxy
 
         private bool SelectValidateSecondaryWeapon(object tag)
         {
-            if (WorkingProfile.WeaponSecondaryType == (string)tag)
-                return true;
-
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
             int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
             if (buy > WorkingProfile.Money + sell)
@@ -1290,8 +1315,6 @@ namespace Galaxy
                 int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                 int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.WeaponSecondaryType = (string)tag;
@@ -1396,8 +1419,6 @@ namespace Galaxy
                 int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
                 int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.WeaponSidekickLeftType = (string)tag;
@@ -1450,9 +1471,6 @@ namespace Galaxy
 
         private bool SelectValidateSidekickRight(object tag)
         {
-            if (WorkingProfile.WeaponSidekickRightType == (string)tag)
-                return true;
-
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
             int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
             if (buy > WorkingProfile.Money + sell)
@@ -1472,8 +1490,6 @@ namespace Galaxy
                 int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
                 int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.WeaponSidekickRightType = (string)tag;
@@ -1511,9 +1527,6 @@ namespace Galaxy
 
         private bool SelectValidateChassis(object tag)
         {
-            if (WorkingProfile.ChassisType == (string)tag)
-                return true;
-
             int sell = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
             int buy = ChassisDefinitions.GetPart((string)tag).Price;
             if (buy > WorkingProfile.Money + sell)
@@ -1529,8 +1542,6 @@ namespace Galaxy
                 int sell = ChassisDefinitions.GetPart(WorkingProfile.ChassisType).Price;
                 int buy = ChassisDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.ChassisType = (string)tag;
@@ -1553,9 +1564,6 @@ namespace Galaxy
 
         private bool SelectValidateGenerator(object tag)
         {
-            if (WorkingProfile.GeneratorType == (string)tag)
-                return true;
-
             int sell = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
             int buy = GeneratorDefinitions.GetPart((string)tag).Price;
             if (buy > WorkingProfile.Money + sell)
@@ -1571,8 +1579,6 @@ namespace Galaxy
                 int sell = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType).Price;
                 int buy = GeneratorDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.GeneratorType = (string)tag;
@@ -1595,9 +1601,6 @@ namespace Galaxy
 
         private bool SelectValidateShield(object tag)
         {
-            if (WorkingProfile.ShieldType == (string)tag)
-                return true;
-
             int sell = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
             int buy = ShieldDefinitions.GetPart((string)tag).Price;
             if (buy > WorkingProfile.Money + sell)
@@ -1613,8 +1616,6 @@ namespace Galaxy
                 int sell = ShieldDefinitions.GetPart(WorkingProfile.ShieldType).Price;
                 int buy = ShieldDefinitions.GetPart((string)tag).Price;
                 int remaining = WorkingProfile.Money + sell - buy;
-                if (remaining < 0)
-                    return;
 
                 WorkingProfile.Money += sell;
                 WorkingProfile.ShieldType = (string)tag;

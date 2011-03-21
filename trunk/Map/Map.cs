@@ -428,29 +428,48 @@ namespace Galaxy
         public static List<string> AllChassisParts()
         {
             return new List<string>() {
-                "BasicShip",
-                "FighterShip",
-                "StrongShip",
-                "UltraShip",
+                "Rookie",
+                "Eagle",
+                "Crusher",
+                "Interceptor",
+                "Phoenix",
+                "Lightning",
+                "Dragon",
+                "Demon",
+                "Ace",
             };
         }
 
         public static List<string> AllGeneratorParts()
         {
             return new List<string>() {
-                "BasicGenerator",
-                "CoreGenerator",
-                "PowerGenerator",
-                "UltraGenerator",
+                "Basic Mk 1",
+                "Basic Mk 2",
+                "Basic Mk 3",
+                "Impulse Mk 1",
+                "Impulse Mk 2",
+                "Impulse Mk 3",
+                "Capacitor Mk 1",
+                "Capacitor Mk 2",
+                "Capacitor Mk 3",
+                "Kinetic",
+                "Magnetic",
+                "Fusion",
             };
         }
 
         public static List<string> AllShieldParts()
         {
             return new List<string>() {
-                "BasicShield",
-                "EnhancedShield",
-                "UltraShield",
+                "Light Shield",
+                "Fiber Shield",
+                "Electric Shield",
+                "Advanced Shield",
+                "Micro Shield",
+                "Actuator Shield",
+                "Power Shield",
+                "Tank Shield",
+                "Ultimate Shield",
             };
         }
 
@@ -481,9 +500,22 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Rookie",    
+                    "Eagle",    
+                    "Crusher",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 1",    
+                    "Impulse Mk 1",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Light Shield",    
+                    "Fiber Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 0,
@@ -496,9 +528,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Rookie",    
+                    "Eagle",    
+                    "Crusher",    
+                    "Interceptor",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 1",    
+                    "Impulse Mk 1",    
+                    "Capacitor Mk 1",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Light Shield",    
+                    "Fiber Shield",    
+                    "Electric Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 1,
@@ -511,9 +559,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Rookie",    
+                    "Crusher",    
+                    "Interceptor",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 1",    
+                    "Impulse Mk 1",    
+                    "Impulse Mk 2",    
+                    "Capacitor Mk 1",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Light Shield",    
+                    "Fiber Shield",    
+                    "Electric Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 2,
@@ -526,9 +590,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Eagle",    
+                    "Crusher",    
+                    "Interceptor",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 1",    
+                    "Basic Mk 2",    
+                    "Impulse Mk 1",    
+                    "Capacitor Mk 2",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Light Shield",    
+                    "Fiber Shield",    
+                    "Micro Shield",    
+                },
             },
 
             new CMapNode() {
@@ -542,9 +622,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Rookie",    
+                    "Eagle",    
+                    "Interceptor",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 2",    
+                    "Impulse Mk 2",    
+                    "Capacitor Mk 1",    
+                    "Magnetic",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Light Shield",    
+                    "Advanced Shield",    
+                    "Micro Shield",    
+                },
 
             },
 
@@ -559,9 +655,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Rookie",    
+                    "Eagle",    
+                    "Crusher",    
+                    "Interceptor",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 2",    
+                    "Capacitor Mk 2",    
+                    "Kinetic",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Electric Shield",    
+                    "Micro Shield",    
+                    "Actuator Shield",    
+                },
 
             },
 
@@ -576,9 +688,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Eagle",    
+                    "Interceptor",    
+                    "Phoenix",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 2",    
+                    "Impulse Mk 2",    
+                    "Capacitor Mk 3",    
+                    "Magnetic",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Micro Shield",    
+                    "Advanced Shield",    
+                    "Actuator Shield",    
+                },
 
             },
             new CMapNode() {
@@ -592,9 +720,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Crusher",    
+                    "Eagle",    
+                    "Phoenix",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 3",    
+                    "Impulse Mk 2",    
+                    "Impulse Mk 3",    
+                    "Fusion",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Advanced Shield",    
+                    "Micro Shield",    
+                    "Power Shield",    
+                },
 
             },
             new CMapNode() {
@@ -607,9 +751,26 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Eagle",    
+                    "Interceptor",    
+                    "Lightning",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 2",    
+                    "Basic Mk 3",    
+                    "Capacitor Mk 2",    
+                    "Capacitor Mk 3",    
+                    "Kinetic",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Advanced Shield",    
+                    "Actuator Shield",    
+                    "Power Shield",    
+                },
 
             },
             new CMapNode() {
@@ -622,9 +783,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Crusher",    
+                    "Interceptor",    
+                    "Lightning",    
+                    "Dragon",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 3",    
+                    "Impulse Mk 3",    
+                    "Fusion",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Micro Shield",    
+                    "Power Shield",    
+                    "Tank Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 9,
@@ -636,9 +813,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Interceptor",    
+                    "Dragon",    
+                    "Phoenix",    
+                    "Demon",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Impulse Mk 3",    
+                    "Capacitor Mk 3",    
+                    "Kinetic",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Advanced Shield",    
+                    "Actuator Shield",    
+                    "Power Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 10,
@@ -650,9 +843,25 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Interceptor",    
+                    "Lightning",    
+                    "Ace",    
+                    "Dragon",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Basic Mk 3",    
+                    "Impulse Mk 3",    
+                    "Capacitor Mk 3",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Actuator Shield",    
+                    "Power Shield",    
+                    "Tank Shield",    
+                },
             },
             new CMapNode() {
                 SaveIndex = 11,
@@ -661,9 +870,26 @@ namespace Galaxy
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
-                AvailableChassisParts = AllChassisParts(),
-                AvailableGeneratorParts = AllGeneratorParts(),
-                AvailableShieldParts = AllShieldParts(),
+                AvailableChassisParts = new List<string>()
+                {
+                    "Lightning",    
+                    "Demon",    
+                    "Dragon",    
+                    "Ace",    
+                },
+                AvailableGeneratorParts = new List<string>()
+                {
+                    "Impulse Mk 3",    
+                    "Kinetic",    
+                    "Magnetic",    
+                    "Fusion",    
+                },
+                AvailableShieldParts = new List<string>()
+                {
+                    "Advanced Shield",    
+                    "Tank Shield",    
+                    "Ultimate Shield",    
+                },
             },
         };
 
