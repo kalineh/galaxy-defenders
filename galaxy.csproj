@@ -94,12 +94,14 @@
     <Compile Include="Enemy\Boss1.cs" />
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
+    <Compile Include="Projectile\Beam.cs" />
     <Compile Include="Projectile\Lightning.cs" />
     <Compile Include="Projectile\Flame.cs" />
     <Compile Include="Projectile\EnemyMiniShot.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
+    <Compile Include="Weapon\WeaponBeam.cs" />
     <Compile Include="Weapon\WeaponLightning.cs" />
     <Compile Include="Weapon\WeaponFlame.cs" />
     <Compile Include="World.cs" />

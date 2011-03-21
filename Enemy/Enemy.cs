@@ -172,6 +172,12 @@ namespace Galaxy
             lightning.Die();
         }
 
+        public void OnCollide(CBeam beam)
+        {
+            World.Stats.ShotDamageDealt += beam.Damage;
+            TakeDamage(beam.Damage, beam.Owner);
+        }
+
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;

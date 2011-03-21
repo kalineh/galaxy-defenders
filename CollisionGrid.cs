@@ -119,10 +119,19 @@ namespace Galaxy
                 Vector2 ul = local - halfsize;
                 Vector2 br = local + halfsize;
 
+                // workaround for centering of aabb collision
+                if (aabb != null)
+                {
+                    ul -= halfsize;
+                    br -= halfsize;
+                }
+
                 int min_x = (int)(ul.X / column_width);
                 int min_y = (int)(ul.Y / row_width);
                 int max_x = (int)(br.X / column_width);
                 int max_y = (int)(br.Y / row_width);
+
+                // NOTE: this fails for beams which extend beyond a 3x3 grid of collision
 
                 min_x = Math.Max(0, Math.Min(min_x, Columns - 1));
                 min_y = Math.Max(0, Math.Min(min_y, Rows - 1));
@@ -230,8 +239,10 @@ namespace Galaxy
 
                     int n = Entities[y][x].Count;
 
+                    string s = String.Format("{0}.{1}: {2}", x, y, n);
+
                     CDebugRender.Box(transform, local_center, grid_size, 1.0f, color);
-                    CDebugRender.Text(transform, local_center, n.ToString(), 1.5f, color);
+                    CDebugRender.Text(transform, local_center, s, 1.5f, color);
 
                     //Vector2 p = Center - Dimensions / 2.0f + new Vector2(column_width * x, row_width * y);
                     //CDebugRender.Box(transform, center, new Vector2(column_width, row_width), 1.0f, color);

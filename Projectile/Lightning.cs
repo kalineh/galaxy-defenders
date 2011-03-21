@@ -16,7 +16,6 @@ namespace Galaxy
     public class CLightning
         : CProjectile
     {
-        public float BaseDamage;
         public int BouncesRemaining;
         public CEntity IgnoreEntity;
         public int NoCollideTime;
@@ -29,8 +28,6 @@ namespace Galaxy
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.UpdateColor();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 16.0f);
-
-            BaseDamage = damage;
         }
 
         public override void Update()

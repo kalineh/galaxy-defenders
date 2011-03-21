@@ -717,7 +717,12 @@ namespace Galaxy
 
         private void RefreshSampleDisplay()
         {
-            EmptyWorld.EntityDelete(SampleShip);
+            // HACK: disable toggle weapons
+            if (SampleShip != null)
+            {
+                SampleShip.DidntFirePrimarySecondaryWeapons();
+                EmptyWorld.EntityDelete(SampleShip);
+            }
 
             SampleShip = CShipFactory.GenerateShip(EmptyWorld, WorkingProfile, ShoppingPlayer);
 

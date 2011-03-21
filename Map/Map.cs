@@ -405,6 +405,7 @@ namespace Galaxy
                 "Plasma",
                 "Flame",
                 "Lightning",
+                "Beam",
             };
         }
 

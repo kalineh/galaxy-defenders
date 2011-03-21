@@ -28,7 +28,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 28.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Fence");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 8.0f;
+            HealthMax = 6.0f;
             CanSeekerTarget = false;
             Coins = 0;
         }
@@ -123,6 +123,12 @@ namespace Galaxy
             {
                 Parent.FenceBeam.Die();
                 Parent.FenceBeam = null;
+                Parent.Die();
+            }
+
+            if (Child != null)
+            {
+                Child.Die();    
             }
 
             base.OnDie();

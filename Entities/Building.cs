@@ -219,6 +219,12 @@ namespace Galaxy
             flame.Die();
         }
 
+        public void OnCollide(CBeam beam)
+        {
+            World.Stats.ShotDamageDealt += beam.Damage;
+            TakeDamage(beam.Damage, beam.Owner);
+        }
+
         public void OnCollideSimulation(CLightning lightning)
         {
             World.Stats.ShotDamageDealt += lightning.Damage;
