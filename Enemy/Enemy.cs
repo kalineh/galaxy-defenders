@@ -116,7 +116,7 @@ namespace Galaxy
                 return;
 
             float damage_recv = source.IsInvincible > 0 ? 10.0f : 0.5f;
-            float damage_send = 2.5f;
+            float damage_send = 2.5f + HealthMax;
 
             World.Stats.CollisionDamageReceived += damage_send;
             source.TakeCollideDamage(Physics.Position, Physics.Velocity, damage_send);
