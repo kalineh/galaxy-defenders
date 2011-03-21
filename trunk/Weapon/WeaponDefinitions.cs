@@ -945,25 +945,26 @@ namespace Galaxy
                         // level 6
                         new List<SWeaponData>() {
                             MakeLightningData(-12.0f, 3),
-                            MakeLightningData(-4.0f, 3),
-                            MakeLightningData(+4.0f, 3),
+                            MakeLightningData(-4.0f, 4),
+                            MakeLightningData(+4.0f, 4),
                             MakeLightningData(+12.0f, 3),
                         },
                         // level 7
-                        new List<SWeaponData>() {
-                            MakeLightningData(-16.0f, 3),
-                            MakeLightningData(-8.0f, 3),
-                            MakeLightningData(+0.0f, 3),
-                            MakeLightningData(+8.0f, 3),
-                            MakeLightningData(+16.0f, 3),
-                        },
-                        // level 8
                         new List<SWeaponData>() {
                             MakeLightningData(-16.0f, 3),
                             MakeLightningData(-8.0f, 4),
                             MakeLightningData(+0.0f, 4),
                             MakeLightningData(+8.0f, 4),
                             MakeLightningData(+16.0f, 3),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeLightningData(-20.0f, 4),
+                            MakeLightningData(-12.0f, 4),
+                            MakeLightningData(-4.0f, 4),
+                            MakeLightningData(+4.0f, 4),
+                            MakeLightningData(+12.0f, 4),
+                            MakeLightningData(+20.0f, 4),
                         },
                     },
                 }
