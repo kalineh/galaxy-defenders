@@ -270,6 +270,13 @@ namespace Galaxy
             DrawDebug(sprite_batch, position, rotation, extra_scale);
         }
 
+        public void Draw(SpriteBatch sprite_batch, Vector2 position, float rotation, Vector2 extra_scale)
+        {
+            Vector2 scale = new Vector2(Scale.X * extra_scale.X, Scale.Y * extra_scale.Y);
+            sprite_batch.Draw(_Texture, position, _CacheFrameSourceRect, _CacheColor, rotation, _CacheOrigin, scale * CGalaxy.GlobalScale, _SpriteEffects, Depth);
+            DrawDebug(sprite_batch, position, rotation, 1.0f);
+        }
+
         public void DrawDebug(SpriteBatch sprite_batch, Vector2 position, float rotation, float extra_scale)
         {
 #if DEBUG

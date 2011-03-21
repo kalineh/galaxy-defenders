@@ -307,6 +307,10 @@ namespace Galaxy
             {
                 FirePrimarySecondaryWeapons();
             }
+            else
+            {
+                DidntFirePrimarySecondaryWeapons();    
+            }
 
             if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.Z))
             {
@@ -372,11 +376,18 @@ namespace Galaxy
             foreach (CWeapon weapon in weapons)
             {
                 if (weapon.CanFire())
-                    required_energy += weapon.Energy;
+                    required_energy += weapon.Energy + weapon.ToggleEnergyDrain;
             }
 
             if (CurrentEnergy < required_energy)
+            {
+                DidntFire(weapons);
+
+                foreach (CWeapon weapon in weapons)
+                    weapon.Overheat();
+
                 return;
+            }
 
             CurrentEnergy -= required_energy;
 
@@ -384,6 +395,12 @@ namespace Galaxy
             {
                 weapon.TryFire();
             }
+        }
+
+        private void DidntFire(List<CWeapon> weapons)
+        {
+            foreach (CWeapon weapon in weapons)
+                weapon.DidntFire();
         }
 
         private void ChargeSidekick(List<CWeapon> weapons)
@@ -440,6 +457,12 @@ namespace Galaxy
         {
             Fire(WeaponPrimary);
             Fire(WeaponSecondary);
+        }
+
+        public void DidntFirePrimarySecondaryWeapons()
+        {
+            DidntFire(WeaponPrimary);
+            DidntFire(WeaponSecondary);
         }
 
         public void ChargeSidekickLeft()

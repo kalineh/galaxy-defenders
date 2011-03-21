@@ -21,10 +21,14 @@ namespace Galaxy
         public bool IsCharge { get; set; }
         public int AutoDischarge { get; set; }
         public float ChargeSpeed { get; set; }
-        protected float Cooldown { get; set; }
+        public float Cooldown { get; set; }
         public int CurrentCharge { get; set; }
         public object CustomData { get; set; }
         public float RandomReloadTime { get; set; }
+        public bool IsToggleWeapon { get; set; }
+        public bool IsToggled { get; set; }
+        public float ToggleEnergyDrain { get; set; }
+        public int ToggleOverheatCooldown { get; set; }
 
         static public int MaximumChargeFrames = 60;
         static public float MaximumChargeSeconds = Time.ToSeconds(MaximumChargeFrames);
@@ -39,12 +43,24 @@ namespace Galaxy
             AutoDischarge = 0;
             CurrentCharge = 0;
             RandomReloadTime = 0.0f;
+            IsToggleWeapon = false;
+            ToggleOverheatCooldown = 0;
         }
 
         public void Update()
         {
             Cooldown -= Time.SingleFrame;
             Cooldown = Math.Max(Cooldown, 0.0f);
+
+            if (IsToggleWeapon)
+            {
+                if (IsToggled)
+                {
+                    Owner.CurrentEnergy = Math.Max(0, Owner.CurrentEnergy - ToggleEnergyDrain);
+                }
+
+                ToggleOverheatCooldown = Math.Max(0, ToggleOverheatCooldown - 1);
+            }
         }
 
         public void ApplyWeaponData(WeaponDefinitions.SWeaponData data)
@@ -61,6 +77,8 @@ namespace Galaxy
             ChargeSpeed = data.ChargeSpeed;
             AutoDischarge = data.AutoDischarge;
             CustomData = data.CustomData;
+            IsToggleWeapon = data.ToggleWeapon;
+            ToggleEnergyDrain = data.ToggleEnergyDrain;
         }
 
         public bool CanFire()
@@ -72,6 +90,11 @@ namespace Galaxy
 
                 if (AutoDischarge > 0)
                     return CurrentCharge >= AutoDischarge;
+            }
+            else if (IsToggleWeapon)
+            {
+                if (ToggleOverheatCooldown > 0)
+                    return false;
             }
 
             return Cooldown <= 0.0f;
@@ -91,6 +114,21 @@ namespace Galaxy
             }
 
             return false;
+        }
+
+        public void DidntFire()
+        {
+            if (IsToggleWeapon)
+                IsToggled = false;
+        }
+
+        public void Overheat()
+        {
+            if (IsToggleWeapon)
+            {
+                ToggleOverheatCooldown = 90;    
+                CAudio.PlaySound("WeaponOverheat", 1.0f);
+            }
         }
 
         public void Charge()
@@ -118,6 +156,14 @@ namespace Galaxy
 
         private void Fire()
         {
+            if (IsToggleWeapon)
+            {
+                if (IsToggled)
+                    return;
+
+                IsToggled = true;
+            }
+
             // TODO: this math is weird and broken
             // TODO: replace with matrices
             Vector2 position = Owner.Physics.Position;

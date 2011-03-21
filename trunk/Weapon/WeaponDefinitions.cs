@@ -123,6 +123,8 @@ namespace Galaxy
             public float ChargeSpeed { get; set; }
             public int AutoDischarge { get; set; }
             public object CustomData { get; set; }
+            public bool ToggleWeapon { get; set; }
+            public float ToggleEnergyDrain { get; set; }
         }
 
         public struct SWeaponDefinition
@@ -176,7 +178,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 0.75f,
+                Damage = 0.5f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -206,12 +208,29 @@ namespace Galaxy
             {
                 ReloadTime = 0.2f,
                 Speed = 16.0f,
-                Damage = 0.07f,
+                Damage = 0.1f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.20f,
                 CustomData = new LightningCustomData() { Bounces = bounces },
+            };
+        }
+
+        public static SWeaponData MakeBeamData(float damage, float drain, float width)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.0f,
+                Speed = 0.0f,
+                Damage = damage,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * 1.0f,
+                Rotation = 0.0f,
+                Energy = 0.0f,
+                CustomData = new BeamCustomData() { Width = width, },
+                ToggleWeapon = true,
+                ToggleEnergyDrain = drain,
             };
         }
 
@@ -833,7 +852,7 @@ namespace Galaxy
             { "Flame",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 750,
+                    BasePrice = 800,
                     DisplayName = "Flame\nThrower",
                     Sound = "WeaponShootFlame",
                     Data = new List<List<SWeaponData>>() {
@@ -891,7 +910,7 @@ namespace Galaxy
             { "Lightning",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 750,
+                    BasePrice = 650,
                     DisplayName = "Lightning\nGun",
                     Sound = "WeaponShootLaser", // TODO: SFX
                     Data = new List<List<SWeaponData>>() {
@@ -945,6 +964,50 @@ namespace Galaxy
                             MakeLightningData(+0.0f, 4),
                             MakeLightningData(+8.0f, 4),
                             MakeLightningData(+16.0f, 3),
+                        },
+                    },
+                }
+            },
+
+            { "Beam",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 2500,
+                    DisplayName = "Beam\nWeapon",
+                    // TODO: too long, doesnt stop quickly
+                    //Sound = "WeaponShootBeam",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.01f, 0.02f, 1.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.02f, 0.03f, 2.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.03f, 0.05f, 3.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.05f, 0.09f, 4.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.07f, 0.12f, 5.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.09f, 0.16f, 6.0f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.11f, 0.20f, 7.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeBeamData(0.15f, 0.24f, 8.0f),
                         },
                     },
                 }
