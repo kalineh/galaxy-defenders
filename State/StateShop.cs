@@ -176,7 +176,8 @@ namespace Galaxy
                     new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
                     new CMenu.CMenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
                     new CMenu.CMenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
-                    new CMenu.CMenuOption() { Text = "Pilot Training", Select = TrainPilot },
+                    // NOTE: disabling to move to clear-game unlocks
+                    //new CMenu.CMenuOption() { Text = "Pilot Training", Select = TrainPilot },
 #if DEBUG
                     new CMenu.CMenuOption() { Text = "* Money (L/R)", Axis = EditMoney, AxisValidate = (tag, axis) => { return true; } },
 #endif

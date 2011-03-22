@@ -99,6 +99,12 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CBlade blade)
+        {
+            blade.Die();
+            Hit();
+        }
+
         public void OnCollide(CDetonation detonation)
         {
             Die();

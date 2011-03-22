@@ -125,6 +125,7 @@ namespace Galaxy
             public object CustomData { get; set; }
             public bool ToggleWeapon { get; set; }
             public float ToggleEnergyDrain { get; set; }
+            public bool ShowSidekick { get; set; }
         }
 
         public struct SWeaponDefinition
@@ -178,7 +179,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 0.5f,
+                Damage = 0.25f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -193,7 +194,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 1.25f,
+                Damage = 0.65f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -1420,6 +1421,28 @@ namespace Galaxy
                                 Rotation = MathHelper.ToRadians(0.0f),
                                 Energy = 0.015f,
                                 ChargeSpeed = Time.ToSeconds(1),
+                            },
+                        },
+                    },
+                }
+            },
+            { "Blade", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootMiniShot",
+                    DisplayName = "Blade",
+                    BasePrice = 7500,
+                    Data = new List<List<SWeaponData>>() {
+                        new List<SWeaponData>() {
+                            new SWeaponData() {
+                                ReloadTime = 0.40f,
+                                Speed = 0.0f,
+                                Damage = 0.40f,
+                                KickbackForce = 0.0f,
+                                Offset = Vector2.Zero,
+                                Rotation = MathHelper.ToRadians(0.0f),
+                                Energy = 4.0f,
+                                ChargeSpeed = 1.0f,
+                                AutoDischarge = 1,
                             },
                         },
                     },
