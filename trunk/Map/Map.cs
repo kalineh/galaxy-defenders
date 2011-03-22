@@ -422,6 +422,7 @@ namespace Galaxy
             return new List<string>() {
                 "MiniShot",
                 "ChargeShot",
+                "Blade",
             };
         }
 

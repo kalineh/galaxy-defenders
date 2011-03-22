@@ -592,10 +592,12 @@ namespace Galaxy
                 usage += weapon.Energy;
             foreach (CWeapon weapon in WeaponSecondary)
                 usage += weapon.Energy;
-            foreach (CWeapon weapon in WeaponSidekickLeft)
-                usage += weapon.Energy;
-            foreach (CWeapon weapon in WeaponSidekickRight)
-                usage += weapon.Energy;
+
+            // NOTE: sidekicks can be high energy use, we dont want to factor them in or shields will not regen!
+            //foreach (CWeapon weapon in WeaponSidekickLeft)
+                //usage += weapon.Energy;
+            //foreach (CWeapon weapon in WeaponSidekickRight)
+                //usage += weapon.Energy;
 
             return usage;
         }

@@ -205,6 +205,12 @@ namespace Galaxy
             minishot.Die();
         }
 
+        public void OnCollide(CBlade blade)
+        {
+            World.Stats.ShotDamageDealt += blade.Damage;
+            TakeDamage(blade.Damage, blade.Owner);
+        }
+
         public void OnCollide(CChargeShot chargeshot)
         {
             World.Stats.ShotDamageDealt += chargeshot.Damage;

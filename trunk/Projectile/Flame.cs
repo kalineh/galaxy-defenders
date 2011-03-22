@@ -46,7 +46,7 @@ namespace Galaxy
         public override void Update()
         {
             float t = 1.0f - (float)AliveTime / (float)Lifetime;
-            Damage = BaseDamage * t;
+            Damage = BaseDamage * 0.5f + BaseDamage * t * 0.5f;
 
             base.Update();
 
