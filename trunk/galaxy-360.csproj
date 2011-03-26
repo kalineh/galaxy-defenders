@@ -73,6 +73,7 @@
     <Compile Include="Enemy\BigBall.cs" />
     <Compile Include="Enemy\Boss1.cs" />
     <Compile Include="Enemy\DoubleTurret.cs" />
+    <Compile Include="Enemy\MiniSquare.cs" />
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="Entities\MusicChanger.cs" />

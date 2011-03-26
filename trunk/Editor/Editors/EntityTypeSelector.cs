@@ -69,6 +69,7 @@ namespace Galaxy
             typeof(CFence),
             typeof(CGlob),
             typeof(CIsosceles),
+            typeof(CMiniSquare),
             typeof(CMissilePod),
             typeof(CMissileTriple),
             typeof(CMissileStorm),

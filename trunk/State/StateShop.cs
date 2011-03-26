@@ -1398,9 +1398,6 @@ namespace Galaxy
 
         private bool SelectValidateSidekickLeft(object tag)
         {
-            if (WorkingProfile.WeaponSidekickLeftType == (string)tag)
-                return true;
-
             int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
             int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
             if (buy > WorkingProfile.Money + sell)

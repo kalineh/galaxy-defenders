@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enemy\Boss1.cs" />
+    <Compile Include="Enemy\MiniSquare.cs" />
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="Projectile\Beam.cs" />
