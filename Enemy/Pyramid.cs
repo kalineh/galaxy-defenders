@@ -22,7 +22,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 56.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Pyramid");
-            HealthMax = 8.0f;
+            HealthMax = 6.0f;
             Coins = 3;
 
             // boring mode

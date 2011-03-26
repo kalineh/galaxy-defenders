@@ -993,23 +993,23 @@ namespace Galaxy
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeBeamData(0.05f, 0.09f, 4.0f),
+                            MakeBeamData(0.05f, 0.07f, 4.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeBeamData(0.07f, 0.12f, 5.0f),
+                            MakeBeamData(0.07f, 0.09f, 5.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeBeamData(0.09f, 0.16f, 6.0f),
+                            MakeBeamData(0.09f, 0.11f, 6.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeBeamData(0.11f, 0.20f, 7.0f),
+                            MakeBeamData(0.11f, 0.14f, 7.0f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeBeamData(0.15f, 0.24f, 8.0f),
+                            MakeBeamData(0.15f, 0.18f, 8.0f),
                         },
                     },
                 }
@@ -1415,12 +1415,12 @@ namespace Galaxy
                             new SWeaponData() {
                                 ReloadTime = 0.15f,
                                 Speed = 15.0f,
-                                Damage = 1.25f,
+                                Damage = 2.0f,
                                 KickbackForce = 0.0f,
                                 Offset = Vector2.Zero,
                                 Rotation = MathHelper.ToRadians(0.0f),
                                 Energy = 0.015f,
-                                ChargeSpeed = Time.ToSeconds(1),
+                                ChargeSpeed = Time.ToSeconds(3),
                             },
                         },
                     },
