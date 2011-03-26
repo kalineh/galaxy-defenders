@@ -36,7 +36,7 @@ namespace Galaxy
             BeamRotation = 0.0f;
             BeamRotationSpeed = 0.0f;
 
-            HealthMax = 7.0f;
+            HealthMax = 5.0f;
 
             Coins = 6;
         }

@@ -33,7 +33,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/ChargeShot", owner.GameControllerIndex);
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
             Damage = damage;
         }
 
@@ -46,9 +46,17 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            // TODO: sfx
+            World.ParticleEffects.Spawn(EParticleType.WeaponChargeHit, Physics.Position, Visual.Color, 0.5f + Damage * 0.25f, -Physics.Velocity.Normal());
             CAudio.PlaySound("WeaponHitLaser", 1.0f);
             base.OnDie();
+        }
+
+        public override void Draw(SpriteBatch sprite_batch)
+        {
+            if (Visual != null)
+            {
+                Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.25f + Damage * 0.5f);
+            }
         }
     }
 }

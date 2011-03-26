@@ -93,7 +93,7 @@ namespace Galaxy
             {
                 "Phoenix",
                 new CChassisPart() {
-                    Price = 8500,
+                    Price = 9500,
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
                     Speed = 2.0f,
@@ -106,7 +106,7 @@ namespace Galaxy
             {
                 "Lightning",
                 new CChassisPart() {
-                    Price = 10000,
+                    Price = 14000,
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
                     Speed = 3.5f,
@@ -119,7 +119,7 @@ namespace Galaxy
             {
                 "Dragon",
                 new CChassisPart() {
-                    Price = 12000,
+                    Price = 22500,
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
                     Speed = 2.25f,
@@ -132,7 +132,7 @@ namespace Galaxy
             {
                 "Demon",
                 new CChassisPart() {
-                    Price = 11500,
+                    Price = 22500,
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
                     Speed = 2.0f,
@@ -145,7 +145,7 @@ namespace Galaxy
             {
                 "Ace",
                 new CChassisPart() {
-                    Price = 12500,
+                    Price = 25000,
                     Texture = "Textures/Player/BasicShip",
                     VisualScale = 0.25f,
                     Speed = 2.75f,
