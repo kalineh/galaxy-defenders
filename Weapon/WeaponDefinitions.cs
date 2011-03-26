@@ -93,8 +93,8 @@ namespace Galaxy
             // TODO: is this price calculation ok?
             int calculable_level = level;
             int base_ = WeaponDefinitions.Items[typename].BasePrice;
-            int total = base_ + base_ * calculable_level * calculable_level;
-            int rounded = total + total % 50;
+            int total = base_ + (int)((float)(base_ * calculable_level * calculable_level) * 0.75f);
+            int rounded = total - total % 100;
             return rounded;
         }
 
