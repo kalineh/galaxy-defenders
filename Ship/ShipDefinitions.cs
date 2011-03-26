@@ -42,7 +42,7 @@ namespace Galaxy
                 "Rookie",
                 new CChassisPart() {
                     Price = 1000,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Rookie",
                     VisualScale = 0.25f,
                     Speed = 1.75f,
                     Friction = 0.85f,
@@ -55,7 +55,7 @@ namespace Galaxy
                 "Eagle",
                 new CChassisPart() {
                     Price = 1250,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Eagle",
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.825f,
@@ -68,7 +68,7 @@ namespace Galaxy
                 "Crusher",
                 new CChassisPart() {
                     Price = 2500,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Crusher",
                     VisualScale = 0.25f,
                     Speed = 1.7f,
                     Friction = 0.90f,
@@ -81,7 +81,7 @@ namespace Galaxy
                 "Interceptor",
                 new CChassisPart() {
                     Price = 7000,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Interceptor",
                     VisualScale = 0.25f,
                     Speed = 2.25f,
                     Friction = 0.80f,
@@ -94,7 +94,7 @@ namespace Galaxy
                 "Phoenix",
                 new CChassisPart() {
                     Price = 9500,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Phoenix",
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.85f,
@@ -107,7 +107,7 @@ namespace Galaxy
                 "Lightning",
                 new CChassisPart() {
                     Price = 14000,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Lightning",
                     VisualScale = 0.25f,
                     Speed = 3.5f,
                     Friction = 0.775f,
@@ -120,7 +120,7 @@ namespace Galaxy
                 "Dragon",
                 new CChassisPart() {
                     Price = 22500,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Dragon",
                     VisualScale = 0.25f,
                     Speed = 2.25f,
                     Friction = 0.825f,
@@ -133,7 +133,7 @@ namespace Galaxy
                 "Demon",
                 new CChassisPart() {
                     Price = 22500,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Demon",
                     VisualScale = 0.25f,
                     Speed = 2.0f,
                     Friction = 0.95f,
@@ -146,7 +146,7 @@ namespace Galaxy
                 "Ace",
                 new CChassisPart() {
                     Price = 25000,
-                    Texture = "Textures/Player/BasicShip",
+                    Texture = "Textures/Player/Ace",
                     VisualScale = 0.25f,
                     Speed = 2.75f,
                     Friction = 0.75f,
