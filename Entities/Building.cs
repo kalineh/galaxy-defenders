@@ -191,6 +191,13 @@ namespace Galaxy
             missile.Die();
         }
 
+        public void OnCollide(CDrunkMissile missile)
+        {
+            World.Stats.ShotDamageDealt += missile.Damage;
+            TakeDamage(missile.Damage, missile.Owner);
+            missile.Die();
+        }
+
         public void OnCollide(CPlasma plasma)
         {
             World.Stats.ShotDamageDealt += plasma.Damage;

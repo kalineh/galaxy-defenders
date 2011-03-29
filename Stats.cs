@@ -36,9 +36,9 @@ namespace Galaxy
         {
             AwardDefinitions = new Dictionary<AwardType, SAward>();
             AwardDefinitions[AwardType.StageClear] = new SAward { Type = AwardType.StageClear, Text = "Stage Clear", Bonus = 10000 };
-            AwardDefinitions[AwardType.BronzeMedal] = new SAward { Type = AwardType.BronzeMedal, Text = "Skill Bonus", Bonus = 100 };
-            AwardDefinitions[AwardType.SilverMedal] = new SAward { Type = AwardType.SilverMedal, Text = "Skill Bonus", Bonus = 250 };
-            AwardDefinitions[AwardType.GoldMedal] = new SAward { Type = AwardType.GoldMedal, Text = "Skill Bonus", Bonus = 750 };
+            AwardDefinitions[AwardType.BronzeMedal] = new SAward { Type = AwardType.BronzeMedal, Text = "Skill Bonus", Bonus = 250 };
+            AwardDefinitions[AwardType.SilverMedal] = new SAward { Type = AwardType.SilverMedal, Text = "Skill Bonus", Bonus = 500 };
+            AwardDefinitions[AwardType.GoldMedal] = new SAward { Type = AwardType.GoldMedal, Text = "Skill Bonus", Bonus = 1000 };
             AwardDefinitions[AwardType.PlatinumMedal] = new SAward { Type = AwardType.PlatinumMedal, Text = "Skill Bonus", Bonus = 1500 };
         }
 

@@ -173,6 +173,34 @@ namespace Galaxy
             };
         }
 
+        public static SWeaponData MakeSpreadLaserData(float rotation)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.18f,
+                Speed = 15.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = new Vector2(0.0f, 0.0f),
+                Rotation = MathHelper.ToRadians(rotation),
+                Energy = 0.1f,
+            };
+        }
+
+        public static SWeaponData MakeBigSpreadLaserData(float rotation)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.18f,
+                Speed = 15.0f,
+                Damage = 0.3f,
+                KickbackForce = 0.0f,
+                Offset = new Vector2(0.0f, 0.0f),
+                Rotation = MathHelper.ToRadians(rotation),
+                Energy = 0.15f,
+            };
+        }
+
         public static SWeaponData MakeFlameData(float reload, float offset)
         {
             return new SWeaponData()
@@ -234,6 +262,65 @@ namespace Galaxy
                 ToggleEnergyDrain = drain,
             };
         }
+
+        public static SWeaponData MakeMissileData(Vector2 offset)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.5f,
+                Speed = 17.0f,
+                Damage = 0.2f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(180.0f),
+                Energy = 0.2f,
+            };
+        }
+
+        public static SWeaponData MakeDrunkMissileData(Vector2 offset, float reload)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 10.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(180.0f),
+                Energy = 0.2f,
+            };
+        }
+
+        public static SWeaponData MakeMissileVolleyData(Vector2 offset)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 1.0f,
+                Speed = 10.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(180.0f),
+                Energy = 1.0f,
+                ChargeSpeed = Time.ToSeconds(2),
+                AutoDischarge = 1,
+            };
+        }
+
+        public static SWeaponData MakeSeekBombData(Vector2 offset, float angle)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.7f,
+                Speed = 14.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = new Vector2(0.0f, -10.0f),
+                Rotation = MathHelper.ToRadians(angle),
+                Energy = 0.1f,
+            };
+        }
+
 
         public static Dictionary<string, SWeaponDefinition> Items = new Dictionary<string, SWeaponDefinition>()
         {
@@ -319,294 +406,63 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = Vector2.Zero,
-                                Rotation = 0.0f,
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(0.0f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(-2.0f),
+                            MakeSpreadLaserData(+2.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-6.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(6.0f),
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(-4.0f),
+                            MakeSpreadLaserData(+0.0f),
+                            MakeSpreadLaserData(+4.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-8.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-4.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(0.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(4.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(8.0f),
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(-6.0f),
+                            MakeSpreadLaserData(-2.0f),
+                            MakeSpreadLaserData(2.0f),
+                            MakeSpreadLaserData(6.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-10.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-6.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(6.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(10.0f),
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(-8.0f),
+                            MakeSpreadLaserData(-4.0f),
+                            MakeBigSpreadLaserData(0.0f),
+                            MakeSpreadLaserData(4.0f),
+                            MakeSpreadLaserData(8.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-12.0f),
-                                Energy = 0.1f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-7.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(7.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(12.0f),
-                                Energy = 0.1f,
-                            },
+                            MakeSpreadLaserData(-12.0f),
+                            MakeSpreadLaserData(-7.0f),
+                            MakeBigSpreadLaserData(-2.0f),
+                            MakeBigSpreadLaserData(+2.0f),
+                            MakeSpreadLaserData(+7.0f),
+                            MakeSpreadLaserData(+12.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-13.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-7.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(7.0f),
-                                Energy = 0.15f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.18f,
-                                Speed = 15.0f,
-                                Damage = 0.3f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(13.0f),
-                                Energy = 0.15f,
-                            },
+                            MakeSpreadLaserData(-11.0f),
+                            MakeBigSpreadLaserData(-7.0f),
+                            MakeBigSpreadLaserData(-3.0f),
+                            MakeBigSpreadLaserData(-0.0f),
+                            MakeBigSpreadLaserData(+3.0f),
+                            MakeBigSpreadLaserData(+7.0f),
+                            MakeSpreadLaserData(+11.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeBigSpreadLaserData(-12.0f),
+                            MakeBigSpreadLaserData(-9.0f),
+                            MakeBigSpreadLaserData(-6.0f),
+                            MakeBigSpreadLaserData(-2.0f),
+                            MakeBigSpreadLaserData(+2.0f),
+                            MakeBigSpreadLaserData(+6.0f),
+                            MakeBigSpreadLaserData(+9.0f),
+                            MakeBigSpreadLaserData(+12.0f),
                         },
                     },
                 }
@@ -1024,137 +880,42 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = Vector2.Zero,
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeMissileData(new Vector2(+0.0f, +0.0f)),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            new SWeaponData() { ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeMissileData(new Vector2(+0.0f, +10.0f)),
+                            MakeMissileData(new Vector2(+0.0f, -10.0f)),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 16.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(12.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -16.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeMissileData(new Vector2(+0.0f, +16.0f)),
+                            MakeMissileData(new Vector2(+0.0f, +0.0f)),
+                            MakeMissileData(new Vector2(+0.0f, -16.0f)),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 18.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(12.0f, 6.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(12.0f, -6.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -18.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeMissileData(new Vector2(+0.0f, +18.0f)),
+                            MakeMissileData(new Vector2(+12.0f, +6.0f)),
+                            MakeMissileData(new Vector2(+12.0f, -6.0f)),
+                            MakeMissileData(new Vector2(+0.0f, -18.0f)),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 22.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(8.0f, 12.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(14.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(8.0f, -12.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.5f,
-                                Speed = 17.0f,
-                                Damage = 0.2f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -22.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeMissileData(new Vector2(+0.0f, +22.0f)),
+                            MakeMissileData(new Vector2(+8.0f, +12.0f)),
+                            MakeMissileData(new Vector2(+14.0f, +0.0f)),
+                            MakeMissileData(new Vector2(+8.0f, -12.0f)),
+                            MakeMissileData(new Vector2(+0.0f, -22.0f)),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeMissileData(new Vector2(+0.0f, +22.0f)),
+                            MakeMissileData(new Vector2(+8.0f, +13.0f)),
+                            MakeMissileData(new Vector2(+14.0f, +6.0f)),
+                            MakeMissileData(new Vector2(+14.0f, -6.0f)),
+                            MakeMissileData(new Vector2(+8.0f, -13.0f)),
+                            MakeMissileData(new Vector2(+0.0f, -22.0f)),
                         },
                     },
                 }
@@ -1168,213 +929,80 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = Vector2.Zero,
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, 0.0f), 180.0f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(195.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(165.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, -10.0f), 195.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +10.0f), 165.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(195.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = MathHelper.ToRadians(180.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(165.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, -10.0f), 195.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +0.0f), 180.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +10.0f), 165.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(195.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -5.0f),
-                                Rotation = MathHelper.ToRadians(185.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 5.0f),
-                                Rotation = MathHelper.ToRadians(175.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(165.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, -10.0f), 195.0f),
+                            MakeSeekBombData(new Vector2(0.0f, -5.0f), 185.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +5.0f), 175.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +10.0f), 165.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -14.0f),
-                                Rotation = MathHelper.ToRadians(205.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -8.0f),
-                                Rotation = MathHelper.ToRadians(195.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -3.0f),
-                                Rotation = MathHelper.ToRadians(185.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 3.0f),
-                                Rotation = MathHelper.ToRadians(175.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 8.0f),
-                                Rotation = MathHelper.ToRadians(165.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 14.0f),
-                                Rotation = MathHelper.ToRadians(155.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, -12.0f), 200.0f),
+                            MakeSeekBombData(new Vector2(0.0f, -6.0f), 190.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +0.0f), 180.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +6.0f), 170.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +12.0f), 160.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -18.0f),
-                                Rotation = MathHelper.ToRadians(215.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -14.0f),
-                                Rotation = MathHelper.ToRadians(205.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -8.0f),
-                                Rotation = MathHelper.ToRadians(195.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -3.0f),
-                                Rotation = MathHelper.ToRadians(185.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 3.0f),
-                                Rotation = MathHelper.ToRadians(175.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 8.0f),
-                                Rotation = MathHelper.ToRadians(165.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 14.0f),
-                                Rotation = MathHelper.ToRadians(155.0f),
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.7f,
-                                Speed = 14.0f,
-                                Damage = 0.1f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 18.0f),
-                                Rotation = MathHelper.ToRadians(145.0f),
-                            },
+                            MakeSeekBombData(new Vector2(0.0f, -14.0f), 205.0f),
+                            MakeSeekBombData(new Vector2(4.0f, -8.0f), 195.0f),
+                            MakeSeekBombData(new Vector2(10.0f, -3.0f), 185.0f),
+                            MakeSeekBombData(new Vector2(10.0f, +3.0f), 175.0f),
+                            MakeSeekBombData(new Vector2(4.0f, +8.0f), 165.0f),
+                            MakeSeekBombData(new Vector2(0.0f, +14.0f), 155.0f),
+                        },
+                    },
+                }
+            },
+
+            { "DrunkMissile", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootMissile",
+                    DisplayName = "Drunk\nMissile",
+                    BasePrice = 750,
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.5f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.4f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, +0.0f), 0.3f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, -2.0f), 0.3f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +2.0f), 0.3f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, -2.0f), 0.2f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +2.0f), 0.2f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, -4.0f), 0.20f),
+                            MakeDrunkMissileData(new Vector2(4.0f, +0.0f), 0.20f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +4.0f), 0.20f),
                         },
                     },
                 }
@@ -1444,6 +1072,24 @@ namespace Galaxy
                                 ChargeSpeed = 1.0f,
                                 AutoDischarge = 1,
                             },
+                        },
+                    },
+                }
+            },
+
+            { "MissileVolley", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootMissile",
+                    DisplayName = "MissileVolley",
+                    BasePrice = 6000,
+                    Data = new List<List<SWeaponData>>() {
+                        new List<SWeaponData>() {
+                            MakeMissileVolleyData(new Vector2(0.0f, -8.0f)),
+                            MakeMissileVolleyData(new Vector2(8.0f, -4.0f)),
+                            MakeMissileVolleyData(new Vector2(12.0f, -1.0f)),
+                            MakeMissileVolleyData(new Vector2(12.0f, 1.0f)),
+                            MakeMissileVolleyData(new Vector2(8.0f, 4.0f)),
+                            MakeMissileVolleyData(new Vector2(0.0f, 8.0f)),
                         },
                     },
                 }

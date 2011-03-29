@@ -141,6 +141,13 @@ namespace Galaxy
             missile.Die();
         }
 
+        public void OnCollide(CDrunkMissile missile)
+        {
+            World.Stats.ShotDamageDealt += missile.Damage;
+            TakeDamage(missile.Damage, missile.Owner);
+            missile.Die();
+        }
+
         public void OnCollide(CSeekBomb seek_bomb)
         {
             if (CanSeekerTarget == false)
@@ -156,6 +163,13 @@ namespace Galaxy
             World.Stats.ShotDamageDealt += plasma.Damage;
             TakeDamage(plasma.Damage, plasma.Owner);
             plasma.Die();
+        }
+
+        public void OnCollide(CPlasmaSplash splash)
+        {
+            World.Stats.ShotDamageDealt += splash.Damage;
+            TakeDamage(splash.Damage, splash.Owner);
+            splash.WasHit = true;
         }
 
         public void OnCollide(CFlame flame)
@@ -255,6 +269,14 @@ namespace Galaxy
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, null, anti_camera);
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, null, anti_camera);
 
+            DropCoins();
+            GenerateCorpse();
+
+            base.OnDie();
+        }
+
+        protected void DropCoins()
+        {
             int big_coins = Coins / 10;
             for (int i = 0; i < big_coins; i++)
             {
@@ -281,9 +303,6 @@ namespace Galaxy
                 World.EntityAdd(powerup);
             }
 
-            GenerateCorpse();
-
-            base.OnDie();
         }
 
         protected virtual bool DoesGenerateCorpse()

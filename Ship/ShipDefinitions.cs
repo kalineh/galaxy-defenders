@@ -197,7 +197,7 @@ namespace Galaxy
                 "Impulse Mk 1",
                 new CGeneratorPart() {
                     Price = 1500,
-                    Energy = 5.0f,
+                    Energy = 3.0f,
                     Regen = 0.06f,
                 }
             },
@@ -205,7 +205,7 @@ namespace Galaxy
                 "Impulse Mk 2",
                 new CGeneratorPart() {
                     Price = 7500,
-                    Energy = 6.0f,
+                    Energy = 4.5f,
                     Regen = 0.09f,
                 }
             },
@@ -213,7 +213,7 @@ namespace Galaxy
                 "Impulse Mk 3",
                 new CGeneratorPart() {
                     Price = 22000,
-                    Energy = 9.0f,
+                    Energy = 7.0f,
                     Regen = 0.13f,
                 }
             },
@@ -222,7 +222,7 @@ namespace Galaxy
                 "Capacitor Mk 1",
                 new CGeneratorPart() {
                     Price = 1500,
-                    Energy = 12.0f,
+                    Energy = 14.0f,
                     Regen = 0.04f,
                 }
             },
@@ -230,7 +230,7 @@ namespace Galaxy
                 "Capacitor Mk 2",
                 new CGeneratorPart() {
                     Price = 8000,
-                    Energy = 14.0f,
+                    Energy = 16.0f,
                     Regen = 0.06f,
                 }
             },
@@ -238,7 +238,7 @@ namespace Galaxy
                 "Capacitor Mk 3",
                 new CGeneratorPart() {
                     Price = 25000,
-                    Energy = 17.0f,
+                    Energy = 21.0f,
                     Regen = 0.09f,
                 }
             },
