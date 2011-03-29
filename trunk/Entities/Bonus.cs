@@ -57,8 +57,8 @@ namespace Galaxy
             
             LerpGravity();
 
-            if (AliveTime > MagnetDelay)
-                LerpToPlayers();
+            LerpToPlayers();
+            KeepInScreen();
 
             if (IsOffScreenBottom(32.0f))
                 Delete();
@@ -71,6 +71,11 @@ namespace Galaxy
 
         private void LerpToPlayers()
         {
+            if (AliveTime < MagnetDelay)
+            {
+                return;
+            }
+
             CShip ship = World.GetNearestShip(Physics.Position);
             if (ship == null)
             {
@@ -96,6 +101,16 @@ namespace Galaxy
                 float power_multiplier = 0.0125f;
                 Physics.Velocity += dir * power * power_multiplier;
             }
+        }
+
+        private void KeepInScreen()
+        {
+            Vector2 tl = World.GameCamera.GetTopLeft();
+            Vector2 br = World.GameCamera.GetBottomRight();
+            Physics.Position = new Vector2(
+                MathHelper.Clamp(Physics.Position.X, tl.X, br.X),
+                MathHelper.Min(br.Y, Physics.Position.Y)
+            );
         }
 
         public void OnCollide(CShip ship)

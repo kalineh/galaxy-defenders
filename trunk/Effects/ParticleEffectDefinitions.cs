@@ -41,6 +41,7 @@ namespace Galaxy
         WeaponLightningHit,
         WeaponMissileHit,
         WeaponMissileTrail,
+        WeaponDrunkMissileTrail,
         WeaponPlasmaHit,
         WeaponSeekBombHit,
         WeaponCharge,
@@ -983,6 +984,37 @@ namespace Galaxy
                         AlphaDeltaVariation = 0.0f,
                         Lifetime = 60,
                         LifetimeVariation = 15,
+                    }
+                },
+
+                {
+                    EParticleType.WeaponDrunkMissileTrail,
+                    new SEffectDefinition()
+                    {
+                        Type = EParticleType.None,
+                        Count = 1,
+                        Visual = CParticleEffectManager.Dot,
+                        Position = Vector2.Zero,
+                        PositionVariationCircle = Vector2.Zero,
+                        PositionVariationBox = new Vector2(4.0f, 16.0f),
+                        PositionDelta = Vector2.Zero,
+                        PositionDeltaVariation = new Vector2(0.2f, 0.2f),
+                        Scale = new Vector2(0.35f, 0.35f),
+                        ScaleVariation = new Vector2(0.1f, 0.1f),
+                        ScaleDelta = new Vector2(-0.04f, -0.04f),
+                        ScaleDeltaVariation = Vector2.Zero,
+                        OutDelta = 0.0f,
+                        Angle = 0.0f,
+                        AngleVariation = 0.0f,
+                        AngleDelta = 0.0f,
+                        AngleDeltaVariation = 0.0f,
+                        Color = Color.White,
+                        Alpha = 1.0f,
+                        AlphaVariation = 0.0f,
+                        AlphaDelta = 0.0f,
+                        AlphaDeltaVariation = 0.0f,
+                        Lifetime = 15,
+                        LifetimeVariation = 5,
                     }
                 },
 

@@ -19,7 +19,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 24.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/MiniSquare");
             HealthMax = 0.15f;
-            Coins = world.Random.NextFloat() > 0.5f ? 1 : 0;
+            Coins = world.Random.Next() > 0.5f ? 1 : 0;
         }
 
         public override void UpdateAI()
@@ -47,6 +47,8 @@ namespace Galaxy
 
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, 0.5f, anti_camera);
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, 0.5f, anti_camera);
+
+            DropCoins();
         }
     }
 }

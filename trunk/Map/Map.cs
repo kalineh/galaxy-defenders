@@ -413,6 +413,7 @@ namespace Galaxy
         {
             return new List<string>() {
                 "Missile",
+                "DrunkMissile",
                 "SeekBomb",
             };
         }
@@ -423,6 +424,7 @@ namespace Galaxy
                 "MiniShot",
                 "ChargeShot",
                 "Blade",
+                "MissileVolley",
             };
         }
 
@@ -498,6 +500,14 @@ namespace Galaxy
                     "Stage1",
                     "*",
                 },
+#if DEBUG
+                AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
+                AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
+                AvailableSidekickWeaponParts = AllSidekickWeapons(),
+                AvailableChassisParts = AllChassisParts(),
+                AvailableGeneratorParts = AllGeneratorParts(),
+                AvailableShieldParts = AllShieldParts(),
+#else
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
                 AvailableSidekickWeaponParts = AllSidekickWeapons(),
@@ -517,6 +527,7 @@ namespace Galaxy
                     "Light Shield",    
                     "Fiber Shield",    
                 },
+#endif
             },
             new CMapNode() {
                 SaveIndex = 0,

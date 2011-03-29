@@ -97,12 +97,15 @@
     <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="Projectile\Beam.cs" />
     <Compile Include="Projectile\Blade.cs" />
+    <Compile Include="Projectile\DrunkMissile.cs" />
     <Compile Include="Projectile\Lightning.cs" />
     <Compile Include="Projectile\Flame.cs" />
     <Compile Include="Projectile\EnemyMiniShot.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
+    <Compile Include="Weapon\WeaponMissileVolley.cs" />
+    <Compile Include="Weapon\WeaponDrunkMissile.cs" />
     <Compile Include="Weapon\WeaponBlade.cs" />
     <Compile Include="Weapon\WeaponBeam.cs" />
     <Compile Include="Weapon\WeaponLightning.cs" />

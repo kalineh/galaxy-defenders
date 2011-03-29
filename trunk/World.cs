@@ -65,6 +65,7 @@ namespace Galaxy
         public int StageTextDisplayCounter { get; set; }
         public CTextLabel StageTextLabelStage { get; set; }
         public CTextLabel StageTextLabelName { get; set; }
+        public List<CPlasmaSplash> PlasmaSplashCache { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -213,6 +214,7 @@ namespace Galaxy
                 Ships.Add(ship);
             }
 
+            // TODO: why does this crash when going into secret stage?
             StageTextLabelStage.Value = "Stage 1";
             StageTextLabelName.Value = CMap.GetMapNodeByStageName(Stage.Definition.Name).StageName;
         }
