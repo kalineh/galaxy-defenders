@@ -31,6 +31,8 @@ namespace Galaxy
                 weapon.Initialize(owner as CShip);
                 weapon.ApplyWeaponData(data);
 
+                weapon.Damage *= 1.0f + (owner as CShip).Pilot.BonusDamage;
+
                 // TODO: cleanup
                 weapon.Sound = WeaponDefinitions.Items[typename].Sound;
 
@@ -151,7 +153,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.16f,
                 Speed = 17.0f,
-                Damage = 0.000001f,
+                Damage = 0.1f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -165,7 +167,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.16f,
                 Speed = 17.0f,
-                Damage = 0.000003f,
+                Damage = 0.3f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -325,11 +327,11 @@ namespace Galaxy
             {
                 ReloadTime = 1.0f,
                 Speed = 10.0f,
-                Damage = 0.15f,
+                Damage = 0.20f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(180.0f),
-                Energy = 1.0f,
+                Energy = 0.10f,
                 ChargeSpeed = Time.ToSeconds(2),
                 AutoDischarge = 1,
             };
@@ -822,31 +824,31 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.5f),
+                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.4f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.4f),
+                            MakeDrunkMissileData(new Vector2(0.0f, 0.0f), 0.3f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeDrunkMissileData(new Vector2(0.0f, +0.0f), 0.3f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +0.0f), 0.2f),
                         },
                         // level 4
-                        new List<SWeaponData>() {
-                            MakeDrunkMissileData(new Vector2(0.0f, -2.0f), 0.3f),
-                            MakeDrunkMissileData(new Vector2(0.0f, +2.0f), 0.3f),
-                        },
-                        // level 5
                         new List<SWeaponData>() {
                             MakeDrunkMissileData(new Vector2(0.0f, -2.0f), 0.2f),
                             MakeDrunkMissileData(new Vector2(0.0f, +2.0f), 0.2f),
                         },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeDrunkMissileData(new Vector2(0.0f, -2.0f), 0.15f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +2.0f), 0.15f),
+                        },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeDrunkMissileData(new Vector2(0.0f, -4.0f), 0.20f),
-                            MakeDrunkMissileData(new Vector2(4.0f, +0.0f), 0.20f),
-                            MakeDrunkMissileData(new Vector2(0.0f, +4.0f), 0.20f),
+                            MakeDrunkMissileData(new Vector2(0.0f, -4.0f), 0.15f),
+                            MakeDrunkMissileData(new Vector2(4.0f, +0.0f), 0.15f),
+                            MakeDrunkMissileData(new Vector2(0.0f, +4.0f), 0.15f),
                         },
                     },
                 }
@@ -928,12 +930,14 @@ namespace Galaxy
                     BasePrice = 6000,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
+                            MakeMissileVolleyData(new Vector2(-4.0f, -12.0f)),
                             MakeMissileVolleyData(new Vector2(0.0f, -8.0f)),
                             MakeMissileVolleyData(new Vector2(8.0f, -4.0f)),
                             MakeMissileVolleyData(new Vector2(12.0f, -1.0f)),
                             MakeMissileVolleyData(new Vector2(12.0f, 1.0f)),
                             MakeMissileVolleyData(new Vector2(8.0f, 4.0f)),
                             MakeMissileVolleyData(new Vector2(0.0f, 8.0f)),
+                            MakeMissileVolleyData(new Vector2(-4.0f, 12.0f)),
                         },
                     },
                 }

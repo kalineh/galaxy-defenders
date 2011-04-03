@@ -98,6 +98,9 @@ namespace Galaxy
         public CAbility Ability0 { get; set; }
         public CAbility Ability1 { get; set; }
         public CAbility Ability2 { get; set; }
+        public float BonusSpeed { get; set; }
+        public int BonusMoney { get; set; }
+        public float BonusDamage { get; set; }
 
         public CPilot()
         {
@@ -548,6 +551,7 @@ namespace Galaxy
                 Ability0 = new Abilities.DashBurst(this, false);
                 Ability1 = new Abilities.Shimmer(this, false);
                 Ability2 = new Abilities.AbsorbEnergy(this, false);
+                BonusSpeed = 0.20f;
             }
         }
 
@@ -559,6 +563,7 @@ namespace Galaxy
                 Ability0 = new Abilities.BulletReflect(this, false);
                 Ability1 = new Abilities.BulletDetonate(this, false);
                 Ability2 = new Abilities.BulletAlchemy(this, false);
+                BonusMoney = 3;
             }
         }
 
@@ -570,6 +575,7 @@ namespace Galaxy
                 Ability0 = new Abilities.GroundSmash(this, false);
                 Ability1 = new Abilities.SuctionCrusher(this, false);
                 Ability2 = new Abilities.ArmorRepair(this, false);
+                BonusDamage = 0.15f;
             }
         }
     }
