@@ -26,9 +26,9 @@ namespace Galaxy
                 Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
                 Splash = CPlasmaSplash.GetCached(world);
                 Splash.Initialize(world);
-                Splash.SetRadius(32.0f);
+                Splash.SetRadius(48.0f);
                 Splash.Owner = owner;
-                Splash.Damage = 0.2f;
+                Splash.Damage = Damage * 0.25f;
             }
             else
             {
@@ -39,9 +39,9 @@ namespace Galaxy
                 Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 6.0f);
                 Splash = CPlasmaSplash.GetCached(world);
                 Splash.Initialize(world);
-                Splash.SetRadius(64.0f);
+                Splash.SetRadius(128.0f);
                 Splash.Owner = owner;
-                Splash.Damage = 0.6f;
+                Splash.Damage = Damage * 0.25f;
             }
         }
 

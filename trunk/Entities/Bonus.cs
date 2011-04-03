@@ -119,7 +119,7 @@ namespace Galaxy
         public void OnCollide(CShip ship)
         {
             World.Stats.CoinsCollected += 1;
-            ship.Score += BonusValue;
+            ship.Score += BonusValue + ship.Pilot.BonusMoney;
             CAudio.PlaySound("BonusGet", 1.0f);
             Die();
         }

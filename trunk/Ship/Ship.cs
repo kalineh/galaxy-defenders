@@ -229,7 +229,7 @@ namespace Galaxy
             GamePadButtons buttons = state.Buttons;
             GamePadDPad dpad = state.DPad;
 
-            float Speed = Chassis.Speed * SpeedEnhancement;
+            float Speed = Chassis.Speed * SpeedEnhancement + Chassis.Speed * Pilot.BonusSpeed;
             Vector2 force = Vector2.Zero;
 
             if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
