@@ -351,6 +351,21 @@ namespace Galaxy
             };
         }
 
+        public static SWeaponData MakeBoomerangData(Vector2 offset, float angle, float reload)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 11.0f,
+                Damage = 0.020f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(angle),
+                Energy = 0.30f,
+                CustomData = new BoomerangCustomData() { SprayAngle = 0.0f },
+            };
+        }
+
 
         public static Dictionary<string, SWeaponDefinition> Items = new Dictionary<string, SWeaponDefinition>()
         {
@@ -811,6 +826,47 @@ namespace Galaxy
                             MakeSeekBombData(new Vector2(10.0f, +3.0f), 175.0f),
                             MakeSeekBombData(new Vector2(4.0f, +8.0f), 165.0f),
                             MakeSeekBombData(new Vector2(0.0f, +14.0f), 155.0f),
+                        },
+                    },
+                }
+            },
+
+            { "Boomerang", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootSeekBomb",
+                    DisplayName = "Boomerang",
+                    BasePrice = 700,
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, 0.0f), 0.0f, 0.4f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, 0.0f), 0.0f, 0.3f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), -3.0f, 0.3f),
+                            MakeBoomerangData(new Vector2(0.0f, +10.0f), 3.0f, 0.3f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), -3.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, +10.0f), 3.0f, 0.25f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), -3.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), 0.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, +10.0f), 3.0f, 0.25f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), -5.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), -2.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, -10.0f), 2.0f, 0.25f),
+                            MakeBoomerangData(new Vector2(0.0f, +10.0f), 5.0f, 0.25f),
                         },
                     },
                 }

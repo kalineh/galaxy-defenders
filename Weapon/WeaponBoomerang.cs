@@ -1,12 +1,12 @@
 ﻿//
-// WeaponBlade.cs
+// WeaponBoomerang.cs
 //
 
 using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    public class CWeaponBlade
+    public class CWeaponBoomerang
         : CWeapon
     {
         public override void Initialize(CShip owner)
@@ -16,7 +16,7 @@ namespace Galaxy
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CBlade blade = CBlade.Spawn(owner, position, rotation, speed, damage);
+            CBoomerang boomerang = CBoomerang.Spawn(owner, position, rotation, speed, damage, custom_data);
         }
     };
 }
