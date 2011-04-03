@@ -105,6 +105,9 @@ namespace Galaxy
 
         private void KeepInScreen()
         {
+            if (AliveTime > MagnetDelay && !GotoPlayer)
+                return;
+
             Vector2 tl = World.GameCamera.GetTopLeft();
             Vector2 br = World.GameCamera.GetBottomRight();
             Physics.Position = new Vector2(

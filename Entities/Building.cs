@@ -205,6 +205,13 @@ namespace Galaxy
             plasma.Die();
         }
 
+        public void OnCollide(CPlasmaSplash splash)
+        {
+            World.Stats.ShotDamageDealt += splash.Damage;
+            TakeDamage(splash.Damage, splash.Owner);
+            splash.WasHit = true;
+        }
+
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;

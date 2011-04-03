@@ -102,6 +102,9 @@ namespace Galaxy
 
             if (WasHit)
                 Die();
+
+            if (AliveTime > 2)
+                Die();
         }
 
         public void SetRadius(float radius)

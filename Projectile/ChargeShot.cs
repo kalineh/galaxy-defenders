@@ -33,7 +33,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/ChargeShot", owner.GameControllerIndex);
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f * damage);
             Damage = damage;
         }
 
