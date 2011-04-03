@@ -158,6 +158,12 @@ namespace Galaxy
             seek_bomb.Die();
         }
 
+        public void OnCollide(CBoomerang boomerang)
+        {
+            World.Stats.ShotDamageDealt += boomerang.Damage;
+            TakeDamage(boomerang.Damage, boomerang.Owner);
+        }
+
         public void OnCollide(CPlasma plasma)
         {
             World.Stats.ShotDamageDealt += plasma.Damage;

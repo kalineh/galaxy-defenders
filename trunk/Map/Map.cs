@@ -415,6 +415,7 @@ namespace Galaxy
                 "Missile",
                 "DrunkMissile",
                 "SeekBomb",
+                "Boomerang",
             };
         }
 
@@ -550,6 +551,7 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>()
                 {
                     "Basic Mk 1",    
+                    "Basic Mk 2",    
                     "Impulse Mk 1",    
                     "Capacitor Mk 1",    
                 },
@@ -581,8 +583,8 @@ namespace Galaxy
                 {
                     "Basic Mk 1",    
                     "Impulse Mk 1",    
-                    "Impulse Mk 2",    
                     "Capacitor Mk 1",    
+                    "Capacitor Mk 2",    
                 },
                 AvailableShieldParts = new List<string>()
                 {
@@ -610,10 +612,10 @@ namespace Galaxy
                 },
                 AvailableGeneratorParts = new List<string>()
                 {
-                    "Basic Mk 1",    
                     "Basic Mk 2",    
                     "Impulse Mk 1",    
-                    "Capacitor Mk 2",    
+                    "Impulse Mk 2",    
+                    "Capacitor Mk 1",    
                 },
                 AvailableShieldParts = new List<string>()
                 {
@@ -645,6 +647,7 @@ namespace Galaxy
                     "Basic Mk 2",    
                     "Impulse Mk 2",    
                     "Capacitor Mk 1",    
+                    "Capacitor Mk 2",    
                     "Magnetic",    
                 },
                 AvailableShieldParts = new List<string>()

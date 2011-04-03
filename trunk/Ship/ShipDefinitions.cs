@@ -245,10 +245,10 @@ namespace Galaxy
             {
                 "Kinetic",
                 new CGeneratorPart() {
-                    Price = 35000,
-                    Energy = 15.0f,
-                    Regen = 0.12f,
-                    RegenOnCollide = 0.1f,
+                    Price = 20000,
+                    Energy = 10.0f,
+                    Regen = 0.08f,
+                    RegenOnCollide = 1.5f,
                     Description = "Collisions provide extra Energy",
                 }
             },
