@@ -160,9 +160,10 @@ namespace Galaxy
                     LabelAwardValues.Add(value);
 
                     // NOTE: we want to add this with the correct timing so the score text animates correctly
+                    float multiplier = World.Ships.Count > 1 ? 0.75f : 1.0f;
                     foreach (CShip ship in World.Ships)
                     {
-                        ship.Score += award.Bonus;
+                        ship.Score += (int)(award.Bonus * multiplier);
                     }
                 }
             }

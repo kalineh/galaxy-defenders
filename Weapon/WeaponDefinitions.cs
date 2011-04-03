@@ -221,7 +221,7 @@ namespace Galaxy
         {
             return new SWeaponData()
             {
-                ReloadTime = 0.0025f,
+                ReloadTime = 0.25f,
                 Speed = 12.0f,
                 Damage = 1.0f,
                 KickbackForce = 0.0f,
@@ -328,7 +328,7 @@ namespace Galaxy
                 ReloadTime = 1.0f,
                 Speed = 10.0f,
                 Damage = 0.20f,
-                KickbackForce = 0.0f,
+                KickbackForce = 0.5f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(180.0f),
                 Energy = 0.10f,
