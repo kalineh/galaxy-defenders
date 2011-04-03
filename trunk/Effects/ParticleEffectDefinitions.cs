@@ -999,7 +999,7 @@ namespace Galaxy
                         PositionVariationBox = new Vector2(4.0f, 16.0f),
                         PositionDelta = Vector2.Zero,
                         PositionDeltaVariation = new Vector2(0.2f, 0.2f),
-                        Scale = new Vector2(0.35f, 0.35f),
+                        Scale = new Vector2(0.30f, 0.30f),
                         ScaleVariation = new Vector2(0.1f, 0.1f),
                         ScaleDelta = new Vector2(-0.04f, -0.04f),
                         ScaleDeltaVariation = Vector2.Zero,

@@ -96,35 +96,37 @@ namespace Galaxy
                 if (entity.Collision.Enabled == false)
                     continue;
 
-                Vector2 local = entity.Physics.Position - upper + half_grid;
-
                 float x = 0.0f;
                 float y = 0.0f;
 
                 CollisionAABB aabb = entity.Collision as CollisionAABB;
                 CollisionCircle circle = entity.Collision as CollisionCircle;
 
+                Vector2 local = Vector2.Zero;
+
                 if (aabb != null)
                 {
                     x = aabb.Size.X * 0.5f;
                     y = aabb.Size.Y * 0.5f;
+                    local = aabb.Position - upper + half_grid;
                 }
                 else if (circle != null)
                 {
                     x = circle.Radius;
                     y = circle.Radius;
+                    local = circle.Position - upper + half_grid;
                 }
 
                 Vector2 halfsize = new Vector2(x, y);
-                Vector2 ul = local - halfsize;
-                Vector2 br = local + halfsize;
 
                 // workaround for centering of aabb collision
                 if (aabb != null)
                 {
-                    ul -= halfsize;
-                    br -= halfsize;
+                    local += halfsize;
                 }
+
+                Vector2 ul = local - halfsize;
+                Vector2 br = local + halfsize;
 
                 int min_x = (int)(ul.X / column_width);
                 int min_y = (int)(ul.Y / row_width);
@@ -239,7 +241,8 @@ namespace Galaxy
 
                     int n = Entities[y][x].Count;
 
-                    string s = String.Format("{0}.{1}: {2}", x, y, n);
+                    //string s = String.Format("{0}.{1}: {2}", x, y, n);
+                    string s = String.Format("{0}", n);
 
                     CDebugRender.Box(transform, local_center, grid_size, 1.0f, color);
                     CDebugRender.Text(transform, local_center, s, 1.5f, color);

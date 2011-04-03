@@ -151,7 +151,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.16f,
                 Speed = 17.0f,
-                Damage = 0.1f,
+                Damage = 0.000001f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -165,7 +165,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.16f,
                 Speed = 17.0f,
-                Damage = 0.3f,
+                Damage = 0.000003f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -198,6 +198,34 @@ namespace Galaxy
                 Offset = new Vector2(0.0f, 0.0f),
                 Rotation = MathHelper.ToRadians(rotation),
                 Energy = 0.15f,
+            };
+        }
+
+        public static SWeaponData MakePlasmaData(Vector2 offset, float rotation)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.25f,
+                Speed = 12.0f,
+                Damage = 0.25f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(rotation),
+                Energy = 0.2f,
+            };
+        }
+
+        public static SWeaponData MakeBigPlasmaData(Vector2 offset, float rotation)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.0025f,
+                Speed = 12.0f,
+                Damage = 1.0f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(rotation),
+                Energy = 0.7f,
             };
         }
 
@@ -283,7 +311,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 10.0f,
-                Damage = 0.1f,
+                Damage = 0.15f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(180.0f),
@@ -297,7 +325,7 @@ namespace Galaxy
             {
                 ReloadTime = 1.0f,
                 Speed = 10.0f,
-                Damage = 0.1f,
+                Damage = 0.15f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(180.0f),
@@ -476,231 +504,47 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = Vector2.Zero,
-                                Rotation = 0.0f,
-                                Energy = 0.2f,
-                            },
+                            MakePlasmaData(new Vector2(+0.0f, +0.0f), +0.0f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.2f,
-                            },
+                            MakePlasmaData(new Vector2(+0.0f, -10.0f), -1.0f),
+                            MakePlasmaData(new Vector2(+0.0f, +10.0f), +1.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-1.0f, -10.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 0.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-1.0f, 10.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.2f,
-                            },
+                            MakePlasmaData(new Vector2(-1.0f, -10.0f), -2.0f),
+                            MakePlasmaData(new Vector2(-0.0f, +0.0f), +0.0f),
+                            MakePlasmaData(new Vector2(-1.0f, +10.0f), +2.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-2.0f, -13.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = Vector2.Zero,
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-2.0f, 13.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.2f,
-                            },
+                            MakePlasmaData(new Vector2(-2.0f, -13.0f), -2.0f),
+                            MakeBigPlasmaData(new Vector2(-5.0f, +0.0f), +0.0f),
+                            MakePlasmaData(new Vector2(-2.0f, +13.0f), +2.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-5.0f, -19.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-5.0f, 19.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.2f,
-                            },
+                            MakePlasmaData(new Vector2(-5.0f, -19.0f), -2.0f),
+                            MakeBigPlasmaData(new Vector2(-3.0f, -10.0f), -0.0f),
+                            MakeBigPlasmaData(new Vector2(-3.0f, +10.0f), +0.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +19.0f), +2.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-3.0f, -22.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-3.0f, 22.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
-                                Energy = 0.7f,
-                            },
+                            MakeBigPlasmaData(new Vector2(-3.0f, -22.0f), -1.0f),
+                            MakeBigPlasmaData(new Vector2(-0.0f, -10.0f), -0.0f),
+                            MakeBigPlasmaData(new Vector2(-0.0f, +10.0f), +0.0f),
+                            MakeBigPlasmaData(new Vector2(-3.0f, +22.0f), +1.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-6.0f, -32.0f),
-                                Rotation = MathHelper.ToRadians(-2.0f),
-                                Energy = 0.2f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-2.0f, -22.0f),
-                                Rotation = MathHelper.ToRadians(-1.0f),
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, -10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(0.0f, 10.0f),
-                                Rotation = 0.0f,
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 1.0f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-2.0f, 22.0f),
-                                Rotation = MathHelper.ToRadians(1.0f),
-                                Energy = 0.7f,
-                            },
-                            new SWeaponData() {
-                                ReloadTime = 0.25f,
-                                Speed = 12.0f,
-                                Damage = 0.25f,
-                                KickbackForce = 0.0f,
-                                Offset = new Vector2(-6.0f, 32.0f),
-                                Rotation = MathHelper.ToRadians(2.0f),
-                                Energy = 0.2f,
-                            },
+                            MakeBigPlasmaData(new Vector2(-6.0f, -32.0f), -2.0f),
+                            MakeBigPlasmaData(new Vector2(-2.0f, -22.0f), -1.0f),
+                            MakeBigPlasmaData(new Vector2(-0.0f, -10.0f), +0.0f),
+                            MakeBigPlasmaData(new Vector2(-0.0f, +10.0f), +0.0f),
+                            MakeBigPlasmaData(new Vector2(-2.0f, +22.0f), +1.0f),
+                            MakeBigPlasmaData(new Vector2(-6.0f, +32.0f), +2.0f),
                         },
                     },
                 }
