@@ -40,7 +40,6 @@ namespace Galaxy
         {
             base.Initialize(world, owner, damage);
 
-            Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Boomerang", owner.GameControllerIndex);
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();

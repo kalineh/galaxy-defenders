@@ -116,6 +116,24 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CDrunkMissile missile)
+        {
+            missile.Die();
+            Hit();
+        }
+
+        public void OnCollide(CVulcan vulcan)
+        {
+            vulcan.Die();
+            Hit();
+        }
+
+        public void OnCollide(CBoomerang boomerang)
+        {
+            boomerang.GetHit(this);
+            Hit();
+        }
+
         public void OnCollide(CBeam beam)
         {
             Hit();
