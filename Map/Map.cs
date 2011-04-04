@@ -416,6 +416,7 @@ namespace Galaxy
                 "DrunkMissile",
                 "SeekBomb",
                 "Boomerang",
+                "Vulcan",
             };
         }
 

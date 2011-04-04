@@ -185,6 +185,13 @@ namespace Galaxy
             flame.Die();
         }
 
+        public void OnCollide(CVulcan vulcan)
+        {
+            World.Stats.ShotDamageDealt += vulcan.Damage;
+            TakeDamage(vulcan.Damage, vulcan.Owner);
+            vulcan.Die();
+        }
+
         public void OnCollideSimulation(CLightning lightning)
         {
             World.Stats.ShotDamageDealt += lightning.Damage;

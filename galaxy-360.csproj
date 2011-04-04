@@ -109,6 +109,7 @@
     <Compile Include="Projectile\EnemyPellet.cs" />
     <Compile Include="Projectile\Flame.cs" />
     <Compile Include="Projectile\Lightning.cs" />
+    <Compile Include="Projectile\Vulcan.cs" />
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
     <Compile Include="ScorePanel.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Weapon\WeaponLaser.cs" />
     <Compile Include="Weapon\WeaponMissile.cs" />
     <Compile Include="Weapon\Weapon.cs" />
+    <Compile Include="Weapon\WeaponVulcan.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>

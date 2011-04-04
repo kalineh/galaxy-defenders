@@ -45,6 +45,7 @@ namespace Galaxy
         WeaponPlasmaHit,
         WeaponSeekBombHit,
         WeaponBoomerangHit,
+        WeaponVulcanHit,
         WeaponCharge,
         ObjectDestroyed,
     }
@@ -1087,6 +1088,37 @@ namespace Galaxy
                     {
                         Type = EParticleType.None,
                         Count = 2,
+                        Visual = CParticleEffectManager.Dot,
+                        Position = Vector2.Zero,
+                        PositionVariationCircle = new Vector2(1.0f, 1.0f),
+                        PositionVariationBox = Vector2.Zero,
+                        PositionDelta = Vector2.Zero,
+                        PositionDeltaVariation = new Vector2(0.4f, 0.4f),
+                        Scale = new Vector2(0.4f, 0.4f),
+                        ScaleVariation = Vector2.Zero,
+                        ScaleDelta = new Vector2(-0.02f, -0.02f),
+                        ScaleDeltaVariation = Vector2.Zero,
+                        OutDelta = 0.0f,
+                        Angle = 0.0f,
+                        AngleVariation = 0.0f,
+                        AngleDelta = 0.0f,
+                        AngleDeltaVariation = 0.0f,
+                        Color = Color.White,
+                        Alpha = 1.0f,
+                        AlphaVariation = 0.0f,
+                        AlphaDelta = 0.0f,
+                        AlphaDeltaVariation = 0.0f,
+                        Lifetime = 60,
+                        LifetimeVariation = 15,
+                    }
+                },
+
+                {
+                    EParticleType.WeaponVulcanHit,
+                    new SEffectDefinition()
+                    {
+                        Type = EParticleType.None,
+                        Count = 1,
                         Visual = CParticleEffectManager.Dot,
                         Position = Vector2.Zero,
                         PositionVariationCircle = new Vector2(1.0f, 1.0f),

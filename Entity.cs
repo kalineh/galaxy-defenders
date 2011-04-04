@@ -195,6 +195,7 @@ namespace Galaxy
 
         public virtual void Delete()
         {
+            IsDead = true;
             World.EntityDelete(this);
         }
 

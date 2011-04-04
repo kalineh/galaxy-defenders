@@ -261,6 +261,21 @@ namespace Galaxy
             };
         }
 
+        public static SWeaponData MakeVulcanData(float reload, float spray)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 17.0f,
+                Damage = 0.050f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.Zero,
+                Rotation = 0.0f,
+                Energy = 0.09f,
+                CustomData = new VulcanCustomData() { SprayAngle = spray },
+            };
+        }
+
         public static SWeaponData MakeLightningData(float offset, int bounces)
         {
             return new SWeaponData()
@@ -460,16 +475,18 @@ namespace Galaxy
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeSpreadLaserData(-4.0f),
-                            MakeSpreadLaserData(+0.0f),
-                            MakeSpreadLaserData(+4.0f),
-                        },
-                        // level 4
-                        new List<SWeaponData>() {
                             MakeSpreadLaserData(-6.0f),
                             MakeSpreadLaserData(-2.0f),
                             MakeSpreadLaserData(2.0f),
                             MakeSpreadLaserData(6.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeSpreadLaserData(-8.0f),
+                            MakeSpreadLaserData(-4.0f),
+                            MakeSpreadLaserData(0.0f),
+                            MakeSpreadLaserData(4.0f),
+                            MakeSpreadLaserData(8.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
@@ -619,6 +636,49 @@ namespace Galaxy
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, 0.0f),
+                        },
+                    },
+                }
+            },
+
+            { "Vulcan",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 800,
+                    DisplayName = "Vulcan Cannon",
+                    Sound = "WeaponShootMiniShot",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.15f, 0.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.14f, 0.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.13f, 0.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.12f, 0.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.11f, 0.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.10f, 0.0f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.09f, 0.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.07f, 0.0f),
                         },
                     },
                 }
