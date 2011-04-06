@@ -291,7 +291,8 @@ namespace Galaxy
         private int CalculateScoreFromHealth()
         {
             float s = HealthMax * 15.0f;
-            float d = s * CDifficulty.MoneyScale[CSaveData.GetCurrentGameData(World.Game).Difficulty];
+            int difficulty = World.CachedDifficulty;
+            float d = s * CDifficulty.MoneyScale[difficulty];
             int score = (int)d;
             return score - score % 10;
         }

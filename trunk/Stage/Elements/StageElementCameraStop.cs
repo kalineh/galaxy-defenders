@@ -107,6 +107,8 @@ namespace Galaxy
                 }
 
                 ExplosionSoundDelay = 6 + (int)(world.Random.NextFloat() * 8.0f);
+
+                world.GameCamera.Shake(0.5f, 2.0f);
             }
 
             ExplosionSoundDelay -= 1;

@@ -33,7 +33,8 @@ namespace Galaxy
 
             if (LastTarget != null && LastTarget.IsDead == false)
             {
-                Vector2 offset = LastTarget.Physics.Position - position;
+                Vector2 target = LastTarget.Physics.Position + LastTarget.Physics.Velocity * 25.0f;
+                Vector2 offset = target - position;
                 rotation = offset.ToAngle();
             }
 
