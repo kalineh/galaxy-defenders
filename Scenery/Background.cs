@@ -70,8 +70,8 @@ namespace Galaxy
             float screen_scale_y = World.GameCamera.ScreenSize.Y / World.Game.Resolution.Y;
 
             // TODO: determine why we lose a pixel when moving left/right!
-            float magic_hack_x = 1.01f;
-            float magic_hack_y = 1.01f;
+            float magic_hack_x = 1.05f;
+            float magic_hack_y = 1.05f;
 
             Vector2 half_x = Vector2.UnitX * screen_size.X * screen_scale_x * magic_hack_x;
             Vector2 half_y = Vector2.UnitY * screen_size.Y * screen_scale_y * magic_hack_y;

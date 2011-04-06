@@ -96,6 +96,11 @@ namespace Galaxy
             return (float)self.NextDouble();
         }
 
+        public static float NextSignedFloat(this Random self)
+        {
+            return (float)self.NextDouble() * (float)self.NextSign();
+        }
+
         public static float NextAngle(this Random self)
         {
             return self.NextFloat() * MathHelper.TwoPi;

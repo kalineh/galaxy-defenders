@@ -505,6 +505,7 @@ namespace Galaxy
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, position, PlayerColor, null, force);
                 Physics.Velocity *= 0.15f;
                 Physics.Velocity += velocity * 0.20f * damage;
+                World.GameCamera.Shake(0.10f, damage * 1.0f);
             }
 
         }
@@ -525,6 +526,8 @@ namespace Galaxy
             }
 
             TakeDamage(source, Physics.Velocity, adjusted);
+
+            World.GameCamera.Shake(0.25f, adjusted * 0.3f);
 
             // TODO: find a way to be sure we can disable this in all cases so it doesnt get left on (particularly after program exit)
             //Vibrate = 0.4f;

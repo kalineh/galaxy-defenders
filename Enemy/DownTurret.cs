@@ -55,7 +55,7 @@ namespace Galaxy
 
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, FireSpeed, FireDamage);
             CAudio.PlaySound("EnemyShoot");
-            FireCooldown = Time.ToFrames(FireDelay);
+            FireCooldown = (int)(Time.ToFrames(FireDelay) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
         }
 
         public override void UpdateCollision()

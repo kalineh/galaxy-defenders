@@ -66,6 +66,7 @@ namespace Galaxy
         public CTextLabel StageTextLabelStage { get; set; }
         public CTextLabel StageTextLabelName { get; set; }
         public List<CPlasmaSplash> PlasmaSplashCache { get; set; }
+        public int CachedDifficulty { get; set; }
 
         public CWorld(CGalaxy game, CStageDefinition stage_definition)
         {
@@ -74,7 +75,7 @@ namespace Galaxy
             Entities = new List<CEntity>();
             EntitiesToAdd = new List<CEntity>();
             EntitiesToDelete = new List<CEntity>();
-            GameCamera = new CCamera(game);
+            GameCamera = new CCamera(this);
             GameCamera.Position = Game.PlayerSpawnPosition.ToVector3();
             ShipEntitiesCache = new List<CShip>();
             Ships = new List<CShip>();
@@ -84,6 +85,7 @@ namespace Galaxy
             GameOverCounter = -1;
             StageTextLabelStage = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
             StageTextLabelName = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
+            CachedDifficulty = CSaveData.GetCurrentGameData(Game).Difficulty;
 
             PauseMenuBase = new CMenu(Game)
             {
@@ -1211,6 +1213,11 @@ namespace Galaxy
             {
                 foreach (Type type in types)
                 {
+                    if (entity.GetType() == typeof(CLightning))
+                    {
+                        (entity as CLightning).BouncesRemaining = 0;
+                    }
+
                     if (entity.GetType().IsSubclassOf(type) || entity.GetType() == type)
                     {
                         ParticleEffects.Spawn(EParticleType.ObjectDestroyed, entity.Physics.Position);

@@ -53,7 +53,7 @@ namespace Galaxy
 
             // TODO: do we want this enemy to shoot? (CBeamer is better perhaps)
             //CEnemyLaser shot = CEnemyLaser.Spawn(World, position, rotation, FireSpeed, FireDamage);
-            FireCooldown = Time.ToFrames(FireDelay);
+            FireCooldown = (int)(Time.ToFrames(FireDelay) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
         }
 
         public override void UpdateCollision()

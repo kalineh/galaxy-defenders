@@ -73,7 +73,7 @@ namespace Galaxy
             }
             else
             {
-                FireCooldown = Time.ToFrames(FireDelay);
+                FireCooldown = (int)(Time.ToFrames(FireDelay) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
                 FireCycle = 0;
             }
         }

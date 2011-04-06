@@ -62,7 +62,7 @@ namespace Galaxy
             CEnemyLaser.Spawn(World, left_fire_position, rotation, FireSpeed, FireDamage);
             CEnemyLaser.Spawn(World, right_fire_position, rotation, FireSpeed, FireDamage);
 
-            FireCooldown = Time.ToFrames(FireDelay);
+            FireCooldown = (int)(Time.ToFrames(FireDelay) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
         }
 
         public override void UpdateCollision()

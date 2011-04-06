@@ -45,5 +45,12 @@ namespace Galaxy
             1.10f,
             1.25f,
         };
+
+        public static float[] ReloadSpeedScale = new float[3]
+        {
+            1.0f,
+            0.9f,
+            0.8f,
+        };
     }
 }

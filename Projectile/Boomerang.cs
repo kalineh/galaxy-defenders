@@ -67,6 +67,8 @@ namespace Galaxy
             World.ParticleEffects.Spawn(EParticleType.WeaponBoomerangHit, mid + rand, Visual.Color, null, -Physics.Velocity.Normal());
 
             Scale -= 0.05f;
+
+            CAudio.PlaySound("WeaponHitMiniShot", 1.0f);
         }
 
         public override void Update()

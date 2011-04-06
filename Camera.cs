@@ -11,7 +11,7 @@ namespace Galaxy
 
     public class CCamera
     {
-        public CGalaxy Game { get; private set; }
+        public CWorld World { get; private set; }
         public Vector3 Position { get; set; }
         public Vector3 LookAt { get; set; }
         public float Rotation { get; set; }
@@ -25,9 +25,12 @@ namespace Galaxy
         public Matrix ProjectionMatrix { get; private set; }
         public Matrix WorldMatrix { get; private set; }
 
-        public CCamera(CGalaxy game)
+        public float ShakeTime { get; set; }
+        public float ShakeIntensity { get; set; }
+
+        public CCamera(CWorld world)
         {
-            Game = game;
+            World = world;
 
             Position = Vector3.Zero;
             LookAt = Vector3.UnitZ * -1.0f;
@@ -36,8 +39,11 @@ namespace Galaxy
             SpawnBorder = 100.0f;
             PanLimit = 100.0f;
 
-            ScreenSize = new Vector2(game.Resolution.X * 0.5f, game.Resolution.Y);
-            float aspect_ratio = (float)game.Resolution.X / (float)game.Resolution.Y;
+            ShakeTime = 0.0f;
+            ShakeIntensity = 0.0f;
+
+            ScreenSize = new Vector2(World.Game.Resolution.X * 0.5f, World.Game.Resolution.Y);
+            float aspect_ratio = (float)World.Game.Resolution.X / (float)World.Game.Resolution.Y;
 
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(90.0f),
@@ -51,20 +57,40 @@ namespace Galaxy
 
         public void Update()
         {
-            ViewMatrix = Matrix.CreateLookAt(Position, LookAt, Vector3.Up);
-            Vector3 viewport_ = new Vector3(Game.Resolution.X, Game.Resolution.Y, 0.0f);
+            Vector3 position = Position;
+
+            if (ShakeTime > 0.0f)
+            {
+                ShakeTime -= Time.SingleFrame;
+                ShakeIntensity *= 0.9f;
+
+                position += new Vector3(
+                    World.Random.NextSignedFloat() * ShakeIntensity,
+                    World.Random.NextSignedFloat() * ShakeIntensity,
+                    0.0f
+                );
+            }
+
+            ViewMatrix = Matrix.CreateLookAt(position, LookAt, Vector3.Up);
+            Vector3 viewport_ = new Vector3(World.Game.Resolution.X, World.Game.Resolution.Y, 0.0f);
             WorldMatrix =
                 Matrix.Identity *
-                Matrix.CreateTranslation(-Position) *
+                Matrix.CreateTranslation(-position) *
                 Matrix.CreateScale(Zoom, Zoom, 1.0f) *
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateTranslation(viewport_ / 2.0f) *
-                Game.RenderScaleMatrix;
+                World.Game.RenderScaleMatrix;
+        }
+
+        public void Shake(float time, float intensity)
+        {
+            ShakeTime = time;
+            ShakeIntensity += intensity;
         }
 
         public Vector2 ScreenToWorld(Vector2 screen)
         {
-            Vector2 viewport_size = new Vector2(Game.Resolution.X * 0.25f, Game.Resolution.Y * 0.5f);
+            Vector2 viewport_size = new Vector2(World.Game.Resolution.X * 0.25f, World.Game.Resolution.Y * 0.5f);
 
             Matrix translation = Matrix.CreateTranslation(Position);
             Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1.0f);
@@ -87,16 +113,16 @@ namespace Galaxy
 
         public Vector2 GetTopLeft()
         {
-            //Viewport viewport = Game.GraphicsDevice.Viewport;
-            //Vector3 viewport_size = new Vector3(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
+            //Viewport viewport = World.Game.GraphicsDevice.Viewport;
+            //Vector3 viewport_size = new Vector3(World.Game.Resolution.X * 0.5f, World.Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
             //return (Position - viewport_size).ToVector2();
             return Position.ToVector2() - (ScreenSize * 1.0f / Zoom) * 0.5f;
         }
 
         public Vector2 GetBottomRight()
         {
-            //Viewport viewport = Game.GraphicsDevice.Viewport;
-            //Vector3 viewport_size = new Vector3(Game.Resolution.X * 0.5f, Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
+            //Viewport viewport = World.Game.GraphicsDevice.Viewport;
+            //Vector3 viewport_size = new Vector3(World.Game.Resolution.X * 0.5f, World.Game.Resolution.Y * 0.5f, 0.0f) * 1.0f / Zoom;
             //return (Position + viewport_size).ToVector2();
             return Position.ToVector2() + (ScreenSize * 1.0f / Zoom) * 0.5f;
         }

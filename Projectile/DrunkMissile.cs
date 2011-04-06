@@ -75,6 +75,7 @@ namespace Galaxy
         protected override void OnDie()
         {
             World.ParticleEffects.Spawn(EParticleType.WeaponMissileHit, Physics.Position, Visual.Color, null, null);
+            CAudio.PlaySound("WeaponHitMissile", 1.0f);
             base.OnDie();
         }
     }

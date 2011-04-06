@@ -518,6 +518,7 @@ namespace Galaxy
                     "Rookie",    
                     "Eagle",    
                     "Crusher",    
+                    "Interceptor",    
                 },
                 AvailableGeneratorParts = new List<string>()
                 {
@@ -583,6 +584,7 @@ namespace Galaxy
                 AvailableGeneratorParts = new List<string>()
                 {
                     "Basic Mk 1",    
+                    "Basic Mk 2",    
                     "Impulse Mk 1",    
                     "Capacitor Mk 1",    
                     "Capacitor Mk 2",    

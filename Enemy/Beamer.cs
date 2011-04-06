@@ -55,7 +55,7 @@ namespace Galaxy
             Vector2 fire_position = position + fire_offset;
 
             CEnemyLaser laser = CEnemyLaser.Spawn(World, fire_position, rotation, FireSpeed, FireDamage);
-            FireCooldown = Time.ToFrames(FireDelay);
+            FireCooldown = (int)(Time.ToFrames(FireDelay) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
 
             CAudio.PlaySound("EnemyShoot");
         }

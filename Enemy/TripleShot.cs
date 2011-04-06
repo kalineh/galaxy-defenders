@@ -88,7 +88,7 @@ namespace Galaxy
             }
             else
             {
-                FireCooldown = Time.ToFrames(FireDelay + World.Random.NextFloat());
+                FireCooldown = (int)(Time.ToFrames(FireDelay + World.Random.NextFloat()) * CDifficulty.ReloadSpeedScale[World.CachedDifficulty]);
                 Mover = OriginalMover;
                 OriginalMover = null;
                 Physics.Velocity = PreviousVelocity;
