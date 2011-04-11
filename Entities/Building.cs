@@ -80,7 +80,7 @@ namespace Galaxy
             {   "Building9",
                 new SBuildingDefinition()
                 {
-                    HealthMax = 10.0f,
+                    HealthMax = 9.0f,
                     ExplosionType = EParticleType.BuildingDestroyedBig,
                 }
             },
@@ -236,6 +236,13 @@ namespace Galaxy
             World.Stats.ShotDamageDealt += chargeshot.Damage;
             TakeDamage(chargeshot.Damage, chargeshot.Owner);
             chargeshot.Die();
+        }
+
+        public void OnCollide(CBomblet bomblet)
+        {
+            World.Stats.ShotDamageDealt += bomblet.Damage;
+            TakeDamage(bomblet.Damage, bomblet.Owner);
+            bomblet.Die();
         }
 
         public void OnCollide(CFlame flame)

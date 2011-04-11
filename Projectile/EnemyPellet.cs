@@ -128,6 +128,11 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CBomblet bomblet)
+        {
+            Die();
+        }
+
         public void OnCollide(CBoomerang boomerang)
         {
             boomerang.GetHit(this);

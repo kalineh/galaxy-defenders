@@ -21,6 +21,28 @@ X = -40.0f,
 Y = -352.0f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementParticleEffectPlayer() {
+Type = Galaxy.EParticleType.EnemyDeathExplosion,
+Cycle = 1.0f,
+Expired = false,
+CycleFrame = 0,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 152.0f,
+Y = 248.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementParticleEffectPlayer() {
+Type = Galaxy.EParticleType.EnemyDeathExplosion,
+Cycle = 1.0f,
+Expired = false,
+CycleFrame = 0,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 176.0f,
+Y = 248.0f,
+},
+});
 
 return stage;
 }

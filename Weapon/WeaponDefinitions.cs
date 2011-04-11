@@ -237,7 +237,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 0.25f,
+                Damage = 0.35f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -252,11 +252,11 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 0.65f,
+                Damage = 1.0f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
-                Energy = 0.15f,
+                Energy = 0.25f,
                 CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.05f },
             };
         }
@@ -267,12 +267,27 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 17.0f,
-                Damage = 0.050f,
+                Damage = 0.075f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.Zero,
                 Rotation = 0.0f,
                 Energy = 0.09f,
                 CustomData = new VulcanCustomData() { SprayAngle = spray },
+            };
+        }
+
+        public static SWeaponData MakeBombletData(float reload)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 2.0f,
+                Damage = 1.0f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.Zero,
+                Rotation = 0.0f,
+                Energy = 0.10f,
+                CustomData = null,
             };
         }
 
@@ -662,23 +677,73 @@ namespace Galaxy
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.12f, 0.0f),
+                            MakeVulcanData(0.1400f, 0.0f),
+                            MakeVulcanData(0.1401f, 0.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.11f, 0.0f),
+                            MakeVulcanData(0.1300f, 0.0f),
+                            MakeVulcanData(0.1301f, 0.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.10f, 0.0f),
+                            MakeVulcanData(0.1200f, 0.0f),
+                            MakeVulcanData(0.1201f, 0.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.09f, 0.0f),
+                            MakeVulcanData(0.1400f, 0.0f),
+                            MakeVulcanData(0.1401f, 0.0f),
+                            MakeVulcanData(0.1402f, 0.0f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.07f, 0.0f),
+                            MakeVulcanData(0.1200f, 0.0f),
+                            MakeVulcanData(0.1201f, 0.0f),
+                            MakeVulcanData(0.1202f, 0.0f),
+                        },
+                    },
+                }
+            },
+
+            { "Bomblet",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 900,
+                    DisplayName = "Bomblet",
+                    Sound = "WeaponShootSeekBomb",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.60f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.55f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.50f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.45f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.40f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.35f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.30f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeBombletData(0.25f),
                         },
                     },
                 }
@@ -722,26 +787,30 @@ namespace Galaxy
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeLightningData(-12.0f, 3),
-                            MakeLightningData(-4.0f, 4),
-                            MakeLightningData(+4.0f, 4),
-                            MakeLightningData(+12.0f, 3),
+                            MakeLightningData(-14.0f, 3),
+                            MakeLightningData(-6.0f, 3),
+                            MakeLightningData(-0.0f, 3),
+                            MakeLightningData(+6.0f, 3),
+                            MakeLightningData(+14.0f, 3),
                         },
                         // level 7
                         new List<SWeaponData>() {
                             MakeLightningData(-16.0f, 3),
                             MakeLightningData(-8.0f, 4),
-                            MakeLightningData(+0.0f, 4),
+                            MakeLightningData(-2.0f, 4),
+                            MakeLightningData(+2.0f, 4),
                             MakeLightningData(+8.0f, 4),
                             MakeLightningData(+16.0f, 3),
                         },
                         // level 8
                         new List<SWeaponData>() {
                             MakeLightningData(-20.0f, 4),
-                            MakeLightningData(-12.0f, 4),
-                            MakeLightningData(-4.0f, 4),
-                            MakeLightningData(+4.0f, 4),
-                            MakeLightningData(+12.0f, 4),
+                            MakeLightningData(-14.0f, 4),
+                            MakeLightningData(-8.0f, 4),
+                            MakeLightningData(-2.0f, 4),
+                            MakeLightningData(+2.0f, 4),
+                            MakeLightningData(+8.0f, 4),
+                            MakeLightningData(+14.0f, 4),
                             MakeLightningData(+20.0f, 4),
                         },
                     },
