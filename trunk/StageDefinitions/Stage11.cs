@@ -4594,7 +4594,7 @@ Y = -19272.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CMissileStorm),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4614,7 +4614,7 @@ Y = -19392.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CMissileStorm),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4634,7 +4634,7 @@ Y = -19392.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4654,7 +4654,7 @@ Y = -19416.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4674,7 +4674,7 @@ Y = -19416.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4694,7 +4694,7 @@ Y = -19416.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4714,7 +4714,7 @@ Y = -19280.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4794,7 +4794,7 @@ Y = -19184.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4834,7 +4834,7 @@ Y = -19384.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4854,7 +4854,7 @@ Y = -19344.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4874,7 +4874,7 @@ Y = -19408.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -4964,7 +4964,7 @@ Y = -19152.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CDoubleTurret),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {

@@ -10,7 +10,7 @@ namespace Galaxy
         : CWeapon
     {
         public CProjectileCache<CVulcan> Cache { get; set; }
-        public CEntity LastTarget { get; set; }
+        public CEnemy LastTarget { get; set; }
 
         public override void Initialize(CShip owner)
         {
@@ -28,7 +28,7 @@ namespace Galaxy
             // TODO: is this an ok place to do a search?
             if (LastTarget == null || LastTarget.IsDead)
             {
-                LastTarget = owner.World.GetNearestEnemySeekable(position, false);
+                LastTarget = owner.World.GetNearestEnemySeekable(position, true);
             }
 
             if (LastTarget != null && LastTarget.IsDead == false)
@@ -36,6 +36,9 @@ namespace Galaxy
                 Vector2 target = LastTarget.Physics.Position + LastTarget.Physics.Velocity * 25.0f;
                 Vector2 offset = target - position;
                 rotation = offset.ToAngle();
+
+                // NOTE: will break seeker bombs, and never resets
+                LastTarget.IsSeekerTarget = true;
             }
 
             vulcan.Physics.Rotation = rotation;

@@ -162,14 +162,14 @@ namespace Galaxy
     {
         public static CGeneratorPart GetPart(string current)
         {
-            return Items.ContainsKey(current) ? Items[current] : Items["Basic Mk 1"];
+            return Items.ContainsKey(current) ? Items[current] : Items["Standard Mk 1"];
         }
 
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
         {
             // basic
             {
-                "Basic Mk 1",
+                "Standard Mk 1",
                 new CGeneratorPart() {
                     Price = 1000,
                     Energy = 8.0f,
@@ -177,7 +177,7 @@ namespace Galaxy
                 }
             },
             {
-                "Basic Mk 2",
+                "Standard Mk 2",
                 new CGeneratorPart() {
                     Price = 5000,
                     Energy = 9.0f,
@@ -185,11 +185,19 @@ namespace Galaxy
                 }
             },
             {
-                "Basic Mk 3",
+                "Standard Mk 3",
                 new CGeneratorPart() {
                     Price = 18000,
                     Energy = 11.0f,
                     Regen = 0.10f,
+                }
+            },
+            {
+                "Standard Mk 4",
+                new CGeneratorPart() {
+                    Price = 35000,
+                    Energy = 14.0f,
+                    Regen = 0.15f,
                 }
             },
             // impulse
@@ -215,6 +223,14 @@ namespace Galaxy
                     Price = 22000,
                     Energy = 7.0f,
                     Regen = 0.13f,
+                }
+            },
+            {
+                "Impulse Mk 4",
+                new CGeneratorPart() {
+                    Price = 38000,
+                    Energy = 10.0f,
+                    Regen = 0.18f,
                 }
             },
             // capacitor
@@ -243,11 +259,19 @@ namespace Galaxy
                 }
             },
             {
+                "Capacitor Mk 4",
+                new CGeneratorPart() {
+                    Price = 34000,
+                    Energy = 38.0f,
+                    Regen = 0.12f,
+                }
+            },
+            {
                 "Kinetic",
                 new CGeneratorPart() {
-                    Price = 20000,
+                    Price = 12000,
                     Energy = 10.0f,
-                    Regen = 0.08f,
+                    Regen = 0.07f,
                     RegenOnCollide = 1.5f,
                     Description = "Collisions provide extra Energy",
                 }
@@ -255,7 +279,7 @@ namespace Galaxy
             {
                 "Magnetic",
                 new CGeneratorPart() {
-                    Price = 30000,
+                    Price = 27000,
                     Energy = 16.0f,
                     Regen = 0.10f,
                     RegenOnCoin = 0.025f,
@@ -265,9 +289,9 @@ namespace Galaxy
             {
                 "Fusion",
                 new CGeneratorPart() {
-                    Price = 40000,
-                    Energy = 5.0f,
-                    Regen = 0.20f,
+                    Price = 45000,
+                    Energy = 7.5f,
+                    Regen = 0.22f,
                 }
             },
         };

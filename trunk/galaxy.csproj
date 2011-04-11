@@ -98,6 +98,7 @@
     <Compile Include="Projectile\Beam.cs" />
     <Compile Include="Projectile\Blade.cs" />
     <Compile Include="Projectile\Boomerang.cs" />
+    <Compile Include="Projectile\Bomblet.cs" />
     <Compile Include="Projectile\Vulcan.cs" />
     <Compile Include="Projectile\DrunkMissile.cs" />
     <Compile Include="Projectile\Lightning.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="ScorePanel.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
+    <Compile Include="Weapon\WeaponBomblet.cs" />
     <Compile Include="Weapon\WeaponVulcan.cs" />
     <Compile Include="Weapon\WeaponBoomerang.cs" />
     <Compile Include="Weapon\WeaponMissileVolley.cs" />

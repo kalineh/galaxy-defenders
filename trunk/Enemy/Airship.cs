@@ -24,7 +24,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(72.0f, 104.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Airship");
-            HealthMax = 9.0f;
+            HealthMax = 7.0f;
 
             CollisionOffset = new Vector2(-36.0f, -52.0f);
 

@@ -225,6 +225,13 @@ namespace Galaxy
             chargeshot.Die();
         }
 
+        public void OnCollide(CBomblet bomblet)
+        {
+            World.Stats.ShotDamageDealt += bomblet.Damage;
+            TakeDamage(bomblet.Damage, bomblet.Owner);
+            bomblet.Die();
+        }
+
         public void OnCollide(CDetonation detonation)
         {
             TakeDamage(5.0f, detonation.Owner);

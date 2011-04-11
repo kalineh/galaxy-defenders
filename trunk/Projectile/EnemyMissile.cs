@@ -147,8 +147,20 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CFlame flame)
+        {
+            flame.Die();
+            Hit();
+        }
+
         public void OnCollide(CDetonation detonation)
         {
+            Die();
+        }
+
+        public void OnCollide(CBomblet bomblet)
+        {
+            bomblet.Die();
             Die();
         }
 

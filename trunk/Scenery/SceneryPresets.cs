@@ -134,7 +134,7 @@ namespace Galaxy
         public static CScenery TempestNebulaBG(CWorld world)
         {
             return new CSceneryChain(world,
-                new CBackground(world, new Color(92, 92, 120)),
+                new CBackground(world, new Color(35, 51, 51)),
                 new CBlendingGradientBackground(world, 1.0f,
                     new List<Color[]>() {
                         new Color[] {

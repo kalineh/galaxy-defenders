@@ -100,6 +100,7 @@
     <Compile Include="OptionsMenu.cs" />
     <Compile Include="Projectile\Beam.cs" />
     <Compile Include="Projectile\Blade.cs" />
+    <Compile Include="Projectile\Bomblet.cs" />
     <Compile Include="Projectile\Boomerang.cs" />
     <Compile Include="Projectile\ChargeShot.cs" />
     <Compile Include="Projectile\DrunkMissile.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Visual.cs" />
     <Compile Include="Weapon\WeaponBeam.cs" />
     <Compile Include="Weapon\WeaponBlade.cs" />
+    <Compile Include="Weapon\WeaponBomblet.cs" />
     <Compile Include="Weapon\WeaponBoomerang.cs" />
     <Compile Include="Weapon\WeaponChargeShot.cs" />
     <Compile Include="Weapon\WeaponDrunkMissile.cs" />
