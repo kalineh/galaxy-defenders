@@ -281,12 +281,12 @@ namespace Galaxy
             return new SWeaponData()
             {
                 ReloadTime = reload,
-                Speed = 2.0f,
-                Damage = 1.0f,
+                Speed = 0.20f,
+                Damage = 2.0f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.Zero,
                 Rotation = 0.0f,
-                Energy = 0.10f,
+                Energy = 0.30f,
                 CustomData = null,
             };
         }
@@ -715,35 +715,35 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeBombletData(0.60f),
+                            MakeBombletData(1.00f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeBombletData(0.55f),
+                            MakeBombletData(0.95f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeBombletData(0.50f),
+                            MakeBombletData(0.90f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeBombletData(0.45f),
+                            MakeBombletData(0.85f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeBombletData(0.40f),
+                            MakeBombletData(0.75f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeBombletData(0.35f),
+                            MakeBombletData(0.65f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeBombletData(0.30f),
+                            MakeBombletData(0.55f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeBombletData(0.25f),
+                            MakeBombletData(0.40f),
                         },
                     },
                 }
