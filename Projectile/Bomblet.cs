@@ -18,9 +18,10 @@ namespace Galaxy
 
             //bomblet.Speed = speed;
 
+            bomblet.Physics.AngularVelocity = 0.02f;
             bomblet.Physics.Rotation = owner.World.Random.NextAngle();
             bomblet.Physics.Position = position;
-            bomblet.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
+            bomblet.Physics.Velocity = Vector2.UnitX.Rotate(bomblet.Physics.Rotation) * speed + owner.World.ScrollSpeed * -Vector2.UnitY;
 
             owner.World.EntityAdd(bomblet);
 
@@ -35,7 +36,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/Bomblet", owner.GameControllerIndex);
             Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
             Visual.Update();
-            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 4.0f);
+            Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 12.0f);
             Damage = damage;
         }
 
@@ -43,7 +44,7 @@ namespace Galaxy
         {
             Physics.AngularVelocity += 0.0001f;
 
-            if (AliveTime > 180)
+            if (AliveTime > 300)
                 Die();
 
             base.Update();
@@ -51,7 +52,7 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.ParticleEffects.Spawn(EParticleType.WeaponBombletHit, Physics.Position, Visual.Color, null, null);
+            World.ParticleEffects.Spawn(EParticleType.WeaponBombletHit, Physics.Position, Visual.Color, null, Owner.World.ScrollSpeed * -Vector2.UnitY);
             CAudio.PlaySound("WeaponHitSeekBomb", 1.0f);
             base.OnDie();
         }

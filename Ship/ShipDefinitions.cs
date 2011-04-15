@@ -310,7 +310,7 @@ namespace Galaxy
                 "Light Shield",
                 new CShieldPart() {
                     Price = 1000,
-                    Shield = 3.0f,
+                    Shield = 4.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.50f,
                 }
@@ -319,7 +319,7 @@ namespace Galaxy
                 "Fiber Shield",
                 new CShieldPart() {
                     Price = 2000,
-                    Shield = 5.0f,
+                    Shield = 6.0f,
                     EnergyDrain = 0.035f,
                     Efficiency = 0.35f,
                 }
@@ -328,7 +328,7 @@ namespace Galaxy
                 "Electric Shield",
                 new CShieldPart() {
                     Price = 3500,
-                    Shield = 4.0f,
+                    Shield = 5.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.65f,
                 }
@@ -337,7 +337,7 @@ namespace Galaxy
                 "Advanced Shield",
                 new CShieldPart() {
                     Price = 7500,
-                    Shield = 5.0f,
+                    Shield = 6.0f,
                     EnergyDrain = 0.040f,
                     Efficiency = 0.75f,
                 }
@@ -346,7 +346,7 @@ namespace Galaxy
                 "Micro Shield",
                 new CShieldPart() {
                     Price = 9500,
-                    Shield = 3.5f,
+                    Shield = 4.5f,
                     EnergyDrain = 0.065f,
                     Efficiency = 0.6f,
                 }
@@ -355,7 +355,7 @@ namespace Galaxy
                 "Actuator Shield",
                 new CShieldPart() {
                     Price = 11000,
-                    Shield = 7.0f,
+                    Shield = 8.0f,
                     EnergyDrain = 0.045f,
                     Efficiency = 0.65f,
                 }
@@ -364,7 +364,7 @@ namespace Galaxy
                 "Power Shield",
                 new CShieldPart() {
                     Price = 13500,
-                    Shield = 8.0f,
+                    Shield = 9.0f,
                     EnergyDrain = 0.075f,
                     Efficiency = 0.75f,
                 }
