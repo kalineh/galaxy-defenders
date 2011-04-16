@@ -281,7 +281,7 @@ namespace Galaxy
             return new SWeaponData()
             {
                 ReloadTime = reload,
-                Speed = 0.20f,
+                Speed = 1.25f,
                 Damage = 2.0f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.Zero,

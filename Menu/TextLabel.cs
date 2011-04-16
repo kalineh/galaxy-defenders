@@ -24,7 +24,7 @@ namespace Galaxy
         private object _Value;
         public object Value
         {
-            get { return Value; }
+            get { return _Value; }
             set { SetValue(value); }
         }
         public string Text { get; private set; }

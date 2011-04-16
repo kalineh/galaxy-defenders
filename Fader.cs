@@ -66,6 +66,24 @@ namespace Galaxy
             return CurrentAlpha >= 1.0f;
         }
 
+        public void Reset()
+        {
+            CurrentTime = 0.0f;
+            CurrentAlpha = -1.0f;
+        }
+
+        public void SetToFadeOut()
+        {
+            CurrentTime = TransitionTime / 2.0f;
+            CurrentAlpha = 0.0f;
+        }
+
+        public void SetToHalfFadeOut()
+        {
+            CurrentTime = TransitionTime / 4.0f;
+            CurrentAlpha = -0.5f;
+        }
+
         public void StopAtHalfFadeOut()
         {
             CurrentAlpha = Math.Min(CurrentAlpha, -0.5f);

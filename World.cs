@@ -216,9 +216,18 @@ namespace Galaxy
                 Ships.Add(ship);
             }
 
-            // TODO: why does this crash when going into secret stage?
-            StageTextLabelStage.Value = "Stage 1";
-            StageTextLabelName.Value = CMap.GetMapNodeByStageName(Stage.Definition.Name).StageName;
+            CMapNode map = CMap.GetMapNodeByStageName(Stage.Definition.Name);
+            if (map != null)
+            {
+                StageTextLabelStage.Value = String.Format("Stage {0}", map.SaveIndex + 1);
+                StageTextLabelName.Value = CMap.GetMapNodeByStageName(Stage.Definition.Name).StageName;
+            }
+            else
+            {
+                // Bonus stage, don't show any title info!
+                StageTextLabelStage.Value = "";
+                StageTextLabelName.Value = "";
+            }
         }
 
         public void Stop()
@@ -390,11 +399,11 @@ namespace Galaxy
                 ParticleEffects.Spawn(EParticleType.PlayerStageEndShipTrail, ship.Physics.Position, ship.Visual.Color, null, null);
             }
 
-            StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
-            StageEndFader.Update();
-
             if (IsSecretWorld)
                 return;
+
+            StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            StageEndFader.Update();
 
             StageClearPanel.Update();
 
@@ -509,22 +518,20 @@ namespace Galaxy
             if (SecretFinishCounter == 0)
                 return;
 
-            SecretFinishFader = SecretFinishFader ?? new CFader(Game) { TransitionTime = 2.0f };
+            SecretFinishFader = SecretFinishFader ?? new CFader(Game) { TransitionTime = 0.5f };
             SecretFinishFader.Update();
+            SecretFinishFader.StopAtHalfFadeOut();
 
-            if (SecretFinishCounter < 60)
-            {
-                SecretFinishFader.StopAtHalfFadeOut();
-            }
-            else
-            {
-                SecretFinishFader.StopAtFullFadeOut();
-            }
-
-            if (SecretFinishCounter > 120)
+            if (SecretFinishCounter > 60)
             {
                 CStateGame return_state = new CStateGame(Game, ReturnWorld);
                 Game.State = new CStateFadeTo(Game, Game.State, return_state);
+
+                // HACK: skip camera back a bit because the screen scrolled while fading in/out
+                return_state.World.GameCamera.Position += Vector3.UnitY * 280.0f;
+                
+                // HACK: adjust fade since we are already actually faded out
+                (Game.State as CStateFadeTo).Fader.SetToHalfFadeOut();
             }
 
             SecretFinishCounter += 1;

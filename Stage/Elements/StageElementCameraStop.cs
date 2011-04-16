@@ -39,17 +39,24 @@ namespace Galaxy
 
         public override void Update(CWorld world)
         {
-            bool enemies = EnemiesExist(world);
-           
-            if (enemies)
+            if (!world.IsSecretWorld)
             {
-                world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 0.0f, 0.05f);
-                return;
+                bool enemies = EnemiesExist(world);
+
+                if (enemies)
+                {
+                    world.ScrollSpeed = MathHelper.Lerp(world.ScrollSpeed, 0.0f, 0.05f);
+                    return;
+                }
             }
 
             // no ships! cannot end
             if (world.ShipEntitiesCache.Count == 0)
                 return;
+
+            // skip ahead to finish phase for secret stage
+            //if (world.IsSecretWorld)
+                //StageEndCountdown = Math.Min(StageEndCountdown, 219);
 
             StageEndCountdown += 1;
             if (StageEndCountdown == 220)
@@ -74,6 +81,8 @@ namespace Galaxy
             if (StageEndCountdown == 1)
                 StageEndCameraPosition = world.GameCamera.Position.ToVector2();
 
+            if (world.IsSecretWorld)
+                return;
 
             if (StageEndCountdown < 240)
             {
