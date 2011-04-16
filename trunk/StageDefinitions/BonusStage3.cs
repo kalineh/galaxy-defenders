@@ -7,7 +7,7 @@ public class BonusStage3 {
 public static CStageDefinition GenerateDefinition() {
 CStageDefinition stage = new CStageDefinition("BonusStage3");
 stage.DisplayName = "";
-stage.ScrollSpeed = 2.5f;
+stage.ScrollSpeed = 3.0f;
 stage.BackgroundSceneryName = "SimpleSpace";
 stage.ForegroundSceneryName = "Empty";
 stage.MusicName = "The_Hidden_Answer";

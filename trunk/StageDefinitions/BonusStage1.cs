@@ -1002,17 +1002,17 @@ Y = -3245.98f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementCameraStop() {
+new Galaxy.CStageElementStageFinish() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -5048.0f,
+X = -16.0f,
+Y = -5560.0f,
 },
 });
 stage.AddElement(0, 
-new Galaxy.CStageElementStageFinish() {
+new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
-Y = -5912.0f,
+X = -8.0f,
+Y = -5352.0f,
 },
 });
 
