@@ -494,6 +494,21 @@ namespace Galaxy
 
                 CStateGame bonus_stage = new CStateGame(Game, definition, this, true);
 
+                // copy state into bonus stage
+                for (int i = 0; i < 2; ++i)
+                {
+                    CShip from = (Ships.Count > i) ? Ships[i] : null;
+                    CShip to = (bonus_stage.World.Ships.Count > i) ? bonus_stage.World.Ships[i] : null;
+
+                    if (from != null && to != null)
+                    {
+                        to.Score = from.Score;
+                        to.CurrentEnergy = from.CurrentEnergy;
+                        to.CurrentShield = from.CurrentShield;
+                        to.CurrentArmor = from.CurrentArmor;
+                    }
+                }
+
                 CStateFadeTo fader = new CStateFadeTo(Game, Game.State, bonus_stage);
                 fader.DontExitSourceState = true;
                 Game.State = fader;
@@ -1134,7 +1149,7 @@ namespace Galaxy
             SecretFinishCounter = 1;
         }
 
-        public void ReturnFromSecret()
+        public void ReturnFromSecret(CWorld old_world)
         {
             SecretEntryCounter = 0;
             SecretEntryFader = null;
@@ -1149,6 +1164,21 @@ namespace Galaxy
                 Vector2 clamped_entry = GameCamera.ClampInside(SecretEntryPosition, 32.0f);
                 ship.Physics.Position = clamped_entry;
                 ship.Physics.Velocity = to_center.Normal() * 40.0f;
+            }
+
+            // copy money data/etc back from secret stage
+            for (int i = 0; i < 2; ++i)
+            {
+                CShip from = (old_world.Ships.Count > i) ? old_world.Ships[i] : null;
+                CShip to = (Ships.Count > i) ? Ships[i] : null;
+
+                if (from != null && to != null)
+                {
+                    to.Score = from.Score;
+                    to.CurrentEnergy = from.CurrentEnergy;
+                    to.CurrentShield = from.CurrentShield;
+                    to.CurrentArmor = from.CurrentArmor;
+                }
             }
         }
 

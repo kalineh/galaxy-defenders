@@ -43,8 +43,9 @@ namespace Galaxy
             Game = game;
             Game.GameFrame = 0;
 
+            CWorld old_world = (Game.State as CStateGame).World;
             World = reuse_world;
-            World.ReturnFromSecret();
+            World.ReturnFromSecret(old_world);
         }
 
         public override void OnExit()

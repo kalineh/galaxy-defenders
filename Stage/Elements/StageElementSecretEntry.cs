@@ -36,6 +36,8 @@ namespace Galaxy
             if (len < range * range)
             {
                 World.StartSecretStageEntry(SecretStage, Position);
+                // TODO: better sound effect (too low volume)
+                CAudio.PlaySound("SecretStageEnter");
                 Expired = true;
             }
         }
