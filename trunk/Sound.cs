@@ -17,16 +17,20 @@ namespace Galaxy
 
         private static WaveBank MusicWaveBank { get; set; }
         private static WaveBank PauseMusicWaveBank { get; set; }
+        private static WaveBank SecretMusicWaveBank { get; set; }
         private static SoundBank MusicSoundBank { get; set; }
         private static SoundBank PauseMusicSoundBank { get; set; }
+        private static SoundBank SecretMusicSoundBank { get; set; }
 
         private static string CurrentMusicName { get; set; }
         private static Cue CurrentMusic { get; set; }
         private static Cue CurrentPauseMusic { get; set; }
+        private static Cue CurrentSecretMusic { get; set; }
 
         private static AudioCategory SFXCategory { get; set; }
         private static AudioCategory MusicCategory { get; set; }
         private static AudioCategory PauseMusicCategory { get; set; }
+        private static AudioCategory SecretMusicCategory { get; set; }
 
         // NOTE: no GetVolume in AudioCategory :(
         private static float SFXVolume { get; set; }
@@ -42,8 +46,10 @@ namespace Galaxy
             SoundBank = new SoundBank(AudioEngine, "Content/XACT/SFX.xsb");
             MusicWaveBank = new WaveBank(AudioEngine, "Content/XACT/Music.xwb", 0, 8);
             PauseMusicWaveBank = new WaveBank(AudioEngine, "Content/XACT/PauseMusic.xwb", 0, 8);
+            SecretMusicWaveBank = new WaveBank(AudioEngine, "Content/XACT/SecretMusic.xwb", 0, 8);
             MusicSoundBank = new SoundBank(AudioEngine, "Content/XACT/Music.xsb");
             PauseMusicSoundBank = new SoundBank(AudioEngine, "Content/XACT/PauseMusic.xsb");
+            SecretMusicSoundBank = new SoundBank(AudioEngine, "Content/XACT/SecretMusic.xsb");
 
             // cannot play before first update, so just update in advance
             AudioEngine.Update();
@@ -51,6 +57,7 @@ namespace Galaxy
             SFXCategory = AudioEngine.GetCategory("SFX");
             MusicCategory = AudioEngine.GetCategory("Music");
             PauseMusicCategory = AudioEngine.GetCategory("PauseMusic");
+            SecretMusicCategory = AudioEngine.GetCategory("SecretMusic");
         }
 
         public static void Update()
@@ -117,10 +124,29 @@ namespace Galaxy
             CurrentMusicName = null;
         }
 
+        public static void PauseMusic()
+        {
+            if (CurrentMusic == null)
+                return;
+
+            CurrentMusic.Pause();
+        }
+
+        public static void UnpauseMusic()
+        {
+            if (CurrentMusic == null)
+                return;
+
+            CurrentMusic.Pause();
+        }
+
         public static void PlayPauseMusic(string name)
         {
             if (CurrentMusic != null)
                 CurrentMusic.Pause();
+
+            if (CurrentSecretMusic != null)
+                CurrentSecretMusic.Pause();
 
             while (!PauseMusicWaveBank.IsPrepared)
             {
@@ -139,10 +165,25 @@ namespace Galaxy
                 CurrentPauseMusic = null;
             }
 
+            if (CurrentSecretMusic != null && CurrentSecretMusic.IsPaused)
+                CurrentSecretMusic.Resume();
+
             if (CurrentMusic != null && CurrentMusic.IsPaused)
             {
                 CurrentMusic.Resume();
             }
+        }
+
+        public static void PlaySecretMusic(string name)
+        {
+            CurrentSecretMusic = SecretMusicSoundBank.GetCue(name);
+            CurrentSecretMusic.Play();
+        }
+
+        public static void StopSecretMusic()
+        {
+            CurrentSecretMusic.Stop(AudioStopOptions.AsAuthored);
+            CurrentSecretMusic = null;
         }
 
         public static void SetSFXVolume(float volume)

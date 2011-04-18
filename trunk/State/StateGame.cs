@@ -23,6 +23,21 @@ namespace Galaxy
             World.Start();
         }
 
+        // HACK: overload for secret stage
+        public CStateGame(CGalaxy game, CStageDefinition stage_definition, CWorld return_world, bool is_secret)
+        {
+            Game = game;
+            Game.GameFrame = 0;
+
+            World = new CWorld(game, stage_definition);
+
+            // NOTE: need to set secret world to provide special secret world music handling
+            World.ReturnWorld = return_world;
+            World.IsSecretWorld = is_secret;
+
+            World.Start();
+        }
+
         public CStateGame(CGalaxy game, CWorld reuse_world)
         {
             Game = game;

@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3505427575;
-    Last Modified High = 30140247;
+    Last Modified Low = 1307582878;
+    Last Modified High = 30146012;
 
     Category
     {
@@ -148,6 +148,32 @@ Global Settings
         }
     }
 
+    Category
+    {
+        Name = SecretMusic;
+        Public = 1;
+        Background Music = 0;
+        Volume = 0;
+
+        Category Entry
+        {
+            Name = Global;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 1;
+            Behavior = 4;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 1;
+            }
+        }
+    }
+
     Variable
     {
         Name = OrientationAngle;
@@ -267,6 +293,39 @@ Global Settings
         Max = 1000000.000000;
     }
 
+    RPC
+    {
+        Name = VolumeUp;
+
+        RPC Curve
+        {
+            Name = 1::39218bd6-50cb-48d5-b46f-8dd0ccf6b9b3;
+            Property = 0;
+            Sound = 0;
+            Line Color = 4292099722;
+            Viewable = 1;
+
+            Variable Entry
+            {
+                Name = AttackTime;
+            }
+
+            RPC Point
+            {
+                X = 0.000000;
+                Y = -9600.000000;
+                Curve = 2;
+            }
+
+            RPC Point
+            {
+                X = 15000.000000;
+                Y = 494.117645;
+                Curve = 3;
+            }
+        }
+    }
+
     Compression Preset
     {
         Name = Music Compression;
@@ -290,8 +349,14 @@ Wave Bank
     Windows Bank Path Edited = 0;
     Seek Tables = 1;
     Compression Preset Name = <none>;
-    Bank Last Revised Low = 4193239567;
-    Bank Last Revised High = 30140252;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 1438886475;
+    PC Bank Last Modified High = 30145530;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
+    Bank Last Revised Low = 1242200343;
+    Bank Last Revised High = 30145530;
 
     Wave
     {
@@ -1005,6 +1070,29 @@ Wave Bank
             Last Modified High = 30139372;
         }
     }
+
+    Wave
+    {
+        Name = SecretStageEnter;
+        File = ..\SE\SecretStageEnter.wav;
+        Build Settings Last Modified Low = 1164188424;
+        Build Settings Last Modified High = 30145530;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 22050;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 80806;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 1037948784;
+            Last Modified High = 30145530;
+        }
+    }
 }
 
 Wave Bank
@@ -1019,12 +1107,12 @@ Wave Bank
     Compression Preset Name = Music Compression;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 2022414874;
-    PC Bank Last Modified High = 30122019;
+    PC Bank Last Modified Low = 561548773;
+    PC Bank Last Modified High = 30145527;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 1530746752;
-    Bank Last Revised High = 30122019;
+    Bank Last Revised Low = 3453048064;
+    Bank Last Revised High = 30145525;
 
     Wave
     {
@@ -1292,30 +1380,6 @@ Wave Bank
 
     Wave
     {
-        Name = The_Hidden_Answer;
-        File = ..\Music\The_Hidden_Answer.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
-        Compression Preset Name = Music Compression;
-
-        Cache
-        {
-            Format Tag = 0;
-            Channels = 1;
-            Sampling Rate = 48000;
-            Bits Per Sample = 1;
-            Play Region Offset = 44;
-            Play Region Length = 8552448;
-            Loop Region Offset = 0;
-            Loop Region Length = 0;
-            File Type = 1;
-            Last Modified Low = 2204516237;
-            Last Modified High = 30121994;
-        }
-    }
-
-    Wave
-    {
         Name = The_Voyage;
         File = ..\Music\The_Voyage.wav;
         Build Settings Last Modified Low = 3824182498;
@@ -1478,6 +1542,50 @@ Wave Bank
     }
 }
 
+Wave Bank
+{
+    Name = SecretMusic;
+    Xbox File = Xbox\SecretMusic.xwb;
+    Windows File = Win\SecretMusic.xwb;
+    Xbox Bank Path Edited = 0;
+    Windows Bank Path Edited = 0;
+    Streaming = 1;
+    Seek Tables = 1;
+    Compression Preset Name = Music Compression;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 972771351;
+    PC Bank Last Modified High = 30145527;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
+    Bank Last Revised Low = 2798248443;
+    Bank Last Revised High = 30145526;
+
+    Wave
+    {
+        Name = The_Hidden_Answer;
+        File = ..\Music\The_Hidden_Answer.wav;
+        Build Settings Last Modified Low = 2798218442;
+        Build Settings Last Modified High = 30145526;
+        Compression Preset Name = Music Compression;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 48000;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 8552448;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2204516237;
+            Last Modified High = 30121994;
+        }
+    }
+}
+
 Sound Bank
 {
     Name = SFX;
@@ -1485,6 +1593,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
+    Bank Last Modified Low = 1308592936;
+    Bank Last Modified High = 30146012;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -2969,6 +3079,53 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = SecretStageEnter;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = SFX;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = SFX;
+                    Bank Index = 0;
+                    Entry Name = SecretStageEnter;
+                    Entry Index = 31;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = EnemyDie1;
@@ -3991,6 +4148,26 @@ Sound Bank
             }
         }
     }
+
+    Cue
+    {
+        Name = SecretStageEnter;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = SecretStageEnter;
+            Index = 31;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
 }
 
 Sound Bank
@@ -4000,8 +4177,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3505747593;
-    Bank Last Modified High = 30140247;
+    Bank Last Modified Low = 1308592936;
+    Bank Last Modified High = 30146012;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -4044,7 +4221,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Turbo;
-                    Entry Index = 14;
+                    Entry Index = 13;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4664,10 +4841,10 @@ Sound Bank
 
                 Wave Entry
                 {
-                    Bank Name = Music;
-                    Bank Index = 1;
+                    Bank Name = SecretMusic;
+                    Bank Index = 3;
                     Entry Name = The_Hidden_Answer;
-                    Entry Index = 11;
+                    Entry Index = 0;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4715,7 +4892,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = The_Voyage;
-                    Entry Index = 12;
+                    Entry Index = 11;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4763,7 +4940,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Troubled_Dreams;
-                    Entry Index = 13;
+                    Entry Index = 12;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4811,7 +4988,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Eye_of_the_Predator;
-                    Entry Index = 15;
+                    Entry Index = 14;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -4859,7 +5036,7 @@ Sound Bank
                     Bank Name = Music;
                     Bank Index = 1;
                     Entry Name = Try_Harder;
-                    Entry Index = 16;
+                    Entry Index = 15;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -5248,8 +5425,8 @@ Sound Bank
     Windows File = Win\PauseMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 3505757594;
-    Bank Last Modified High = 30140247;
+    Bank Last Modified Low = 1308592936;
+    Bank Last Modified High = 30146012;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -5298,6 +5475,25 @@ Sound Bank
                     Weight Min = 0;
                 }
             }
+
+            Set Volume Event
+            {
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Ramp
+                {
+                    Initial Value = -9600.000000;
+                    Slope = 38.400005;
+                    Slope Delta = -0.076647;
+                    Duration = 500;
+                }
+            }
         }
     }
 
@@ -5315,6 +5511,86 @@ Sound Bank
         Sound Entry
         {
             Name = 1-X-0;
+            Index = 0;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+}
+
+Sound Bank
+{
+    Name = SecretMusic;
+    Xbox File = Xbox\SecretMusic.xsb;
+    Windows File = Win\SecretMusic.xsb;
+    Xbox Bank Path Edited = 0;
+    Windows Bank Path Edited = 0;
+    Bank Last Modified Low = 1308602936;
+    Bank Last Modified High = 30146012;
+    Header Last Modified High = 0;
+    Header Last Modified Low = 0;
+
+    Sound
+    {
+        Name = The_Hidden_Answer;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = SecretMusic;
+                    Bank Index = 3;
+                    Entry Name = The_Hidden_Answer;
+                    Entry Index = 0;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Cue
+    {
+        Name = The_Hidden_Answer;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = The_Hidden_Answer;
             Index = 0;
             Weight Min = 0;
             Weight Max = 255;
