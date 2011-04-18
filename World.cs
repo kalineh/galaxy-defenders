@@ -181,9 +181,15 @@ namespace Galaxy
             ScrollSpeed = Stage.Definition.ScrollSpeed;
             Stage.Start();
 
-            // TODO: should this be in the stage?
-            //if (!Game.EditorMode)
+            if (IsSecretWorld)
+            {
+                CAudio.PauseMusic();
+                CAudio.PlaySecretMusic(Stage.Definition.MusicName);
+            }
+            else
+            {
                 CAudio.PlayMusic(Stage.Definition.MusicName);
+            }
 
             MethodInfo bg_method = typeof(CSceneryPresets).GetMethod(Stage.Definition.BackgroundSceneryName);
             BackgroundScenery = bg_method.Invoke(null, new object[] { this }) as CScenery;
@@ -399,9 +405,6 @@ namespace Galaxy
                 ParticleEffects.Spawn(EParticleType.PlayerStageEndShipTrail, ship.Physics.Position, ship.Visual.Color, null, null);
             }
 
-            if (IsSecretWorld)
-                return;
-
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
 
@@ -489,12 +492,10 @@ namespace Galaxy
 
                 CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(SecretStageName);
 
-                CStateGame bonus_stage = new CStateGame(Game, definition);
-                bonus_stage.World.ReturnWorld = this;
-                bonus_stage.World.IsSecretWorld = true;
+                CStateGame bonus_stage = new CStateGame(Game, definition, this, true);
 
                 CStateFadeTo fader = new CStateFadeTo(Game, Game.State, bonus_stage);
-                fader.NoExitSource = true;
+                fader.DontExitSourceState = true;
                 Game.State = fader;
                 
                 return;
@@ -1033,6 +1034,9 @@ namespace Galaxy
 
         private void CheckGameOverConditions()
         {
+            if (IsSecretWorld)
+                return;
+
             if (ShipEntitiesCache.Count == 0)
             {
                 if (GameOverCounter == -1)
@@ -1136,8 +1140,8 @@ namespace Galaxy
             SecretEntryFader = null;
             StageEnd = false;
 
-            //if (!Game.EditorMode)
-                CAudio.PlayMusic(Stage.Definition.MusicName);
+            CAudio.StopSecretMusic();
+            CAudio.UnpauseMusic();
 
             foreach (CShip ship in ShipEntitiesCache)
             {
@@ -1168,8 +1172,23 @@ namespace Galaxy
 
         public void RetryGame(object tag)
         {
-            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(Stage.Definition.Name);
-            Game.State = new CStateFadeTo(Game, Game.State, new CStateGame(Game, definition));
+            CAudio.StopMusic();
+
+            if (IsSecretWorld)
+            {
+                CAudio.StopSecretMusic();
+                CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(ReturnWorld.Stage.Definition.Name);
+
+                // HACK: force release since we skipped the release coming into the secret stage (because we wanted to be able to return to it)
+                ReturnWorld.Stop();
+
+                Game.State = new CStateFadeTo(Game, Game.State, new CStateGame(Game, definition));
+            }
+            else
+            {
+                CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(Stage.Definition.Name);
+                Game.State = new CStateFadeTo(Game, Game.State, new CStateGame(Game, definition));
+            }
         }
 
         public void GotoQuitConfirm(object tag)

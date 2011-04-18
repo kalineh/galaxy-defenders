@@ -50,6 +50,19 @@ namespace Galaxy
                 }
             }
 
+            // HACK: this is not the right place for this
+            if (world.IsSecretWorld)
+            {
+                // HACK: danger, bad hackings
+                world.StageEnd = true;
+
+                foreach (CShip ship in world.ShipEntitiesCache)
+                {
+                    ship.Physics.Velocity += Vector2.UnitY * -0.1f * StageEndCountdown;
+                    world.ParticleEffects.Spawn(EParticleType.PlayerStageEndShipTrail, ship.Physics.Position, ship.Visual.Color, null, null);
+                }
+            }
+
             // no ships! cannot end
             if (world.ShipEntitiesCache.Count == 0)
                 return;
