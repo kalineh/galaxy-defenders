@@ -48,6 +48,7 @@ namespace Galaxy
         {
             typeof(CBonus),
             typeof(CPowerup),
+            typeof(CHealthBar),
         };
     }
 

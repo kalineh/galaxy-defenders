@@ -522,7 +522,7 @@ namespace Galaxy
             {
                 Vector2 dir = offset.Normal();
                 Physics.Velocity *= 0.8f;
-                Physics.Velocity += dir * 7.0f * adjusted;
+                Physics.Velocity += dir * 5.0f * adjusted;
             }
 
             TakeDamage(source, Physics.Velocity, adjusted);
