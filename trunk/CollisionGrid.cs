@@ -257,7 +257,7 @@ namespace Galaxy
                         if (circle != null)
                         {
                             // TODO: circle debug render!
-                            CDebugRender.Box(transform, circle.Position, circle.Radius * Vector2.One * 2.0f, 1.0f, XnaColor.Blue);
+                            CDebugRender.Circle(transform, circle.Position, circle.Radius, 1.0f, XnaColor.Blue);
                         }
                         if (box != null)
                         {

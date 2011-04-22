@@ -128,13 +128,13 @@ namespace Galaxy
 
         private static bool CircleBox(CollisionCircle a, CollisionAABB b)
         {
-            if (a.Position.X + a.Radius < b.Position.X)
-                return false;
-            if (a.Position.Y + a.Radius < b.Position.Y)
-                return false;
-            if (a.Position.X - a.Radius > b.Position.X + b.Size.X)
-                return false;
-            if (a.Position.Y - a.Radius > b.Position.Y + b.Size.Y)
+            Vector2 p = new Vector2(
+                MathHelper.Clamp(a.Position.X, b.Position.X - b.Size.X * 0.5f, b.Position.X + b.Size.X * 0.5f),
+                MathHelper.Clamp(a.Position.Y, b.Position.Y - b.Size.Y * 0.5f, b.Position.Y + b.Size.Y * 0.5f)
+            );
+
+            float lensqr = (a.Position - p).LengthSquared();
+            if (lensqr > a.Radius * a.Radius)
                 return false;
 
             return true;
