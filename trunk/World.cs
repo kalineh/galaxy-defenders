@@ -1283,6 +1283,22 @@ namespace Galaxy
             }
         }
 
+        public void DestroyAllEnemies()
+        {
+            foreach (CEntity entity in Entities)
+            {
+                // ignore
+                if (entity.GetType() == typeof(CFence))
+                    continue;
+
+                if (entity.IsDead)
+                    continue;
+
+                if (entity.GetType().IsSubclassOf(typeof(CEnemy)))
+                    entity.Die();
+            }
+        }
+
         public void SetHudShips()
         {
             for (int i = 0; i < Ships.Count; ++i)
