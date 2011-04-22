@@ -335,7 +335,10 @@ namespace Galaxy
         protected virtual void GenerateCorpse()
         {
             if (DoesGenerateCorpse() && Mover == null)
+            {
+                Corpse.Physics.Position = Physics.Position;
                 World.EntityAdd(Corpse);
+            }
         }
     }
 }

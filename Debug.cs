@@ -189,6 +189,19 @@ namespace Galaxy
             Line(transform, position + halfx + halfy, -scalex, width, color);
         }
 
+        static public void Circle(Matrix transform, Vector2 position, float radius, float width, Color color)
+        {
+            const float Segments = 14.0f;
+            const float Step = MathHelper.TwoPi / Segments;
+            for (int i = 0; i < Segments; ++i)
+            {
+                Vector2 a = position + new Vector2((float)Math.Cos(Step * (i + 0)), (float)Math.Sin(Step * (i + 0))) * radius;
+                Vector2 b = position + new Vector2((float)Math.Cos(Step * (i + 1)), (float)Math.Sin(Step * (i + 1))) * radius;
+
+                Line(transform, a, b - a, width, color);
+            }
+        }
+
         static public void Line(Matrix transform, Vector2 position, Vector2 vector)
         {
             Line(transform, position, vector, 1.0f, Color.White);

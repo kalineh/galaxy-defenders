@@ -12,40 +12,10 @@ stage.BackgroundSceneryName = "MysteriousCloudsBG";
 stage.ForegroundSceneryName = "MysteriousCloudsFG";
 stage.MusicName = "The_Voyage";
 stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 392.0f,
-Y = -584.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 392.0f,
-Y = -824.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 392.0f,
-Y = -704.0f,
-},
-});
-stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -624.0f,
-Y = -1024.0f,
+X = -608.0f,
+Y = -832.0f,
 },
 });
 stage.AddElement(0, 
@@ -56,7 +26,7 @@ Type = typeof(Galaxy.CBoss1),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
-Y = -768.0f,
+Y = -544.0f,
 },
 },
 MoverPresetName = "None",
@@ -65,44 +35,14 @@ MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 24.0f,
-Y = -768.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -584.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -824.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementBuilding() {
-Coins = 0,
-Powerup = false,
-TextureName = "Building9",
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -328.0f,
-Y = -704.0f,
+Y = -544.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementHealthBar() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -1336.0f,
+X = 24.0f,
+Y = -1136.0f,
 },
 });
 
