@@ -54,7 +54,7 @@ namespace Galaxy
             for (int i = 0; i < SleepingFibers.Count; ++i)
             {
                 CFiber fiber = SleepingFibers[i];
-                if (fiber.Sleeping-- <= 0)
+                if (--fiber.Sleeping <= 0)
                 {
                     SleepingFibers[i] = SleepingFibers[SleepingFibers.Count - 1];
                     SleepingFibers.RemoveAt(SleepingFibers.Count - 1);
@@ -82,11 +82,15 @@ namespace Galaxy
 
                     if (fiber.Enumerator.Current.GetType() == typeof(int))
                     {
-                        // swap and pop
-                        ActiveFibers[i] = ActiveFibers[ActiveFibers.Count - 1];
-                        ActiveFibers.RemoveAt(ActiveFibers.Count - 1);
-                        fiber.Sleeping = (int)fiber.Enumerator.Current;
-                        SleepingFibers.Add(fiber);
+                        if ((int)fiber.Enumerator.Current > 0)
+                        {
+                            // swap and pop
+                            ActiveFibers[i] = ActiveFibers[ActiveFibers.Count - 1];
+                            ActiveFibers.RemoveAt(ActiveFibers.Count - 1);
+                            fiber.Sleeping = (int)fiber.Enumerator.Current;
+                            SleepingFibers.Add(fiber);
+                            i--;
+                        }
                     }
                 }
             }
@@ -100,6 +104,7 @@ namespace Galaxy
                     // swap and pop
                     ActiveFibers[i] = ActiveFibers[ActiveFibers.Count - 1];
                     ActiveFibers.RemoveAt(ActiveFibers.Count - 1);
+                    i--;
                 }
             }
         }
