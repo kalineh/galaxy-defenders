@@ -20,7 +20,7 @@ namespace Galaxy
         {
             base.Initialize(world);
 
-            Physics = null;
+            Physics = new CPhysics();
             Collision = null;
             Visual = null;
             Mover = null;
