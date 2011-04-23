@@ -1265,7 +1265,25 @@ namespace Galaxy
                 typeof(CBonus),
             };
 
+            // TODO: functionize delete 
             foreach (CEntity entity in Entities)
+            {
+                foreach (Type type in types)
+                {
+                    if (entity.GetType() == typeof(CLightning))
+                    {
+                        (entity as CLightning).BouncesRemaining = 0;
+                    }
+
+                    if (entity.GetType().IsSubclassOf(type) || entity.GetType() == type)
+                    {
+                        ParticleEffects.Spawn(EParticleType.ObjectDestroyed, entity.Physics.Position);
+                        entity.Die();
+                    }
+                }
+            }
+
+            foreach (CEntity entity in EntitiesToAdd)
             {
                 foreach (Type type in types)
                 {

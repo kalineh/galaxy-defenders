@@ -49,6 +49,7 @@ namespace Galaxy
         WeaponVulcanHit,
         WeaponCharge,
         ObjectDestroyed,
+        WeaponIneffective,
     }
 
     public struct SEffectDefinition
@@ -1213,6 +1214,37 @@ namespace Galaxy
                     {
                         Type = EParticleType.None,
                         Count = 6,
+                        Visual = CParticleEffectManager.Dot,
+                        Position = Vector2.Zero,
+                        PositionVariationCircle = new Vector2(6.0f, 6.0f),
+                        PositionVariationBox = Vector2.Zero,
+                        PositionDelta = Vector2.Zero,
+                        PositionDeltaVariation = new Vector2(0.4f, 0.4f),
+                        Scale = new Vector2(0.6f, 0.6f),
+                        ScaleVariation = Vector2.Zero,
+                        ScaleDelta = new Vector2(-0.05f, -0.05f),
+                        ScaleDeltaVariation = Vector2.Zero,
+                        OutDelta = 0.0f,
+                        Angle = 0.0f,
+                        AngleVariation = MathHelper.TwoPi,
+                        AngleDelta = 0.0f,
+                        AngleDeltaVariation = 0.0f,
+                        Color = CEnemy.EnemyGrayColor,
+                        Alpha = 1.0f,
+                        AlphaVariation = 0.0f,
+                        AlphaDelta = 0.0f,
+                        AlphaDeltaVariation = 0.0f,
+                        Lifetime = 60,
+                        LifetimeVariation = 15,
+                    }
+                },
+
+                {
+                    EParticleType.WeaponIneffective,
+                    new SEffectDefinition()
+                    {
+                        Type = EParticleType.None,
+                        Count = 4,
                         Visual = CParticleEffectManager.Dot,
                         Position = Vector2.Zero,
                         PositionVariationCircle = new Vector2(6.0f, 6.0f),
