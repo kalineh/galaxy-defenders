@@ -214,7 +214,7 @@ namespace Galaxy
             for (int i = 0; i < 16; ++i)
             {
                 float t = MathHelper.TwoPi / 16.0f * i;
-                CEnemyShot shot = CEnemyShot.Spawn(World, position, t, 8, 2.0f);
+                CEnemyShot shot = CEnemyShot.Spawn(World, position, t, 8, 3.0f);
                 CAudio.PlaySound("EnemyShoot");
             }
         }
@@ -225,7 +225,7 @@ namespace Galaxy
             for (int i = 0; i < 16; ++i)
             {
                 float t = MathHelper.TwoPi / 16.0f * i;
-                CEnemyShot shot = CEnemyShot.Spawn(World, position, t, 8, 2.0f);
+                CEnemyShot shot = CEnemyShot.Spawn(World, position, t, 8, 3.0f);
                 CAudio.PlaySound("EnemyShoot");
             }
         }
@@ -234,7 +234,7 @@ namespace Galaxy
         {
             float rotation = MathHelper.PiOver2;
             Vector2 position = Physics.Position + new Vector2(-64.0f, 110.0f);
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 2.0f);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 3.0f);
             CAudio.PlaySound("EnemyShoot");
         }
 
@@ -242,7 +242,7 @@ namespace Galaxy
         {
             float rotation = MathHelper.PiOver2;
             Vector2 position = Physics.Position + new Vector2(+64.0f, 110.0f);
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 2.0f);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 3.0f);
             CAudio.PlaySound("EnemyShoot");
         }
 
@@ -250,7 +250,7 @@ namespace Galaxy
         {
             float rotation = MathHelper.PiOver2;
             Vector2 position = Physics.Position + new Vector2(0.0f, 132.0f);
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 2.0f);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 3.0f);
             CAudio.PlaySound("EnemyShoot");
         }
     }

@@ -263,7 +263,7 @@ namespace Galaxy
         private void RegularShot(Vector2 position, Vector2 direction)
         {
             float rotation = direction.ToAngle();
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 2.0f);
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 3.0f);
             CAudio.PlaySound("EnemyShoot");
         }
     }

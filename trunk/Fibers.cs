@@ -49,6 +49,31 @@ namespace Galaxy
             return result;
         }
 
+        public void Kill(CFiber.DExecutable executable)
+        {
+            for (int i = 0; i < ActiveFibers.Count; ++i)
+            {
+                CFiber fiber = ActiveFibers[i];
+                if (fiber.Executable != executable)
+                    continue;
+
+                ActiveFibers[i] = ActiveFibers[ActiveFibers.Count - 1];
+                ActiveFibers.RemoveAt(ActiveFibers.Count - 1);
+                i--;
+            }
+
+            for (int i = 0; i < SleepingFibers.Count; ++i)
+            {
+                CFiber fiber = SleepingFibers[i];
+                if (fiber.Executable != executable)
+                    continue;
+
+                SleepingFibers[i] = SleepingFibers[SleepingFibers.Count - 1];
+                SleepingFibers.RemoveAt(SleepingFibers.Count - 1);
+                i--;
+            }
+        }
+
         public void Update()
         {
             for (int i = 0; i < SleepingFibers.Count; ++i)
@@ -76,7 +101,7 @@ namespace Galaxy
 
                     if (!fiber.Enumerator.MoveNext())
                     {
-                        fiber.Enumerable = null;
+                        fiber.Executable = null;
                         continue;
                     }
 
@@ -94,12 +119,11 @@ namespace Galaxy
                     }
                 }
             }
-
             // NOTE: linq too slow, generates garbage
-            //ActiveFibers.RemoveAll(fiber => fiber.Enumerable == null);
+            //ActiveFibers.RemoveAll(fiber => fiber.Executable == null);
             for (int i = 0; i < ActiveFibers.Count; ++i)
             {
-                if (ActiveFibers[i].Enumerable == null)
+                if (ActiveFibers[i].Executable == null)
                 {
                     // swap and pop
                     ActiveFibers[i] = ActiveFibers[ActiveFibers.Count - 1];
