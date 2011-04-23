@@ -49,6 +49,8 @@ namespace Galaxy
                     Boss = entity as CEnemy;
                 else if (entity.GetType() == typeof(CBoss3))
                     Boss = entity as CEnemy;
+                else if (entity.GetType() == typeof(CBoss4))
+                    Boss = entity as CEnemy;
                 else
                     continue;
                 break;
