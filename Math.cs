@@ -148,6 +148,13 @@ namespace Galaxy
             float move = MathHelper.Clamp(offset, -amount, amount);
             return MathHelper.WrapAngle(from + move);
         }
+
+        public static float MoveToValue(float from, float to, float step)
+        {
+            float offset = to - from;
+            float move = step * offset;
+            return from + move;
+        }
     }
 
     public static class ColorExtensions
