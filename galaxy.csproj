@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Editor\Entities\EditorEntityHealthBar.cs" />
     <Compile Include="Enemy\Boss1.cs" />
+    <Compile Include="Enemy\Boss2.cs" />
     <Compile Include="Enemy\MiniSquare.cs" />
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
