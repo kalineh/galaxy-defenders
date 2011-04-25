@@ -3799,8 +3799,8 @@ Powerup = false,
 Type = typeof(Galaxy.CBoss2),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -16912.0f,
+X = 24.0f,
+Y = -16856.0f,
 },
 },
 MoverPresetName = "None",
@@ -3808,8 +3808,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -16912.0f,
+X = 24.0f,
+Y = -16856.0f,
 },
 });
 stage.AddElement(0, 
@@ -3830,6 +3830,13 @@ CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 448.0f,
 Y = -16728.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementHealthBar() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = -240.0f,
+Y = -17160.0f,
 },
 });
 

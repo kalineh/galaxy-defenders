@@ -17,6 +17,8 @@ namespace Galaxy
         public CBoss4 Boss { get; set; }
         public Vector2 CollisionOffset { get; set; }
         public Vector2 FireOffset { get; set; }
+        public delegate void OnDamageDelegate(float damage_tracker);
+        public OnDamageDelegate OnDamage { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -40,14 +42,47 @@ namespace Galaxy
         public override void TakeDamage(float damage, CShip source)
         {
             Boss.TakeDamageDirect(damage, source);
+            OnDamage(damage);
+        }
+
+        public override float GetRadius()
+        {
+            // override being deleted due to offscreen
+            return 512.0f;
         }
 
         public IEnumerable UpdateWeaponsPattern0()
         {
             while (true)
             {
-                RegularShot(Physics.Position + FireOffset, Vector2.UnitY);
-                yield return 30;
+                int Steps = 7;
+                float Range = 0.3f;
+                float Sign = World.Random.NextSign();
+                Vector2 dir = Vector2.UnitY.Rotate(World.Random.NextSignedFloat() * 0.25f);
+                for (int i = 0; i < Steps; ++i)
+                {
+                    RegularShot(Physics.Position + FireOffset, Vector2.UnitY.Rotate((Range * -0.5f + Range / (float)Steps * i) * Sign));
+                    yield return 6;
+                }
+
+                yield return 90;
+            }
+        }
+
+        public IEnumerable UpdateWeaponsPattern1()
+        {
+            while (true)
+            {
+                int Steps = 3;
+                float Range = 0.3f;
+                Vector2 dir = GetDirToShip();
+                for (int i = 0; i < Steps; ++i)
+                {
+                    RegularShot(Physics.Position + FireOffset, dir.Rotate(Range * -0.5f + Range / (float)Steps * i));
+                    yield return 3;
+                }
+
+                yield return 60;
             }
         }
 
@@ -76,6 +111,10 @@ namespace Galaxy
         public float CenterOut { get; set; }
         public float LeftOut { get; set; }
         public float RightOut { get; set; }
+        public float CenterDamage { get; set; }
+        public float LeftDamage { get; set; }
+        public float RightDamage { get; set; }
+        public CVisual Cover { get; set; }
 
         public override void Initialize(CWorld world)
         {
@@ -85,7 +124,9 @@ namespace Galaxy
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(260.0f, 215.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss4");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 30.0f;
+            Cover = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/Boss4Cover");
+            Cover.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 2.0f;
+            HealthMax = 80.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             CenterOut = 0.0f;
@@ -94,7 +135,7 @@ namespace Galaxy
 
             FiberManager = new CFiberManager();
             FiberManager.Fork(this.UpdateMovement);
-            FiberManager.Fork(this.UpdateWeapons);
+            //FiberManager.Fork(this.UpdateWeapons);
             FiberManager.Fork(this.UpdateCenter);
             FiberManager.Fork(this.UpdateLeft);
             FiberManager.Fork(this.UpdateRight);
@@ -109,6 +150,8 @@ namespace Galaxy
                 MakeChildren();
 
             UpdateChildrenAttachment();
+
+            IsSeekerTarget = true;
         }
 
         private void MakeChildren()
@@ -128,9 +171,9 @@ namespace Galaxy
             Left.CollisionOffset = new Vector2(+140.0f, -32.0f);
             Right.CollisionOffset = new Vector2(-214.0f, -32.0f);
 
-            Center.FireOffset = new Vector2(0.0f, -94.0f);
-            Left.FireOffset = new Vector2(-178.0f, -34.0f);
-            Right.FireOffset = new Vector2(+249.0f, -34.0f);
+            Center.FireOffset = new Vector2(-1.0f, 180.0f);
+            Left.FireOffset = new Vector2(+182.0f, -6.0f);
+            Right.FireOffset = new Vector2(-182.0f, -6.0f);
 
             Center.Visual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
             Left.Visual.NormalizedOrigin = new Vector2(0.0f, 0.5f);
@@ -139,6 +182,10 @@ namespace Galaxy
             Center.Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
             Left.Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
             Right.Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -2.0f;
+
+            Center.OnDamage = (damage => this.CenterDamage += damage);
+            Left.OnDamage = (damage => this.LeftDamage += damage);
+            Right.OnDamage = (damage => this.RightDamage += damage);
             
             World.EntityAdd(Center);
             World.EntityAdd(Left);
@@ -171,7 +218,8 @@ namespace Galaxy
         {
             base.Draw(sprite_batch);
 
-            //sprite_batch.DrawString(World.Game.GameRegularFont, "health:" + Health, World.GameCamera.GetCenter().ToVector2(), Color.White);
+            if (Health > HealthMax * 0.5f)
+                Cover.Draw(sprite_batch, Physics.Position, 0.0f);
         }
 
         public override void UpdateCollision()
@@ -187,41 +235,74 @@ namespace Galaxy
             //base.TakeDamage(damage, source);
             //Vector2 position = projectile position?
             //World.ParticleEffects.Spawn(EParticleType.WeaponIneffective, position);
+
+            if (Health > HealthMax * 0.5f)
+                return;
+
+            base.TakeDamage(damage, source);
         }
 
         // TODO: maybe need to OnCollide with everything here
         
         public void TakeDamageDirect(float damage, CShip source)
         {
+            if (Health > HealthMax * 0.5f && (Health - damage) < HealthMax * 0.5f)
+                BreakCover();
+
             base.TakeDamage(damage, source);
+        }
+
+        public void BreakCover()
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position + World.Random.NextVector2() * World.Random.NextSignedFloat() * 100.0f, CEnemy.EnemyOrangeColor, 1.2f, null);
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position + World.Random.NextVector2() * World.Random.NextSignedFloat() * 100.0f, CEnemy.EnemyGrayColor, 1.2f, null);
+            }
+
+            FiberManager.Fork(this.UpdateWeapons);
         }
         
         private IEnumerable UpdateWeapons()
         {
             yield return 60;
-            yield break;
+
+            Vector2 center_cannon = new Vector2(+2.0f, -58.0f);
+            Vector2 left_cannon = new Vector2(-75.0f, -58.0f);
+            Vector2 right_cannon = new Vector2(+75.0f, -58.0f);
 
             while (true)
             {
                 yield return 30;
 
-                int attack_type = World.Random.Next() % 2;
+                int attack_type = World.Random.Next() % 3;
 
                 switch (attack_type)
                 {
                     case 0:
-                        RegularShot(Physics.Position, GetDirToShip());
+                        RegularShot(Physics.Position + left_cannon, GetDirToShip());
+                        RegularShot(Physics.Position + right_cannon, GetDirToShip());
                         yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
+                        RegularShot(Physics.Position + left_cannon, GetDirToShip());
+                        RegularShot(Physics.Position + right_cannon, GetDirToShip());
                         yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
+                        RegularShot(Physics.Position + left_cannon, GetDirToShip());
+                        RegularShot(Physics.Position + right_cannon, GetDirToShip());
                         yield return 4;
                         break;
 
                     case 1:    
                         for (int i = 0; i < 8; ++i)
                         {
-                            PelletShot(Physics.Position, GetDirToShip());
+                            PelletShot(Physics.Position + center_cannon, GetDirToShip());
+                            yield return 6;
+                        }
+                        break;
+
+                    case 2:
+                        for (int i = 0; i < 8; ++i)
+                        {
+                            PelletShot(Physics.Position + center_cannon, Vector2.UnitY.Rotate(World.Random.NextSignedFloat() * 0.1f * World.Random.NextFloat()));
                             yield return 6;
                         }
                         break;
@@ -233,7 +314,7 @@ namespace Galaxy
         {
             while (true)
             {
-                yield return 60;    
+                yield return 30 + World.Random.Next() % 120;
 
                 for (int i = 0; i < 60; ++i)
                 {
@@ -241,23 +322,41 @@ namespace Galaxy
                     yield return 0;
                 }
 
-                Center.FiberManager.Fork(Center.UpdateWeaponsPattern0);
-                yield return 240;
-                Center.FiberManager.Kill(Center.UpdateWeaponsPattern0);
-
-                for (int i = 0; i < 60; ++i)
+                switch (World.Random.Next() % 2)
                 {
-                    CenterOut = Interpolation.MoveToValue(CenterOut, 0.0f, 0.05f);
+                    case 0: Center.FiberManager.Fork(Center.UpdateWeaponsPattern0); break;
+                    case 1: Center.FiberManager.Fork(Center.UpdateWeaponsPattern1); break;
+                }
+
+                while (CenterDamage < 5.0f || Health < HealthMax * 0.25f)
+                {
+                    yield return 30;
+                }
+
+                CenterDamage = 0.0f;
+                Center.FiberManager.Kill(Center.UpdateWeaponsPattern0);
+                Center.FiberManager.Kill(Center.UpdateWeaponsPattern1);
+
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Center.Physics.Position + Center.FireOffset, CEnemy.EnemyOrangeColor, null, null);
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Center.Physics.Position + Center.FireOffset, CEnemy.EnemyGrayColor, null, null);
+
+                for (int i = 0; i < 30; ++i)
+                {
+                    CenterOut = Interpolation.MoveToValue(CenterOut, 0.0f, 0.10f);
                     yield return 0;
                 }
+
+                yield return 120;
             }
         }
 
         private IEnumerable UpdateLeft()
         {
+            yield return 120;
+
             while (true)
             {
-                yield return 60;    
+                yield return 30 + World.Random.Next() % 120;
 
                 for (int i = 0; i < 60; ++i)
                 {
@@ -265,23 +364,41 @@ namespace Galaxy
                     yield return 0;
                 }
 
-                Center.FiberManager.Fork(Center.UpdateWeaponsPattern0);
-                yield return 240;
-                Center.FiberManager.Kill(Center.UpdateWeaponsPattern0);
-
-                for (int i = 0; i < 60; ++i)
+                switch (World.Random.Next() % 2)
                 {
-                    LeftOut = Interpolation.MoveToValue(LeftOut, 0.0f, 0.05f);
+                    case 0: Left.FiberManager.Fork(Left.UpdateWeaponsPattern0); break;
+                    case 1: Left.FiberManager.Fork(Left.UpdateWeaponsPattern1); break;
+                }
+
+                while (LeftDamage < 5.0f || Health < HealthMax * 0.25f)
+                {
+                    yield return 30;
+                }
+
+                LeftDamage = 0.0f;
+                Left.FiberManager.Kill(Left.UpdateWeaponsPattern0);
+                Left.FiberManager.Kill(Left.UpdateWeaponsPattern1);
+
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Left.Physics.Position + Left.FireOffset, CEnemy.EnemyOrangeColor, null, null);
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Left.Physics.Position + Left.FireOffset, CEnemy.EnemyGrayColor, null, null);
+
+                for (int i = 0; i < 30; ++i)
+                {
+                    LeftOut = Interpolation.MoveToValue(LeftOut, 0.0f, 0.10f);
                     yield return 0;
                 }
+
+                yield return 120;
             }
         }
 
         private IEnumerable UpdateRight()
         {
+            yield return 120;
+
             while (true)
             {
-                yield return 60;    
+                yield return 30 + World.Random.Next() % 120;
 
                 for (int i = 0; i < 60; ++i)
                 {
@@ -289,20 +406,38 @@ namespace Galaxy
                     yield return 0;
                 }
 
-                Center.FiberManager.Fork(Center.UpdateWeaponsPattern0);
-                yield return 240;
-                Center.FiberManager.Kill(Center.UpdateWeaponsPattern0);
-
-                for (int i = 0; i < 60; ++i)
+                switch (World.Random.Next() % 2)
                 {
-                    RightOut = Interpolation.MoveToValue(RightOut, 0.0f, 0.05f);
+                    case 0: Right.FiberManager.Fork(Right.UpdateWeaponsPattern0); break;
+                    case 1: Right.FiberManager.Fork(Right.UpdateWeaponsPattern1); break;
+                }
+
+                while (RightDamage < 5.0f || Health < HealthMax * 0.25f)
+                {
+                    yield return 30;
+                }
+
+                RightDamage = 0.0f;
+                Right.FiberManager.Kill(Right.UpdateWeaponsPattern0);
+                Right.FiberManager.Kill(Right.UpdateWeaponsPattern1);
+
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Right.Physics.Position + Right.FireOffset, CEnemy.EnemyOrangeColor, null, null);
+                World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Right.Physics.Position + Right.FireOffset, CEnemy.EnemyGrayColor, null, null);
+
+                for (int i = 0; i < 30; ++i)
+                {
+                    RightOut = Interpolation.MoveToValue(RightOut, 0.0f, 0.10f);
                     yield return 0;
                 }
+
+                yield return 120;
             }
         }
 
         private IEnumerable UpdateMovement()
         {
+            yield return 120;
+
             Vector2 base_ = Physics.Position;
             while (true)
             {

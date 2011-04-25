@@ -124,7 +124,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 60.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss3");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 50.0f;
+            HealthMax = 100.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             Phase = 0;

@@ -175,7 +175,7 @@ namespace Galaxy
         public bool IsAboveActiveRegionForDeath(Vector2 position)
         {
             Vector2 tl = GetTopLeft();
-            return position.Y < tl.Y - 200.0f;
+            return position.Y < tl.Y - 240.0f;
         }
 
         public bool IsAboveActiveRegion(Vector2 position)

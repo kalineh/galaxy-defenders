@@ -66,8 +66,8 @@ namespace Galaxy
             int length = Math.Max((int)(580.0f * health), 0);
 
             Vector2 center = World.GameCamera.GetCenter().ToVector2();
-            sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)center.X - 350, (int)center.Y - 550, 600, 40), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.9f);
-            sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)center.X - 340, (int)center.Y - 540, 580, 20), null, Color.Gray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.95f);
+            sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)center.X - 350, (int)center.Y - 550, 600, 40), null, Color.DimGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.9f);
+            sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)center.X - 340, (int)center.Y - 540, 580, 20), null, Color.DarkGray, 0.0f, Vector2.Zero, SpriteEffects.None, 0.95f);
             sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)center.X - 340, (int)center.Y - 540, length, 20), null, CEnemy.EnemyOrangeColor, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
         }
     }
