@@ -138,18 +138,5 @@ namespace Galaxy
             ActiveFibers.Clear();
             SleepingFibers.Clear();
         }
-
-        public static IEnumerable WaitFrames(int frames)
-        {
-            while (frames-- > 0)
-                yield return frames;
-        }
-
-        public static IEnumerable WaitSeconds(float seconds)
-        {
-            Console.WriteLine("WaitSeconds: {0}", seconds);
-            int frames = Time.ToFrames(seconds);
-            yield return WaitFrames(frames);
-        }
     }
 }

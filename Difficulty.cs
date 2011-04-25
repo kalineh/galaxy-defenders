@@ -36,6 +36,13 @@ namespace Galaxy
             1.85f,
         };
 
+        public static float[] BossHealthScale = new float[3]
+        {
+            1.0f,
+            1.5f,
+            2.0f,
+        };
+
         // TODO: damage scale
         // TODO: fire delay scale
 

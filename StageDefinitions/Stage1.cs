@@ -3983,6 +3983,13 @@ X = 480.0f,
 Y = -18080.0f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementHealthBar() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 8.0f,
+Y = -18544.0f,
+},
+});
 
 return stage;
 }
