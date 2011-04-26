@@ -126,7 +126,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             Cover = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/Boss4Cover");
             Cover.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 2.0f;
-            HealthMax = 80.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 100.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             CenterOut = 0.0f;
@@ -218,7 +218,7 @@ namespace Galaxy
         {
             base.Draw(sprite_batch);
 
-            if (Health > HealthMax * 0.5f)
+            if (Health > HealthMax * 0.6f)
                 Cover.Draw(sprite_batch, Physics.Position, 0.0f);
         }
 
@@ -236,7 +236,7 @@ namespace Galaxy
             //Vector2 position = projectile position?
             //World.ParticleEffects.Spawn(EParticleType.WeaponIneffective, position);
 
-            if (Health > HealthMax * 0.5f)
+            if (Health > HealthMax * 0.6f)
                 return;
 
             base.TakeDamage(damage, source);
@@ -246,7 +246,7 @@ namespace Galaxy
         
         public void TakeDamageDirect(float damage, CShip source)
         {
-            if (Health > HealthMax * 0.5f && (Health - damage) < HealthMax * 0.5f)
+            if (Health > HealthMax * 0.6f && (Health - damage) < HealthMax * 0.6f)
                 BreakCover();
 
             base.TakeDamage(damage, source);
@@ -259,6 +259,9 @@ namespace Galaxy
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position + World.Random.NextVector2() * World.Random.NextSignedFloat() * 100.0f, CEnemy.EnemyOrangeColor, 1.2f, null);
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position + World.Random.NextVector2() * World.Random.NextSignedFloat() * 100.0f, CEnemy.EnemyGrayColor, 1.2f, null);
             }
+
+            string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+            CAudio.PlaySound(death_sound);
 
             FiberManager.Fork(this.UpdateWeapons);
         }
@@ -328,7 +331,7 @@ namespace Galaxy
                     case 1: Center.FiberManager.Fork(Center.UpdateWeaponsPattern1); break;
                 }
 
-                while (CenterDamage < 5.0f || Health < HealthMax * 0.25f)
+                while (CenterDamage < 5.0f || Health < HealthMax * 0.30f)
                 {
                     yield return 30;
                 }
@@ -336,6 +339,8 @@ namespace Galaxy
                 CenterDamage = 0.0f;
                 Center.FiberManager.Kill(Center.UpdateWeaponsPattern0);
                 Center.FiberManager.Kill(Center.UpdateWeaponsPattern1);
+                string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+                CAudio.PlaySound(death_sound);
 
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Center.Physics.Position + Center.FireOffset, CEnemy.EnemyOrangeColor, null, null);
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Center.Physics.Position + Center.FireOffset, CEnemy.EnemyGrayColor, null, null);
@@ -378,6 +383,8 @@ namespace Galaxy
                 LeftDamage = 0.0f;
                 Left.FiberManager.Kill(Left.UpdateWeaponsPattern0);
                 Left.FiberManager.Kill(Left.UpdateWeaponsPattern1);
+                string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+                CAudio.PlaySound(death_sound);
 
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Left.Physics.Position + Left.FireOffset, CEnemy.EnemyOrangeColor, null, null);
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Left.Physics.Position + Left.FireOffset, CEnemy.EnemyGrayColor, null, null);
@@ -420,6 +427,8 @@ namespace Galaxy
                 RightDamage = 0.0f;
                 Right.FiberManager.Kill(Right.UpdateWeaponsPattern0);
                 Right.FiberManager.Kill(Right.UpdateWeaponsPattern1);
+                string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+                CAudio.PlaySound(death_sound);
 
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Right.Physics.Position + Right.FireOffset, CEnemy.EnemyOrangeColor, null, null);
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Right.Physics.Position + Right.FireOffset, CEnemy.EnemyGrayColor, null, null);
