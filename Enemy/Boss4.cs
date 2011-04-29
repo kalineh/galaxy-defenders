@@ -134,7 +134,7 @@ namespace Galaxy
             RightOut = 0.0f;
 
             FiberManager = new CFiberManager();
-            FiberManager.Fork(this.UpdateMovement);
+            //FiberManager.Fork(this.UpdateMovement);
             //FiberManager.Fork(this.UpdateWeapons);
             FiberManager.Fork(this.UpdateCenter);
             FiberManager.Fork(this.UpdateLeft);

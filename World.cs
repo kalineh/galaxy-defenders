@@ -1088,10 +1088,8 @@ namespace Galaxy
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponPrimaryLevel = ship.PrimaryWeapon.Level;
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSecondaryType = ship.SecondaryWeapon.Type;
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
-                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickLeftType = ship.SidekickLeft.Type;
-                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickLeftLevel = ship.SidekickLeft.Level;
-                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickRightType = ship.SidekickRight.Type;
-                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickRightLevel = ship.SidekickRight.Level;
+                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickType = ship.Sidekick.Type;
+                profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSidekickLevel = ship.Sidekick.Level;
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].WeaponSecondaryLevel = ship.SecondaryWeapon.Level;
             }
 

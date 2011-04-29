@@ -35,8 +35,7 @@ namespace Galaxy
         public CShieldPart Shield { get; set; }
         public CWeaponPart PrimaryWeapon { get; set; }
         public CWeaponPart SecondaryWeapon { get; set; }
-        public CWeaponPart SidekickLeft { get; set; }
-        public CWeaponPart SidekickRight { get; set; }
+        public CWeaponPart Sidekick { get; set; }
 
         public float CurrentArmor { get; set; }
         public float CurrentShield { get; set; }
@@ -64,6 +63,8 @@ namespace Galaxy
 
         public int Score { get; set; }
 
+        public int RapidFireCountdown { get; set; }
+
         public void Initialize(
             CWorld world,
             GameControllerIndex index,
@@ -73,8 +74,7 @@ namespace Galaxy
             CShieldPart shield,
             CWeaponPart primary,
             CWeaponPart secondary,
-            CWeaponPart sidekick_left,
-            CWeaponPart sidekick_right
+            CWeaponPart sidekick
         )
         {
             base.Initialize(world);
@@ -90,8 +90,7 @@ namespace Galaxy
             Shield = shield;
             PrimaryWeapon = primary;
             SecondaryWeapon = secondary;
-            SidekickLeft = sidekick_left;
-            SidekickRight = sidekick_right;
+            Sidekick = sidekick;
 
             Physics = new CPhysics();
             Physics.Friction = chassis.Friction;
@@ -120,8 +119,8 @@ namespace Galaxy
         {
             WeaponPrimary = CWeaponFactory.GenerateWeapon(this, PrimaryWeapon);
             WeaponSecondary = CWeaponFactory.GenerateWeapon(this, SecondaryWeapon);
-            WeaponSidekickLeft = CWeaponFactory.GenerateWeapon(this, SidekickLeft);
-            WeaponSidekickRight = CWeaponFactory.GenerateWeapon(this, SidekickRight);
+            WeaponSidekickLeft = CWeaponFactory.GenerateWeapon(this, Sidekick);
+            WeaponSidekickRight = CWeaponFactory.GenerateWeapon(this, Sidekick);
 
             CurrentArmor = Chassis.Armor;
             CurrentShield = Shield.Shield;
@@ -288,46 +287,34 @@ namespace Galaxy
                 }
             }
 
+            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.LeftControl))
+            {
+                ChargeSidekickLeft();    
+                ChargeSidekickRight();    
+            }
+            else
+            {
+                FireSidekickLeft();    
+                FireSidekickRight();    
+            }
 
-            // TODO: bind to functions?
-            if (buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.A))
-            {
-                Pilot.Ability0.TryEnable();
-            }
-            // TODO: this key isnt working?
-            if (buttons.B == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.S))
-            {
-                Pilot.Ability1.TryEnable();
-            }
-            if (buttons.A == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.D))
-            {
-                Pilot.Ability2.TryEnable();
-            }
-            if (buttons.X == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.LeftShift))
+            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.LeftShift))
             {
                 FirePrimarySecondaryWeapons();
+                RapidFireCountdown = 12;
             }
             else
             {
-                DidntFirePrimarySecondaryWeapons();    
-            }
+                RapidFireCountdown = Math.Max(0, RapidFireCountdown - 1);
 
-            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.Z))
-            {
-                ChargeSidekickLeft();
-            }
-            else
-            {
-                FireSidekickLeft();
-            }
-
-            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.X))
-            {
-                ChargeSidekickRight();
-            }
-            else
-            {
-                FireSidekickRight();
+                if (RapidFireCountdown > 0)
+                {
+                    FirePrimarySecondaryWeapons();
+                }
+                else
+                {
+                    DidntFirePrimarySecondaryWeapons();
+                }
             }
         }
 

@@ -123,18 +123,9 @@ namespace Galaxy
             {
                 yield return 60 + World.Random.Next() % 30;
 
-                switch (World.Random.Next() % 3)
+                switch (World.Random.Next() % 2)
                 {
                     case 0:
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        break;
-
-                    case 1:
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
                         RegularShot(Physics.Position, Vector2.UnitY);
                         yield return 4;
                         RegularShot(Physics.Position, Vector2.UnitY);
@@ -144,6 +135,8 @@ namespace Galaxy
                         break;
 
                     case 2:
+                        RegularShot(Physics.Position, GetDirToShip());
+                        yield return 4;
                         RegularShot(Physics.Position, GetDirToShip());
                         yield return 4;
                         RegularShot(Physics.Position, GetDirToShip());
@@ -329,12 +322,17 @@ namespace Galaxy
                 switch (World.Random.Next() % 2)
                 {
                     case 0:
-                        RegularShot(Physics.Position + cannons[0], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[1], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[2], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[3], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[4], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[5], GetDirToShip());
+                        for (int i = 0; i < 4 + World.Random.Next() % 4; ++i)
+                        {
+                            RegularShot(Physics.Position + cannons[0], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[1], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[2], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[3], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[4], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[5], GetDirToShip());
+
+                            yield return 30;
+                        }
                         break;
 
                     case 1:

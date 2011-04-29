@@ -39,10 +39,8 @@ namespace Galaxy
         public int WeaponPrimaryLevel;
         public string WeaponSecondaryType;
         public int WeaponSecondaryLevel;
-        public string WeaponSidekickLeftType;
-        public int WeaponSidekickLeftLevel;
-        public string WeaponSidekickRightType;
-        public int WeaponSidekickRightLevel;
+        public string WeaponSidekickType;
+        public int WeaponSidekickLevel;
 
         public static SProfilePilotState MakeDefaultPilot(int index)
         {
@@ -61,10 +59,8 @@ namespace Galaxy
                 WeaponPrimaryLevel = 2,
                 WeaponSecondaryType = "",
                 WeaponSecondaryLevel = 0,
-                WeaponSidekickLeftType = "",
-                WeaponSidekickLeftLevel = 0,
-                WeaponSidekickRightType = "",
-                WeaponSidekickRightLevel = 0,
+                WeaponSidekickType = "",
+                WeaponSidekickLevel = 0,
             };
         }
     }
@@ -293,8 +289,7 @@ namespace Galaxy
             int item_value =
                 CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponPrimaryType, pilot.WeaponPrimaryLevel) +
                 CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSecondaryType, pilot.WeaponSecondaryLevel) +
-                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickLeftType, pilot.WeaponSidekickLeftLevel) +
-                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickRightType, pilot.WeaponSidekickRightLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickType, pilot.WeaponSidekickLevel) +
                 ChassisDefinitions.GetPart(pilot.ChassisType).Price +
                 ChassisDefinitions.GetPart(pilot.GeneratorType).Price +
                 ChassisDefinitions.GetPart(pilot.ShieldType).Price;
