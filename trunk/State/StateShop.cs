@@ -22,8 +22,7 @@ namespace Galaxy
         private CMenu MenuUpgradeShip { get; set; }
         private CMenu MenuPrimaryWeapon { get; set; }
         private CMenu MenuSecondaryWeapon { get; set; }
-        private CMenu MenuSidekickLeft { get; set; }
-        private CMenu MenuSidekickRight { get; set; }
+        private CMenu MenuSidekick { get; set; }
         private CMenu MenuChassis { get; set; }
         private CMenu MenuGenerator { get; set; }
         private CMenu MenuShield { get; set; }
@@ -174,8 +173,7 @@ namespace Galaxy
                     new CMenu.CMenuOption() { Text = "Shield", Select = EditShield },
                     new CMenu.CMenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon },
                     new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon },
-                    new CMenu.CMenuOption() { Text = "Sidekick Left", Select = EditSidekickLeft },
-                    new CMenu.CMenuOption() { Text = "Sidekick Right", Select = EditSidekickRight },
+                    new CMenu.CMenuOption() { Text = "Sidekick", Select = EditSidekick },
                     // NOTE: disabling to move to clear-game unlocks
                     //new CMenu.CMenuOption() { Text = "Pilot Training", Select = TrainPilot },
 #if DEBUG
@@ -292,16 +290,16 @@ namespace Galaxy
                                                 });
 
             //
-            // Sidekick Left
+            // Sidekick
             //
-            MenuSidekickLeft = new CMenu(game)
+            MenuSidekick = new CMenu(game)
             {
                 Position = GetShoppingPlayerMenuPosition(),
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickLeftEmpty, Highlight = HighlightSidekickLeft, Data = "" });
-            IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickLeftType };
+            MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "" });
+            IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickType };
             IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in sidekick_left_weapon_parts)
@@ -309,20 +307,20 @@ namespace Galaxy
                 if (weapon_part == "")
                     continue;
 
-                MenuSidekickLeft.MenuOptions.Add(
+                MenuSidekick.MenuOptions.Add(
                     new CMenu.CMenuOption()
                     {
                         Text = weapon_part,
                         SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
                         Data = weapon_part,
-                        Select = SelectSidekickLeft,
-                        SelectValidate = SelectValidateSidekickLeft,
-                        Highlight = HighlightSidekickLeft,
+                        Select = SelectSidekick,
+                        SelectValidate = SelectValidateSidekick,
+                        Highlight = HighlightSidekick,
                     }
                 );
             }
 
-            MenuSidekickLeft.MenuOptions.Add(new CMenu.CMenuOption()
+            MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption()
                                              {
                                                  Text = "Done",
                                                  Select = ReturnToUpgradeShip,
@@ -330,38 +328,6 @@ namespace Galaxy
                                                  CancelOption = true,
                                                  PanelType = CMenu.PanelType.Small
                                              });
-
-            //
-            // Sidekick Right
-            //
-            MenuSidekickRight = new CMenu(game)
-            {
-                Position = GetShoppingPlayerMenuPosition(),
-                MenuOptions = new List<CMenu.CMenuOption>(),
-            };
-
-            MenuSidekickRight.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickRightEmpty, Highlight = HighlightSidekickRight, Data = "" });
-            IEnumerable<string> sidekick_right_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickRightType };
-            IEnumerable<string> sidekick_right_weapon_parts_all = sidekick_right_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
-            IEnumerable<string> sidekick_right_weapon_parts = sidekick_right_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
-            foreach (string weapon_part in sidekick_right_weapon_parts)
-            {
-                if (weapon_part == "")
-                    continue;
-
-                MenuSidekickRight.MenuOptions.Add(
-                    new CMenu.CMenuOption()
-                    {
-                        Text = weapon_part,
-                        SubText = "Cost: " + CWeaponFactory.GetPriceForLevel(weapon_part, 0),
-                        Data = weapon_part,
-                        Select = SelectSidekickRight,
-                        SelectValidate = SelectValidateSidekickRight,
-                        Highlight = HighlightSidekickRight,
-                    }
-                );
-            }
-            MenuSidekickRight.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Done", Select = ReturnToUpgradeShip, Highlight = RevertWorkingProfile, CancelOption = true, PanelType = CMenu.PanelType.Small });
 
             //
             // Chassis
@@ -625,12 +591,9 @@ namespace Galaxy
             if (Menu == MenuSecondaryWeapon)
                 foreach (CMenu.CMenuOption option in MenuSecondaryWeapon.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSecondaryType;
-            if (Menu == MenuSidekickLeft)
-                foreach (CMenu.CMenuOption option in MenuSidekickLeft.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickLeftType;
-            if (Menu == MenuSidekickRight)
-                foreach (CMenu.CMenuOption option in MenuSidekickRight.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickRightType;
+            if (Menu == MenuSidekick)
+                foreach (CMenu.CMenuOption option in MenuSidekick.MenuOptions)
+                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickType;
             if (Menu == MenuChassis)
                 foreach (CMenu.CMenuOption option in MenuChassis.MenuOptions)
                     option.SpecialHighlight = (string) option.Data == LockedProfile.ChassisType;
@@ -656,8 +619,7 @@ namespace Galaxy
             int item_value =
                 CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponPrimaryType, LockedProfile.WeaponPrimaryLevel) +
                 CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel) +
-                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickLeftType, LockedProfile.WeaponSidekickLeftLevel) +
-                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickRightType, LockedProfile.WeaponSidekickRightLevel) +
+                CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel) +
                 ChassisDefinitions.GetPart(LockedProfile.ChassisType).Price +
                 ChassisDefinitions.GetPart(LockedProfile.GeneratorType).Price +
                 ChassisDefinitions.GetPart(LockedProfile.ShieldType).Price;
@@ -695,8 +657,7 @@ namespace Galaxy
                 LockedProfile.ShieldType,
                 LockedProfile.WeaponPrimaryType,
                 LockedProfile.WeaponSecondaryType,
-                LockedProfile.WeaponSidekickLeftType,
-                LockedProfile.WeaponSidekickRightType
+                LockedProfile.WeaponSidekickType,
             };
 
             foreach (int index in Enumerable.Range(0, keys.Length))
@@ -869,13 +830,13 @@ namespace Galaxy
                         DrawPurchasePanel();
                 }
             }
-            else if (Menu == MenuSidekickLeft)
+            else if (Menu == MenuSidekick)
             {
                 CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
-                if (!option.CancelOption && WorkingProfile.WeaponSidekickLeftType != "")
+                if (!option.CancelOption && WorkingProfile.WeaponSidekickType != "")
                 {
                     Vector2 position = blank_position + new Vector2(0.0f, 30.0f);
-                    int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+                    int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
 
                     Labels.BaseCostPrice.Value = price;
                     Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
@@ -884,7 +845,7 @@ namespace Galaxy
 
                 if (!option.CancelOption)
                 {
-                    if (WorkingProfile.WeaponSidekickLeftType == "")
+                    if (WorkingProfile.WeaponSidekickType == "")
                     {
                         Vector2 position = blank_position;
                         Labels.BaseCostPrice.Value = 0;
@@ -892,34 +853,7 @@ namespace Galaxy
                         Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
                     }
 
-                    if (SelectValidateSidekickLeft(Menu.MenuOptions[Menu.Cursor].Data))
-                        DrawPurchasePanel();
-                }
-            }
-            else if (Menu == MenuSidekickRight)
-            {
-                CMenu.CMenuOption option = Menu.MenuOptions[Menu.Cursor];
-                if (!option.CancelOption && WorkingProfile.WeaponSidekickRightType != "")
-                {
-                    Vector2 position = blank_position + new Vector2(0.0f, 30.0f);
-                    int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-
-                    Labels.BaseCostPrice.Value = price;
-                    Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
-                    Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
-                }
-
-                if (!option.CancelOption)
-                {
-                    if (WorkingProfile.WeaponSidekickRightType == "")
-                    {
-                        Vector2 position = blank_position;
-                        Labels.BaseCostPrice.Value = 0;
-                        Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
-                        Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
-                    }
-
-                    if (SelectValidateSidekickRight(Menu.MenuOptions[Menu.Cursor].Data))
+                    if (SelectValidateSidekick(Menu.MenuOptions[Menu.Cursor].Data))
                         DrawPurchasePanel();
                 }
             }
@@ -1145,15 +1079,9 @@ namespace Galaxy
             Menu.ForceRefresh();
         }
 
-        private void EditSidekickLeft(object tag)
+        private void EditSidekick(object tag)
         {
-            Menu = MenuSidekickLeft;
-            Menu.ForceRefresh();
-        }
-
-        private void EditSidekickRight(object tag)
-        {
-            Menu = MenuSidekickRight;
+            Menu = MenuSidekick;
             Menu.ForceRefresh();
         }
 
@@ -1370,9 +1298,9 @@ namespace Galaxy
             return true;
         }
 
-        private void SelectSidekickLeft(object tag)
+        private void SelectSidekick(object tag)
         {
-            if (WorkingProfile.WeaponSidekickLeftType == LockedProfile.WeaponSidekickLeftType && WorkingProfile.WeaponSidekickLeftLevel == LockedProfile.WeaponSidekickLeftLevel)
+            if (WorkingProfile.WeaponSidekickType == LockedProfile.WeaponSidekickType && WorkingProfile.WeaponSidekickLevel == LockedProfile.WeaponSidekickLevel)
                 return;
 
             CAudio.PlaySound("MenuBuy");
@@ -1381,24 +1309,24 @@ namespace Galaxy
             RefreshSampleDisplay();
         }
 
-        private void SelectSidekickLeftEmpty(object tag)
+        private void SelectSidekickEmpty(object tag)
         {
-            if (WorkingProfile.WeaponSidekickLeftType == LockedProfile.WeaponSidekickLeftType && WorkingProfile.WeaponSidekickLeftLevel == LockedProfile.WeaponSidekickLeftLevel)
+            if (WorkingProfile.WeaponSidekickType == LockedProfile.WeaponSidekickType && WorkingProfile.WeaponSidekickLevel == LockedProfile.WeaponSidekickLevel)
                 return;
 
             CAudio.PlaySound("MenuBuy");
 
-            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickLeftType, LockedProfile.WeaponSidekickLeftLevel);
+            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel);
             LockedProfile.Money += sell;
-            LockedProfile.WeaponSidekickLeftType = "";
-            LockedProfile.WeaponSidekickLeftLevel = 0;
+            LockedProfile.WeaponSidekickType = "";
+            LockedProfile.WeaponSidekickLevel = 0;
             RevertWorkingProfile(null);
             RefreshSampleDisplay();
         }
 
-        private bool SelectValidateSidekickLeft(object tag)
+        private bool SelectValidateSidekick(object tag)
         {
-            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
             int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
             if (buy > WorkingProfile.Money + sell)
                 return false;
@@ -1406,107 +1334,36 @@ namespace Galaxy
             return true;
         }
 
-        private void HighlightSidekickLeft(object tag)
+        private void HighlightSidekick(object tag)
         {
-            if (WorkingProfile.WeaponSidekickLeftType != (string)tag)
+            if (WorkingProfile.WeaponSidekickType != (string)tag)
             {
                 int level = 0;
-                if (LockedProfile.WeaponSidekickLeftType == (string)tag)
-                    level = LockedProfile.WeaponSidekickLeftLevel;
+                if (LockedProfile.WeaponSidekickType == (string)tag)
+                    level = LockedProfile.WeaponSidekickLevel;
 
-                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
                 int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
                 int remaining = WorkingProfile.Money + sell - buy;
 
                 WorkingProfile.Money += sell;
-                WorkingProfile.WeaponSidekickLeftType = (string)tag;
-                WorkingProfile.WeaponSidekickLeftLevel = level;
+                WorkingProfile.WeaponSidekickType = (string)tag;
+                WorkingProfile.WeaponSidekickLevel = level;
                 WorkingProfile.Money -= buy;
 
                 RefreshSampleDisplay();
             }
         }
 
-        private void HighlightSidekickLeftEmpty(object tag)
+        private void HighlightSidekickEmpty(object tag)
         {
-            if (LockedProfile.WeaponSidekickLeftType == "")
+            if (LockedProfile.WeaponSidekickType == "")
             {
-                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickLeftType, WorkingProfile.WeaponSidekickLeftLevel);
+                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
 
                 WorkingProfile.Money += sell;
-                WorkingProfile.WeaponSidekickLeftType = (string)tag;
-                WorkingProfile.WeaponSidekickLeftLevel = 0;
-
-                RefreshSampleDisplay();
-            }
-        }
-
-        private void SelectSidekickRight(object tag)
-        {
-            if (WorkingProfile.WeaponSidekickRightType == LockedProfile.WeaponSidekickRightType && WorkingProfile.WeaponSidekickRightLevel == LockedProfile.WeaponSidekickRightLevel)
-                return;
-
-            CAudio.PlaySound("MenuBuy");
-
-            LockWorkingProfile();
-            RefreshSampleDisplay();
-        }
-
-        private void SelectSidekickRightEmpty(object tag)
-        {
-            if (WorkingProfile.WeaponSidekickRightType == LockedProfile.WeaponSidekickRightType && WorkingProfile.WeaponSidekickRightLevel == LockedProfile.WeaponSidekickRightLevel)
-                return;
-
-            CAudio.PlaySound("MenuBuy");
-
-            int sell = CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickRightType, LockedProfile.WeaponSidekickRightLevel);
-            LockedProfile.Money += sell;
-            LockedProfile.WeaponSidekickRightType = "";
-            LockedProfile.WeaponSidekickRightLevel = 0;
-            RevertWorkingProfile(null);
-            RefreshSampleDisplay();
-        }
-
-        private bool SelectValidateSidekickRight(object tag)
-        {
-            int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-            int buy = CWeaponFactory.GetPriceForLevel((string)tag, 0);
-            if (buy > WorkingProfile.Money + sell)
-                return false;
-
-            return true;
-        }
-
-        private void HighlightSidekickRight(object tag)
-        {
-            if (WorkingProfile.WeaponSidekickRightType != (string)tag)
-            {
-                int level = 0;
-                if (LockedProfile.WeaponSidekickRightType == (string)tag)
-                    level = LockedProfile.WeaponSidekickRightLevel;
-
-                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-                int buy = CWeaponFactory.GetTotalPriceForLevel((string)tag, level);
-                int remaining = WorkingProfile.Money + sell - buy;
-
-                WorkingProfile.Money += sell;
-                WorkingProfile.WeaponSidekickRightType = (string)tag;
-                WorkingProfile.WeaponSidekickRightLevel = level;
-                WorkingProfile.Money -= buy;
-
-                RefreshSampleDisplay();
-            }
-        }
-
-        private void HighlightSidekickRightEmpty(object tag)
-        {
-            if (LockedProfile.WeaponSidekickRightType == "")
-            {
-                int sell = CWeaponFactory.GetTotalPriceForLevel(WorkingProfile.WeaponSidekickRightType, WorkingProfile.WeaponSidekickRightLevel);
-
-                WorkingProfile.Money += sell;
-                WorkingProfile.WeaponSidekickRightType = (string)tag;
-                WorkingProfile.WeaponSidekickRightLevel = 0;
+                WorkingProfile.WeaponSidekickType = (string)tag;
+                WorkingProfile.WeaponSidekickLevel = 0;
 
                 RefreshSampleDisplay();
             }
@@ -1729,8 +1586,7 @@ namespace Galaxy
             MenuUpgradeShip.Position = position;
             MenuPrimaryWeapon.Position = position;
             MenuSecondaryWeapon.Position = position;
-            MenuSidekickLeft.Position = position;
-            MenuSidekickRight.Position = position;
+            MenuSidekick.Position = position;
             MenuChassis.Position = position;
             MenuGenerator.Position = position;
             MenuShield.Position = position;

@@ -4083,6 +4083,23 @@ X = 160.0f,
 Y = -17376.0f,
 },
 });
+stage.AddElement(0, 
+new Galaxy.CStageElementHealthBar() {
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 328.0f,
+Y = -17776.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementDecoration() {
+TextureName = "LightBlue1",
+DepthOffset = 0.0f,
+Rotation = 90.0f,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 8.0f,
+Y = -17376.0f,
+},
+});
 
 return stage;
 }
