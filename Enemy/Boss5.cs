@@ -37,7 +37,7 @@ namespace Galaxy
             FiberManager.Update();
         }
 
-        public IEnumerable UpdateWeapons()
+        public IEnumerable UpdateWeapons2()
         {
             while (true)
             {
@@ -62,16 +62,10 @@ namespace Galaxy
             collision.Position = Physics.Position;
         }
 
-        private void RegularShot(Vector2 position, Vector2 direction)
-        {
-            float rotation = direction.ToAngle();
-            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8.0f, 2.0f);
-            CAudio.PlaySound("EnemyShoot");
-        }
-
         public void Activate()
         {
             FiberManager.Fork(this.UpdateMovement);
+            FiberManager.Fork(this.UpdateWeapons);
         }
 
         public IEnumerable UpdateMovement()
@@ -120,6 +114,52 @@ namespace Galaxy
                 yield return 60;
             }
         }
+
+        public IEnumerable UpdateWeapons()
+        {
+            yield return 180;
+
+            while (true)
+            {
+                yield return 60 + World.Random.Next() % 30;
+
+                switch (World.Random.Next() % 3)
+                {
+                    case 0:
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        break;
+
+                    case 1:
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        RegularShot(Physics.Position, Vector2.UnitY);
+                        yield return 4;
+                        break;
+
+                    case 2:
+                        RegularShot(Physics.Position, GetDirToShip());
+                        yield return 4;
+                        RegularShot(Physics.Position, GetDirToShip());
+                        yield return 4;
+                        break;
+                }
+            }
+        }
+
+        private void RegularShot(Vector2 position, Vector2 direction)
+        {
+            float rotation = direction.ToAngle();
+            CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8.0f, 2.0f);
+            CAudio.PlaySound("EnemyShoot");
+        }
+
     }
 
     public class CBoss5
@@ -143,7 +183,7 @@ namespace Galaxy
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
             Cover = CVisual.MakeSpriteUncached(world.Game, "Textures/Enemy/Boss5Cover");
             Cover.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * 2.0f;
-            HealthMax = 20.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 120.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             CoverRotation = MathHelper.PiOver2;
@@ -204,7 +244,7 @@ namespace Galaxy
         {
             // TODO: find a better way to sync these
             CollisionAABB collision = Collision as CollisionAABB;
-            collision.Position = Physics.Position + new Vector2(-130.0f, -120.0f);
+            collision.Position = Physics.Position + new Vector2(-85.0f, -85.0f);
         }
 
         public override void TakeDamage(float damage, CShip source)
@@ -237,15 +277,15 @@ namespace Galaxy
             yield return 60;
 
             Vector2[] cannons = {
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
+                new Vector2(-54.0f, +50.0f),
+                new Vector2(+49.0f, +50.0f),
+                new Vector2(-54.0f, -53.0f),
+                new Vector2(+49.0f, -53.0f),
             };
 
             while (true)
             {
-                yield return 30;
+                yield return 60;
 
                 switch (World.Random.Next() % 2)
                 {
@@ -257,10 +297,13 @@ namespace Galaxy
                         break;
 
                     case 1:
-                        RegularShot(Physics.Position + cannons[0], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[1], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[2], GetDirToShip());
-                        RegularShot(Physics.Position + cannons[3], GetDirToShip());
+                        Vector2 dir = GetDirToShip();
+                        for (int i = 0; i < 18; ++i)
+                        {
+                            RegularShot(Physics.Position + cannons[i % 4], GetDirToShip());
+                            yield return 3;
+                        }
+
                         break;
                 }
             }
@@ -271,12 +314,12 @@ namespace Galaxy
             yield return 120;
 
             Vector2[] cannons = {
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
-                new Vector2(+0.0f, +0.0f),
+                new Vector2(-54.0f, +50.0f),
+                new Vector2(-3.0f, +50.0f),
+                new Vector2(+49.0f, +50.0f),
+                new Vector2(-54.0f, -53.0f),
+                new Vector2(-3.0f, -53.0f),
+                new Vector2(+49.0f, -53.0f),
             };
 
             while (true)
