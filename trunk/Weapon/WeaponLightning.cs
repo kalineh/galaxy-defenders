@@ -38,4 +38,10 @@ namespace Galaxy
             owner.World.EntityAdd(lightning);
         }
     }
+
+    public class CWeaponLightningFocus
+        : CWeaponLightning
+    {
+        
+    }
 }

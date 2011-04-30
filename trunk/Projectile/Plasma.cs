@@ -24,11 +24,6 @@ namespace Galaxy
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
                 Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
-                Splash = CPlasmaSplash.GetCached(world);
-                Splash.Initialize(world);
-                Splash.SetRadius(48.0f);
-                Splash.Owner = owner;
-                Splash.Damage = Damage * 0.25f;
             }
             else
             {
@@ -36,7 +31,7 @@ namespace Galaxy
                 Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigPlasma", owner.GameControllerIndex);
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
-                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 6.0f);
+                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
                 Splash = CPlasmaSplash.GetCached(world);
                 Splash.Initialize(world);
                 Splash.SetRadius(128.0f);
@@ -54,11 +49,18 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            World.EntityAdd(Splash);
-            Splash.Physics.Position = Physics.Position;
-            Splash.Collision.Enabled = true;
+            if (Splash != null)
+            {
+                World.EntityAdd(Splash);
+                Splash.Physics.Position = Physics.Position;
+                Splash.Collision.Enabled = true;
+                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaSplash, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
+            }
+            else
+            {
+                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaHit, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
+            }
 
-            World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaHit, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
             base.OnDie();
         }
     }

@@ -45,6 +45,7 @@ namespace Galaxy
             CurrentCharge = 0;
             RandomReloadTime = 0.0f;
             RandomRotation = 0.0f;
+            RandomReloadTime = 0.0f;
             IsToggleWeapon = false;
             ToggleOverheatCooldown = 0;
         }
@@ -82,6 +83,7 @@ namespace Galaxy
             IsToggleWeapon = data.ToggleWeapon;
             ToggleEnergyDrain = data.ToggleEnergyDrain;
             RandomRotation = data.RandomRotation;
+            RandomReloadTime = data.RandomReloadTime;
         }
 
         public bool CanFire()

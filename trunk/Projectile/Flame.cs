@@ -13,6 +13,8 @@ namespace Galaxy
         public int Lifetime;
         public float Friction;
         public float SprayAngle;
+        public float StartRotation;
+        public float FireRotationSpeed;
     };
 
     public class CFlame
