@@ -20,10 +20,11 @@ namespace Galaxy
             CGeneratorPart generator = GeneratorDefinitions.GetPart(profile.GeneratorType);
             CShieldPart shield = ShieldDefinitions.GetPart(profile.ShieldType);
             CWeaponPart primary = WeaponDefinitions.GetPart(profile.WeaponPrimaryType, profile.WeaponPrimaryLevel);
+            CWeaponPart primary_focus = WeaponDefinitions.GetPart(profile.WeaponPrimaryType + "Focus", profile.WeaponPrimaryLevel);
             CWeaponPart secondary = WeaponDefinitions.GetPart(profile.WeaponSecondaryType, profile.WeaponSecondaryLevel);
             CWeaponPart sidekick = WeaponDefinitions.GetPart(profile.WeaponSidekickType, profile.WeaponSidekickLevel);
             CShip ship = new CShip();
-            ship.Initialize(world, index, pilot, chassis, generator, shield, primary, secondary, sidekick);
+            ship.Initialize(world, index, pilot, chassis, generator, shield, primary, primary_focus, secondary, sidekick);
             return ship;
         }
     }

@@ -25,6 +25,7 @@ namespace Galaxy
         public int CurrentCharge { get; set; }
         public object CustomData { get; set; }
         public float RandomReloadTime { get; set; }
+        public float RandomRotation { get; set; }
         public bool IsToggleWeapon { get; set; }
         public bool IsToggled { get; set; }
         public float ToggleEnergyDrain { get; set; }
@@ -43,6 +44,7 @@ namespace Galaxy
             AutoDischarge = 0;
             CurrentCharge = 0;
             RandomReloadTime = 0.0f;
+            RandomRotation = 0.0f;
             IsToggleWeapon = false;
             ToggleOverheatCooldown = 0;
         }
@@ -79,6 +81,7 @@ namespace Galaxy
             CustomData = data.CustomData;
             IsToggleWeapon = data.ToggleWeapon;
             ToggleEnergyDrain = data.ToggleEnergyDrain;
+            RandomRotation = data.RandomRotation;
         }
 
         public bool CanFire()
@@ -168,7 +171,7 @@ namespace Galaxy
             // TODO: replace with matrices
             Vector2 position = Owner.Physics.Position;
             float base_rotation = Owner.Physics.Rotation;
-            float rotation = base_rotation + Rotation;
+            float rotation = base_rotation + Rotation + Owner.World.Random.NextSignedFloat() * RandomRotation;
             Vector2 dir = Owner.Physics.GetDir();
             Vector2 fire_offset = dir * Offset.X + dir.Perp() * Offset.Y;
             Vector2 fire_position = position + fire_offset;

@@ -40,7 +40,17 @@ namespace Galaxy
     {
     }
 
+    public class CWeaponFrontLaserFocus
+        : CWeaponLaser
+    {
+    }
+
     public class CWeaponSpreadLaser
+        : CWeaponLaser
+    {
+    }
+
+    public class CWeaponSpreadLaserFocus
         : CWeaponLaser
     {
     }
