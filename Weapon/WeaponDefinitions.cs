@@ -128,6 +128,7 @@ namespace Galaxy
             public bool ToggleWeapon { get; set; }
             public float ToggleEnergyDrain { get; set; }
             public float RandomRotation { get; set; }
+            public float RandomReloadTime { get; set; }
             public bool ShowSidekick { get; set; }
         }
 
@@ -239,25 +240,25 @@ namespace Galaxy
             {
                 ReloadTime = 0.25f,
                 Speed = 12.0f,
-                Damage = 0.25f,
+                Damage = 0.20f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(rotation),
-                Energy = 0.2f,
+                Energy = 0.175f,
             };
         }
 
-        public static SWeaponData MakeBigPlasmaData(Vector2 offset, float rotation)
+        public static SWeaponData MakePlasmaFocusData(Vector2 offset, float rotation)
         {
             return new SWeaponData()
             {
                 ReloadTime = 0.25f,
                 Speed = 12.0f,
-                Damage = 1.0f,
+                Damage = 1.5f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(rotation),
-                Energy = 0.7f,
+                Energy = 1.0f,
             };
         }
 
@@ -272,7 +273,8 @@ namespace Galaxy
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.15f,
-                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.1f },
+                RandomReloadTime = 0.1f,
+                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.1f, StartRotation = MathHelper.ToRadians(-90.0f), }
             };
         }
 
@@ -287,9 +289,26 @@ namespace Galaxy
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.25f,
-                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.05f },
+                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.05f, StartRotation = MathHelper.ToRadians(-90.0f), },
             };
         }
+
+        public static SWeaponData MakeFlameFocusData(float reload, float rotation)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 15.0f,
+                Damage = 0.35f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * -2.0f,
+                Rotation = 0.0f,
+                Energy = 0.15f,
+                //RandomReloadTime = 0.1f,
+                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.0f, StartRotation = MathHelper.ToRadians(rotation), FireRotationSpeed = 0.070f },
+            };
+        }
+
 
         public static SWeaponData MakeVulcanData(float reload, float spray)
         {
@@ -332,6 +351,22 @@ namespace Galaxy
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
                 Energy = 0.20f,
+                CustomData = new LightningCustomData() { Bounces = bounces },
+            };
+        }
+
+        public static SWeaponData MakeLightningFocusData(float offset, int bounces, float reload, float angle)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = reload,
+                Speed = 16.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * offset,
+                Rotation = 0.0f,
+                Energy = 0.225f,
+                RandomRotation = MathHelper.ToRadians(angle),
                 CustomData = new LightningCustomData() { Bounces = bounces },
             };
         }
@@ -699,36 +734,104 @@ namespace Galaxy
                         new List<SWeaponData>() {
                             MakePlasmaData(new Vector2(-1.0f, -10.0f), -2.0f),
                             MakePlasmaData(new Vector2(-0.0f, +0.0f), +0.0f),
-                            MakePlasmaData(new Vector2(-1.0f, +10.0f), +2.0f),
+                            MakePlasmaData(new Vector2(+1.0f, +10.0f), +2.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
                             MakePlasmaData(new Vector2(-2.0f, -13.0f), -2.0f),
-                            MakeBigPlasmaData(new Vector2(-5.0f, +0.0f), +0.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +0.0f), +0.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +0.0f), +0.0f),
                             MakePlasmaData(new Vector2(-2.0f, +13.0f), +2.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakePlasmaData(new Vector2(-5.0f, -19.0f), -2.0f),
-                            MakeBigPlasmaData(new Vector2(-3.0f, -10.0f), -0.0f),
-                            MakeBigPlasmaData(new Vector2(-3.0f, +10.0f), +0.0f),
-                            MakePlasmaData(new Vector2(-5.0f, +19.0f), +2.0f),
+                            MakePlasmaData(new Vector2(-5.0f, -19.0f), -4.0f),
+                            MakePlasmaData(new Vector2(-3.0f, -10.0f), -2.0f),
+                            MakePlasmaData(new Vector2(+0.0f, +0.0f), -0.0f),
+                            MakePlasmaData(new Vector2(-3.0f, +10.0f), +2.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +19.0f), +4.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeBigPlasmaData(new Vector2(-3.0f, -22.0f), -1.0f),
-                            MakeBigPlasmaData(new Vector2(-0.0f, -10.0f), -0.0f),
-                            MakeBigPlasmaData(new Vector2(-0.0f, +10.0f), +0.0f),
-                            MakeBigPlasmaData(new Vector2(-3.0f, +22.0f), +1.0f),
+                            MakePlasmaData(new Vector2(-8.0f, -19.0f), -3.5f),
+                            MakePlasmaData(new Vector2(-5.0f, -10.0f), -2.0f),
+                            MakePlasmaData(new Vector2(+3.0f, -5.0f), -1.0f),
+                            MakePlasmaData(new Vector2(+0.0f, +0.0f), -0.0f),
+                            MakePlasmaData(new Vector2(+3.0f, +5.0f), +1.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +10.0f), +2.0f),
+                            MakePlasmaData(new Vector2(-8.0f, +19.0f), +3.5f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeBigPlasmaData(new Vector2(-6.0f, -32.0f), -2.0f),
-                            MakeBigPlasmaData(new Vector2(-2.0f, -22.0f), -1.0f),
-                            MakeBigPlasmaData(new Vector2(-0.0f, -10.0f), +0.0f),
-                            MakeBigPlasmaData(new Vector2(-0.0f, +10.0f), +0.0f),
-                            MakeBigPlasmaData(new Vector2(-2.0f, +22.0f), +1.0f),
-                            MakeBigPlasmaData(new Vector2(-6.0f, +32.0f), +2.0f),
+                            MakePlasmaData(new Vector2(-8.0f, -19.0f), -3.5f),
+                            MakePlasmaData(new Vector2(-5.0f, -10.0f), -2.5f),
+                            MakePlasmaData(new Vector2(+3.0f, -5.0f), -1.5f),
+                            MakePlasmaData(new Vector2(+0.0f, -0.0f), -0.5f),
+                            MakePlasmaData(new Vector2(+0.0f, +0.0f), +0.5f),
+                            MakePlasmaData(new Vector2(+3.0f, +5.0f), +1.0f),
+                            MakePlasmaData(new Vector2(-5.0f, +10.0f), +3.0f),
+                            MakePlasmaData(new Vector2(-8.0f, +19.0f), +5.0f),
+                        },
+                    },
+                }
+            },
+
+            { "PlasmaFocus", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootPlasma",
+                    DisplayName = "Plasma\nShot",
+                    BasePrice = 1250,
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), +0.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(+0.0f, -10.0f), -1.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +10.0f), +1.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(-1.0f, -10.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(-0.0f, +0.0f), +0.0f),
+                            MakePlasmaFocusData(new Vector2(+1.0f, +10.0f), +2.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(-2.0f, -13.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), +0.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), +0.0f),
+                            MakePlasmaFocusData(new Vector2(-2.0f, +13.0f), +2.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(-5.0f, -19.0f), -4.0f),
+                            MakePlasmaFocusData(new Vector2(-3.0f, -10.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), -0.0f),
+                            MakePlasmaFocusData(new Vector2(-3.0f, +10.0f), +2.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +19.0f), +4.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -3.5f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -1.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), -0.0f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +1.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +2.0f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +3.5f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -3.5f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -2.5f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -1.5f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, -0.0f), -0.5f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), +0.5f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +1.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +3.0f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +5.0f),
                         },
                     },
                 }
@@ -786,6 +889,54 @@ namespace Galaxy
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, -4.0f),
                             MakeBigFlameData(0.10f, 0.0f),
+                        },
+                    },
+                }
+            },
+
+            { "FlameFocus",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 800,
+                    DisplayName = "Flame\nThrower",
+                    Sound = "WeaponShootFlame",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.05f, 0.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.04f, 0.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.03f, 0.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.04f, 0.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.03f, -90.0f),
+                            MakeFlameFocusData(0.03f, +90.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.02f, -90.0f),
+                            MakeFlameFocusData(0.02f, +90.0f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.01f, -90.0f),
+                            MakeFlameFocusData(0.01f, +90.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeFlameFocusData(0.01f, -120.0f),
+                            MakeFlameFocusData(0.01f, 0.0f),
+                            MakeFlameFocusData(0.01f, +120.0f),
                         },
                     },
                 }
@@ -947,6 +1098,61 @@ namespace Galaxy
                             MakeLightningData(+8.0f, 4),
                             MakeLightningData(+14.0f, 4),
                             MakeLightningData(+20.0f, 4),
+                        },
+                    },
+                }
+            },
+
+            { "LightningFocus",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 800,
+                    DisplayName = "Lightning\nGun",
+                    Sound = "WeaponShootLaser", // TODO: SFX
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.10f, 20.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.10f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.10f, 40.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 60.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 60.0f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 60.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.09f, 80.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 60.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 80.0f),
                         },
                     },
                 }

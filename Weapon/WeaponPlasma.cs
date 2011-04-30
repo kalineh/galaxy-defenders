@@ -22,4 +22,10 @@ namespace Galaxy
             owner.World.EntityAdd(plasma);
         }
     };
+
+    public class CWeaponPlasmaFocus
+        : CWeaponPlasma
+    {
+        
+    }
 }

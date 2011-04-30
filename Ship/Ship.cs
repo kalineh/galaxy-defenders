@@ -280,6 +280,7 @@ namespace Galaxy
                 if (CInput.IsRawKeyPressed(Keys.B))
                 {
                     WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
+                    WeaponFocus = DowngradeWeapon(FocusWeapon);
                     SingleShotEnergyUsage = CalculateSingleShotEnergy();
                 }
                 if (CInput.IsRawKeyPressed(Keys.V))
@@ -293,6 +294,7 @@ namespace Galaxy
                 if (CInput.IsRawKeyPressed(Keys.B))
                 {
                     WeaponPrimary = UpgradeWeapon(PrimaryWeapon);
+                    WeaponFocus = UpgradeWeapon(FocusWeapon);
                     SingleShotEnergyUsage = CalculateSingleShotEnergy();
                 }
                 if (CInput.IsRawKeyPressed(Keys.V))
@@ -317,6 +319,11 @@ namespace Galaxy
             {
                 RapidFireCountdown = 12;
                 FocusFireCountup += 1;
+
+                if (IsFocusMode())
+                {
+                    World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position + Vector2.UnitY * -38.0f, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
+                }
 
                 FirePrimarySecondaryWeapons();
             }
