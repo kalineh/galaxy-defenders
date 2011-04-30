@@ -388,6 +388,23 @@ namespace Galaxy
             };
         }
 
+        public static SWeaponData MakeBeamFocusData(float damage, float drain, float radius)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.0f,
+                Speed = 0.0f,
+                Damage = damage,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * 1.0f,
+                Rotation = 0.0f,
+                Energy = 0.0f,
+                CustomData = new BeamFocusCustomData() { Radius = radius, },
+                ToggleWeapon = true,
+                ToggleEnergyDrain = drain,
+            };
+        }
+
         public static SWeaponData MakeMissileData(Vector2 offset)
         {
             return new SWeaponData()
@@ -1172,31 +1189,75 @@ namespace Galaxy
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeBeamData(0.02f, 0.03f, 2.0f),
+                            MakeBeamData(0.02f, 0.025f, 2.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeBeamData(0.03f, 0.05f, 3.0f),
+                            MakeBeamData(0.03f, 0.030f, 3.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeBeamData(0.05f, 0.07f, 4.0f),
+                            MakeBeamData(0.04f, 0.035f, 4.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeBeamData(0.07f, 0.09f, 5.0f),
+                            MakeBeamData(0.05f, 0.040f, 5.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeBeamData(0.09f, 0.11f, 6.0f),
+                            MakeBeamData(0.06f, 0.045f, 6.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeBeamData(0.11f, 0.14f, 7.0f),
+                            MakeBeamData(0.07f, 0.050f, 7.0f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeBeamData(0.15f, 0.18f, 8.0f),
+                            MakeBeamData(0.08f, 0.055f, 8.0f),
+                        },
+                    },
+                }
+            },
+
+            { "BeamFocus",
+                new SWeaponDefinition()
+                {
+                    BasePrice = 2500,
+                    DisplayName = "Beam\nWeapon",
+                    // TODO: too long, doesnt stop quickly
+                    //Sound = "WeaponShootBeam",
+                    Data = new List<List<SWeaponData>>() {
+                        // level 1
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.05f, 0.05f, 170.0f),
+                        },
+                        // level 2
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.10f, 0.07f, 200.0f),
+                        },
+                        // level 3
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.15f, 0.09f, 230.0f),
+                        },
+                        // level 4
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.20f, 0.11f, 260.0f),
+                        },
+                        // level 5
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.25f, 0.13f, 290.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.30f, 0.15f, 320.0f),
+                        },
+                        // level 7
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.35f, 0.18f, 350.0f),
+                        },
+                        // level 8
+                        new List<SWeaponData>() {
+                            MakeBeamFocusData(0.40f, 0.20f, 380.0f),
                         },
                     },
                 }

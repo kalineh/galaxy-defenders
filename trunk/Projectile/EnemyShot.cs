@@ -72,6 +72,11 @@ namespace Galaxy
             Die();
         }
 
+        public void OnCollide(CBeamFocus beam)
+        {
+            Die();
+        }
+
         protected override void OnDie()
         {
             World.ParticleEffects.Spawn(EParticleType.EnemyShotHit, Physics.Position);

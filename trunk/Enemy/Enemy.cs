@@ -207,6 +207,12 @@ namespace Galaxy
             TakeDamage(beam.Damage, beam.Owner);
         }
 
+        public void OnCollide(CBeamFocus beam)
+        {
+            World.Stats.ShotDamageDealt += beam.Damage;
+            TakeDamage(beam.Damage, beam.Owner);
+        }
+
         public void OnCollide(CMiniShot minishot)
         {
             World.Stats.ShotDamageDealt += minishot.Damage;

@@ -144,6 +144,11 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CBeamFocus beam)
+        {
+            Hit();
+        }
+
         public void OnCollide(CLightning lightning)
         {
             lightning.Die();
