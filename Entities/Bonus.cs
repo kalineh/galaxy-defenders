@@ -99,6 +99,7 @@ namespace Galaxy
                 GotoForce += 2.0f;
                 float power = Math.Max(GotoForce, MaxLength - length);
                 float power_multiplier = 0.0125f;
+                Physics.Position += dir * power * 0.04f;
                 Physics.Velocity += dir * power * power_multiplier;
             }
         }
