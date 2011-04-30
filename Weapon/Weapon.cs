@@ -131,7 +131,7 @@ namespace Galaxy
         {
             if (IsToggleWeapon)
             {
-                ToggleOverheatCooldown = 90;    
+                ToggleOverheatCooldown = 60;    
                 CAudio.PlaySound("WeaponOverheat", 1.0f);
             }
         }

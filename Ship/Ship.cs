@@ -317,7 +317,7 @@ namespace Galaxy
 
             if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.C))
             {
-                RapidFireCountdown = 12;
+                RapidFireCountdown = 15;
                 FocusFireCountup += 1;
 
                 if (IsFocusMode())
