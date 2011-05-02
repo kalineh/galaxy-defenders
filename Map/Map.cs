@@ -428,6 +428,7 @@ namespace Galaxy
                 "ChargeShot",
                 "Blade",
                 "MissileVolley",
+                "MissileLauncher",
             };
         }
 
@@ -449,15 +450,18 @@ namespace Galaxy
         public static List<string> AllGeneratorParts()
         {
             return new List<string>() {
-                "Standard Mk 1",
-                "Standard Mk 2",
-                "Standard Mk 3",
-                "Impulse Mk 1",
-                "Impulse Mk 2",
-                "Impulse Mk 3",
-                "Capacitor Mk 1",
-                "Capacitor Mk 2",
-                "Capacitor Mk 3",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
                 "Kinetic",
                 "Magnetic",
                 "Fusion",
@@ -521,11 +525,7 @@ namespace Galaxy
                     "Crusher",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 1",    
-                    "Impulse Mk 1",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Light Shield",    
@@ -551,13 +551,7 @@ namespace Galaxy
                     "Crusher",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 1",    
-                    "Standard Mk 2",    
-                    "Impulse Mk 1",    
-                    "Capacitor Mk 1",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Light Shield",    
@@ -582,14 +576,7 @@ namespace Galaxy
                     "Crusher",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 1",    
-                    "Standard Mk 3",    
-                    "Impulse Mk 2",    
-                    "Kinetic",    
-                    "Capacitor Mk 2",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Light Shield",    
@@ -614,14 +601,7 @@ namespace Galaxy
                     "Crusher",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 1",    
-                    "Standard Mk 2",    
-                    "Impulse Mk 1",    
-                    "Impulse Mk 3",    
-                    "Capacitor Mk 3",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Light Shield",    
@@ -647,14 +627,7 @@ namespace Galaxy
                     "Eagle",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 2",    
-                    "Impulse Mk 3",    
-                    "Capacitor Mk 1",    
-                    "Capacitor Mk 2",    
-                    "Magnetic",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Light Shield",    
@@ -682,14 +655,7 @@ namespace Galaxy
                     "Crusher",    
                     "Interceptor",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 2",    
-                    "Standard Mk 3",    
-                    "Impulse Mk 1",    
-                    "Impulse Mk 2",    
-                    "Capacitor Mk 4",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Electric Shield",    
@@ -716,14 +682,7 @@ namespace Galaxy
                     "Interceptor",    
                     "Phoenix",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 2",    
-                    "Impulse Mk 4",    
-                    "Capacitor Mk 2",    
-                    "Kinetic",    
-                    "Magnetic",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Micro Shield",    
@@ -749,13 +708,7 @@ namespace Galaxy
                     "Eagle",    
                     "Phoenix",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 2",    
-                    "Standard Mk 3",    
-                    "Impulse Mk 4",    
-                    "Fusion",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Advanced Shield",    
@@ -780,14 +733,7 @@ namespace Galaxy
                     "Interceptor",    
                     "Lightning",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 3",    
-                    "Standard Mk 4",    
-                    "Capacitor Mk 3",    
-                    "Capacitor Mk 4",    
-                    "Magnetic",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Advanced Shield",    
@@ -813,13 +759,7 @@ namespace Galaxy
                     "Lightning",    
                     "Dragon",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 3",    
-                    "Impulse Mk 3",    
-                    "Capacitor Mk 3",    
-                    "Fusion",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Micro Shield",    
@@ -844,13 +784,7 @@ namespace Galaxy
                     "Phoenix",    
                     "Demon",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 4",    
-                    "Impulse Mk 4",    
-                    "Capacitor Mk 3",    
-                    "Magnetic",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Advanced Shield",    
@@ -875,12 +809,7 @@ namespace Galaxy
                     "Ace",    
                     "Dragon",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 4",    
-                    "Impulse Mk 4",    
-                    "Capacitor Mk 4",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Actuator Shield",    
@@ -902,15 +831,7 @@ namespace Galaxy
                     "Dragon",    
                     "Ace",    
                 },
-                AvailableGeneratorParts = new List<string>()
-                {
-                    "Standard Mk 4",    
-                    "Impulse Mk 4",    
-                    "Capacitor Mk 4",    
-                    "Kinetic",    
-                    "Magnetic",    
-                    "Fusion",    
-                },
+                AvailableGeneratorParts = AllGeneratorParts(),
                 AvailableShieldParts = new List<string>()
                 {
                     "Advanced Shield",    

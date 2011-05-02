@@ -53,7 +53,7 @@ namespace Galaxy
                 Score = 0,
                 Money = 0,
                 ChassisType = "Rookie",
-                GeneratorType = "Basic Mk 1",
+                GeneratorType = "1",
                 ShieldType = "Light Shield",
                 WeaponPrimaryType = "FrontLaser",
                 WeaponPrimaryLevel = 2,
