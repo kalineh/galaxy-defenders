@@ -33,7 +33,7 @@ namespace Galaxy
     {
         public static CChassisPart GetPart(string current)
         {
-            return Items.ContainsKey(current) ? Items[current] : Items["Rookie"];
+            return Items[current];
         }
 
         public static Dictionary<string, CChassisPart> Items = new Dictionary<string, CChassisPart>()
@@ -162,7 +162,7 @@ namespace Galaxy
     {
         public static CGeneratorPart GetPart(string current)
         {
-            return Items.ContainsKey(current) ? Items[current] : Items["1"];
+            return Items[current];
         }
 
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
@@ -301,7 +301,7 @@ namespace Galaxy
     {
         public static CShieldPart GetPart(string current)
         {
-            return Items.ContainsKey(current) ? Items[current] : Items["Light Shield"];
+            return Items[current];
         }
 
         public static Dictionary<string, CShieldPart> Items = new Dictionary<string, CShieldPart>()

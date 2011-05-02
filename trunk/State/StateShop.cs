@@ -621,8 +621,8 @@ namespace Galaxy
                 CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel) +
                 CWeaponFactory.GetTotalPriceForLevel(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel) +
                 ChassisDefinitions.GetPart(LockedProfile.ChassisType).Price +
-                ChassisDefinitions.GetPart(LockedProfile.GeneratorType).Price +
-                ChassisDefinitions.GetPart(LockedProfile.ShieldType).Price;
+                GeneratorDefinitions.GetPart(LockedProfile.GeneratorType).Price +
+                ShieldDefinitions.GetPart(LockedProfile.ShieldType).Price;
 
             int skill_value = 
                 (LockedProfile.AbilityUnlocked0 ? CAbility.AbilityPrice : 0) +
@@ -1413,8 +1413,10 @@ namespace Galaxy
 
             CAudio.PlaySound("MenuBuy");
 
+            int before = GetShoppingPilotTotalUsedMoney();
             LockWorkingProfile();
             RefreshSampleDisplay();
+            int after = GetShoppingPilotTotalUsedMoney();
         }
 
         private bool SelectValidateGenerator(object tag)
