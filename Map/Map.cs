@@ -429,6 +429,7 @@ namespace Galaxy
                 "Blade",
                 "MissileVolley",
                 "MissileLauncher",
+                "LaserShot",
             };
         }
 

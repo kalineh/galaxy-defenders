@@ -515,36 +515,36 @@ namespace Galaxy
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeFrontLaserData(-12.0f),
-                            MakeFrontLaserData(-4.0f),
-                            MakeFrontLaserData(+4.0f),
-                            MakeFrontLaserData(+12.0f),
+                            MakeFrontLaserData(-15.0f),
+                            MakeFrontLaserData(-5.0f),
+                            MakeFrontLaserData(+5.0f),
+                            MakeFrontLaserData(+15.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeFrontLaserData(-18.0f),
+                            MakeFrontLaserData(-20.0f),
                             MakeFrontLaserData(-10.0f),
                             MakeBigFrontLaserData(+0.0f),
                             MakeFrontLaserData(+10.0f),
-                            MakeFrontLaserData(+18.0f),
+                            MakeFrontLaserData(+20.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeFrontLaserData(-20.0f),
-                            MakeFrontLaserData(-13.0f),
+                            MakeFrontLaserData(-25.0f),
+                            MakeFrontLaserData(-15.0f),
                             MakeBigFrontLaserData(-5.0f),
                             MakeBigFrontLaserData(+5.0f),
-                            MakeFrontLaserData(+13.0f),
-                            MakeFrontLaserData(+20.0f),
+                            MakeFrontLaserData(+15.0f),
+                            MakeFrontLaserData(+25.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeFrontLaserData(-23.0f),
+                            MakeFrontLaserData(-25.0f),
                             MakeBigFrontLaserData(-15.0f),
                             MakeBigFrontLaserData(-5.0f),
                             MakeBigFrontLaserData(+5.0f),
                             MakeBigFrontLaserData(+15.0f),
-                            MakeFrontLaserData(+23.0f),
+                            MakeFrontLaserData(+25.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
@@ -678,14 +678,14 @@ namespace Galaxy
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeBigSpreadLaserData(-12.0f),
-                            MakeBigSpreadLaserData(-9.0f),
-                            MakeBigSpreadLaserData(-6.0f),
-                            MakeBigSpreadLaserData(-2.0f),
-                            MakeBigSpreadLaserData(+2.0f),
-                            MakeBigSpreadLaserData(+6.0f),
-                            MakeBigSpreadLaserData(+9.0f),
-                            MakeBigSpreadLaserData(+12.0f),
+                            MakeBigSpreadLaserData(-11.0f),
+                            MakeBigSpreadLaserData(-7.0f),
+                            MakeBigSpreadLaserData(-4.0f),
+                            MakeBigSpreadLaserData(-1.0f),
+                            MakeBigSpreadLaserData(+1.0f),
+                            MakeBigSpreadLaserData(+4.0f),
+                            MakeBigSpreadLaserData(+7.0f),
+                            MakeBigSpreadLaserData(+11.0f),
                         },
                     },
                 }
@@ -1486,7 +1486,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootLaser",
                     DisplayName = "Charge\nShot",
-                    BasePrice = 5000,
+                    BasePrice = 12500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             new SWeaponData() {
@@ -1507,7 +1507,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMiniShot",
                     DisplayName = "Blade",
-                    BasePrice = 7500,
+                    BasePrice = 10000,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             new SWeaponData() {
@@ -1550,10 +1550,23 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
                     DisplayName = "MissileLauncher",
-                    BasePrice = 5000,
+                    BasePrice = 6500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             MakeMissileLauncherData(new Vector2(-8.0f, -0.0f)),
+                        },
+                    },
+                }
+            },
+
+            { "LaserShot", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootLaser",
+                    DisplayName = "LaserShot",
+                    BasePrice = 3000,
+                    Data = new List<List<SWeaponData>>() {
+                        new List<SWeaponData>() {
+                            MakeFrontLaserData(0.0f),
                         },
                     },
                 }
