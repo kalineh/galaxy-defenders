@@ -291,8 +291,8 @@ namespace Galaxy
                 CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSecondaryType, pilot.WeaponSecondaryLevel) +
                 CWeaponFactory.GetTotalPriceForLevel(pilot.WeaponSidekickType, pilot.WeaponSidekickLevel) +
                 ChassisDefinitions.GetPart(pilot.ChassisType).Price +
-                ChassisDefinitions.GetPart(pilot.GeneratorType).Price +
-                ChassisDefinitions.GetPart(pilot.ShieldType).Price;
+                GeneratorDefinitions.GetPart(pilot.GeneratorType).Price +
+                ShieldDefinitions.GetPart(pilot.ShieldType).Price;
 
             int skill_value = 
                 (pilot.AbilityUnlocked0 ? CAbility.AbilityPrice : 0) +
