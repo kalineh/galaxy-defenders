@@ -198,7 +198,7 @@ namespace Galaxy
                 if (!SpriteBatchInUse)
                 {
                     float depth = Dot.Depth;
-                    SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                    SpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
                     SpriteBatchInUse = true;
                     for (int i = 0; i < Alive.Count; ++i)
                     {

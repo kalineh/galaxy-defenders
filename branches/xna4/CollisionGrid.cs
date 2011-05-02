@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace Galaxy
 {
-    using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
+    using XnaColor = Microsoft.Xna.Framework.Color;
 
     public class CCollisionGrid
     {

@@ -129,7 +129,7 @@ technique SpriteBatch
 {
 	pass
 	{
-		VertexShader = compile vs_1_1 SpriteVertexShader();
-		PixelShader  = compile ps_1_1 SpritePixelShader();
+		VertexShader = compile vs_2_0 SpriteVertexShader();
+		PixelShader  = compile ps_2_0 SpritePixelShader();
 	}
 }

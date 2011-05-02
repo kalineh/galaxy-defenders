@@ -115,7 +115,7 @@ namespace Galaxy
 
         public override void Draw(CGalaxy game)
         {
-            game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Transform);
+            game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Transform);
             game.DefaultSpriteBatch.DrawString(game.DebugFont, Text, Position, Color.White, 0.0f, Vector2.Zero, 0.5f * Scale, SpriteEffects.None, 0.0f);
             game.DefaultSpriteBatch.End();
         }

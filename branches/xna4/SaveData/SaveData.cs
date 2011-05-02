@@ -108,9 +108,9 @@ namespace Galaxy
         static CSaveData()
         {
             DefaultSaveData = new SSaveData() {
-                CurrentProfile = "galaxy",
+                CurrentProfile = "Default",
                 Profiles = new List<SProfile>() {
-                    CreateDefaultProfile("galaxy"),
+                    CreateDefaultProfile("Default"),
                 }
             };
             SaveData = DefaultSaveData;
@@ -312,66 +312,54 @@ namespace Galaxy
 
         private static void ImportImpl(out SSaveData data, string filename)
         {
-#if XBOX360
             if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
             {
                 data = DefaultSaveData;
                 return;
             }
 
-            StorageContainer container = GuideUtil.StorageDevice.OpenContainer("galaxy");
-            string fullpath = Path.Combine(container.Path, "profiles.xml");
-#else
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
-#endif
-
             AccessMutex.WaitOne();
 
-            FileStream stream = null;
-            try
+            GuideUtil.StorageDeviceOpenResult = GuideUtil.StorageDevice.BeginOpenContainer("galaxy", null, null);
+            GuideUtil.StorageDeviceOpenResult.AsyncWaitHandle.WaitOne();
+            using (StorageContainer container = GuideUtil.StorageDevice.EndOpenContainer(GuideUtil.StorageDeviceOpenResult))
             {
-                stream = File.Open(fullpath, FileMode.Open, FileAccess.Read);
-                XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
-                data = (SSaveData)serializer.Deserialize(stream);
-                
-                // TODO: cannot put this in a function because the out param must be assigned to
-                // TODO: change SSaveData to a class
-                // ---
-                for (int index = 0; index < data.Profiles.Count; ++index)
+                try
                 {
-                    SProfile profile = data.Profiles[index];
-
-                    if (profile.Version < SProfile.CurrentVersion)
+                    using (Stream stream = container.OpenFile(filename, FileMode.Open, FileAccess.Read))
                     {
-                        // TODO: version migration
-                        string name = data.Profiles[index].Name;
-                        data.Profiles[index] = CreateDefaultProfile(name);
+                        XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
+                        data = (SSaveData)serializer.Deserialize(stream);
+
+                        // TODO: cannot put this in a function because the out param must be assigned to
+                        // TODO: change SSaveData to a class
+                        // ---
+                        for (int index = 0; index < data.Profiles.Count; ++index)
+                        {
+                            SProfile profile = data.Profiles[index];
+
+                            if (profile.Version < SProfile.CurrentVersion)
+                            {
+                                // TODO: version migration
+                                string name = data.Profiles[index].Name;
+                                data.Profiles[index] = CreateDefaultProfile(name);
+                            }
+
+                            // NOTE: avoid old save data having empty scores
+                            data.Profiles[index].Game[0].StageScores = data.Profiles[index].Game[0].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                            data.Profiles[index].Game[0].StageMedals = data.Profiles[index].Game[0].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                            data.Profiles[index].Game[1].StageScores = data.Profiles[index].Game[1].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                            data.Profiles[index].Game[1].StageMedals = data.Profiles[index].Game[1].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                        }
+                        // ---
                     }
-
-                    // NOTE: avoid old save data having empty scores
-                    data.Profiles[index].Game[0].StageScores = data.Profiles[index].Game[0].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                    data.Profiles[index].Game[0].StageMedals = data.Profiles[index].Game[0].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                    data.Profiles[index].Game[1].StageScores = data.Profiles[index].Game[1].StageScores ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                    data.Profiles[index].Game[1].StageMedals = data.Profiles[index].Game[1].StageMedals ?? new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 }
-                // ---
-
+                catch (Exception exception)
+                {
+                    data = DefaultSaveData;
+                    Console.WriteLine(exception.ToString());
+                }
             }
-            catch (Exception exception)
-            {
-                data = DefaultSaveData;
-                Console.WriteLine(exception.ToString());
-            }
-            finally
-            {
-                if (stream != null)
-                    stream.Close();   
-
-#if XBOX360
-                container.Dispose();
-#endif
-            }
-
             AccessMutex.ReleaseMutex();
         }
 
@@ -385,33 +373,25 @@ namespace Galaxy
 
         private static void ExportImpl(SSaveData data, string filename)
         {
-#if XBOX360
             if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
                 return;
 
-            StorageContainer container = GuideUtil.StorageDevice.OpenContainer("galaxy");
-            string fullpath = Path.Combine(container.Path, "profiles.xml");
-#else
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
-#endif
-
-            FileStream stream = File.Open(fullpath, FileMode.Create, FileAccess.Write);
-            try
+            GuideUtil.StorageDeviceOpenResult = GuideUtil.StorageDevice.BeginOpenContainer("galaxy", null, null);
+            GuideUtil.StorageDeviceOpenResult.AsyncWaitHandle.WaitOne();
+            using (StorageContainer container = GuideUtil.StorageDevice.EndOpenContainer(GuideUtil.StorageDeviceOpenResult))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
-                serializer.Serialize(stream, data);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.ToString());
-            }
-            finally
-            {
-                stream.Close();
-
-#if XBOX360
-                container.Dispose();
-#endif
+                using (Stream stream = container.OpenFile(filename, FileMode.Create, FileAccess.Write))
+                {
+                    try
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
+                        serializer.Serialize(stream, data);
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.ToString());
+                    }
+                }
             }
         }
     }

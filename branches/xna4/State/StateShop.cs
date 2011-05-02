@@ -491,15 +491,15 @@ namespace Galaxy
             EmptyWorld.DrawBackground(EmptyWorld.GameCamera);
             EmptyWorld.DrawEntities(EmptyWorld.GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, EmptyWorld.GameCamera.WorldMatrix);
             SampleShip.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, EmptyWorld.GameCamera.WorldMatrix);
             EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
 
             float panel_x = ShoppingPlayer == GameControllerIndex.One ? 928.0f : 480.0f;
             SpriteEffects panel_effects = ShoppingPlayer == GameControllerIndex.One ? SpriteEffects.None : SpriteEffects.FlipHorizontally;

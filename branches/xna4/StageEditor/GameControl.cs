@@ -95,8 +95,6 @@ namespace StageEditor
                 GameTime game_time = new GameTime(
                     TimeSpan.FromSeconds(FrameTimeInSeconds * Game.GameFrame),
                     TimeSpan.FromSeconds(FrameTimeInSeconds),
-                    TimeSpan.FromSeconds(FrameTimeInSeconds * Game.GameFrame),
-                    TimeSpan.FromSeconds(FrameTimeInSeconds),
                     false
                 );
 
@@ -104,7 +102,7 @@ namespace StageEditor
                 Game.Update(game_time);
                 Game.Draw(game_time);
                 Galaxy.CDebugRender.Render(Game);
-                Game.GraphicsDevice.Present((IntPtr)CachedHandle);
+                Game.GraphicsDevice.Present();
                 DateTime post = DateTime.Now;
                 TimeSpan diff = post - pre;
                 TimeSpan frame = TimeSpan.FromSeconds(FrameTimeInSeconds);

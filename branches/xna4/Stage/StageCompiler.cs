@@ -40,7 +40,7 @@ namespace Galaxy
                 {
                     Console.WriteLine(String.Format("code:{0}: {1}", error.Line, error.ErrorText));
                 }
-                throw new CompilationFailedException();
+                throw new Exception(); // SJS FIXME CompilationFailedException();
             }
 
             return results.CompiledAssembly;
