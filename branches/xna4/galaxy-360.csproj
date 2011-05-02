@@ -1,0 +1,376 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>{1E8771D1-D85D-4BF9-911E-51471124EB70}</ProjectGuid>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>galaxy</RootNamespace>
+    <AssemblyName>galaxy</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
+    <XnaPlatform>Xbox 360</XnaPlatform>
+    <XnaCrossPlatformGroupID>85badecf-3032-4508-8713-f13a2766521b</XnaCrossPlatformGroupID>
+    <ApplicationIcon>Galaxy.ico</ApplicationIcon>
+    <Thumbnail>GalaxyThumbnail.png</Thumbnail>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ManifestCertificateThumbprint>E75D717ABD4C4CD9BC057EC4D602A93916DA964D</ManifestCertificateThumbprint>
+    <ManifestKeyFile>galaxy_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>true</SignManifests>
+    <PublishUrl>E:\Dev\galaxy-publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
+    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaCompressContent>true</XnaCompressContent>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CollisionGrid.cs" />
+    <None Include="Editor\Editors\DecorationTypeSelector.cs" />
+    <None Include="Editor\Editors\TextureSelector.cs" />
+    <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
+    <None Include="Editor\Entities\EditorEntityMusicChanger.cs" />
+    <None Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
+    <None Include="Editor\Entities\EditorEntityHealthBar.cs" />
+    <Compile Include="Effects\AnimationEffects.cs" />
+    <Compile Include="Effects\NewParticleEffect.cs" />
+    <Compile Include="Effects\ParticleEffectDefinitions.cs" />
+    <Compile Include="Enemy\BigBall.cs" />
+    <Compile Include="Enemy\Boss1.cs" />
+    <Compile Include="Enemy\Boss2.cs" />
+    <Compile Include="Enemy\Boss3.cs" />
+    <Compile Include="Enemy\Boss4.cs" />
+    <Compile Include="Enemy\Boss5.cs" />
+    <Compile Include="Enemy\DoubleTurret.cs" />
+    <Compile Include="Enemy\MiniSquare.cs" />
+    <Compile Include="Enemy\MissileStorm.cs" />
+    <Compile Include="Enemy\MissileTriple.cs" />
+    <Compile Include="Entities\HealthBar.cs" />
+    <Compile Include="Entities\MusicChanger.cs" />
+    <Compile Include="GameControllerIndex.cs" />
+    <Compile Include="Enemy\Cannon.cs" />
+    <Compile Include="Enemy\Splitter.cs" />
+    <Compile Include="Enemy\Swirl.cs" />
+    <Compile Include="Enemy\SwirlBall.cs" />
+    <Compile Include="Enemy\Teleporter.cs" />
+    <Compile Include="Guide.cs" />
+    <Compile Include="Hud\HudManager.cs" />
+    <Compile Include="Hud\HudPilotSelect.cs" />
+    <Compile Include="Menu\TextLabel.cs" />
+    <Compile Include="Mover\MoverSinHorizontal.cs" />
+    <Compile Include="NaturalSorter.cs" />
+    <Compile Include="Enemy\Airship.cs" />
+    <Compile Include="Enemy\BlackHole.cs" />
+    <Compile Include="Enemy\Cutter.cs" />
+    <Compile Include="Enemy\CutterBall.cs" />
+    <Compile Include="Enemy\MissilePod.cs" />
+    <Compile Include="Enemy\Pyramid.cs" />
+    <Compile Include="Enemy\RaidTurret.cs" />
+    <Compile Include="Enemy\RotateTurret.cs" />
+    <Compile Include="OptionsMenu.cs" />
+    <Compile Include="Projectile\Beam.cs" />
+    <Compile Include="Projectile\Blade.cs" />
+    <Compile Include="Projectile\Bomblet.cs" />
+    <Compile Include="Projectile\Boomerang.cs" />
+    <Compile Include="Projectile\ChargeShot.cs" />
+    <Compile Include="Projectile\DrunkMissile.cs" />
+    <Compile Include="Projectile\EnemyCannonShot.cs" />
+    <Compile Include="Projectile\EnemyMiniShot.cs" />
+    <Compile Include="Projectile\EnemyMissile.cs" />
+    <Compile Include="Projectile\EnemyPellet.cs" />
+    <Compile Include="Projectile\Flame.cs" />
+    <Compile Include="Projectile\Lightning.cs" />
+    <Compile Include="Projectile\Vulcan.cs" />
+    <Compile Include="SampleShip.cs" />
+    <Compile Include="SampleShipManager.cs" />
+    <Compile Include="ScorePanel.cs" />
+    <Compile Include="SpriteBatchExtensions.cs" />
+    <Compile Include="StageClearPanel.cs" />
+    <Compile Include="StageDefinitions\BonusStage2.cs" />
+    <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage1.cs" />
+    <Compile Include="StageDefinitions\OldStage10.cs" />
+    <Compile Include="StageDefinitions\OldStage11.cs" />
+    <Compile Include="StageDefinitions\OldStage12.cs" />
+    <Compile Include="StageDefinitions\OldStage2.cs" />
+    <Compile Include="StageDefinitions\OldStage3.cs" />
+    <Compile Include="StageDefinitions\OldStage4.cs" />
+    <Compile Include="StageDefinitions\OldStage5.cs" />
+    <Compile Include="StageDefinitions\OldStage6.cs" />
+    <Compile Include="StageDefinitions\OldStage7.cs" />
+    <Compile Include="StageDefinitions\OldStage8.cs" />
+    <Compile Include="StageDefinitions\OldStage9.cs" />
+    <Compile Include="StageDefinitions\Stage10.cs" />
+    <Compile Include="StageDefinitions\Stage11.cs" />
+    <Compile Include="StageDefinitions\Stage12.cs" />
+    <Compile Include="StageDefinitions\Stage8.cs" />
+    <Compile Include="StageDefinitions\Stage9.cs" />
+    <Compile Include="StageDefinitions\StageDefinitionSerializable.cs" />
+    <Compile Include="Stage\Elements\StageElementHealthBar.cs" />
+    <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
+    <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
+    <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
+    <Compile Include="Stats.cs" />
+    <Compile Include="Detonation.cs" />
+    <Compile Include="Pilot.cs" />
+    <Compile Include="Difficulty.cs" />
+    <Compile Include="Effects\ParticleEffect.cs" />
+    <Compile Include="Enemy\BonusShip.cs" />
+    <Compile Include="Enemy\DownTurret.cs" />
+    <Compile Include="Enemy\FenceBeam.cs" />
+    <Compile Include="Enemy\Fence.cs" />
+    <Compile Include="Enemy\Glob.cs" />
+    <Compile Include="Enemy\TripleShot.cs" />
+    <Compile Include="Mover\MoverIgnoreCamera.cs" />
+    <Compile Include="Projectile\Projectile.cs" />
+    <Compile Include="Projectile\ProjectileCache.cs" />
+    <Compile Include="Quadtree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StageDefinitions\Stage5.cs" />
+    <Compile Include="StageDefinitions\Stage3.cs" />
+    <Compile Include="StageDefinitions\Stage4.cs" />
+    <Compile Include="StageDefinitions\Stage6.cs" />
+    <Compile Include="StageDefinitions\Stage7.cs" />
+    <Compile Include="State\StatePilotSelect.cs" />
+    <Compile Include="StringBuilderExtFormat.cs" />
+    <Compile Include="StringBuilderExtNumeric.cs" />
+    <Compile Include="Stubs360.cs" />
+    <Compile Include="Content.cs" />
+    <Compile Include="Camera.cs" />
+    <Compile Include="Fibers.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="Projectile\MiniShot.cs" />
+    <Compile Include="Projectile\Plasma.cs" />
+    <Compile Include="Scenery\Background.cs" />
+    <Compile Include="Scenery\Clouds.cs" />
+    <Compile Include="Scenery\SceneryPresets.cs" />
+    <Compile Include="Scenery\Scenery.cs" />
+    <Compile Include="Ship\ShipParts.cs" />
+    <Compile Include="Ship\ShipDefinitions.cs" />
+    <Compile Include="Sound.cs" />
+    <None Include="Editor\Converters\EditorConverters.cs" />
+    <None Include="Editor\Converters\EntityMoverTypeConverter.cs" />
+    <None Include="Editor\Editors\EntityMoverPresetSelector.cs" />
+    <None Include="Editor\Editors\EntityTypeSelector.cs" />
+    <None Include="Editor\Entities\EditorEntityCameraStop.cs" />
+    <None Include="Editor\Entities\EditorEntityBuilding.cs" />
+    <None Include="Editor\Entities\EditorEntityDecoration.cs" />
+    <None Include="Editor\Entities\EditorEntitySpawnerEnemy.cs" />
+    <None Include="Editor\Entities\EditorEntityAsteroidField.cs" />
+    <None Include="Editor\Entities\EditorStageElementGeneration.cs" />
+    <None Include="Editor\Entities\EditorEntityBase.cs" />
+    <None Include="Editor\Entities\EditorEntityStageFinish.cs" />
+    <None Include="Editor\Entities\EditorEntityTypes.cs" />
+    <None Include="Editor\Entities\EditorEntityPreview.cs" />
+    <None Include="Editor\Entities\EditorEntityUnknown.cs" />
+    <None Include="Editor\StageSerializer.cs" />
+    <None Include="Editor\Editor.cs" />
+    <None Include="Editor\Entities\EditorEntitySpawnerEntity.cs" />
+    <None Include="Editor\EditorStageDefinitionProcessing.cs" />
+    <Compile Include="Enemy\ShootBall.cs" />
+    <Compile Include="Enemy\Spike.cs" />
+    <Compile Include="Entities\Decoration.cs" />
+    <Compile Include="Hud\Hud.cs" />
+    <Compile Include="Layers.cs" />
+    <Compile Include="Entities\Asteroid.cs" />
+    <Compile Include="Collision.cs" />
+    <Compile Include="Entities\Bonus.cs" />
+    <Compile Include="Enemy\Isosceles.cs" />
+    <Compile Include="Entities\Building.cs" />
+    <Compile Include="Entities\SpacePlatform.cs" />
+    <Compile Include="FrameRate.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="Fader.cs" />
+    <Compile Include="Menu\Menu.cs" />
+    <Compile Include="Mover\MoverPresets.cs" />
+    <Compile Include="PrimitiveBatch.cs" />
+    <Compile Include="Projectile\SeekBomb.cs" />
+    <Compile Include="SaveData\HighScoreData.cs" />
+    <Compile Include="SaveData\SaveData.cs" />
+    <Compile Include="StageDefinitions\BonusStage1.cs" />
+    <Compile Include="StageDefinitions\Stage2.cs" />
+    <Compile Include="StageDefinitions\EditorStage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="StageDefinitions\Stage1.cs" />
+    <Compile Include="StageDefinitions\StagePresets.cs" />
+    <None Include="Editor\StageCodeWriter.cs" />
+    <Compile Include="Stage\Elements\StageElementCameraStop.cs" />
+    <Compile Include="Stage\Elements\StageElementBuilding.cs" />
+    <Compile Include="Stage\Elements\StageElementDecoration.cs" />
+    <Compile Include="Stage\Elements\StageElementSpawnerEnemy.cs" />
+    <None Include="Stage\StageCompiler.cs" />
+    <Compile Include="State\StateStageSelect.cs" />
+    <None Include="State\StateEditor.cs" />
+    <Compile Include="State\StateShop.cs" />
+    <Compile Include="State\StateFadeTo.cs" />
+    <Compile Include="State\StateGame.cs" />
+    <Compile Include="State\State.cs" />
+    <Compile Include="State\StateMainMenu.cs" />
+    <Compile Include="Entities\Powerup.cs" />
+    <Compile Include="Debug.cs" />
+    <Compile Include="Enemy\Turret.cs" />
+    <Compile Include="Enemy\Beamer.cs" />
+    <Compile Include="Enemy\Ball.cs" />
+    <Compile Include="Enemy\Enemy.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Mover\MoverSequence.cs" />
+    <Compile Include="Mover\MoverFixedVelocity.cs" />
+    <Compile Include="Mover\MoverSin.cs" />
+    <Compile Include="Mover\Mover.cs" />
+    <Compile Include="OneShotAnimation.cs" />
+    <Compile Include="Projectile\EnemyShot.cs" />
+    <Compile Include="Projectile\Missile.cs" />
+    <Compile Include="Projectile\EnemyLaser.cs" />
+    <Compile Include="Projectile\Laser.cs" />
+    <Compile Include="Math.cs" />
+    <Compile Include="Physics.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EntryPoint.cs" />
+    <Compile Include="Galaxy.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="Ship\Ship.cs" />
+    <Compile Include="Stage\Stage.cs" />
+    <Compile Include="StageDefinitions\StageDefinition.cs" />
+    <Compile Include="Stage\Elements\StageElementAsteroidField.cs" />
+    <Compile Include="Stage\Elements\StageElementStageFinish.cs" />
+    <Compile Include="Stage\Elements\SpawnTimer.cs" />
+    <Compile Include="Stage\Elements\SpawnPosition.cs" />
+    <Compile Include="Stage\Elements\StageElementSpawnerEntity.cs" />
+    <Compile Include="Stage\Elements\StageElement.cs" />
+    <Compile Include="Scenery\Stars.cs" />
+    <Compile Include="Time.cs" />
+    <Compile Include="Visual.cs" />
+    <Compile Include="Weapon\WeaponBeam.cs" />
+    <Compile Include="Weapon\WeaponBlade.cs" />
+    <Compile Include="Weapon\WeaponBomblet.cs" />
+    <Compile Include="Weapon\WeaponBoomerang.cs" />
+    <Compile Include="Weapon\WeaponChargeShot.cs" />
+    <Compile Include="Weapon\WeaponDrunkMissile.cs" />
+    <Compile Include="Weapon\WeaponFlame.cs" />
+    <Compile Include="Weapon\WeaponLaserShot.cs" />
+    <Compile Include="Weapon\WeaponLightning.cs" />
+    <Compile Include="Weapon\WeaponMiniShot.cs" />
+    <Compile Include="Weapon\WeaponMissileLauncher.cs" />
+    <Compile Include="Weapon\WeaponMissileVolley.cs" />
+    <Compile Include="Weapon\WeaponPlasma.cs" />
+    <Compile Include="Weapon\WeaponSeekBomb.cs" />
+    <Compile Include="Weapon\WeaponDefinitions.cs" />
+    <Compile Include="Weapon\WeaponLaser.cs" />
+    <Compile Include="Weapon\WeaponMissile.cs" />
+    <Compile Include="Weapon\Weapon.cs" />
+    <Compile Include="Weapon\WeaponVulcan.cs" />
+    <Compile Include="World.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Galaxy.ico" />
+    <Content Include="GalaxyThumbnail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <NestedContentProject Include="Content\Content.contentproj">
+      <Project>897e0d7b-1452-42ca-9161-ca735b5d72d8</Project>
+      <Visible>False</Visible>
+    </NestedContentProject>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft XNA Framework Redistributable 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="galaxy_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
