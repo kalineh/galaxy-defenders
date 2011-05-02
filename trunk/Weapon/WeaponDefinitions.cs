@@ -331,7 +331,7 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 1.25f,
-                Damage = 2.0f,
+                Damage = 1.25f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.Zero,
                 Rotation = 0.0f,
@@ -416,6 +416,22 @@ namespace Galaxy
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(180.0f),
                 Energy = 0.2f,
+            };
+        }
+
+        public static SWeaponData MakeMissileLauncherData(Vector2 offset)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.5f,
+                Speed = 17.0f,
+                Damage = 0.2f,
+                KickbackForce = 0.0f,
+                Offset = offset,
+                Rotation = MathHelper.ToRadians(180.0f),
+                Energy = 0.2f,
+                ChargeSpeed = 1.0f,
+                AutoDischarge = 1,
             };
         }
 
@@ -682,51 +698,51 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.08f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.08f),
                             MakeSpreadLaserFocusData(+0.0f, 0.08f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.08f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.08f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.07f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.07f),
                             MakeSpreadLaserFocusData(+0.0f, 0.07f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.07f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.07f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.06f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.06f),
                             MakeSpreadLaserFocusData(+0.0f, 0.06f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.06f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.06f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.05f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.05f),
                             MakeSpreadLaserFocusData(+0.0f, 0.05f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.05f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.05f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.04f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.04f),
                             MakeSpreadLaserFocusData(+0.0f, 0.04f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.04f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.04f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.03f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.03f),
                             MakeSpreadLaserFocusData(+0.0f, 0.03f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.03f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.03f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.02f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.02f),
                             MakeSpreadLaserFocusData(+0.0f, 0.02f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.02f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.02f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-30.0f, 0.01f),
+                            MakeSpreadLaserFocusData(-90.0f, 0.01f),
                             MakeSpreadLaserFocusData(+0.0f, 0.01f),
-                            MakeSpreadLaserFocusData(+30.0f, 0.01f),
+                            MakeSpreadLaserFocusData(+90.0f, 0.01f),
                         },
                     },
                 }
@@ -1514,7 +1530,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
                     DisplayName = "MissileVolley",
-                    BasePrice = 6000,
+                    BasePrice = 12000,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             MakeMissileVolleyData(new Vector2(-4.0f, -12.0f)),
@@ -1525,6 +1541,19 @@ namespace Galaxy
                             MakeMissileVolleyData(new Vector2(8.0f, 4.0f)),
                             MakeMissileVolleyData(new Vector2(0.0f, 8.0f)),
                             MakeMissileVolleyData(new Vector2(-4.0f, 12.0f)),
+                        },
+                    },
+                }
+            },
+
+            { "MissileLauncher", 
+                new SWeaponDefinition() {
+                    Sound = "WeaponShootMissile",
+                    DisplayName = "MissileLauncher",
+                    BasePrice = 5000,
+                    Data = new List<List<SWeaponData>>() {
+                        new List<SWeaponData>() {
+                            MakeMissileLauncherData(new Vector2(-8.0f, -0.0f)),
                         },
                     },
                 }

@@ -21,7 +21,7 @@ namespace Galaxy
             bomblet.Physics.AngularVelocity = 0.02f;
             bomblet.Physics.Rotation = owner.World.Random.NextAngle();
             bomblet.Physics.Position = position;
-            bomblet.Physics.Velocity = Vector2.UnitX.Rotate(bomblet.Physics.Rotation) * speed + owner.World.ScrollSpeed * -Vector2.UnitY * 2.5f;
+            bomblet.Physics.Velocity = Vector2.UnitX.Rotate(bomblet.Physics.Rotation) * speed + owner.World.ScrollSpeed * -Vector2.UnitY * 3.5f;
             bomblet.Physics.Friction = 0.98f;
 
             owner.World.EntityAdd(bomblet);
@@ -45,6 +45,7 @@ namespace Galaxy
         {
             Physics.AngularVelocity += 0.0001f;
             Physics.Position += Owner.World.ScrollSpeed * -Vector2.UnitY;
+            Physics.Velocity += Vector2.UnitY * -0.005f;
 
             if (AliveTime > 480)
                 Die();

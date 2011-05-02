@@ -162,108 +162,108 @@ namespace Galaxy
     {
         public static CGeneratorPart GetPart(string current)
         {
-            return Items.ContainsKey(current) ? Items[current] : Items["Standard Mk 1"];
+            return Items.ContainsKey(current) ? Items[current] : Items["1"];
         }
 
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
         {
             // basic
             {
-                "Standard Mk 1",
+                "1",
                 new CGeneratorPart() {
                     Price = 1000,
-                    Energy = 8.0f,
+                    Energy = 3.0f,
                     Regen = 0.05f,
                 }
             },
             {
-                "Standard Mk 2",
+                "2",
                 new CGeneratorPart() {
-                    Price = 5000,
-                    Energy = 9.0f,
+                    Price = 2500,
+                    Energy = 4.0f,
                     Regen = 0.07f,
                 }
             },
             {
-                "Standard Mk 3",
+                "3",
                 new CGeneratorPart() {
-                    Price = 18000,
-                    Energy = 11.0f,
-                    Regen = 0.10f,
+                    Price = 3500,
+                    Energy = 5.0f,
+                    Regen = 0.08f,
                 }
             },
             {
-                "Standard Mk 4",
+                "4",
                 new CGeneratorPart() {
-                    Price = 35000,
-                    Energy = 14.0f,
-                    Regen = 0.15f,
+                    Price = 7500,
+                    Energy = 6.0f,
+                    Regen = 0.09f,
                 }
             },
             // impulse
             {
-                "Impulse Mk 1",
+                "5",
                 new CGeneratorPart() {
-                    Price = 1500,
-                    Energy = 3.0f,
-                    Regen = 0.06f,
-                }
-            },
-            {
-                "Impulse Mk 2",
-                new CGeneratorPart() {
-                    Price = 7500,
-                    Energy = 4.5f,
-                    Regen = 0.09f,
-                }
-            },
-            {
-                "Impulse Mk 3",
-                new CGeneratorPart() {
-                    Price = 22000,
+                    Price = 12000,
                     Energy = 7.0f,
-                    Regen = 0.13f,
+                    Regen = 0.10f,
                 }
             },
             {
-                "Impulse Mk 4",
+                "6",
                 new CGeneratorPart() {
-                    Price = 38000,
+                    Price = 14500,
+                    Energy = 8.0f,
+                    Regen = 0.11f,
+                }
+            },
+            {
+                "7",
+                new CGeneratorPart() {
+                    Price = 18000,
+                    Energy = 9.0f,
+                    Regen = 0.12f,
+                }
+            },
+            {
+                "8",
+                new CGeneratorPart() {
+                    Price = 23500,
                     Energy = 10.0f,
-                    Regen = 0.18f,
+                    Regen = 0.13f,
                 }
             },
             // capacitor
             {
-                "Capacitor Mk 1",
+                "9",
                 new CGeneratorPart() {
-                    Price = 1500,
-                    Energy = 14.0f,
-                    Regen = 0.04f,
+                    Price = 26500,
+                    Energy = 11.0f,
+                    Regen = 0.14f,
                 }
             },
             {
-                "Capacitor Mk 2",
+                "10",
                 new CGeneratorPart() {
-                    Price = 8000,
-                    Energy = 16.0f,
-                    Regen = 0.06f,
+                    Price = 31000,
+                    Energy = 12.0f,
+                    Regen = 0.15f,
                 }
             },
             {
-                "Capacitor Mk 3",
-                new CGeneratorPart() {
-                    Price = 25000,
-                    Energy = 21.0f,
-                    Regen = 0.09f,
-                }
-            },
-            {
-                "Capacitor Mk 4",
+                "11",
                 new CGeneratorPart() {
                     Price = 34000,
-                    Energy = 38.0f,
-                    Regen = 0.12f,
+                    Energy = 13.0f,
+                    Regen = 0.16f,
+                }
+            },
+            {
+                "12",
+                new CGeneratorPart() {
+                    Price = 38000,
+                    Energy = 14.0f,
+                    Regen = 0.17f,
                 }
             },
             {
@@ -310,7 +310,7 @@ namespace Galaxy
                 "Light Shield",
                 new CShieldPart() {
                     Price = 1000,
-                    Shield = 4.0f,
+                    Shield = 6.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.50f,
                 }
@@ -319,7 +319,7 @@ namespace Galaxy
                 "Fiber Shield",
                 new CShieldPart() {
                     Price = 2000,
-                    Shield = 6.0f,
+                    Shield = 8.0f,
                     EnergyDrain = 0.035f,
                     Efficiency = 0.35f,
                 }
@@ -328,7 +328,7 @@ namespace Galaxy
                 "Electric Shield",
                 new CShieldPart() {
                     Price = 3500,
-                    Shield = 5.0f,
+                    Shield = 7.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.65f,
                 }
@@ -337,7 +337,7 @@ namespace Galaxy
                 "Advanced Shield",
                 new CShieldPart() {
                     Price = 7500,
-                    Shield = 6.0f,
+                    Shield = 9.0f,
                     EnergyDrain = 0.040f,
                     Efficiency = 0.75f,
                 }
@@ -346,7 +346,7 @@ namespace Galaxy
                 "Micro Shield",
                 new CShieldPart() {
                     Price = 9500,
-                    Shield = 4.5f,
+                    Shield = 7.5f,
                     EnergyDrain = 0.065f,
                     Efficiency = 0.6f,
                 }
@@ -355,7 +355,7 @@ namespace Galaxy
                 "Actuator Shield",
                 new CShieldPart() {
                     Price = 11000,
-                    Shield = 8.0f,
+                    Shield = 11.0f,
                     EnergyDrain = 0.045f,
                     Efficiency = 0.65f,
                 }
@@ -364,7 +364,7 @@ namespace Galaxy
                 "Power Shield",
                 new CShieldPart() {
                     Price = 13500,
-                    Shield = 9.0f,
+                    Shield = 14.0f,
                     EnergyDrain = 0.075f,
                     Efficiency = 0.75f,
                 }
@@ -373,7 +373,7 @@ namespace Galaxy
                 "Tank Shield",
                 new CShieldPart() {
                     Price = 13000,
-                    Shield = 15.0f,
+                    Shield = 18.0f,
                     EnergyDrain = 0.050f,
                     Efficiency = 0.50f,
                 }
@@ -382,7 +382,7 @@ namespace Galaxy
                 "Ultimate Shield",
                 new CShieldPart() {
                     Price = 15000,
-                    Shield = 10.0f,
+                    Shield = 15.0f,
                     EnergyDrain = 0.075f,
                     Efficiency = 0.85f,
                 }

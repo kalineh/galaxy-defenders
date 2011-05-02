@@ -114,6 +114,7 @@
     <Compile Include="Stage\Elements\StageElementHealthBar.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
+    <Compile Include="Weapon\WeaponMissileLauncher.cs" />
     <Compile Include="Weapon\WeaponBomblet.cs" />
     <Compile Include="Weapon\WeaponVulcan.cs" />
     <Compile Include="Weapon\WeaponBoomerang.cs" />

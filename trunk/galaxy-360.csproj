@@ -287,6 +287,7 @@
     <Compile Include="Weapon\WeaponFlame.cs" />
     <Compile Include="Weapon\WeaponLightning.cs" />
     <Compile Include="Weapon\WeaponMiniShot.cs" />
+    <Compile Include="Weapon\WeaponMissileLauncher.cs" />
     <Compile Include="Weapon\WeaponMissileVolley.cs" />
     <Compile Include="Weapon\WeaponPlasma.cs" />
     <Compile Include="Weapon\WeaponSeekBomb.cs" />

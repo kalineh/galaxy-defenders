@@ -12,7 +12,6 @@ namespace Galaxy
     public struct BeamCustomData
     {
         public float Width;
-        public float EnergyDrain;
     };
 
     public class CBeam
@@ -89,7 +88,6 @@ namespace Galaxy
     public struct BeamFocusCustomData
     {
         public float Radius;
-        public float EnergyDrain;
     };
 
     public class CBeamFocus
