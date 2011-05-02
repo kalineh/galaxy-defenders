@@ -40,12 +40,12 @@ namespace StageEditor
             parameters.BackBufferHeight = Math.Max(height, 1);
             parameters.BackBufferFormat = SurfaceFormat.Color;
 
-            parameters.EnableAutoDepthStencil = true;
-            parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
+            //parameters.EnableAutoDepthStencil = true;
+            //parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
+            parameters.DepthStencilFormat = DepthFormat.Depth24;
 
             graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,
-                                                DeviceType.Hardware,
-                                                windowHandle,
+                                                GraphicsProfile.HiDef,
                                                 parameters);
         }
 
@@ -128,9 +128,9 @@ namespace StageEditor
 
 
         // IGraphicsDeviceService events.
-        public event EventHandler DeviceCreated;
-        public event EventHandler DeviceDisposing;
-        public event EventHandler DeviceReset;
-        public event EventHandler DeviceResetting;
+        public event EventHandler<EventArgs> DeviceCreated;
+        public event EventHandler<EventArgs> DeviceDisposing;
+        public event EventHandler<EventArgs> DeviceReset;
+        public event EventHandler<EventArgs> DeviceResetting;
     }
 }

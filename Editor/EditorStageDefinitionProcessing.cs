@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace Galaxy
 {
-    using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
+    using XnaColor = Microsoft.Xna.Framework.Color;
 
     public class CStageGenerate
     {

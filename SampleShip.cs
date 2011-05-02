@@ -54,7 +54,7 @@ namespace Galaxy
 
         public override void Draw()
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
             Ship.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
         }

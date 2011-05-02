@@ -589,7 +589,7 @@ namespace Galaxy
             if (Game.EditorMode)
                 return;
 
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
+            Game.GraphicsDevice.RasterizerState = Game.RasterState_Scissor;
 
             //
             // NOTE: GameCamera.ScreenSize is the game area screensize (between the two hud elements)
@@ -626,19 +626,19 @@ namespace Galaxy
             DrawEntities(GameCamera);
             DrawForeground(GameCamera);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
             DrawStageTextDisplay(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
 
             // 27ms (sorted), 7ms (immediate)
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, GameCamera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, GameCamera.WorldMatrix);
             ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
 
             if (GameOverFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 GameOverFader.Draw(Game.DefaultSpriteBatch);
                 GameOverMenu.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
@@ -646,28 +646,28 @@ namespace Galaxy
 
             if (StageEndFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 StageEndFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretEntryFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 SecretEntryFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretFinishFader != null)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 SecretFinishFader.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
 
             if (SecretEntryCounter > 20 && SecretEntryCounter < 120)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, 150.0f);
                 Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, text_position, "SECRET WARP", Color.LightGreen);
                 Game.DefaultSpriteBatch.End();
@@ -675,7 +675,7 @@ namespace Galaxy
 
             if (StageEndCounter > 0)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 if (ScorePanel != null && ScorePanel.IsVisible())
                     ScorePanel.Draw(Game.DefaultSpriteBatch);
                 else
@@ -686,7 +686,7 @@ namespace Galaxy
             /*
             if (StageEndText.Count > 0)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 
                 Vector2 text_position = new Vector2(Game.Resolution.X / 2.0f - 75.0f, 150.0f);
 
@@ -724,7 +724,7 @@ namespace Galaxy
             {
                 if (!DebugPaused)
                 {
-                    Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+                    Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                     Vector2 pause_text_position = new Vector2(Game.Resolution.X / 2.0f - 100.0f, Game.Resolution.Y / 2.0f - 250.0f);
                     Game.DefaultSpriteBatch.Draw(Game.PixelTexture, new Rectangle(0, 0, (int)Game.Resolution.X, (int)Game.Resolution.Y), new Color(0, 0, 0, 92));
                     PauseMenu.Draw(Game.DefaultSpriteBatch);
@@ -745,8 +745,8 @@ namespace Galaxy
 
         public void DrawEntities(CCamera camera)
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, camera.WorldMatrix);
-
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, camera.WorldMatrix);
+            
             foreach (CEntity entity in Entities)
             {
                 entity.Draw(Game.DefaultSpriteBatch);

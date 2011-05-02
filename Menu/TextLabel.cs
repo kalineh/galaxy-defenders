@@ -77,7 +77,7 @@ namespace Galaxy
 
         public void Draw(SpriteBatch sprite_batch, SpriteFont font, Vector2 position, Color color, float scale)
         {
-            Color drop_shadow_color = new Color(Color.Black, 0.35f);
+            Color drop_shadow_color = new Color(0.0f, 0.0f, 0.0f, 0.35f);
             Vector2 drop_shadow_offset = new Vector2(2.0f, 2.0f);
             switch (Alignment)
             {

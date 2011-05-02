@@ -22,7 +22,7 @@ struct VertexOut
 //
 // VERTEX
 //
-VertexOut VertexShader(
+VertexOut VertexShaderFunction(
     float4 Position  : POSITION, 
     float4 Color : COLOR0,
     float4 TextureCoordinate : TEXCOORD0 )
@@ -63,7 +63,7 @@ technique TransformTechnique
 {
     pass P0
     {
-        vertexShader = compile vs_2_0 VertexShader();
+        vertexShader = compile vs_2_0 VertexShaderFunction();
         pixelShader = compile ps_2_0 PixelShaderFunction();
     }
 }

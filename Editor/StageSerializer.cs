@@ -24,7 +24,8 @@ namespace Galaxy
             CStageDefinitionSerializable serializable = new CStageDefinitionSerializable();
             serializable.ConvertFromDefinition(stage);
 
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
+            // SJS FIXME
+            string fullpath = Path.Combine("StorageContainer.TitleLocation", filename);
             FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Write);
             try
             {
