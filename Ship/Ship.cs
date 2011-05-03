@@ -513,7 +513,13 @@ namespace Galaxy
 
         public void TakeDamage(Vector2 source, Vector2 velocity, float damage)
         {
-            ApplyDamage(damage);
+            // NOTE: this is doubled up in the collision resist calcation
+            //       but we want to factor it in a little for regular damage too
+            float resistance = Chassis.CollisionResistance * 0.25f;
+            float inverse_resistance = 1.0f - resistance;
+            float adjusted = damage * inverse_resistance;
+
+            ApplyDamage(adjusted);
 
             Vector2 position = Physics.Position + (source - Physics.Position) * 0.35f;
             Vector2 force = velocity.Normal() * -2.0f;
@@ -523,14 +529,15 @@ namespace Galaxy
                 CAudio.PlaySound("PlayerShieldHit", 1.0f);
                 ShieldHitDisplayFrames = 4;
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipShieldDamage, position, PlayerColor, null, null);
+                World.GameCamera.Shake(0.05f, adjusted * 0.5f);
             }
             else
             {
                 CAudio.PlaySound("PlayerArmorHit", 1.0f);
                 World.ParticleEffects.Spawn(EParticleType.PlayerShipArmorDamage, position, PlayerColor, null, force);
                 Physics.Velocity *= 0.15f;
-                Physics.Velocity += velocity * 0.20f * damage;
-                World.GameCamera.Shake(0.10f, damage * 1.0f);
+                Physics.Velocity += velocity * 0.20f * adjusted;
+                World.GameCamera.Shake(0.10f, adjusted * 1.0f);
             }
 
         }
@@ -547,7 +554,7 @@ namespace Galaxy
             {
                 Vector2 dir = offset.Normal();
                 Physics.Velocity *= 0.8f;
-                Physics.Velocity += dir * 5.0f * adjusted;
+                Physics.Velocity += dir * 3.5f * adjusted;
             }
 
             TakeDamage(source, Physics.Velocity, adjusted);
