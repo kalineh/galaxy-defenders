@@ -50,6 +50,9 @@ namespace Galaxy
 
         public void OnCollide(CEnemy enemy)
         {
+            if (enemy.GetType() == typeof(CBlackHole))
+                return;
+
             GetHit(enemy);
         }
 

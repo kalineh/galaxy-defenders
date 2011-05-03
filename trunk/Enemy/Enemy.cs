@@ -194,6 +194,11 @@ namespace Galaxy
             vulcan.Die();
         }
 
+        public void OnCollide(CLightning lightning)
+        {
+            // handled by OnCollideSimulation
+        }
+
         public void OnCollideSimulation(CLightning lightning)
         {
             World.Stats.ShotDamageDealt += lightning.Damage;

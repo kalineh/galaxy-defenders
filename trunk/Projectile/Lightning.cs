@@ -64,6 +64,9 @@ namespace Galaxy
             if (enemy == IgnoreEntity)
                 return;
 
+            if (enemy.GetType() == typeof(CBlackHole))
+                return;
+
             IgnoreEntity = enemy;
             enemy.OnCollideSimulation(this);
             DoBounce();

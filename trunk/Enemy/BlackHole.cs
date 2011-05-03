@@ -21,7 +21,7 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Blackhole");
             Visual.Depth = CLayers.Weapons + CLayers.SubLayerIncrement * 1.0f;
             Visual.Recache();
-            HealthMax = 0.0f;
+            HealthMax = 100000.0f;
         }
 
         public override void UpdateAI()
@@ -39,7 +39,7 @@ namespace Galaxy
             float square_inverse = inverse * inverse;
             Vector2 pull = offset * square_inverse * 0.0000025f * scale;
             entity.Physics.Velocity += pull;
-            entity.Physics.Velocity *= 0.99f;
+            entity.Physics.Velocity *= 0.97f;
             World.ParticleEffects.Spawn(EParticleType.EnemyBlackHolePull, Physics.Position - offset.Normal() * 58.0f);
 
             if (length < 42.0f)
@@ -131,6 +131,34 @@ namespace Galaxy
         public new void OnCollide(CEnemyPellet pellet)
         {
             PullEntity(pellet, 1.0f);
+        }
+
+        public new void OnCollide(CLightning lightning)
+        {
+            PullEntity(lightning, 1.0f);
+        }
+
+        public new void OnCollide(CBeam beam)
+        {
+        }
+
+        public new void OnCollide(CBeamFocus beam_focus)
+        {
+        }
+
+        public new void OnCollide(CBomblet bomblet)
+        {
+            PullEntity(bomblet, 1.0f);
+        }
+
+        public new void OnCollide(CFlame flame)
+        {
+            PullEntity(flame, 1.0f);
+        }
+
+        public new void OnCollide(CBoomerang boomerang)
+        {
+            PullEntity(boomerang, 1.0f);
         }
 
         public override void UpdateCollision()
