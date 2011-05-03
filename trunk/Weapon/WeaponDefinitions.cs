@@ -169,11 +169,11 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 19.0f,
-                Damage = 0.125f,
+                Damage = 0.15f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
-                Energy = 0.15f,
+                Energy = 0.25f,
             };
         }
 
@@ -231,6 +231,22 @@ namespace Galaxy
                 Offset = new Vector2(0.0f, 0.0f),
                 Rotation = MathHelper.ToRadians(rotation),
                 Energy = 0.15f,
+            };
+        }
+
+        public static SWeaponData MakeLaserShotData(float offset)
+        {
+            return new SWeaponData()
+            {
+                ReloadTime = 0.16f,
+                Speed = 17.0f,
+                Damage = 0.1f,
+                KickbackForce = 0.0f,
+                Offset = Vector2.UnitY * offset,
+                Rotation = 0.0f,
+                Energy = 0.1f,
+                ChargeSpeed = 1.0f,
+                AutoDischarge = 1,
             };
         }
 
@@ -361,11 +377,11 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 16.0f,
-                Damage = 0.1f,
+                Damage = 0.15f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
-                Energy = 0.225f,
+                Energy = 0.275f,
                 RandomRotation = MathHelper.ToRadians(angle),
                 CustomData = new LightningCustomData() { Bounces = bounces },
             };
@@ -1153,47 +1169,47 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.10f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 20.0f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.10f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.10f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.07f, 35.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 35.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 40.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 60.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 35.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 45.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 60.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 35.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 45.0f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 40.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 60.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.09f, 80.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 35.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 45.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.06f, 55.0f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 20.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 40.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 60.0f),
-                            MakeLightningFocusData(+0.0f, 2, 0.07f, 80.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 20.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 35.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 45.0f),
+                            MakeLightningFocusData(+0.0f, 2, 0.04f, 55.0f),
                         },
                     },
                 }
@@ -1574,7 +1590,7 @@ namespace Galaxy
                     BasePrice = 3000,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
-                            MakeFrontLaserData(0.0f),
+                            MakeLaserShotData(0.0f),
                         },
                     },
                 }
