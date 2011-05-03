@@ -193,7 +193,7 @@ namespace Galaxy
                 HasClearedGame = new bool[] { false, false, false, false },
                 Game = new SProfileGameData[2] {
                     new SProfileGameData() {
-                        Stage = "",
+                        Stage = "Start",
                         Difficulty = 1,
                         Pilots = new SProfilePilotState[] {
                             SProfilePilotState.MakeDefaultPilot(0),
@@ -203,7 +203,7 @@ namespace Galaxy
                         StageMedals = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
                     },
                     new SProfileGameData() {
-                        Stage = "",
+                        Stage = "Start",
                         Difficulty = 1,
                         Pilots = new SProfilePilotState[] {
                             SProfilePilotState.MakeDefaultPilot(0),
