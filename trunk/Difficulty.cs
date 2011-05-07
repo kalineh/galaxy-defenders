@@ -55,7 +55,7 @@ namespace Galaxy
 
         public static float[] ReloadSpeedScale = new float[3]
         {
-            1.0f,
+            1.1f,
             0.9f,
             0.8f,
         };

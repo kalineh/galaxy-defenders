@@ -246,9 +246,9 @@ namespace Galaxy
                 Vector2 center = World.GameCamera.GetCenter().ToVector2() + Vector2.UnitY * -120.0f;
                 Vector2 target = center + Vector2.UnitX.Rotate(World.Random.NextAngle()) * 300.0f * World.Random.NextSign();
 
-                for (int i = 0; i < 120; ++i)
+                for (int i = 0; i < 180; ++i)
                 {
-                    Physics.Position = Vector2.Lerp(Physics.Position, target, 0.005f);
+                    Physics.Position = Vector2.Lerp(Physics.Position, target, 0.010f);
                     yield return 0;
                 }
                 yield return 0;
@@ -262,9 +262,9 @@ namespace Galaxy
                 Vector2 center = World.GameCamera.GetCenter().ToVector2() + Vector2.UnitY * -120.0f;
                 Vector2 target = center + Vector2.UnitX.Rotate(World.Random.NextAngle()) * 300.0f * World.Random.NextSign();
 
-                for (int i = 0; i < 60; ++i)
+                for (int i = 0; i < 90; ++i)
                 {
-                    Physics.Position = Vector2.Lerp(Physics.Position, target, 0.015f);
+                    Physics.Position = Vector2.Lerp(Physics.Position, target, 0.020f);
                     yield return 0;
                 }
                 yield return 0;
@@ -280,22 +280,32 @@ namespace Galaxy
                 switch (World.Random.Next() % 3)
                 {
                     case 0:
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
+                        for (int c = 0; c < 4; ++c)
+                        {
+                            Vector2 dir = Vector2.UnitY;
+                            float sign = c % 2 == 0 ? 1.0f : -1.0f;
+                            for (int i = 0; i < 6; ++i)
+                            {
+                                RegularShot(c, dir.Rotate(0.4f / 8.0f * i * sign));
+                                yield return 2;
+                            }
+                        }
                         break;
 
                     case 1:
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
+                    {
+                        for (int c = 0; c < 4; ++c)
+                        {
+                            Vector2 dir = GetDirToShip();
+                            float sign = c % 2 == 0 ? 1.0f : -1.0f;
+                            for (int i = 0; i < 5; ++i)
+                            {
+                                RegularShot(c, dir.Rotate(0.4f / 8.0f * i * sign));
+                                yield return 3;
+                            }
+                        }
                         break;
+                    }
 
                     case 2:
                         float old = ChildrenDesiredSpeed;
@@ -326,22 +336,33 @@ namespace Galaxy
                 switch (World.Random.Next() % 3)
                 {
                     case 0:
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
+                        for (int c = 0; c < 6; ++c)
+                        {
+                            Vector2 dir = Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * c);
+                            Vector2 dir2 = Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 3) % 6);
+                            for (int i = 0; i < 8; ++i)
+                            {
+                                Spheres[c].RegularShot(dir);
+                                Spheres[(c + 3) % 6].RegularShot(dir2);
+                                yield return 2;
+                            }
+                        }
                         break;
 
                     case 1:
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
+                    {
+                        for (int c = 0; c < 4; ++c)
+                        {
+                            Vector2 dir = GetDirToShip();
+                            float sign = c % 2 == 0 ? 1.0f : -1.0f;
+                            for (int i = 0; i < 14; ++i)
+                            {
+                                RegularShot(c, dir.Rotate(0.4f / 8.0f * i * sign));
+                                yield return 3;
+                            }
+                        }
                         break;
+                    }
 
                     case 2:
                         float old = ChildrenDesiredSpeed;
@@ -372,45 +393,63 @@ namespace Galaxy
                 switch (World.Random.Next() % 3)
                 {
                     case 0:
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
-                        yield return 4;
+                        for (int c = 0; c < 6; ++c)
+                        {
+                            for (int i = 0; i < 4; ++i)
+                            {
+                                Spheres[(c + 0) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 0) % 6));
+                                Spheres[(c + 1) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 1) % 6));
+                                Spheres[(c + 2) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 2) % 6));
+                                Spheres[(c + 3) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 3) % 6));
+                                Spheres[(c + 4) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 4) % 6));
+                                Spheres[(c + 5) % 6].RegularShot(Vector2.UnitX.Rotate(ChildrenRotation + MathHelper.TwoPi / 6.0f * (c + 5) % 6));
+                                yield return 2;
+                            }
+                        }
                         break;
 
                     case 1:
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        RegularShot(Physics.Position, GetDirToShip());
-                        yield return 4;
-                        break;
-
-                    case 2:
-                        float old = ChildrenDesiredSpeed;
-                        ChildrenDesiredSpeed = 0.2f;
-                        yield return 60;
-
-                        for (int i = 0; i < 5; ++i)
+                    {
+                        for (int c = 0; c < 4; ++c)
                         {
-                            for (int j = 0; j < 6; ++j)
+                            Vector2 dir = GetDirToShip();
+                            float sign = c % 2 == 0 ? 1.0f : -1.0f;
+                            for (int i = 0; i < 10; ++i)
                             {
-                                Spheres[j].AimedShot();
+                                RegularShot(c, dir.Rotate(0.4f / 8.0f * i * sign));
                                 yield return 3;
                             }
                         }
-
-                        ChildrenDesiredSpeed = old;
                         break;
+                    }
+
+                    case 2:
+                    {
+                        Vector2 dir = GetDirToShipWithLead(32.0f);
+                        for (int i = 0; i < 32; ++i)
+                        {
+                            RegularShot(i % 4, dir);
+                            yield return 4;
+                        }
+
+                        break;
+                    }
                 }
             }
         }
 
-        private void RegularShot(Vector2 position, Vector2 direction)
+
+        private void RegularShot(int cannon, Vector2 direction)
         {
+            Vector2[] offsets = {
+                new Vector2(-40.0f, 0.0f),
+                new Vector2(0.0f, 40.0f),
+                new Vector2(40.0f, 0.0f),
+                new Vector2(0.0f, -40.0f),
+            };
+
+            Vector2 position = Physics.Position + offsets[cannon].Rotate(CenterRotation);
+            
             float rotation = direction.ToAngle();
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8.0f, 2.0f);
             CAudio.PlaySound("EnemyShoot");
