@@ -126,15 +126,19 @@ namespace Galaxy
                 switch (World.Random.Next() % 2)
                 {
                     case 0:
-                        RegularShot(Physics.Position, Vector2.UnitY);
+                        Vector2 dir = GetDirToShip();
+                        RegularShot(Physics.Position, dir);
                         yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
+                        RegularShot(Physics.Position, dir.Rotate(-0.04f));
+                        RegularShot(Physics.Position, dir.Rotate(+0.04f));
                         yield return 4;
-                        RegularShot(Physics.Position, Vector2.UnitY);
+                        RegularShot(Physics.Position, dir.Rotate(-0.06f));
+                        RegularShot(Physics.Position, dir);
+                        RegularShot(Physics.Position, dir.Rotate(+0.06f));
                         yield return 4;
                         break;
 
-                    case 2:
+                    case 1:
                         RegularShot(Physics.Position, GetDirToShip());
                         yield return 4;
                         RegularShot(Physics.Position, GetDirToShip());

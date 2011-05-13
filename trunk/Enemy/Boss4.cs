@@ -55,7 +55,7 @@ namespace Galaxy
         {
             while (true)
             {
-                int Steps = 7;
+                int Steps = 6;
                 float Range = 0.3f;
                 float Sign = World.Random.NextSign();
                 Vector2 dir = Vector2.UnitY.Rotate(World.Random.NextSignedFloat() * 0.25f);
