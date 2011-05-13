@@ -49,6 +49,8 @@ namespace Galaxy
 
         protected override void OnDie()
         {
+            string death_sound = EnemyDeathSoundStrings[World.Random.Next() % 3];
+            CAudio.PlaySound(death_sound);
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyOrangeColor, 1.5f, null);
             World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position, CEnemy.EnemyGrayColor, 1.5f, null);
         }
