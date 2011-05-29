@@ -326,16 +326,20 @@ namespace Galaxy
                 switch (World.Random.Next() % 2)
                 {
                     case 0:
+                        Vector2 target = Physics.Position + Vector2.UnitY * -100.0f;
+                        CShip ship = World.GetNearestShip(Physics.Position);
+                        if (ship != null)
+                            target = ship.Physics.Position;
                         for (int i = 0; i < 4 + World.Random.Next() % 4; ++i)
                         {
-                            RegularShot(Physics.Position + cannons[0], GetDirToShip());
-                            RegularShot(Physics.Position + cannons[1], GetDirToShip());
-                            RegularShot(Physics.Position + cannons[2], GetDirToShip());
-                            RegularShot(Physics.Position + cannons[3], GetDirToShip());
-                            RegularShot(Physics.Position + cannons[4], GetDirToShip());
-                            RegularShot(Physics.Position + cannons[5], GetDirToShip());
+                            RegularShot(Physics.Position + cannons[0], (target - (Physics.Position + cannons[0])).Normal());
+                            RegularShot(Physics.Position + cannons[1], (target - (Physics.Position + cannons[1])).Normal());
+                            RegularShot(Physics.Position + cannons[2], (target - (Physics.Position + cannons[2])).Normal());
+                            RegularShot(Physics.Position + cannons[3], (target - (Physics.Position + cannons[3])).Normal());
+                            RegularShot(Physics.Position + cannons[4], (target - (Physics.Position + cannons[4])).Normal());
+                            RegularShot(Physics.Position + cannons[5], (target - (Physics.Position + cannons[5])).Normal());
 
-                            yield return 30;
+                            yield return 15;
                         }
                         break;
 
