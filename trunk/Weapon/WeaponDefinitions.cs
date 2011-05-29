@@ -169,11 +169,11 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 19.0f,
-                Damage = 0.15f,
+                Damage = 0.175f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
-                Energy = 0.25f,
+                Energy = 0.225f,
             };
         }
 
@@ -211,11 +211,11 @@ namespace Galaxy
             {
                 ReloadTime = reload,
                 Speed = 15.0f,
-                Damage = 0.125f,
+                Damage = 0.15f,
                 KickbackForce = 0.0f,
                 Offset = new Vector2(0.0f, 0.0f),
                 Rotation = MathHelper.ToRadians(rotation),
-                Energy = 0.15f,
+                Energy = 0.175f,
                 RandomRotation = MathHelper.ToRadians(5.0f),
             };
         }
