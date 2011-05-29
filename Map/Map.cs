@@ -175,6 +175,20 @@
  * - Gunthor
  * - Mystery
  * 
+ * BOSSES
+ * 
+ * - idea dump:
+ * crushing wall boss!
+ * enemy firing boss
+ * beam firing boss
+ * suction beam/zone boss
+ * air/force pushing boss
+ * invisible boss? X) (small sphere?)
+ * many blocks boss, blocks fall at player as destroyed (breaking wall thing)
+ * echidna style?
+ * balloon?
+ * 
+ * 
  * 
  * MUSIC
  * 
