@@ -216,7 +216,8 @@ namespace Galaxy
             };
 
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
-            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts);
+            //IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts);
+            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.MakeRandomPrimaryWeapons(game));
             IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in primary_weapon_parts)
             {
@@ -256,7 +257,8 @@ namespace Galaxy
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "" });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
-            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
+            //IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
+            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.MakeRandomSecondaryWeapons(game));
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in secondary_weapon_parts)
             {
@@ -300,7 +302,8 @@ namespace Galaxy
 
             MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "" });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickType };
-            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
+            //IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
+            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.MakeRandomSidekickWeapons(game));
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in sidekick_left_weapon_parts)
             {
@@ -339,7 +342,8 @@ namespace Galaxy
             };
 
             IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
-            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts);
+            //IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts);
+            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.MakeRandomChassisParts(game));
             IEnumerable<string> chassis_parts = chassis_parts_all.Distinct().OrderBy(C => ChassisDefinitions.GetPart(C).Price);
             foreach (string chassis_part in chassis_parts)
             {
@@ -367,7 +371,8 @@ namespace Galaxy
             };
 
             IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
-            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts);
+            //IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts);
+            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.MakeRandomGeneratorParts(game));
             IEnumerable<string> generator_parts = generator_parts_all.Distinct().OrderBy(G => GeneratorDefinitions.GetPart(G).Price);
             foreach (string generator_part in generator_parts)
             {
@@ -408,7 +413,8 @@ namespace Galaxy
             };
 
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
-            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
+            //IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
+            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.MakeRandomShieldParts(game));
             IEnumerable<string> shield_parts = shield_parts_all.Distinct().OrderBy(S => ShieldDefinitions.GetPart(S).Price);
             foreach (string shield_part in shield_parts)
             {

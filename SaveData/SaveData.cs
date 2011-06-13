@@ -21,6 +21,7 @@ namespace Galaxy
         public SProfilePilotState[] Pilots;
         public int[] StageScores;
         public int[] StageMedals;
+        public int RandomPartsSeed;
     }
 
     [Serializable]
@@ -201,6 +202,7 @@ namespace Galaxy
                         },
                         StageScores = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
                         StageMedals = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
+                        RandomPartsSeed = 0,
                     },
                     new SProfileGameData() {
                         Stage = "Start",
@@ -211,6 +213,7 @@ namespace Galaxy
                         },
                         StageScores = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
                         StageMedals = new int[] { 0,0,0,0,0,0,0,0,0,0,0,0 },
+                        RandomPartsSeed = 0,
                     },
                 },
                 Options = new SProfileOptionsData() {

@@ -153,6 +153,12 @@ namespace Galaxy
             if (Game.HudManager.IsPilotSelectCompleteAll())
             {
                 Game.HudManager.LockHuds();
+
+                // TODO: a bit of a hack place to put this
+                SProfile data = CSaveData.GetCurrentProfile();
+                data.Game[Game.PlayersInGame - 1].RandomPartsSeed = (new Random()).Next();
+                CSaveData.SetCurrentProfileData(data);
+
                 Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
                 return;
             }
