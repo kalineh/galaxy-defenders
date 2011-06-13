@@ -23,7 +23,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(120.0f, 120.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss1Chunk");
-            HealthMax = 10.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 8.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
 
@@ -90,7 +90,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 150.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss1");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 40.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 25.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
 
