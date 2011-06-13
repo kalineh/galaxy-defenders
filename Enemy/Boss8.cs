@@ -229,7 +229,7 @@ namespace Galaxy
                         {
                             FireLowerCannon(i % 3, dir.Rotate(-0.3f + 0.6f / 12.0f * (float)i));
                             FireLowerCannon(5 - i % 3, dir.Rotate(0.3f - 0.6f / 12.0f * (float)i));
-                            yield return 1;
+                            yield return 2;
                         }
                         break;
                     }
@@ -265,19 +265,19 @@ namespace Galaxy
                         break;
 
                     case 1:
-                        for (int j = 0; j < 8; ++j)
+                        for (int j = 0; j < 3; ++j)
                         {
                             Vector2 dir = GetDirToShip();
                             for (int i = 0; i < 6; ++i)
                             {
                                 FireUpperCannon(i % 3, dir);
-                                yield return 5;
+                                yield return 3;
                             }
 
                             for (int i = 0; i < 6; ++i)
                             {
                                 FireUpperCannon(i % 3 + 3, dir);
-                                yield return 5;
+                                yield return 3;
                             }
                         }
                         break;
@@ -289,7 +289,7 @@ namespace Galaxy
                         {
                             FireUpperCannon(i % 3, dir.Rotate(-0.3f + 0.6f / 12.0f * (float)i));
                             FireUpperCannon(5 - i % 3, dir.Rotate(0.3f - 0.6f / 12.0f * (float)i));
-                            yield return 1;
+                            yield return 2;
                         }
                         break;
                     }
@@ -303,7 +303,7 @@ namespace Galaxy
                             {
                                 FireUpperCannon(i % 3, dir.Rotate(-0.3f + 0.6f / 12.0f * (float)i));
                                 FireUpperCannon(5 - i % 3, dir.Rotate(0.3f - 0.6f / 12.0f * (float)i));
-                                yield return 1;
+                                yield return 2;
                             }
                         }
                         break;
@@ -317,10 +317,9 @@ namespace Galaxy
             Vector2 base_ = Physics.Position;
             while (true)
             {
-                float time = Health < HealthMax * 0.5f ? 1.25f : 1.0f;
                 Vector2 target = new Vector2(
-                    (float)Math.Sin(AliveTime * 0.01f * time) * 200.0f,
-                    (float)-Math.Sin(AliveTime * 0.02f * time) * 80.0f
+                    (float)Math.Sin(AliveTime * 0.01f) * 200.0f,
+                    (float)-Math.Sin(AliveTime * 0.02f) * 80.0f
                 );
 
                 Physics.Position = Vector2.Lerp(Physics.Position, base_ + target, 0.1f);

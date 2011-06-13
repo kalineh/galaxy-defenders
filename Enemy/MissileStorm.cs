@@ -31,7 +31,7 @@ namespace Galaxy
 
             FireDelay = 0.05f;
             FireCooldown = 0;
-            FireDamage = 7.5f;
+            FireDamage = 6.0f;
             FireSpeed = 2.5f;
             FireSequenceCountdown = 60;
             FireRotationDirection = World.Random.NextSign();
