@@ -80,6 +80,7 @@
     <Compile Include="Enemy\Boss6.cs" />
     <Compile Include="Enemy\Boss7.cs" />
     <Compile Include="Enemy\Boss8.cs" />
+    <Compile Include="Enemy\Boss9.cs" />
     <Compile Include="Enemy\DoubleTurret.cs" />
     <Compile Include="Enemy\MiniSquare.cs" />
     <Compile Include="Enemy\MissileStorm.cs" />
