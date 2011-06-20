@@ -18,6 +18,7 @@ namespace Galaxy
 
         public int TeleportCountdown { get; set; }
         public int InTeleportCountdown { get; set; }
+        public int TriggerTeleportCount { get; set; }
 
         private int FireWaves { get; set; }
 
@@ -166,8 +167,15 @@ namespace Galaxy
         {
             base.TakeDamage(damage, source);
 
-            if (FireWaves < 0)
-                FireWaves = 0;
+            TriggerTeleportCount += 1;
+            if (TriggerTeleportCount > 6)
+            {
+                if (FireWaves < 0)
+                {
+                    TriggerTeleportCount = 0;
+                    FireWaves = 0;
+                }
+            }
         }
     }
 }

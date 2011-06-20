@@ -22,11 +22,11 @@ stage.AddElement(0,
 new Galaxy.CStageElementSpawnerEnemy() {
 NoDropCoins = false,
 Powerup = false,
-Type = typeof(Galaxy.CBoss9),
+Type = typeof(Galaxy.CBoss10),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 16.0f,
-Y = -472.0f,
+X = 280.0f,
+Y = -696.0f,
 },
 },
 MoverPresetName = "None",
@@ -34,8 +34,8 @@ MoverSpeedMultiplier = 1.0f,
 MoverTransitionMultiplier = 1.0f,
 CustomElement = null,
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 16.0f,
-Y = -472.0f,
+X = 280.0f,
+Y = -696.0f,
 },
 });
 stage.AddElement(0, 

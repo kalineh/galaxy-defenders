@@ -53,6 +53,7 @@ namespace Galaxy
         ObjectDestroyed,
         WeaponIneffective,
         Boss8Wind,
+        Boss10BallTrail,
     }
 
     public struct SEffectDefinition
@@ -1357,6 +1358,37 @@ namespace Galaxy
                         AngleDelta = 0.0f,
                         AngleDeltaVariation = 0.0f,
                         Color = Color.White,
+                        Alpha = 1.0f,
+                        AlphaVariation = 0.0f,
+                        AlphaDelta = 0.0f,
+                        AlphaDeltaVariation = 0.0f,
+                        Lifetime = 60,
+                        LifetimeVariation = 15,
+                    }
+                },
+
+                {
+                    EParticleType.Boss10BallTrail,
+                    new SEffectDefinition()
+                    {
+                        Type = EParticleType.None,
+                        Count = 1,
+                        Visual = CParticleEffectManager.Dot,
+                        Position = Vector2.Zero,
+                        PositionVariationCircle = new Vector2(28.0f, 28.0f),
+                        PositionVariationBox = Vector2.Zero,
+                        PositionDelta = Vector2.Zero,
+                        PositionDeltaVariation = new Vector2(0.4f, 0.4f),
+                        Scale = new Vector2(0.3f, 0.3f),
+                        ScaleVariation = Vector2.Zero,
+                        ScaleDelta = new Vector2(-0.005f, -0.005f),
+                        ScaleDeltaVariation = Vector2.Zero,
+                        OutDelta = 0.0f,
+                        Angle = 0.0f,
+                        AngleVariation = MathHelper.TwoPi,
+                        AngleDelta = 0.0f,
+                        AngleDeltaVariation = 0.0f,
+                        Color = CEnemy.EnemyGrayColor,
                         Alpha = 1.0f,
                         AlphaVariation = 0.0f,
                         AlphaDelta = 0.0f,

@@ -88,7 +88,7 @@ namespace Galaxy
             Vector2 ofs = Target.Physics.Position - Physics.Position;
             Vector2 fwd = Physics.GetDir();
             float dot = Vector2.Dot(ofs, fwd.Perp());
-            Physics.AngularVelocity = Math.Sign(dot) * 0.01f;
+            Physics.AngularVelocity = Math.Sign(dot) * 0.0035f;
             Physics.Velocity = Physics.GetDir() * Speed;
 
             Speed += 0.075f;
