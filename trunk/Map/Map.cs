@@ -179,12 +179,12 @@
  * 
  * - idea dump:
  * crushing wall boss!
- * enemy firing boss
+ * enemy firing boss (boss 9)
  * beam firing boss
  * suction beam/zone boss
  * air/force pushing boss
  * invisible boss? X) (small sphere?)
- * many blocks boss, blocks fall at player as destroyed (breaking wall thing)
+ * many blocks boss, blocks fall at player as destroyed (breaking wall thing) boss 11
  * echidna style?
  * balloon?
  * 

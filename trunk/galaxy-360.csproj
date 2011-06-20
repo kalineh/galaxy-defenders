@@ -73,6 +73,7 @@
     <Compile Include="Effects\ParticleEffectDefinitions.cs" />
     <Compile Include="Enemy\BigBall.cs" />
     <Compile Include="Enemy\Boss1.cs" />
+    <Compile Include="Enemy\Boss10.cs" />
     <Compile Include="Enemy\Boss2.cs" />
     <Compile Include="Enemy\Boss3.cs" />
     <Compile Include="Enemy\Boss4.cs" />

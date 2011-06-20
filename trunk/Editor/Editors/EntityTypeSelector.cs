@@ -69,6 +69,7 @@ namespace Galaxy
             typeof(CBoss7),
             typeof(CBoss8),
             typeof(CBoss9),
+            typeof(CBoss10),
             typeof(CBlackHole),
             typeof(CBonusShip),
             typeof(CCannon),
