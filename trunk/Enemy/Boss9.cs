@@ -222,7 +222,6 @@ namespace Galaxy
 
                 int attack_type = World.Random.Next() % 4;
 
-                attack_type = 0;
                 switch (attack_type)
                 {
                     case 0:

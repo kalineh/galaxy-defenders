@@ -207,7 +207,7 @@ namespace Galaxy
         public void FadeOut()
         {
             Collision.Enabled = false;
-            FadeTimer = 60 * -25;
+            FadeTimer = 60 * -60;
         }
 
         public override void UpdateCollision()
@@ -233,7 +233,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 60.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss10");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -0.0f;
-            HealthMax = 60.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 30.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
 
