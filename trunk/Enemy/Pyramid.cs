@@ -53,6 +53,7 @@ namespace Galaxy
                     float adjusted = TurretRotation + MathHelper.PiOver2;
                     Vector2 turret_offset = Vector2.UnitX.Rotate(adjusted) * 34.0f;
                     CProjectile shot = CEnemyMiniShot.Spawn(World, Physics.Position + turret_offset, adjusted, 9.0f, 1.0f);
+                    CAudio.PlaySound("EnemyCannonShoot");
                     shot.Physics.Velocity += World.ScrollSpeed * -Vector2.UnitY;
                 }
             }
