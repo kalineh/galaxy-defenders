@@ -75,6 +75,7 @@
     <Compile Include="Enemy\Boss1.cs" />
     <Compile Include="Enemy\Boss10.cs" />
     <Compile Include="Enemy\Boss11.cs" />
+    <Compile Include="Enemy\Boss12.cs" />
     <Compile Include="Enemy\Boss2.cs" />
     <Compile Include="Enemy\Boss3.cs" />
     <Compile Include="Enemy\Boss4.cs" />
