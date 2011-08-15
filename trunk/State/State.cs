@@ -11,5 +11,6 @@ namespace Galaxy
         public virtual void OnExit() {}
         public abstract void Update();
         public abstract void Draw();
+        public virtual void PostHudDraw() {}
     }
 }

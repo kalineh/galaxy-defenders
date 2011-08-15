@@ -20,6 +20,14 @@ namespace Galaxy
         public static Texture2D MenuItemInvalidTexture { get; set; }
         public static Texture2D MenuItemInvalidSelectedTexture { get; set; }
         public bool AllowHighlightInvalid { get; set; }
+        public GameControllerIndex GameControllerIndex { get; set; }
+        public static GameControllerIndex ActiveGameControllerIndexPC { get; set; }
+        public bool HideText { get; set; }
+        public string CursorIconName { get; set; }
+        public CVisual CursorIconVisual { get; set; }
+
+        public delegate void MenuOnCancel();
+        public MenuOnCancel OnCancel { get; set; }
 
         public static void LoadMenuTextures(CGalaxy game)
         {
@@ -75,6 +83,8 @@ namespace Galaxy
             public object Data;
             public int AxisValue;
             public bool Visible;
+            public CVisual OverlayIcon;
+            public Vector2 OverlayOffset;
 
             public CMenuOption()
             {
@@ -109,6 +119,11 @@ namespace Galaxy
         public Vector2 Position { get; set; }
         public bool Centered { get; set; }
 
+        static CMenu()
+        {
+            ActiveGameControllerIndexPC = GameControllerIndex.One;
+        }
+
         public CMenu(CGalaxy game)
         {
             Game = game;
@@ -117,6 +132,12 @@ namespace Galaxy
             Position = Vector2.Zero;
             Visible = true;
             AllowHighlightInvalid = true;
+            GameControllerIndex = GameControllerIndex.One;
+        }
+
+        public bool CanKeyboardInput()
+        {
+            return ActiveGameControllerIndexPC == GameControllerIndex;
         }
 
         public void Update()
@@ -124,15 +145,23 @@ namespace Galaxy
             if (!Visible)
                 return;
 
-            if (Game.Input.IsKeyPressed(Keys.Escape) || Game.Input.IsPadCancelPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Escape)) || Game.Input.IsPadCancelPressed(GameControllerIndex))
             {
-                foreach (CMenuOption cancel_option in VisibleMenuOptions)
+                if (OnCancel != null)
                 {
-                    if (cancel_option.CancelOption)
+                    CAudio.PlaySound("MenuCancel");
+                    OnCancel();
+                }
+                else
+                {
+                    foreach (CMenuOption cancel_option in VisibleMenuOptions)
                     {
-                        CAudio.PlaySound("MenuCancel");
-                        cancel_option.Highlight(cancel_option.Data);
-                        cancel_option.Select(cancel_option.Data);
+                        if (cancel_option.CancelOption)
+                        {
+                            CAudio.PlaySound("MenuCancel");
+                            cancel_option.Highlight(cancel_option.Data);
+                            cancel_option.Select(cancel_option.Data);
+                        }
                     }
                 }
             }
@@ -160,7 +189,7 @@ namespace Galaxy
                 option.Axis(option.Data, option.AxisValue);
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Enter) || Game.Input.IsPadConfirmPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Enter)) || Game.Input.IsPadConfirmPressed(GameControllerIndex))
             {
                 if (MenuOptions[Cursor] != null && MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data))
                 {
@@ -171,7 +200,7 @@ namespace Galaxy
                     CAudio.PlaySound("MenuCancel");
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Left) || Game.Input.IsPadLeftPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Left)) || Game.Input.IsPadLeftPressed(GameControllerIndex))
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -183,7 +212,7 @@ namespace Galaxy
                     option.AxisValue += 1;
             }
 
-            if (Game.Input.IsKeyPressed(Keys.Right) || Game.Input.IsPadRightPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Right)) || Game.Input.IsPadRightPressed(GameControllerIndex))
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -209,6 +238,19 @@ namespace Galaxy
                 {
                     bool valid = option.SelectValidate(option.Data);
                     bool selected = option == MenuOptions[Cursor];
+
+                    bool was_icon = TryRenderMenuOption(option, position, sprite_batch);
+                    if (was_icon)
+                    {
+                        if (option == MenuOptions[Cursor])
+                        {
+                            TryRenderCursorIcon(option, position, sprite_batch);
+                            TryRenderOverlayIcon(option, position, sprite_batch);
+                        }
+
+                        position += new Vector2(0.0f, option.IconVisual.Texture.Height + 0.0f);
+                        continue;
+                    }
 
                     if (option.PanelType != PanelType.None)
                     {
@@ -245,7 +287,12 @@ namespace Galaxy
 
                         Vector2 center = position + new Vector2(texture.Width, texture.Height) / 2.0f;
                         sprite_batch.Draw(texture, position, null, Color.White);
-                        option.TextLabel.Draw(sprite_batch, Game.GameRegularFont, center, color);
+
+                        if (HideText == false)
+                        {
+                            option.TextLabel.Draw(sprite_batch, Game.GameRegularFont, center, color);
+                        }
+
                         option.CustomRender(option.Data, sprite_batch, center);
 
                         position += Vector2.UnitY * 26.0f;
@@ -288,7 +335,7 @@ namespace Galaxy
         public int GetCursorInputOffset()
         {
             int offset = 0;
-            if (Game.Input.IsKeyPressed(Keys.Down) || Game.Input.IsPadDownPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Down)) || Game.Input.IsPadDownPressed(GameControllerIndex))
             {
                 offset += 1;
                 if (!AllowHighlightInvalid)
@@ -297,7 +344,7 @@ namespace Galaxy
                         offset += 1;
                 }
             }
-            if (Game.Input.IsKeyPressed(Keys.Up) || Game.Input.IsPadUpPressedAny())
+            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Up)) || Game.Input.IsPadUpPressed(GameControllerIndex))
             {
                 offset -= 1;
                 if (!AllowHighlightInvalid)
@@ -332,19 +379,48 @@ namespace Galaxy
             if (option.IconName == null)
                 return null;
 
-            if (option.IconVisual != null)
+            if (option.IconVisual == null)
                 option.IconVisual = CVisual.MakeSpriteFromGame(Game, option.IconName, Vector2.One, Color.White);
 
             return option.IconVisual;
         }
 
-        public void TryRenderMenuOption(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
+        public CVisual GetCursorIcon()
+        {
+            if (CursorIconName == null)
+                return null;
+
+            if (CursorIconVisual == null)
+                CursorIconVisual = CVisual.MakeSpriteFromGame(Game, CursorIconName, Vector2.One, Color.White);
+
+            return CursorIconVisual;
+        }
+
+        public bool TryRenderMenuOption(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
         {
             CVisual icon = GetIcon(option);
+            if (icon == null)
+                return false;
+
+            icon.Draw(sprite_batch, position, 0.0f);
+            return true;
+        }
+
+        public void TryRenderCursorIcon(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
+        {
+            CVisual icon = GetCursorIcon();
             if (icon == null)
                 return;
 
             icon.Draw(sprite_batch, position, 0.0f);
+        }
+
+        public void TryRenderOverlayIcon(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
+        {
+            if (option.OverlayIcon == null)
+                return;
+
+            option.OverlayIcon.Draw(sprite_batch, position + option.OverlayOffset, 0.0f);
         }
     }
 }

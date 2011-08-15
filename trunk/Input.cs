@@ -227,6 +227,17 @@ namespace Galaxy
                    IsPadCancelPressed(GameControllerIndex.Two);
         }
 
+        public bool IsPadCancelPressedAnyFilter(GameControllerIndex? filter)
+        {
+            if (filter == null)
+                return IsPadCancelPressedAny();
+
+            if (filter == GameControllerIndex.One)
+                return IsPadCancelPressed(GameControllerIndex.Two);
+            else
+                return IsPadCancelPressed(GameControllerIndex.One);
+        }
+
         public bool IsPadStartPressed(GameControllerIndex game_controller_index)
         {
             bool is_down = IsPadStartDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);

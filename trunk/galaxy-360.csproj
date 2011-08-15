@@ -153,6 +153,7 @@
     <Compile Include="Stage\Elements\StageElementMusicChanger.cs" />
     <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
+    <Compile Include="ShopMenu.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Pilot.cs" />
