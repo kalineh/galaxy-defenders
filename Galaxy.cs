@@ -284,7 +284,10 @@ namespace Galaxy
             HudManager = new CHudManager(this);
 
             // Enter our default state now that assets are ready.
-            State = new CStateMainMenu(this);
+            //State = new CStateMainMenu(this);
+            State = new CStateShop(this);
+
+            HudManager.LockHuds();
         }
 
         /// <summary>
@@ -358,6 +361,8 @@ namespace Galaxy
             GraphicsDevice.RenderState.ScissorTestEnable = false;
 
             HudManager.Draw();
+
+            State.PostHudDraw();
 
             FrameRateDisplay.Draw(DefaultSpriteBatch);
 

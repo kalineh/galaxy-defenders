@@ -73,6 +73,23 @@ namespace Galaxy
             return CanDowngrade(weapon_part.Type, weapon_part.Level, steps);
         }
 
+        public static string GetDisplayName(string typename)
+        {
+            if (!WeaponDefinitions.Items.ContainsKey(typename))
+                return "Unknown";
+
+            return WeaponDefinitions.Items[typename].DisplayName;
+        }
+
+        public static string GetIconName(string typename)
+        {
+            if (!WeaponDefinitions.Items.ContainsKey(typename))
+                return null;
+
+            //return WeaponDefinitions.Items[typename].IconName;
+            return "Textures/UI/Shop/IconItemFrontLaser";
+        }
+
         public static string GetNextWeaponInCycle(string current, List<string> types)
         {
             if (current == "")
@@ -517,7 +534,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 650,
-                    DisplayName = "Front\nLaser",
+                    DisplayName = "Front Laser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -638,7 +655,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 700,
-                    DisplayName = "Spread\nLaser",
+                    DisplayName = "Spread Laser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -775,7 +792,7 @@ namespace Galaxy
             { "Plasma", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootPlasma",
-                    DisplayName = "Plasma\nShot",
+                    DisplayName = "Plasma Shot",
                     BasePrice = 1250,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -836,7 +853,7 @@ namespace Galaxy
             { "PlasmaFocus", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootPlasma",
-                    DisplayName = "Plasma\nShot",
+                    DisplayName = "Plasma Shot",
                     BasePrice = 1250,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -898,7 +915,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 800,
-                    DisplayName = "Flame\nThrower",
+                    DisplayName = "Flame Thrower",
                     Sound = "WeaponShootFlame",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -955,7 +972,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 800,
-                    DisplayName = "Flame\nThrower",
+                    DisplayName = "Flame Thrower",
                     Sound = "WeaponShootFlame",
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1097,7 +1114,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 800,
-                    DisplayName = "Lightning\nGun",
+                    DisplayName = "Lightning Gun",
                     Sound = "WeaponShootLaser", // TODO: SFX
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1164,7 +1181,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 800,
-                    DisplayName = "Lightning\nGun",
+                    DisplayName = "Lightning Gun",
                     Sound = "WeaponShootLaser", // TODO: SFX
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1219,7 +1236,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 2500,
-                    DisplayName = "Beam\nWeapon",
+                    DisplayName = "Beam Weapon",
                     // TODO: too long, doesnt stop quickly
                     //Sound = "WeaponShootBeam",
                     Data = new List<List<SWeaponData>>() {
@@ -1263,7 +1280,7 @@ namespace Galaxy
                 new SWeaponDefinition()
                 {
                     BasePrice = 2500,
-                    DisplayName = "Beam\nWeapon",
+                    DisplayName = "Beam Weapon",
                     // TODO: too long, doesnt stop quickly
                     //Sound = "WeaponShootBeam",
                     Data = new List<List<SWeaponData>>() {
@@ -1307,7 +1324,7 @@ namespace Galaxy
             { "Missile", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
-                    DisplayName = "Missile\nRack",
+                    DisplayName = "Missile Rack",
                     BasePrice = 1000,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1356,7 +1373,7 @@ namespace Galaxy
             { "SeekBomb", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootSeekBomb",
-                    DisplayName = "Seek\nBomb",
+                    DisplayName = "Seek Bomb",
                     BasePrice = 500,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1446,7 +1463,7 @@ namespace Galaxy
             { "DrunkMissile", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
-                    DisplayName = "Drunk\nMissile",
+                    DisplayName = "Drunk Missile",
                     BasePrice = 750,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
@@ -1487,7 +1504,7 @@ namespace Galaxy
             { "MiniShot", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMiniShot",
-                    DisplayName = "Mini\nShot",
+                    DisplayName = "Mini Shot",
                     BasePrice = 2500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
@@ -1509,7 +1526,7 @@ namespace Galaxy
             { "ChargeShot", 
                 new SWeaponDefinition() {
                     Sound = "WeaponShootLaser",
-                    DisplayName = "Charge\nShot",
+                    DisplayName = "Charge Shot",
                     BasePrice = 12500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {

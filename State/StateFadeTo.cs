@@ -81,6 +81,19 @@ namespace Galaxy
             Fader.Draw(SpriteBatch);
             SpriteBatch.End();
         }
+
+        public override void PostHudDraw()
+        {
+            if (Fader.IsFadeIn())
+            {
+                Source.PostHudDraw();
+            }
+
+            if (Fader.IsFadeOut())
+            {
+                Target.PostHudDraw();
+            }
+        }
     }
 
     public class CStateChangeTo

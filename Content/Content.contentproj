@@ -1092,8 +1092,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\Shop\IconFrontLaser.png">
-      <Name>IconFrontLaser</Name>
+    <Compile Include="Textures\UI\Shop\IconItemFrontLaser.png">
+      <Name>IconItemFrontLaser</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -1784,6 +1784,53 @@
     </Compile>
     <Compile Include="Textures\Enemy\Boss12Eye.png">
       <Name>Boss12Eye</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconCategoryChassis.png">
+      <Name>IconCategoryChassis</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconCategoryCursor.png">
+      <Name>IconCategoryCursor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconItemCursor.png">
+      <Name>IconItemCursor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconItemNone.png">
+      <Name>IconItemNone</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\ShopUpgradeBars6.png">
+      <Name>ShopUpgradeBars6</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\ShopUpgradeBars8.png">
+      <Name>ShopUpgradeBars8</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\ShopItemPanel.png">
+      <Name>ShopItemPanel</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
