@@ -366,10 +366,18 @@ namespace Galaxy
         {
             MenuUpdateHighlights();
 
-            if (ItemMenu == null)
-                CategoryMenu.Update();
+            if (IsFlyToStage)
+            {
+                if (Game.Input.IsPadBackPressed(ControllerIndex) || Game.Input.IsKeyPressed(Keys.Escape))
+                    CancelFlyToStage();
+            }
             else
-                ItemMenu.Update();
+            {
+                if (ItemMenu == null)
+                    CategoryMenu.Update();
+                else
+                    ItemMenu.Update();
+            }
 
             UpdateMenuPositions();
 
@@ -585,7 +593,11 @@ namespace Galaxy
         {
             RefreshSampleDisplay();
 
+            SampleShip.IsInvincible -= 1;
+            SampleShip.IsReflectBullets -= 1;
+
             IsFlyToStage = false;
+            IsMoveToStage = false;
         }
 
         private void LockWorkingProfile()
@@ -640,7 +652,8 @@ namespace Galaxy
             Vector2 info_position = GetInfoPosition();
             Vector2 text_position = info_position + GetInfoOffset();
 
-            Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, info_position, Color.White);
+            SpriteEffects flip = ControllerIndex == GameControllerIndex.Two ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, info_position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, flip, 0.0f);
 
             if (ItemMenu == MenuPrimaryWeapon)
             {
@@ -1322,7 +1335,7 @@ namespace Galaxy
             float y = Game.Resolution.Y;
             return ControllerIndex == GameControllerIndex.One ?
                 new Vector2(x * 0.291f, y * 0.351f) :
-                new Vector2(x * 0.601f, y * 0.351f);
+                new Vector2(x * 0.707f, y * 0.351f);
         }
 
         private Vector2 GetMenuPanelOffset()
@@ -1331,7 +1344,7 @@ namespace Galaxy
             float y = Game.Resolution.Y;
             return ControllerIndex == GameControllerIndex.One ?
                 new Vector2(x * 0.065f, y * 0.060f) :
-                new Vector2(x * 0.016f, y * 0.022f);
+                new Vector2(x * 0.047f, y * 0.060f);
         }
 
         private Vector2 GetInfoPosition()
@@ -1340,7 +1353,7 @@ namespace Galaxy
             float y = Game.Resolution.Y;
             return ControllerIndex == GameControllerIndex.One ?
                 new Vector2(x * 0.020f, y * 0.400f) :
-                new Vector2(x * 0.920f, y * 0.400f);
+                new Vector2(x * 0.765f, y * 0.400f);
         }
 
         private Vector2 GetInfoOffset()
@@ -1378,6 +1391,10 @@ namespace Galaxy
 
         private void ReturnToMainMenu()
         {
+            // ignore if flying to stage, will cancel first
+            if (IsFlyToStage)
+                return;
+
             Game.State = new CStateFadeTo(Game, Game.State, new CStateMainMenu(Game));
         }
 
