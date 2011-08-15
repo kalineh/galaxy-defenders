@@ -126,6 +126,7 @@ namespace Galaxy
         public void Initialize(GameControllerIndex controller_index, CWorld world)
         {
             World = world;
+            ControllerIndex = controller_index;
 
             //
             // Upgrade Ship
@@ -534,17 +535,15 @@ namespace Galaxy
             int base_ = WorkingProfile.Money;
             int diff = WorkingProfile.Money - LockedProfile.Money;
 
-            if (diff == 0)
-                return;
-
-            Color color = Color.White;
+            Color color = new Color(160, 160, 160);
             if (diff < 0)
-                color = Color.LightSalmon;
+                color = Color.RosyBrown;
             if (diff > 0)
-                color = Color.LightGreen;
+                color = Color.LightBlue;
 
             // TODO: money display
-            Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, WorkingProfile.Money.ToString(), Game.HudManager.Huds[(int)ControllerIndex].MoneyTextPosition + new Vector2(0.0f, -48.0f), color, 0.0f, Vector2.Zero, 1.5f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
+            Game.HudManager.Huds[(int)ControllerIndex].ShowMoney = false;
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, Game.HudManager.Huds[(int)ControllerIndex].MoneyTextPosition, WorkingProfile.Money.ToString(), color, 1.15f);
         }
 
         private void RefreshSampleDisplay()
@@ -1373,11 +1372,8 @@ namespace Galaxy
         private void CloseItemMenu()
         {
             ItemMenu = null;
-        }
-
-        private void ReturnToUpgradeMenu(object tag)
-        {
-            CloseItemMenu();
+            RevertWorkingProfile(null);
+            RefreshSampleDisplay();
         }
 
         private void ReturnToMainMenu()

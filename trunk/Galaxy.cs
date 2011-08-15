@@ -221,6 +221,7 @@ namespace Galaxy
             {
                 GraphicsDevice.RenderState.ScissorTestEnable = false;
                 GraphicsDevice.Clear(Color.Black);
+                GraphicsDevice.RenderState.ScissorTestEnable = true;
             }
 
             Vector3 translation = new Vector3(width - Resolution.X * scale_factor.X, height - Resolution.Y * scale_factor.Y, 0.0f);
@@ -355,16 +356,15 @@ namespace Galaxy
 
             GraphicsDevice.RenderState.ScissorTestEnable = false;
             GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.RenderState.ScissorTestEnable = true;
 
             State.Draw();
 
             GraphicsDevice.RenderState.ScissorTestEnable = false;
-
             HudManager.Draw();
-
             State.PostHudDraw();
-
             FrameRateDisplay.Draw(DefaultSpriteBatch);
+            GraphicsDevice.RenderState.ScissorTestEnable = true;
 
             if (CSaveData.SaveIconVisible)
             {
