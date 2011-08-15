@@ -589,8 +589,6 @@ namespace Galaxy
             if (Game.EditorMode)
                 return;
 
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
-
             //
             // NOTE: GameCamera.ScreenSize is the game area screensize (between the two hud elements)
             //       GraphicsDevice.Viewport is the actual screen area

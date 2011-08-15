@@ -36,10 +36,8 @@ namespace Galaxy
 
         public void Draw()
         {
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = false;
             DrawHuds();
             DrawHudsProfileSelect();
-            Game.GraphicsDevice.RenderState.ScissorTestEnable = true;
         }
 
         public void ActivatePressStart()
