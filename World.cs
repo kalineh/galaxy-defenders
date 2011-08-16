@@ -408,7 +408,8 @@ namespace Galaxy
             StageEndFader = StageEndFader ?? new CFader(Game) { TransitionTime = 2.0f };
             StageEndFader.Update();
 
-            StageClearPanel.Update();
+            if (!StageFinalEndExitFlag)
+                StageClearPanel.Update();
 
             if (ScorePanel != null)
                 ScorePanel.Update();
@@ -417,16 +418,16 @@ namespace Galaxy
             {
                 if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
                 {
-                    if (ScorePanel == null)
+                    if (!StageFinalEndExitFlag)
                     {
                         SetScoreSaveData();
-                        ScorePanel = new CScorePanel(Game);
-                        ScorePanel.SetVisible(true);
-                        ScorePanel.HighlightIndex = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
+
+                        // NOTE: disabling feature, too confusing
+                        //ScorePanel = new CScorePanel(Game);
+                        //ScorePanel.SetVisible(true);
+                        //ScorePanel.HighlightIndex = CMap.GetMapNodeByStageName(Stage.Definition.Name).SaveIndex;
+
                         StageEndCounter = AllowExit - 20;
-                    }
-                    else
-                    {
                         StageFinalEndExitFlag = true;
                     }
                 }
@@ -676,7 +677,7 @@ namespace Galaxy
                 Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
                 if (ScorePanel != null && ScorePanel.IsVisible())
                     ScorePanel.Draw(Game.DefaultSpriteBatch);
-                else
+                else if (!StageFinalEndExitFlag)
                     StageClearPanel.Draw(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
             }
@@ -1106,7 +1107,10 @@ namespace Galaxy
             int players_index = Game.PlayersInGame - 1;
 
             foreach (CShip ship in Ships)
+            {
                 profile.Game[players_index].Pilots[(int)ship.GameControllerIndex].Money += ship.Score;
+                ship.Score = 0;
+            }
 
             int total_money =
                 profile.Game[players_index].Pilots[0].Money +
