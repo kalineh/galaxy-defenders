@@ -177,7 +177,7 @@ namespace Galaxy
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
         {
             {
-                "Standard",
+                "Standard Generator",
                 new CGeneratorPart() {
                     Price = 1000,
                     Energy = 3.0f,
@@ -186,7 +186,7 @@ namespace Galaxy
                 }
             },
             {
-                "Conduction",
+                "Conduction Generator",
                 new CGeneratorPart() {
                     Price = 2500,
                     Energy = 4.0f,
@@ -195,7 +195,7 @@ namespace Galaxy
                 }
             },
             {
-                "Battery",
+                "Battery Generator",
                 new CGeneratorPart() {
                     Price = 3500,
                     Energy = 7.0f,
@@ -204,7 +204,7 @@ namespace Galaxy
                 }
             },
             {
-                "Booster",
+                "Booster Generator",
                 new CGeneratorPart() {
                     Price = 7500,
                     Energy = 5.0f,
@@ -213,7 +213,7 @@ namespace Galaxy
                 }
             },
             {
-                "Impulse",
+                "Impulse Generator",
                 new CGeneratorPart() {
                     Price = 12000,
                     Energy = 7.0f,
@@ -222,7 +222,7 @@ namespace Galaxy
                 }
             },
             {
-                "Microwave",
+                "Microwave Generator",
                 new CGeneratorPart() {
                     Price = 14500,
                     Energy = 8.0f,
@@ -231,7 +231,7 @@ namespace Galaxy
                 }
             },
             {
-                "Vortex",
+                "Vortex Generator",
                 new CGeneratorPart() {
                     Price = 18000,
                     Energy = 9.0f,
@@ -240,7 +240,7 @@ namespace Galaxy
                 }
             },
             {
-                "Capacitor",
+                "Capacitor Generator",
                 new CGeneratorPart() {
                     Price = 23500,
                     Energy = 14.0f,
@@ -249,7 +249,7 @@ namespace Galaxy
                 }
             },
             {
-                "Electron",
+                "Electron Generator",
                 new CGeneratorPart() {
                     Price = 26500,
                     Energy = 12.0f,
@@ -258,7 +258,7 @@ namespace Galaxy
                 }
             },
             {
-                "Kinetic",
+                "Kinetic Generator",
                 new CGeneratorPart() {
                     Price = 12000,
                     Energy = 10.0f,
@@ -269,7 +269,7 @@ namespace Galaxy
                 }
             },
             {
-                "Magnetic",
+                "Magnetic Generator",
                 new CGeneratorPart() {
                     Price = 27000,
                     Energy = 16.0f,
@@ -280,7 +280,7 @@ namespace Galaxy
                 }
             },
             {
-                "Fusion",
+                "Fusion Generator",
                 new CGeneratorPart() {
                     Price = 45000,
                     Energy = 7.5f,
@@ -307,7 +307,7 @@ namespace Galaxy
                     Shield = 6.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.50f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldLight",
                 }
             },
             {
@@ -317,7 +317,7 @@ namespace Galaxy
                     Shield = 8.0f,
                     EnergyDrain = 0.035f,
                     Efficiency = 0.35f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldFiber",
                 }
             },
             {
@@ -327,7 +327,7 @@ namespace Galaxy
                     Shield = 7.0f,
                     EnergyDrain = 0.030f,
                     Efficiency = 0.65f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldElectric",
                 }
             },
             {
@@ -337,7 +337,7 @@ namespace Galaxy
                     Shield = 9.0f,
                     EnergyDrain = 0.040f,
                     Efficiency = 0.75f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldAdvanced",
                 }
             },
             {
@@ -347,7 +347,7 @@ namespace Galaxy
                     Shield = 7.5f,
                     EnergyDrain = 0.065f,
                     Efficiency = 0.6f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldMicro",
                 }
             },
             {
@@ -357,7 +357,7 @@ namespace Galaxy
                     Shield = 11.0f,
                     EnergyDrain = 0.045f,
                     Efficiency = 0.65f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldActuator",
                 }
             },
             {
@@ -367,7 +367,7 @@ namespace Galaxy
                     Shield = 14.0f,
                     EnergyDrain = 0.075f,
                     Efficiency = 0.75f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldPower",
                 }
             },
             {
@@ -377,7 +377,7 @@ namespace Galaxy
                     Shield = 18.0f,
                     EnergyDrain = 0.050f,
                     Efficiency = 0.50f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldTank",
                 }
             },
             {
@@ -387,7 +387,7 @@ namespace Galaxy
                     Shield = 15.0f,
                     EnergyDrain = 0.075f,
                     Efficiency = 0.85f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconShieldUltimate",
                 }
             },
         };

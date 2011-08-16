@@ -466,18 +466,18 @@ namespace Galaxy
         public static List<string> AllGeneratorParts()
         {
             return new List<string>() {
-                "Standard",
-                "Conduction",
-                "Battery",
-                "Booster",
-                "Impulse",
-                "Microwave",
-                "Vortex",
-                "Capacitor",
-                "Electron",
-                "Kinetic",
-                "Magnetic",
-                "Fusion",
+                "Standard Generator",
+                "Conduction Generator",
+                "Battery Generator",
+                "Booster Generator",
+                "Impulse Generator",
+                "Microwave Generator",
+                "Vortex Generator",
+                "Capacitor Generator",
+                "Electron Generator",
+                "Kinetic Generator",
+                "Magnetic Generator",
+                "Fusion Generator",
             };
         }
 

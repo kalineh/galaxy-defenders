@@ -1030,13 +1030,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\UI\Shop\DefaultIcon.png">
-      <Name>DefaultIcon</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\UI\Menu\MenuItem.png">
       <Name>MenuItem</Name>
       <Importer>TextureImporter</Importer>
@@ -1967,6 +1960,147 @@
     </Compile>
     <Compile Include="Textures\UI\Shop\IconGeneratorVortex.png">
       <Name>IconGeneratorVortex</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconShieldAdvanced.png">
+      <Name>IconShieldAdvanced</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldElectric.png">
+      <Name>IconShieldElectric</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldFiber.png">
+      <Name>IconShieldFiber</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldLight.png">
+      <Name>IconShieldLight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldMicro.png">
+      <Name>IconShieldMicro</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldPower.png">
+      <Name>IconShieldPower</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldTank.png">
+      <Name>IconShieldTank</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconShieldUltimate.png">
+      <Name>IconShieldUltimate</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconShieldActuator.png">
+      <Name>IconShieldActuator</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconWeaponBeam.png">
+      <Name>IconWeaponBeam</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponBlade.png">
+      <Name>IconWeaponBlade</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponBomblet.png">
+      <Name>IconWeaponBomblet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponBoomerang.png">
+      <Name>IconWeaponBoomerang</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponChargeShot.png">
+      <Name>IconWeaponChargeShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponDrunkMissile.png">
+      <Name>IconWeaponDrunkMissile</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponFlame.png">
+      <Name>IconWeaponFlame</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponFrontLaser.png">
+      <Name>IconWeaponFrontLaser</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponLaserShot.png">
+      <Name>IconWeaponLaserShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponLightning.png">
+      <Name>IconWeaponLightning</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponMiniShot.png">
+      <Name>IconWeaponMiniShot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponMissile.png">
+      <Name>IconWeaponMissile</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponMissileLauncher.png">
+      <Name>IconWeaponMissileLauncher</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponMissileVolley.png">
+      <Name>IconWeaponMissileVolley</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponPlasma.png">
+      <Name>IconWeaponPlasma</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponSeekBomb.png">
+      <Name>IconWeaponSeekBomb</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponSpreadLaser.png">
+      <Name>IconWeaponSpreadLaser</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\UI\Shop\IconWeaponVulcan.png">
+      <Name>IconWeaponVulcan</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

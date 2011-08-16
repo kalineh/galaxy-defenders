@@ -267,8 +267,9 @@ namespace Galaxy
 
             MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "", IconName = "Textures/UI/Shop/IconItemNone", });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickType };
-            //IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts);
-            IEnumerable<string> sidekick_left_weapon_parts_all = sidekick_left_weapon_parts_own.Concat(CMap.MakeRandomSidekickWeapons(Game));
+            IEnumerable<string> sidekick_left_weapon_parts_all = ShowAllItems ? 
+                sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts) :
+                sidekick_left_weapon_parts_own.Concat(CMap.MakeRandomSidekickWeapons(Game));
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in sidekick_left_weapon_parts)
             {

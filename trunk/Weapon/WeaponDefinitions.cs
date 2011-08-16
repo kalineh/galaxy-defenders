@@ -86,8 +86,7 @@ namespace Galaxy
             if (!WeaponDefinitions.Items.ContainsKey(typename))
                 return null;
 
-            //return WeaponDefinitions.Items[typename].IconName;
-            return "Textures/UI/Shop/IconItemFrontLaser";
+            return String.Format("Textures/UI/Shop/IconWeapon{0}", typename);
         }
 
         public static string GetNextWeaponInCycle(string current, List<string> types)
