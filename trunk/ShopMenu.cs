@@ -149,7 +149,7 @@ namespace Galaxy
 
             Labels = new SLabels(null);
 
-            ShowAllItems = true;
+            ShowAllItems = false;
 
         }
 
@@ -580,10 +580,18 @@ namespace Galaxy
             int diff = WorkingProfile.Money - LockedProfile.Money;
 
             Color color = new Color(160, 160, 160);
+            Color earn_money = new Color(140, 170, 180);
+            Color lose_money = new Color(130, 130, 130);
+            Color cannot_afford = new Color(180, 130, 130);
+
             if (diff < 0)
-                color = Color.RosyBrown;
+                if (base_ < 0)
+                    color = cannot_afford;
+                else
+                    color = lose_money;
+
             if (diff > 0)
-                color = Color.LightBlue;
+                color = earn_money;
 
             // TODO: money display
             // TODO: reduce garbage
@@ -963,8 +971,7 @@ namespace Galaxy
         {
             WorkingProfile.Money += amount;
             WorkingProfile.Money = Math.Max(0, WorkingProfile.Money);
-
-            LockWorkingProfile();
+            LockedProfile.Money = WorkingProfile.Money;
         }
 
         private void EditChassis(object tag)

@@ -56,15 +56,6 @@ namespace Galaxy
 
         public override void Update()
         {
-            // TODO: remove, obsolete
-            //if (Game.PlayersInGame > 1)
-            //{
-                //if (Game.Input.IsL1PressedAny() || Game.Input.IsKeyPressed(Keys.F1))
-                    //ChangeShoppingPlayer(GameControllerIndex.One);
-                //if (Game.Input.IsR1PressedAny() || Game.Input.IsKeyPressed(Keys.F2))
-                    //ChangeShoppingPlayer(GameControllerIndex.Two);
-            //}
-
             Menu1P.Update();
             if (Game.PlayersInGame > 1)
                 Menu2P.Update();
@@ -155,12 +146,5 @@ namespace Galaxy
 
             GenerateEnemyDelay = 0 - (int)(EmptyWorld.Random.NextFloat() * 60);
         }
-
-        // remove
-        //private void SetScoreboardPosition()
-        //{
-            //if (ScorePanel != null && ScorePanel.IsVisible())
-                //ScorePanel.BasePosition = new Vector2(ShoppingPlayer == GameControllerIndex.One ? 774.0f : 1146.0f, 156.0f);
-        //}
     }
 }

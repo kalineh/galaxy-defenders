@@ -325,13 +325,6 @@ namespace Galaxy
 
         public void DrawMoney(SpriteBatch sprite_batch)
         {
-            //
-            // TODO: fix these before enabling money
-            // - non-override shows ship data wrong
-            // - show only score, not money
-            // - ideally should be 0 at game start, not StartingMoney
-            //
-
             // TODO: just not show?
             //MoneyIconVisual.Draw(sprite_batch, MoneyIconPosition, 0.0f);
 
@@ -345,16 +338,19 @@ namespace Galaxy
 
             // TODO: score needs to be maintained across secret stages?
             // add current stage score if valid
-            int money = Ship.Score;
+            int score = Ship.Score;
+            SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
+            int money = profile.Pilots[(int)GameControllerIndex].Money;
+            int total_money = score + money;
 
-            if (money != LastMoney)
+            if (total_money != LastMoney)
             {
                 // TODO: move string scale to the score add place, so shop doesnt cause this
-                if (money > LastMoney)
+                if (total_money > LastMoney)
                     MoneyStringScale = 1.15f;
 
-                CachedMoneyString = String.Format("{0}￥", money);
-                LastMoney = money;
+                CachedMoneyString = String.Format("{0}￥", total_money);
+                LastMoney = total_money;
             }
 
             float base_color = 160.0f / 255.0f;
