@@ -49,7 +49,7 @@ namespace Galaxy
                     Armor = 20.0f,
                     CollisionResistance = 0.25f,
                     Description = "Rookie Ship",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisRookie",
                 }
             },
             {
@@ -63,7 +63,7 @@ namespace Galaxy
                     Armor = 15.0f,
                     CollisionResistance = 0.15f,
                     Description = "Highly Maneuverable",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisEagle",
                 }
             },
             {
@@ -77,7 +77,7 @@ namespace Galaxy
                     Armor = 30.0f,
                     CollisionResistance = 0.60f,
                     Description = "Solid and Durable",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisCrusher",
                 }
             },
             {
@@ -91,7 +91,7 @@ namespace Galaxy
                     Armor = 25.0f,
                     CollisionResistance = 0.35f,
                     Description = "Experimental Fighter",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisInterceptor",
                 }
             },
             {
@@ -105,7 +105,7 @@ namespace Galaxy
                     Armor = 30.0f,
                     CollisionResistance = 0.50f,
                     Description = "Strong All-Round",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisPhoenix",
                 }
             },
             {
@@ -119,7 +119,7 @@ namespace Galaxy
                     Armor = 25.0f,
                     CollisionResistance = 0.35f,
                     Description = "Unmatched Speed",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisLightning",
                 }
             },
             {
@@ -133,7 +133,7 @@ namespace Galaxy
                     Armor = 35.0f,
                     CollisionResistance = 0.60f,
                     Description = "Powerful Fighter Ship",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisDragon",
                 }
             },
             {
@@ -147,7 +147,7 @@ namespace Galaxy
                     Armor = 50.0f,
                     CollisionResistance = 0.85f,
                     Description = "Exceptional Strength",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisDemon",
                 }
             },
             {
@@ -161,7 +161,7 @@ namespace Galaxy
                     Armor = 40.0f,
                     CollisionResistance = 0.75f,
                     Description = "Top Quality",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconChassisAce",
                 }
             },
         };
@@ -176,115 +176,85 @@ namespace Galaxy
 
         public static Dictionary<string, CGeneratorPart> Items = new Dictionary<string, CGeneratorPart>()
         {
-            // basic
             {
-                "1",
+                "Standard",
                 new CGeneratorPart() {
                     Price = 1000,
                     Energy = 3.0f,
                     Regen = 0.05f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorStandard",
                 }
             },
             {
-                "2",
+                "Conduction",
                 new CGeneratorPart() {
                     Price = 2500,
                     Energy = 4.0f,
                     Regen = 0.07f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorConduction",
                 }
             },
             {
-                "3",
+                "Battery",
                 new CGeneratorPart() {
                     Price = 3500,
-                    Energy = 5.0f,
-                    Regen = 0.08f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    Energy = 7.0f,
+                    Regen = 0.06f,
+                    IconName = "Textures/UI/Shop/IconGeneratorBattery",
                 }
             },
             {
-                "4",
+                "Booster",
                 new CGeneratorPart() {
                     Price = 7500,
-                    Energy = 6.0f,
+                    Energy = 5.0f,
                     Regen = 0.09f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorBooster",
                 }
             },
-            // impulse
             {
-                "5",
+                "Impulse",
                 new CGeneratorPart() {
                     Price = 12000,
                     Energy = 7.0f,
                     Regen = 0.10f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorImpulse",
                 }
             },
             {
-                "6",
+                "Microwave",
                 new CGeneratorPart() {
                     Price = 14500,
                     Energy = 8.0f,
                     Regen = 0.11f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorMicrowave",
                 }
             },
             {
-                "7",
+                "Vortex",
                 new CGeneratorPart() {
                     Price = 18000,
                     Energy = 9.0f,
                     Regen = 0.12f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorVortex",
                 }
             },
             {
-                "8",
+                "Capacitor",
                 new CGeneratorPart() {
                     Price = 23500,
-                    Energy = 10.0f,
-                    Regen = 0.13f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    Energy = 14.0f,
+                    Regen = 0.11f,
+                    IconName = "Textures/UI/Shop/IconGeneratorCapacitor",
                 }
             },
-            // capacitor
             {
-                "9",
+                "Electron",
                 new CGeneratorPart() {
                     Price = 26500,
-                    Energy = 11.0f,
-                    Regen = 0.14f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
-                }
-            },
-            {
-                "10",
-                new CGeneratorPart() {
-                    Price = 31000,
                     Energy = 12.0f,
-                    Regen = 0.15f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
-                }
-            },
-            {
-                "11",
-                new CGeneratorPart() {
-                    Price = 34000,
-                    Energy = 13.0f,
-                    Regen = 0.16f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
-                }
-            },
-            {
-                "12",
-                new CGeneratorPart() {
-                    Price = 38000,
-                    Energy = 14.0f,
-                    Regen = 0.17f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    Regen = 0.14f,
+                    IconName = "Textures/UI/Shop/IconGeneratorElectron",
                 }
             },
             {
@@ -294,8 +264,8 @@ namespace Galaxy
                     Energy = 10.0f,
                     Regen = 0.07f,
                     RegenOnCollide = 1.5f,
-                    Description = "Collisions provide extra Energy",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    Description = "Collisions provide Energy",
+                    IconName = "Textures/UI/Shop/IconGeneratorKinetic",
                 }
             },
             {
@@ -306,7 +276,7 @@ namespace Galaxy
                     Regen = 0.10f,
                     RegenOnCoin = 0.025f,
                     Description = "Coins increase Energy",
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorMagnetic",
                 }
             },
             {
@@ -315,7 +285,7 @@ namespace Galaxy
                     Price = 45000,
                     Energy = 7.5f,
                     Regen = 0.22f,
-                    IconName = "Textures/UI/Shop/IconItemFrontLaser",
+                    IconName = "Textures/UI/Shop/IconGeneratorFusion",
                 }
             },
         };
