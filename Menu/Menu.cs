@@ -84,7 +84,9 @@ namespace Galaxy
             public int AxisValue;
             public bool Visible;
             public CVisual OverlayIcon;
+            public CVisual OverlayIcon2; // TODO: list
             public Vector2 OverlayOffset;
+            public Vector2 OverlayOffset2;
 
             public CMenuOption()
             {
@@ -242,6 +244,8 @@ namespace Galaxy
                     bool was_icon = TryRenderMenuOption(option, position, sprite_batch);
                     if (was_icon)
                     {
+                        TryRenderOverlayIcon2(option, position, sprite_batch);
+
                         if (option == MenuOptions[Cursor])
                         {
                             TryRenderCursorIcon(option, position, sprite_batch);
@@ -421,6 +425,14 @@ namespace Galaxy
                 return;
 
             option.OverlayIcon.Draw(sprite_batch, position + option.OverlayOffset, 0.0f);
+        }
+
+        public void TryRenderOverlayIcon2(CMenuOption option, Vector2 position, SpriteBatch sprite_batch)
+        {
+            if (option.OverlayIcon2 == null)
+                return;
+
+            option.OverlayIcon2.Draw(sprite_batch, position + option.OverlayOffset2, 0.0f);
         }
     }
 }
