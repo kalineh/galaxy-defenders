@@ -28,6 +28,7 @@ namespace Galaxy
             set { SetValue(value); }
         }
         public string Text { get; private set; }
+        public string Suffix { get; set; }
 
         public CTextLabel()
         {
@@ -84,16 +85,22 @@ namespace Galaxy
                 case EAlignment.Left:
                     sprite_batch.DrawStringAlignLeft(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
                     sprite_batch.DrawStringAlignLeft(font, position, Text, color, scale);
+                    if (Suffix != null)
+                        sprite_batch.DrawStringAlignLeft(font, position + new Vector2(font.MeasureString(Text).X, 0.0f), Suffix, color, scale);
                     break;
 
                 case EAlignment.Center:
                     sprite_batch.DrawStringAlignCenter(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
                     sprite_batch.DrawStringAlignCenter(font, position, Text, color, scale);
+                    if (Suffix != null)
+                        sprite_batch.DrawStringAlignLeft(font, position + new Vector2(font.MeasureString(Text).X / 2.0f, 0.0f), Suffix, color, scale);
                     break;
 
                 case EAlignment.Right:
                     sprite_batch.DrawStringAlignRight(font, position + drop_shadow_offset, Text, drop_shadow_color, scale);
                     sprite_batch.DrawStringAlignRight(font, position, Text, color, scale);
+                    if (Suffix != null)
+                        sprite_batch.DrawStringAlignLeft(font, position, Suffix, color, scale);
                     break;
 
             }
