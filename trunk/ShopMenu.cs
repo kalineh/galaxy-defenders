@@ -37,8 +37,10 @@ namespace Galaxy
         private CVisual ShopUpgradeBars6Visual { get; set; }
         private GameControllerIndex ControllerIndex { get; set; }
         private Texture2D ShopPurchasePanelTexture { get; set; }
+        private Texture2D ShopPurchasePanelInvalidTexture { get; set; }
         private CTextLabel ShopPurchaseTextLabel { get; set; }
         private CVisual ShopItemPanelVisual { get; set; }
+        private CVisual IconItemEquippedVisual { get; set; }
         public bool IsFlyToStage { get; set; }
         public bool IsMoveToStage { get; set; }
 
@@ -137,11 +139,13 @@ namespace Galaxy
             ShopUpgradeBars6Visual.TileY = 6;
             ShopUpgradeBars6Visual.Recache();
             ShopPurchasePanelTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopPurchaseButtonPanel");
+            ShopPurchasePanelInvalidTexture = CContent.LoadTexture2D(game, "Textures/UI/Shop/ShopPurchaseButtonPanelInvalid");
             ShopPurchaseTextLabel = new CTextLabel() { Value = "Purchase" };
             ShopItemPanelVisual = CVisual.MakeSpriteFromGame(game, "Textures/UI/Shop/ShopItemPanel", Vector2.One, Color.White);
             ShopItemPanelVisual.NormalizedOrigin = new Vector2(0.5f, 0.0f);
             ShopItemPanelVisual.TileX = 8;
             ShopItemPanelVisual.Recache();
+            IconItemEquippedVisual = CVisual.MakeSpriteFromGame(game, "Textures/UI/Shop/IconItemEquipped", Vector2.One, Color.White);
 
             Labels = new SLabels(null);
 
@@ -200,6 +204,7 @@ namespace Galaxy
                         IconName = CWeaponFactory.GetIconName(weapon_part),
                         OverlayIcon = ShopUpgradeBars8Visual,
                         OverlayOffset = new Vector2(0.0f, 28.0f),
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                         Data = weapon_part,
                         Select = SelectPrimaryWeapon,
                         SelectValidate = SelectValidatePrimaryWeapon,
@@ -222,7 +227,7 @@ namespace Galaxy
                 CursorIconName = "Textures/UI/Shop/IconItemCursor",
             };
 
-            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "", IconName = "Textures/UI/Shop/IconItemNone", });
+            MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "", IconName = "Textures/UI/Shop/IconItemNone", OverlayOffset2 = new Vector2(6.0f, 0.0f), });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
             IEnumerable<string> secondary_weapon_parts_all = ShowAllItems ? 
                 secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts) :
@@ -241,6 +246,7 @@ namespace Galaxy
                         IconName = CWeaponFactory.GetIconName(weapon_part),
                         OverlayIcon = ShopUpgradeBars6Visual,
                         OverlayOffset = new Vector2(0.0f, 28.0f),
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                         Data = weapon_part,
                         Select = SelectSecondaryWeapon,
                         SelectValidate = SelectValidateSecondaryWeapon,
@@ -265,7 +271,7 @@ namespace Galaxy
                 CursorIconName = "Textures/UI/Shop/IconItemCursor",
             };
 
-            MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "", IconName = "Textures/UI/Shop/IconItemNone", });
+            MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "", IconName = "Textures/UI/Shop/IconItemNone", OverlayOffset2 = new Vector2(6.0f, 0.0f), });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickType };
             IEnumerable<string> sidekick_left_weapon_parts_all = ShowAllItems ? 
                 sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts) :
@@ -286,6 +292,7 @@ namespace Galaxy
                         Select = SelectSidekick,
                         SelectValidate = SelectValidateSidekick,
                         Highlight = HighlightSidekick,
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                     }
                 );
             }
@@ -318,6 +325,7 @@ namespace Galaxy
                         Select = SelectChassis,
                         SelectValidate = SelectValidateChassis,
                         Highlight = HighlightChassis,
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                     }
                 );
             }
@@ -351,6 +359,7 @@ namespace Galaxy
                         Select = SelectGenerator,
                         SelectValidate = SelectValidateGenerator,
                         Highlight = HighlightGenerator,
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                     }
                 );
             }
@@ -383,6 +392,7 @@ namespace Galaxy
                         Select = SelectShield,
                         SelectValidate = SelectValidateShield,
                         Highlight = HighlightShield,
+                        OverlayOffset2 = new Vector2(6.0f, 0.0f),
                     }
                 );
             }
@@ -395,8 +405,6 @@ namespace Galaxy
 
         public void Update()
         {
-            MenuUpdateHighlights();
-
             if (IsFlyToStage)
             {
                 if (Game.Input.IsPadBackPressed(ControllerIndex) || Game.Input.IsKeyPressed(Keys.Escape))
@@ -475,40 +483,30 @@ namespace Galaxy
                 ItemMenu.Draw(sprite_batch);
             }
 
-            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "equipment usage", new Vector2(960.0f, 962.0f), Color.LightGray, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
-            //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, (int)Math.Round(c * 100) + "%", new Vector2(960.0f, 962.0f), Color.LightGray, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, CLayers.UI+ CLayers.SubLayerIncrement);
-
-            //DrawMoneyPoolBarAll();
             DrawMoney();
             DrawMenuBaseErrata();
-
-            //if (Game.PlayersInGame > 1)
-            //{
-                //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "L1", new Vector2(328.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
-                //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "R1", new Vector2(1600.0f, 240.0f), Color.Gray, 0.0f, Vector2.Zero, 2.0f, SpriteEffects.None, 0.0f);
-            //}
         }
 
-        private void MenuUpdateHighlights()
+        private void MenuUpdateEquippedIcons()
         {
             if (ItemMenu == MenuPrimaryWeapon)
                 foreach (CMenu.CMenuOption option in MenuPrimaryWeapon.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponPrimaryType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.WeaponPrimaryType ? IconItemEquippedVisual : null;
             if (ItemMenu == MenuSecondaryWeapon)
                 foreach (CMenu.CMenuOption option in MenuSecondaryWeapon.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSecondaryType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.WeaponSecondaryType ? IconItemEquippedVisual : null;
             if (ItemMenu == MenuSidekick)
                 foreach (CMenu.CMenuOption option in MenuSidekick.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.WeaponSidekickType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.WeaponSidekickType ? IconItemEquippedVisual : null;
             if (ItemMenu == MenuChassis)
                 foreach (CMenu.CMenuOption option in MenuChassis.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.ChassisType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.ChassisType ? IconItemEquippedVisual : null;
             if (ItemMenu == MenuGenerator)
                 foreach (CMenu.CMenuOption option in MenuGenerator.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.GeneratorType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.GeneratorType ? IconItemEquippedVisual : null;
             if (ItemMenu == MenuShield)
                 foreach (CMenu.CMenuOption option in MenuShield.MenuOptions)
-                    option.SpecialHighlight = (string) option.Data == LockedProfile.ShieldType;
+                    option.OverlayIcon2 = (string)option.Data == LockedProfile.ShieldType ? IconItemEquippedVisual : null;
         }
 
         private SProfilePilotState GetShoppingPilotData()
@@ -611,6 +609,8 @@ namespace Galaxy
             SampleShip.Physics.Position = new Vector2(x, 250.0f);
 
             SampleShotDelay = 15;
+
+            MenuUpdateEquippedIcons();
 
             // should we try and force collect recent created objects? strings, etc
             // TODO: seems something is leaking atm
@@ -725,7 +725,7 @@ namespace Galaxy
                 int level = WorkingProfile.WeaponPrimaryLevel;
 
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption && WorkingProfile.WeaponPrimaryType != "")
+                if (WorkingProfile.WeaponPrimaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
 
@@ -735,8 +735,8 @@ namespace Galaxy
                     Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
                     Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
 
-                    if (SelectValidatePrimaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None")
-                        DrawPurchasePanel();
+                    bool valid = SelectValidatePrimaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None";
+                    DrawPurchasePanel(valid);
                 }
             }
             else if (ItemMenu == MenuSecondaryWeapon)
@@ -745,7 +745,7 @@ namespace Galaxy
                 int level = WorkingProfile.WeaponSecondaryLevel;
 
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption && WorkingProfile.WeaponSecondaryType != "")
+                if (WorkingProfile.WeaponSecondaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
@@ -755,29 +755,22 @@ namespace Galaxy
 
                     Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
                     Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
+
+                    bool valid = SelectValidateSecondaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
+                    DrawPurchasePanel(valid);
                 }
-
-                if (!option.CancelOption)
+                else
                 {
-                    // delete me
-                    //if (WorkingProfile.WeaponSecondaryType == "")
-                    //{
-                        //Vector2 position = text_position;
-                        //Labels.BaseCostPrice.Value = 0;
-                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, text_color);
-                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + text_line * 1.0f, text_color);
-                    //}
-
-                    if (SelectValidateSecondaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
-                        DrawPurchasePanel();
+                    Labels.ItemHeader.Value = "None";
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
+                    DrawPurchasePanel(true);
                 }
             }
             else if (ItemMenu == MenuSidekick)
             {
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption && WorkingProfile.WeaponSidekickType != "")
+                if (WorkingProfile.WeaponSidekickType != "")
                 {
-                    Vector2 position = text_position + text_line * 1.0f;
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
 
                     Labels.ItemPrice.Value = price;
@@ -785,115 +778,94 @@ namespace Galaxy
 
                     Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
                     Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
+
+                    bool valid = SelectValidateSidekick(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
+                    DrawPurchasePanel(valid);
                 }
-
-                if (!option.CancelOption)
+                else
                 {
-                    // delete me
-                    //if (WorkingProfile.WeaponSidekickType == "")
-                    //{
-                        //Vector2 position = text_position;
-                        //Labels.BaseCostPrice.Value = 0;
-                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, text_color);
-                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + text_line * 1.0f, text_color);
-                    //}
-
-                    if (SelectValidateSidekick(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
-                        DrawPurchasePanel();
+                    Labels.ItemHeader.Value = "None";
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
+                    DrawPurchasePanel(true);
                 }
             }
             else if (ItemMenu == MenuChassis)
             {
                 CChassisPart part = ChassisDefinitions.GetPart(WorkingProfile.ChassisType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption)
-                {
-                    Labels.ItemHeader.Value = WorkingProfile.ChassisType;
-                    Labels.ItemPrice.Value = part.Price;
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                    Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
-                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+                Labels.ItemHeader.Value = WorkingProfile.ChassisType;
+                Labels.ItemPrice.Value = part.Price;
+                Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                    Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
-                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+                Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
+                Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
-                    Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
-                    Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
-                    Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
-                }
+                Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
+                Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
-                if (!option.CancelOption)
-                {
-                    if (SelectValidateChassis(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
-                        DrawPurchasePanel();
-                }
+                Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
+                Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
+
+                bool valid = SelectValidateChassis(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
+                DrawPurchasePanel(valid);
             }
             else if (ItemMenu == MenuGenerator)
             {
                 CGeneratorPart part = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption)
+
+                Labels.ItemHeader.Value = WorkingProfile.GeneratorType;
+                Labels.ItemPrice.Value = part.Price;
+                Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
+
+                Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
+                Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+
+                Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 10000.0f);
+                Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+
+                if (!String.IsNullOrEmpty(part.Description))
                 {
-                    Labels.ItemHeader.Value = WorkingProfile.GeneratorType;
-                    Labels.ItemPrice.Value = part.Price;
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
-
-                    Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
-                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
-
-                    Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 10000.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
-
-                    if (!String.IsNullOrEmpty(part.Description))
-                    {
-                        Labels.DescValue.Value = part.Description;
-                        //Labels.DescHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
-                        Labels.DescValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31 + new Vector2(-16.0f, 0.0f), text_color);
-                    }
+                    Labels.DescValue.Value = part.Description;
+                    //Labels.DescHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.DescValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31 + new Vector2(-16.0f, 0.0f), text_color);
                 }
 
-                if (!option.CancelOption)
-                {
-                    if (SelectValidateGenerator(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
-                        DrawPurchasePanel();
-                }
+                bool valid = SelectValidateGenerator(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
+                DrawPurchasePanel(valid);
             }
             else if (ItemMenu == MenuShield)
             {
                 CShieldPart part = ShieldDefinitions.GetPart(WorkingProfile.ShieldType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
-                if (!option.CancelOption)
-                {
-                    Labels.ItemHeader.Value = WorkingProfile.ShieldType;
-                    Labels.ItemPrice.Value = part.Price;
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                    Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
-                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+                Labels.ItemHeader.Value = WorkingProfile.ShieldType;
+                Labels.ItemPrice.Value = part.Price;
+                Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                    Labels.RegenValue.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+                Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
+                Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
-                    Labels.EfficiencyValue.Value = Convert.ToInt32(part.Efficiency * 100.0f);
-                    Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
-                    Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
-                }
+                Labels.RegenValue.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
+                Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
-                if (!option.CancelOption)
-                {
-                    if (SelectValidateShield(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
-                        DrawPurchasePanel();
-                }
+                Labels.EfficiencyValue.Value = Convert.ToInt32(part.Efficiency * 100.0f);
+                Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
+
+                bool valid = SelectValidateShield(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
+                DrawPurchasePanel(valid);
             }
             else
             {
@@ -1304,10 +1276,8 @@ namespace Galaxy
 
             CAudio.PlaySound("MenuBuy");
 
-            int before = GetShoppingPilotTotalUsedMoney();
             LockWorkingProfile();
             RefreshSampleDisplay();
-            int after = GetShoppingPilotTotalUsedMoney();
         }
 
         private bool SelectValidateGenerator(object tag)
@@ -1409,14 +1379,17 @@ namespace Galaxy
                 new Vector2(x * 0.103f, y * 0.031f);
         }
 
-        private void DrawPurchasePanel()
+        private void DrawPurchasePanel(bool valid)
         {
             Vector2 menu_position = GetMenuPosition();
-            Vector2 panel_position = menu_position + new Vector2(20.0f, 564.0f);
-            Game.DefaultSpriteBatch.Draw(ShopPurchasePanelTexture, panel_position, Color.White);
+            Vector2 panel_position = menu_position + new Vector2(-54.0f, 554.0f);
+            Texture2D texture = valid ? ShopPurchasePanelTexture : ShopPurchasePanelInvalidTexture;
+            Game.DefaultSpriteBatch.Draw(texture, panel_position, Color.White);
             ShopPurchaseTextLabel.Alignment = CTextLabel.EAlignment.Left;
-            float scale = 1.0f + (float)(Math.Abs(Math.Sin(SampleShip.World.Game.GameFrame * 0.1f))) * 0.015f;
-            ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, panel_position + new Vector2(60.0f, 42.0f), Color.White, scale);
+            float t = valid ? SampleShip.World.Game.GameFrame * 0.1f : 0.0f;
+            float scale = 1.0f + (float)(Math.Abs(Math.Sin(t * 0.4f))) * 0.025f;
+            Color color = valid ? new Color(160, 160, 160) : new Color(110, 110, 110);
+            ShopPurchaseTextLabel.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, panel_position + new Vector2(60.0f, 42.0f), color, scale);
             //Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, "Purchase", panel_position + new Vector2(58.0f, 24.0f), Color.White);
         }
 
@@ -1424,6 +1397,7 @@ namespace Galaxy
         {
             ItemMenu = child;
             ItemMenu.ForceRefresh();
+            MenuUpdateEquippedIcons();
         }
 
         private void CloseItemMenu()

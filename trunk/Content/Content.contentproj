@@ -2106,6 +2106,20 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Textures\UI\Shop\ShopPurchaseButtonPanelInvalid.png">
+      <Name>ShopPurchaseButtonPanelInvalid</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\UI\Shop\IconItemEquipped.png">
+      <Name>IconItemEquipped</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Textures\Bottom\" />
     <Folder Include="Textures\FullScreen\" />
   </ItemGroup>
