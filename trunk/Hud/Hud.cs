@@ -192,7 +192,7 @@ namespace Galaxy
             Ability1IconGreyButtonVisual.Update();
             Ability2IconGreyButtonVisual.Update();
 
-            CachedMoneyString = "0";
+            CachedMoneyString = "0￥";
             MoneyStringScale = 1.0f;
 
             SProfileGameData profile = CSaveData.GetCurrentGameData(Game);
@@ -353,7 +353,7 @@ namespace Galaxy
                 if (money > LastMoney)
                     MoneyStringScale = 1.15f;
 
-                CachedMoneyString = String.Format("{0}", money);
+                CachedMoneyString = String.Format("{0}￥", money);
                 LastMoney = money;
             }
 

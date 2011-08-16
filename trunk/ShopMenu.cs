@@ -14,6 +14,8 @@ namespace Galaxy
 {
     public class CShopMenu
     {
+        public static bool ShowAllItems { get; set; }
+
         public CGalaxy Game { get; set; }
         public CWorld World { get; set; }
         public CMenu CategoryMenu { get; set; }
@@ -25,8 +27,6 @@ namespace Galaxy
         private CMenu MenuChassis { get; set; }
         private CMenu MenuGenerator { get; set; }
         private CMenu MenuShield { get; set; }
-        private delegate void DrawMenuErrataFunction();
-        private DrawMenuErrataFunction DrawMenuErrata { get; set; }
         private CShip SampleShip { get; set; }
         private int SampleShotDelay { get; set; }
         private SProfilePilotState WorkingProfile;
@@ -44,8 +44,8 @@ namespace Galaxy
 
         private struct SLabels
         {
-            public CTextLabel WeaponHeader;
-            public CTextLabel WeaponPrice;
+            public CTextLabel ItemHeader;
+            public CTextLabel ItemPrice;
             public CTextLabel ArmorHeader;
             public CTextLabel ArmorValue;
             public CTextLabel SpeedHeader;
@@ -65,8 +65,8 @@ namespace Galaxy
 
             public SLabels(object unused)
             {
-                WeaponHeader = new CTextLabel();
-                WeaponPrice = new CTextLabel();
+                ItemHeader = new CTextLabel();
+                ItemPrice = new CTextLabel();
                 ArmorHeader = new CTextLabel();
                 ArmorValue = new CTextLabel();
                 SpeedHeader = new CTextLabel();
@@ -84,15 +84,39 @@ namespace Galaxy
                 DescHeader = new CTextLabel();
                 DescValue = new CTextLabel();
 
-                WeaponHeader.Value = "WEAPON";
-                ArmorHeader.Value = "ARMOR";
-                SpeedHeader.Value = "SPEED";
-                DensityHeader.Value = "DENSITY";
-                ShieldHeader.Value = "SHIELD";
-                RegenHeader.Value = "REGEN";
-                EfficiencyHeader.Value = "EFFICIENCY %";
-                EnergyHeader.Value = "ENERGY";
-                DescHeader.Value = "DESCRIPTION";
+                ArmorHeader.Value = "Armor";
+                SpeedHeader.Value = "Speed";
+                DensityHeader.Value = "Density";
+                ShieldHeader.Value = "Shield";
+                RegenHeader.Value = "Regen";
+                EfficiencyHeader.Value = "Efficiency";
+                EnergyHeader.Value = "Energy";
+                DescHeader.Value = "Special";
+
+                ArmorHeader.Alignment = CTextLabel.EAlignment.Right;
+                SpeedHeader.Alignment = CTextLabel.EAlignment.Right;
+                DensityHeader.Alignment = CTextLabel.EAlignment.Right;
+                ArmorHeader.Alignment = CTextLabel.EAlignment.Right;
+                SpeedHeader.Alignment = CTextLabel.EAlignment.Right;
+                DensityHeader.Alignment = CTextLabel.EAlignment.Right;
+                ShieldHeader.Alignment = CTextLabel.EAlignment.Right;
+                RegenHeader.Alignment = CTextLabel.EAlignment.Right;
+                EfficiencyHeader.Alignment = CTextLabel.EAlignment.Right;
+                EnergyHeader.Alignment = CTextLabel.EAlignment.Right;
+                DescHeader.Alignment = CTextLabel.EAlignment.Right;
+
+                ArmorValue.Alignment = CTextLabel.EAlignment.Left;
+                SpeedValue.Alignment = CTextLabel.EAlignment.Left;
+                DensityValue.Alignment = CTextLabel.EAlignment.Left;
+                ShieldValue.Alignment = CTextLabel.EAlignment.Left;
+                RegenValue.Alignment = CTextLabel.EAlignment.Left;
+                EfficiencyValue.Alignment = CTextLabel.EAlignment.Left;
+                EnergyValue.Alignment = CTextLabel.EAlignment.Left;
+                DescValue.Alignment = CTextLabel.EAlignment.Center;
+
+                ItemPrice.Suffix = "￥";
+                EfficiencyValue.Suffix = "%";
+                DensityValue.Suffix = "%";
             }
         };
         private SLabels Labels { get; set; }
@@ -121,6 +145,8 @@ namespace Galaxy
 
             Labels = new SLabels(null);
 
+            ShowAllItems = true;
+
         }
 
         public void Initialize(GameControllerIndex controller_index, CWorld world)
@@ -137,11 +163,11 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.CMenuOption>()
                 {
                     new CMenu.CMenuOption() { Text = "Chassis", Select = EditChassis, IconName = "Textures/UI/Shop/IconCategoryChassis" },
-                    new CMenu.CMenuOption() { Text = "Generator", Select = EditGenerator, IconName = "Textures/UI/Shop/IconCategoryChassis" },
-                    new CMenu.CMenuOption() { Text = "Shield", Select = EditShield, IconName = "Textures/UI/Shop/IconCategoryChassis" },
-                    new CMenu.CMenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon, IconName = "Textures/UI/Shop/IconCategoryChassis" },
-                    new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon, IconName = "Textures/UI/Shop/IconCategoryChassis" },
-                    new CMenu.CMenuOption() { Text = "Sidekick", Select = EditSidekick, IconName = "Textures/UI/Shop/IconCategoryChassis" },
+                    new CMenu.CMenuOption() { Text = "Generator", Select = EditGenerator, IconName = "Textures/UI/Shop/IconCategoryGenerator" },
+                    new CMenu.CMenuOption() { Text = "Shield", Select = EditShield, IconName = "Textures/UI/Shop/IconCategoryShield" },
+                    new CMenu.CMenuOption() { Text = "Main Weapon", Select = EditPrimaryWeapon, IconName = "Textures/UI/Shop/IconCategoryWeaponPrimary" },
+                    new CMenu.CMenuOption() { Text = "Support Weapon", Select = EditSecondaryWeapon, IconName = "Textures/UI/Shop/IconCategoryWeaponSecondary" },
+                    new CMenu.CMenuOption() { Text = "Sidekick", Select = EditSidekick, IconName = "Textures/UI/Shop/IconCategoryWeaponSidekick" },
                 },
                 HideText = true,
                 CursorIconName = "Textures/UI/Shop/IconCategoryCursor",
@@ -160,8 +186,9 @@ namespace Galaxy
             };
 
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
-            //IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts);
-            IEnumerable<string> primary_weapon_parts_all = primary_weapon_parts_own.Concat(CMap.MakeRandomPrimaryWeapons(Game));
+            IEnumerable<string> primary_weapon_parts_all = ShowAllItems ?
+                primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts) :
+                primary_weapon_parts_own.Concat(CMap.MakeRandomPrimaryWeapons(Game));
             IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in primary_weapon_parts)
             {
@@ -197,8 +224,9 @@ namespace Galaxy
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "", IconName = "Textures/UI/Shop/IconItemNone", });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
-            //IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts);
-            IEnumerable<string> secondary_weapon_parts_all = secondary_weapon_parts_own.Concat(CMap.MakeRandomSecondaryWeapons(Game));
+            IEnumerable<string> secondary_weapon_parts_all = ShowAllItems ? 
+                secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts) :
+                secondary_weapon_parts_own.Concat(CMap.MakeRandomSecondaryWeapons(Game));
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
             foreach (string weapon_part in secondary_weapon_parts)
             {
@@ -273,8 +301,9 @@ namespace Galaxy
             };
 
             IEnumerable<string> chassis_parts_own = new List<string>() { GetShoppingPilotData().ChassisType };
-            //IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts);
-            IEnumerable<string> chassis_parts_all = chassis_parts_own.Concat(CMap.MakeRandomChassisParts(Game));
+            IEnumerable<string> chassis_parts_all = ShowAllItems ? 
+                chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts) :
+                chassis_parts_own.Concat(CMap.MakeRandomChassisParts(Game));
             IEnumerable<string> chassis_parts = chassis_parts_all.Distinct().OrderBy(C => ChassisDefinitions.GetPart(C).Price);
             foreach (string chassis_part in chassis_parts)
             {
@@ -304,8 +333,9 @@ namespace Galaxy
             };
 
             IEnumerable<string> generator_parts_own = new List<string>() { GetShoppingPilotData().GeneratorType };
-            //IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts);
-            IEnumerable<string> generator_parts_all = generator_parts_own.Concat(CMap.MakeRandomGeneratorParts(Game));
+            IEnumerable<string> generator_parts_all = ShowAllItems ? 
+                generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts) :
+                generator_parts_own.Concat(CMap.MakeRandomGeneratorParts(Game));
             IEnumerable<string> generator_parts = generator_parts_all.Distinct().OrderBy(G => GeneratorDefinitions.GetPart(G).Price);
             foreach (string generator_part in generator_parts)
             {
@@ -336,8 +366,9 @@ namespace Galaxy
             };
 
             IEnumerable<string> shield_parts_own = new List<string>() { GetShoppingPilotData().ShieldType };
-            //IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts);
-            IEnumerable<string> shield_parts_all = shield_parts_own.Concat(CMap.MakeRandomShieldParts(Game));
+            IEnumerable<string> shield_parts_all = ShowAllItems ?
+                shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts) :
+                shield_parts_own.Concat(CMap.MakeRandomShieldParts(Game));
             IEnumerable<string> shield_parts = shield_parts_all.Distinct().OrderBy(S => ShieldDefinitions.GetPart(S).Price);
             foreach (string shield_part in shield_parts)
             {
@@ -357,7 +388,6 @@ namespace Galaxy
 
             CategoryMenu = MenuUpgradeShip;
             ItemMenu = null;
-            DrawMenuErrata = DrawMenuBaseErrata;
 
             RefreshSampleDisplay();
         }
@@ -380,6 +410,13 @@ namespace Galaxy
             }
 
             UpdateMenuPositions();
+
+            int primary_level = WorkingProfile.WeaponPrimaryLevel;
+            int secondary_level = WorkingProfile.WeaponSecondaryLevel;
+            ShopUpgradeBars8Visual.Frame = primary_level;
+            ShopUpgradeBars6Visual.Frame = secondary_level;
+            ShopUpgradeBars8Visual.Recache();
+            ShopUpgradeBars6Visual.Recache();
 
 #if DEBUG
             if (Game.Input.IsL1Pressed(ControllerIndex) || Game.Input.IsKeyPressed(Keys.PageDown))
@@ -442,7 +479,7 @@ namespace Galaxy
 
             //DrawMoneyPoolBarAll();
             DrawMoney();
-            DrawMenuErrata();
+            DrawMenuBaseErrata();
 
             //if (Game.PlayersInGame > 1)
             //{
@@ -550,8 +587,10 @@ namespace Galaxy
                 color = Color.LightBlue;
 
             // TODO: money display
+            // TODO: reduce garbage
             Game.HudManager.Huds[(int)ControllerIndex].ShowMoney = false;
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, Game.HudManager.Huds[(int)ControllerIndex].MoneyTextPosition, WorkingProfile.Money.ToString(), color, 1.15f);
+            string money_string = string.Format("{0}￥", WorkingProfile.Money);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, Game.HudManager.Huds[(int)ControllerIndex].MoneyTextPosition, money_string, color, 1.15f);
         }
 
         private void RefreshSampleDisplay()
@@ -571,6 +610,10 @@ namespace Galaxy
             SampleShip.Physics.Position = new Vector2(x, 250.0f);
 
             SampleShotDelay = 15;
+
+            // should we try and force collect recent created objects? strings, etc
+            // TODO: seems something is leaking atm
+            //System.GC.Collect(0, GCCollectionMode.Forced);
         }
 
         private void RevertWorkingProfile(object tag)
@@ -617,6 +660,7 @@ namespace Galaxy
 
         private string GetWeaponDisplayString(string typename, int level)
         {
+            // TODO: reduce garbage
             return String.Format("{0} Mk {1}", CWeaponFactory.GetDisplayName(typename), GetRomanNumerals(level));
         }
 
@@ -650,7 +694,26 @@ namespace Galaxy
         private void DrawMenuBaseErrata()
         {
             Vector2 info_position = GetInfoPosition();
-            Vector2 text_position = info_position + GetInfoOffset();
+            Vector2 text_position = info_position + GetInfoTextOffset();
+            Vector2 text_line0 = new Vector2(0.0f, 30.0f);
+            Vector2 text00 = text_position + text_line0 * 0.0f;
+            Vector2 text01 = text_position + text_line0 * 1.0f;
+            Vector2 text_line1 = new Vector2(30.0f, 0.0f);
+            Vector2 text_header_split = new Vector2(0.0f, 70.0f);
+            Vector2 text_section = new Vector2(0.0f, 30.0f);
+            Vector2 text10 = text_position + text_line1 * 0.0f + text_section * 1.0f + text_header_split;
+            Vector2 text11 = text_position + text_line1 * 1.0f + text_section * 1.0f + text_header_split;
+            Vector2 text20 = text_position + text_line1 * 0.0f + text_section * 2.0f + text_header_split;
+            Vector2 text21 = text_position + text_line1 * 1.0f + text_section * 2.0f + text_header_split;
+            Vector2 text30 = text_position + text_line1 * 0.0f + text_section * 3.0f + text_header_split;
+            Vector2 text31 = text_position + text_line1 * 1.0f + text_section * 3.0f + text_header_split;
+            Color text_color = new Color(160, 160, 160);
+
+            Vector2 textw0 = text_position + text_line0 * 2.0f;
+            Vector2 textw1 = text_position + text_line0 * 3.0f;
+
+            // delete me
+            Vector2 text_line = text_line0;
 
             SpriteEffects flip = ControllerIndex == GameControllerIndex.Two ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, info_position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, flip, 0.0f);
@@ -663,18 +726,13 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponPrimaryType != "")
                 {
-                    Vector2 position = text_position;
-                    ShopUpgradeBars8Visual.Frame = level;
-                    ShopUpgradeBars8Visual.Recache();
-                    ShopUpgradeBars8Visual.Draw(Game.DefaultSpriteBatch, position + new Vector2(-6.0f, 176.0f), 0.0f);
-
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
 
-                    Labels.WeaponPrice.Value = price;
-                    Labels.WeaponHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponPrimaryType, level);
+                    Labels.ItemPrice.Value = price;
+                    Labels.ItemHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponPrimaryType, level);
 
-                    Labels.WeaponHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
-                    Labels.WeaponPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
 
                     if (SelectValidatePrimaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None")
                         DrawPurchasePanel();
@@ -688,19 +746,14 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSecondaryType != "")
                 {
-                    Vector2 position = text_position;
-                    ShopUpgradeBars6Visual.Frame = level;
-                    ShopUpgradeBars6Visual.Recache();
-                    ShopUpgradeBars6Visual.Draw(Game.DefaultSpriteBatch, position + new Vector2(-6.0f, 176.0f), 0.0f);
-
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
 
-                    Labels.WeaponPrice.Value = price;
-                    Labels.WeaponHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponSecondaryType, level);
+                    Labels.ItemPrice.Value = price;
+                    Labels.ItemHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponSecondaryType, level);
 
-                    Labels.WeaponHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
-                    Labels.WeaponPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
                 }
 
                 if (!option.CancelOption)
@@ -710,8 +763,8 @@ namespace Galaxy
                     //{
                         //Vector2 position = text_position;
                         //Labels.BaseCostPrice.Value = 0;
-                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
-                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, text_color);
+                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + text_line * 1.0f, text_color);
                     //}
 
                     if (SelectValidateSecondaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
@@ -723,14 +776,14 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption && WorkingProfile.WeaponSidekickType != "")
                 {
-                    Vector2 position = text_position + new Vector2(0.0f, 30.0f);
+                    Vector2 position = text_position + text_line * 1.0f;
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
 
-                    Labels.WeaponPrice.Value = price;
-                    Labels.WeaponHeader.Value = CWeaponFactory.GetDisplayName(WorkingProfile.WeaponSidekickType);
+                    Labels.ItemPrice.Value = price;
+                    Labels.ItemHeader.Value = CWeaponFactory.GetDisplayName(WorkingProfile.WeaponSidekickType);
 
-                    Labels.WeaponHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
-                    Labels.WeaponPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
                 }
 
                 if (!option.CancelOption)
@@ -740,8 +793,8 @@ namespace Galaxy
                     //{
                         //Vector2 position = text_position;
                         //Labels.BaseCostPrice.Value = 0;
-                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, Color.White);
-                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + new Vector2(0.0f, 30.0f), Color.White);
+                        //Labels.BaseCostHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position, text_color);
+                        //Labels.BaseCostPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position + text_line * 1.0f, text_color);
                     //}
 
                     if (SelectValidateSidekick(ItemMenu.MenuOptions[ItemMenu.Cursor].Data))
@@ -754,22 +807,22 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = text_position + new Vector2(0.0f, 10.0f);
-                    Vector2 position1 = text_position + new Vector2(0.0f, 80.0f);
-                    Vector2 position2 = text_position + new Vector2(0.0f, 150.0f);
+                    Labels.ItemHeader.Value = WorkingProfile.ChassisType;
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
                     Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
-                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
-                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
                     Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
-                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
-                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
-                    // delete me?
-                    //Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
-                    //Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
-                    //Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
+                    Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
                 }
 
                 if (!option.CancelOption)
@@ -784,23 +837,24 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = text_position + new Vector2(0.0f, 10.0f);
-                    Vector2 position1 = text_position + new Vector2(0.0f, 80.0f);
-                    Vector2 position2 = text_position + new Vector2(0.0f, 160.0f);
+                    Labels.ItemHeader.Value = WorkingProfile.GeneratorType;
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
                     Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
-                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
-                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 10000.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
                     if (!String.IsNullOrEmpty(part.Description))
                     {
                         Labels.DescValue.Value = part.Description;
-                        Labels.DescHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
-                        Labels.DescValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
+                        //Labels.DescHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                        Labels.DescValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31 + new Vector2(-16.0f, 0.0f), text_color);
                     }
                 }
 
@@ -816,21 +870,22 @@ namespace Galaxy
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
                 if (!option.CancelOption)
                 {
-                    Vector2 position0 = text_position + new Vector2(0.0f, 10.0f);
-                    Vector2 position1 = text_position + new Vector2(0.0f, 80.0f);
-                    Vector2 position2 = text_position + new Vector2(0.0f, 150.0f);
+                    Labels.ItemHeader.Value = WorkingProfile.ShieldType;
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
                     Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
-                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0, Color.White);
-                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position0 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
                     Labels.RegenValue.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
-                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1, Color.White);
-                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position1 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
                     Labels.EfficiencyValue.Value = Convert.ToInt32(part.Efficiency * 100.0f);
-                    Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2, Color.White);
-                    Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, position2 + new Vector2(0.0f, 30.0f), Color.White);
+                    Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
                 }
 
                 if (!option.CancelOption)
@@ -848,78 +903,66 @@ namespace Galaxy
         private void ShowHelpInfo()
         {
             Vector2 info_position = GetInfoPosition();
-            Vector2 text_position = info_position + GetInfoOffset();
+            Vector2 text_position = info_position + GetInfoTextOffset();
 
             string[] strings = {
-                "WELCOME TO SHOP",
-                "PURCHASE UPGRADES",
-                "AND WEAPONS HERE",
+                "Welcome to Shop",
+                "Purchase upgrades",
+                "and weapons here",
                 "",
             };
 
-            if (Game.PlayersInGame > 1)
+            if (ItemMenu == null)
             {
-                strings[3] = "L1/R1 TO CHANGE PLAYER";
-            }
-
-            if (ItemMenu == MenuUpgradeShip)
-            {
-                switch (ItemMenu.Cursor)
+                switch (CategoryMenu.Cursor)
                 {
                     case 0: // chassis
-                        strings[0] = "CHASSIS";
-                        strings[1] = "UPGRADE FOR IMPROVED";
-                        strings[2] = "HULL ARMOR AND SPEED";
+                        strings[0] = "Chassis";
+                        strings[1] = "Upgrade for improved";
+                        strings[2] = "hull armor and speed";
                         break;
 
                     case 1: // generator
-                        strings[0] = "GENERATOR";
-                        strings[1] = "PROVIDES ENERGY FOR";
-                        strings[2] = "WEAPONS AND SHIELD";
+                        strings[0] = "Generator";
+                        strings[1] = "Provides energy for";
+                        strings[2] = "weapons and shield";
                         break;
 
                     case 2: // shield
-                        strings[0] = "SHIELD";
-                        strings[1] = "UPGRADE FOR IMPROVED";
-                        strings[2] = "STORAGE AND REGEN";
+                        strings[0] = "Shield";
+                        strings[1] = "Upgrade for improved";
+                        strings[2] = "shield and regen";
                         break;
 
                     case 3: // primary
-                        strings[0] = "PRIMARY WEAPON";
-                        strings[1] = "SHIP MAIN WEAPON";
-                        strings[2] = "MAKE IT STRONG";
+                        strings[0] = "Primary Weapon";
+                        strings[1] = "Ship main weapon";
+                        strings[2] = "Make it strong";
                         break;
 
                     case 4: // secondary
-                        strings[0] = "SECONDARY WEAPON";
-                        strings[1] = "AUXILARY FIREPOWER";
-                        strings[2] = "USE WITHOUT CAUTION";
+                        strings[0] = "Support Weapon";
+                        strings[1] = "Auxilary firepower";
+                        strings[2] = "Use without caution";
                         break;
 
-                    case 5: // sidekick left
-                        strings[0] = "SIDEKICK LEFT";
-                        strings[1] = "INCREASE FIREPOWER";
-                        strings[2] = "FURTHER WITH SIDEKICKS";
+                    case 5: // sidekick
+                        strings[0] = "Sidekick Weapon";
+                        strings[1] = "Increase firepower";
+                        strings[2] = "further with sidekicks";
                         break;
 
-                    case 6: // sidekick right
-                        strings[0] = "SIDEKICK RIGHT";
-                        strings[1] = "INCREASE FIREPOWER";
-                        strings[2] = "FURTHER WITH SIDEKICKS";
-                        break;
-
-                    case 7: // +10000
-                    case 8: // -10000
                     default:
                         break;
                 }
             }
 
-            float offset = Game.PlayersInGame == 1 ? 20.0f : 0.0f;
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 30.0f + offset), strings[0], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 60.0f + offset), strings[1], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 90.0f + offset), strings[2], Color.White);
-            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 150.0f + offset), strings[3], Color.White);
+            float offset = 0.0f;
+            Color color = new Color(160, 160, 160);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 30.0f + offset), strings[0], color);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 70.0f + offset), strings[1], color);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 100.0f + offset), strings[2], color);
+            Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameRegularFont, text_position + new Vector2(0.0f, 160.0f + offset), strings[3], color);
         }
 
         private void StageSelect(object tag)
@@ -1356,13 +1399,13 @@ namespace Galaxy
                 new Vector2(x * 0.765f, y * 0.400f);
         }
 
-        private Vector2 GetInfoOffset()
+        private Vector2 GetInfoTextOffset()
         {
             float x = Game.Resolution.X;
             float y = Game.Resolution.Y;
             return ControllerIndex == GameControllerIndex.One ?
-                new Vector2(x * 0.106f, y * 0.031f) :
-                new Vector2(x * 0.106f, y * 0.031f);
+                new Vector2(x * 0.103f, y * 0.031f) :
+                new Vector2(x * 0.103f, y * 0.031f);
         }
 
         private void DrawPurchasePanel()
