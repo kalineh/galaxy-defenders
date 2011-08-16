@@ -285,9 +285,11 @@ namespace Galaxy
             HudManager = new CHudManager(this);
 
             // Enter our default state now that assets are ready.
-            //State = new CStateMainMenu(this);
-            PlayersInGame = 2;
-            State = new CStateShop(this);
+            State = new CStateMainMenu(this);
+
+            // debug shop testing
+            //PlayersInGame = 2;
+            //State = new CStateShop(this);
 
             HudManager.LockHuds();
         }

@@ -564,11 +564,11 @@ namespace Galaxy
             return data.RandomPartsSeed + data.Stage.GetHashCode();
         }
 
-        public static float MakePureRandomPartsRatio(CGalaxy game)
+        public static float MakeWeaponRandomPartsRatio(CGalaxy game)
         {
             int seed = MakeRandomPartsSeed(game);
             Random random = new Random(seed);
-            return random.NextSignedFloat() * 0.5f + MakeRandomPartsRatio(game) * 0.5f;
+            return random.NextFloat() * 0.65f + MakeRandomPartsRatio(game) * 0.35f;
         }
 
         public static float MakeRandomPartsRatio(CGalaxy game)
@@ -580,17 +580,17 @@ namespace Galaxy
 
         public static List<string> MakeRandomPrimaryWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllPrimaryWeapons(), MakeRandomPartsSeed(game), MakePureRandomPartsRatio(game) * 0.5f * MakeRandomPartsRatio(game) * 0.5f, 0.4f, 0.4f);
+            return MakeRandomParts(AllPrimaryWeapons(), MakeRandomPartsSeed(game), MakeWeaponRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<string> MakeRandomSecondaryWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllSecondaryWeapons(), MakeRandomPartsSeed(game), MakePureRandomPartsRatio(game) * 0.5f * MakeRandomPartsRatio(game) * 0.5f, 0.4f, 0.4f);
+            return MakeRandomParts(AllSecondaryWeapons(), MakeRandomPartsSeed(game), MakeWeaponRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<string> MakeRandomSidekickWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllSidekickWeapons(), MakeRandomPartsSeed(game), MakePureRandomPartsRatio(game) * 0.25f * MakeRandomPartsRatio(game) * 0.75f, 0.4f, 0.4f);
+            return MakeRandomParts(AllSidekickWeapons(), MakeRandomPartsSeed(game), MakeWeaponRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<string> MakeRandomChassisParts(CGalaxy game)
