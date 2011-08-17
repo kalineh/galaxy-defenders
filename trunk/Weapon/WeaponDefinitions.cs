@@ -231,7 +231,7 @@ namespace Galaxy
                 KickbackForce = 0.0f,
                 Offset = new Vector2(0.0f, 0.0f),
                 Rotation = MathHelper.ToRadians(rotation),
-                Energy = 0.175f,
+                Energy = 0.135f,
                 RandomRotation = MathHelper.ToRadians(5.0f),
             };
         }
@@ -730,59 +730,59 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.08f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.08f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.08f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.08f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.15f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.15f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.15f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.15f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.07f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.07f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.07f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.07f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.11f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.11f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.11f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.11f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.06f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.06f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.06f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.06f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.09f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.09f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.09f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.09f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.05f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.05f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.05f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.05f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.07f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.07f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.07f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.07f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.04f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.04f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.04f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.04f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.05f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.05f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.05f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.05f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.03f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.03f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.03f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.03f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.04f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.04f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.04f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.04f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.02f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.02f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.02f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.02f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.03f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.03f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.03f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.03f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeSpreadLaserFocusData(-80.0f, 0.01f),
-                            MakeSpreadLaserFocusData(-80.0f, 0.01f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.01f),
-                            MakeSpreadLaserFocusData(+80.0f, 0.01f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.02f),
+                            MakeSpreadLaserFocusData(-80.0f, 0.02f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.02f),
+                            MakeSpreadLaserFocusData(+80.0f, 0.02f),
                         },
                     },
                 }

@@ -1420,6 +1420,9 @@ namespace Galaxy
             if (IsFlyToStage)
                 return;
 
+			// we should certainly save changes
+			SaveLockedProfile();
+
             Game.State = new CStateFadeTo(Game, Game.State, new CStateMainMenu(Game));
         }
 
