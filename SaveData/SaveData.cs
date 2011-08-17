@@ -80,7 +80,7 @@ namespace Galaxy
     [Serializable]
     public struct SProfile
     {
-        public static int CurrentVersion = 1;
+        public static int CurrentVersion = 2;
         public int Version;
         public string Name;
         public bool[] HasClearedGame; // per-pilot
