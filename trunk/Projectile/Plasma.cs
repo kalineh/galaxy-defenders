@@ -17,7 +17,7 @@ namespace Galaxy
         {
             base.Initialize(world, owner, damage);
 
-            if (damage < 1.0f)
+            if (damage < 0.5f)
             {
                 Physics = new CPhysics();
                 Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/SmallPlasma", owner.GameControllerIndex);
@@ -34,7 +34,7 @@ namespace Galaxy
                 Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
                 Splash = CPlasmaSplash.GetCached(world);
                 Splash.Initialize(world);
-                Splash.SetRadius(128.0f);
+                Splash.SetRadius(140.0f);
                 Splash.Owner = owner;
                 Splash.Damage = Damage * 0.25f;
             }
@@ -54,7 +54,8 @@ namespace Galaxy
                 World.EntityAdd(Splash);
                 Splash.Physics.Position = Physics.Position;
                 Splash.Collision.Enabled = true;
-                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaSplash, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
+                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaSplash, Physics.Position, Visual.Color, null, Physics.Velocity.Normal() * 1.0f);
+                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaHit, Physics.Position, Visual.Color, 2.0f, -Physics.Velocity.Normal());
             }
             else
             {

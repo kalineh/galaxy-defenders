@@ -48,20 +48,12 @@ namespace Galaxy
         {
             public CTextLabel ItemHeader;
             public CTextLabel ItemPrice;
-            public CTextLabel ArmorHeader;
-            public CTextLabel ArmorValue;
-            public CTextLabel SpeedHeader;
-            public CTextLabel SpeedValue;
-            public CTextLabel DensityHeader;
-            public CTextLabel DensityValue;
-            public CTextLabel ShieldHeader;
-            public CTextLabel ShieldValue;
-            public CTextLabel RegenHeader;
-            public CTextLabel RegenValue;
-            public CTextLabel EfficiencyHeader;
-            public CTextLabel EfficiencyValue;
-            public CTextLabel EnergyHeader;
-            public CTextLabel EnergyValue;
+            public CTextLabel Info0Name;
+            public CTextLabel Info0Data;
+            public CTextLabel Info1Name;
+            public CTextLabel Info1Data;
+            public CTextLabel Info2Name;
+            public CTextLabel Info2Data;
             public CTextLabel DescHeader;
             public CTextLabel DescValue;
 
@@ -69,56 +61,22 @@ namespace Galaxy
             {
                 ItemHeader = new CTextLabel();
                 ItemPrice = new CTextLabel();
-                ArmorHeader = new CTextLabel();
-                ArmorValue = new CTextLabel();
-                SpeedHeader = new CTextLabel();
-                SpeedValue = new CTextLabel();
-                DensityHeader = new CTextLabel();
-                DensityValue = new CTextLabel();
-                ShieldHeader = new CTextLabel();
-                ShieldValue = new CTextLabel();
-                RegenHeader = new CTextLabel();
-                RegenValue = new CTextLabel();
-                EfficiencyHeader = new CTextLabel();
-                EfficiencyValue = new CTextLabel();
-                EnergyHeader = new CTextLabel();
-                EnergyValue = new CTextLabel();
+                Info0Name = new CTextLabel();
+                Info0Data = new CTextLabel();
+                Info1Name = new CTextLabel();
+                Info1Data = new CTextLabel();
+                Info2Name = new CTextLabel();
+                Info2Data = new CTextLabel();
                 DescHeader = new CTextLabel();
                 DescValue = new CTextLabel();
 
-                ArmorHeader.Value = "Armor";
-                SpeedHeader.Value = "Speed";
-                DensityHeader.Value = "Density";
-                ShieldHeader.Value = "Shield";
-                RegenHeader.Value = "Regen";
-                EfficiencyHeader.Value = "Efficiency";
-                EnergyHeader.Value = "Energy";
-                DescHeader.Value = "Special";
-
-                ArmorHeader.Alignment = CTextLabel.EAlignment.Right;
-                SpeedHeader.Alignment = CTextLabel.EAlignment.Right;
-                DensityHeader.Alignment = CTextLabel.EAlignment.Right;
-                ArmorHeader.Alignment = CTextLabel.EAlignment.Right;
-                SpeedHeader.Alignment = CTextLabel.EAlignment.Right;
-                DensityHeader.Alignment = CTextLabel.EAlignment.Right;
-                ShieldHeader.Alignment = CTextLabel.EAlignment.Right;
-                RegenHeader.Alignment = CTextLabel.EAlignment.Right;
-                EfficiencyHeader.Alignment = CTextLabel.EAlignment.Right;
-                EnergyHeader.Alignment = CTextLabel.EAlignment.Right;
-                DescHeader.Alignment = CTextLabel.EAlignment.Right;
-
-                ArmorValue.Alignment = CTextLabel.EAlignment.Left;
-                SpeedValue.Alignment = CTextLabel.EAlignment.Left;
-                DensityValue.Alignment = CTextLabel.EAlignment.Left;
-                ShieldValue.Alignment = CTextLabel.EAlignment.Left;
-                RegenValue.Alignment = CTextLabel.EAlignment.Left;
-                EfficiencyValue.Alignment = CTextLabel.EAlignment.Left;
-                EnergyValue.Alignment = CTextLabel.EAlignment.Left;
+                Info0Name.Alignment = CTextLabel.EAlignment.Right;
+                Info1Name.Alignment = CTextLabel.EAlignment.Right;
+                Info2Name.Alignment = CTextLabel.EAlignment.Right;
+                Info0Data.Alignment = CTextLabel.EAlignment.Left;
+                Info1Data.Alignment = CTextLabel.EAlignment.Left;
+                Info2Data.Alignment = CTextLabel.EAlignment.Left;
                 DescValue.Alignment = CTextLabel.EAlignment.Center;
-
-                ItemPrice.Suffix = "￥";
-                EfficiencyValue.Suffix = "%";
-                DensityValue.Suffix = "%";
             }
         };
         private SLabels Labels { get; set; }
@@ -149,7 +107,7 @@ namespace Galaxy
 
             Labels = new SLabels(null);
 
-            ShowAllItems = false;
+            ShowAllItems = true;
 
         }
 
@@ -700,6 +658,66 @@ namespace Galaxy
             return Color.Gray;
         }
 
+        private int GetWeaponPowerDisplayValue(string typename, int level)
+        {
+            if (String.IsNullOrEmpty(typename))
+                return 0;
+
+            float damage = WeaponDefinitions.Items[typename].Data[level][0].Damage;
+            float adjusted = damage * WeaponDefinitions.Items[typename].Data[level].Count;
+
+            if (typename == "Beam")
+            {
+                // hits per frame, make it look more damaging
+                adjusted += damage * level * 4.0f;
+            }
+            if (typename == "Boomerang")
+            {
+                // hits multiple times, give an estimated average damage per enemy
+                adjusted *= 4.0f;
+            }
+            if (typename == "Blade")
+            {
+                // hits multiple times, give an estimated average damage per enemy
+                adjusted *= 4.0f;
+            }
+
+            return Convert.ToInt32(adjusted * 100.0f);
+        }
+
+        private int GetWeaponReloadDisplayValue(string typename, int level)
+        {
+            if (String.IsNullOrEmpty(typename))
+                return 0;
+
+            //float rate = 1.5f - WeaponDefinitions.Items[typename].Data[level][0].ReloadTime;
+            //float adjusted = rate * WeaponDefinitions.Items[typename].Data[level].Count;
+            float adjusted = WeaponDefinitions.Items[typename].Data[level][0].ReloadTime;
+
+            if (typename == "Beam")
+            {
+                adjusted = 1.0f;
+            }
+
+            return Convert.ToInt32(adjusted * 100.0f);
+        }
+
+        private int GetWeaponEnergyDisplayValue(string typename, int level)
+        {
+            if (String.IsNullOrEmpty(typename))
+                return 0;
+
+            float energy = WeaponDefinitions.Items[typename].Data[level][0].Energy;
+            float adjusted = energy * WeaponDefinitions.Items[typename].Data[level].Count;
+
+            if (typename == "Beam")
+            {
+                adjusted += WeaponDefinitions.Items[typename].Data[level][0].ToggleEnergyDrain * 50.0f;
+            }
+
+            return Convert.ToInt32(adjusted * 100.0f);
+        }
+
         private void DrawMenuBaseErrata()
         {
             Vector2 info_position = GetInfoPosition();
@@ -717,6 +735,8 @@ namespace Galaxy
             Vector2 text30 = text_position + text_line1 * 0.0f + text_section * 3.0f + text_header_split;
             Vector2 text31 = text_position + text_line1 * 1.0f + text_section * 3.0f + text_header_split;
             Color text_color = new Color(160, 160, 160);
+            Color text_color_upgrade = Color.LightGreen;
+            Color text_color_downgrade = Color.LightPink;
 
             Vector2 textw0 = text_position + text_line0 * 2.0f;
             Vector2 textw1 = text_position + text_line0 * 3.0f;
@@ -727,118 +747,330 @@ namespace Galaxy
             SpriteEffects flip = ControllerIndex == GameControllerIndex.Two ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             Game.DefaultSpriteBatch.Draw(ShopUpgradePanelTexture, info_position, null, Color.White, 0.0f, Vector2.Zero, 1.0f, flip, 0.0f);
 
+            Labels.Info0Data.Suffix = "";
+            Labels.Info1Data.Suffix = "";
+            Labels.Info2Data.Suffix = "";
+
             if (ItemMenu == MenuPrimaryWeapon)
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponPrimaryType);
                 int level = WorkingProfile.WeaponPrimaryLevel;
-
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.WeaponPrimaryType && option.AxisValue == LockedProfile.WeaponPrimaryLevel;
+
                 if (WorkingProfile.WeaponPrimaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
 
-                    Labels.ItemPrice.Value = price;
+                    if (is_current)
+                    {
+                        Labels.ItemPrice.Value = "equipped";
+                        Labels.ItemPrice.Suffix = "";
+                    }
+                    else
+                    {
+                        Labels.ItemPrice.Value = price;
+                        Labels.ItemPrice.Suffix = "￥";
+                    }
+
                     Labels.ItemHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponPrimaryType, level);
 
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
+
+                    int working_power = GetWeaponPowerDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    int locked_power = GetWeaponPowerDisplayValue(LockedProfile.WeaponPrimaryType, LockedProfile.WeaponPrimaryLevel);
+                    bool is_upgrade_power = working_power > locked_power;
+                    bool is_same_power = working_power == locked_power;
+                    Color color_power = is_upgrade_power ? text_color_upgrade : (is_same_power ? text_color : text_color_downgrade);
+                    Labels.Info0Name.Value = "Power";
+                    Labels.Info0Data.Value = GetWeaponPowerDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    Labels.Info0Name.Suffix = is_upgrade_power ? "  ↑" : (is_same_power ? "" : "  ↓");
+                    Labels.Info0Name.SuffixColor = color_power;
+                    Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+
+                    int working_rate = GetWeaponReloadDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    int locked_rate = GetWeaponReloadDisplayValue(LockedProfile.WeaponPrimaryType, LockedProfile.WeaponPrimaryLevel);
+                    bool is_upgrade_rate = working_rate > locked_rate;
+                    bool is_same_rate = working_rate == locked_rate;
+                    Color color_rate = is_upgrade_rate ? text_color_upgrade : (is_same_rate ? text_color : text_color_downgrade);
+                    Labels.Info1Name.Value = "Reload";
+                    Labels.Info1Data.Value = GetWeaponReloadDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    Labels.Info1Name.Suffix = is_upgrade_rate ? "  ↑" : (is_same_rate ? "" : "  ↓");
+                    Labels.Info1Name.SuffixColor = color_rate;
+                    Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+
+                    int working_energy = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    int locked_energy = GetWeaponEnergyDisplayValue(LockedProfile.WeaponPrimaryType, LockedProfile.WeaponPrimaryLevel);
+                    bool is_upgrade_energy = working_energy > locked_energy;
+                    bool is_same_energy = working_energy == locked_energy;
+                    Color color_energy = is_upgrade_energy ? text_color_upgrade : (is_same_energy ? text_color : text_color_downgrade);
+                    Labels.Info2Name.Value = "Energy";
+                    Labels.Info2Data.Value = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponPrimaryType, WorkingProfile.WeaponPrimaryLevel);
+                    Labels.Info2Name.Suffix = is_upgrade_energy ? "  ↑" : (is_same_energy ? "" : "  ↓");
+                    Labels.Info2Name.SuffixColor = color_energy;
+                    Labels.Info2Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.Info2Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
 
                     bool valid = SelectValidatePrimaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data) || WorkingProfile.WeaponPrimaryType == "None";
-                    DrawPurchasePanel(valid);
+                    DrawPurchasePanel(valid && !is_current);
                 }
             }
             else if (ItemMenu == MenuSecondaryWeapon)
             {
                 int max = CWeaponFactory.GetMaxLevel(WorkingProfile.WeaponSecondaryType);
                 int level = WorkingProfile.WeaponSecondaryLevel;
-
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.WeaponSecondaryType && option.AxisValue == LockedProfile.WeaponSecondaryLevel;
+
                 if (WorkingProfile.WeaponSecondaryType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
                     int next_price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel + 1);
 
-                    Labels.ItemPrice.Value = price;
+                    if (is_current)
+                    {
+                        Labels.ItemPrice.Value = "equipped";
+                        Labels.ItemPrice.Suffix = "";
+                    }
+                    else
+                    {
+                        Labels.ItemPrice.Value = price;
+                        Labels.ItemPrice.Suffix = "￥";
+                    }
+
                     Labels.ItemHeader.Value = GetWeaponDisplayString(WorkingProfile.WeaponSecondaryType, level);
 
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
+
+                    int working_power = GetWeaponPowerDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    int locked_power = GetWeaponPowerDisplayValue(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel);
+                    bool is_upgrade_power = working_power > locked_power;
+                    bool is_same_power = working_power == locked_power;
+                    Color color_power = is_upgrade_power ? text_color_upgrade : (is_same_power ? text_color : text_color_downgrade);
+                    Labels.Info0Name.Value = "Power";
+                    Labels.Info0Data.Value = GetWeaponPowerDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    Labels.Info0Name.Suffix = is_upgrade_power ? "  ↑" : (is_same_power ? "" : "  ↓");
+                    Labels.Info0Name.SuffixColor = color_power;
+                    Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+
+                    int working_rate = GetWeaponReloadDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    int locked_rate = GetWeaponReloadDisplayValue(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel);
+                    bool is_upgrade_rate = working_rate > locked_rate;
+                    bool is_same_rate = working_rate == locked_rate;
+                    Color color_rate = is_upgrade_rate ? text_color_upgrade : (is_same_rate ? text_color : text_color_downgrade);
+                    Labels.Info1Name.Value = "Reload";
+                    Labels.Info1Data.Value = GetWeaponReloadDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    Labels.Info1Name.Suffix = is_upgrade_rate ? "  ↑" : (is_same_rate ? "" : "  ↓");
+                    Labels.Info1Name.SuffixColor = color_rate;
+                    Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+
+                    int working_energy = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    int locked_energy = GetWeaponEnergyDisplayValue(LockedProfile.WeaponSecondaryType, LockedProfile.WeaponSecondaryLevel);
+                    bool is_upgrade_energy = working_energy > locked_energy;
+                    bool is_same_energy = working_energy == locked_energy;
+                    Color color_energy = is_upgrade_energy ? text_color_upgrade : (is_same_energy ? text_color : text_color_downgrade);
+                    Labels.Info2Name.Value = "Energy";
+                    Labels.Info2Data.Value = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponSecondaryType, WorkingProfile.WeaponSecondaryLevel);
+                    Labels.Info2Name.Suffix = is_upgrade_energy ? "  ↑" : (is_same_energy ? "" : "  ↓");
+                    Labels.Info2Name.SuffixColor = color_energy;
+                    Labels.Info2Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.Info2Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
+
 
                     bool valid = SelectValidateSecondaryWeapon(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
-                    DrawPurchasePanel(valid);
+                    DrawPurchasePanel(valid && !is_current);
                 }
                 else
                 {
                     Labels.ItemHeader.Value = "None";
                     Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
-                    DrawPurchasePanel(true);
+                    DrawPurchasePanel(!is_current);
                 }
             }
             else if (ItemMenu == MenuSidekick)
             {
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.WeaponSidekickType;
+
                 if (WorkingProfile.WeaponSidekickType != "")
                 {
                     int price = CWeaponFactory.GetPriceForLevel(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
 
-                    Labels.ItemPrice.Value = price;
+                    if (is_current)
+                    {
+                        Labels.ItemPrice.Value = "equipped";
+                        Labels.ItemPrice.Suffix = "";
+                    }
+                    else
+                    {
+                        Labels.ItemPrice.Value = price;
+                        Labels.ItemPrice.Suffix = "￥";
+                    }
+
                     Labels.ItemHeader.Value = CWeaponFactory.GetDisplayName(WorkingProfile.WeaponSidekickType);
 
-                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
-                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw1, text_color);
+                    Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
+                    Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
+
+                    int working_power = GetWeaponPowerDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    int locked_power = GetWeaponPowerDisplayValue(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel);
+                    bool is_upgrade_power = working_power > locked_power;
+                    bool is_same_power = working_power == locked_power;
+                    Color color_power = is_upgrade_power ? text_color_upgrade : (is_same_power ? text_color : text_color_downgrade);
+                    Labels.Info0Name.Value = "Power";
+                    Labels.Info0Data.Value = GetWeaponPowerDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    Labels.Info0Name.Suffix = is_upgrade_power ? "  ↑" : (is_same_power ? "" : "  ↓");
+                    Labels.Info0Name.SuffixColor = color_power;
+                    Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                    Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+
+                    int working_rate = GetWeaponReloadDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    int locked_rate = GetWeaponReloadDisplayValue(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel);
+                    bool is_upgrade_rate = working_rate > locked_rate;
+                    bool is_same_rate = working_rate == locked_rate;
+                    Color color_rate = is_upgrade_rate ? text_color_upgrade : (is_same_rate ? text_color : text_color_downgrade);
+                    Labels.Info1Name.Value = "Reload";
+                    Labels.Info1Data.Value = GetWeaponReloadDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    Labels.Info1Name.Suffix = is_upgrade_rate ? "  ↑" : (is_same_rate ? "" : "  ↓");
+                    Labels.Info1Name.SuffixColor = color_rate;
+                    Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                    Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+
+                    int working_energy = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    int locked_energy = GetWeaponEnergyDisplayValue(LockedProfile.WeaponSidekickType, LockedProfile.WeaponSidekickLevel);
+                    bool is_upgrade_energy = working_energy > locked_energy;
+                    bool is_same_energy = working_energy == locked_energy;
+                    Color color_energy = is_upgrade_energy ? text_color_upgrade : (is_same_energy ? text_color : text_color_downgrade);
+                    Labels.Info2Name.Value = "Energy";
+                    Labels.Info2Data.Value = GetWeaponEnergyDisplayValue(WorkingProfile.WeaponSidekickType, WorkingProfile.WeaponSidekickLevel);
+                    Labels.Info2Name.Suffix = is_upgrade_energy ? "  ↑" : (is_same_energy ? "" : "  ↓");
+                    Labels.Info2Name.SuffixColor = color_energy;
+                    Labels.Info2Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                    Labels.Info2Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
 
                     bool valid = SelectValidateSidekick(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
-                    DrawPurchasePanel(valid);
+                    DrawPurchasePanel(valid && !is_current);
                 }
                 else
                 {
                     Labels.ItemHeader.Value = "None";
                     Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, textw0, text_color);
-                    DrawPurchasePanel(true);
+                    DrawPurchasePanel(!is_current);
                 }
             }
             else if (ItemMenu == MenuChassis)
             {
                 CChassisPart part = ChassisDefinitions.GetPart(WorkingProfile.ChassisType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.ChassisType;
 
                 Labels.ItemHeader.Value = WorkingProfile.ChassisType;
-                Labels.ItemPrice.Value = part.Price;
+                if (is_current)
+                {
+                    Labels.ItemPrice.Value = "equipped";
+                    Labels.ItemPrice.Suffix = "";
+                }
+                else
+                {
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemPrice.Suffix = "￥";
+                }
+
+                Labels.ItemPrice.Suffix = is_current ? "" : "￥";
                 Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
                 Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                Labels.ArmorValue.Value = Convert.ToInt32(part.Armor * 100.0f);
-                Labels.ArmorHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                Labels.ArmorValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+                int working_armor = Convert.ToInt32(part.Armor * 100.0f);
+                int locked_armor = Convert.ToInt32(ChassisDefinitions.GetPart(LockedProfile.ChassisType).Armor * 100.0f);
+                bool is_upgrade_armor = working_armor > locked_armor;
+                bool is_same_armor = working_armor == locked_armor;
+                Color color_armor = is_upgrade_armor ? text_color_upgrade : (is_same_armor ? text_color : text_color_downgrade);
+                Labels.Info0Name.Value = "Armor";
+                Labels.Info0Data.Value = Convert.ToInt32(part.Armor * 100.0f);
+                Labels.Info0Name.Suffix = is_upgrade_armor ? "  ↑" : (is_same_armor ? "" : "  ↓");
+                Labels.Info0Name.SuffixColor = color_armor;
+                Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
-                Labels.SpeedValue.Value = Convert.ToInt32(part.Speed * 100.0f);
-                Labels.SpeedHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                Labels.SpeedValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+                int working_speed = Convert.ToInt32(part.Speed * 100.0f);
+                int locked_speed = Convert.ToInt32(ChassisDefinitions.GetPart(LockedProfile.ChassisType).Speed * 100.0f);
+                bool is_upgrade_speed = working_speed > locked_speed;
+                bool is_same_speed = working_speed == locked_speed;
+                Color color_speed = is_upgrade_speed ? text_color_upgrade : (is_same_speed ? text_color : text_color_downgrade);
+                Labels.Info1Name.Value = "Speed";
+                Labels.Info1Data.Value = Convert.ToInt32(part.Speed * 100.0f);
+                Labels.Info1Name.Suffix = is_upgrade_speed ? "  ↑" : (is_same_speed ? "" : "  ↓");
+                Labels.Info1Name.SuffixColor = color_speed;
+                Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
-                Labels.DensityValue.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
-                Labels.DensityHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
-                Labels.DensityValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
+                int working_density = Convert.ToInt32(part.CollisionResistance * 100.0f);
+                int locked_density = Convert.ToInt32(ChassisDefinitions.GetPart(LockedProfile.ChassisType).CollisionResistance * 100.0f);
+                bool is_upgrade_density = working_density > locked_density;
+                bool is_same_density = working_density == locked_density;
+                Color color_density = is_upgrade_density ? text_color_upgrade : (is_same_density ? text_color : text_color_downgrade);
+                Labels.Info2Name.Value = "Density";
+                Labels.Info2Data.Value = Convert.ToInt32(part.CollisionResistance * 100.0f);
+                Labels.Info2Data.Suffix = "%";
+                Labels.Info2Name.Suffix = is_upgrade_density ? "  ↑" : (is_same_density ? "" : "  ↓");
+                Labels.Info2Name.SuffixColor = color_density;
+                Labels.Info2Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                Labels.Info2Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
 
                 bool valid = SelectValidateChassis(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
-                DrawPurchasePanel(valid);
+                DrawPurchasePanel(valid && !is_current);
             }
             else if (ItemMenu == MenuGenerator)
             {
                 CGeneratorPart part = GeneratorDefinitions.GetPart(WorkingProfile.GeneratorType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.GeneratorType;
 
                 Labels.ItemHeader.Value = WorkingProfile.GeneratorType;
-                Labels.ItemPrice.Value = part.Price;
+                if (is_current)
+                {
+                    Labels.ItemPrice.Value = "equipped";
+                    Labels.ItemPrice.Suffix = "";
+                }
+                else
+                {
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemPrice.Suffix = "￥";
+                }
+
+                Labels.ItemPrice.Suffix = is_current ? "" : "￥";
                 Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
                 Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                Labels.EnergyValue.Value = Convert.ToInt32(part.Energy * 100.0f);
-                Labels.EnergyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                Labels.EnergyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+                int working_energy = Convert.ToInt32(part.Energy * 100.0f);
+                int locked_energy = Convert.ToInt32(GeneratorDefinitions.GetPart(LockedProfile.GeneratorType).Energy * 100.0f);
+                bool is_upgrade_energy = working_energy > locked_energy;
+                bool is_same_energy = working_energy == locked_energy;
+                Color color_energy = is_upgrade_energy ? text_color_upgrade : (is_same_energy ? text_color : text_color_downgrade);
+                Labels.Info0Name.Value = "Energy";
+                Labels.Info0Data.Value = Convert.ToInt32(part.Energy * 100.0f);
+                Labels.Info0Name.Suffix = is_upgrade_energy ? "  ↑" : (is_same_energy ? "" : "  ↓");
+                Labels.Info0Name.SuffixColor = color_energy;
+                Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
-                Labels.RegenValue.Value = Convert.ToInt32(part.Regen * 10000.0f);
-                Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+                int working_regen = Convert.ToInt32(part.Regen * 100.0f);
+                int locked_regen = Convert.ToInt32(GeneratorDefinitions.GetPart(LockedProfile.GeneratorType).Regen * 100.0f);
+                bool is_upgrade_regen = working_regen > locked_regen;
+                bool is_same_regen = working_regen == locked_regen;
+                Color color_regen = is_upgrade_regen ? text_color_upgrade : (is_same_regen ? text_color : text_color_downgrade);
+                Labels.Info1Name.Value = "Regen";
+                Labels.Info1Data.Value = Convert.ToInt32(part.Regen * 100.0f);
+                Labels.Info1Name.Suffix = is_upgrade_regen ? "  ↑" : (is_same_regen ? "" : "  ↓");
+                Labels.Info1Name.SuffixColor = color_regen;
+                Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
                 if (!String.IsNullOrEmpty(part.Description))
                 {
@@ -848,32 +1080,68 @@ namespace Galaxy
                 }
 
                 bool valid = SelectValidateGenerator(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
-                DrawPurchasePanel(valid);
+                DrawPurchasePanel(valid && !is_current);
             }
             else if (ItemMenu == MenuShield)
             {
                 CShieldPart part = ShieldDefinitions.GetPart(WorkingProfile.ShieldType);
                 CMenu.CMenuOption option = ItemMenu.MenuOptions[ItemMenu.Cursor];
+                bool is_current = (string)option.Data == LockedProfile.ShieldType;
 
                 Labels.ItemHeader.Value = WorkingProfile.ShieldType;
-                Labels.ItemPrice.Value = part.Price;
+                if (is_current)
+                {
+                    Labels.ItemPrice.Value = "equipped";
+                    Labels.ItemPrice.Suffix = "";
+                }
+                else
+                {
+                    Labels.ItemPrice.Value = part.Price;
+                    Labels.ItemPrice.Suffix = "￥";
+                }
+
                 Labels.ItemHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text00, text_color);
                 Labels.ItemPrice.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text01, text_color);
 
-                Labels.ShieldValue.Value = Convert.ToInt32(part.Shield * 100.0f);
-                Labels.ShieldHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
-                Labels.ShieldValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
+                int working_shield = Convert.ToInt32(part.Shield * 100.0f);
+                int locked_shield = Convert.ToInt32(ShieldDefinitions.GetPart(LockedProfile.ShieldType).Shield * 100.0f);
+                bool is_upgrade_shield = working_shield > locked_shield;
+                bool is_same_shield = working_shield == locked_shield;
+                Color color_shield = is_upgrade_shield ? text_color_upgrade : (is_same_shield ? text_color : text_color_downgrade);
+                Labels.Info0Name.Value = "Shield";
+                Labels.Info0Data.Value = Convert.ToInt32(part.Shield * 100.0f);
+                Labels.Info0Name.Suffix = is_upgrade_shield ? "  ↑" : (is_same_shield ? "" : "  ↓");
+                Labels.Info0Name.SuffixColor = color_shield;
+                Labels.Info0Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text10, text_color);
+                Labels.Info0Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text11, text_color);
 
-                Labels.RegenValue.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
-                Labels.RegenHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
-                Labels.RegenValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
+                int working_regen = Convert.ToInt32(part.EnergyDrain * 100.0f);
+                int locked_regen = Convert.ToInt32(ShieldDefinitions.GetPart(LockedProfile.ShieldType).EnergyDrain * 100.0f);
+                bool is_upgrade_regen = working_regen > locked_regen;
+                bool is_same_regen = working_regen == locked_regen;
+                Color color_regen = is_upgrade_regen ? text_color_upgrade : (is_same_regen ? text_color : text_color_downgrade);
+                Labels.Info1Name.Value = "Regen";
+                Labels.Info1Data.Value = Convert.ToInt32(part.EnergyDrain * 100.0f);
+                Labels.Info1Name.Suffix = is_upgrade_regen ? "  ↑" : (is_same_regen ? "" : "  ↓");
+                Labels.Info1Name.SuffixColor = color_regen;
+                Labels.Info1Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text20, text_color);
+                Labels.Info1Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text21, text_color);
 
-                Labels.EfficiencyValue.Value = Convert.ToInt32(part.Efficiency * 100.0f);
-                Labels.EfficiencyHeader.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
-                Labels.EfficiencyValue.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
+                int working_efficiency = Convert.ToInt32(part.Efficiency * 100.0f);
+                int locked_efficiency = Convert.ToInt32(ShieldDefinitions.GetPart(LockedProfile.ShieldType).Efficiency * 100.0f);
+                bool is_upgrade_efficiency = working_efficiency > locked_efficiency;
+                bool is_same_efficiency = working_efficiency == locked_efficiency;
+                Color color_efficiency = is_upgrade_efficiency ? text_color_upgrade : (is_same_efficiency ? text_color : text_color_downgrade);
+                Labels.Info2Name.Value = "Efficiency";
+                Labels.Info2Data.Value = Convert.ToInt32(part.Efficiency * 100.0f);
+                Labels.Info2Data.Suffix = "%";
+                Labels.Info2Name.Suffix = is_upgrade_efficiency ? "  ↑" : (is_same_efficiency ? "" : "  ↓");
+                Labels.Info2Name.SuffixColor = color_efficiency;
+                Labels.Info2Name.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text30, text_color);
+                Labels.Info2Data.Draw(Game.DefaultSpriteBatch, Game.GameRegularFont, text31, text_color);
 
                 bool valid = SelectValidateShield(ItemMenu.MenuOptions[ItemMenu.Cursor].Data);
-                DrawPurchasePanel(valid);
+                DrawPurchasePanel(valid && !is_current);
             }
             else
             {
@@ -1388,6 +1656,10 @@ namespace Galaxy
 
         private void DrawPurchasePanel(bool valid)
         {
+            // just early out?
+            if (!valid)
+                return;
+
             Vector2 menu_position = GetMenuPosition();
             Vector2 panel_position = menu_position + new Vector2(-54.0f, 554.0f);
             Texture2D texture = valid ? ShopPurchasePanelTexture : ShopPurchasePanelInvalidTexture;
