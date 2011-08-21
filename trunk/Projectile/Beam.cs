@@ -59,6 +59,10 @@ namespace Galaxy
             CAudio.PlaySound("WeaponHitLaser");
         }
 
+        public void OnCollide(CBlackHole blackhole)
+        {
+        }
+
         public void OnCollide(CBuilding building)
         {
             Vector2 pos = new Vector2(MathHelper.Clamp(building.Physics.Position.X, Physics.Position.X - Width, Physics.Position.X + Width), building.Physics.Position.Y);
