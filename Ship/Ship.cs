@@ -63,10 +63,9 @@ namespace Galaxy
         public int IsAbsorbBullets { get; set; }
         public float SpeedEnhancement { get; set; }
 
-        public int Score { get; set; }
+        public bool IsFocusMode { get; set; }
 
-        public int RapidFireCountdown { get; set; }
-        public int FocusFireCountup { get; set; }
+        public int Score { get; set; }
 
         public void Initialize(
             CWorld world,
@@ -149,7 +148,7 @@ namespace Galaxy
             UpdateShields();
             UpdateArmor();
 
-            if (IsFocusMode())
+            if (IsFocusMode)
             {
                 Physics.Friction = Interpolation.MoveToValue(Physics.Friction, Chassis.Friction * 0.6f, 0.2f);
             }
@@ -274,71 +273,60 @@ namespace Galaxy
             Physics.Velocity += force;
 
             // TEST: weapon upgrade
-            bool lctrl_down = CInput.IsRawKeyDown(Keys.LeftControl);
-            if (lctrl_down)
+            if (CInput.IsRawKeyPressed(Keys.NumPad1))
             {
-                if (CInput.IsRawKeyPressed(Keys.B))
-                {
-                    WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
-                    WeaponFocus = DowngradeWeapon(FocusWeapon);
-                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
-                }
-                if (CInput.IsRawKeyPressed(Keys.V))
-                {
-                    WeaponSecondary = DowngradeWeapon(SecondaryWeapon);
-                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
-                }
+                WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
+                WeaponFocus = DowngradeWeapon(FocusWeapon);
+                SingleShotEnergyUsage = CalculateSingleShotEnergy();
+            }
+            if (CInput.IsRawKeyPressed(Keys.NumPad2))
+            {
+                WeaponSecondary = DowngradeWeapon(SecondaryWeapon);
+                SingleShotEnergyUsage = CalculateSingleShotEnergy();
+            }
+            if (CInput.IsRawKeyPressed(Keys.NumPad4))
+            {
+                WeaponPrimary = UpgradeWeapon(PrimaryWeapon);
+                WeaponFocus = UpgradeWeapon(FocusWeapon);
+                SingleShotEnergyUsage = CalculateSingleShotEnergy();
+            }
+            if (CInput.IsRawKeyPressed(Keys.NumPad5))
+            {
+                WeaponSecondary = UpgradeWeapon(SecondaryWeapon);
+                SingleShotEnergyUsage = CalculateSingleShotEnergy();
+            }
+
+            if ((World.Game.Input.IsR2Down(GameControllerIndex) && World.Game.Input.IsL2Down(GameControllerIndex)) || World.Game.Input.IsKeyDown(Keys.V))
+            {
+                FireFocusWeapons();
+                World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
+                IsFocusMode = true;
             }
             else
             {
-                if (CInput.IsRawKeyPressed(Keys.B))
-                {
-                    WeaponPrimary = UpgradeWeapon(PrimaryWeapon);
-                    WeaponFocus = UpgradeWeapon(FocusWeapon);
-                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
-                }
-                if (CInput.IsRawKeyPressed(Keys.V))
-                {
-                    WeaponSecondary = UpgradeWeapon(SecondaryWeapon);
-                    SingleShotEnergyUsage = CalculateSingleShotEnergy();
-                }
-            }
+                IsFocusMode = false;
 
-            if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.X))
-            {
-                ChargeSidekickLeft();    
-                ChargeSidekickRight();    
-            }
-            else
-            {
-                FireSidekickLeft();    
-                FireSidekickRight();    
-            }
-
-            if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.C))
-            {
-                RapidFireCountdown = 15;
-                FocusFireCountup += 1;
-
-                if (IsFocusMode())
-                {
-                    World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position + Vector2.UnitY * -38.0f, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
-                }
-
-                FirePrimarySecondaryWeapons();
-            }
-            else
-            {
-                RapidFireCountdown = Math.Max(0, RapidFireCountdown - 1);
-                FocusFireCountup = 0;
-
-                if (RapidFireCountdown > 0)
+                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.C))
                 {
                     FirePrimarySecondaryWeapons();
                 }
                 else
                 {
                     DidntFirePrimarySecondaryWeapons();
+                }
+            }
+
+            if (!IsFocusMode)
+            {
+                if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.X))
+                {
+                    ChargeSidekickLeft();
+                    ChargeSidekickRight();
+                }
+                else
+                {
+                    FireSidekickLeft();
+                    FireSidekickRight();
                 }
             }
         }
@@ -470,18 +458,15 @@ namespace Galaxy
 
         public void FirePrimarySecondaryWeapons()
         {
-            if (IsFocusMode())
-            {
-                Fire(WeaponFocus);
-                DidntFire(WeaponPrimary);
-            }
-            else
-            {
-                Fire(WeaponPrimary);
-                DidntFire(WeaponFocus);
-            }
-
+            Fire(WeaponPrimary);
+            DidntFire(WeaponFocus);
             Fire(WeaponSecondary);
+        }
+
+        public void FireFocusWeapons()
+        {
+            Fire(WeaponFocus);
+            DidntFire(WeaponPrimary);
         }
 
         public void DidntFirePrimarySecondaryWeapons()
@@ -649,11 +634,6 @@ namespace Galaxy
         public void GetCoin()
         {
             CurrentEnergy += 1.0f * Generator.RegenOnCoin;
-        }
-
-        public bool IsFocusMode()
-        {
-            return FocusFireCountup > 8;
         }
     };
 }

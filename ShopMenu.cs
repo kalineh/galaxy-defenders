@@ -133,7 +133,7 @@ namespace Galaxy
                 },
                 HideText = true,
                 CursorIconName = "Textures/UI/Shop/IconCategoryCursor",
-                OnCancel = ReturnToMainMenu,
+                //OnCancel = ReturnToMainMenu,
             };
 
             //
@@ -617,7 +617,7 @@ namespace Galaxy
             // TODO: sample ship fly
         }
 
-        private void SaveLockedProfile()
+        public void SaveLockedProfile()
         {
             SProfile profile = CSaveData.GetCurrentProfile();
             profile.Game[Game.PlayersInGame - 1].Pilots[(int)ControllerIndex] = LockedProfile;
