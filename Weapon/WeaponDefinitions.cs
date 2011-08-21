@@ -1032,34 +1032,25 @@ namespace Galaxy
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeVulcanData(0.13f, 0.0f),
-                        },
-                        // level 4
-                        new List<SWeaponData>() {
                             MakeVulcanData(0.1400f, 0.0f),
                             MakeVulcanData(0.1401f, 0.0f),
                         },
-                        // level 5
+                        // level 4
                         new List<SWeaponData>() {
                             MakeVulcanData(0.1300f, 0.0f),
                             MakeVulcanData(0.1301f, 0.0f),
                         },
-                        // level 6
-                        new List<SWeaponData>() {
-                            MakeVulcanData(0.1200f, 0.0f),
-                            MakeVulcanData(0.1201f, 0.0f),
-                        },
-                        // level 7
-                        new List<SWeaponData>() {
-                            MakeVulcanData(0.1400f, 0.0f),
-                            MakeVulcanData(0.1401f, 0.0f),
-                            MakeVulcanData(0.1402f, 0.0f),
-                        },
-                        // level 8
+                        // level 5
                         new List<SWeaponData>() {
                             MakeVulcanData(0.1200f, 0.0f),
                             MakeVulcanData(0.1201f, 0.0f),
                             MakeVulcanData(0.1202f, 0.0f),
+                        },
+                        // level 6
+                        new List<SWeaponData>() {
+                            MakeVulcanData(0.1100f, 0.0f),
+                            MakeVulcanData(0.1101f, 0.0f),
+                            MakeVulcanData(0.1102f, 0.0f),
                         },
                     },
                 }
@@ -1324,7 +1315,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
                     DisplayName = "Missile Rack",
-                    BasePrice = 1000,
+                    BasePrice = 1100,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -1373,7 +1364,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootSeekBomb",
                     DisplayName = "Seek Bomb",
-                    BasePrice = 500,
+                    BasePrice = 750,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -1422,7 +1413,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootSeekBomb",
                     DisplayName = "Boomerang",
-                    BasePrice = 700,
+                    BasePrice = 800,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -1463,7 +1454,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
                     DisplayName = "Drunk Missile",
-                    BasePrice = 750,
+                    BasePrice = 900,
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
@@ -1504,7 +1495,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMiniShot",
                     DisplayName = "Mini Shot",
-                    BasePrice = 2500,
+                    BasePrice = 3500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             new SWeaponData() {
@@ -1590,7 +1581,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootMissile",
                     DisplayName = "MissileLauncher",
-                    BasePrice = 6500,
+                    BasePrice = 7500,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             MakeMissileLauncherData(new Vector2(-8.0f, -0.0f)),
@@ -1603,7 +1594,7 @@ namespace Galaxy
                 new SWeaponDefinition() {
                     Sound = "WeaponShootLaser",
                     DisplayName = "LaserShot",
-                    BasePrice = 3000,
+                    BasePrice = 9000,
                     Data = new List<List<SWeaponData>>() {
                         new List<SWeaponData>() {
                             MakeLaserShotData(0.0f),

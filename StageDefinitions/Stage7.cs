@@ -2942,7 +2942,7 @@ Y = -17544.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CCannon),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
@@ -2962,7 +2962,7 @@ Y = -17536.0f,
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
+NoDropCoins = true,
 Powerup = false,
 Type = typeof(Galaxy.CCannon),
 SpawnPosition = new Galaxy.CSpawnPositionFixed() {
