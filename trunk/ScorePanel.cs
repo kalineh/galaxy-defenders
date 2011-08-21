@@ -82,7 +82,7 @@ namespace Galaxy
 
             ShowContinue = true;
             ContinueLabel = new CTextLabel() { Value = "Continue", Alignment = CTextLabel.EAlignment.Left };
-            ContinueButton = CVisual.MakeSpriteCached1(Game, "Textures/UI/Xbox/xboxControllerButtonX");
+            ContinueButton = CVisual.MakeSpriteCached1(Game, "Textures/UI/Xbox/xboxControllerButtonA");
 
             BasePosition = new Vector2(1920.0f / 2.0f + 8.0f, 140.0f);
         }

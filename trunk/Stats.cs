@@ -122,7 +122,7 @@ namespace Galaxy
         public string GetTotalPercentString()
         {
             int total = GetTotalPercent();
-            string result = String.Format("TOTAL: {0}%", total);
+            string result = String.Format("Total: {0}%", total);
             return result;
         }
 
