@@ -31,12 +31,12 @@ namespace Galaxy
                 Visual = CVisual.MakeSpriteCachedForPlayer(world.Game, "Textures/Weapons/BigPlasma", owner.GameControllerIndex);
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
-                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 32.0f);
+                Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 38.0f);
                 Splash = CPlasmaSplash.GetCached(world);
                 Splash.Initialize(world);
-                Splash.SetRadius(140.0f);
+                Splash.SetRadius(210.0f);
                 Splash.Owner = owner;
-                Splash.Damage = Damage * 0.25f;
+                Splash.Damage = Damage * 0.5f;
             }
         }
 
@@ -45,6 +45,16 @@ namespace Galaxy
             // TODO: find a better way to sync these
             CollisionCircle box = Collision as CollisionCircle;
             box.Position = Physics.Position;
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            if (Splash != null)
+            {
+                World.ParticleEffects.Spawn(EParticleType.WeaponPlasmaTrail, Physics.Position, Visual.Color, null, -Physics.Velocity.Normal());
+            }
         }
 
         protected override void OnDie()
