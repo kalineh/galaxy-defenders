@@ -78,6 +78,9 @@ namespace Galaxy
             if (Boss == null)
                 return;
 
+            if (Boss.IsDead)
+                return;
+
             float health = Boss.Health / Boss.HealthMax;
             int length = Math.Max((int)(580.0f * health), 0);
 

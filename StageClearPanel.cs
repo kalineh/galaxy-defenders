@@ -65,12 +65,12 @@ namespace Galaxy
             LabelAwards = new List<CTextLabel>();
             LabelAwardValues = new List<CTextLabel>();
 
-            LabelStageClear.Value = "STAGE CLEAR";
-            LabelCoins.Value = "COINS";
-            LabelEnemies.Value = "ENEMIES";
-            LabelBuildings.Value = "BUILDINGS";
-            LabelTotal.Value = "TOTAL";
-            LabelArmorRepair.Value = "REPAIR COST";
+            LabelStageClear.Value = "Stage Clear";
+            LabelCoins.Value = "Coins";
+            LabelEnemies.Value = "Enemies";
+            LabelBuildings.Value = "Buildings";
+            LabelTotal.Value = "Total";
+            LabelArmorRepair.Value = "Repair Cost";
 
             LabelStageClear.Alignment = CTextLabel.EAlignment.Center;
             LabelCoins.Alignment = CTextLabel.EAlignment.Right;
@@ -196,8 +196,8 @@ namespace Galaxy
             if (Counter >= StageClearShow)
             {
                 Vector2 panel_position = new Vector2(World.Game.Resolution.X / 2.0f - 75.0f, 150.0f);
-                sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)panel_position.X - 140, (int)panel_position.Y - 35, 450, 570), null, new Color(76, 76, 76, 192), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
-                sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)panel_position.X - 130, (int)panel_position.Y - 25, 430, 550), null, new Color(30, 30, 30, 128), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)panel_position.X - 140, (int)panel_position.Y - 35, 450, 570), null, new Color(76, 76, 76), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
+                sprite_batch.Draw(World.Game.PixelTexture, new Rectangle((int)panel_position.X - 130, (int)panel_position.Y - 25, 430, 550), null, new Color(30, 30, 30), 0.0f, Vector2.Zero, SpriteEffects.None, 0.0f);
 
                 LabelStageClear.Draw(sprite_batch, World.Game.GameLargeFont, base_ + new Vector2(+0.0f, 40.0f), Color.White);
             }
@@ -259,8 +259,8 @@ namespace Galaxy
             if (Counter >= MedalShow + 60)
             {
                 float scale = 1.0f + (float)Math.Sin(World.Game.GameFrame * 0.1f) * 0.01f;
-                ContinueLabel.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(60.0f, 520.0f), Color.LightGray, scale);
-                ContinueButton.Draw(sprite_batch, base_ + new Vector2(40.0f, 520.0f), 0.0f);
+                ContinueLabel.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-60.0f, 490.0f), Color.LightGray, scale);
+                ContinueButton.Draw(sprite_batch, base_ + new Vector2(-80.0f, 490.0f), 0.0f);
             }
         }
     }
