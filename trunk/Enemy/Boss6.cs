@@ -23,7 +23,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 38.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss6Sphere");
-            HealthMax = 30.0f;
+            HealthMax = 130.0f;
             Coins = 0;
             BaseScore = 0;
             FiberManager = new CFiberManager();

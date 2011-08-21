@@ -42,6 +42,9 @@ namespace Galaxy
 
             if (!Game.EditorMode)
                 CAudio.PlayMusic("Konami's_Moon_Base");
+
+            //if (CSaveData.GetCurrentGameData(Game).Stage == "Stage1")
+                //FrameCount = 1600;
         }
 
         public override void OnExit()
@@ -56,6 +59,16 @@ namespace Galaxy
 
         public override void Update()
         {
+            if (Game.Input.IsPadBackPressedAny() || Game.Input.IsKeyPressed(Keys.Back))
+            {
+                Menu1P.SaveLockedProfile();
+                if (Game.PlayersInGame > 1)
+                    Menu2P.SaveLockedProfile();
+
+                Game.State = new CStateFadeTo(Game, this, new CStateMainMenu(Game));
+                return;
+            }
+
             Menu1P.Update();
             if (Game.PlayersInGame > 1)
                 Menu2P.Update();
@@ -91,6 +104,12 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, EmptyWorld.GameCamera.WorldMatrix);
             EmptyWorld.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();
+
+            //float alpha = 0.7f + (float)Math.Abs(Math.Sin(FrameCount * 0.01f)) * 0.3f;
+            //Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Game.RenderScaleMatrix);
+            ////Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, new Vector2(Game.Resolution.X / 2.0f, Game.Resolution.Y * 0.8f), "PRESS START TO ENTER STAGE", new Color(160, 160, 160, (byte)alpha));
+            //Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, new Vector2(Game.Resolution.X / 2.0f, Game.Resolution.Y * 0.8f), FrameCount.ToString(), new Color(160, 160, 160, (byte)alpha));
+            //Game.DefaultSpriteBatch.End();
         }
 
         public override void PostHudDraw()
@@ -115,7 +134,14 @@ namespace Galaxy
 
         private void StageSelect()
         {
+#if DEBUG
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
+#else
+            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
+            string stage = selectable_stages.Count > 0 ? selectable_stages[0] : "Stage1";
+            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName((string)stage);
+            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
+#endif
         }
 
         private void UpdateGenerateEnemy()
