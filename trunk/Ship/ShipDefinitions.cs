@@ -188,81 +188,81 @@ namespace Galaxy
             {
                 "Conduction Generator",
                 new CGeneratorPart() {
-                    Price = 2500,
-                    Energy = 4.0f,
-                    Regen = 0.07f,
+                    Price = 4000,
+                    Energy = 5.0f,
+                    Regen = 0.08f,
                     IconName = "Textures/UI/Shop/IconGeneratorConduction",
                 }
             },
             {
                 "Battery Generator",
                 new CGeneratorPart() {
-                    Price = 3500,
-                    Energy = 7.0f,
-                    Regen = 0.06f,
+                    Price = 4500,
+                    Energy = 8.0f,
+                    Regen = 0.07f,
                     IconName = "Textures/UI/Shop/IconGeneratorBattery",
                 }
             },
             {
                 "Booster Generator",
                 new CGeneratorPart() {
-                    Price = 7500,
-                    Energy = 5.0f,
-                    Regen = 0.09f,
+                    Price = 9000,
+                    Energy = 6.0f,
+                    Regen = 0.10f,
                     IconName = "Textures/UI/Shop/IconGeneratorBooster",
                 }
             },
             {
                 "Impulse Generator",
                 new CGeneratorPart() {
-                    Price = 12000,
-                    Energy = 7.0f,
-                    Regen = 0.10f,
+                    Price = 14000,
+                    Energy = 8.0f,
+                    Regen = 0.11f,
                     IconName = "Textures/UI/Shop/IconGeneratorImpulse",
                 }
             },
             {
                 "Microwave Generator",
                 new CGeneratorPart() {
-                    Price = 14500,
-                    Energy = 8.0f,
-                    Regen = 0.11f,
+                    Price = 18500,
+                    Energy = 10.0f,
+                    Regen = 0.13f,
                     IconName = "Textures/UI/Shop/IconGeneratorMicrowave",
                 }
             },
             {
                 "Vortex Generator",
                 new CGeneratorPart() {
-                    Price = 18000,
-                    Energy = 9.0f,
-                    Regen = 0.12f,
+                    Price = 24000,
+                    Energy = 10.0f,
+                    Regen = 0.16f,
                     IconName = "Textures/UI/Shop/IconGeneratorVortex",
                 }
             },
             {
                 "Capacitor Generator",
                 new CGeneratorPart() {
-                    Price = 23500,
-                    Energy = 14.0f,
-                    Regen = 0.11f,
+                    Price = 28500,
+                    Energy = 15.0f,
+                    Regen = 0.14f,
                     IconName = "Textures/UI/Shop/IconGeneratorCapacitor",
                 }
             },
             {
                 "Electron Generator",
                 new CGeneratorPart() {
-                    Price = 26500,
-                    Energy = 12.0f,
-                    Regen = 0.14f,
+                    Price = 34000,
+                    Energy = 14.0f,
+                    Regen = 0.18f,
                     IconName = "Textures/UI/Shop/IconGeneratorElectron",
                 }
             },
             {
                 "Kinetic Generator",
                 new CGeneratorPart() {
-                    Price = 12000,
-                    Energy = 10.0f,
-                    Regen = 0.07f,
+                    Price = 38000,
+                    Energy = 16.0f,
+                    Regen = 0.17f,
                     RegenOnCollide = 1.5f,
                     Description = "Collisions provide Energy",
                     IconName = "Textures/UI/Shop/IconGeneratorKinetic",
@@ -271,9 +271,9 @@ namespace Galaxy
             {
                 "Magnetic Generator",
                 new CGeneratorPart() {
-                    Price = 27000,
-                    Energy = 16.0f,
-                    Regen = 0.10f,
+                    Price = 42000,
+                    Energy = 18.0f,
+                    Regen = 0.17f,
                     RegenOnCoin = 0.025f,
                     Description = "Coins increase Energy",
                     IconName = "Textures/UI/Shop/IconGeneratorMagnetic",
@@ -282,9 +282,9 @@ namespace Galaxy
             {
                 "Fusion Generator",
                 new CGeneratorPart() {
-                    Price = 45000,
-                    Energy = 7.5f,
-                    Regen = 0.22f,
+                    Price = 57000,
+                    Energy = 13.0f,
+                    Regen = 0.23f,
                     IconName = "Textures/UI/Shop/IconGeneratorFusion",
                 }
             },

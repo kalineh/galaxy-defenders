@@ -208,7 +208,7 @@ namespace Galaxy
             Physics = new CPhysics();
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(280.0f, 144.0f));
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss11");
-            HealthMax = 160.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 180.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             Phase = 0;

@@ -528,14 +528,14 @@ namespace Galaxy
 
         private void CannonShot(Vector2 position)
         {
-            CEnemyMiniShot.Spawn(World, position, MathHelper.PiOver2, CannonSpeeds[Phase], 0.5f);
+            CEnemyMiniShot.Spawn(World, position, MathHelper.PiOver2, CannonSpeeds[Phase], 1.25f);
             CAudio.PlaySound("EnemyCannonShoot");
         }
 
         private void CannonShotDirectional(Vector2 position, Vector2 dir)
         {
             float angle = dir.ToAngle();
-            CEnemyMiniShot.Spawn(World, position, angle, CannonSpeeds[Phase], 0.5f);
+            CEnemyMiniShot.Spawn(World, position, angle, CannonSpeeds[Phase], 1.25f);
             CAudio.PlaySound("EnemyCannonShoot");
         }
     }

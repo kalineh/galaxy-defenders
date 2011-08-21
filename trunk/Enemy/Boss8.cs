@@ -379,6 +379,7 @@ namespace Galaxy
             float rotation = direction.ToAngle();
             Vector2 position = Physics.Position + cannons[index];
             CEnemyShot shot = CEnemyShot.Spawn(World, position, rotation, 8, 3.0f);
+            CAudio.PlaySound("EnemyShoot");
         }
     }
 }
