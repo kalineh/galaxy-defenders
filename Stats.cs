@@ -96,19 +96,19 @@ namespace Galaxy
         public int GetCoinsCollectedPercent()
         {
             float percent = CoinsTotal == 0 ? 0.0f : 100.0f / CoinsTotal * CoinsCollected;
-            return (int)Math.Round(percent);
+            return Math.Min(100, (int)Math.Round(percent));
         }
 
         public int GetEnemyKillsPercent()
         {
             float percent = EnemyTotal == 0 ? 0.0f : 100.0f / EnemyTotal * EnemyKills;
-            return (int)Math.Round(percent);
+            return Math.Min(100, (int)Math.Round(percent));
         }
 
         public int GetBuildingKillsPercent()
         {
             float percent = BuildingTotal == 0 ? 0.0f : 100.0f / BuildingTotal * BuildingKills;
-            return (int)Math.Round(percent);
+            return Math.Min(100, (int)Math.Round(percent));
         }
 
         public int GetTotalPercent()

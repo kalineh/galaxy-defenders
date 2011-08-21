@@ -107,7 +107,7 @@ namespace Galaxy
 
             Labels = new SLabels(null);
 
-            ShowAllItems = true;
+            ShowAllItems = false;
 
         }
 

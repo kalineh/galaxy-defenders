@@ -58,8 +58,11 @@ namespace Galaxy
 
         public override void Draw(SpriteBatch sprite_batch)
         {
-            float t = (float)AliveTime / (float)Lifetime;
-            Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.5f + t * 0.5f);
+            if (Visual != null)
+            {
+                float t = (float)AliveTime / (float)Lifetime;
+                Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.5f + t * 0.5f);
+            }
         }
 
         public override void UpdateCollision()
