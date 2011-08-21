@@ -297,19 +297,20 @@ namespace Galaxy
 
             // TODO: active effect display?
 
-            FireIconVisual.Draw(sprite_batch, FireIconPosition, 0.0f);
-            Ability0IconVisual.Draw(sprite_batch, Ability0IconPosition, 0.0f);
-            Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
-            Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
+            // NOTE: disabled abilities
+            //FireIconVisual.Draw(sprite_batch, FireIconPosition, 0.0f);
+            //Ability0IconVisual.Draw(sprite_batch, Ability0IconPosition, 0.0f);
+            //Ability1IconVisual.Draw(sprite_batch, Ability1IconPosition, 0.0f);
+            //Ability2IconVisual.Draw(sprite_batch, Ability2IconPosition, 0.0f);
 
-            CVisual button0 = CanUseAbility0 ? Ability0IconButtonVisual : Ability0IconGreyButtonVisual;
-            CVisual button1 = CanUseAbility1 ? Ability1IconButtonVisual : Ability1IconGreyButtonVisual;
-            CVisual button2 = CanUseAbility2 ? Ability2IconButtonVisual : Ability2IconGreyButtonVisual;
+            //CVisual button0 = CanUseAbility0 ? Ability0IconButtonVisual : Ability0IconGreyButtonVisual;
+            //CVisual button1 = CanUseAbility1 ? Ability1IconButtonVisual : Ability1IconGreyButtonVisual;
+            //CVisual button2 = CanUseAbility2 ? Ability2IconButtonVisual : Ability2IconGreyButtonVisual;
 
-            FireButtonIconVisual.Draw(sprite_batch, FireIconPosition + new Vector2(38.0f, 0.0f), 0.0f);
-            button0.Draw(sprite_batch, Ability0IconPosition + new Vector2(0.0f, 42.0f), 0.0f);
-            button1.Draw(sprite_batch, Ability1IconPosition + new Vector2(-38.0f, 0.0f), 0.0f);
-            button2.Draw(sprite_batch, Ability2IconPosition + new Vector2(0.0f, -42.0f), 0.0f);
+            //FireButtonIconVisual.Draw(sprite_batch, FireIconPosition + new Vector2(38.0f, 0.0f), 0.0f);
+            //button0.Draw(sprite_batch, Ability0IconPosition + new Vector2(0.0f, 42.0f), 0.0f);
+            //button1.Draw(sprite_batch, Ability1IconPosition + new Vector2(-38.0f, 0.0f), 0.0f);
+            //button2.Draw(sprite_batch, Ability2IconPosition + new Vector2(0.0f, -42.0f), 0.0f);
 
             Color color = new Color(160, 160, 160);
             sprite_batch.DrawStringAlignCenter(Game.GameLargeFont, NameTextPosition, NameText, color, 1.0f);

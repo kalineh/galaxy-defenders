@@ -199,7 +199,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.16f,
                 Speed = 17.0f,
-                Damage = 0.25f,
+                Damage = 0.225f,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * offset,
                 Rotation = 0.0f,
@@ -242,7 +242,7 @@ namespace Galaxy
             {
                 ReloadTime = 0.18f,
                 Speed = 15.0f,
-                Damage = 0.25f,
+                Damage = 0.225f,
                 KickbackForce = 0.0f,
                 Offset = new Vector2(0.0f, 0.0f),
                 Rotation = MathHelper.ToRadians(rotation),
@@ -284,9 +284,9 @@ namespace Galaxy
         {
             return new SWeaponData()
             {
-                ReloadTime = 0.25f,
-                Speed = 12.0f,
-                Damage = 0.75f,
+                ReloadTime = 0.3f,
+                Speed = 10.0f,
+                Damage = 0.60f,
                 KickbackForce = 0.0f,
                 Offset = offset,
                 Rotation = MathHelper.ToRadians(rotation),
@@ -653,7 +653,7 @@ namespace Galaxy
             { "SpreadLaser",
                 new SWeaponDefinition()
                 {
-                    BasePrice = 700,
+                    BasePrice = 600,
                     DisplayName = "Spread Laser",
                     Sound = "WeaponShootLaser",
                     Data = new List<List<SWeaponData>>() {
@@ -861,50 +861,50 @@ namespace Galaxy
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(+0.0f, -10.0f), -1.0f),
-                            MakePlasmaFocusData(new Vector2(+0.0f, +10.0f), +1.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, -10.0f), -1.5f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +10.0f), +1.5f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(-1.0f, -10.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(-1.0f, -10.0f), -3.0f),
                             MakePlasmaFocusData(new Vector2(-0.0f, +0.0f), +0.0f),
-                            MakePlasmaFocusData(new Vector2(+1.0f, +10.0f), +2.0f),
+                            MakePlasmaFocusData(new Vector2(+1.0f, +10.0f), +3.0f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(-2.0f, -13.0f), -2.0f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), +0.0f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), +0.0f),
-                            MakePlasmaFocusData(new Vector2(-2.0f, +13.0f), +2.0f),
+                            MakePlasmaFocusData(new Vector2(-2.0f, -13.0f), -4.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), -1.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +0.0f), +1.0f),
+                            MakePlasmaFocusData(new Vector2(-2.0f, +13.0f), +4.0f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(-5.0f, -19.0f), -4.0f),
-                            MakePlasmaFocusData(new Vector2(-3.0f, -10.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, -19.0f), -6.0f),
+                            MakePlasmaFocusData(new Vector2(-3.0f, -10.0f), -3.0f),
                             MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), -0.0f),
-                            MakePlasmaFocusData(new Vector2(-3.0f, +10.0f), +2.0f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, +19.0f), +4.0f),
+                            MakePlasmaFocusData(new Vector2(-3.0f, +10.0f), +3.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +19.0f), +6.0f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -3.5f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -2.0f),
-                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -1.0f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -8.5f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -5.0f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -2.5f),
                             MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), -0.0f),
-                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +1.0f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +2.0f),
-                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +3.5f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +2.5f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +5.0f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +8.5f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -3.5f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -2.5f),
-                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -1.5f),
-                            MakePlasmaFocusData(new Vector2(+0.0f, -0.0f), -0.5f),
-                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), +0.5f),
-                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +1.0f),
-                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +3.0f),
-                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +5.0f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, -19.0f), -10.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, -10.0f), -7.5f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, -5.0f), -5.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, -0.0f), -2.0f),
+                            MakePlasmaFocusData(new Vector2(+0.0f, +0.0f), +2.0f),
+                            MakePlasmaFocusData(new Vector2(+3.0f, +5.0f), +5.0f),
+                            MakePlasmaFocusData(new Vector2(-5.0f, +10.0f), +7.5f),
+                            MakePlasmaFocusData(new Vector2(-8.0f, +19.0f), +10.0f),
                         },
                     },
                 }

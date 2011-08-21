@@ -149,6 +149,11 @@ namespace Galaxy
             Hit();
         }
 
+        public void OnCollide(CPlasmaSplash splash)
+        {
+            Hit();
+        }
+
         public void OnCollide(CLightning lightning)
         {
             lightning.Die();
