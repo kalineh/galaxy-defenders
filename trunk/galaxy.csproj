@@ -119,6 +119,10 @@
     <Compile Include="Projectile\EnemyMiniShot.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="ShopMenu.cs" />
+    <Compile Include="StageDefinitions\BonusStage4.cs" />
+    <Compile Include="StageDefinitions\BonusStage5.cs" />
+    <Compile Include="StageDefinitions\BonusStage6.cs" />
+    <Compile Include="StageDefinitions\BonusStage7.cs" />
     <Compile Include="Stage\Elements\StageElementHealthBar.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
