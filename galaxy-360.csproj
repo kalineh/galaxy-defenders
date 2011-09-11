@@ -131,6 +131,10 @@
     <Compile Include="StageClearPanel.cs" />
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
+    <Compile Include="StageDefinitions\BonusStage4.cs" />
+    <Compile Include="StageDefinitions\BonusStage5.cs" />
+    <Compile Include="StageDefinitions\BonusStage6.cs" />
+    <Compile Include="StageDefinitions\BonusStage7.cs" />
     <Compile Include="StageDefinitions\OldStage1.cs" />
     <Compile Include="StageDefinitions\OldStage10.cs" />
     <Compile Include="StageDefinitions\OldStage11.cs" />
