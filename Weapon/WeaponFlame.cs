@@ -36,12 +36,17 @@ namespace Galaxy
             flame.Physics.Velocity = Vector2.UnitX.Rotate(rotation) * speed;
 
             flame.Physics.Rotation = owner.World.Random.NextAngle();
-            flame.Physics.Velocity += new Vector2(0.0f, owner.Physics.Velocity.Y * 0.5f);
 
             flame.Physics.Friction = custom.Friction;
             flame.Physics.Velocity = flame.Physics.Velocity.Rotate(owner.World.Random.NextFloat() * custom.SprayAngle * owner.World.Random.NextSign());
             flame.Physics.AngularVelocity = owner.World.Random.NextAngle() * 0.05f;
             flame.Lifetime = custom.Lifetime;
+
+            flame.Physics.Velocity += Vector2.UnitY * -owner.World.ScrollSpeed * custom.AntiCameraSpeed;
+
+            flame.ScaleOverride = custom.ScaleOverride;
+
+            owner.Physics.Velocity *= 1.15f;
 
             // TODO: what if this is on the entity delete list?!
             // TODO: it will be added (a second instance), then deleted at the end of the frame

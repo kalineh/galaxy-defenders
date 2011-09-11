@@ -325,19 +325,19 @@ namespace Galaxy
             };
         }
 
-        public static SWeaponData MakeFlameFocusData(float reload, float rotation)
+        public static SWeaponData MakeFlameFocusData(int lifetime, float damage)
         {
             return new SWeaponData()
             {
-                ReloadTime = reload,
-                Speed = 15.0f,
-                Damage = 0.35f,
+                ReloadTime = 0.0f,
+                Speed = 0.15f,
+                Damage = damage,
                 KickbackForce = 0.0f,
                 Offset = Vector2.UnitY * -2.0f,
                 Rotation = 0.0f,
-                Energy = 0.15f,
+                Energy = 0.25f,
                 //RandomReloadTime = 0.1f,
-                CustomData = new FlameCustomData() { Lifetime = 20, Friction = 0.99f, SprayAngle = 0.0f, StartRotation = MathHelper.ToRadians(rotation), FireRotationSpeed = 0.070f },
+                CustomData = new FlameCustomData() { Lifetime = lifetime, Friction = 1.0f, SprayAngle = MathHelper.ToRadians(360.0f), StartRotation = 0.0f, FireRotationSpeed = 0.0f, AntiCameraSpeed = 1.5f, ScaleOverride = 1.0f },
             };
         }
 
@@ -953,40 +953,51 @@ namespace Galaxy
                     Data = new List<List<SWeaponData>>() {
                         // level 1
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.05f, 0.0f),
+                            MakeFlameFocusData(90, 0.175f),
+                            MakeFlameFocusData(90, 0.175f),
+                            MakeFlameFocusData(90, 0.175f),
                         },
                         // level 2
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.04f, 0.0f),
+                            MakeFlameFocusData(100, 0.185f),
+                            MakeFlameFocusData(100, 0.185f),
+                            MakeFlameFocusData(100, 0.185f),
                         },
                         // level 3
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.03f, 0.0f),
+                            MakeFlameFocusData(110, 0.195f),
+                            MakeFlameFocusData(110, 0.195f),
+                            MakeFlameFocusData(110, 0.195f),
                         },
                         // level 4
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.04f, 0.0f),
+                            MakeFlameFocusData(120, 0.205f),
+                            MakeFlameFocusData(120, 0.205f),
+                            MakeFlameFocusData(120, 0.205f),
                         },
                         // level 5
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.03f, -90.0f),
-                            MakeFlameFocusData(0.03f, +90.0f),
+                            MakeFlameFocusData(130, 0.215f),
+                            MakeFlameFocusData(130, 0.215f),
+                            MakeFlameFocusData(130, 0.215f),
                         },
                         // level 6
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.02f, -90.0f),
-                            MakeFlameFocusData(0.02f, +90.0f),
+                            MakeFlameFocusData(145, 0.225f),
+                            MakeFlameFocusData(145, 0.225f),
+                            MakeFlameFocusData(145, 0.225f),
                         },
                         // level 7
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.01f, -90.0f),
-                            MakeFlameFocusData(0.01f, +90.0f),
+                            MakeFlameFocusData(160, 0.235f),
+                            MakeFlameFocusData(160, 0.235f),
+                            MakeFlameFocusData(160, 0.235f),
                         },
                         // level 8
                         new List<SWeaponData>() {
-                            MakeFlameFocusData(0.01f, -120.0f),
-                            MakeFlameFocusData(0.01f, 0.0f),
-                            MakeFlameFocusData(0.01f, +120.0f),
+                            MakeFlameFocusData(180, 0.25f),
+                            MakeFlameFocusData(180, 0.25f),
+                            MakeFlameFocusData(180, 0.25f),
                         },
                     },
                 }

@@ -15,6 +15,8 @@ namespace Galaxy
         public float SprayAngle;
         public float StartRotation;
         public float FireRotationSpeed;
+        public float AntiCameraSpeed;
+        public float? ScaleOverride;
     };
 
     public class CFlame
@@ -22,6 +24,7 @@ namespace Galaxy
     {
         public float BaseDamage;
         public float Lifetime;
+        public float? ScaleOverride;
 
         public override void Initialize(CWorld world, CShip owner, float damage)
         {
@@ -60,8 +63,15 @@ namespace Galaxy
         {
             if (Visual != null)
             {
-                float t = (float)AliveTime / (float)Lifetime;
-                Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.5f + t * 0.5f);
+                if (ScaleOverride == null)
+                {
+                    float t = (float)AliveTime / (float)Lifetime;
+                    Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, 0.5f + t * 0.5f);
+                }
+                else
+                {
+                    Visual.Draw(sprite_batch, Physics.Position, Physics.Rotation, (float)ScaleOverride);
+                }
             }
         }
 
