@@ -109,7 +109,8 @@ namespace Galaxy
             SidekickVisual.Update();
 
             ShieldHitVisual = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/PlayerShieldHit");
-            ShieldHitVisual.Color = new Color(PlayerColor, 128);
+            // xna4: premultiplied alpha?
+            ShieldHitVisual.Color = new Color(PlayerColor.R, PlayerColor.G, PlayerColor.B, 128);
             ShieldHitVisual.Scale = new Vector2(1.25f, 1.25f);
             ShieldHitVisual.Update();
 

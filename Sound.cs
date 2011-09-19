@@ -209,6 +209,15 @@ namespace Galaxy
             return MusicVolume;    
         }
 
+        public static float GetMusicTimeMilliseconds()
+        {
+            // only supporting visualization effects for main music
+            if (CurrentMusic != null)
+                return CurrentMusic.GetVariable("AttackTime");
+
+            return 0.0f;
+        }
+
         public static Dictionary<string, float> MusicDurations = new Dictionary<string, float>()
         {
             // NOTE: just rough approximations

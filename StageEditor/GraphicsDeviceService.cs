@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 // The IGraphicsDeviceService interface requires a DeviceCreated event, but we
@@ -40,13 +41,14 @@ namespace StageEditor
             parameters.BackBufferHeight = Math.Max(height, 1);
             parameters.BackBufferFormat = SurfaceFormat.Color;
 
-            parameters.EnableAutoDepthStencil = true;
-            parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
+            // XNA4
+            //parameters.EnableAutoDepthStencil = true;
+            //parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
+            parameters.DepthStencilFormat = DepthFormat.Depth24;
 
-            graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter,
-                                                DeviceType.Hardware,
-                                                windowHandle,
-                                                parameters);
+            // XNA4
+            //graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.Hardware, windowHandle, parameters);
+            graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, parameters);
         }
 
 
@@ -128,9 +130,9 @@ namespace StageEditor
 
 
         // IGraphicsDeviceService events.
-        public event EventHandler DeviceCreated;
-        public event EventHandler DeviceDisposing;
-        public event EventHandler DeviceReset;
-        public event EventHandler DeviceResetting;
+        public event EventHandler<EventArgs> DeviceCreated;
+        public event EventHandler<EventArgs> DeviceDisposing;
+        public event EventHandler<EventArgs> DeviceReset;
+        public event EventHandler<EventArgs> DeviceResetting;
     }
 }

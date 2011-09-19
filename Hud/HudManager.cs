@@ -118,13 +118,13 @@ namespace Galaxy
             // NOTE: no side panels in editor mode!
             if (Game.EditorMode)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
                 Huds[0].DrawEditor(Game.DefaultSpriteBatch);
                 Game.DefaultSpriteBatch.End();
                 return;
             }
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
 
             foreach (CHud hud in Huds)
                 hud.Draw(Game.DefaultSpriteBatch);
@@ -134,7 +134,7 @@ namespace Galaxy
 
         private void DrawHudsProfileSelect()
         {
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, Game.RenderScaleMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
 
             foreach (HudPilotSelect hud in HudsProfileSelect)
                 hud.Draw(Game.DefaultSpriteBatch);

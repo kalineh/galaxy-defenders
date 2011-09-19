@@ -40,7 +40,9 @@ namespace Galaxy
                 {
                     Console.WriteLine(String.Format("code:{0}: {1}", error.Line, error.ErrorText));
                 }
-                throw new CompilationFailedException();
+
+                //throw new CompilationFailedException(); // XNA4
+                throw new Exception("Compilation failed");
             }
 
             return results.CompiledAssembly;

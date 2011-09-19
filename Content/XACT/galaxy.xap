@@ -1,7 +1,7 @@
 Signature = XACT3;
-Version = 17;
-Content Version = 45;
-Release = March 2009;
+Version = 18;
+Content Version = 46;
+Release = February 2010;
 
 Options
 {
@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 1307582878;
-    Last Modified High = 30146012;
+    Last Modified Low = 3382144465;
+    Last Modified High = 30176917;
 
     Category
     {
@@ -299,7 +299,7 @@ Global Settings
 
         RPC Curve
         {
-            Name = 1::39218bd6-50cb-48d5-b46f-8dd0ccf6b9b3;
+            Name = 1::e33f7f75-3035-42c8-af21-24e863f05e9c;
             Property = 0;
             Sound = 0;
             Line Color = 4292099722;
@@ -351,8 +351,8 @@ Wave Bank
     Compression Preset Name = <none>;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 1438886475;
-    PC Bank Last Modified High = 30145530;
+    PC Bank Last Modified Low = 961530075;
+    PC Bank Last Modified High = 30176913;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
     Bank Last Revised Low = 1242200343;
@@ -1105,21 +1105,15 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 561548773;
-    PC Bank Last Modified High = 30145527;
-    Header Last Modified Low = 0;
-    Header Last Modified High = 0;
-    Bank Last Revised Low = 3453048064;
-    Bank Last Revised High = 30145525;
+    Bank Last Revised Low = 386070341;
+    Bank Last Revised High = 30176937;
 
     Wave
     {
         Name = Aerial_Assault;
         File = ..\Music\Aerial_Assault.wav;
-        Build Settings Last Modified Low = 3824162496;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1142,8 +1136,8 @@ Wave Bank
     {
         Name = Afraid_of_Darkness;
         File = ..\Music\Afraid_of_Darkness.wav;
-        Build Settings Last Modified Low = 3824162496;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1166,8 +1160,8 @@ Wave Bank
     {
         Name = Alkali Earth;
         File = ..\Music\Alkali Earth.wav;
-        Build Settings Last Modified Low = 3824162496;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1190,8 +1184,8 @@ Wave Bank
     {
         Name = Boss 9;
         File = ..\Music\Boss 9.wav;
-        Build Settings Last Modified Low = 3824162496;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1214,8 +1208,8 @@ Wave Bank
     {
         Name = fighting_for_control;
         File = ..\Music\fighting_for_control.wav;
-        Build Settings Last Modified Low = 3824172497;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1238,8 +1232,8 @@ Wave Bank
     {
         Name = Insurrection;
         File = ..\Music\Insurrection.wav;
-        Build Settings Last Modified Low = 3824172497;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1262,8 +1256,8 @@ Wave Bank
     {
         Name = Konami's_Moon_Base;
         File = ..\Music\Konami's_Moon_Base.wav;
-        Build Settings Last Modified Low = 3824172497;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1286,8 +1280,8 @@ Wave Bank
     {
         Name = Luminosity_and_Viscosity;
         File = ..\Music\Luminosity_and_Viscosity.wav;
-        Build Settings Last Modified Low = 3824172497;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1310,8 +1304,8 @@ Wave Bank
     {
         Name = Math_Party;
         File = ..\Music\Math_Party.wav;
-        Build Settings Last Modified Low = 3824172497;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386060341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1334,8 +1328,8 @@ Wave Bank
     {
         Name = Sirius;
         File = ..\Music\Sirius.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1358,8 +1352,8 @@ Wave Bank
     {
         Name = Still_Afraid_of_Darkness;
         File = ..\Music\Still_Afraid_of_Darkness.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1382,8 +1376,8 @@ Wave Bank
     {
         Name = The_Voyage;
         File = ..\Music\The_Voyage.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1406,8 +1400,8 @@ Wave Bank
     {
         Name = Troubled_Dreams;
         File = ..\Music\Troubled_Dreams.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1430,8 +1424,8 @@ Wave Bank
     {
         Name = Turbo;
         File = ..\Music\Turbo.wav;
-        Build Settings Last Modified Low = 3824182498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1454,8 +1448,8 @@ Wave Bank
     {
         Name = Eye_of_the_Predator;
         File = ..\Music\Eye_of_the_Predator.wav;
-        Build Settings Last Modified Low = 3824192498;
-        Build Settings Last Modified High = 30122004;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1478,8 +1472,8 @@ Wave Bank
     {
         Name = Try_Harder;
         File = ..\Music\Try_Harder.wav;
-        Build Settings Last Modified Low = 3509079733;
-        Build Settings Last Modified High = 30122013;
+        Build Settings Last Modified Low = 386070341;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1509,21 +1503,15 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 2854857573;
-    PC Bank Last Modified High = 30122022;
-    Header Last Modified Low = 0;
-    Header Last Modified High = 0;
-    Bank Last Revised Low = 2833966378;
-    Bank Last Revised High = 30122022;
+    Bank Last Revised Low = 386260352;
+    Bank Last Revised High = 30176937;
 
     Wave
     {
         Name = 1-X-0;
         File = ..\Music\1-X-0.wav;
-        Build Settings Last Modified Low = 2624694408;
-        Build Settings Last Modified High = 30122022;
+        Build Settings Last Modified Low = 386260352;
+        Build Settings Last Modified High = 30176937;
 
         Cache
         {
@@ -1552,21 +1540,15 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 972771351;
-    PC Bank Last Modified High = 30145527;
-    Header Last Modified Low = 0;
-    Header Last Modified High = 0;
-    Bank Last Revised Low = 2798248443;
-    Bank Last Revised High = 30145526;
+    Bank Last Revised Low = 386260352;
+    Bank Last Revised High = 30176937;
 
     Wave
     {
         Name = The_Hidden_Answer;
         File = ..\Music\The_Hidden_Answer.wav;
-        Build Settings Last Modified Low = 2798218442;
-        Build Settings Last Modified High = 30145526;
+        Build Settings Last Modified Low = 386260352;
+        Build Settings Last Modified High = 30176937;
         Compression Preset Name = Music Compression;
 
         Cache
@@ -1593,8 +1575,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1308592936;
-    Bank Last Modified High = 30146012;
+    Bank Last Modified Low = 1436247227;
+    Bank Last Modified High = 30176913;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -1622,7 +1604,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1669,7 +1651,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1716,7 +1698,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1763,7 +1745,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1810,7 +1792,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1857,7 +1839,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1891,7 +1873,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1928,7 +1910,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1975,7 +1957,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2022,7 +2004,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2069,7 +2051,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2116,7 +2098,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2163,7 +2145,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2210,7 +2192,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2257,7 +2239,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2304,7 +2286,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2351,7 +2333,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2398,7 +2380,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2445,7 +2427,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2492,7 +2474,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2539,7 +2521,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2586,7 +2568,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2633,7 +2615,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2680,7 +2662,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2727,7 +2709,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2774,7 +2756,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2821,7 +2803,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2868,7 +2850,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2915,7 +2897,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -2962,7 +2944,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -3009,7 +2991,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -3056,7 +3038,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -3103,7 +3085,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4177,8 +4159,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1308592936;
-    Bank Last Modified High = 30146012;
+    Bank Last Modified Low = 1436397236;
+    Bank Last Modified High = 30176913;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -4206,7 +4188,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4254,7 +4236,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4301,7 +4283,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4349,7 +4331,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4397,7 +4379,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4445,7 +4427,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4493,7 +4475,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4541,7 +4523,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4589,7 +4571,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4637,7 +4619,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4685,7 +4667,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4733,7 +4715,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4781,7 +4763,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4829,7 +4811,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4877,7 +4859,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4925,7 +4907,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -4973,7 +4955,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -5021,7 +5003,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -5425,8 +5407,8 @@ Sound Bank
     Windows File = Win\PauseMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1308592936;
-    Bank Last Modified High = 30146012;
+    Bank Last Modified Low = 1436397236;
+    Bank Last Modified High = 30176913;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -5455,7 +5437,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -5525,8 +5507,8 @@ Sound Bank
     Windows File = Win\SecretMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1308602936;
-    Bank Last Modified High = 30146012;
+    Bank Last Modified Low = 1436397236;
+    Bank Last Modified High = 30176913;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -5554,7 +5536,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {

@@ -6,7 +6,7 @@ using System;
 
 namespace Galaxy
 {
-    [Serializable]
+    //[Serializable]
     public struct CHighScoreData
     {
     }

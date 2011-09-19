@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Galaxy
 {
     using WinPoint = System.Drawing.Point;
-    using XnaColor = Microsoft.Xna.Framework.Graphics.Color;
+    using XnaColor = Microsoft.Xna.Framework.Color;
     using System.Reflection;
 
     public enum EditorInteractionState
@@ -492,14 +492,14 @@ namespace Galaxy
 
             foreach (CEntity entity in HoverEntities)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
                 CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.White);
             }
 
             foreach (CEntity entity in SelectedEntities)
             {
-                Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
                 Game.DefaultSpriteBatch.End();
                 CDebugRender.Box(World.GameCamera.WorldMatrix, entity.Physics.Position, Vector2.One * entity.GetRadius() * 2.0f, 1.0f, XnaColor.Green);
             }
@@ -526,7 +526,7 @@ namespace Galaxy
             float music_time = CAudio.GetMusicDurationSeconds(StageDefinition.MusicName) * 60.0f;
             CDebugRender.Line(World.GameCamera.WorldMatrix, new Vector2(-half_game_width, -music_time * 2.5f * 60.0f), new Vector2(game_width, 0.0f), 2.0f, XnaColor.Red);
 
-            Game.DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, World.GameCamera.WorldMatrix);
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
 
             World.ParticleEffects.Draw(Game.DefaultSpriteBatch);
             Game.DefaultSpriteBatch.End();

@@ -24,7 +24,9 @@ namespace Galaxy
             CStageDefinitionSerializable serializable = new CStageDefinitionSerializable();
             serializable.ConvertFromDefinition(stage);
 
-            string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
+            // XNA4: no more title location, should open stream via StorageContainer.OpenFile()
+            //string fullpath = Path.Combine(StorageContainer.TitleLocation, filename);
+            string fullpath = Path.Combine(".", filename);
             FileStream stream = File.Open(fullpath, FileMode.OpenOrCreate, FileAccess.Write);
             try
             {
