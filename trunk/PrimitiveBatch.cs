@@ -80,11 +80,10 @@ namespace PrimitivesSample
             // create a vertex declaration, which tells the graphics card what kind of
             // data to expect during a draw call. We're drawing using
             // VertexPositionColors, so we'll use those vertex elements.
-            vertexDeclaration = new VertexDeclaration(graphicsDevice, 
-                VertexPositionColor.VertexElements);
+            vertexDeclaration = VertexPositionColor.VertexDeclaration;
 
             // set up a new basic effect, and enable vertex colors.
-            basicEffect = new BasicEffect(graphicsDevice, null);
+            basicEffect = new BasicEffect(graphicsDevice);
             basicEffect.VertexColorEnabled = true;
 
             // projection uses CreateOrthographicOffCenter to create 2d projection
@@ -129,7 +128,6 @@ namespace PrimitivesSample
             // complex logic. Since that's a bit too complicated for this sample, we'll
             // simply disallow them.
             if (primitiveType == PrimitiveType.LineStrip ||
-                primitiveType == PrimitiveType.TriangleFan ||
                 primitiveType == PrimitiveType.TriangleStrip)
             {
                 throw new NotSupportedException
@@ -143,9 +141,7 @@ namespace PrimitivesSample
 
             // prepare the graphics device for drawing by setting the vertex declaration
             // and telling our basic effect to begin.
-            device.VertexDeclaration = vertexDeclaration;
-            basicEffect.Begin();
-            basicEffect.CurrentTechnique.Passes[0].Begin();
+            basicEffect.CurrentTechnique.Passes[0].Apply();
 
             // flip the error checking boolean. It's now ok to call AddVertex, Flush,
             // and End.
@@ -198,8 +194,9 @@ namespace PrimitivesSample
             Flush();
 
             // and then tell basic effect that we're done.
-            basicEffect.CurrentTechnique.Passes[0].End();
-            basicEffect.End();
+            // kalin: is this ok to not remove?
+            //basicEffect.CurrentTechnique.Passes[0].End();
+            //basicEffect.End();
             hasBegun = false;
         }
 
@@ -243,9 +240,9 @@ namespace PrimitivesSample
             int numVertsPerPrimitive;
             switch (primitive)
             {
-                case PrimitiveType.PointList:
-                    numVertsPerPrimitive = 1;
-                    break;
+                //case PrimitiveType.PointList:
+                    //numVertsPerPrimitive = 1;
+                    //break;
                 case PrimitiveType.LineList:
                     numVertsPerPrimitive = 2;
                     break;

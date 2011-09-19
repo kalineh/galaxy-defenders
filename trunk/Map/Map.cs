@@ -971,8 +971,13 @@ namespace Galaxy
 
         public static CMapNode GetMapNodeByStageName(string stage_name)
         {
-            CMapNode node = Nodes.Find(n => n.Current == stage_name);
-            return node;
+            // XNA4
+            //CMapNode node = Nodes.Find(n => n.Current == stage_name);
+            //return node;
+            foreach (CMapNode node in Nodes)
+                if (node.Current == stage_name)
+                    return node;
+            return null;
         }
     }
 

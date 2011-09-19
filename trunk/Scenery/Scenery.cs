@@ -49,7 +49,7 @@ namespace Galaxy
             foreach (CScenery scenery in Sceneries)
             {
                 // TODO: hack for render ordering
-                sprite_batch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                sprite_batch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
                 scenery.Draw(sprite_batch);
                 sprite_batch.End();
             }

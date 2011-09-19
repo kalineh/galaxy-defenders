@@ -94,7 +94,19 @@ namespace Galaxy
             if (current == "")
                 return types[0];
 
-            int index = types.FindIndex(s => s == current);
+            // XNA4
+            //int index = types.FindIndex(s => s == current);
+            int index = types.Count;
+            for (int i = 0; i < types.Count; ++i)
+            {
+                if (types[i] == current)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            // NOTE: bug? should be checking -1 for the linq version?
             if (index == types.Count)
                 return "";
 

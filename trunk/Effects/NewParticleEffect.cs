@@ -78,8 +78,8 @@ namespace Galaxy
         public List<SAddRequest> ThreadLocalAddRequests { get; set; }
         public List<SEffectDefinition> Definitions { get; set; }
         public List<SParticle> DrawList { get; set; }
-        public Mutex AddRequestMutex { get; set; }
-        public Mutex DrawMutex { get; set; }
+        public object AddRequestMutex { get; set; }
+        public object DrawMutex { get; set; }
         public static CVisual Dot { get; set; }
         public static CVisual Triangle { get; set; }
         public Random Random { get; set; }
@@ -100,8 +100,11 @@ namespace Galaxy
             AddRequests = new List<SAddRequest>(256);
             ThreadLocalAddRequests = new List<SAddRequest>(256);
             Definitions = new List<SEffectDefinition>(256);
-            AddRequestMutex = new Mutex();
-            DrawMutex = new Mutex();
+            // XNA4
+            //AddRequestMutex = new Mutex();
+            //DrawMutex = new Mutex();
+            AddRequestMutex = new object();
+            DrawMutex = new object();
             Random = new Random();
             SpriteBatch = new SpriteBatch(world.Game.GraphicsDevice);
 
@@ -198,7 +201,7 @@ namespace Galaxy
                 if (!SpriteBatchInUse)
                 {
                     float depth = Dot.Depth;
-                    SpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None, World.GameCamera.WorldMatrix);
+                    SpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, World.GameCamera.WorldMatrix);
                     SpriteBatchInUse = true;
                     for (int i = 0; i < Alive.Count; ++i)
                     {

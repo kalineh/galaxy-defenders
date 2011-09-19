@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "galaxy", "galaxy.csproj", "{A87E45DB-543D-40C8-8B38-C9593AFFF029}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StageEditor", "StageEditor\StageEditor.csproj", "{990A3F52-89DE-40E8-8F51-C658A4A7C396}"
@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StageEditor", "StageEditor\
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "galaxy-360", "galaxy-360.csproj", "{1E8771D1-D85D-4BF9-911E-51471124EB70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "galaxy-defenders-360Content", "Content\galaxy-defenders-360Content.contentproj", "{897E0D7B-1452-42CA-9161-CA735B5D72D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

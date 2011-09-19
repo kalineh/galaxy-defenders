@@ -22,7 +22,7 @@ struct VertexOut
 //
 // VERTEX
 //
-VertexOut VertexShader(
+VertexOut VertexShaderFunction(
     float4 Position  : POSITION, 
     float4 Color : COLOR0,
     float4 TextureCoordinate : TEXCOORD0 )
@@ -41,7 +41,7 @@ VertexOut VertexShader(
 //
 sampler TextureSampler = sampler_state
 {
-	// TODO: learn the texture specification system
+    // TODO: learn the texture specification system
     Texture = <UserTexture>;
     mipfilter = LINEAR; 
 };
@@ -51,9 +51,9 @@ sampler TextureSampler = sampler_state
 //
 float4 PixelShaderFunction( VertexOut vertex ) : COLOR
 {
-	float4 texture_rgba = tex2D(TextureSampler, vertex.texture_coordinate ).rgba;
-	float4 result = vertex.color * texture_rgba;
-	return result;
+    float4 texture_rgba = tex2D(TextureSampler, vertex.texture_coordinate ).rgba;
+    float4 result = vertex.color * texture_rgba;
+    return result;
 }
 
 //
@@ -63,7 +63,7 @@ technique TransformTechnique
 {
     pass P0
     {
-        vertexShader = compile vs_2_0 VertexShader();
+        vertexShader = compile vs_2_0 VertexShaderFunction();
         pixelShader = compile ps_2_0 PixelShaderFunction();
     }
 }

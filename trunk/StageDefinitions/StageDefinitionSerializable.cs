@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace Galaxy
 {
-    [Serializable]
+    //[Serializable]
     public class CStageDefinitionSerializable
     {
         public struct SStageElements

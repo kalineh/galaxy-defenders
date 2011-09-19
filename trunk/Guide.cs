@@ -14,6 +14,8 @@ namespace Galaxy
     {
         public static CGalaxy Game { get; set; }
         public static IAsyncResult StorageDeviceResult { get; set; }
+        public static IAsyncResult StorageDeviceSelectorResult { get; set; }
+        public static IAsyncResult StorageDeviceOpenResult { get; set; }
         public static StorageDevice StorageDevice { get; set; }
         public static Thread StorageDeviceInitializeThread { get; set; }
         public static bool StorageDeviceReady { get; set; }
@@ -21,12 +23,17 @@ namespace Galaxy
         public static void Start()
         {
             StorageDeviceReady = false;
-            ThreadStart start = new ThreadStart(StartImpl);     
+
+#if XBOX360
+            ThreadStart start = new ThreadStart(StartImplXbox360);
+#else
+            ThreadStart start = new ThreadStart(StartImplWindows);
+#endif
             StorageDeviceInitializeThread = new Thread(start);
             StorageDeviceInitializeThread.Start();
         }
 
-        public static void StartImpl()
+        public static void StartImplXbox360()
         {
             while (!StorageDeviceReady)
             {
@@ -40,14 +47,16 @@ namespace Galaxy
 
                     while (Guide.IsVisible)
                         Thread.Sleep(0);
-                    GuideUtil.StorageDeviceResult = Guide.BeginShowStorageDeviceSelector(null, null);
-                    GuideUtil.StorageDeviceResult.AsyncWaitHandle.WaitOne();
-                    GuideUtil.StorageDevice = Guide.EndShowStorageDeviceSelector(GuideUtil.StorageDeviceResult);
+
+                    GuideUtil.StorageDeviceSelectorResult = StorageDevice.BeginShowSelector(null, null);
+                    GuideUtil.StorageDeviceSelectorResult.AsyncWaitHandle.WaitOne();
+                    GuideUtil.StorageDevice = StorageDevice.EndShowSelector(GuideUtil.StorageDeviceSelectorResult);
 
                     if (GuideUtil.StorageDevice == null)
                     {
                         while (Guide.IsVisible)
                             Thread.Sleep(0);
+
                         IAsyncResult result = Guide.BeginShowMessageBox("Unable To Save", "Storage device selection was cancelled.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Alert, null, null);
                         result.AsyncWaitHandle.WaitOne();
                         Guide.EndShowMessageBox(result);
@@ -57,6 +66,7 @@ namespace Galaxy
                     {
                         while (Guide.IsVisible)
                             Thread.Sleep(0);
+
                         IAsyncResult result = Guide.BeginShowMessageBox("Unable To Save", "Storage device is not connected.\nGame data will not be saved.", new string[] { "Ok" }, 0, MessageBoxIcon.Warning, null, null);
                         result.AsyncWaitHandle.WaitOne();
                         Guide.EndShowMessageBox(result);
@@ -72,7 +82,7 @@ namespace Galaxy
                     // NOTE: this array may not be in order as expected
                     //
                     SignedInGamer gamer = null;
-                    for (int i = 0; i < 4; ++i)
+                    for (int i = 0; i < SignedInGamer.SignedInGamers.Count; ++i)
                     {
                         gamer = SignedInGamer.SignedInGamers[i];
                         if (gamer != null)
@@ -98,9 +108,42 @@ namespace Galaxy
                 {
                     while (Guide.IsVisible)
                         Thread.Sleep(0);
+
                     IAsyncResult result = Guide.BeginShowMessageBox("Error", e.ToString(), new string[] { "Ok" }, 0, MessageBoxIcon.Error, null, null);
                     result.AsyncWaitHandle.WaitOne();
                     Guide.EndShowMessageBox(result);
+                }
+            }
+        }
+
+        public static void StartImplWindows()
+        {
+            while (!StorageDeviceReady)
+            {
+                try
+                {
+                    GuideUtil.StorageDeviceSelectorResult = StorageDevice.BeginShowSelector(null, null);
+                    GuideUtil.StorageDeviceSelectorResult.AsyncWaitHandle.WaitOne();
+                    GuideUtil.StorageDevice = StorageDevice.EndShowSelector(GuideUtil.StorageDeviceSelectorResult);
+
+                    string tag = "Default";
+
+                    CSaveData.Load();
+                    CSaveData.AddNewProfile(tag);
+                    CSaveData.SetCurrentProfile(tag);
+
+                    SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
+                    CAudio.SetSFXVolume(options.SFXVolume);
+                    CAudio.SetMusicVolume(options.MusicVolume);
+                    Game.SetUserScaleValue(options.UserScale);
+
+                    StorageDeviceReady = true;
+                }
+                catch (Exception)
+                {
+                    //IAsyncResult result = Guide.BeginShowMessageBox("Error", e.ToString(), new string[] { "Ok" }, 0, MessageBoxIcon.Error, null, null);
+                    //result.AsyncWaitHandle.WaitOne();
+                    //Guide.EndShowMessageBox(result);
                 }
             }
         }

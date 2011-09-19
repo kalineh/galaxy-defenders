@@ -48,6 +48,9 @@ namespace Galaxy
         public Stopwatch DrawStopwatch { get; set; }
         public static float GlobalScale { get; set; }
 
+        public RasterizerState RasterState_NoScissor { get; set; }
+        public RasterizerState RasterState_Scissor { get; set; }
+
         public CGalaxy()
         {
 #if XBOX360
@@ -85,8 +88,8 @@ namespace Galaxy
 
 #if !XBOX360
 
-            this.Activated += new EventHandler(NotifyActivated);
-            this.Deactivated += new EventHandler(NotifyDeactivated);
+            this.Activated += new EventHandler<EventArgs>(NotifyActivated);
+            this.Deactivated += new EventHandler<EventArgs>(NotifyDeactivated);
 
 #if DEBUG
             Window.AllowUserResizing = true;
@@ -123,6 +126,12 @@ namespace Galaxy
             PlayersInGame = 1;
 
             PlayerSpawnPosition = new Vector2(0.0f, 400.0f);
+
+            RasterState_NoScissor = new RasterizerState();
+            RasterState_Scissor = new RasterizerState();
+
+            RasterState_NoScissor.ScissorTestEnable = false;
+            RasterState_Scissor.ScissorTestEnable = true;
         }
 
         void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -173,20 +182,31 @@ namespace Galaxy
 
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
-            GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
-            GraphicsDevice.PresentationParameters.BackBufferCount = 1;
-            GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
+            // XNA 3.1
+            //GraphicsDevice.PresentationParameters.AutoDepthStencilFormat = DepthFormat.Unknown;
+            //GraphicsDevice.PresentationParameters.BackBufferCount = 1;
+            //GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Rgba32;
+            //GraphicsDevice.PresentationParameters.BackBufferWidth = 1920;
+            //GraphicsDevice.PresentationParameters.BackBufferHeight = 1080;
+            //GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
+            //GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
+            //GraphicsDevice.PresentationParameters.IsFullScreen = false;
+            //GraphicsDevice.PresentationParameters.MultiSampleQuality = 0;
+            //GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
+            //GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
+            //GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.DiscardDepthStencil;
+            //GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+            //GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
+
+
+            GraphicsDevice.PresentationParameters.DepthStencilFormat = DepthFormat.Depth24Stencil8;
+            GraphicsDevice.PresentationParameters.BackBufferFormat = SurfaceFormat.Color;
             GraphicsDevice.PresentationParameters.BackBufferWidth = 1920;
             GraphicsDevice.PresentationParameters.BackBufferHeight = 1080;
-            GraphicsDevice.PresentationParameters.EnableAutoDepthStencil = false;
-            GraphicsDevice.PresentationParameters.FullScreenRefreshRateInHz = 60;
             GraphicsDevice.PresentationParameters.IsFullScreen = false;
-            GraphicsDevice.PresentationParameters.MultiSampleQuality = 0;
-            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
             GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
-            GraphicsDevice.PresentationParameters.PresentOptions = PresentOptions.DiscardDepthStencil;
             GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
-            GraphicsDevice.PresentationParameters.SwapEffect = SwapEffect.Discard;
+            GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
             GraphicsDeviceManager.ApplyChanges();
@@ -219,9 +239,9 @@ namespace Galaxy
 
             if (GraphicsDevice != null)
             {
-                GraphicsDevice.RenderState.ScissorTestEnable = false;
+                GraphicsDevice.RasterizerState = RasterState_NoScissor;
                 GraphicsDevice.Clear(Color.Black);
-                GraphicsDevice.RenderState.ScissorTestEnable = true;
+                GraphicsDevice.RasterizerState = RasterState_Scissor;
             }
 
             Vector3 translation = new Vector3(width - Resolution.X * scale_factor.X, height - Resolution.Y * scale_factor.Y, 0.0f);
@@ -248,19 +268,26 @@ namespace Galaxy
 
 #if XBOX360
             SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
+#endif 
+
+            // Storage guide.
             GuideUtil.Game = this;
             GuideUtil.Start();
+            
+            // Default user scale.
             SetUserScaleValue(1.0f);
-#else
+
+            // Load save data.
             CSaveData.Load();
 
+            // Set options data.
             SProfileOptionsData options = CSaveData.GetCurrentProfile().Options;
             CAudio.SetSFXVolume(options.SFXVolume);
             CAudio.SetMusicVolume(options.MusicVolume);
             SetUserScaleValue(options.UserScale);
 
+            // Notify ready.
             GuideUtil.StorageDeviceReady = true;
-#endif
 
             // Save thread.
             CSaveData.StartSaveThread();
@@ -321,6 +348,7 @@ namespace Galaxy
             GlobalScale = 1.0f;
 #endif
 
+            Console.WriteLine("time: {0}", CAudio.GetMusicTimeMilliseconds());
 
 
             UpdateStopwatch.Reset();
@@ -357,21 +385,21 @@ namespace Galaxy
 
             base.Draw(game_time);
 
-            GraphicsDevice.RenderState.ScissorTestEnable = false;
+            GraphicsDevice.RasterizerState = RasterState_NoScissor;
             GraphicsDevice.Clear(Color.Black);
-            GraphicsDevice.RenderState.ScissorTestEnable = true;
+            GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             State.Draw();
 
-            GraphicsDevice.RenderState.ScissorTestEnable = false;
+            GraphicsDevice.RasterizerState = RasterState_NoScissor;
             HudManager.Draw();
             State.PostHudDraw();
             FrameRateDisplay.Draw(DefaultSpriteBatch);
-            GraphicsDevice.RenderState.ScissorTestEnable = true;
+            GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             if (CSaveData.SaveIconVisible)
             {
-                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
+                DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, RenderScaleMatrix);
                 float step = 1.0f / 8.0f;
                 float rotation = step * ((GameFrame / 4) % 8);
                 // title safe area sucks :(
@@ -386,11 +414,11 @@ namespace Galaxy
                 MusicDisplayCounter -= 1;
                 // NOTE: this is non-critical text, so not displaying on 480p wont be a fail
                 Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.07f);
-                DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, RenderScaleMatrix);
+                DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > MusicDisplayTime ? 1.0f - (MusicDisplayCounter - MusicDisplayTime) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
                 MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);
-                DefaultSpriteBatch.DrawString(GameRegularFont, MusicDisplayName, position + new Vector2(42.0f, 8.0f), new Color(Color.LightGray, alpha));
+                DefaultSpriteBatch.DrawString(GameRegularFont, MusicDisplayName, position + new Vector2(42.0f, 8.0f), new Color(Color.LightGray.R, Color.LightGray.G, Color.LightGray.B, alpha));
                 DefaultSpriteBatch.End();
             }
 
@@ -403,10 +431,12 @@ namespace Galaxy
 
             // simple profiling
             // TODO: why doesnt depth work here :( HUD always renders on top
-            DefaultSpriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, Matrix.Identity);
+            DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+
+
 
 #if !XBOX360
             // NOTE: no GC.CollectionCount on 360
