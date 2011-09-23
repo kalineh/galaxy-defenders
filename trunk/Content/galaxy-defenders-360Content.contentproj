@@ -2164,6 +2164,81 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MusicBin\1-X-0.mid.bin">
+      <Name>1-X-0.mid</Name>
+      <Processor>PassThroughProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Aerial_Assault.mid.bin">
+      <Name>Aerial_Assault.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Afraid_of_Darkness.mid.bin">
+      <Name>Afraid_of_Darkness.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Alkali Earth.mid.bin">
+      <Name>Alkali Earth.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Eye_of_the_Predator.mid.bin">
+      <Name>Eye_of_the_Predator.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\fighting_for_control.mid.bin">
+      <Name>fighting_for_control.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\gmdrum.mid.bin">
+      <Name>gmdrum.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Insurrection.mid.bin">
+      <Name>Insurrection.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Konami%27s_Moon_Base.mid.bin">
+      <Name>Konami%27s_Moon_Base.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Luminosity_and_Viscosity.mid.bin">
+      <Name>Luminosity_and_Viscosity.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Math_Party.mid.bin">
+      <Name>Math_Party.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Sirius.mid.bin">
+      <Name>Sirius.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Still_Afraid_of_Darkness.mid.bin">
+      <Name>Still_Afraid_of_Darkness.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\The_Hidden_Answer.mid.bin">
+      <Name>The_Hidden_Answer.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\the_voyage.mid.bin">
+      <Name>the_voyage.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Troubled_Dreams.mid.bin">
+      <Name>Troubled_Dreams.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Try_Harder.mid.bin">
+      <Name>Try_Harder.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MusicBin\Turbo.mid.bin">
+      <Name>Turbo.mid</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

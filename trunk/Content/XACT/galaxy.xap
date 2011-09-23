@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 3382144465;
-    Last Modified High = 30176917;
+    Last Modified Low = 431512940;
+    Last Modified High = 30176937;
 
     Category
     {
@@ -1105,6 +1105,10 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 431592945;
+    PC Bank Last Modified High = 30176937;
     Bank Last Revised Low = 386070341;
     Bank Last Revised High = 30176937;
 
@@ -1503,6 +1507,10 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 844816580;
+    PC Bank Last Modified High = 30176937;
     Bank Last Revised Low = 386260352;
     Bank Last Revised High = 30176937;
 
@@ -1540,6 +1548,10 @@ Wave Bank
     Streaming = 1;
     Seek Tables = 1;
     Compression Preset Name = Music Compression;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 898939676;
+    PC Bank Last Modified High = 30176937;
     Bank Last Revised Low = 386260352;
     Bank Last Revised High = 30176937;
 

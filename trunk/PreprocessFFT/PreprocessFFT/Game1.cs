@@ -17,8 +17,24 @@ using NAudio;
 using NAudio.Midi;
 using NAudio.Wave;
 
+//
+// I apologize for this ungodly mess of code.
+//
+
 namespace PreprocessFFT
 {
+    public struct BinaryFrame
+    {
+        public byte channel0;
+        public byte channel1;
+        public byte channel2;
+        public byte channel3;
+        public byte channel4;
+        public byte channel5;
+        public byte channel6;
+        public byte channel7;
+    };
+
     public class Midi
     {
         MidiFile midi;
@@ -41,6 +57,11 @@ namespace PreprocessFFT
             //Debug.Assert(midi.DeltaTicksPerQuarterNote == 120);
             //Debug.Assert(midi.Tracks == 1);
 
+            ResetCursor();
+        }
+
+        public void ResetCursor()
+        {
             tempo = 120.0f; // midi spec default?
 
                     //double seconds = e.AbsoluteTime / last_tempo;
@@ -88,9 +109,298 @@ namespace PreprocessFFT
             //timestamp / 0.704 = # ms
         }
 
+        public struct FrameVelocity
+        {
+            public int frame;
+            public int velocity;
+        };
+
+        public List<BinaryFrame> CreateBinary()
+        {
+            ResetCursor();
+
+            // find active channels
+            // assign to 1-n
+            // assert < 8
+            // write 1 byte per frame (1/60)
+
+            // collect per-frame, per-channel data
+
+            const double FrameTime = 1.0 / 60.0 * 1000.0;
+            double ms = 0.0;
+            int frame_count = 0;
+
+            // key: channel, value: list of (frame, power) frames that play note
+            Dictionary<int, List<FrameVelocity>> notes = new Dictionary<int, List<FrameVelocity>>();
+
+            // force start at 0.0f
+            ms = -FrameTime;
+            frame_count = -1;
+
+            // note: we must iterate all tracks per frame to track tempo changes correctly
+            while (true)
+            {
+                ms += FrameTime;
+                frame_count += 1;
+
+                // iterate all tracks
+                foreach (IEnumerator<MidiEvent> event_iterator in cursor_events)
+                {
+                    // iterate events until over current time
+                    while (event_iterator.Current != null)
+                    {
+                        MidiEvent e = event_iterator.Current;
+                        double event_ms = EventTimeInMilliseconds(e.AbsoluteTime);
+
+                        if (event_ms > ms)
+                            break;
+
+                        if (e is TempoEvent)
+                        {
+                            tempo = (e as TempoEvent).Tempo;
+                            us_per_quarter_note = (e as TempoEvent).MicrosecondsPerQuarterNote;
+                        }
+
+                        MidiCommandCode code = e.CommandCode;
+                        if (code == MidiCommandCode.NoteOn)
+                        {
+                            NoteOnEvent ne = e as NoteOnEvent;
+                            if (ne.OffEvent != null)
+                            {
+                                int channel = e.Channel;
+
+                                if (!notes.ContainsKey(channel))
+                                    notes.Add(channel, new List<FrameVelocity>());
+
+                                // mix note with velocity
+                                float fvel = ne.Velocity;
+                                float fnote = ne.NoteNumber;
+                                float fmixed = fvel / 127.0f * (fnote / 127.0f * 1.25f);
+                                float fpower = (fmixed * fmixed * fmixed * 0.5f) * (ne.NoteLength + 1 * 0.1f);
+                                fpower = Math.Min(1.0f, fpower);
+                                byte value = (byte)(fpower * 127.0f);
+
+                                List<FrameVelocity> frames = notes[channel];
+                                FrameVelocity fv = new FrameVelocity() { frame = frame_count, velocity = value };
+
+                                //Console.WriteLine("frame: {0}, channel: {1}, velocity: {2}, length: {3}", frame_count, channel, value, ne.NoteLength);
+                                frames.Add(fv);
+                            }
+                        }
+
+                        event_iterator.MoveNext();
+                    }
+                }
+
+                // check for remaining data
+                bool remaining = false;
+                foreach (IEnumerator<MidiEvent> event_iterator in cursor_events)
+                {
+                    if (event_iterator.Current != null)
+                    {
+                        remaining = true;
+                        break;
+                    }
+                }
+
+                if (!remaining)
+                    break;
+            }
+
+            // compress per-frame data to bits
+
+            // channel_map[i] = channel
+            List<int> channel_map = new List<int>();
+
+            // generate map of channel to 
+            foreach (int channel in notes.Keys)
+            {
+                channel_map.Add(channel);
+            }
+
+            //Debug.Assert(notes.Keys.Count < 8);
+            //Console.WriteLine("NOTES: {0}", notes.Keys.Count);
+
+            // sort by activity?
+
+            List<BinaryFrame> binary = Enumerable.Repeat(new BinaryFrame(), frame_count).ToList();
+            int binary_frame = 0;
+            for (int i = 0; i < frame_count; ++i)
+            {
+                int channel_index = 0;
+                foreach (KeyValuePair<int, List<FrameVelocity>> pair in notes)
+                {
+                    foreach (FrameVelocity note_frame in pair.Value)
+                    {
+                        if (note_frame.frame > binary_frame)
+                            break;
+
+                        if (note_frame.frame == binary_frame)
+                        {
+                            BinaryFrame bf = binary[i];
+                            switch (channel_index)
+                            {
+                                case 0: bf.channel0 = (byte)note_frame.velocity; break;
+                                case 1: bf.channel1 = (byte)note_frame.velocity; break;
+                                case 2: bf.channel2 = (byte)note_frame.velocity; break;
+                                case 3: bf.channel3 = (byte)note_frame.velocity; break;
+                                case 4: bf.channel4 = (byte)note_frame.velocity; break;
+                                case 5: bf.channel5 = (byte)note_frame.velocity; break;
+                                case 6: bf.channel6 = (byte)note_frame.velocity; break;
+                                case 7: bf.channel7 = (byte)note_frame.velocity; break;
+                            }
+                            binary[i] = bf;
+                        }
+                    }
+
+                    channel_index++;
+
+                    // ignore excess channels
+                    if (channel_index >= 8)
+                        break;
+                }
+
+                //if (binary[i] != 0)
+                    //Console.WriteLine("{0}: {1}", i, binary[i]);
+            
+                binary_frame++;
+            }
+
+            return binary;
+        }
+
+        public List<byte> CreateBinaryLowRes()
+        {
+            ResetCursor();
+
+            // find active channels
+            // assign to 1-n
+            // assert < 8
+            // write 1 byte per frame (1/60)
+
+            // collect per-frame, per-channel data
+
+            const double FrameTime = 1.0 / 60.0 * 1000.0;
+            double ms = 0.0;
+            int frame_count = 0;
+
+            // key: channel, value: list of frames that play note
+            Dictionary<int, List<int>> notes = new Dictionary<int, List<int>>();
+
+            // force start at 0.0f
+            ms = -FrameTime;
+            frame_count = -1;
+
+            // note: we must iterate all tracks per frame to track tempo changes correctly
+            while (true)
+            {
+                ms += FrameTime;
+                frame_count += 1;
+
+                // iterate all tracks
+                foreach (IEnumerator<MidiEvent> event_iterator in cursor_events)
+                {
+                    // iterate events until over current time
+                    while (event_iterator.Current != null)
+                    {
+                        MidiEvent e = event_iterator.Current;
+                        double event_ms = EventTimeInMilliseconds(e.AbsoluteTime);
+
+                        if (event_ms > ms)
+                            break;
+
+                        if (e is TempoEvent)
+                        {
+                            tempo = (e as TempoEvent).Tempo;
+                            us_per_quarter_note = (e as TempoEvent).MicrosecondsPerQuarterNote;
+                        }
+
+                        MidiCommandCode code = e.CommandCode;
+                        if (code == MidiCommandCode.NoteOn)
+                        {
+                            NoteOnEvent ne = e as NoteOnEvent;
+                            if (ne.OffEvent != null)
+                            {
+                                int channel = e.Channel;
+
+                                if (!notes.ContainsKey(channel))
+                                    notes.Add(channel, new List<int>());
+
+                                List<int> frames = notes[channel];
+                                frames.Add(frame_count);
+                            }
+                        }
+
+                        event_iterator.MoveNext();
+                    }
+                }
+
+                // check for remaining data
+                bool remaining = false;
+                foreach (IEnumerator<MidiEvent> event_iterator in cursor_events)
+                {
+                    if (event_iterator.Current != null)
+                    {
+                        remaining = true;
+                        break;
+                    }
+                }
+
+                if (!remaining)
+                    break;
+            }
+
+            // compress per-frame data to bits
+
+            // channel_map[i] = channel
+            List<int> channel_map = new List<int>();
+
+            // generate map of channel to 
+            foreach (int channel in notes.Keys)
+            {
+                channel_map.Add(channel);
+            }
+
+            //Debug.Assert(notes.Keys.Count < 8);
+            //Console.WriteLine("NOTES: {0}", notes.Keys.Count);
+
+            // sort by activity?
+
+            List<byte> binary = Enumerable.Repeat((byte)0, frame_count).ToList();
+            int binary_frame = 0;
+            for (int i = 0; i < frame_count; ++i)
+            {
+                int channel_index = 0;
+                foreach (KeyValuePair<int, List<int>> pair in notes)
+                {
+                    foreach (int note_frame in pair.Value)
+                    {
+                        if (note_frame > binary_frame)
+                            break;
+
+                        if (note_frame == binary_frame)
+                            binary[i] |= (byte)(1 << channel_index);
+                    }
+
+                    channel_index++;
+
+                    // ignore excess channels
+                    if (channel_index >= 8)
+                        break;
+                }
+
+                //if (binary[i] != 0)
+                    //Console.WriteLine("{0}: {1}", i, binary[i]);
+            
+                binary_frame++;
+            }
+
+            return binary;
+        }
+
         public bool PlayMilliseconds(double ms)
         {
-            // play events from current event to cursor ms
+            // play events from current event to cursor ms  
 
             bool played = false;
 
@@ -125,7 +435,7 @@ namespace PreprocessFFT
                             double offtime = EventTimeInMilliseconds(ne.OffEvent.AbsoluteTime);
                             double playtime = offtime - ems;
                             Console.WriteLine("{0}: {1}", ems, (e as NoteEvent).NoteName);
-                            Console.Beep(400, (int)Math.Max(16, playtime));
+                            //Console.Beep(400, (int)Math.Max(16, playtime));
                             played = true;
                         }
                     }
@@ -151,6 +461,8 @@ namespace PreprocessFFT
         SpriteFont spriteFont;
         SoundEffect soundEffect;
         Midi midi;
+        List<byte> binaryDumpLowRes;
+        List<BinaryFrame> binaryDump;
 
         public struct MidiData
         {
@@ -166,7 +478,43 @@ namespace PreprocessFFT
 
             //midiFile = new MidiFile("../../../Content/gmdrum.mid", false);
             //midi = new Midi("../../../Content/gmdrum.mid");
-            midi = new Midi("../../../Content/Afraid_of_Darkness.mid");
+
+            // actual data write
+            DumpBinaryOutput();
+
+            //midi = new Midi("../../../Content/gmdrum.mid");
+            midi = new Midi("../../../Content/Konami's_Moon_Base.mid");
+            binaryDump = midi.CreateBinary();
+            midi.ResetCursor();
+        }
+
+        public void DumpBinaryOutput()
+        {
+            foreach (string filename in Directory.EnumerateFiles("../../../Content/", "*.mid"))
+            {
+                midi = new Midi(filename);
+                binaryDump = midi.CreateBinary();
+
+                using (FileStream stream = new FileStream(String.Format("../../../Content/{0}.bin", filename), FileMode.Create, FileAccess.Write))
+                {
+                    using (BinaryWriter writer = new BinaryWriter(stream))
+                    {
+                        Console.WriteLine("Writing {0}...", filename);
+                        for (int i = 0; i < binaryDump.Count; ++i)
+                        {
+                            writer.Write(binaryDump[i].channel0);
+                            writer.Write(binaryDump[i].channel1);
+                            writer.Write(binaryDump[i].channel2);
+                            writer.Write(binaryDump[i].channel3);
+                            writer.Write(binaryDump[i].channel4);
+                            writer.Write(binaryDump[i].channel5);
+                            writer.Write(binaryDump[i].channel6);
+                            writer.Write(binaryDump[i].channel7);
+                        }
+                    }
+                    stream.Close();
+                }
+            }
         }
 
         public void DumpMidi(string filename)
@@ -250,8 +598,8 @@ namespace PreprocessFFT
             pixel = Content.Load<Texture2D>("Pixel");
 
             spriteFont = Content.Load<SpriteFont>("Debug");
-            soundEffect = Content.Load<SoundEffect>("gmdrum");
-            soundEffect.Play();
+            song = Content.Load<Song>("Konami's_Moon_Base");
+            MediaPlayer.Play(song);
         }
 
         protected override void UnloadContent()
@@ -267,7 +615,7 @@ namespace PreprocessFFT
 
             // TODO: Add your update logic here
 
-            MediaPlayer.Volume = 0.005f;
+            MediaPlayer.Volume = 0.15f;
 
             //if (MediaPlayer.State == MediaState.Stopped)
                 //MediaPlayer.Play(song);
@@ -323,21 +671,19 @@ namespace PreprocessFFT
                     1.0f, 1000.0f);
 
 
-                VertexDeclaration declaration = new VertexDeclaration(GraphicsDevice, VertexPositionColor.VertexElements);
-                BasicEffect basic = new BasicEffect(GraphicsDevice, null);
-                basic.Begin();
+                //VertexDeclaration declaration = VertexPositionColor.VertexDeclaration;
+                BasicEffect basic = new BasicEffect(GraphicsDevice);
                 basic.World = Matrix.Identity;
                 basic.View = viewMatrix;
                 basic.Projection = projectionMatrix;
                 foreach (EffectPass pass in basic.CurrentTechnique.Passes)
                 {
-                    pass.Begin();
-                    GraphicsDevice.VertexDeclaration = declaration;
+                    pass.Apply();
+                    // XNA4: what to change to?
+                    //GraphicsDevice.VertexDeclaration = declaration;
                     if (history[index].Count > 2)
                         GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, vertex_data, 0, history[index].Count - 1);
-                    pass.End();
                 }
-                basic.End();
                 //GraphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, 0, 32);
             }
         }
@@ -380,7 +726,7 @@ namespace PreprocessFFT
 
                 int y = (int)(frequency * height);
                 Rectangle r = new Rectangle(i * bar_width + i * spacing, (int)height - y, bar_width, y);
-                spriteBatch.Draw(pixel, r, new Color(Color.Red, 180));
+                spriteBatch.Draw(pixel, r, new Color(Color.Red.R, Color.Red.G, Color.Red.B, 180));
             }
         }
 
@@ -412,7 +758,7 @@ namespace PreprocessFFT
 
                 int y = (int)(chaos * height);
                 Rectangle r = new Rectangle(i * bar_width + i * spacing, (int)height - y, bar_width, y);
-                spriteBatch.Draw(pixel, r, new Color(Color.Green, 180));
+                spriteBatch.Draw(pixel, r, new Color(Color.Green.R, Color.Green.G, Color.Green.B, 180));
             }
         }
 
@@ -436,7 +782,7 @@ namespace PreprocessFFT
 
                 int y = (int)(value * height);
                 Rectangle r = new Rectangle(i * bar_width + i * spacing, (int)height - y, bar_width, y);
-                spriteBatch.Draw(pixel, r, new Color(Color.Black, 255));
+                spriteBatch.Draw(pixel, r, new Color(Color.Black.R, Color.Black.G, Color.Black.B, 255));
             }
         }
 
@@ -458,7 +804,7 @@ namespace PreprocessFFT
 
                 int y = (int)(maximum * height);
                 Rectangle r = new Rectangle(i * bar_width + i * spacing, (int)height - y, bar_width, y);
-                spriteBatch.Draw(pixel, r, new Color(Color.Yellow, 40));
+                spriteBatch.Draw(pixel, r, new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 40));
             }
         }
 
@@ -582,15 +928,57 @@ namespace PreprocessFFT
                 spriteBatch.Draw(pixel, r, Color.White);
                 y = (int)(sample * height);
                 r = new Rectangle(i * bar_width + i * spacing, (int)height - y, bar_width, y);
-                spriteBatch.Draw(pixel, r, new Color(Color.Red, 80));
+                spriteBatch.Draw(pixel, r, new Color(Color.Red.R, Color.Red.G, Color.Red.B, 80));
             }
 
             spriteBatch.DrawString(spriteFont, String.Format("{0}ms", last_seconds), new Vector2(10.0f, 10.0f), Color.White);
         }
 
         bool played_this_frame;
-        void DrawPlayMidi()
+        int draw_frame_counter;
+        int last_drawn_frame;
+        void DrawPlayMidiLowRes()
         {
+            if (binaryDumpLowRes.Count > draw_frame_counter && binaryDumpLowRes[draw_frame_counter] != 0)
+                last_drawn_frame = 0;
+            else
+                last_drawn_frame++;
+
+            spriteBatch.DrawString(spriteFont, String.Format("{0}", last_drawn_frame), new Vector2(10.0f, 40.0f), Color.White);
+
+            draw_frame_counter++;
+        }
+
+        void DrawPlayMidi(int ms)
+        {
+            draw_frame_counter = (int)((float)ms / 16.7777f);
+
+            Console.WriteLine("{0}%", (int)(((float)draw_frame_counter / (float)binaryDump.Count) * 100.0f));
+
+            if (binaryDump.Count <= draw_frame_counter)
+                return;
+
+            BinaryFrame bf = binaryDump[draw_frame_counter];
+
+            Rectangle r0 = new Rectangle(10 + 30 * 0, 20, 20, bf.channel0);
+            Rectangle r1 = new Rectangle(10 + 30 * 1, 20, 20, bf.channel1);
+            Rectangle r2 = new Rectangle(10 + 30 * 2, 20, 20, bf.channel2);
+            Rectangle r3 = new Rectangle(10 + 30 * 3, 20, 20, bf.channel3);
+            Rectangle r4 = new Rectangle(10 + 30 * 4, 20, 20, bf.channel4);
+            Rectangle r5 = new Rectangle(10 + 30 * 5, 20, 20, bf.channel5);
+            Rectangle r6 = new Rectangle(10 + 30 * 6, 20, 20, bf.channel6);
+            Rectangle r7 = new Rectangle(10 + 30 * 7, 20, 20, bf.channel7);
+
+            spriteBatch.Draw(pixel, r0, Color.White);
+            spriteBatch.Draw(pixel, r1, Color.White);
+            spriteBatch.Draw(pixel, r2, Color.White);
+            spriteBatch.Draw(pixel, r3, Color.White);
+            spriteBatch.Draw(pixel, r4, Color.White);
+            spriteBatch.Draw(pixel, r5, Color.White);
+            spriteBatch.Draw(pixel, r6, Color.White);
+            spriteBatch.Draw(pixel, r7, Color.White);
+
+            draw_frame_counter++;
         }
 
         protected override void Draw(GameTime gameTime)
@@ -605,8 +993,18 @@ namespace PreprocessFFT
             //DrawChaos2();
             //DrawMidi((int)gameTime.TotalGameTime.TotalMilliseconds, midiFile);
 
-            midi.PlayMilliseconds(gameTime.ElapsedGameTime.Ticks / 10000.0);
+            //midi.PlayMilliseconds(gameTime.ElapsedGameTime.Ticks / 10000.0);
+            //DrawPlayMidi();
             //played_this_frame = midi.PlayMilliseconds(16.77777);
+
+            TimeSpan ts = MediaPlayer.PlayPosition;
+            double drift_compensate = 1.0075f;
+            int ms = (int)(ts.TotalMilliseconds * drift_compensate);
+
+            // NOTE: this is probably just for mediaplayer, xact should be ok
+            ms += 1000;
+
+            DrawPlayMidi(ms);
 
             spriteBatch.End();
 

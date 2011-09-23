@@ -140,6 +140,7 @@
     <Compile Include="Enemy\MissileStorm.cs" />
     <Compile Include="Enemy\MissileTriple.cs" />
     <Compile Include="Entities\HealthBar.cs" />
+    <Compile Include="MusicBin.cs" />
     <Compile Include="Projectile\Beam.cs" />
     <Compile Include="Projectile\Blade.cs" />
     <Compile Include="Projectile\Boomerang.cs" />

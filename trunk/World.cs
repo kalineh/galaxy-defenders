@@ -611,10 +611,10 @@ namespace Galaxy
             // NOTE: The 360 can break with scissor rectangles outside the screen!
             //
             Game.GraphicsDevice.ScissorRectangle = new Rectangle(
-                (int)(x),
-                (int)(y),
-                (int)(screen_size.X),
-                (int)(screen_size.Y)
+                Math.Max(0, (int)(x)),
+                Math.Max(0, (int)(y)),
+                Math.Min(vp.Width, (int)(screen_size.X)),
+                Math.Min(vp.Height, (int)(screen_size.Y))
             );
         }
 
