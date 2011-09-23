@@ -39,7 +39,9 @@ namespace Galaxy
         public delegate void MusicChangeDelegate(string music_name);
         public static MusicChangeDelegate OnMusicChange { get; set; }
 
-        public static void Initialize()
+        public static CMusicBin MusicBin { get; set; }
+
+        public static void Initialize(CGalaxy Game)
         {
             AudioEngine = new AudioEngine("Content/XACT/galaxy.xgs");
             WaveBank = new WaveBank(AudioEngine, "Content/XACT/SFX.xwb");
@@ -58,11 +60,34 @@ namespace Galaxy
             MusicCategory = AudioEngine.GetCategory("Music");
             PauseMusicCategory = AudioEngine.GetCategory("PauseMusic");
             SecretMusicCategory = AudioEngine.GetCategory("SecretMusic");
+
+            MusicBin = new CMusicBin(Game);
         }
 
         public static void Update()
         {
             AudioEngine.Update();
+            UpdateMusicBin();
+        }
+
+        public static void UpdateMusicBin()
+        {
+            if (CurrentMusic == null)
+                return;
+
+            if (CurrentPauseMusic != null)
+                return;
+
+            //if (!CurrentMusic.IsPrepared)
+                //return;
+
+            if (!CurrentMusic.IsPlaying)
+                return;
+
+            if (CurrentMusic.IsPaused)
+                return;
+
+            MusicBin.Tick();
         }
 
         public static void Shutdown()
@@ -112,6 +137,8 @@ namespace Galaxy
 
             if (OnMusicChange != null)
                 OnMusicChange(name);
+
+            MusicBin.OpenMusic(String.Format("Content/MusicBin/{0}.mid.bin", name));
         }
 
         public static void StopMusic()
@@ -137,7 +164,7 @@ namespace Galaxy
             if (CurrentMusic == null)
                 return;
 
-            CurrentMusic.Pause();
+            CurrentMusic.Resume();
         }
 
         public static void PlayPauseMusic(string name)

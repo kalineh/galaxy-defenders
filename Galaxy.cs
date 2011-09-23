@@ -264,7 +264,7 @@ namespace Galaxy
             PixelTexture = Content.Load<Texture2D>("Textures/Top/Pixel");
 
             // Audio.
-            CAudio.Initialize();
+            CAudio.Initialize(this);
 
 #if XBOX360
             SignedInGamer.SignedOut += new EventHandler<SignedOutEventArgs>(OnGamerSignOut);
@@ -348,9 +348,6 @@ namespace Galaxy
             GlobalScale = 1.0f;
 #endif
 
-            Console.WriteLine("time: {0}", CAudio.GetMusicTimeMilliseconds());
-
-
             UpdateStopwatch.Reset();
             UpdateStopwatch.Start();
 
@@ -367,6 +364,24 @@ namespace Galaxy
             GameFrame += 1;
 
             UpdateStopwatch.Stop();
+
+#if XBOX360
+            // TEST THIS ON 360
+            Debug.Assert(false);
+#endif
+
+            if (CInput.IsRawKeyDown(Keys.LeftControl))
+            {
+                CAudio.PlayMusic("Eye_of_the_Predator");
+            }
+            if (CInput.IsRawKeyDown(Keys.LeftShift))
+            {
+                CAudio.PauseMusic();
+            }
+            if (CInput.IsRawKeyDown(Keys.RightShift))
+            {
+                CAudio.UnpauseMusic();
+            }
         }
 
         /// <summary>
@@ -443,6 +458,45 @@ namespace Galaxy
             //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(0): {0}", (int)(GC.CollectionCount(0))), new Vector2(500.0f, 120.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("collects(1): {0}", (int)(GC.CollectionCount(1))), new Vector2(500.0f, 150.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
 #endif
+
+            DefaultSpriteBatch.End();
+
+            DrawDebugMusic();
+        }
+
+        public void DrawDebugMusic()
+        {
+            DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+
+            byte c0 = CAudio.MusicBin.GetChannelData(0);
+            byte c1 = CAudio.MusicBin.GetChannelData(1);
+            byte c2 = CAudio.MusicBin.GetChannelData(2);
+            byte c3 = CAudio.MusicBin.GetChannelData(3);
+            byte c4 = CAudio.MusicBin.GetChannelData(4);
+            byte c5 = CAudio.MusicBin.GetChannelData(5);
+            byte c6 = CAudio.MusicBin.GetChannelData(6);
+            byte c7 = CAudio.MusicBin.GetChannelData(7);
+
+            int power = c0 + c1 + c2 + c3 + c4 + c5 + c6 + c7;
+
+            Rectangle r0 = new Rectangle(500 + 30 * 0, 200, 20, c0);
+            Rectangle r1 = new Rectangle(500 + 30 * 1, 200, 20, c1);
+            Rectangle r2 = new Rectangle(500 + 30 * 2, 200, 20, c2);
+            Rectangle r3 = new Rectangle(500 + 30 * 3, 200, 20, c3);
+            Rectangle r4 = new Rectangle(500 + 30 * 4, 200, 20, c4);
+            Rectangle r5 = new Rectangle(500 + 30 * 5, 200, 20, c5);
+            Rectangle r6 = new Rectangle(500 + 30 * 6, 200, 20, c6);
+            Rectangle r7 = new Rectangle(500 + 30 * 7, 200, 20, c7);
+
+            DefaultSpriteBatch.Draw(PixelTexture, r0, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r1, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r2, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r3, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r4, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r5, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r6, Color.White);
+            DefaultSpriteBatch.Draw(PixelTexture, r7, Color.White);
+
 
             DefaultSpriteBatch.End();
         }
