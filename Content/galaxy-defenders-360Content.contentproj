@@ -2165,6 +2165,16 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\SpriteBatchCustomTest.fx">
+      <Name>SpriteBatchCustomTest</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\FunkyClouds.fx">
+      <Name>FunkyClouds</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="MusicBin\1-X-0.mid.bin">
       <Name>1-X-0.mid</Name>
       <Processor>PassThroughProcessor</Processor>
