@@ -14,6 +14,7 @@ namespace Galaxy
         public CGalaxy Game { get; private set; }
         public List<CHud> Huds { get; set; }
         public List<HudPilotSelect> HudsProfileSelect { get; set; }
+        public bool Hidden { get; set; }
 
         public CHudManager(CGalaxy game)
         {
@@ -115,6 +116,9 @@ namespace Galaxy
 
         private void DrawHuds()
         {
+            if (Hidden)
+                return;
+
             // NOTE: no side panels in editor mode!
             if (Game.EditorMode)
             {

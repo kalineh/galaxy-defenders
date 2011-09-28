@@ -139,6 +139,8 @@
     <Compile Include="Projectile\Vulcan.cs" />
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
+    <Compile Include="Scenery\Sceneries\FunkyClouds.cs" />
+    <Compile Include="Scenery\Sceneries\ShaderSceneries.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="StageClearPanel.cs" />
@@ -171,6 +173,7 @@
     <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="ShopMenu.cs" />
+    <Compile Include="State\StateBackgroundTest.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Pilot.cs" />

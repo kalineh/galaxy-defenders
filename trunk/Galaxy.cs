@@ -93,7 +93,7 @@ namespace Galaxy
 
 #if DEBUG
             Window.AllowUserResizing = true;
-            Window.ClientSizeChanged += new EventHandler(Window_ClientSizeChanged);
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
 #endif
             // NOTE: for PC we will just scale to fit as much of the screen as possible
             if (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height < 1080)
@@ -313,6 +313,7 @@ namespace Galaxy
 
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
+            //State = new CStateBackgroundTest(this);
 
             // debug shop testing
             //PlayersInGame = 2;
@@ -367,7 +368,7 @@ namespace Galaxy
 
 #if XBOX360
             // TEST THIS ON 360
-            Debug.Assert(false);
+            //Debug.Assert(false);
 #endif
 
             if (CInput.IsRawKeyDown(Keys.LeftControl))
@@ -405,6 +406,7 @@ namespace Galaxy
             GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             State.Draw();
+            return;
 
             GraphicsDevice.RasterizerState = RasterState_NoScissor;
             HudManager.Draw();
