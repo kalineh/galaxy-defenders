@@ -47,7 +47,7 @@ namespace Galaxy
 
             // NOTE: test on 360
 #if XBOX360
-            Debug.Assert(false);
+            //Debug.Assert(false);
 #endif
 
             // TODO: block read
