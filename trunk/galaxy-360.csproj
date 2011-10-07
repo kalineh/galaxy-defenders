@@ -74,12 +74,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CollisionGrid.cs" />
+    <None Include="app.config" />
     <None Include="Editor\Editors\DecorationTypeSelector.cs" />
     <None Include="Editor\Editors\TextureSelector.cs" />
     <None Include="Editor\Entities\EditorEntitySecretEntry.cs" />
     <None Include="Editor\Entities\EditorEntityMusicChanger.cs" />
     <None Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
     <None Include="Editor\Entities\EditorEntityHealthBar.cs" />
+    <Compile Include="EffectLoader.cs" />
     <Compile Include="MusicBin.cs" />
     <Compile Include="Effects\AnimationEffects.cs" />
     <Compile Include="Effects\NewParticleEffect.cs" />

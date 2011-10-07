@@ -313,7 +313,7 @@ namespace Galaxy
 
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
-            //State = new CStateBackgroundTest(this);
+            State = new CStateBackgroundTest(this);
 
             // debug shop testing
             //PlayersInGame = 2;
@@ -406,6 +406,7 @@ namespace Galaxy
             GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             State.Draw();
+            DrawDebugMusic();
             return;
 
             GraphicsDevice.RasterizerState = RasterState_NoScissor;

@@ -33,7 +33,8 @@ namespace Galaxy
 
             RefreshScenery();
 
-            CAudio.PlayMusic("Sirius");
+            CAudio.PlayMusic("Eye_of_the_Predator");
+            //CAudio.PlayMusic("Konami's_Moon_Base");
         }
 
         public override void Update()
