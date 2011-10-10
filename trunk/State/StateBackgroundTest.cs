@@ -33,7 +33,8 @@ namespace Galaxy
 
             RefreshScenery();
 
-            CAudio.PlayMusic("Eye_of_the_Predator");
+            CAudio.PlayMusic("The_Voyage");
+            //CAudio.PlayMusic("Eye_of_the_Predator");
             //CAudio.PlayMusic("Konami's_Moon_Base");
         }
 
@@ -53,6 +54,13 @@ namespace Galaxy
                 BackgroundIndex--;
             if (CInput.IsRawKeyPressed(Keys.Right))
                 BackgroundIndex++;
+
+            if (CInput.IsRawKeyPressed(Keys.B) && CInput.IsRawKeyDown(Keys.LeftControl))
+            {
+                Game.State = new CStateMainMenu(Game);
+                Game.HudManager.Hidden = false;
+                return;
+            }
         }
 
         public override void Draw()
