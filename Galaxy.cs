@@ -313,7 +313,7 @@ namespace Galaxy
 
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
-            State = new CStateBackgroundTest(this);
+            //State = new CStateBackgroundTest(this);
 
             // debug shop testing
             //PlayersInGame = 2;
@@ -371,6 +371,7 @@ namespace Galaxy
             //Debug.Assert(false);
 #endif
 
+            /*
             if (CInput.IsRawKeyDown(Keys.LeftControl))
             {
                 CAudio.PlayMusic("Eye_of_the_Predator");
@@ -383,6 +384,7 @@ namespace Galaxy
             {
                 CAudio.UnpauseMusic();
             }
+            */
         }
 
         /// <summary>
@@ -403,11 +405,10 @@ namespace Galaxy
 
             GraphicsDevice.RasterizerState = RasterState_NoScissor;
             GraphicsDevice.Clear(Color.Black);
-            GraphicsDevice.RasterizerState = RasterState_Scissor;
+            //GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             State.Draw();
             DrawDebugMusic();
-            return;
 
             GraphicsDevice.RasterizerState = RasterState_NoScissor;
             HudManager.Draw();

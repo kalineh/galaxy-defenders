@@ -14,25 +14,34 @@ namespace Galaxy
         : CScenery
     {
         public float[] music_data;
+        public float[] smooth_music_data;
+        public Dictionary<VertexDeclaration, VertexBuffer> unit_quads;
       
         public CShaderScenery(CWorld world)
             : base(world)
         {
             music_data = new float[8];
+            smooth_music_data = new float[8];
+            unit_quads = new Dictionary<VertexDeclaration, VertexBuffer>();
 
             ReloadShaders();
         }
 
         public void UpdateMusicData()
         {
-            music_data[0] = (float)CAudio.MusicBin.GetChannelData(0) / 255.0f;
-            music_data[1] = (float)CAudio.MusicBin.GetChannelData(1) / 255.0f;
-            music_data[2] = (float)CAudio.MusicBin.GetChannelData(2) / 255.0f;
-            music_data[3] = (float)CAudio.MusicBin.GetChannelData(3) / 255.0f;
-            music_data[4] = (float)CAudio.MusicBin.GetChannelData(4) / 255.0f;
-            music_data[5] = (float)CAudio.MusicBin.GetChannelData(5) / 255.0f;
-            music_data[6] = (float)CAudio.MusicBin.GetChannelData(6) / 255.0f;
-            music_data[7] = (float)CAudio.MusicBin.GetChannelData(7) / 255.0f;
+            for (int i = 0; i < 8; ++i)
+            {
+                music_data[i] = (float)CAudio.MusicBin.GetChannelData(i) / 255.0f;
+                smooth_music_data[i] = MathHelper.Lerp(smooth_music_data[i], music_data[i], Math.Abs(music_data[i] - smooth_music_data[i]) * 0.05f);
+            }
+        }
+
+        public float GetTotalMusicValue()
+        {
+            float result = 0.0f;
+            for (int i = 0; i < 8; ++i)
+                result += music_data[i];
+            return result;
         }
 
         public override void Update()
@@ -50,6 +59,50 @@ namespace Galaxy
         public void SetShaderMusicData(Effect effect)
         {
             effect.Parameters["MusicData"].SetValue(music_data);
+            effect.Parameters["SmoothMusicData"].SetValue(smooth_music_data);
+        }
+
+        public void DrawFullscreenQuad(VertexDeclaration declaration, Effect effect)
+        {
+            if (!unit_quads.ContainsKey(declaration))
+            {
+                if (declaration == VertexPositionColorTexture.VertexDeclaration)
+                {
+                    VertexBuffer vb = new VertexBuffer(World.Game.GraphicsDevice, VertexPositionColorTexture.VertexDeclaration, 6, BufferUsage.None);
+                    vb.SetData(new VertexPositionColorTexture[6] {
+                        new VertexPositionColorTexture() { Position = new Vector3(0.0f, 0.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(0.0f, 0.0f) },
+                        new VertexPositionColorTexture() { Position = new Vector3(1.0f, 0.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(1.0f, 0.0f) },
+                        new VertexPositionColorTexture() { Position = new Vector3(0.0f, 1.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(0.0f, 1.0f) },
+                        new VertexPositionColorTexture() { Position = new Vector3(0.0f, 1.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(0.0f, 1.0f) },
+                        new VertexPositionColorTexture() { Position = new Vector3(1.0f, 0.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(1.0f, 0.0f) },
+                        new VertexPositionColorTexture() { Position = new Vector3(1.0f, 1.0f, 0.0f), Color = new Color(1.0f, 1.0f, 1.0f), TextureCoordinate = new Vector2(1.0f, 1.0f) },
+                    });
+
+                    unit_quads[declaration] = vb;
+                }
+                else
+                {
+                    // todo
+                    Console.WriteLine("CShaderScenery.DrawFullscreenQuad(): no support for declaration type: {0}", declaration.ToString());
+                    return;
+                }
+            }
+
+            VertexBuffer quad = unit_quads[declaration];
+
+            GraphicsDevice gd = World.Game.GraphicsDevice;
+            
+            Viewport vp = gd.Viewport;
+            Matrix world = Matrix.CreateScale(vp.Width, vp.Height, 1.0f);
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0.0f, vp.Width, vp.Height, 0.0f, 0.0f, 1.0f);
+
+            effect.Parameters["World"].SetValue(world);
+            effect.Parameters["Projection"].SetValue(projection);
+            SetShaderMusicData(effect);
+            effect.Techniques[0].Passes[0].Apply();
+
+            gd.SetVertexBuffer(quad);
+            gd.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
         }
 
         protected virtual void ReloadShaders()
