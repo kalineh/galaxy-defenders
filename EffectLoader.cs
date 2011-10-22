@@ -6,6 +6,23 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+
+#if XBOX360
+
+namespace Galaxy
+{
+    public class CEffectLoader
+    {
+        public static Effect Load(GraphicsDevice device, string shader_name)
+        {
+            return null;
+        }
+    }
+}
+
+#else
+
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
@@ -96,3 +113,5 @@ namespace Galaxy
         }
     }
 }
+
+#endif

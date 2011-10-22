@@ -408,7 +408,10 @@ namespace Galaxy
             //GraphicsDevice.RasterizerState = RasterState_Scissor;
 
             State.Draw();
-            DrawDebugMusic();
+
+#if DEBUG
+            //DrawDebugMusic();
+#endif
 
             GraphicsDevice.RasterizerState = RasterState_NoScissor;
             HudManager.Draw();
@@ -446,7 +449,7 @@ namespace Galaxy
             //while (GraphicsDevice.RasterStatus.InVerticalBlank)
                 //Thread.Sleep(0);
 
-            DrawStopwatch.Start();
+            DrawStopwatch.Stop();
 
             // simple profiling
             // TODO: why doesnt depth work here :( HUD always renders on top
@@ -454,8 +457,7 @@ namespace Galaxy
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-
-
+            //Console.WriteLine("update: {0}ms, render: {1}ms", UpdateStopwatch.ElapsedMilliseconds, DrawStopwatch.ElapsedMilliseconds);
 
 #if !XBOX360
             // NOTE: no GC.CollectionCount on 360
@@ -464,8 +466,6 @@ namespace Galaxy
 #endif
 
             DefaultSpriteBatch.End();
-
-            DrawDebugMusic();
         }
 
         public void DrawDebugMusic()
