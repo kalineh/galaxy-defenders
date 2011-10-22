@@ -37,6 +37,10 @@ namespace Galaxy
 
         public void OpenMusic(string filename)
         {
+#if XBOX360
+            return;
+#endif
+
             CurrentFile = filename;
             FrameCount = 0;
 
@@ -46,9 +50,7 @@ namespace Galaxy
             DriftCompensationFrames = 60;
 
             // NOTE: test on 360
-#if XBOX360
             //Debug.Assert(false);
-#endif
 
             // TODO: block read
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
@@ -73,6 +75,9 @@ namespace Galaxy
 
         public void Tick()
         {
+#if XBOX360
+            return;
+#endif
             FrameCount++;
             DriftCounter++;
 
@@ -85,6 +90,9 @@ namespace Galaxy
 
         public byte GetChannelData(int channel)
         {
+#if XBOX360
+            return 0;
+#endif
             if (CurrentBinary == null)
                 return (byte)0;
 
