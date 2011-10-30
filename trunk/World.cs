@@ -483,7 +483,6 @@ namespace Galaxy
                 SecretEntryPosition *= new Vector2(1.01f, 1.0f);
                 Vector2 ofs = SecretEntryPosition - ship.Physics.Position;
                 ship.Physics.Position += ofs * 0.25f;
-                ship.IsInvincible += 1;
             }
 
             if (SecretEntryCounter > 120)
@@ -526,11 +525,12 @@ namespace Galaxy
             // TODO: less shit
             if (IsSecretWorld)
             {
+                // NOTE: removing, death in secret is death in real life
                 // TODO: faster implementation
-                if (ShipEntitiesCache.Count == 0)
-                {
-                    SecretFinishCounter = Math.Max(SecretFinishCounter, 1);
-                }
+                //if (ShipEntitiesCache.Count == 0)
+                //{
+                    //SecretFinishCounter = Math.Max(SecretFinishCounter, 1);
+                //}
             }
 
             if (SecretFinishCounter == 0)
@@ -1049,8 +1049,9 @@ namespace Galaxy
 
         private void CheckGameOverConditions()
         {
-            if (IsSecretWorld)
-                return;
+            // NOTE: change conditions; death in secret is death in real life
+            //if (IsSecretWorld)
+                //return;
 
             if (ShipEntitiesCache.Count == 0)
             {
@@ -1235,6 +1236,10 @@ namespace Galaxy
         public void QuitGame(object tag)
         {
             Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
+
+            if (IsSecretWorld)
+                CAudio.StopSecretMusic();
+                
         }
 
         public void OptionsMenu(object tag)
