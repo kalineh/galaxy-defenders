@@ -52,6 +52,9 @@ namespace Galaxy
             // NOTE: test on 360
             //Debug.Assert(false);
 
+            if (File.Exists(filename) == false)
+                return;
+
             // TODO: block read
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
