@@ -62,6 +62,11 @@ namespace Galaxy
 
             Content.RootDirectory = "Content";
             GraphicsDeviceManager = new GraphicsDeviceManager(this);
+
+            // NOTE: need to force hidef here or the editor thinks it is in Reach profile
+            GraphicsDeviceManager.GraphicsProfile = GraphicsProfile.HiDef;
+            GraphicsDeviceManager.ApplyChanges();
+
             GraphicsDevice = GraphicsDeviceManager.GraphicsDevice;
 
             // Game resolution.

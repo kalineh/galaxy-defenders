@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace StageEditor
 {
@@ -29,8 +31,9 @@ namespace StageEditor
         /// Initializes the control, creating the ContentManager
         /// and using it to load a SpriteFont.
         /// </summary>
-        protected override void Initialize()
+        protected override void OnCreateControl()
         {
+            base.OnCreateControl();
             GameThread = new Thread(new ThreadStart(RunGameThread));
             CachedHandle = (object)this.Handle;
             HandleDestroyed += (sender, event_args) => Dispose();
@@ -69,6 +72,9 @@ namespace StageEditor
                 return;
 
             Galaxy.CStateEditor editor = Game.State as Galaxy.CStateEditor;
+            if (editor == null)
+                return;
+
             WinPoint local = new WinPoint(ClientRectangle.Left, ClientRectangle.Top);
             WinPoint screen = PointToScreen(local);
             // HACK: the mouse coords we get in form mode are from -560, -310 to 1359, 889, so lets tell the form it's at a different position.
@@ -105,9 +111,11 @@ namespace StageEditor
                 Game.Update(game_time);
                 Game.Draw(game_time);
                 Galaxy.CDebugRender.Render(Game);
+
                 // XNA4
                 //Game.GraphicsDevice.Present((IntPtr)CachedHandle);
-                Game.GraphicsDevice.Present();
+                Game.GraphicsDevice.Present(null, null, (IntPtr)CachedHandle);
+
                 DateTime post = DateTime.Now;
                 TimeSpan diff = post - pre;
                 TimeSpan frame = TimeSpan.FromSeconds(FrameTimeInSeconds);

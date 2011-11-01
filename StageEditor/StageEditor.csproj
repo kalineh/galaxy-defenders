@@ -38,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -54,10 +54,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="galaxy, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\bin\x86\Release\galaxy.exe</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -84,8 +80,7 @@
     </Compile>
     <Compile Include="GraphicsDeviceService.cs">
     </Compile>
-    <Compile Include="GraphicsDeviceControl.cs">
-    </Compile>
+    <Compile Include="GraphicsDeviceControl.cs" />
     <Compile Include="ServiceContainer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -136,6 +131,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\galaxy.csproj">
+      <Project>{A87E45DB-543D-40C8-8B38-C9593AFFF029}</Project>
+      <Name>galaxy</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
