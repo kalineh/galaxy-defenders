@@ -57,6 +57,10 @@ namespace Galaxy
 
         public static List<string> NaturalSort(List<string> strings)
         {
+            List<string> result = new List<string>(strings);
+            result.Sort();
+            return result;
+
             Func<string, object> convert = str => {
                 try
                 {

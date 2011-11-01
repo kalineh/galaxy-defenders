@@ -45,10 +45,20 @@ namespace StageEditor
             //parameters.EnableAutoDepthStencil = true;
             //parameters.AutoDepthStencilFormat = DepthFormat.Depth24;
             parameters.DepthStencilFormat = DepthFormat.Depth24;
+            parameters.DeviceWindowHandle = windowHandle;
+            parameters.IsFullScreen = false;
 
             // XNA4
             //graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.Hardware, windowHandle, parameters);
-            graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, parameters);
+            try
+            {
+                graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, parameters);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                System.Diagnostics.Debug.Assert(false);
+            }
         }
 
 
