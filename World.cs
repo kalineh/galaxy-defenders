@@ -295,6 +295,11 @@ namespace Galaxy
             {
                 GameCamera.Position += Vector3.UnitY * -32.0f;
             }
+
+            if (Game.Input.IsKeyPressed(Keys.I))
+            {
+                StartStageEnd();
+            }
 #endif
 
             if (!IsGameOverState())
@@ -1132,6 +1137,7 @@ namespace Galaxy
 
         public void StartStageEnd()
         {
+            StageEnd = true;
             StageEndCounter = 1;
         }
 

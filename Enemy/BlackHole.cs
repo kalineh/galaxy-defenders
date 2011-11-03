@@ -69,7 +69,7 @@ namespace Galaxy
 
         public new void OnCollide(CShip ship)
         {
-            float scale = 1.0f;
+            float scale = 0.75f;
 
             Vector2 offset = Physics.Position - ship.Physics.Position;
             Vector2 force = ship.GetInputVector();
@@ -77,7 +77,7 @@ namespace Galaxy
             float dot = Vector2.Dot(offset, force);
             if (dot < 0.0f)
             {
-                scale = 0.75f;    
+                scale = 0.5f;    
             }
 
             PullEntityShip(ship, scale);
@@ -108,6 +108,11 @@ namespace Galaxy
         public new void OnCollide(CMiniShot minishot)
         {
             PullEntity(minishot, 1.0f);
+        }
+
+        public new void OnCollide(CVulcan vulcan)
+        {
+            PullEntity(vulcan, 1.0f);
         }
 
         public new void OnCollide(CChargeShot chargeshot)
