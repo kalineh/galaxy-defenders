@@ -15,20 +15,6 @@ stage.AddElement(0,
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 0.0f,
-Y = -17584.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementStageFinish() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = -24.0f,
-Y = -18768.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementCameraStop() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 0.0f,
 Y = -2800.0f,
 },
 });

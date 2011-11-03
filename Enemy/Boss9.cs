@@ -51,6 +51,8 @@ namespace Galaxy
             FiberManager = new CFiberManager();
             FiberManager.Fork(this.UpdateBallLeft);
             FiberManager.Fork(this.UpdateBallRight);
+
+            Coins = 0;
         }
 
         public override void Update()
