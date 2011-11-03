@@ -297,7 +297,7 @@ namespace Galaxy
                 SingleShotEnergyUsage = CalculateSingleShotEnergy();
             }
 
-            if ((World.Game.Input.IsR2Down(GameControllerIndex) && World.Game.Input.IsL2Down(GameControllerIndex)) || World.Game.Input.IsKeyDown(Keys.V))
+            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.V))
             {
                 FireFocusWeapons();
                 World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
@@ -307,7 +307,7 @@ namespace Galaxy
             {
                 IsFocusMode = false;
 
-                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.C))
+                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.C))
                 {
                     FirePrimarySecondaryWeapons();
                 }

@@ -597,6 +597,7 @@ namespace Galaxy
 
             SampleShip.IsInvincible += 1;
             SampleShip.IsReflectBullets += 1;
+            SampleShip.Physics.Velocity = Vector2.Zero;
 
             IsFlyToStage = true;
         }
@@ -607,6 +608,7 @@ namespace Galaxy
 
             SampleShip.IsInvincible -= 1;
             SampleShip.IsReflectBullets -= 1;
+            SampleShip.Physics.Velocity = Vector2.Zero;
 
             IsFlyToStage = false;
             IsMoveToStage = false;
@@ -737,8 +739,8 @@ namespace Galaxy
             Vector2 text30 = text_position + text_line1 * 0.0f + text_section * 3.0f + text_header_split;
             Vector2 text31 = text_position + text_line1 * 1.0f + text_section * 3.0f + text_header_split;
             Color text_color = new Color(160, 160, 160);
-            Color text_color_upgrade = Color.LightGreen;
-            Color text_color_downgrade = Color.LightPink;
+            Color text_color_upgrade = Color.Green;
+            Color text_color_downgrade = Color.DarkRed;
 
             Vector2 textw0 = text_position + text_line0 * 2.0f;
             Vector2 textw1 = text_position + text_line0 * 3.0f;

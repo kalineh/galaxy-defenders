@@ -23,8 +23,9 @@ namespace Galaxy
             World = world;
 
             // TODO: not repeat this check!
-            if (IsExpired() == false)
-                return;
+            if (!World.IsSecretWorld)
+                if (IsExpired() == false)
+                    return;
 
             if (World.IsSecretWorld)
                 World.StartSecretStageFinish();

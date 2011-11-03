@@ -545,7 +545,7 @@ namespace Galaxy
             SecretFinishFader.Update();
             SecretFinishFader.StopAtHalfFadeOut();
 
-            if (SecretFinishCounter > 60)
+            if (SecretFinishCounter > 30)
             {
                 CStateGame return_state = new CStateGame(Game, ReturnWorld);
                 Game.State = new CStateFadeTo(Game, Game.State, return_state);

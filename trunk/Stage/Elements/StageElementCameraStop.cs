@@ -68,8 +68,8 @@ namespace Galaxy
                 return;
 
             // skip ahead to finish phase for secret stage
-            //if (world.IsSecretWorld)
-                //StageEndCountdown = Math.Min(StageEndCountdown, 219);
+            if (world.IsSecretWorld)
+                StageEndCountdown = Math.Min(StageEndCountdown, 190);
 
             StageEndCountdown += 1;
             if (StageEndCountdown == 220)
@@ -83,6 +83,7 @@ namespace Galaxy
                 }
 
                 world.StageEnd = true;
+                world.StageEndCounter = Math.Min(world.StageEndCounter, 120);
                 world.StageClearPanel.Start();
             }
 

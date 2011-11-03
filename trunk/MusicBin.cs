@@ -41,6 +41,9 @@ namespace Galaxy
             return;
 #endif
 
+            // NOTE: disabled for all
+            return;
+
             CurrentFile = filename;
             FrameCount = 0;
 

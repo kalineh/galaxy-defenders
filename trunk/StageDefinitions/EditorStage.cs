@@ -14,35 +14,15 @@ stage.MusicName = "The_Voyage";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -608.0f,
-Y = -832.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementSpawnerEnemy() {
-NoDropCoins = false,
-Powerup = false,
-Type = typeof(Galaxy.CBoss12),
-SpawnPosition = new Galaxy.CSpawnPositionFixed() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 24.0f,
-Y = -656.0f,
-},
-},
-MoverPresetName = "None",
-MoverSpeedMultiplier = 1.0f,
-MoverTransitionMultiplier = 1.0f,
-CustomElement = null,
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 24.0f,
-Y = -656.0f,
+X = -552.0f,
+Y = -1248.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementHealthBar() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = 24.0f,
-Y = -1136.0f,
+X = 16.0f,
+Y = -1480.0f,
 },
 });
 stage.AddElement(0, 
@@ -153,6 +133,15 @@ Rotation = 0.0f,
 Position = new Microsoft.Xna.Framework.Vector2() {
 X = 344.0f,
 Y = -472.0f,
+},
+});
+stage.AddElement(0, 
+new Galaxy.CStageElementSecretEntry() {
+SecretStage = "BonusStage3",
+Expired = false,
+Position = new Microsoft.Xna.Framework.Vector2() {
+X = 424.0f,
+Y = -456.0f,
 },
 });
 

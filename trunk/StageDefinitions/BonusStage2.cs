@@ -14,29 +14,15 @@ stage.MusicName = "The_Hidden_Answer";
 stage.AddElement(0, 
 new Galaxy.CStageElementCameraStop() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -88.0f,
-Y = -12096.0f,
+X = 16.0f,
+Y = -2952.0f,
 },
 });
 stage.AddElement(0, 
 new Galaxy.CStageElementStageFinish() {
 Position = new Microsoft.Xna.Framework.Vector2() {
-X = -88.0f,
-Y = -13424.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementCameraStop() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -3088.0f,
-},
-});
-stage.AddElement(0, 
-new Galaxy.CStageElementStageFinish() {
-Position = new Microsoft.Xna.Framework.Vector2() {
-X = 8.0f,
-Y = -4248.0f,
+X = 16.0f,
+Y = -3096.0f,
 },
 });
 stage.AddElement(0, 
