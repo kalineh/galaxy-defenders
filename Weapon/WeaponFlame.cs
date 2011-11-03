@@ -10,21 +10,18 @@ namespace Galaxy
     public class CWeaponFlame
         : CWeapon
     {
-        public CProjectileCache<CFlame> Cache { get; set; }
         public float FireRotation { get; set; }
 
         public override void Initialize(CShip owner)
         {
             base.Initialize(owner);
-
-            Cache = new CProjectileCache<CFlame>(owner.World);
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
             FlameCustomData custom = (FlameCustomData)custom_data;
 
-            CFlame flame = Cache.GetProjectileInstance(Owner.GameControllerIndex);
+            CFlame flame = ProjectileCacheManager.Flames.GetProjectileInstance(Owner.GameControllerIndex);
 
             flame.Initialize(owner.World, owner, damage);
 

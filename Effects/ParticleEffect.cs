@@ -12,6 +12,8 @@ namespace Galaxy
 {
     public class CParticleEffectManager
     {
+        public static CParticleEffectManager Instance { get; set; }
+
         public CWorld World { get; set; }
         public List<CParticle> Particles { get; set; }
         public List<CParticle> Cache { get; set; }
@@ -19,18 +21,24 @@ namespace Galaxy
         public static CVisual Dot { get; set; }
         public static CVisual Triangle { get; set; }
 
-        public CParticleEffectManager(CWorld world)
+        public static void CreateParticleEffectManager(CGalaxy game)
         {
-            World = world;
-            Dot = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/DotParticle");
-            Triangle = CVisual.MakeSpriteUncached(world.Game, "Textures/Effects/TriangleParticle");
-            Dot.Recache();
-            Triangle.Recache();
+            Instance = new CParticleEffectManager(game);
+            Instance.Initialize(CGalaxyEffects.MakeDefinitions());
+        }
+
+        public CParticleEffectManager(CGalaxy game)
+        {
             Particles = new List<CParticle>();
             Cache = new List<CParticle>(8192);
             for (int i = 0; i < 8192; ++i)
                 Cache.Add(new CParticle());
-            Definitions = new List<SEffectDefinition>(256);
+            Definitions = new List<SEffectDefinition>(64);
+
+            Dot = CVisual.MakeSpriteUncached(game, "Textures/Effects/DotParticle");
+            Triangle = CVisual.MakeSpriteUncached(game, "Textures/Effects/TriangleParticle");
+            Dot.Recache();
+            Triangle.Recache();
         }
 
         public void Initialize(Dictionary<EParticleType, SEffectDefinition> definitions)
@@ -40,6 +48,21 @@ namespace Galaxy
                 Definitions.Add(SEffectDefinition.MakeDefaultEffectDefinition());
             foreach (KeyValuePair<EParticleType, SEffectDefinition> kv in definitions)
                 Definitions[(int)kv.Key] = kv.Value;
+        }
+
+        public void ResetWorld(CWorld world)
+        {
+            World = world;
+
+            // force all alive particles to end lifetime
+            for (int i = 0; i < Particles.Count; ++i)
+            {
+                CParticle particle = Particles[i];
+                particle.Frame = particle.Lifetime;
+            }
+
+            // update to move particles back to cache
+            Update();
         }
 
         public void Update()
@@ -102,6 +125,10 @@ namespace Galaxy
         public void Spawn(EParticleType type, Vector2 position, Color? override_color, float? override_scale_factor, Vector2? override_position_delta)
         {
             SEffectDefinition d = Definitions[(int)type];
+            if (d.Visual == null)
+            {
+                Console.WriteLine("asdf");
+            }
             Random random = World.Random;
             Vector2 ignore_camera = World.ScrollSpeed * -Vector2.UnitY * 0.0f;
 

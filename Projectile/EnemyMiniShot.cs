@@ -16,7 +16,7 @@ namespace Galaxy
 
         public static CEnemyMiniShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyMiniShot shot = new CEnemyMiniShot();
+            CEnemyMiniShot shot = ProjectileCacheManager.EnemyMiniShots.GetProjectileInstance(GameControllerIndex.One);
             shot.Initialize(world, null, damage);
 
             shot.Physics.Rotation = rotation;
@@ -37,6 +37,9 @@ namespace Galaxy
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyMiniShot");
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
+
+            IsReflected = false;
+            WhoReflected = null;
         }
 
         public override void UpdateCollision()

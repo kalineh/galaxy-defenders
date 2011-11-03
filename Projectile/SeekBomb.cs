@@ -13,7 +13,7 @@ namespace Galaxy
     {
         public static CSeekBomb Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CSeekBomb seek_bomb = new CSeekBomb();
+            CSeekBomb seek_bomb = ProjectileCacheManager.SeekBombs.GetProjectileInstance(owner.GameControllerIndex);
             seek_bomb.Initialize(owner.World, owner, damage);
 
             seek_bomb.Speed = speed;
@@ -42,6 +42,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 1.0f);
             Damage = damage;
             SeekFramesRemaining = 90;
+            Target = null;
         }
 
         public override void Update()

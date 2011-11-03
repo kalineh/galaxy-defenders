@@ -18,7 +18,7 @@ namespace Galaxy
 
         public static CEnemyCannonShot Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyCannonShot shot = new CEnemyCannonShot();
+            CEnemyCannonShot shot = ProjectileCacheManager.EnemyCannonShots.GetProjectileInstance(GameControllerIndex.One);
             shot.Initialize(world, null, damage);
 
             shot.Physics.Rotation = rotation;
@@ -40,6 +40,9 @@ namespace Galaxy
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyCannonShot");
             Collision = CCollision.GetCacheAABB(this, Vector2.Zero, new Vector2(11.0f, 42.0f));
 
+            IsReflected = false;
+            WhoReflected = null;
+            CanCollideWait = 0;
             Health = 4;
         }
 

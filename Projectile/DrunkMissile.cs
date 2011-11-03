@@ -19,7 +19,7 @@ namespace Galaxy
 
         public static CDrunkMissile Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CDrunkMissile missile = new CDrunkMissile();
+            CDrunkMissile missile = ProjectileCacheManager.DrunkMissiles.GetProjectileInstance(owner.GameControllerIndex);
             missile.Initialize(owner.World, owner, damage);
 
             missile.Speed = speed;

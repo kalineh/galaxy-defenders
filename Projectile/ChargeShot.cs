@@ -12,7 +12,7 @@ namespace Galaxy
     {
         public static CChargeShot Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge)
         {
-            CChargeShot charge_shot = new CChargeShot();
+            CChargeShot charge_shot = ProjectileCacheManager.ChargeShots.GetProjectileInstance(owner.GameControllerIndex);
             charge_shot.Initialize(owner.World, owner, damage * charge);
 
             charge_shot.Physics.Rotation = rotation;

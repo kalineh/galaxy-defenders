@@ -18,7 +18,7 @@ namespace Galaxy
     {
         public static CBoomerang Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage, object custom_data)
         {
-            CBoomerang boomerang = new CBoomerang();
+            CBoomerang boomerang = ProjectileCacheManager.Boomerangs.GetProjectileInstance(owner.GameControllerIndex);
             boomerang.Initialize(owner.World, owner, damage);
 
             boomerang.Physics.Rotation = owner.World.Random.NextAngle();

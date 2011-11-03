@@ -10,18 +10,14 @@ namespace Galaxy
     public class CWeaponLightning
         : CWeapon
     {
-        public CProjectileCache<CLightning> Cache { get; set; }
-
         public override void Initialize(CShip owner)
         {
             base.Initialize(owner);
-
-            Cache = new CProjectileCache<CLightning>(owner.World);
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CLightning lightning = Cache.GetProjectileInstance(Owner.GameControllerIndex);
+            CLightning lightning = ProjectileCacheManager.Lightnings.GetProjectileInstance(Owner.GameControllerIndex);
 
             lightning.Initialize(owner.World, owner, damage);
 

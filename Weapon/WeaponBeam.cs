@@ -10,18 +10,14 @@ namespace Galaxy
     public class CWeaponBeam
         : CWeapon
     {
-        public CProjectileCache<CBeam> Cache { get; set; }
-
         public override void Initialize(CShip owner)
         {
             base.Initialize(owner);
-
-            Cache = new CProjectileCache<CBeam>(owner.World);
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CBeam beam = Cache.GetProjectileInstance(Owner.GameControllerIndex);
+            CBeam beam = ProjectileCacheManager.Beams.GetProjectileInstance(Owner.GameControllerIndex);
 
             beam.Initialize(owner.World, owner, damage);
 
@@ -43,18 +39,14 @@ namespace Galaxy
     public class CWeaponBeamFocus
         : CWeapon
     {
-        public CProjectileCache<CBeamFocus> Cache { get; set; }
-
         public override void Initialize(CShip owner)
         {
             base.Initialize(owner);
-
-            Cache = new CProjectileCache<CBeamFocus>(owner.World);
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CBeamFocus beam = Cache.GetProjectileInstance(Owner.GameControllerIndex);
+            CBeamFocus beam = ProjectileCacheManager.BeamFocuses.GetProjectileInstance(Owner.GameControllerIndex);
 
             beam.Initialize(owner.World, owner, damage);
 

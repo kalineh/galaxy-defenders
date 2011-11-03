@@ -15,7 +15,7 @@ namespace Galaxy
 
         public static CMissile Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CMissile missile = new CMissile();
+            CMissile missile = ProjectileCacheManager.Missiles.GetProjectileInstance(owner.GameControllerIndex);
             missile.Initialize(owner.World, owner, damage);
 
             missile.Speed = speed;

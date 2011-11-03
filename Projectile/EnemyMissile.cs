@@ -10,6 +10,7 @@ namespace Galaxy
 {
     public class CEnemyMissile
         : CEntity
+        , ICacheableProjectile
     {
         public bool IsReflected { get; set; }
         public CShip WhoReflected { get; set; }
@@ -19,7 +20,7 @@ namespace Galaxy
 
         public static CEnemyMissile Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyMissile missile = new CEnemyMissile();
+            CEnemyMissile missile = ProjectileCacheManager.EnemyMissiles.GetProjectileInstance(GameControllerIndex.One);
 
             missile.Initialize(world);
             missile.Physics.Position = position;
@@ -44,6 +45,10 @@ namespace Galaxy
             Collision = new CollisionCircle(Vector2.Zero, 10.0f);
 
             Health = 4;
+
+            IsReflected = false;
+            WhoReflected = null;
+            Target = null;
         }
 
         public override void Update()
