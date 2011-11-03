@@ -9,19 +9,16 @@ namespace Galaxy
     public class CWeaponVulcan
         : CWeapon
     {
-        public CProjectileCache<CVulcan> Cache { get; set; }
         public CEnemy LastTarget { get; set; }
 
         public override void Initialize(CShip owner)
         {
             base.Initialize(owner);
-
-            Cache = new CProjectileCache<CVulcan>(owner.World);
         }
 
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CVulcan vulcan = Cache.GetProjectileInstance(Owner.GameControllerIndex);
+            CVulcan vulcan = ProjectileCacheManager.Vulcans.GetProjectileInstance(Owner.GameControllerIndex);
 
             vulcan.Initialize(owner.World, owner, damage);
 

@@ -17,7 +17,7 @@ namespace Galaxy
     {
         public static CVulcan Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CVulcan vulcan = new CVulcan();
+            CVulcan vulcan = ProjectileCacheManager.Vulcans.GetProjectileInstance(owner.GameControllerIndex);
             vulcan.Initialize(owner.World, owner, damage);
 
             vulcan.Physics.Rotation = rotation;

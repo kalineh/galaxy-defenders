@@ -11,7 +11,7 @@ namespace Galaxy
     {
         protected override void Instantiate(CShip owner, Vector2 position, float rotation, float speed, float damage, float charge, object custom_data)
         {
-            CPlasma plasma = new CPlasma();
+            CPlasma plasma = ProjectileCacheManager.Plasmas.GetProjectileInstance(owner.GameControllerIndex);
 
             plasma.Initialize(owner.World, owner, damage);
 

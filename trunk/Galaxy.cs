@@ -316,6 +316,9 @@ namespace Galaxy
             // Hud management.
             HudManager = new CHudManager(this);
 
+            // Particle effects.
+            CParticleEffectManager.CreateParticleEffectManager(this);
+
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
             //State = new CStateBackgroundTest(this);

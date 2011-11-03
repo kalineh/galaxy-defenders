@@ -9,6 +9,7 @@ namespace Galaxy
 {
     public class CEnemyPellet
         : CEntity
+        , ICacheableProjectile
     {
         private int Health { get; set; }
         public bool IsReflected { get; set; }
@@ -16,7 +17,7 @@ namespace Galaxy
 
         public static CEnemyPellet Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyPellet pellet = new CEnemyPellet();
+            CEnemyPellet pellet = ProjectileCacheManager.EnemyPellets.GetProjectileInstance(GameControllerIndex.One);
 
             pellet.Initialize(world);
             pellet.Physics.Position = position;

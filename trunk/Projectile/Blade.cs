@@ -14,7 +14,7 @@ namespace Galaxy
 
         public static CBlade Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CBlade blade = new CBlade();
+            CBlade blade = ProjectileCacheManager.Blades.GetProjectileInstance(owner.GameControllerIndex);
             blade.Initialize(owner.World, owner, damage);
 
             blade.Physics.Rotation = rotation;

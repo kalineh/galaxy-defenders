@@ -80,8 +80,9 @@ namespace Galaxy
             ShipEntitiesCache = new List<CShip>();
             Ships = new List<CShip>();
             CollisionGrid = new CCollisionGrid(this, new Vector2(1200.0f, 1200.0f), 10, 10);
-            ParticleEffects = new CParticleEffectManager(this);
-            ParticleEffects.Initialize(CGalaxyEffects.MakeDefinitions());
+            ParticleEffects = CParticleEffectManager.Instance;
+            ParticleEffects.ResetWorld(this);
+            ProjectileCacheManager.ResetWorld(this);
             GameOverCounter = -1;
             StageTextLabelStage = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };
             StageTextLabelName = new CTextLabel() { Alignment = CTextLabel.EAlignment.Center };

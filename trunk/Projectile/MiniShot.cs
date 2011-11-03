@@ -12,7 +12,7 @@ namespace Galaxy
     {
         public static CMiniShot Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CMiniShot mini_shot = new CMiniShot();
+            CMiniShot mini_shot = ProjectileCacheManager.MiniShots.GetProjectileInstance(owner.GameControllerIndex);
             mini_shot.Initialize(owner.World, owner, damage);
 
             mini_shot.Physics.Rotation = rotation;

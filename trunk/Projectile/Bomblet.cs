@@ -13,7 +13,7 @@ namespace Galaxy
     {
         public static CBomblet Spawn(CShip owner, Vector2 position, float rotation, float speed, float damage)
         {
-            CBomblet bomblet = new CBomblet();
+            CBomblet bomblet = ProjectileCacheManager.Bomblets.GetProjectileInstance(owner.GameControllerIndex);
             bomblet.Initialize(owner.World, owner, damage);
 
             //bomblet.Speed = speed;

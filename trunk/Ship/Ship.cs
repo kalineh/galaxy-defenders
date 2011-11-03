@@ -143,6 +143,7 @@ namespace Galaxy
 
         public override void Update()
         {
+            World.ParticleEffects.Spawn(EParticleType.PlayerShipDestroyed, Physics.Position, PlayerColor, null, null);
             UpdateInput();
             UpdateGenerator();
             UpdateWeapons();

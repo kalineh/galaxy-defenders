@@ -9,13 +9,14 @@ namespace Galaxy
 {
     public class CEnemyLaser
         : CEntity
+        , ICacheableProjectile
     {
         public bool IsReflected { get; set; }
         public CShip WhoReflected { get; set; }
 
         public static CEnemyLaser Spawn(CWorld world, Vector2 position, float rotation, float speed, float damage)
         {
-            CEnemyLaser laser = new CEnemyLaser();
+            CEnemyLaser laser = ProjectileCacheManager.EnemyLasers.GetProjectileInstance(GameControllerIndex.One);
 
             laser.Initialize(world);
             laser.Physics.Position = position;
@@ -37,6 +38,9 @@ namespace Galaxy
             Physics = new CPhysics();
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Weapons/EnemyLaser");
             Collision = new CollisionAABB(Vector2.Zero, new Vector2(1.0f, 0.5f));
+
+            IsReflected = false;
+            WhoReflected = null;
         }
 
         public override void UpdateCollision()
