@@ -531,7 +531,7 @@ namespace Galaxy
             Random r = new Random(seed);
 
             int total = parts.Count;
-            int count = (int)Math.Round(total * (volume + volume * r.NextSignedFloat() * volume_variation));
+            int count = (int)Math.Round(total * (volume + volume_variation * r.NextSignedFloat()));
             int center = (int)Math.Round(total * ratio);
 
             count = Math.Max(count, 2);
@@ -540,7 +540,7 @@ namespace Galaxy
             List<string> result = new List<string>();
             for (int i = 0; i < 30; ++i)
             {
-                int offset = (int)Math.Round(3.0f * r.NextSignedFloat() * r.NextSignedFloat());
+                int offset = (int)(r.NextSignedFloat() * total * ratio);
                 int index = center + offset;
 
                 index = Math.Max(index, 0);
@@ -580,32 +580,32 @@ namespace Galaxy
 
         public static List<string> MakeRandomPrimaryWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllPrimaryWeapons(), MakeRandomPartsSeed(game), 1.0f, 0.4f, 0.3f);
+            return MakeRandomParts(AllPrimaryWeapons(), MakeRandomPartsSeed(game) + 1, 0.5f, 0.4f, 0.5f);
         }
 
         public static List<string> MakeRandomSecondaryWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllSecondaryWeapons(), MakeRandomPartsSeed(game), 1.0f, 0.4f, 0.3f);
+            return MakeRandomParts(AllSecondaryWeapons(), MakeRandomPartsSeed(game) + 2, 0.5f, 0.4f, 0.5f);
         }
 
         public static List<string> MakeRandomSidekickWeapons(CGalaxy game)
         {
-            return MakeRandomParts(AllSidekickWeapons(), MakeRandomPartsSeed(game), 1.0f, 0.4f, 0.3f);
+            return MakeRandomParts(AllSidekickWeapons(), MakeRandomPartsSeed(game) + 3, 0.5f, 0.4f, 0.5f);
         }
 
         public static List<string> MakeRandomChassisParts(CGalaxy game)
         {
-            return MakeRandomParts(AllChassisParts(), MakeRandomPartsSeed(game), MakeRandomPartsRatio(game), 0.4f, 0.4f);
+            return MakeRandomParts(AllChassisParts(), MakeRandomPartsSeed(game) + 4, MakeRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<string> MakeRandomGeneratorParts(CGalaxy game)
         {
-            return MakeRandomParts(AllGeneratorParts(), MakeRandomPartsSeed(game), MakeRandomPartsRatio(game), 0.4f, 0.4f);
+            return MakeRandomParts(AllGeneratorParts(), MakeRandomPartsSeed(game) + 5, MakeRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<string> MakeRandomShieldParts(CGalaxy game)
         {
-            return MakeRandomParts(AllShieldParts(), MakeRandomPartsSeed(game), MakeRandomPartsRatio(game), 0.4f, 0.4f);
+            return MakeRandomParts(AllShieldParts(), MakeRandomPartsSeed(game) + 6, MakeRandomPartsRatio(game), 0.4f, 0.4f);
         }
 
         public static List<CMapNode> Nodes = new List<CMapNode>()
