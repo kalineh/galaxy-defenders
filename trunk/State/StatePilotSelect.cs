@@ -85,7 +85,11 @@ namespace Galaxy
 
         private void StartGame(object tag)
         {
-            Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+            //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+
+            // NOTE: now we just jump into stage 1, let the player play before giving them shop
+            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName("Stage1");
+            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
         }
 
         private void Back(object tag)

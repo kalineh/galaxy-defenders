@@ -61,6 +61,7 @@ namespace Galaxy
             result.Sort();
             return result;
 
+            /*
             Func<string, object> convert = str => {
                 try
                 {
@@ -77,6 +78,7 @@ namespace Galaxy
                 new CEnumerableComparer<object>());
 
             return sorted.ToList();
+            */
         }
     }
 }

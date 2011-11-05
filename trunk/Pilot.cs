@@ -94,6 +94,146 @@ namespace Galaxy
 
     public abstract class CPilot
     {
+        public struct StartingItems
+        {
+            public string PrimaryWeapon;
+            public int PrimaryWeaponLevel;
+            public string SecondaryWeapon;
+            public int SecondaryWeaponLevel;
+            public string SidekickWeapon;
+            public string Chassis;
+            public string Generator;
+            public string Shield;
+        };
+
+        public static Dictionary<string, List<StartingItems>> PilotStartingItems = new Dictionary<string, List<StartingItems>>()
+        {
+            { "Kazuki",
+                new List<StartingItems>() {
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 1,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 1,
+                        Chassis = "Eagle",
+                        Generator = "Standard Generator",
+                        Shield = "Light Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 1,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 2,
+                        Chassis = "Eagle",
+                        Generator = "Standard Generator",
+                        Shield = "Fiber Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 2,
+                        Chassis = "Eagle",
+                        Generator = "Conduction Generator",
+                        Shield = "Fiber Shield",
+                    },
+                }
+            },
+            { "Rabbit", 
+                new List<StartingItems>() {
+                    new StartingItems() {
+                        PrimaryWeapon = "Lightning",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "SeekBomb",
+                        SecondaryWeaponLevel = 0,
+                        Chassis = "Rookie",
+                        Generator = "Standard Generator",
+                        Shield = "Light Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "Lightning",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "SeekBomb",
+                        SecondaryWeaponLevel = 1,
+                        Chassis = "Rookie",
+                        Generator = "Standard Generator",
+                        Shield = "Fiber Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "Lightning",
+                        PrimaryWeaponLevel = 3,
+                        SecondaryWeapon = "SeekBomb",
+                        SecondaryWeaponLevel = 1,
+                        Chassis = "Rookie",
+                        Generator = "Conduction Generator",
+                        Shield = "Fiber Shield",
+                    },
+                }
+            },
+            { "Gunthor",
+                new List<StartingItems>() {
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "Missile",
+                        SecondaryWeaponLevel = 0,
+                        Chassis = "Crusher",
+                        Generator = "Standard Generator",
+                        Shield = "Light Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "Missile",
+                        SecondaryWeaponLevel = 1,
+                        Chassis = "Crusher",
+                        Generator = "Standard Generator",
+                        Shield = "Fiber Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "FrontLaser",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "Missile",
+                        SecondaryWeaponLevel = 2,
+                        Chassis = "Crusher",
+                        Generator = "Conduction Generator",
+                        Shield = "Fiber Shield",
+                    },
+                }
+            },
+            { "Mystery", 
+                new List<StartingItems>() {
+                    new StartingItems() {
+                        PrimaryWeapon = "Plasma",
+                        PrimaryWeaponLevel = 2,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 2,
+                        Chassis = "Interceptor",
+                        Generator = "Conduction Generator",
+                        Shield = "Light Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "Plasma",
+                        PrimaryWeaponLevel = 3,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 2,
+                        Chassis = "Interceptor",
+                        Generator = "Conduction Generator",
+                        Shield = "Fiber Shield",
+                    },
+                    new StartingItems() {
+                        PrimaryWeapon = "Plasma",
+                        PrimaryWeaponLevel = 3,
+                        SecondaryWeapon = "Vulcan",
+                        SecondaryWeaponLevel = 3,
+                        Chassis = "Interceptor",
+                        Generator = "Conduction Generator",
+                        Shield = "Fiber Shield",
+                    },
+                }
+            },
+        };
+
         public CShip Ship { get; set; }
         public CAbility Ability0 { get; set; }
         public CAbility Ability1 { get; set; }
