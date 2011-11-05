@@ -158,8 +158,12 @@ namespace Galaxy
                 SProfile data = CSaveData.GetCurrentProfile();
                 data.Game[Game.PlayersInGame - 1].RandomPartsSeed = (new Random()).Next();
                 CSaveData.SetCurrentProfileData(data);
+                CSaveData.SaveRequest();
 
-                Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                // NOTE: jump straight to stage 1 now, let player shop after
+                //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                CStageDefinition definition = CStageDefinition.GetStageDefinitionByName("Stage1");
+                Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
                 return;
             }
 
