@@ -17,9 +17,9 @@ namespace Galaxy
 
         public static int[] StartingMoney = new int[3]
         {
+            0,
+            1500,
             2500,
-            5000,
-            7500,
         };
 
         public static int[] StartingWeaponLevel = new int[3]

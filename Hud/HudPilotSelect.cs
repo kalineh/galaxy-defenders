@@ -178,7 +178,8 @@ namespace Galaxy
                         Cursor = next_valid;
                     }
 
-                    PortraitIconVisuals[Cursor].Scale = Vector2.One + Vector2.One * 0.025f * (float)Math.Sin(Game.GameFrame * 0.1f);
+                    // NOTE: looks crap
+                    //PortraitIconVisuals[Cursor].Scale = Vector2.One + Vector2.One * 0.025f * (float)Math.Sin(Game.GameFrame * 0.1f);
                     break;
 
                 case EState.Selected:
