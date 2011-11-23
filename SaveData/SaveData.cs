@@ -406,6 +406,10 @@ namespace Galaxy
 
         private static void ExportImpl(SSaveData data, string filename)
         {
+            // user cancelled save device selection
+            if (GuideUtil.StorageDevice == null || GuideUtil.StorageDevice.IsConnected == false)
+                return;
+
             GuideUtil.StorageDeviceOpenResult = GuideUtil.StorageDevice.BeginOpenContainer("galaxy", null, null);
             GuideUtil.StorageDeviceOpenResult.AsyncWaitHandle.WaitOne();
             using (StorageContainer container = GuideUtil.StorageDevice.EndOpenContainer(GuideUtil.StorageDeviceOpenResult))
