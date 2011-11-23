@@ -170,6 +170,8 @@ namespace Galaxy
 
             if (Counter == StatsShow + StatsInterval * 5)
             {
+                // NOTE: disable repair for design purpose
+                /*
                 int total_repair = 0;
                 foreach (CShip ship in World.Ships)
                 {
@@ -179,6 +181,7 @@ namespace Galaxy
                     total_repair += repair_cost;
                 }
                 LabelArmorRepairValue.Value = String.Format("-{0}￥", total_repair);
+                 * */
             }
         }
 
@@ -228,11 +231,12 @@ namespace Galaxy
                 LabelTotalValue.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, percent_base + spacing * 3.0f), Color.White);
             }
 
-            if (Counter >= StatsShow + StatsInterval * 5)
-            {
-                LabelArmorRepair.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-8.0f, percent_base + spacing * 4.5f), Color.White);
-                LabelArmorRepairValue.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, percent_base + spacing * 4.5f), Color.LightPink);
-            }
+            // NOTE: disable repair for design purpose
+            //if (Counter >= StatsShow + StatsInterval * 5)
+            //{
+                //LabelArmorRepair.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(-8.0f, percent_base + spacing * 4.5f), Color.White);
+                //LabelArmorRepairValue.Draw(sprite_batch, World.Game.GameRegularFont, base_ + new Vector2(+8.0f, percent_base + spacing * 4.5f), Color.LightPink);
+            //}
 
             for (int i = 0; i < LabelAwards.Count; ++i)
             {
