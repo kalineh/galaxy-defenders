@@ -356,27 +356,6 @@ namespace Galaxy
         {
             State = EState.Locked;    
             Game.HudManager.Huds[(int)GameControllerIndex].UpdatePilot();
-
-            // give starting weapons
-            SProfileGameData data = CSaveData.GetCurrentGameData(Game);
-
-            string pilot = data.Pilots[(int)GameControllerIndex].Pilot;
-            int difficulty = CSaveData.GetCurrentGameData(Game).Difficulty;
-
-            CPilot.StartingItems items = CPilot.PilotStartingItems[pilot][difficulty];
-
-            data.Pilots[(int)GameControllerIndex].WeaponPrimaryType = items.PrimaryWeapon;
-            data.Pilots[(int)GameControllerIndex].WeaponPrimaryLevel = items.PrimaryWeaponLevel;
-            data.Pilots[(int)GameControllerIndex].WeaponSecondaryType = items.SecondaryWeapon;
-            data.Pilots[(int)GameControllerIndex].WeaponSecondaryLevel = items.SecondaryWeaponLevel;
-            data.Pilots[(int)GameControllerIndex].ChassisType = items.Chassis;
-            data.Pilots[(int)GameControllerIndex].GeneratorType = items.Generator;
-            data.Pilots[(int)GameControllerIndex].ShieldType = items.Shield;
-
-            SProfile profile = CSaveData.GetCurrentProfile();
-            int players_index = Game.PlayersInGame - 1;
-            profile.Game[players_index] = data;
-            CSaveData.SetCurrentProfileData(profile);
         }
 
         public void Selected()
@@ -395,10 +374,31 @@ namespace Galaxy
                 case 2: pilot = "Gunthor"; break;
                 //case 3: pilot = "Mystery"; break;
                 default:
+                    pilot = "Kazuki";
                     break;
             }
 
             CSaveData.GetCurrentProfile().Game[Game.PlayersInGame - 1].Pilots[(int)GameControllerIndex].Pilot = pilot;
+
+            // give starting weapons
+            SProfileGameData data = CSaveData.GetCurrentGameData(Game);
+
+            int difficulty = CSaveData.GetCurrentGameData(Game).Difficulty;
+
+            CPilot.StartingItems items = CPilot.PilotStartingItems[pilot][difficulty];
+
+            data.Pilots[(int)GameControllerIndex].WeaponPrimaryType = items.PrimaryWeapon;
+            data.Pilots[(int)GameControllerIndex].WeaponPrimaryLevel = items.PrimaryWeaponLevel;
+            data.Pilots[(int)GameControllerIndex].WeaponSecondaryType = items.SecondaryWeapon;
+            data.Pilots[(int)GameControllerIndex].WeaponSecondaryLevel = items.SecondaryWeaponLevel;
+            data.Pilots[(int)GameControllerIndex].ChassisType = items.Chassis;
+            data.Pilots[(int)GameControllerIndex].GeneratorType = items.Generator;
+            data.Pilots[(int)GameControllerIndex].ShieldType = items.Shield;
+
+            SProfile profile = CSaveData.GetCurrentProfile();
+            int players_index = Game.PlayersInGame - 1;
+            profile.Game[players_index] = data;
+            CSaveData.SetCurrentProfileData(profile);
         }
     }
 }

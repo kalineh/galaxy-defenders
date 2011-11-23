@@ -197,7 +197,7 @@ namespace Galaxy
                 HasClearedGame = new bool[] { false, false, false, false },
                 Game = new SProfileGameData[2] {
                     new SProfileGameData() {
-                        Stage = "Start",
+                        Stage = "", // no stage until pilot select
                         InProgress = false,
                         ClearedGame = false,
                         Difficulty = 1,
@@ -210,7 +210,7 @@ namespace Galaxy
                         RandomPartsSeed = 0,
                     },
                     new SProfileGameData() {
-                        Stage = "Start",
+                        Stage = "", // no stage until pilot select
                         InProgress = false,
                         ClearedGame = false,
                         Difficulty = 1,
@@ -275,16 +275,22 @@ namespace Galaxy
             }
 
             SProfile new_profile = CreateDefaultProfile(name);
-            // XNA4
+
+            // add new profile to list
+            SaveData.Profiles.Add(new_profile);
+
+            // XNA4: remove all existing profiles to test
             //SaveData.Profiles.RemoveAll(existing => existing.Name == name);
-            for (int i = 0; i < SaveData.Profiles.Count; ++i)
-            {
-                if (SaveData.Profiles[i].Name == name)
-                {
-                    SaveData.Profiles[i] = new_profile;
-                    break;
-                }
-            }
+            
+            // NOTE: what was this even for?
+            //for (int i = 0; i < SaveData.Profiles.Count; ++i)
+            //{
+                //if (SaveData.Profiles[i].Name != name)
+                //{
+                    //SaveData.Profiles[i] = new_profile;
+                    //break;
+                //}
+            //}
         }
 
         public static void SetCurrentProfile(string name)
@@ -359,6 +365,7 @@ namespace Galaxy
                     {
                         using (Stream stream = container.OpenFile(filename, FileMode.Open, FileAccess.Read))
                         {
+                            stream.Position = 0;
                             XmlSerializer serializer = new XmlSerializer(typeof(SSaveData));
                             data = (SSaveData)serializer.Deserialize(stream);
 
