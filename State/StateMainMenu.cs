@@ -96,7 +96,7 @@ namespace Galaxy
                 {
                     new CMenu.CMenuOption() { Text = "Normal", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Normal },
                     new CMenu.CMenuOption() { Text = "Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Hard },
-                    new CMenu.CMenuOption() { Text = "Extreme", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Extreme },
+                    new CMenu.CMenuOption() { Text = "Really Hard", Select = SelectDifficulty, Data = CDifficulty.DifficultyLevel.Extreme },
                     new CMenu.CMenuOption() { Text = "Back", Select = BackToNewGameContinueMenu, CancelOption = true, PanelType = CMenu.PanelType.Small },
                 },
             };
@@ -168,6 +168,11 @@ namespace Galaxy
 
                 // NOTE: jump straight to stage 1 now, let player shop after
                 //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+#if DEBUG
+                // debug can just shop
+                Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                return;
+#endif
                 CStageDefinition definition = CStageDefinition.GetStageDefinitionByName("Stage1");
                 Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
                 return;
