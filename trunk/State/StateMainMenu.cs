@@ -54,6 +54,12 @@ namespace Galaxy
                 },
             };
 
+            // show special clear mode continue
+            if (CSaveData.GetCurrentGameData(Game).ClearedGame == true)
+            {
+                MenuNewGameContinue.MenuOptions[0].Text = "Continue++";
+            }
+
             MenuConfirmNewGame = new CMenu(game)
             {
                 Position = new Vector2(Game.Resolution.X / 2.0f - 128.0f, 400.0f),

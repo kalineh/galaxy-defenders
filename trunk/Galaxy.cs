@@ -321,6 +321,7 @@ namespace Galaxy
 
             // Enter our default state now that assets are ready.
             State = new CStateMainMenu(this);
+            //State = new CStateGameFinish(this);
             //State = new CStateBackgroundTest(this);
 
             // debug shop testing

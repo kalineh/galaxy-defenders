@@ -421,6 +421,25 @@ namespace Galaxy
             if (ScorePanel != null)
                 ScorePanel.Update();
 
+            if (StageEndCounter >= 1)
+            {
+                // final stage clear handling
+                SProfile profile = CSaveData.GetCurrentProfile();
+                SProfileGameData game_data = profile.Game[Game.PlayersInGame - 1];
+                if (game_data.ClearedGame == false && Stage.Definition.Name == "Stage12")
+                {
+                    SetScoreSaveData();
+                    profile.Game[Game.PlayersInGame - 1].ClearedGame = true;
+                    profile.Game[Game.PlayersInGame - 1].Pilots[0].Money = 999999999;
+                    if (Game.PlayersInGame > 1)
+                        profile.Game[Game.PlayersInGame - 1].Pilots[1].Money = 999999999;
+                    CSaveData.SetCurrentProfileData(profile);
+                    SaveAndExit();
+                    Game.State = new CStateFadeTo(Game, Game.State, new CStateGameFinish(Game));
+                    return;
+                }
+            }
+
             if (StageEndCounter > AllowExit)
             {
                 if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
@@ -445,20 +464,8 @@ namespace Galaxy
                 StageEndFader.StopAtFullFadeOut();
                 if (StageEndCounter > UpperClamp)
                 {
-                    SProfile profile = CSaveData.GetCurrentProfile();
-                    SProfileGameData game_data = profile.Game[Game.PlayersInGame - 1];
-                    if (game_data.ClearedGame == false && Stage.Definition.Name == "Stage12")
-                    {
-                        profile.Game[Game.PlayersInGame - 1].ClearedGame = true;
-                        CSaveData.SetCurrentProfileData(profile);
-                        SaveAndExit();
-                        Game.State = new CStateFadeTo(Game, Game.State, new CStateGameFinish(Game));
-                    }
-                    else
-                    {
-                        SaveAndExit();
-                        ReturnFromStageComplete();
-                    }
+                    SaveAndExit();
+                    ReturnFromStageComplete();
                 }
             }
             else
