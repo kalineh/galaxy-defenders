@@ -18,6 +18,7 @@ namespace Galaxy
     {
         public string Stage;
         public bool InProgress;
+        public bool ClearedGame;
         public int Difficulty;
         public SProfilePilotState[] Pilots;
         public int[] StageScores;
@@ -197,6 +198,8 @@ namespace Galaxy
                 Game = new SProfileGameData[2] {
                     new SProfileGameData() {
                         Stage = "Start",
+                        InProgress = false,
+                        ClearedGame = false,
                         Difficulty = 1,
                         Pilots = new SProfilePilotState[] {
                             SProfilePilotState.MakeDefaultPilot(0),
@@ -208,6 +211,8 @@ namespace Galaxy
                     },
                     new SProfileGameData() {
                         Stage = "Start",
+                        InProgress = false,
+                        ClearedGame = false,
                         Difficulty = 1,
                         Pilots = new SProfilePilotState[] {
                             SProfilePilotState.MakeDefaultPilot(0),

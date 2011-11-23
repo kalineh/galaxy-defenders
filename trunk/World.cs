@@ -299,7 +299,7 @@ namespace Galaxy
 
             if (Game.Input.IsKeyPressed(Keys.I))
             {
-                StartStageEnd();
+                SkipToStageEnd();
             }
 #endif
 
@@ -445,8 +445,20 @@ namespace Galaxy
                 StageEndFader.StopAtFullFadeOut();
                 if (StageEndCounter > UpperClamp)
                 {
-                    SaveAndExit();
-                    GotoLobby();
+                    SProfile profile = CSaveData.GetCurrentProfile();
+                    SProfileGameData game_data = profile.Game[Game.PlayersInGame - 1];
+                    if (game_data.ClearedGame == false && Stage.Definition.Name == "Stage12")
+                    {
+                        profile.Game[Game.PlayersInGame - 1].ClearedGame = true;
+                        CSaveData.SetCurrentProfileData(profile);
+                        SaveAndExit();
+                        Game.State = new CStateFadeTo(Game, Game.State, new CStateGameFinish(Game));
+                    }
+                    else
+                    {
+                        SaveAndExit();
+                        ReturnFromStageComplete();
+                    }
                 }
             }
             else
@@ -1131,7 +1143,7 @@ namespace Galaxy
             profile.Game[players_index].StageMedals[stage_index] = Stats.GetMedalTypeSaveIndex();
         }
 
-        private void GotoLobby()
+        private void ReturnFromStageComplete()
         {
             Game.State = new CStateFadeTo(Game, Game.State, new CStateShop(Game));
         }
@@ -1140,6 +1152,15 @@ namespace Galaxy
         {
             StageEnd = true;
             StageEndCounter = 1;
+        }
+
+        public void SkipToStageEnd()
+        {
+            foreach (CShip ship in Ships)
+            {
+                ship.Physics.Position = new Vector2(0.0f, -25000.0f);
+                GameCamera.Position = new Vector3(0.0f, -25000.0f, 0.0f);
+            }
         }
 
         public void StartSecretStageEntry(string stage, Vector2 position)

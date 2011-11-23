@@ -137,10 +137,17 @@ namespace Galaxy
 #if DEBUG
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
 #else
-            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
-            string stage = selectable_stages.Count > 0 ? selectable_stages[0] : "Stage1";
-            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName((string)stage);
-            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
+            if (CSaveData.GetCurrentGameData(Game).ClearedGame == true)
+            {
+                Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
+            }
+            else
+            {
+                List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
+                string stage = selectable_stages.Count > 0 ? selectable_stages[0] : "Stage1";
+                CStageDefinition definition = CStageDefinition.GetStageDefinitionByName((string)stage);
+                Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
+            }
 #endif
         }
 

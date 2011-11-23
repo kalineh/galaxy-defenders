@@ -16,8 +16,8 @@ Global Settings
     Header File = galaxy.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 431512940;
-    Last Modified High = 30176937;
+    Last Modified Low = 1533366509;
+    Last Modified High = 30189956;
 
     Category
     {
@@ -299,7 +299,7 @@ Global Settings
 
         RPC Curve
         {
-            Name = 1::e33f7f75-3035-42c8-af21-24e863f05e9c;
+            Name = 1::1fb823f2-0865-443c-b01f-628bca5b1d41;
             Property = 0;
             Sound = 0;
             Line Color = 4292099722;
@@ -1107,10 +1107,10 @@ Wave Bank
     Compression Preset Name = Music Compression;
     Xbox Bank Last Modified Low = 0;
     Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 431592945;
-    PC Bank Last Modified High = 30176937;
-    Bank Last Revised Low = 386070341;
-    Bank Last Revised High = 30176937;
+    PC Bank Last Modified Low = 1533646525;
+    PC Bank Last Modified High = 30189956;
+    Bank Last Revised Low = 1200787487;
+    Bank Last Revised High = 30189956;
 
     Wave
     {
@@ -1495,6 +1495,29 @@ Wave Bank
             Last Modified High = 30122013;
         }
     }
+
+    Wave
+    {
+        Name = fading-memories;
+        File = ..\Music\fading-memories.wav;
+        Build Settings Last Modified Low = 1031777820;
+        Build Settings Last Modified High = 30189956;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 4726816;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 505607725;
+            Last Modified High = 30189956;
+        }
+    }
 }
 
 Wave Bank
@@ -1511,6 +1534,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 844816580;
     PC Bank Last Modified High = 30176937;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 386260352;
     Bank Last Revised High = 30176937;
 
@@ -1552,6 +1577,8 @@ Wave Bank
     Xbox Bank Last Modified High = 0;
     PC Bank Last Modified Low = 898939676;
     PC Bank Last Modified High = 30176937;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 386260352;
     Bank Last Revised High = 30176937;
 
@@ -1587,8 +1614,8 @@ Sound Bank
     Windows File = Win\SFX.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1436247227;
-    Bank Last Modified High = 30176913;
+    Bank Last Modified Low = 1980362076;
+    Bank Last Modified High = 30189956;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -4171,8 +4198,8 @@ Sound Bank
     Windows File = Win\Music.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1436397236;
-    Bank Last Modified High = 30176913;
+    Bank Last Modified Low = 1980362076;
+    Bank Last Modified High = 30189956;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -5038,6 +5065,54 @@ Sound Bank
         }
     }
 
+    Sound
+    {
+        Name = fading-memories;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Music;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Loop Count = 255;
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaker Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Music;
+                    Bank Index = 1;
+                    Entry Name = fading-memories;
+                    Entry Index = 16;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
     Cue
     {
         Name = Turbo;
@@ -5410,6 +5485,26 @@ Sound Bank
             Weight Max = 255;
         }
     }
+
+    Cue
+    {
+        Name = fading-memories;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = fading-memories;
+            Index = 18;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
 }
 
 Sound Bank
@@ -5419,8 +5514,8 @@ Sound Bank
     Windows File = Win\PauseMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1436397236;
-    Bank Last Modified High = 30176913;
+    Bank Last Modified Low = 1980372076;
+    Bank Last Modified High = 30189956;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
@@ -5519,8 +5614,8 @@ Sound Bank
     Windows File = Win\SecretMusic.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
-    Bank Last Modified Low = 1436397236;
-    Bank Last Modified High = 30176913;
+    Bank Last Modified Low = 1980372076;
+    Bank Last Modified High = 30189956;
     Header Last Modified High = 0;
     Header Last Modified Low = 0;
 
