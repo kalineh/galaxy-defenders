@@ -19,6 +19,7 @@ namespace Galaxy
         public string NameText { get; set; }
         public string MoneyText { get; set; }
         public int Cursor { get; set; }
+        public int InputWaitFrameCount { get; set; }
 
         private CVisual LeftPanelVisual { get; set; }
         private CVisual RightPanelVisual { get; set; }
@@ -117,6 +118,10 @@ namespace Galaxy
 
         public void Update()
         {
+            InputWaitFrameCount++;
+            if (InputWaitFrameCount < 2)
+                return;
+
             switch (State)
             {
                 case EState.PressStart:
@@ -344,6 +349,7 @@ namespace Galaxy
         public void Activate()
         {
             State = EState.Active;
+            InputWaitFrameCount = 0;
         }
 
         public void Lock()

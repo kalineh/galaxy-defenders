@@ -47,6 +47,7 @@ namespace Galaxy
         public Stopwatch UpdateStopwatch { get; set; }
         public Stopwatch DrawStopwatch { get; set; }
         public static float GlobalScale { get; set; }
+        public int DebugInfoCounter { get; set; }
 
         public RasterizerState RasterState_NoScissor { get; set; }
         public RasterizerState RasterState_Scissor { get; set; }
@@ -444,7 +445,7 @@ namespace Galaxy
             {
                 MusicDisplayCounter -= 1;
                 // NOTE: this is non-critical text, so not displaying on 480p wont be a fail
-                Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.07f);
+                Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.09f);
                 DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > MusicDisplayTime ? 1.0f - (MusicDisplayCounter - MusicDisplayTime) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
@@ -463,10 +464,13 @@ namespace Galaxy
             // simple profiling
             // TODO: why doesnt depth work here :( HUD always renders on top
             DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+
+#if DEBUG
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //Console.WriteLine("update: {0}ms, render: {1}ms", UpdateStopwatch.ElapsedMilliseconds, DrawStopwatch.ElapsedMilliseconds);
+#endif
 
 #if !XBOX360
             // NOTE: no GC.CollectionCount on 360
