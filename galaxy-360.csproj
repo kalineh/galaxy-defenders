@@ -176,6 +176,7 @@
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="ShopMenu.cs" />
     <Compile Include="State\StateBackgroundTest.cs" />
+    <Compile Include="State\StateGameFinish.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
     <Compile Include="Pilot.cs" />

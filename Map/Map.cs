@@ -947,7 +947,7 @@ namespace Galaxy
                 StageName = "Lamination X",
                 Current = "Stage12",
                 Next = new List<string>() {
-                    "*",
+                    "+",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
