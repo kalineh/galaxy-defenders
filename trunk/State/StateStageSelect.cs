@@ -80,6 +80,7 @@ namespace Galaxy
             Menu.Update();
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
+            EmptyWorld.ParticleEffects.Update();
         }
 
         public override void Draw()
