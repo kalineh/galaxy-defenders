@@ -91,7 +91,7 @@ namespace Galaxy
 
                     string tag = "Default";
                     if (gamer != null)
-                        tag = (string)gamer.Tag;
+                        tag = (string)gamer.Gamertag;
 
                     CSaveData.Load();
                     CSaveData.AddNewProfile(tag);
