@@ -114,10 +114,16 @@ namespace Galaxy
             base.Update();
 
             if (WasHit)
+            {
                 Die();
+                return;
+            }
 
             if (AliveTime > 2)
+            {
                 Die();
+                return;
+            }
         }
 
         public void SetRadius(float radius)

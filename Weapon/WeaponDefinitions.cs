@@ -302,7 +302,7 @@ namespace Galaxy
                 KickbackForce = 0.0f,
                 Offset = Vector2.Zero,
                 Rotation = 0.0f,
-                Energy = 6.0f,
+                Energy = 5.5f,
             };
         }
 

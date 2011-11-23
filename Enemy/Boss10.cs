@@ -118,7 +118,7 @@ namespace Galaxy
             if (BlockHitCountdown > 0)
                 return;
 
-            if (!block.Collision.Enabled)
+            if (block.Collision.Enabled == false)
                 return;
 
             Vector2 offset = Physics.Position - block.Physics.Position;
