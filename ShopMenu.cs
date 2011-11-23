@@ -107,8 +107,9 @@ namespace Galaxy
 
             Labels = new SLabels(null);
 
-#if DEBUG
             ShowAllItems = false;
+#if DEBUG
+            ShowAllItems = true;
 #endif
 
         }
@@ -117,6 +118,8 @@ namespace Galaxy
         {
             World = world;
             ControllerIndex = controller_index;
+
+            bool cleared_game = CSaveData.GetCurrentGameData(Game).ClearedGame == true;
 
             //
             // Upgrade Ship
@@ -150,7 +153,7 @@ namespace Galaxy
             };
 
             IEnumerable<string> primary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponPrimaryType };
-            IEnumerable<string> primary_weapon_parts_all = ShowAllItems ?
+            IEnumerable<string> primary_weapon_parts_all = (ShowAllItems || cleared_game) ?
                 primary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailablePrimaryWeaponParts) :
                 primary_weapon_parts_own.Concat(CMap.MakeRandomPrimaryWeapons(Game));
             IEnumerable<string> primary_weapon_parts = primary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
@@ -189,7 +192,7 @@ namespace Galaxy
 
             MenuSecondaryWeapon.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSecondaryWeaponEmpty, Highlight = HighlightSecondaryWeapon, Data = "", IconName = "Textures/UI/Shop/IconItemNone", OverlayOffset2 = new Vector2(6.0f, 0.0f), });
             IEnumerable<string> secondary_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSecondaryType };
-            IEnumerable<string> secondary_weapon_parts_all = ShowAllItems ? 
+            IEnumerable<string> secondary_weapon_parts_all = (ShowAllItems || cleared_game) ? 
                 secondary_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSecondaryWeaponParts) :
                 secondary_weapon_parts_own.Concat(CMap.MakeRandomSecondaryWeapons(Game));
             IEnumerable<string> secondary_weapon_parts = secondary_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
@@ -233,7 +236,7 @@ namespace Galaxy
 
             MenuSidekick.MenuOptions.Add(new CMenu.CMenuOption() { Text = "None", SubText = "Cost: 0", Select = SelectSidekickEmpty, Highlight = HighlightSidekick, Data = "", IconName = "Textures/UI/Shop/IconItemNone", OverlayOffset2 = new Vector2(6.0f, 0.0f), });
             IEnumerable<string> sidekick_left_weapon_parts_own = new List<string>() { GetShoppingPilotData().WeaponSidekickType };
-            IEnumerable<string> sidekick_left_weapon_parts_all = ShowAllItems ? 
+            IEnumerable<string> sidekick_left_weapon_parts_all = (ShowAllItems || cleared_game) ? 
                 sidekick_left_weapon_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableSidekickWeaponParts) :
                 sidekick_left_weapon_parts_own.Concat(CMap.MakeRandomSidekickWeapons(Game));
             IEnumerable<string> sidekick_left_weapon_parts = sidekick_left_weapon_parts_all.Distinct().OrderBy(W => CWeaponFactory.GetPriceForLevel(W, 0));
@@ -272,7 +275,21 @@ namespace Galaxy
             IEnumerable<string> chassis_parts_all = ShowAllItems ? 
                 chassis_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableChassisParts) :
                 chassis_parts_own.Concat(CMap.MakeRandomChassisParts(Game));
+
+            if (cleared_game)
+            {
+                chassis_parts_all = new List<string>() { 
+                    "Interceptor",
+                    "Phoenix",
+                    "Lightning",
+                    "Dragon",
+                    "Demon",
+                    "Ace",
+                };
+            }
+
             IEnumerable<string> chassis_parts = chassis_parts_all.Distinct().OrderBy(C => ChassisDefinitions.GetPart(C).Price);
+
             foreach (string chassis_part in chassis_parts)
             {
                 MenuChassis.MenuOptions.Add(
@@ -305,6 +322,19 @@ namespace Galaxy
             IEnumerable<string> generator_parts_all = ShowAllItems ? 
                 generator_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableGeneratorParts) :
                 generator_parts_own.Concat(CMap.MakeRandomGeneratorParts(Game));
+
+            if (cleared_game)
+            {
+                generator_parts_all = new List<string>() { 
+                    "Vortex Generator",
+                    "Capacitor Generator",
+                    "Electron Generator",
+                    "Kinetic Generator",
+                    "Magnetic Generator",
+                    "Fusion Generator",
+                };
+            }
+
             IEnumerable<string> generator_parts = generator_parts_all.Distinct().OrderBy(G => GeneratorDefinitions.GetPart(G).Price);
             foreach (string generator_part in generator_parts)
             {
@@ -339,6 +369,19 @@ namespace Galaxy
             IEnumerable<string> shield_parts_all = ShowAllItems ?
                 shield_parts_own.Concat(CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).AvailableShieldParts) :
                 shield_parts_own.Concat(CMap.MakeRandomShieldParts(Game));
+
+            if (cleared_game)
+            {
+                shield_parts_all = new List<string>() { 
+                    "Advanced Shield",
+                    "Micro Shield",
+                    "Actuator Shield",
+                    "Power Shield",
+                    "Tank Shield",
+                    "Ultimate Shield",
+                };
+            }
+
             IEnumerable<string> shield_parts = shield_parts_all.Distinct().OrderBy(S => ShieldDefinitions.GetPart(S).Price);
             foreach (string shield_part in shield_parts)
             {
@@ -1696,8 +1739,8 @@ namespace Galaxy
             if (IsFlyToStage)
                 return;
 
-			// we should certainly save changes
-			SaveLockedProfile();
+            // we should certainly save changes
+            SaveLockedProfile();
 
             Game.State = new CStateFadeTo(Game, Game.State, new CStateMainMenu(Game));
         }

@@ -32,9 +32,41 @@ namespace Galaxy
             EmptyWorld.GameCamera.Position = new Vector3(0.0f, 0.0f, 0.0f);
 
             Text = new string[] {
-                "line 1",
-                "line 2",
-                "line 3",
+                "",
+                "",
+                "AS THE EVIL KURGLON EMPIRE",
+                "RECEIVED DEFEAT",
+                "",
+                "",
+                "OUR VALLIANT HERO COULD",
+                "ENJOY TRIUMPH FROM THE",
+                "PLANET POPULATION",
+                "",
+                "",
+                "THE TASTE OF FREEDOM AND PEACE",
+                "COULD IT LAST FOREVER?",
+                "",
+                "",
+                "THE TALE OF YOUR TREMENDOUS",
+                "VICTORY OVER THE KURGLON EMPIRE",
+                "SHALL BE PASSED DOWN FROM",
+                "GENERATION TO GENERATION",
+                "",
+                "",
+                "AS THE HERO WHO BROUGHT PEACE",
+                "PEACE TO FANTORA-K",
+                "",
+                "",
+                "EVEN THOUGH THE WAR HAS BEEN OVER",
+                "THE SCAR OF DECIMATED POPULATION",
+                "IS REMEMBERED",
+                "",
+                "",
+                "ONLY CONTINUED PEACE WILL",
+                "ADVENGE IT",
+                "",
+                "",
+                "UNTIL A TRUE HERO CAN PERFORM.....",
             };
         }
 
@@ -60,7 +92,13 @@ namespace Galaxy
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.ParticleEffects.Update();
 
-            if (FrameCount > 300)
+#if DEBUG
+            if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.Escape))
+            {
+                Game.State = new CStateFadeTo(Game, Game.State, new CStateMainMenu(Game));
+            }
+#endif
+            if (FrameCount > 3200)
             {
                 if (Game.Input.IsPadStartPressedAny() || Game.Input.IsKeyPressed(Keys.Escape))
                 {
@@ -78,9 +116,9 @@ namespace Galaxy
             Game.DefaultSpriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
 
             // draw text
-            const float speed = 4.0f;
-            const float spacing = 40.0f;
-            Vector2 base_position = new Vector2(Game.Resolution.X * 0.5f, FrameCount * speed);
+            const float speed = 0.70f;
+            const float spacing = 50.0f;
+            Vector2 base_position = new Vector2(Game.Resolution.X * 0.5f, 1080.0f - FrameCount * speed);
             for (int i = 0; i < Text.Length; ++i)
             {
                 Game.DefaultSpriteBatch.DrawStringAlignCenter(

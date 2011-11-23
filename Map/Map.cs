@@ -615,7 +615,6 @@ namespace Galaxy
                 StageName = "Editor Stage",
                 Current = "EditorStage",
                 Next = new List<string>() {
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -630,7 +629,6 @@ namespace Galaxy
                 Current = "Start",
                 Next = new List<string>() {
                     "Stage1",
-                    "*",
                 },
 #if DEBUG
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
@@ -664,7 +662,6 @@ namespace Galaxy
                 Current = "Stage1",
                 Next = new List<string>() {
                     "Stage2",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -690,7 +687,6 @@ namespace Galaxy
                 Current = "Stage2",
                 Next = new List<string>() {
                     "Stage3",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -715,7 +711,6 @@ namespace Galaxy
                 Current = "Stage3",
                 Next = new List<string>() {
                     "Stage4",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -741,7 +736,6 @@ namespace Galaxy
                 Current = "Stage4",
                 Next = new List<string>() {
                     "Stage5",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -768,7 +762,6 @@ namespace Galaxy
                 Current = "Stage5",
                 Next = new List<string>() {
                     "Stage6",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -796,7 +789,6 @@ namespace Galaxy
                 Current = "Stage6",
                 Next = new List<string>() {
                     "Stage7",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -822,7 +814,6 @@ namespace Galaxy
                 Current = "Stage7",
                 Next = new List<string>() {
                     "Stage8",
-                    "*",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),
@@ -947,7 +938,6 @@ namespace Galaxy
                 StageName = "Lamination X",
                 Current = "Stage12",
                 Next = new List<string>() {
-                    "+",
                 },
                 AvailablePrimaryWeaponParts = AllPrimaryWeapons(),
                 AvailableSecondaryWeaponParts = AllSecondaryWeapons(),

@@ -30,71 +30,34 @@ namespace Galaxy
                 MenuOptions = new List<CMenu.CMenuOption>(),
             };
 
-            List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
-            foreach (string stage in selectable_stages)
-            {
-                // DEBUG: add all stages
-#if !XBOX360
-                if (stage == "*")
-                {
-                    Menu.Position += new Vector2(0.0f, -250.0f);
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage7", Select = StartGame, Data = "Stage7" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage8", Select = StartGame, Data = "Stage8" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage9", Select = StartGame, Data = "Stage9" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage10", Select = StartGame, Data = "Stage10" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage11", Select = StartGame, Data = "Stage11" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage12", Select = StartGame, Data = "Stage12" });
-                }
-                else if (stage != "+")
-                {
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
-                }
-#else // XBOX360
-                if (stage != "*" && stage != "+")
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
-//#if DEBUG
-                // TODO: find a way to automate this on 360
-                if (stage == "*")
-                {
-                    Menu.Position += new Vector2(0.0f, -250.0f);
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage1", Select = StartGame, Data = "Stage1" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage2", Select = StartGame, Data = "Stage2" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage3", Select = StartGame, Data = "Stage3" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage4", Select = StartGame, Data = "Stage4" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage5", Select = StartGame, Data = "Stage5" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage6", Select = StartGame, Data = "Stage6" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage7", Select = StartGame, Data = "Stage7" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage8", Select = StartGame, Data = "Stage8" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage9", Select = StartGame, Data = "Stage9" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage10", Select = StartGame, Data = "Stage10" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage11", Select = StartGame, Data = "Stage11" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "* Stage12", Select = StartGame, Data = "Stage12" });
-                }
-//#endif
+            bool cleared_game = CSaveData.GetCurrentGameData(Game).ClearedGame == true;
+#if DEBUG
+            cleared_game = true;
 #endif
 
-                if (stage == "+")
+            if (!cleared_game)
+            {
+                List<string> selectable_stages = CMap.GetMapNodeByStageName(CSaveData.GetCurrentGameData(Game).Stage).Next;
+                foreach (string stage in selectable_stages)
                 {
-                    Menu.Position += new Vector2(0.0f, -250.0f);
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 1", Select = StartGame, Data = "Stage1" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 2", Select = StartGame, Data = "Stage2" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 3", Select = StartGame, Data = "Stage3" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 4", Select = StartGame, Data = "Stage4" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 5", Select = StartGame, Data = "Stage5" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 6", Select = StartGame, Data = "Stage6" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 7", Select = StartGame, Data = "Stage7" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 8", Select = StartGame, Data = "Stage8" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 9", Select = StartGame, Data = "Stage9" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 10", Select = StartGame, Data = "Stage10" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 11", Select = StartGame, Data = "Stage11" });
-                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 12", Select = StartGame, Data = "Stage12" });
+                    Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = stage, Select = StartGame, Data = stage });
                 }
+            }
+            else
+            {
+                Menu.Position += new Vector2(0.0f, -250.0f);
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 1", Select = StartGame, Data = "Stage1" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 2", Select = StartGame, Data = "Stage2" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 3", Select = StartGame, Data = "Stage3" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 4", Select = StartGame, Data = "Stage4" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 5", Select = StartGame, Data = "Stage5" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 6", Select = StartGame, Data = "Stage6" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 7", Select = StartGame, Data = "Stage7" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 8", Select = StartGame, Data = "Stage8" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 9", Select = StartGame, Data = "Stage9" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 10", Select = StartGame, Data = "Stage10" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 11", Select = StartGame, Data = "Stage11" });
+                Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Stage 12", Select = StartGame, Data = "Stage12" });
             }
 
             Menu.MenuOptions.Add(new CMenu.CMenuOption() { Text = "Back", Select = Back, CancelOption = true, PanelType = CMenu.PanelType.Small });
