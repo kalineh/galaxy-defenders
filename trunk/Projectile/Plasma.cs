@@ -24,6 +24,8 @@ namespace Galaxy
                 Visual.Color = CShip.GetPlayerColor(owner.GameControllerIndex);
                 Visual.Update();
                 Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 2.0f);
+                // NOTE: not clearing this means that splash shots will be re-used as non splash shots but have a lingering Splash object
+                Splash = null;
             }
             else
             {

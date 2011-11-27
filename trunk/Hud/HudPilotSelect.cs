@@ -267,9 +267,9 @@ namespace Galaxy
                 "",
                 "Bonus: Speed+",
                 "",
-                "Ability: Dash Burst",
-                "Ability: Shimmer",
-                "Ability: Absorb Energy",
+                //"Ability: Dash Burst",
+                //"Ability: Shimmer",
+                //"Ability: Absorb Energy",
             },
             new List<string>()
             {
@@ -280,9 +280,9 @@ namespace Galaxy
                 "",
                 "Bonus: Money+",
                 "",
-                "Ability: Bullet Reflect",
-                "Ability: Bullet Detonate",
-                "Ability: Bullet Alchemy",
+                //"Ability: Bullet Reflect",
+                //"Ability: Bullet Detonate",
+                //"Ability: Bullet Alchemy",
             },
             new List<string>()
             {
@@ -293,9 +293,9 @@ namespace Galaxy
                 "",
                 "Bonus: Damage+",
                 "",
-                "Ability: Ground Smash",
-                "Ability: Suction Crusher",
-                "Ability: Armor Repair",
+                //"Ability: Ground Smash",
+                //"Ability: Suction Crusher",
+                //"Ability: Armor Repair",
             },
             new List<string>()
             {
@@ -307,9 +307,9 @@ namespace Galaxy
                 "Bonus: Speed+",
                 "Bonus: Damage+",
                 "",
-                "Ability: ???",
-                "Ability: ???",
-                "Ability: ???",
+                //"Ability: ???",
+                //"Ability: ???",
+                //"Ability: ???",
             },
         };
         public void DrawPilotInfo(SpriteBatch sprite_batch, Vector2 position)

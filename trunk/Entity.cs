@@ -11,6 +11,10 @@ namespace Galaxy
 {
     public class CEntity
     {
+#if DEBUG
+        public static int NextID { get; set; }
+        public int ID { get; set; }
+#endif
         public CWorld World { get; set; }
         public CPhysics Physics { get; set; }
         public CVisual Visual { get; set; }
@@ -21,6 +25,10 @@ namespace Galaxy
 
         public virtual void Initialize(CWorld world)
         {
+#if DEBUG
+            ID = NextID++;
+#endif
+
             World = world;
             Physics = null;
             Visual = null;
