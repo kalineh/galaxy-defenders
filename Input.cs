@@ -104,6 +104,11 @@ namespace Galaxy
             return PreviousFrameGamePadState[(int)game_controller_index];
         }
 
+        public void SetCurrentFrameGamePadState(GameControllerIndex game_controller_index, GamePadState state)
+        {
+            CurrentFrameGamePadState[(int)game_controller_index] = state;
+        }
+
         public void Update()
         {
             PreviousFrameGamePadState[(int)GameControllerIndex.One] = CurrentFrameGamePadState[(int)GameControllerIndex.One];

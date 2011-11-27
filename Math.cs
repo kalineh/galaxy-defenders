@@ -155,6 +155,13 @@ namespace Galaxy
             float move = step * offset;
             return from + move;
         }
+
+        public static Vector2 MoveToVector(Vector2 from, Vector2 to, float amount)
+        {
+            Vector2 offset = to - from;
+            Vector2 move = amount * offset;
+            return from + move;
+        }
     }
 
     public static class ColorExtensions

@@ -18,7 +18,7 @@ namespace Galaxy
     {
         public CGalaxy Game { get; set; }
         public Random Random { get; private set; }
-        private List<CEntity> Entities { get; set; }
+        public List<CEntity> Entities { get; set; }
         private List<CEntity> EntitiesToAdd { get; set; }
         private List<CEntity> EntitiesToDelete { get; set; }
         public CStage Stage { get; set; }
