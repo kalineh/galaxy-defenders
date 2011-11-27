@@ -222,6 +222,7 @@ namespace Galaxy
         {
             Game.PlayersInGame = (int)tag;
             Menu = MenuNewGameContinue;
+            Menu.MoveToFirstValid();
 
             // XNA4
 //#if XBOX360
