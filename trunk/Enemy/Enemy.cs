@@ -77,9 +77,9 @@ namespace Galaxy
 
         public override void Update()
         {
-            UpdateAI();
-
             base.Update();
+
+            UpdateAI();
 
             if (IsInDieRegion())
                 Delete();

@@ -120,8 +120,8 @@ namespace Galaxy
 
 
                     // DEBUG
-                    if (CInput.IsRawKeyPressed(Microsoft.Xna.Framework.Input.Keys.A))
-                        ball.Die();    
+                    //if (CInput.IsRawKeyPressed(Microsoft.Xna.Framework.Input.Keys.A))
+                        //ball.Die();    
                 }
 
                 yield return 60;

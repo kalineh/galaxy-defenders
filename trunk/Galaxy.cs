@@ -215,6 +215,10 @@ namespace Galaxy
             GraphicsDevice.PresentationParameters.MultiSampleCount = 4;
 
             GraphicsDeviceManager.SynchronizeWithVerticalRetrace = true;
+#if SOAK_TEST
+            GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = false;
+#endif
             GraphicsDeviceManager.ApplyChanges();
 
             base.Initialize();

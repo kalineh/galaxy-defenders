@@ -289,6 +289,7 @@ namespace Galaxy
             Physics.Velocity += force;
 
             // TEST: weapon upgrade
+#if DEBUG
             if (CInput.IsRawKeyPressed(Keys.NumPad1))
             {
                 WeaponPrimary = DowngradeWeapon(PrimaryWeapon);
@@ -311,6 +312,7 @@ namespace Galaxy
                 WeaponSecondary = UpgradeWeapon(SecondaryWeapon);
                 SingleShotEnergyUsage = CalculateSingleShotEnergy();
             }
+#endif
 
             if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.V))
             {
@@ -1167,6 +1169,16 @@ namespace Galaxy
             {
                 Ship.Shield = ShieldDefinitions.GetPart(CMap.AllShieldParts()[0]);
             }
+
+            // clamp to max levels
+            Ship.PrimaryWeapon.Level = Math.Min(Ship.PrimaryWeapon.Level, CWeaponFactory.GetMaxLevel(Ship.PrimaryWeapon.Type) - 1);
+            Ship.SecondaryWeapon.Level = Math.Min(Ship.SecondaryWeapon.Level, CWeaponFactory.GetMaxLevel(Ship.SecondaryWeapon.Type) - 1);
+            Ship.FocusWeapon.Level = Math.Min(Ship.FocusWeapon.Level, CWeaponFactory.GetMaxLevel(Ship.FocusWeapon.Type) - 1);
+            Ship.Sidekick.Level = Math.Min(Ship.Sidekick.Level, CWeaponFactory.GetMaxLevel(Ship.Sidekick.Type) - 1);
+            Ship.PrimaryWeapon.Level = Math.Max(Ship.PrimaryWeapon.Level, 0);
+            Ship.SecondaryWeapon.Level = Math.Max(Ship.SecondaryWeapon.Level, 0);
+            Ship.FocusWeapon.Level = Math.Max(Ship.FocusWeapon.Level, 0);
+            Ship.Sidekick.Level = Math.Max(Ship.Sidekick.Level, 0);
 
             Ship.InitializeEquipment();
         }

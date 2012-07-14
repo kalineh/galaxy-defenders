@@ -1025,6 +1025,10 @@ namespace Galaxy
         {
             foreach (CEntity entity in Entities)
             {
+                // boo
+                if (entity.IsDead)
+                    return;
+
                 entity.Update();
             }
         }
@@ -1074,20 +1078,28 @@ namespace Galaxy
 
         public void ProcessEntityAdd()
         {
-            foreach (CEntity entity in EntitiesToAdd)
+            lock (CollisionMutex)
             {
-                Entities.Add(entity);
+                foreach (CEntity entity in EntitiesToAdd)
+                {
+                    //Console.WriteLine("World.ProcessEntityAdd(): ID: {0}, Type: {1}", entity.ID, entity.GetType().ToString());
+                    Entities.Add(entity);
+                }
+                EntitiesToAdd.Clear();
             }
-            EntitiesToAdd.Clear();
         }
 
         public void ProcessEntityDelete()
         {
-            foreach (CEntity entity in EntitiesToDelete)
+            lock (CollisionMutex)
             {
-                Entities.Remove(entity);
+                foreach (CEntity entity in EntitiesToDelete)
+                {
+                    //Console.WriteLine("World.ProcessEntityDelete(): ID: {0}, Type: {1}", entity.ID, entity.GetType().ToString());
+                    Entities.Remove(entity);
+                }
+                EntitiesToDelete.Clear();
             }
-            EntitiesToDelete.Clear();
         }
 
         private bool IsGameOverState()

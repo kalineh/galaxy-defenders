@@ -25,6 +25,8 @@ namespace Galaxy
 
         public virtual void Initialize(CWorld world)
         {
+            //Console.WriteLine("Entity.Initialize(): ID: {0}, Old ID: {1}, Type: {2}", NextID + 1, ID, GetType().ToString());
+
 #if DEBUG
             ID = NextID++;
 #endif
@@ -206,12 +208,16 @@ namespace Galaxy
 
         public virtual void Delete()
         {
+            //Console.WriteLine("Entity.Delete(): ID: {0}, IsDead: {1}, Type: {2}", ID, IsDead, GetType().ToString());
+
             IsDead = true;
             World.EntityDelete(this);
         }
 
         public virtual void Die()
         {
+            //Console.WriteLine("Entity.Die(): ID: {0}, IsDead: {1}, Type: {2}", ID, IsDead, GetType().ToString());
+
             if (IsDead)
                 return;
 
