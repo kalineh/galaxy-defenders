@@ -125,10 +125,11 @@ namespace Galaxy
             switch (State)
             {
                 case EState.PressStart:
-                    if (Game.Input.PollGameControllerConnected(GameControllerIndex))
+                    if (Game.Input.PollGameControllerConnected(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Space) || Game.Input.IsKeyPressed(Keys.Enter))
                     {
                         State = EState.Inactive;
                     }
+
                     break;
 
                 case EState.Inactive:
@@ -141,6 +142,13 @@ namespace Galaxy
                         ChoosePilotFromCursor();
                         Selected();
                     }
+
+#if SOAK_TEST
+                    // force select immediately
+                    Cursor = (int)GameControllerIndex;
+                    ChoosePilotFromCursor();
+                    Selected();
+#endif
 
                     PortraitIconVisuals[Cursor].Scale = Vector2.One;
 
