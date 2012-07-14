@@ -92,12 +92,11 @@ namespace Galaxy
 
         public static void Shutdown()
         {
-            AudioEngine.Dispose();
-            SoundBank.Dispose();
+            if (AudioEngine != null)
+                AudioEngine.Dispose();
 
             if (CurrentMusic != null)
             {
-                CurrentMusic.Dispose();
                 CurrentMusic = null;
                 CurrentMusicName = null;
             }

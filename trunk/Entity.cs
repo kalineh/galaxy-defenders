@@ -40,6 +40,9 @@ namespace Galaxy
 
         public virtual void Update()
         {
+            if (IsDead)
+                System.Console.WriteLine("WARNING: updating dead object: {0}", this.GetType().ToString());
+
             if (Mover != null)
             {
                 Mover.Move(this);

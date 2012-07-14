@@ -440,6 +440,11 @@ namespace Galaxy
             if (Game.Input.IsPadStartPressed(ControllerIndex) || Game.Input.IsKeyPressed(ControllerIndex == GameControllerIndex.One ? Keys.F1 : Keys.F2))
                 FlyToStage();
 
+#if SOAK_TEST
+            if (!IsFlyToStage)
+                FlyToStage();
+#endif
+
             Game.HudManager.Huds[(int)ControllerIndex].Ship = SampleShip;
             Game.HudManager.Huds[(int)ControllerIndex].Update();
             SampleShip.UpdateGenerator();

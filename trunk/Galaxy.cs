@@ -262,6 +262,10 @@ namespace Galaxy
         /// </summary>
         protected override void LoadContent()
         {
+            // NOTE: force an UnloadContent call because xna doesn't call it when the window is resized
+            //       which causes multiple save threads to start
+            UnloadContent();
+
             // Graphics device does not exist during Initialize().
             DefaultSpriteBatch = new SpriteBatch(GraphicsDevice);
             DebugFont = Content.Load<SpriteFont>("Fonts/Debug");
@@ -324,6 +328,11 @@ namespace Galaxy
             State = new CStateMainMenu(this);
             //State = new CStateGameFinish(this);
             //State = new CStateBackgroundTest(this);
+
+#if SOAK_TEST
+            PlayersInGame = 2;
+            State = new CStateShop(this);
+#endif
 
             // debug shop testing
             //PlayersInGame = 2;
@@ -466,9 +475,9 @@ namespace Galaxy
             DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
 
 #if DEBUG
-            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-            DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("update: {0}ms", UpdateStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 30.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("render: {0}ms", DrawStopwatch.ElapsedMilliseconds), new Vector2(500.0f, 60.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+            //DefaultSpriteBatch.DrawString(GameRegularFont, String.Format("memory: {0:r2}kb", (float)(GC.GetTotalMemory(false) / 1024)), new Vector2(500.0f, 90.0f), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             //Console.WriteLine("update: {0}ms, render: {1}ms", UpdateStopwatch.ElapsedMilliseconds, DrawStopwatch.ElapsedMilliseconds);
 #endif
 

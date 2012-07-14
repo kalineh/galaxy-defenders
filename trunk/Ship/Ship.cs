@@ -155,6 +155,11 @@ namespace Galaxy
             UpdateShields();
             UpdateArmor();
 
+#if SOAK_TEST
+            CurrentShield = Shield.Shield;
+            CurrentArmor = Chassis.Armor;
+#endif
+
             if (IsFocusMode)
             {
                 Physics.Friction = Interpolation.MoveToValue(Physics.Friction, Chassis.Friction * 0.6f, 0.2f);
@@ -341,7 +346,7 @@ namespace Galaxy
                 }
             }
 
-#if DEBUG
+//#if DEBUG
             if (GameControllerIndex == Galaxy.GameControllerIndex.One && World.Game.Input.IsKeyPressed(Keys.F1))
             {
                 if (AI == null)
@@ -357,7 +362,13 @@ namespace Galaxy
                 else
                     DisableAI();
             }
+
+#if SOAK_TEST
+            if (AI == null)
+                EnableAI(true);
 #endif
+
+//#endif
         }
 
         public void UpdateGenerator()
@@ -675,6 +686,7 @@ namespace Galaxy
             value += Chassis.Price;
             value += Generator.Price;
             value += Shield.Price;
+            value += CSaveData.GetCurrentGameData(World.Game).Pilots[(int)GameControllerIndex].Money;
 
             return value;
         }
