@@ -331,14 +331,21 @@ namespace Galaxy
 
 #if SOAK_TEST
             PlayersInGame = 2;
-            State = new CStateShop(this);
+            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName("Stage1");
+            State = new CStateGame(this, definition);
 #endif
 
             // debug shop testing
             //PlayersInGame = 2;
             //State = new CStateShop(this);
 
+            // TODO: why was this locked immediately?
             HudManager.LockHuds();
+
+#if SOAK_TEST
+            //HudManager.ActivatePilotSelect();
+#endif
+
         }
 
         /// <summary>

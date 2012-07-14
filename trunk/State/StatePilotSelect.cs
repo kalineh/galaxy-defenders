@@ -43,7 +43,8 @@ namespace Galaxy
         {
             if (Game.HudManager.IsPilotSelectCompleteAll())
             {
-                Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
+                StartGame(null);
+                //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
                 return;
             }
             else

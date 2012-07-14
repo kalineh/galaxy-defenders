@@ -169,9 +169,11 @@ namespace Galaxy
                 // NOTE: jump straight to stage 1 now, let player shop after
                 //Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
 #if DEBUG
+#if !SOAK_TEST
                 // debug can just shop
                 Game.State = new CStateFadeTo(Game, this, new CStateShop(Game));
                 return;
+#endif
 #endif
                 CStageDefinition definition = CStageDefinition.GetStageDefinitionByName("Stage1");
                 Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
