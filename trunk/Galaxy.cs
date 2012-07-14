@@ -9,6 +9,10 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
+#if SOAK_TEST
+using System.Reflection;
+#endif
+
 namespace Galaxy
 {
     /// <summary>
@@ -52,8 +56,28 @@ namespace Galaxy
         public RasterizerState RasterState_NoScissor { get; set; }
         public RasterizerState RasterState_Scissor { get; set; }
 
+#if SOAK_TEST
+        public MethodInfo ActivateMethod;
+#endif
+
+#if SOAK_TEST
+        protected override void OnDeactivated(object sender, EventArgs args)
+        {
+            base.OnDeactivated(sender, args);
+
+            if (!base.IsActive)
+            {
+                ActivateMethod.Invoke(this, new object[] { sender, args });
+            }
+        }
+#endif
+
         public CGalaxy()
         {
+#if SOAK_TEST
+            ActivateMethod = typeof(Game).GetMethod("HostActivated", BindingFlags.NonPublic | BindingFlags.Instance);
+#endif
+
 #if XBOX360
             // NOTE: still clamps at 60fps somehow, just doesnt do catchup code which makes fps even worse
             this.IsFixedTimeStep = false;
