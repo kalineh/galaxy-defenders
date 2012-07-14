@@ -34,6 +34,10 @@ namespace Galaxy
 
             if (Boss == null)
                 return;
+
+#if SOAK_TEST
+            Boss.TakeDamage(1.0f, null);
+#endif
         }
 
         public void FindBoss()

@@ -106,7 +106,7 @@ namespace Galaxy
         public static Thread SaveThread;
         public static bool SaveRequestFlag;
         public static bool SaveIconVisible;
-        private static bool SaveThreadRunning;
+        private static int SaveThreadID;
 
         static CSaveData()
         {
@@ -127,7 +127,7 @@ namespace Galaxy
 
         public static void StartSaveThread()
         {
-            SaveThreadRunning = true;
+            SaveThreadID += 1;
             ThreadStart start = new ThreadStart(SaveThreadLoop);
             SaveThread = new Thread(start);
             SaveThread.Start();
@@ -135,7 +135,7 @@ namespace Galaxy
 
         public static void StopSaveThread()
         {
-            SaveThreadRunning = false;
+            SaveThreadID += 1;
         }
 
         public static void SaveThreadLoop()
@@ -145,7 +145,9 @@ namespace Galaxy
             SaveThread.SetProcessorAffinity(threads);
 #endif
 
-            while (SaveThreadRunning)
+            int starting_save_thread_id = SaveThreadID;
+
+            while (SaveThreadID == starting_save_thread_id)
             {
                 if (!SaveRequestFlag)
                 {
@@ -354,8 +356,8 @@ namespace Galaxy
             }
 
             //AccessMutex.WaitOne();
-            lock (AccessMutex)
-            {
+            //lock (AccessMutex)
+            //{
                 GuideUtil.StorageDeviceOpenResult = GuideUtil.StorageDevice.BeginOpenContainer("galaxy", null, null);
                 GuideUtil.StorageDeviceOpenResult.AsyncWaitHandle.WaitOne();
 
@@ -400,7 +402,7 @@ namespace Galaxy
                 }
 
                 //AccessMutex.ReleaseMutex();
-            }
+            //}
         }
 
         private static void Export(SSaveData data, string filename)

@@ -265,7 +265,19 @@ namespace Galaxy
             // HACK: must set every frame because some OnExit during fadeout will clear it after we set it in Start()
             SetHudShips();
 
-            if (!Game.IsActive && !Game.EditorMode && !IsGameOverState())
+            bool autopause = Game.IsActive == false;
+
+            if (Game.EditorMode)
+                autopause = false;
+
+            if (IsGameOverState())
+                autopause = false;
+
+#if SOAK_TEST
+            autopause = false;
+#endif
+
+            if (autopause)
             {
                 PauseGame();
             }
@@ -426,7 +438,13 @@ namespace Galaxy
                 // final stage clear handling
                 SProfile profile = CSaveData.GetCurrentProfile();
                 SProfileGameData game_data = profile.Game[Game.PlayersInGame - 1];
-                if (game_data.ClearedGame == false && Stage.Definition.Name == "Stage12")
+                bool first_time_cleared_last_stage = game_data.ClearedGame == false && Stage.Definition.Name == "Stage12";
+
+#if SOAK_TEST
+                first_time_cleared_last_stage = false;
+#endif
+
+                if (first_time_cleared_last_stage)
                 {
                     SetScoreSaveData();
                     profile.Game[Game.PlayersInGame - 1].ClearedGame = true;
@@ -442,7 +460,12 @@ namespace Galaxy
 
             if (StageEndCounter > AllowExit)
             {
-                if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter))
+                bool force_end_stage = false;
+
+#if SOAK_TEST
+                force_end_stage = true;
+#endif
+                if (Game.Input.IsPadConfirmPressedAny() || Game.Input.IsPadCancelPressedAny() || Game.Input.IsKeyPressed(Keys.Enter) || force_end_stage)
                 {
                     if (!StageFinalEndExitFlag)
                     {

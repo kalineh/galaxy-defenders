@@ -134,6 +134,15 @@ namespace Galaxy
 
         private void StageSelect()
         {
+#if SOAK_TEST
+            SProfileGameData data = CSaveData.GetCurrentGameData(Game);
+            int stage = CMap.GetMapNodeByStageName(data.Stage).SaveIndex;
+            int next = (stage + 1) % 12;
+            CStageDefinition definition = CStageDefinition.GetStageDefinitionByName(String.Format("Stage{0}", next + 1));
+            Game.State = new CStateFadeTo(Game, this, new CStateGame(Game, definition));
+            return;
+#endif
+
 #if DEBUG
             Game.State = new CStateFadeTo(Game, this, new CStateStageSelect(Game));
 #else

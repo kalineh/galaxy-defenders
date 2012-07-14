@@ -124,7 +124,7 @@ namespace Galaxy
             Collision = CCollision.GetCacheCircle(this, Vector2.Zero, 60.0f);
             Visual = CVisual.MakeSpriteCached1(world.Game, "Textures/Enemy/Boss3");
             Visual.Depth = CLayers.Enemy + CLayers.SubLayerIncrement * -1.0f;
-            HealthMax = 100.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
+            HealthMax = 80.0f * CDifficulty.BossHealthScale[world.CachedDifficulty];
             Coins = 0;
             BaseScore = 0;
             Phase = 0;
@@ -221,7 +221,7 @@ namespace Galaxy
 
             while (true)
             {
-                yield return 30;
+                yield return 60;
 
                 int attack_type = World.Random.Next() % 2;
 
@@ -237,7 +237,7 @@ namespace Galaxy
                         break;
 
                     case 1:    
-                        for (int i = 0; i < 8; ++i)
+                        for (int i = 0; i < 6; ++i)
                         {
                             PelletShot(Physics.Position, GetDirToShip());
                             yield return 6;
@@ -260,7 +260,7 @@ namespace Galaxy
 
             while (true)
             {
-                yield return 30;
+                yield return 50;
 
                 int attack_type = World.Random.Next() % 2;
 
@@ -276,7 +276,7 @@ namespace Galaxy
                         break;
 
                     case 1:    
-                        for (int i = 0; i < 5; ++i)
+                        for (int i = 0; i < 4; ++i)
                         {
                             Vector2 dir = GetDirToShip();
                             PelletShot(Physics.Position, GetDirToShip());
@@ -302,7 +302,7 @@ namespace Galaxy
 
             while (true)
             {
-                yield return 30;
+                yield return 40;
 
                 int attack_type = World.Random.Next() % 2;
 
@@ -325,7 +325,7 @@ namespace Galaxy
                         break;
 
                     case 1:    
-                        for (int i = 0; i < 20; ++i)
+                        for (int i = 0; i < 16; ++i)
                         {
                             PelletShot(Physics.Position, GetDirToShip());
                             yield return 6;
