@@ -74,18 +74,23 @@ namespace Galaxy
 
         protected override void OnDie()
         {
-            float step = MathHelper.TwoPi / Balls.Count;
-            float start = World.Game.GameFrame * 0.1f;
-            for (int i = 0; i < Balls.Count; ++i)
+            if (Balls != null)
             {
-                CSwirlBall ball = Balls[i];
-                if (ball.IsDead)
-                    continue;
+                float step = MathHelper.TwoPi / Balls.Count;
+                float start = World.Game.GameFrame * 0.1f;
+                for (int i = 0; i < Balls.Count; ++i)
+                {
+                    CSwirlBall ball = Balls[i];
+                    if (ball.IsDead)
+                        continue;
 
-                Vector2 dir = Vector2.UnitX.Rotate(start + step * i + MathHelper.PiOver2 + 0.1f);
-                Vector2 velocity = dir * 2.5f;
+                    Vector2 dir = Vector2.UnitX.Rotate(start + step * i + MathHelper.PiOver2 + 0.1f);
+                    Vector2 velocity = dir * 2.5f;
 
-                Balls[i].Physics.Velocity = velocity;
+                    Balls[i].Physics.Velocity = velocity;
+                }
+
+                Balls = null;
             }
 
             base.OnDie();

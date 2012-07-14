@@ -139,6 +139,12 @@ namespace Galaxy
             World.DestroyAllProjectiles();
             World.DestroyAllEnemies();
 
+            if (!Left.IsDead)
+                Left.Die();
+
+            if (!Right.IsDead)
+                Right.Die();
+
             for (int i = 0; i < 14; ++i)
             {
                 World.ParticleEffects.Spawn(EParticleType.EnemyDeathExplosion, Physics.Position + World.Random.NextVector2() * World.Random.NextSignedFloat() * 240.0f, CEnemy.EnemyOrangeColor, 1.5f, null);

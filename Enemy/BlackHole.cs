@@ -63,8 +63,10 @@ namespace Galaxy
             ship.Physics.Velocity *= 0.90f;
             World.ParticleEffects.Spawn(EParticleType.EnemyBlackHolePullShip, ship.Physics.Position, null, null, dir * 4.0f);
 
+#if !SOAK_TEST
             if (length < 1.0f)
                 ship.Die();
+#endif
         }
 
         public new void OnCollide(CShip ship)
