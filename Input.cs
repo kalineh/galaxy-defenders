@@ -17,6 +17,7 @@ namespace Galaxy
         private PlayerIndex[] GameControllerIndexToPlayerIndex { get; set; }
         private GamePadState[] CurrentFrameGamePadState { get; set; }
         private GamePadState[] PreviousFrameGamePadState { get; set; }
+        private GameControllerIndex KeyboardControllerIndex;
 
         public CInput(CGalaxy game)
         {
@@ -48,7 +49,7 @@ namespace Galaxy
             // check all controllers
             if (!ConnectedPlayerIndex[(int)PlayerIndex.One])
             {
-                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) || IsKeyDown(Keys.F1))
+                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F1))
                 {
                     SetGameControllerIndex(game_controller_index, PlayerIndex.One);
                     return true;
@@ -56,7 +57,7 @@ namespace Galaxy
             }
             if (!ConnectedPlayerIndex[(int)PlayerIndex.Two])
             {
-                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start) || IsKeyDown(Keys.F2))
+                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
                 {
                     SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
                     return true;
@@ -64,7 +65,7 @@ namespace Galaxy
             }
             if (!ConnectedPlayerIndex[(int)PlayerIndex.Three])
             {
-                if (GamePad.GetState(PlayerIndex.Three).IsButtonDown(Buttons.Start) || IsKeyDown(Keys.F3))
+                if (GamePad.GetState(PlayerIndex.Three).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F3))
                 {
                     SetGameControllerIndex(game_controller_index, PlayerIndex.Three);
                     return true;
@@ -72,7 +73,7 @@ namespace Galaxy
             }
             if (!ConnectedPlayerIndex[(int)PlayerIndex.Four])
             {
-                if (GamePad.GetState(PlayerIndex.Four).IsButtonDown(Buttons.Start) || IsKeyDown(Keys.F4))
+                if (GamePad.GetState(PlayerIndex.Four).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F4))
                 {
                     SetGameControllerIndex(game_controller_index, PlayerIndex.Four);
                     return true;
@@ -91,6 +92,13 @@ namespace Galaxy
         public void SetGameControllerIndex(GameControllerIndex game_controller_index, PlayerIndex player_index)
         {
             ConnectedPlayerIndex[(int)player_index] = true;
+            GameControllerIndexToPlayerIndex[(int)game_controller_index] = player_index;
+        }
+
+        public void SetKeyboardControllerIndex(GameControllerIndex game_controller_index, PlayerIndex player_index)
+        {
+            ConnectedPlayerIndex[(int)player_index] = true;
+            KeyboardControllerIndex = game_controller_index;
             GameControllerIndexToPlayerIndex[(int)game_controller_index] = player_index;
         }
 
@@ -124,14 +132,29 @@ namespace Galaxy
                 CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(player_two);
         }
 
+        public bool IsKeyboardController(GameControllerIndex game_controller_index)
+        {
+            return KeyboardControllerIndex == game_controller_index;
+        }
+
         public bool IsKeyDown(Keys query)
         {
             return IsRawKeyDown(query);
         }
 
+        public bool IsKeyDownGame(GameControllerIndex game_controller_index, Keys query)
+        {
+            return IsKeyboardController(game_controller_index) && IsRawKeyDown(query);
+        }
+
         public bool IsKeyPressed(Keys query)
         {
             return IsRawKeyPressed(query);
+        }
+
+        public bool IsKeyPressedGame(GameControllerIndex game_controller_index, Keys query)
+        {
+            return IsKeyboardController(game_controller_index) && IsRawKeyPressed(query);
         }
 
         public bool IsPadLeftDown(GameControllerIndex game_controller_index)

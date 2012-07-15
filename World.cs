@@ -374,12 +374,14 @@ namespace Galaxy
                     PauseGame();
             }
 
+#if DEBUG
             if (Game.Input.IsKeyPressed(Keys.T))
             {
                 Paused = false;
                 DebugPaused = false;
                 WasStepped = true;
             }
+#endif
         }
 
         public void UpdateInput()

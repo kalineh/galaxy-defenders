@@ -35,7 +35,7 @@ namespace Galaxy
         private Texture2D ShopUpgradePanelTexture { get; set; }
         private CVisual ShopUpgradeBars8Visual { get; set; }
         private CVisual ShopUpgradeBars6Visual { get; set; }
-        private GameControllerIndex ControllerIndex { get; set; }
+        public GameControllerIndex ControllerIndex { get; set; }
         private Texture2D ShopPurchasePanelTexture { get; set; }
         private Texture2D ShopPurchasePanelInvalidTexture { get; set; }
         private CTextLabel ShopPurchaseTextLabel { get; set; }
@@ -437,7 +437,7 @@ namespace Galaxy
                 EditMoney(+10000);
 #endif
 
-            if (Game.Input.IsPadStartPressed(ControllerIndex) || Game.Input.IsKeyPressed(ControllerIndex == GameControllerIndex.One ? Keys.F1 : Keys.F2))
+            if (Game.Input.IsPadStartPressed(ControllerIndex) || Game.Input.IsKeyPressedGame(ControllerIndex, Keys.Tab))
                 FlyToStage();
 
 #if SOAK_TEST

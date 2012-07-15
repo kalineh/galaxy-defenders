@@ -110,7 +110,7 @@ namespace Galaxy
             //       any target resolution, so for any SD resolution we will use a buffer of that size
             //       and let the 360 handle it
             //
-            if (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height < 720)
+            if (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height <= 720)
             {
                 GraphicsDeviceManager.PreferredBackBufferWidth = 1280;
                 GraphicsDeviceManager.PreferredBackBufferHeight = 720;
@@ -490,7 +490,7 @@ namespace Galaxy
                 MusicDisplayCounter -= 1;
                 // NOTE: this is non-critical text, so not displaying on 480p wont be a fail
                 Vector2 position = new Vector2(476.0f, 1080.0f - 1080.0f * 0.09f);
-                DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, RenderScaleMatrix);
+                DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, RenderScaleMatrix);
                 float alpha = Math.Min(1.0f, MusicDisplayCounter > MusicDisplayTime ? 1.0f - (MusicDisplayCounter - MusicDisplayTime) / 60.0f : MusicDisplayCounter / 60.0f);
                 MusicIcon.Alpha = alpha;
                 MusicIcon.Draw(DefaultSpriteBatch, position + new Vector2(8.0f, 8.0f), 0.0f);

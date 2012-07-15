@@ -20,6 +20,7 @@ namespace Galaxy
         private CShopMenu Menu1P { get; set; }
         private CShopMenu Menu2P { get; set; }
         private int GenerateEnemyDelay { get; set; }
+        private int HeaderTimer { get; set; }
 
         public CStateShop(CGalaxy game)
         {
@@ -88,6 +89,8 @@ namespace Galaxy
             EmptyWorld.BackgroundScenery.Update();
             EmptyWorld.ForegroundScenery.Update();
             EmptyWorld.ParticleEffects.Update();
+
+            HeaderTimer += 1;
         }
 
         public override void Draw()
@@ -110,6 +113,23 @@ namespace Galaxy
             ////Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, new Vector2(Game.Resolution.X / 2.0f, Game.Resolution.Y * 0.8f), "PRESS START TO ENTER STAGE", new Color(160, 160, 160, (byte)alpha));
             //Game.DefaultSpriteBatch.DrawStringAlignCenter(Game.GameLargeFont, new Vector2(Game.Resolution.X / 2.0f, Game.Resolution.Y * 0.8f), FrameCount.ToString(), new Color(160, 160, 160, (byte)alpha));
             //Game.DefaultSpriteBatch.End();
+
+            string header = "Welcome to Randy's Random Item Shop";
+            float alpha = (float)Math.Max(0, Math.Min(60, 240 - HeaderTimer)) / 60.0f;
+
+            Game.DefaultSpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, Game.RenderScaleMatrix);
+            Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, header, new Vector2(Game.Resolution.X / 2.0f - 300.0f, 50.0f), new Color(1.0f, 1.0f, 1.0f, alpha), 0.0f, new Vector2(60.0f, 10.0f), 1.2f, SpriteEffects.None, 0.0f);
+
+            if (HeaderTimer > 600)
+            {
+                if (Game.Input.IsKeyboardController(Menu1P.ControllerIndex) ||
+                    Game.Input.IsKeyboardController(Menu2P.ControllerIndex))
+                {
+                    string continue_text = "Press TAB to proceed to " + (CSaveData.GetCurrentGameData(Game).Stage + 1);
+                    Game.DefaultSpriteBatch.DrawString(Game.GameRegularFont, continue_text, new Vector2(Game.Resolution.X / 2.0f - 160.0f, 50.0f), Color.White, 0.0f, new Vector2(60.0f, 10.0f), 1.0f, SpriteEffects.None, 0.0f);
+                }
+            }
+            Game.DefaultSpriteBatch.End();
         }
 
         public override void PostHudDraw()
