@@ -8,6 +8,49 @@ using System.Runtime.InteropServices;
 
 namespace Galaxy
 {
+    // workaround because xna class is not mutable, blwarhg
+    public struct GamePadButtonsMutable
+    {
+        public GamePadButtonsMutable(GamePadState state)
+        {
+            A = state.Buttons.A;
+            B = state.Buttons.B;
+            Back = state.Buttons.Back;
+            BigButton = state.Buttons.BigButton;
+            LeftShoulder = state.Buttons.LeftShoulder;
+            LeftStick = state.Buttons.LeftStick;
+            RightShoulder = state.Buttons.RightShoulder;
+            RightStick = state.Buttons.RightStick;
+            Start = state.Buttons.Start;
+            X = state.Buttons.X;
+            Y = state.Buttons.Y;
+            DPadUp = state.DPad.Up;
+            DPadDown = state.DPad.Down;
+            DPadLeft = state.DPad.Left;
+            DPadRight = state.DPad.Right;
+            ThumbstickLeft = state.ThumbSticks.Left;
+            ThumbstickRight = state.ThumbSticks.Right;
+        }
+
+        public ButtonState A;
+        public ButtonState B;
+        public ButtonState Back;
+        public ButtonState BigButton;
+        public ButtonState LeftShoulder;
+        public ButtonState LeftStick;
+        public ButtonState RightShoulder;
+        public ButtonState RightStick;
+        public ButtonState Start;
+        public ButtonState X;
+        public ButtonState Y;
+        public ButtonState DPadUp;
+        public ButtonState DPadDown;
+        public ButtonState DPadLeft;
+        public ButtonState DPadRight;
+        public Vector2 ThumbstickLeft;
+        public Vector2 ThumbstickRight;
+    }
+
     public class CInput
     {
         public const float DeadZone = 0.025f;
@@ -17,6 +60,8 @@ namespace Galaxy
         private PlayerIndex[] GameControllerIndexToPlayerIndex { get; set; }
         private GamePadState[] CurrentFrameGamePadState { get; set; }
         private GamePadState[] PreviousFrameGamePadState { get; set; }
+        private GamePadButtonsMutable[] CurrentFrameGamePadButtonsState { get; set; }
+        private GamePadButtonsMutable[] PreviousFrameGamePadButtonsState { get; set; }
         private GameControllerIndex KeyboardControllerIndex;
 
         public CInput(CGalaxy game)
@@ -27,9 +72,16 @@ namespace Galaxy
             CurrentFrameGamePadState = new GamePadState[2];
             CurrentFrameGamePadState[(int)GameControllerIndex.One] = GamePad.GetState(PlayerIndex.One);
             CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(PlayerIndex.Two);
+            CurrentFrameGamePadButtonsState = new GamePadButtonsMutable[2];
+            CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.One));
+            CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.Two));
             PreviousFrameGamePadState = new GamePadState[2];
             PreviousFrameGamePadState[(int)GameControllerIndex.One] = GamePad.GetState(PlayerIndex.One);
             PreviousFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(PlayerIndex.Two);
+            PreviousFrameGamePadButtonsState = new GamePadButtonsMutable[2];
+            PreviousFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.One));
+            PreviousFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.Two));
+            KeyboardControllerIndex = (GameControllerIndex)(-1);
         }
 
         public void ResetGameControllers()
@@ -54,28 +106,22 @@ namespace Galaxy
                     SetGameControllerIndex(game_controller_index, PlayerIndex.One);
                     return true;
                 }
+                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F1))
+                {
+                    SetGameControllerIndex(game_controller_index, PlayerIndex.One);
+                    return true;
+                }
             }
             if (!ConnectedPlayerIndex[(int)PlayerIndex.Two])
             {
-                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
+                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
                 {
                     SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
                     return true;
                 }
-            }
-            if (!ConnectedPlayerIndex[(int)PlayerIndex.Three])
-            {
-                if (GamePad.GetState(PlayerIndex.Three).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F3))
+                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
                 {
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.Three);
-                    return true;
-                }
-            }
-            if (!ConnectedPlayerIndex[(int)PlayerIndex.Four])
-            {
-                if (GamePad.GetState(PlayerIndex.Four).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F4))
-                {
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.Four);
+                    SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
                     return true;
                 }
             }
@@ -107,6 +153,11 @@ namespace Galaxy
             return CurrentFrameGamePadState[(int)game_controller_index];
         }
 
+        public GamePadButtonsMutable GetCurrentFrameGamePadButtonsState(GameControllerIndex game_controller_index)
+        {
+            return CurrentFrameGamePadButtonsState[(int)game_controller_index];
+        }
+
         public GamePadState GetPreviousFrameGamePadState(GameControllerIndex game_controller_index)
         {
             return PreviousFrameGamePadState[(int)game_controller_index];
@@ -121,6 +172,8 @@ namespace Galaxy
         {
             PreviousFrameGamePadState[(int)GameControllerIndex.One] = CurrentFrameGamePadState[(int)GameControllerIndex.One];
             PreviousFrameGamePadState[(int)GameControllerIndex.Two] = CurrentFrameGamePadState[(int)GameControllerIndex.Two];
+            PreviousFrameGamePadButtonsState[(int)GameControllerIndex.One] = CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One];
+            PreviousFrameGamePadButtonsState[(int)GameControllerIndex.Two] = CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two];
 
             PlayerIndex player_one = GameControllerIndexToPlayerIndex[0];
             PlayerIndex player_two = GameControllerIndexToPlayerIndex[1];
@@ -130,6 +183,22 @@ namespace Galaxy
 
             if ((int)player_two != -1)
                 CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(player_two);
+
+            if ((int)KeyboardControllerIndex != -1)
+            {
+                int index = (int)KeyboardControllerIndex;
+                CurrentFrameGamePadButtonsState[index].X = Game.Input.IsKeyDown(Keys.V) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].A = Game.Input.IsKeyDown(Keys.Enter) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].B = Game.Input.IsKeyDown(Keys.Escape) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].LeftShoulder = Game.Input.IsKeyDown(Keys.X) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].RightShoulder = Game.Input.IsKeyDown(Keys.C) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].Back = Game.Input.IsKeyDown(Keys.Back) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].Start = Game.Input.IsKeyDown(Keys.Tab) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].DPadUp = Game.Input.IsKeyDown(Keys.Up) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].DPadDown = Game.Input.IsKeyDown(Keys.Down) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].DPadLeft = Game.Input.IsKeyDown(Keys.Left) ? ButtonState.Pressed : ButtonState.Released;
+                CurrentFrameGamePadButtonsState[index].DPadRight = Game.Input.IsKeyDown(Keys.Right) ? ButtonState.Pressed : ButtonState.Released;
+            }
         }
 
         public bool IsKeyboardController(GameControllerIndex game_controller_index)
@@ -144,6 +213,7 @@ namespace Galaxy
 
         public bool IsKeyDownGame(GameControllerIndex game_controller_index, Keys query)
         {
+            return false;
             return IsKeyboardController(game_controller_index) && IsRawKeyDown(query);
         }
 
@@ -154,54 +224,55 @@ namespace Galaxy
 
         public bool IsKeyPressedGame(GameControllerIndex game_controller_index, Keys query)
         {
+            return false;
             return IsKeyboardController(game_controller_index) && IsRawKeyPressed(query);
         }
 
         public bool IsPadLeftDown(GameControllerIndex game_controller_index)
         {
-            return IsPadLeftDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsPadLeftDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         public bool IsPadRightDown(GameControllerIndex game_controller_index)
         {
-            return IsPadRightDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsPadRightDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         public bool IsPadUpDown(GameControllerIndex game_controller_index)
         {
-            return IsPadUpDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsPadUpDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         public bool IsPadDownDown(GameControllerIndex game_controller_index)
         {
-            return IsPadDownDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsPadDownDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         public bool IsPadLeftPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadLeftDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadLeftDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadLeftDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadLeftDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
         public bool IsPadRightPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadRightDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadRightDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadRightDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadRightDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
         public bool IsPadUpPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadUpDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadUpDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadUpDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadUpDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
         public bool IsPadDownPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadDownDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadDownDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadDownDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadDownDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
@@ -231,8 +302,8 @@ namespace Galaxy
 
         public bool IsPadConfirmPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = CurrentFrameGamePadState[(int)game_controller_index].Buttons.A == ButtonState.Pressed;
-            bool was_down = PreviousFrameGamePadState[(int)game_controller_index].Buttons.A == ButtonState.Pressed;
+            bool is_down = CurrentFrameGamePadButtonsState[(int)game_controller_index].A == ButtonState.Pressed;
+            bool was_down = PreviousFrameGamePadButtonsState[(int)game_controller_index].A == ButtonState.Pressed;
             return is_down && !was_down;
         }
 
@@ -244,8 +315,8 @@ namespace Galaxy
 
         public bool IsPadCancelPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = CurrentFrameGamePadState[(int)game_controller_index].Buttons.B == ButtonState.Pressed;
-            bool was_down = PreviousFrameGamePadState[(int)game_controller_index].Buttons.B == ButtonState.Pressed;
+            bool is_down = CurrentFrameGamePadButtonsState[(int)game_controller_index].B == ButtonState.Pressed;
+            bool was_down = PreviousFrameGamePadButtonsState[(int)game_controller_index].B == ButtonState.Pressed;
             return is_down && !was_down;
         }
 
@@ -268,15 +339,15 @@ namespace Galaxy
 
         public bool IsPadStartPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadStartDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadStartDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadStartDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadStartDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
         public bool IsPadBackPressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsPadBackDownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsPadBackDownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsPadBackDownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsPadBackDownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
@@ -292,29 +363,29 @@ namespace Galaxy
                    IsPadBackPressed(GameControllerIndex.Two);
         }
 
-        private bool IsPadStartDownImpl(GamePadState state)
+        private bool IsPadStartDownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Buttons.Start == ButtonState.Pressed;
+            bool down = state.Start == ButtonState.Pressed;
             return down;
         }
 
-        private bool IsPadBackDownImpl(GamePadState state)
+        private bool IsPadBackDownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Buttons.Back == ButtonState.Pressed;
+            bool down = state.Back == ButtonState.Pressed;
             return down;
         }
 
         public bool IsL1Pressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsL1DownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsL1DownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsL1DownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsL1DownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
         public bool IsR1Pressed(GameControllerIndex game_controller_index)
         {
-            bool is_down = IsR1DownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
-            bool was_down = IsR1DownImpl(PreviousFrameGamePadState[(int)game_controller_index]);
+            bool is_down = IsR1DownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
+            bool was_down = IsR1DownImpl(PreviousFrameGamePadButtonsState[(int)game_controller_index]);
             return is_down && !was_down;
         }
 
@@ -340,43 +411,43 @@ namespace Galaxy
             return IsR2DownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
         }
 
-        private bool IsPadLeftDownImpl(GamePadState state)
+        private bool IsPadLeftDownImpl(GamePadButtonsMutable state)
         {
-            bool dpad = state.DPad.Left == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.X < -DeadZone;
+            bool dpad = state.DPadLeft == ButtonState.Pressed;
+            bool stick = state.ThumbstickLeft.X < -DeadZone;
             return dpad || stick;
         }
 
-        private bool IsPadRightDownImpl(GamePadState state)
+        private bool IsPadRightDownImpl(GamePadButtonsMutable state)
         {
-            bool dpad = state.DPad.Right == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.X > DeadZone;
+            bool dpad = state.DPadRight == ButtonState.Pressed;
+            bool stick = state.ThumbstickLeft.X > DeadZone;
             return dpad || stick;
         }
 
-        private bool IsPadUpDownImpl(GamePadState state)
+        private bool IsPadUpDownImpl(GamePadButtonsMutable state)
         {
-            bool dpad = state.DPad.Up == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.Y > DeadZone;
+            bool dpad = state.DPadUp == ButtonState.Pressed;
+            bool stick = state.ThumbstickLeft.Y > DeadZone;
             return dpad || stick;
         }
 
-        private bool IsPadDownDownImpl(GamePadState state)
+        private bool IsPadDownDownImpl(GamePadButtonsMutable state)
         {
-            bool dpad = state.DPad.Down == ButtonState.Pressed;
-            bool stick = state.ThumbSticks.Left.Y < -DeadZone;
+            bool dpad = state.DPadDown == ButtonState.Pressed;
+            bool stick = state.ThumbstickLeft.Y < -DeadZone;
             return dpad || stick;
         }
 
-        private bool IsL1DownImpl(GamePadState state)
+        private bool IsL1DownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Buttons.LeftShoulder == ButtonState.Pressed;
+            bool down = state.LeftShoulder == ButtonState.Pressed;
             return down;
         }
 
-        private bool IsR1DownImpl(GamePadState state)
+        private bool IsR1DownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Buttons.RightShoulder == ButtonState.Pressed;
+            bool down = state.RightShoulder == ButtonState.Pressed;
             return down;
         }
 

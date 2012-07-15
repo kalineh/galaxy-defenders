@@ -254,19 +254,18 @@ namespace Galaxy
         public Vector2 GetInputVector()
         {
             GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
-            GamePadButtons buttons = state.Buttons;
-            GamePadDPad dpad = state.DPad;
+            GamePadButtonsMutable mutable = World.Game.Input.GetCurrentFrameGamePadButtonsState(GameControllerIndex);
 
             float Speed = Chassis.Speed * SpeedEnhancement + Chassis.Speed * Pilot.BonusSpeed;
             Vector2 force = Vector2.Zero;
 
-            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Up)) { force.Y -= Speed; }
-            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Down)) { force.Y += Speed; }
-            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Left)) { force.X -= Speed; }
-            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Right)) { force.X += Speed; }
+            if (mutable.DPadUp == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Up)) { force.Y -= Speed; }
+            if (mutable.DPadDown == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Down)) { force.Y += Speed; }
+            if (mutable.DPadLeft == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Left)) { force.X -= Speed; }
+            if (mutable.DPadRight == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Right)) { force.X += Speed; }
 
             //Console.WriteLine("thumb: {0}, speed: {1}, force: {2}", state.ThumbSticks.Left, Speed, force);
-            force += state.ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
+            force += mutable.ThumbstickLeft * new Vector2(1.0f, -1.0f) * Speed;
 
             if (force.LengthSquared() > 0.0f)
                 force = force.Normal() * Math.Min(force.Length(), Speed);
@@ -282,8 +281,7 @@ namespace Galaxy
 
             // TODO: entity/physics input controller?
             GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
-            GamePadButtons buttons = state.Buttons;
-            GamePadDPad dpad = state.DPad;
+            GamePadButtonsMutable buttons = World.Game.Input.GetCurrentFrameGamePadButtonsState(GameControllerIndex);
 
             Vector2 force = GetInputVector();
             Physics.Velocity += force;
@@ -314,7 +312,7 @@ namespace Galaxy
             }
 #endif
 
-            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.V))
+            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed)
             {
                 FireFocusWeapons();
                 World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
@@ -324,7 +322,7 @@ namespace Galaxy
             {
                 IsFocusMode = false;
 
-                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.C))
+                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex))
                 {
                     FirePrimarySecondaryWeapons();
                 }
@@ -336,7 +334,7 @@ namespace Galaxy
 
             if (!IsFocusMode)
             {
-                if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.X))
+                if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex))
                 {
                     ChargeSidekickLeft();
                     ChargeSidekickRight();
