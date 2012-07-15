@@ -21,7 +21,6 @@ namespace Galaxy
         public static Texture2D MenuItemInvalidSelectedTexture { get; set; }
         public bool AllowHighlightInvalid { get; set; }
         public GameControllerIndex GameControllerIndex { get; set; }
-        public static GameControllerIndex ActiveGameControllerIndexPC { get; set; }
         public bool HideText { get; set; }
         public string CursorIconName { get; set; }
         public CVisual CursorIconVisual { get; set; }
@@ -123,7 +122,6 @@ namespace Galaxy
 
         static CMenu()
         {
-            ActiveGameControllerIndexPC = GameControllerIndex.One;
         }
 
         public CMenu(CGalaxy game)
@@ -137,17 +135,12 @@ namespace Galaxy
             GameControllerIndex = GameControllerIndex.One;
         }
 
-        public bool CanKeyboardInput()
-        {
-            return ActiveGameControllerIndexPC == GameControllerIndex;
-        }
-
         public void Update()
         {
             if (!Visible)
                 return;
 
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Escape)) || Game.Input.IsPadCancelPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Escape)) || Game.Input.IsPadCancelPressed(GameControllerIndex))
             {
                 if (OnCancel != null)
                 {
@@ -191,7 +184,7 @@ namespace Galaxy
                 option.Axis(option.Data, option.AxisValue);
             }
 
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Enter)) || Game.Input.IsPadConfirmPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Enter)) || Game.Input.IsPadConfirmPressed(GameControllerIndex))
             {
                 if (MenuOptions[Cursor] != null && MenuOptions[Cursor].SelectValidate(MenuOptions[Cursor].Data))
                 {
@@ -202,7 +195,7 @@ namespace Galaxy
                     CAudio.PlaySound("MenuCancel");
             }
 
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Left)) || Game.Input.IsPadLeftPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Left)) || Game.Input.IsPadLeftPressed(GameControllerIndex))
             {
                 option.AxisValue -= 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -214,7 +207,7 @@ namespace Galaxy
                     option.AxisValue += 1;
             }
 
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Right)) || Game.Input.IsPadRightPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Right)) || Game.Input.IsPadRightPressed(GameControllerIndex))
             {
                 option.AxisValue += 1;
                 if (option.AxisValidate(option.Data, option.AxisValue))
@@ -339,7 +332,7 @@ namespace Galaxy
         public int GetCursorInputOffset()
         {
             int offset = 0;
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Down)) || Game.Input.IsPadDownPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Down)) || Game.Input.IsPadDownPressed(GameControllerIndex))
             {
                 offset += 1;
                 if (!AllowHighlightInvalid)
@@ -348,7 +341,7 @@ namespace Galaxy
                         offset += 1;
                 }
             }
-            if ((CanKeyboardInput() && Game.Input.IsKeyPressed(Keys.Up)) || Game.Input.IsPadUpPressed(GameControllerIndex))
+            if ((Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Up)) || Game.Input.IsPadUpPressed(GameControllerIndex))
             {
                 offset -= 1;
                 if (!AllowHighlightInvalid)

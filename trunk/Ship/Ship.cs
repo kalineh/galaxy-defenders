@@ -260,10 +260,10 @@ namespace Galaxy
             float Speed = Chassis.Speed * SpeedEnhancement + Chassis.Speed * Pilot.BonusSpeed;
             Vector2 force = Vector2.Zero;
 
-            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Up)) { force.Y -= Speed; }
-            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Down)) { force.Y += Speed; }
-            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Left)) { force.X -= Speed; }
-            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.Right)) { force.X += Speed; }
+            if (dpad.Up == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Up)) { force.Y -= Speed; }
+            if (dpad.Down == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Down)) { force.Y += Speed; }
+            if (dpad.Left == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Left)) { force.X -= Speed; }
+            if (dpad.Right == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.Right)) { force.X += Speed; }
 
             //Console.WriteLine("thumb: {0}, speed: {1}, force: {2}", state.ThumbSticks.Left, Speed, force);
             force += state.ThumbSticks.Left * new Vector2(1.0f, -1.0f) * Speed;
@@ -314,7 +314,7 @@ namespace Galaxy
             }
 #endif
 
-            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDown(Keys.V))
+            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.V))
             {
                 FireFocusWeapons();
                 World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);
@@ -324,7 +324,7 @@ namespace Galaxy
             {
                 IsFocusMode = false;
 
-                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.C))
+                if (buttons.RightShoulder == ButtonState.Pressed || World.Game.Input.IsR2Down(GameControllerIndex) || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.C))
                 {
                     FirePrimarySecondaryWeapons();
                 }
@@ -336,7 +336,7 @@ namespace Galaxy
 
             if (!IsFocusMode)
             {
-                if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDown(Keys.X))
+                if (buttons.LeftShoulder == ButtonState.Pressed || World.Game.Input.IsL2Down(GameControllerIndex) || World.Game.Input.IsKeyDownGame(GameControllerIndex, Keys.X))
                 {
                     ChargeSidekickLeft();
                     ChargeSidekickRight();

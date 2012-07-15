@@ -125,8 +125,15 @@ namespace Galaxy
             switch (State)
             {
                 case EState.PressStart:
-                    if (Game.Input.PollGameControllerConnected(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Space) || Game.Input.IsKeyPressed(Keys.Enter))
+                    if (Game.Input.PollGameControllerConnected(GameControllerIndex))
                     {
+                        State = EState.Inactive;
+                    }
+
+                    // NOTE: will pop the input state, so calling again on the other hud wont start P2 as well
+                    if (Game.Input.IsKeyPressed(Keys.Space) || Game.Input.IsKeyPressed(Keys.Enter))
+                    {
+                        Game.Input.SetKeyboardControllerIndex(GameControllerIndex, (PlayerIndex)GameControllerIndex);
                         State = EState.Inactive;
                     }
 
@@ -137,7 +144,7 @@ namespace Galaxy
 
                 case EState.Active:
                     // TODO: up/down control for profile select
-                    if (Game.Input.IsPadConfirmPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Enter))
+                    if (Game.Input.IsPadConfirmPressed(GameControllerIndex) || Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Enter))
                     {
                         ChoosePilotFromCursor();
                         Selected();
@@ -159,7 +166,7 @@ namespace Galaxy
                     if (Game.PlayersInGame == 1)
                         other_cursor = -1;
 
-                    if (Game.Input.IsPadLeftPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Left))
+                    if (Game.Input.IsPadLeftPressed(GameControllerIndex) || Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Left))
                     {
                         int next_valid = Cursor;
 
@@ -175,7 +182,7 @@ namespace Galaxy
                         Cursor = next_valid;
                     }
 
-                    if (Game.Input.IsPadRightPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Right))
+                    if (Game.Input.IsPadRightPressed(GameControllerIndex) || Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Right))
                     {
                         int next_valid = Cursor;
 
@@ -196,7 +203,7 @@ namespace Galaxy
                     break;
 
                 case EState.Selected:
-                    if (Game.Input.IsPadCancelPressed(GameControllerIndex) || Game.Input.IsKeyPressed(Keys.Escape))
+                    if (Game.Input.IsPadCancelPressed(GameControllerIndex) || Game.Input.IsKeyPressedGame(GameControllerIndex, Keys.Escape))
                     {
                         State = EState.Active;
                         break;
@@ -207,7 +214,7 @@ namespace Galaxy
 
                 case EState.Locked:
                     // NOTE: no more disabling mid-game
-                    //if (Game.Input.IsPadStartPressed(GameControllerIndex) || Game.Input.IsKeyPressed(StartKey))
+                    //if (Game.Input.IsPadStartPressed(GameControllerIndex) || Game.Input.IsKeyPressedGame(GameControllerIndex, (StartKey))
                     //{
                         //Game.HudManager.ToggleProfileActive(GameControllerIndex);
                         //State = EState.Inactive;
