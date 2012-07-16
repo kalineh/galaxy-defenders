@@ -131,11 +131,11 @@ namespace Galaxy
                     }
 
                     // NOTE: will pop the input state, so calling again on the other hud wont start P2 as well
-                    if (Game.Input.IsKeyPressed(Keys.Space) || Game.Input.IsKeyPressed(Keys.Enter))
-                    {
-                        Game.Input.SetKeyboardControllerIndex(GameControllerIndex, (PlayerIndex)GameControllerIndex);
-                        State = EState.Inactive;
-                    }
+                    //if (Game.Input.IsKeyPressed(Keys.Space) || Game.Input.IsKeyPressed(Keys.Enter))
+                    //{
+                        //Game.Input.SetKeyboardControllerIndex(GameControllerIndex, (PlayerIndex)GameControllerIndex);
+                        //State = EState.Inactive;
+                    //}
 
                     break;
 

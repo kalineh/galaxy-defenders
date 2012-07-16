@@ -32,8 +32,8 @@ namespace Galaxy
         public static float[] HealthScale = new float[3]
         {
             1.0f,
-            1.35f,
-            1.85f,
+            1.25f,
+            1.55f,
         };
 
         public static float[] BossHealthScale = new float[3]
