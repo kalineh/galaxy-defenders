@@ -312,7 +312,15 @@ namespace Galaxy
             }
 #endif
 
-            if (buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed)
+            bool is_focus_fire = buttons.A == ButtonState.Pressed || buttons.B == ButtonState.Pressed || buttons.X == ButtonState.Pressed || buttons.Y == ButtonState.Pressed;
+
+            // need to handle keyboard special here because confirm/cancel are mapped to A/B with Enter/Escape
+            if (World.Game.Input.IsKeyboardController(GameControllerIndex))
+            {
+                is_focus_fire = buttons.X == ButtonState.Pressed;
+            }
+
+            if (is_focus_fire)
             {
                 FireFocusWeapons();
                 World.ParticleEffects.Spawn(EParticleType.PlayerFocusMode, Physics.Position, Visual.Color, null, Physics.Velocity + World.ScrollSpeed * -Vector2.UnitY);

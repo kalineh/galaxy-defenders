@@ -101,27 +101,30 @@ namespace Galaxy
             // check all controllers
             if (!ConnectedPlayerIndex[(int)PlayerIndex.One])
             {
-                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F1))
+                if (IsKeyDown(Keys.Enter) && (int)KeyboardControllerIndex == -1)
                 {
+                    KeyboardControllerIndex = game_controller_index;
                     SetGameControllerIndex(game_controller_index, PlayerIndex.One);
                     return true;
                 }
-                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F1))
-                {
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.One);
-                    return true;
-                }
+
+                //if (GamePad.GetState(game_controller_index).IsButtonDown(Buttons.Start))
+                //{
+                    //SetGameControllerIndex(game_controller_index, PlayerIndex.One);
+                    //return true;
+                //}
             }
             if (!ConnectedPlayerIndex[(int)PlayerIndex.Two])
             {
-                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
+                if (IsKeyDown(Keys.Enter) && (int)KeyboardControllerIndex == -1)
                 {
+                    KeyboardControllerIndex = game_controller_index;
                     SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
                     return true;
                 }
-                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))// || IsKeyDown(Keys.F2))
+                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))
                 {
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
+                    SetGameControllerIndex(GameControllerIndex.Two, PlayerIndex.Two);
                     return true;
                 }
             }
@@ -179,10 +182,16 @@ namespace Galaxy
             PlayerIndex player_two = GameControllerIndexToPlayerIndex[1];
 
             if ((int)player_one != -1)
+            {
                 CurrentFrameGamePadState[(int)GameControllerIndex.One] = GamePad.GetState(player_one);
+                CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(CurrentFrameGamePadState[(int)GameControllerIndex.One]);
+            }
 
             if ((int)player_two != -1)
+            {
                 CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(player_two);
+                CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(CurrentFrameGamePadState[(int)GameControllerIndex.Two]);
+            }
 
             if ((int)KeyboardControllerIndex != -1)
             {
