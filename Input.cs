@@ -8,6 +8,13 @@ using System.Runtime.InteropServices;
 
 namespace Galaxy
 {
+    public enum InputSourceIndex
+    {
+        ControllerOne, // must be same value as PlayerIndex.One
+        ControllerTwo, // must be same value as PlayerIndex.Two
+        Keyboard,
+    };
+
     // workaround because xna class is not mutable, blwarhg
     public struct GamePadButtonsMutable
     {
@@ -30,6 +37,8 @@ namespace Galaxy
             DPadRight = state.DPad.Right;
             ThumbstickLeft = state.ThumbSticks.Left;
             ThumbstickRight = state.ThumbSticks.Right;
+            TriggerLeft = state.Triggers.Left;
+            TriggerRight = state.Triggers.Right;
         }
 
         public ButtonState A;
@@ -49,6 +58,8 @@ namespace Galaxy
         public ButtonState DPadRight;
         public Vector2 ThumbstickLeft;
         public Vector2 ThumbstickRight;
+        public float TriggerLeft;
+        public float TriggerRight;
     }
 
     public class CInput
@@ -57,21 +68,16 @@ namespace Galaxy
 
         private CGalaxy Game { get; set; }
         private bool[] ConnectedPlayerIndex { get; set; }
-        private PlayerIndex[] GameControllerIndexToPlayerIndex { get; set; }
-        private GamePadState[] CurrentFrameGamePadState { get; set; }
+        private InputSourceIndex[] GameControllerIndexToInputSourceIndex { get; set; }
         private GamePadState[] PreviousFrameGamePadState { get; set; }
         private GamePadButtonsMutable[] CurrentFrameGamePadButtonsState { get; set; }
         private GamePadButtonsMutable[] PreviousFrameGamePadButtonsState { get; set; }
-        private GameControllerIndex KeyboardControllerIndex;
 
         public CInput(CGalaxy game)
         {
             Game = game;
             ConnectedPlayerIndex = new bool[4] { false, false, false, false };
-            GameControllerIndexToPlayerIndex = new PlayerIndex[2] { (PlayerIndex)(-1), (PlayerIndex)(-1) };
-            CurrentFrameGamePadState = new GamePadState[2];
-            CurrentFrameGamePadState[(int)GameControllerIndex.One] = GamePad.GetState(PlayerIndex.One);
-            CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(PlayerIndex.Two);
+            GameControllerIndexToInputSourceIndex = new InputSourceIndex[2] { (InputSourceIndex)(-1), (InputSourceIndex)(-1) };
             CurrentFrameGamePadButtonsState = new GamePadButtonsMutable[2];
             CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.One));
             CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.Two));
@@ -81,50 +87,40 @@ namespace Galaxy
             PreviousFrameGamePadButtonsState = new GamePadButtonsMutable[2];
             PreviousFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.One));
             PreviousFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.Two));
-            KeyboardControllerIndex = (GameControllerIndex)(-1);
         }
 
         public void ResetGameControllers()
         {
             ConnectedPlayerIndex = new bool[4] { false, false, false, false };
-            GameControllerIndexToPlayerIndex = new PlayerIndex[2] { (PlayerIndex)(-1), (PlayerIndex)(-1) };
+            GameControllerIndexToInputSourceIndex = new InputSourceIndex[2] { (InputSourceIndex)(-1), (InputSourceIndex)(-1) };
         }
 
         public bool PollGameControllerConnected(GameControllerIndex game_controller_index)
         {
             // already connected
-            if ((int)GameControllerIndexToPlayerIndex[(int)game_controller_index] != (-1))
+            if ((int)GameControllerIndexToInputSourceIndex[(int)game_controller_index] != (-1))
             {
                 return true;     
             }
 
             // check all controllers
-            if (!ConnectedPlayerIndex[(int)PlayerIndex.One])
+            if (!ConnectedPlayerIndex[(int)game_controller_index])
             {
-                if (IsKeyDown(Keys.Enter) && (int)KeyboardControllerIndex == -1)
+                // only valid if no other keyboards are connected
+                if (IsKeyDown(Keys.Enter) && GameControllerIndexToInputSourceIndex[0] != InputSourceIndex.Keyboard && GameControllerIndexToInputSourceIndex[1] != InputSourceIndex.Keyboard)
                 {
-                    KeyboardControllerIndex = game_controller_index;
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.One);
+                    SetGameControllerInputSourceIndex(game_controller_index, InputSourceIndex.Keyboard);
                     return true;
                 }
-
-                //if (GamePad.GetState(game_controller_index).IsButtonDown(Buttons.Start))
-                //{
-                    //SetGameControllerIndex(game_controller_index, PlayerIndex.One);
-                    //return true;
-                //}
-            }
-            if (!ConnectedPlayerIndex[(int)PlayerIndex.Two])
-            {
-                if (IsKeyDown(Keys.Enter) && (int)KeyboardControllerIndex == -1)
+                if (GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.Start) && GameControllerIndexToInputSourceIndex[0] != InputSourceIndex.ControllerOne && GameControllerIndexToInputSourceIndex[1] != InputSourceIndex.ControllerOne)
                 {
-                    KeyboardControllerIndex = game_controller_index;
-                    SetGameControllerIndex(game_controller_index, PlayerIndex.Two);
+                    SetGameControllerInputSourceIndex(game_controller_index, InputSourceIndex.ControllerOne);
                     return true;
                 }
-                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start))
+                // is this correct? 
+                if (GamePad.GetState(PlayerIndex.Two).IsButtonDown(Buttons.Start) && GameControllerIndexToInputSourceIndex[0] != InputSourceIndex.ControllerTwo && GameControllerIndexToInputSourceIndex[1] != InputSourceIndex.ControllerTwo)
                 {
-                    SetGameControllerIndex(GameControllerIndex.Two, PlayerIndex.Two);
+                    SetGameControllerInputSourceIndex(game_controller_index, InputSourceIndex.ControllerTwo);
                     return true;
                 }
             }
@@ -134,26 +130,14 @@ namespace Galaxy
 
         public int CountConnectedControllers()
         {
-            return ((int)GameControllerIndexToPlayerIndex[0] == -1 ? 0 : 1) +
-                   ((int)GameControllerIndexToPlayerIndex[1] == -1 ? 0 : 1);
+            return ((int)GameControllerIndexToInputSourceIndex[0] == -1 ? 0 : 1) +
+                   ((int)GameControllerIndexToInputSourceIndex[1] == -1 ? 0 : 1);
         }
 
-        public void SetGameControllerIndex(GameControllerIndex game_controller_index, PlayerIndex player_index)
+        public void SetGameControllerInputSourceIndex(GameControllerIndex game_controller_index, InputSourceIndex input_source_index)
         {
-            ConnectedPlayerIndex[(int)player_index] = true;
-            GameControllerIndexToPlayerIndex[(int)game_controller_index] = player_index;
-        }
-
-        public void SetKeyboardControllerIndex(GameControllerIndex game_controller_index, PlayerIndex player_index)
-        {
-            ConnectedPlayerIndex[(int)player_index] = true;
-            KeyboardControllerIndex = game_controller_index;
-            GameControllerIndexToPlayerIndex[(int)game_controller_index] = player_index;
-        }
-
-        public GamePadState GetCurrentFrameGamePadState(GameControllerIndex game_controller_index)
-        {
-            return CurrentFrameGamePadState[(int)game_controller_index];
+            ConnectedPlayerIndex[(int)game_controller_index] = true;
+            GameControllerIndexToInputSourceIndex[(int)game_controller_index] = input_source_index;
         }
 
         public GamePadButtonsMutable GetCurrentFrameGamePadButtonsState(GameControllerIndex game_controller_index)
@@ -161,58 +145,69 @@ namespace Galaxy
             return CurrentFrameGamePadButtonsState[(int)game_controller_index];
         }
 
+        public void SetCurrentFrameGamePadButtonsState(GameControllerIndex game_controller_index, GamePadButtonsMutable buttons)
+        {
+            CurrentFrameGamePadButtonsState[(int)game_controller_index] = buttons;
+        }
+
         public GamePadState GetPreviousFrameGamePadState(GameControllerIndex game_controller_index)
         {
             return PreviousFrameGamePadState[(int)game_controller_index];
         }
 
-        public void SetCurrentFrameGamePadState(GameControllerIndex game_controller_index, GamePadState state)
+        public GamePadButtonsMutable GetGamePadButtonsStateFromInputSource(InputSourceIndex input_source_index)
         {
-            CurrentFrameGamePadState[(int)game_controller_index] = state;
+            switch (input_source_index)
+            {
+                case InputSourceIndex.Keyboard:
+                    {
+                        GamePadButtonsMutable buttons = new GamePadButtonsMutable();
+                        buttons.Y = ButtonState.Released;
+                        buttons.X = Game.Input.IsKeyDown(Keys.V) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.A = Game.Input.IsKeyDown(Keys.Enter) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.B = Game.Input.IsKeyDown(Keys.Escape) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.LeftShoulder = Game.Input.IsKeyDown(Keys.X) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.RightShoulder = Game.Input.IsKeyDown(Keys.C) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.Back = Game.Input.IsKeyDown(Keys.Back) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.Start = Game.Input.IsKeyDown(Keys.Tab) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.DPadUp = Game.Input.IsKeyDown(Keys.Up) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.DPadDown = Game.Input.IsKeyDown(Keys.Down) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.DPadLeft = Game.Input.IsKeyDown(Keys.Left) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.DPadRight = Game.Input.IsKeyDown(Keys.Right) ? ButtonState.Pressed : ButtonState.Released;
+                        buttons.TriggerLeft = 0.0f;
+                        buttons.TriggerRight = 0.0f;
+                        return buttons;
+                    }
+
+                case InputSourceIndex.ControllerOne:
+                    {
+                        return new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.One));
+                    }
+
+                case InputSourceIndex.ControllerTwo:
+                    {
+                        return new GamePadButtonsMutable(GamePad.GetState(PlayerIndex.Two));
+                    }
+            }
+
+            return new GamePadButtonsMutable();
         }
 
         public void Update()
         {
-            PreviousFrameGamePadState[(int)GameControllerIndex.One] = CurrentFrameGamePadState[(int)GameControllerIndex.One];
-            PreviousFrameGamePadState[(int)GameControllerIndex.Two] = CurrentFrameGamePadState[(int)GameControllerIndex.Two];
             PreviousFrameGamePadButtonsState[(int)GameControllerIndex.One] = CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One];
             PreviousFrameGamePadButtonsState[(int)GameControllerIndex.Two] = CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two];
 
-            PlayerIndex player_one = GameControllerIndexToPlayerIndex[0];
-            PlayerIndex player_two = GameControllerIndexToPlayerIndex[1];
+            InputSourceIndex player_one_input = GameControllerIndexToInputSourceIndex[0];
+            InputSourceIndex player_two_input = GameControllerIndexToInputSourceIndex[1];
 
-            if ((int)player_one != -1)
-            {
-                CurrentFrameGamePadState[(int)GameControllerIndex.One] = GamePad.GetState(player_one);
-                CurrentFrameGamePadButtonsState[(int)GameControllerIndex.One] = new GamePadButtonsMutable(CurrentFrameGamePadState[(int)GameControllerIndex.One]);
-            }
-
-            if ((int)player_two != -1)
-            {
-                CurrentFrameGamePadState[(int)GameControllerIndex.Two] = GamePad.GetState(player_two);
-                CurrentFrameGamePadButtonsState[(int)GameControllerIndex.Two] = new GamePadButtonsMutable(CurrentFrameGamePadState[(int)GameControllerIndex.Two]);
-            }
-
-            if ((int)KeyboardControllerIndex != -1)
-            {
-                int index = (int)KeyboardControllerIndex;
-                CurrentFrameGamePadButtonsState[index].X = Game.Input.IsKeyDown(Keys.V) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].A = Game.Input.IsKeyDown(Keys.Enter) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].B = Game.Input.IsKeyDown(Keys.Escape) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].LeftShoulder = Game.Input.IsKeyDown(Keys.X) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].RightShoulder = Game.Input.IsKeyDown(Keys.C) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].Back = Game.Input.IsKeyDown(Keys.Back) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].Start = Game.Input.IsKeyDown(Keys.Tab) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].DPadUp = Game.Input.IsKeyDown(Keys.Up) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].DPadDown = Game.Input.IsKeyDown(Keys.Down) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].DPadLeft = Game.Input.IsKeyDown(Keys.Left) ? ButtonState.Pressed : ButtonState.Released;
-                CurrentFrameGamePadButtonsState[index].DPadRight = Game.Input.IsKeyDown(Keys.Right) ? ButtonState.Pressed : ButtonState.Released;
-            }
+            CurrentFrameGamePadButtonsState[0] = GetGamePadButtonsStateFromInputSource(player_one_input);
+            CurrentFrameGamePadButtonsState[1] = GetGamePadButtonsStateFromInputSource(player_two_input);
         }
 
         public bool IsKeyboardController(GameControllerIndex game_controller_index)
         {
-            return KeyboardControllerIndex == game_controller_index;
+            return GameControllerIndexToInputSourceIndex[(int)game_controller_index] == InputSourceIndex.Keyboard;
         }
 
         public bool IsKeyDown(Keys query)
@@ -222,8 +217,8 @@ namespace Galaxy
 
         public bool IsKeyDownGame(GameControllerIndex game_controller_index, Keys query)
         {
+            // deprecated
             return false;
-            return IsKeyboardController(game_controller_index) && IsRawKeyDown(query);
         }
 
         public bool IsKeyPressed(Keys query)
@@ -412,12 +407,12 @@ namespace Galaxy
 
         public bool IsL2Down(GameControllerIndex game_controller_index)
         {
-            return IsPadL2DownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsPadL2DownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         public bool IsR2Down(GameControllerIndex game_controller_index)
         {
-            return IsR2DownImpl(CurrentFrameGamePadState[(int)game_controller_index]);
+            return IsR2DownImpl(CurrentFrameGamePadButtonsState[(int)game_controller_index]);
         }
 
         private bool IsPadLeftDownImpl(GamePadButtonsMutable state)
@@ -460,15 +455,15 @@ namespace Galaxy
             return down;
         }
 
-        private bool IsPadL2DownImpl(GamePadState state)
+        private bool IsPadL2DownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Triggers.Left > DeadZone;
+            bool down = state.TriggerLeft > DeadZone;
             return down;
         }
 
-        private bool IsR2DownImpl(GamePadState state)
+        private bool IsR2DownImpl(GamePadButtonsMutable state)
         {
-            bool down = state.Triggers.Right > DeadZone;
+            bool down = state.TriggerRight > DeadZone;
             return down;
         }
 

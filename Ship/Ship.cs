@@ -253,7 +253,6 @@ namespace Galaxy
 
         public Vector2 GetInputVector()
         {
-            GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
             GamePadButtonsMutable mutable = World.Game.Input.GetCurrentFrameGamePadButtonsState(GameControllerIndex);
 
             float Speed = Chassis.Speed * SpeedEnhancement + Chassis.Speed * Pilot.BonusSpeed;
@@ -280,7 +279,7 @@ namespace Galaxy
                 return;
 
             // TODO: entity/physics input controller?
-            GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
+            //GamePadState state = World.Game.Input.GetCurrentFrameGamePadState(GameControllerIndex);
             GamePadButtonsMutable buttons = World.Game.Input.GetCurrentFrameGamePadButtonsState(GameControllerIndex);
 
             Vector2 force = GetInputVector();
@@ -766,7 +765,8 @@ namespace Galaxy
                 InputDPad
             );
 
-            Ship.World.Game.Input.SetCurrentFrameGamePadState(Ship.GameControllerIndex, state);
+            GamePadButtonsMutable buttons = new GamePadButtonsMutable(state);
+            Ship.World.Game.Input.SetCurrentFrameGamePadButtonsState(Ship.GameControllerIndex, buttons);
         }
     
 
