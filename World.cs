@@ -1029,7 +1029,7 @@ namespace Galaxy
             {
                 // boo
                 if (entity.IsDead)
-                    return;
+                    break;
 
                 entity.Update();
             }
