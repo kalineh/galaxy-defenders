@@ -1,0 +1,9 @@
+# Setup #
+
+1. Download Visual C# Express
+  * http://www.microsoft.com/express/Downloads/#2008-Visual-CS
+2. Download XNA
+  * http://www.microsoft.com/downloads/en/confirmation.aspx?familyId=80782277-d584-42d2-8024-893fcd9d3e82&displayLang=en
+3. SVN checkout source.
+  * http://code.google.com/p/galaxy-defenders/source/checkout
+4. Compile and run!

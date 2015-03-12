@@ -1,0 +1,29 @@
+# Flip Blocks #
+
+Flat rectangular blocks. Physics based gameplay. Blocks connect on the short edge of the rectangle, but the player can choose whether they connect via the top edge or the bottom edge (thus controlling which way they can fold down). Blocks are indestructible, joints can hold infinite weight.
+
+# Robot Solver #
+
+Customizable robot which solves platformer style levels autonomously. Attach wheels, springs, jetpacks, weapons, etc. Allow realtime level manipulation to build sections to assist?
+
+# Omar's N-Camel #
+
+Camel with increasing number of humps, to act as a bridge as game areas are completed.
+
+
+# Side Scroller concepts #
+
+Stage which mirrors from the player both sides, so you can 'proceed' by going left or right into the game, but left or right provides minor variations is what you can do.
+
+
+
+
+
+
+
+# Details #
+
+Add your content here.  Format your content with:
+  * Text in **bold** or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
