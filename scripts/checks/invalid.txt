@@ -1,0 +1,2 @@
+# This script must fail with a nonzero exit code and this line number.
+assert p1.health eq 999

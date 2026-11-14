@@ -1,0 +1,251 @@
+#include "game.h"
+#include <math.h>
+#include <string.h>
+
+static float clamp(float value, float low, float high) {
+    return value < low ? low : value > high ? high : value;
+}
+
+static uint32_t random_next(Game *game) {
+    game->random = game->random * 1664525u + 1013904223u;
+    return game->random;
+}
+
+static bool segment_hits(float ax, float ay, float bx, float by, float x, float y, float radius) {
+    float dx = bx - ax, dy = by - ay;
+    float length = dx * dx + dy * dy;
+    float t = length > 0 ? clamp(((x - ax) * dx + (y - ay) * dy) / length, 0, 1) : 0;
+    dx = ax + t * dx - x;
+    dy = ay + t * dy - y;
+    return dx * dx + dy * dy <= radius * radius;
+}
+
+static void effect_add(Game *game, float x, float y, int kind) {
+    Effect *effect = &game->effects[game->effect_cursor++ % GAME_EFFECTS];
+    *effect = (Effect){x, y, 24, kind};
+    if (game->effect_cursor == GAME_EFFECTS) game->effect_cursor = 0;
+}
+
+bool game_join(Game *game, int slot) {
+    if (slot < 0 || slot >= GAME_PLAYERS || game->players[slot].joined || game->over || game->complete) return false;
+    Player *player = &game->players[slot];
+    *player = (Player){0};
+    player->joined = true;
+    player->x = slot == 0 ? 400 : 560;
+    player->y = 880;
+    player->health = 20;
+    player->lives = 3;
+    player->invulnerable = 90;
+    return true;
+}
+
+void game_reset(Game *game, uint32_t seed) {
+    memset(game, 0, sizeof(*game));
+    game->random = seed;
+    game->waves = true;
+    game_join(game, 0);
+}
+
+int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y) {
+    if (kind < ENEMY_BALL || kind > ENEMY_BOSS || !isfinite(x) || !isfinite(y)) return -1;
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        if (game->enemies[i].active) continue;
+        Enemy *enemy = &game->enemies[i];
+        *enemy = (Enemy){0};
+        enemy->active = true;
+        enemy->kind = kind;
+        enemy->x = x;
+        enemy->y = y;
+        enemy->vy = kind == ENEMY_TRIANGLE ? 4.5f : 2.5f;
+        enemy->radius = kind == ENEMY_BOSS ? 150 : kind == ENEMY_TRIANGLE ? 28 : 36;
+        enemy->health = kind == ENEMY_BOSS ? 60 : kind == ENEMY_TURRET ? 1.5f : 0.5f;
+        enemy->cooldown = 75;
+        return i;
+    }
+    ++game->dropped_spawns;
+    return -1;
+}
+
+int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float vy, float damage) {
+    if (owner < -1 || owner >= GAME_PLAYERS || damage <= 0 || !isfinite(damage) ||
+        !isfinite(x) || !isfinite(y) || !isfinite(vx) || !isfinite(vy)) return -1;
+    for (int i = 0; i < GAME_BULLETS; ++i) {
+        if (game->bullets[i].active) continue;
+        game->bullets[i] = (Bullet){true, owner, x, y, vx, vy, owner < 0 ? 9 : 5, damage};
+        return i;
+    }
+    ++game->dropped_spawns;
+    return -1;
+}
+
+void game_damage_player(Game *game, int slot, float damage) {
+    if (slot < 0 || slot >= GAME_PLAYERS || damage <= 0 || !isfinite(damage)) return;
+    Player *player = &game->players[slot];
+    if (!player->joined || player->lives <= 0 || player->invulnerable > 0) return;
+    player->health -= damage;
+    player->invulnerable = 45;
+    ++game->hits;
+    effect_add(game, player->x, player->y, 1);
+    if (player->health > 0) return;
+    player->health = 0;
+    --player->lives;
+    if (player->lives > 0) {
+        player->health = 20;
+        player->x = slot == 0 ? 400 : 560;
+        player->y = 880;
+        player->vx = player->vy = 0;
+        player->invulnerable = 120;
+    }
+}
+
+static void update_players(Game *game) {
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        Player *player = &game->players[i];
+        if (!player->joined || player->lives <= 0) continue;
+        if (player->invulnerable > 0) --player->invulnerable;
+        if (player->cooldown > 0) --player->cooldown;
+        float x = player->input.x, y = player->input.y;
+        float length = sqrtf(x * x + y * y);
+        if (length > 1) { x /= length; y /= length; }
+        /* Rookie acceleration and friction from legacy/Ship/ShipDefinitions.cs. */
+        float acceleration = player->input.focus ? 0.65f : 1.5f;
+        player->vx += x * acceleration;
+        player->vy += y * acceleration;
+        player->x = clamp(player->x + player->vx, 30, GAME_WIDTH - 30);
+        player->y = clamp(player->y + player->vy, 40, GAME_HEIGHT - 40);
+        player->vx *= 0.85f;
+        player->vy *= 0.85f;
+        if ((player->x <= 30 && player->vx < 0) || (player->x >= GAME_WIDTH - 30 && player->vx > 0)) player->vx = 0;
+        if ((player->y <= 40 && player->vy < 0) || (player->y >= GAME_HEIGHT - 40 && player->vy > 0)) player->vy = 0;
+        if (player->input.fire && player->cooldown == 0) {
+            float spread = player->input.focus ? 0 : 0.8f;
+            game_spawn_bullet(game, i, player->x - 13, player->y - 32, -spread, -18, 0.25f);
+            game_spawn_bullet(game, i, player->x + 13, player->y - 32, spread, -18, 0.25f);
+            player->cooldown = 7;
+            ++game->shots;
+        }
+    }
+}
+
+static void spawn_wave(Game *game) {
+    if (!game->waves || game->boss_spawned) return;
+    if (game->tick >= 2700) {
+        if (game_spawn_enemy(game, ENEMY_BOSS, 480, -180) >= 0) game->boss_spawned = true;
+        return;
+    }
+    if (game->tick % 180 != 60) return;
+    int wave = game->tick / 180;
+    EnemyKind kind = (EnemyKind)(wave % 3);
+    float offset = (float)(random_next(game) % 100) - 50;
+    for (int i = 0; i < 5; ++i) {
+        int index = game_spawn_enemy(game, kind, 160 + i * 160 + offset, -50 - i * 36);
+        if (index >= 0 && kind == ENEMY_TRIANGLE) game->enemies[index].vx = wave % 2 ? 0.8f : -0.8f;
+    }
+}
+
+static void enemy_fire(Game *game, Enemy *enemy) {
+    if (--enemy->cooldown > 0) return;
+    int target = -1;
+    float nearest = 1e20f;
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        Player *player = &game->players[i];
+        if (!player->joined || player->lives <= 0) continue;
+        float dx = player->x - enemy->x, dy = player->y - enemy->y;
+        float distance = dx * dx + dy * dy;
+        if (distance < nearest) { nearest = distance; target = i; }
+    }
+    if (target < 0) return;
+    float dx = game->players[target].x - enemy->x, dy = game->players[target].y - enemy->y;
+    float length = sqrtf(dx * dx + dy * dy);
+    if (length < 1) length = 1;
+    game_spawn_bullet(game, -1, enemy->x, enemy->y + 24, dx / length * 5, dy / length * 5, 2);
+    if (enemy->kind == ENEMY_BOSS) {
+        for (int i = -3; i <= 3; ++i) {
+            float angle = i * 0.18f + sinf(enemy->age * 0.025f) * 0.25f;
+            game_spawn_bullet(game, -1, enemy->x, enemy->y + 90, sinf(angle) * 5, cosf(angle) * 5, 2);
+        }
+    }
+    enemy->cooldown = enemy->kind == ENEMY_BOSS ? 40 : 110;
+}
+
+static void update_enemies(Game *game) {
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        Enemy *enemy = &game->enemies[i];
+        if (!enemy->active) continue;
+        ++enemy->age;
+        if (enemy->kind == ENEMY_BOSS && enemy->y >= 200) {
+            enemy->x = 480 + sinf(enemy->age * 0.012f) * 240;
+        } else {
+            enemy->x += enemy->vx;
+            enemy->y += enemy->vy;
+        }
+        if ((enemy->kind == ENEMY_TURRET || enemy->kind == ENEMY_BOSS) && enemy->y > 0 && enemy->y < 900) enemy_fire(game, enemy);
+        for (int p = 0; p < GAME_PLAYERS; ++p) {
+            Player *player = &game->players[p];
+            if (player->joined && player->lives > 0 && segment_hits(enemy->x, enemy->y, enemy->x, enemy->y,
+                player->x, player->y, enemy->radius + 18)) game_damage_player(game, p, 4);
+        }
+        if (enemy->y > GAME_HEIGHT + 200) enemy->active = false;
+    }
+}
+
+static void update_bullets(Game *game) {
+    for (int i = 0; i < GAME_BULLETS; ++i) {
+        Bullet *bullet = &game->bullets[i];
+        if (!bullet->active) continue;
+        float old_x = bullet->x, old_y = bullet->y;
+        bullet->x += bullet->vx;
+        bullet->y += bullet->vy;
+        if (bullet->owner >= 0) {
+            for (int e = 0; e < GAME_ENEMIES; ++e) {
+                Enemy *enemy = &game->enemies[e];
+                if (!enemy->active || !segment_hits(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y, enemy->radius + bullet->radius)) continue;
+                bullet->active = false;
+                enemy->health -= bullet->damage;
+                if (enemy->health <= 0) {
+                    enemy->active = false;
+                    ++game->kills;
+                    game->players[bullet->owner].score += enemy->kind == ENEMY_BOSS ? 5000 : 100;
+                    effect_add(game, enemy->x, enemy->y, enemy->kind == ENEMY_BOSS ? 2 : 0);
+                    if (enemy->kind == ENEMY_BOSS) game->complete = true;
+                }
+                break;
+            }
+        } else {
+            for (int p = 0; p < GAME_PLAYERS; ++p) {
+                Player *player = &game->players[p];
+                if (!player->joined || player->lives <= 0 || !segment_hits(old_x, old_y, bullet->x, bullet->y,
+                    player->x, player->y, 18 + bullet->radius)) continue;
+                game_damage_player(game, p, bullet->damage);
+                bullet->active = false;
+                break;
+            }
+        }
+        if (bullet->x < -100 || bullet->x > GAME_WIDTH + 100 || bullet->y < -250 || bullet->y > GAME_HEIGHT + 100) bullet->active = false;
+    }
+}
+
+void game_tick(Game *game) {
+    if (game->paused || game->over || game->complete) return;
+    ++game->tick;
+    for (int i = 0; i < GAME_EFFECTS; ++i) if (game->effects[i].life > 0) --game->effects[i].life;
+    update_players(game);
+    spawn_wave(game);
+    update_enemies(game);
+    update_bullets(game);
+    bool alive = false;
+    for (int p = 0; p < GAME_PLAYERS; ++p) if (game->players[p].joined && game->players[p].lives > 0) alive = true;
+    if (!alive) game->over = true;
+}
+
+int game_enemy_count(const Game *game) {
+    int count = 0;
+    for (int i = 0; i < GAME_ENEMIES; ++i) count += game->enemies[i].active;
+    return count;
+}
+
+int game_bullet_count(const Game *game) {
+    int count = 0;
+    for (int i = 0; i < GAME_BULLETS; ++i) count += game->bullets[i].active;
+    return count;
+}

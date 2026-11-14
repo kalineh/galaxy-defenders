@@ -1,0 +1,23 @@
+# The same commands work in the in-game console.
+game.reset 42
+game.waves 0
+assert p1.health eq 20
+player.join 2
+player.input 1 0 0 1 1
+enemy.spawn ball 400 600
+game.step 35
+assert kills eq 1
+assert p1.score eq 100
+assert shots eq 5
+assert p2.health eq 20
+player.input 1 1 0 0 0
+game.step 120
+assert p1.x eq 930
+game.pause 1
+game.step 10
+assert tick eq 155
+game.reset 42
+assert tick eq 0
+assert kills eq 0
+assert p2.joined eq 0
+state
