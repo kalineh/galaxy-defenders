@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-target="${1:-headless}"
+target="${1:-native}"
 if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|test)$ ]]; then
     echo 'Usage: ./build.sh [native|headless|test]' >&2
     exit 2
@@ -25,10 +25,6 @@ elif [[ "$target" == test ]]; then
     "$zig" cc "${flags[@]}" tests/test_game.c "${core[@]}" -o build/headless/test_game.exe
     echo 'Built build/headless/test_game.exe'
 else
-    if [[ ! -f src/app.c ]]; then
-        echo 'Windowed client is not implemented yet; use ./build.sh headless.' >&2
-        exit 1
-    fi
     ray=third_party/raylib/src
     mkdir -p build/raylib
     objects=()

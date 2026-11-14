@@ -4,6 +4,35 @@ A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).
 Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.md).
 
+## Play the first pass
+
+Double-click `play.bat` after building. It starts at 1% master volume. The game
+opens directly into a short combat trial using original sprites, HUD assets,
+music, and sound effects. A simplified boss appears after 45 seconds.
+
+| Action | Player 1 | Player 2 |
+| --- | --- | --- |
+| Move | WASD or arrows | IJKL |
+| Fire | Space or Z | Enter or right Ctrl |
+| Focus / slow movement | Left Shift | Right Shift |
+| Join | Joined at launch | F2 |
+
+Gamepad 1 controls player 1; gamepad 2 controls player 2 (Start joins). Use the
+left stick/D-pad to move, A/right trigger to fire, LB to focus, and Start to pause.
+Keyboard remains available when a controller disconnects. Physical controller
+mapping/disconnect behavior still needs human playtesting.
+
+`P`/Escape pauses, `R` restarts, `M` toggles mute, and backtick opens the console.
+Shift+backtick expands it, Up recalls the last command, Down clears it, and
+Escape closes it. Close the window to exit. Gamepad Y restarts after win/loss.
+
+This is a foundation playtest, not a complete stage port. It has movement,
+shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.
+Wave patterns, weapon behavior, and boss attacks are simplified. Original
+authored stages, scenery, weapon selection/upgrades, energy/shields, abilities,
+menus, and saves are not ported yet; inactive HUD meters show `--`. Web/mobile
+builds are also pending. Existing music remains in use.
+
 ## Build and test (Windows)
 
 Install Git for Windows, then run these commands from the repository in PowerShell:
@@ -11,6 +40,7 @@ Install Git for Windows, then run these commands from the repository in PowerShe
 ```powershell
 .\scripts\setup.ps1
 & 'C:\Program Files\Git\bin\bash.exe' ./build.sh headless
+& 'C:\Program Files\Git\bin\bash.exe' ./build.sh native
 & 'C:\Program Files\Git\bin\bash.exe' ./test.sh
 ```
 
@@ -18,9 +48,15 @@ Setup obtains checksum-verified Zig 0.13.0 in ignored `external/zig/`. Raylib 6.
 source is vendored. No other checkout, NPM, global compiler, or XNA installation is
 required. Build outputs reuse `build/headless/` and `build/native/`.
 
-The windowed client is in progress. The headless combat slice already runs the
-same fixed-tick simulation that the client will use, without linking raylib,
+The headless combat slice runs the same fixed-tick simulation as the client,
+without linking raylib,
 opening a window, initializing audio, or waiting for wall-clock time.
+
+Run `build/native/galaxy.exe` directly, or copy the entire `build/native/` folder
+to share it. Assets are resolved beside the executable, independently of the
+working directory. `--volume 0.3` selects a louder master level; `--mute` skips
+audio initialization entirely. Direct interactive launches default to 30%;
+bounded `--frames` checks default to 1%.
 
 ## Scripted checks
 
@@ -38,6 +74,13 @@ Commands are bounded to 72,000 requested ticks per process and 4,096 script line
 Unknown commands, invalid arguments, and failed assertions exit nonzero. The
 test runner intentionally exercises failures, so expected `ERROR`/`FAIL` lines
 appear before its final PASS result.
+
+The native executable also supports `--headless` with the same commands. For a
+bounded render check, use `--frames 120 --capture artifacts/native-port/combat.png`.
+This mode holds scripted player input, advances exactly one tick per frame, and
+exits; `--console --frames 1` captures the console without desktop automation.
+Create the capture directory first. Screenshots are supporting evidence, not a
+pixel-parity gate. Automated tests use no computer-use tools.
 
 ## Scratch data
 

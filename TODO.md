@@ -1,22 +1,23 @@
 # Active Work
 
-## First native playable slice
+## Current handoff
 
-- Purpose: give the user an early Windows build using original art/music, backed
-  by a shared console and fast headless verification; see `PORT_PLAN.md`.
-- Constraints: simple C/raylib; no NPM installs; local co-op; network play deferred.
-- Current state: XNA preserved; raylib 6.0 vendored; local compiler setup ready.
-  Fixed-tick combat simulation and shared console/script runner pass headless
-  checks for movement, swept collisions, co-op, death/reset, pool bounds,
-  deterministic runs, assertions, and malformed commands.
-- [ ] Establish repository-local compiler/raylib build and native window.
-- [ ] Implement fixed-tick combat slice and keyboard/gamepad co-op.
-- [ ] Connect the existing shared console to the windowed client.
-- [ ] Run focused unit/integration checks, invalid-script checks, and visual smoke.
-- [ ] Deliver runnable build, controls, limitations, and next parity milestone.
-- Acceptance: user can move/shoot, fight enemies, take damage, restart, hear the
-  existing music, and join a second player. Headless checks create no window/audio
-  device, exercise real simulation, and return nonzero on failure.
-- Next action: implement `src/app.c`, stage original sprites/music, and run a
-  native graphical smoke check before delivering the build.
-- Verified: Git Bash `./test.sh` (unit checks + combat script + expected CLI failures).
+The first native combat trial is runnable via `play.bat`; controls and explicit
+parity gaps are in `README.md`. Native build, headless unit/integration checks,
+audio loading, co-op combat render, and console render passed. Original HUD
+assets/layout are reused; there is no new UI framework. Human playtesting is
+needed for feel and physical controller behavior. Do not use computer-use tools.
+
+## Remaining work
+
+- [ ] Add a bounded raylib memory/software-render target for windowless captures.
+- [ ] Incorporate first-playtest feedback before expanding the port.
+- [ ] Audit/port the first authored stage and its actual enemy/boss contracts;
+  preserve original music. Follow the milestones in `PORT_PLAN.md`.
+
+Next action: prove one software-rendered capture with the existing vendored
+raylib, using fixed output directories and no audio device.
+
+Verification: Git Bash `./test.sh`, `./build.sh native`; native `--headless
+--script scripts/checks/combat.txt`; bounded `--frames`/`--capture` and `--console`
+runs. Scratch is always `artifacts/native-port/`; never store durable inputs there.

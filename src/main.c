@@ -1,20 +1,22 @@
 #include "game.h"
 #include "console.h"
 #include <errno.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #ifndef GALAXY_HEADLESS
-int app_run(Game *game, Console *console, int frames, const char *capture, bool mute);
+int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console);
 #endif
 
 static Game game;
 static Console console;
 
 int main(int argc, char **argv) {
-    bool headless = false, mute = false;
+    bool headless = false, mute = false, show_console = false;
     int frames = 0;
+    float volume = -1;
     const char *script = NULL, *commands = NULL, *capture = NULL;
 #ifdef GALAXY_HEADLESS
     headless = true;
@@ -28,13 +30,26 @@ int main(int argc, char **argv) {
                  "  --frames N           graphical smoke: exit after N frames\n"
                  "  --capture PATH       save the final graphical frame (requires --frames)\n"
                  "  --mute               disable audio device\n"
+                 "  --volume 0..1        master volume (default .3; --frames default .01)\n"
+                 "  --console            open the graphical debug console at launch\n"
                  "Use --command help for the shared command list.");
             return 0;
         } else if (!strcmp(argv[i], "--headless")) headless = true;
         else if (!strcmp(argv[i], "--mute")) mute = true;
+        else if (!strcmp(argv[i], "--console")) show_console = true;
         else if (!strcmp(argv[i], "--script") && i + 1 < argc && !script) script = argv[++i];
         else if (!strcmp(argv[i], "--command") && i + 1 < argc && !commands) commands = argv[++i];
         else if (!strcmp(argv[i], "--capture") && i + 1 < argc && !capture) capture = argv[++i];
+        else if (!strcmp(argv[i], "--volume") && i + 1 < argc && volume < 0) {
+            char *end;
+            errno = 0;
+            const char *text = argv[++i];
+            volume = strtof(text, &end);
+            if (errno || end == text || *end || !isfinite(volume) || volume < 0 || volume > 1) {
+                fputs("Invalid --volume value (expected 0..1)\n", stderr);
+                return 2;
+            }
+        }
         else if (!strcmp(argv[i], "--frames") && i + 1 < argc && !frames) {
             char *end;
             errno = 0;
@@ -43,7 +58,7 @@ int main(int argc, char **argv) {
             frames = (int)value;
         } else { fprintf(stderr, "Unknown or incomplete argument: %s\n", argv[i]); return 2; }
     }
-    if ((headless && (frames || capture)) || (capture && !frames)) {
+    if ((headless && (frames || capture || show_console)) || (capture && !frames)) {
         fputs("--frames/--capture require a graphical run; capture also requires --frames\n", stderr);
         return 2;
     }
@@ -55,7 +70,8 @@ int main(int argc, char **argv) {
         return 0;
     }
 #ifndef GALAXY_HEADLESS
-    return app_run(&game, &console, frames, capture, mute);
+    if (volume < 0) volume = frames ? 0.01f : 0.3f;
+    return app_run(&game, &console, frames, capture, mute, volume, show_console);
 #else
     (void)mute;
     return 0;

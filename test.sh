@@ -13,4 +13,8 @@ if ./build/headless/galaxy.exe --unknown; then
     echo 'FAIL: unknown launch argument returned success' >&2
     exit 1
 fi
+if ./build/headless/galaxy.exe --volume nan; then
+    echo 'FAIL: invalid volume returned success' >&2
+    exit 1
+fi
 echo 'PASS: unit checks, combat script, and expected command-line failures'
