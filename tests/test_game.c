@@ -295,6 +295,7 @@ static void stage_clear_exit(void) {
     game_spawn_bullet(&game, 0, 480, 400, 0, -200, 60);
     game_tick(&game);
     CHECK(game.complete && game.menu.page == MENU_CLEAR);
+    CHECK(game_bullet_count(&game) == 0 && game_enemy_count(&game) == 0);
     CHECK(!strcmp(game_menu_label(&game, 0), "Continue"));
     int tick = game.tick;
     for (int i = 0; i < 90; ++i) game_tick(&game);

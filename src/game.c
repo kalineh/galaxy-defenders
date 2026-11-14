@@ -343,7 +343,13 @@ static void update_bullets(Game *game) {
                     ++game->kills;
                     game->players[bullet->owner].score += enemy->kind == ENEMY_BOSS ? 5000 : 100;
                     game_effect(game, EFFECT_ENEMY_DEATH, enemy->x, enemy->y, 0, 0, -1.25f);
-                    if (enemy->kind == ENEMY_BOSS) game->complete = true;
+                    if (enemy->kind == ENEMY_BOSS) {
+                        /* Boss1.OnDie clears enemies/projectiles before results. */
+                        game->complete = true;
+                        for (int n = 0; n < GAME_BULLETS; ++n) game->bullets[n].active = false;
+                        for (int n = 0; n < GAME_ENEMIES; ++n) game->enemies[n].active = false;
+                        return;
+                    }
                 }
                 break;
             }
