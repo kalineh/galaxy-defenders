@@ -167,7 +167,15 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
         !isfinite(x) || !isfinite(y) || !isfinite(vx) || !isfinite(vy)) return -1;
     for (int i = 0; i < GAME_BULLETS; ++i) {
         if (game->bullets[i].active) continue;
-        game->bullets[i] = (Bullet){true, owner, x, y, vx, vy, owner < 0 ? 9 : 5, damage};
+        Bullet *bullet = &game->bullets[i];
+        /* Keep pool snapshots deterministic, including padding after active. */
+        memset(bullet, 0, sizeof(*bullet));
+        bullet->active = true;
+        bullet->owner = owner;
+        bullet->x = x; bullet->y = y;
+        bullet->vx = vx; bullet->vy = vy;
+        bullet->radius = owner < 0 ? 9 : 5;
+        bullet->damage = damage;
         return i;
     }
     ++game->dropped_spawns;
