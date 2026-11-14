@@ -9,6 +9,8 @@ These are unmodified copies from the preserved XNA game:
   `legacy/Content/Textures/Weapons/`.
 - HUD panel frames, backgrounds, icons, armor bar, and portraits: corresponding
   files in `legacy/Content/Textures/UI/`. Layout follows `legacy/Hud/Hud.cs`.
+- `DotParticle.png` and `TriangleParticle.png`: original effect textures from
+  `legacy/Content/Textures/Effects/`, used with the active legacy particle definitions.
 - `audio/The_Voyage.wav`: `legacy/Content/Music/The_Voyage.wav`.
 - Other `audio/*.wav`: corresponding files in `legacy/Content/SE/`.
 

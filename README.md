@@ -6,7 +6,7 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 
 ## Play the first pass
 
-Run `./play.sh` in Git Bash after building. It starts at 1% master volume. The game
+Run `./play.sh` in Git Bash after building. It starts at 30% master volume. The game
 opens directly into a short combat trial using original sprites, HUD assets,
 music, and sound effects. A simplified boss appears after 45 seconds.
 
@@ -30,7 +30,7 @@ This is a foundation playtest, not a complete stage port. It has movement,
 shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.
 Wave patterns, weapon behavior, and boss attacks are simplified. Original
 authored stages, scenery, weapon selection/upgrades, energy/shields, abilities,
-menus, and saves are not ported yet; inactive HUD meters show `--`. Web/mobile
+menus, and saves are not ported yet; inactive HUD meters remain empty. Web/mobile
 builds are also pending. Existing music remains in use.
 
 ## Build and test (Windows)

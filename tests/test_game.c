@@ -121,8 +121,28 @@ static void command_failures(void) {
     CHECK(!console_chain(&console, &game, "game.reset 1;game.step 1")); /* reset cannot bypass budget */
 }
 
+static void legacy_effects(void) {
+    reset();
+    game_effect(&game, EFFECT_ENEMY_DEATH, 400, 300, 0, 0, 0);
+    int orange = 0, gray = 0;
+    for (int i = 0; i < GAME_EFFECTS; ++i) if (game.effects[i].life > 0) {
+        orange += game.effects[i].r == 252 && game.effects[i].g == 124;
+        gray += game.effects[i].r == 102 && game.effects[i].g == 102;
+    }
+    CHECK(orange == 24 && gray == 24);
+    reset();
+    game.players[0].lives = 1;
+    game.players[0].invulnerable = 0;
+    game_damage_player(&game, 0, 20);
+    CHECK(game.deaths == 1 && game.effect_cursor == 32);
+    game_tick(&game);
+    CHECK(game.over);
+    for (int frame = 0; frame < 90; ++frame) game_tick(&game);
+    for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
+}
+
 int main(void) {
-    movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures();
+    movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

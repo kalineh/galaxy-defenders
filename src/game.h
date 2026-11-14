@@ -10,7 +10,7 @@
 #define GAME_PLAYERS 2
 #define GAME_ENEMIES 96
 #define GAME_BULLETS 768
-#define GAME_EFFECTS 96
+#define GAME_EFFECTS 8192
 
 typedef struct {
     float x, y;
@@ -40,9 +40,13 @@ typedef struct {
 } Bullet;
 
 typedef struct {
-    float x, y;
+    float x, y, vx, vy, scale, scale_delta, angle, spin;
     int life, kind;
+    uint8_t r, g, b;
 } Effect;
+
+typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
+    EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT } EffectKind;
 
 typedef struct {
     Player players[GAME_PLAYERS];
@@ -50,7 +54,7 @@ typedef struct {
     Bullet bullets[GAME_BULLETS];
     Effect effects[GAME_EFFECTS];
     uint32_t random;
-    int tick, kills, shots, hits, dropped_spawns, effect_cursor;
+    int tick, kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
     bool waves, paused, over, complete, boss_spawned;
 } Game;
 
@@ -62,5 +66,6 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
 void game_damage_player(Game *game, int slot, float damage);
 int game_enemy_count(const Game *game);
 int game_bullet_count(const Game *game);
+void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy);
 
 #endif

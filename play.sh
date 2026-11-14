@@ -7,4 +7,4 @@ if [[ ! -f build/native/galaxy.exe ]]; then
     exit 1
 fi
 
-exec ./build/native/galaxy.exe --volume 0.01 "$@"
+exec ./build/native/galaxy.exe "$@"

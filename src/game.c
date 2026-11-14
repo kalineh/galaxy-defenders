@@ -20,10 +20,72 @@ static bool segment_hits(float ax, float ay, float bx, float by, float x, float 
     return dx * dx + dy * dy <= radius * radius;
 }
 
-static void effect_add(Game *game, float x, float y, int kind) {
-    Effect *effect = &game->effects[game->effect_cursor++ % GAME_EFFECTS];
-    *effect = (Effect){x, y, 24, kind};
-    if (game->effect_cursor == GAME_EFFECTS) game->effect_cursor = 0;
+static float random_unit(Game *game) {
+    return (random_next(game) >> 8) / 16777216.0f;
+}
+
+void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy) {
+    /* Active definitions from legacy/Effects/ParticleEffectDefinitions.cs. */
+    static const struct {
+        int count, triangle, lifetime, variation;
+        float offset, circle, box, speed, scale, scale_variation, shrink, outward, spin;
+    } definitions[] = {
+        {24, 1, 90, 0, 0, 0, 24, 2, 1.5f, 0.2f, -0.06f, 2.5f, 0.2f},
+        {8, 1, 60, 15, 8, 10, 0, 2.5f, 1.4f, 0.2f, -0.1f, 0.5f, 0.1f},
+        {24, 1, 60, 15, 0, 8, 0, 3, 2, 0.2f, -0.05f, 1, 0.2f},
+        {2, 0, 15, 0, 0, 40, 0, 1, 0.3f, 0, -0.025f, -4, 0.2f},
+        {4, 0, 60, 15, 0, 3, 0, 1, 0.7f, 0, -0.02f, 0, 0}
+    };
+    if (kind < 0 || kind > EFFECT_ENEMY_SHOT_HIT) return;
+    int passes = kind == EFFECT_ENEMY_DEATH ? 2 : 1;
+    for (int pass = 0; pass < passes; ++pass) {
+        for (int i = 0; i < definitions[kind].count; ++i) {
+            Effect *effect = &game->effects[game->effect_cursor];
+            game->effect_cursor = (game->effect_cursor + 1) % GAME_EFFECTS;
+            float angle = random_unit(game) * 6.2831853f;
+            float dx = (random_unit(game) - 0.5f) * definitions[kind].box + cosf(angle) * definitions[kind].circle + definitions[kind].offset;
+            float dy = (random_unit(game) - 0.5f) * definitions[kind].box + sinf(angle) * definitions[kind].circle + definitions[kind].offset;
+            float length = sqrtf(dx * dx + dy * dy);
+            *effect = (Effect){0};
+            effect->x = x + dx;
+            effect->y = y + dy;
+            effect->vx = vx + (random_unit(game) - 0.5f) * definitions[kind].speed;
+            effect->vy = vy + (random_unit(game) - 0.5f) * definitions[kind].speed;
+            if (length > 0.001f) {
+                effect->vx += dx / length * definitions[kind].outward;
+                effect->vy += dy / length * definitions[kind].outward;
+            }
+            effect->scale = definitions[kind].scale + (random_unit(game) - 0.5f) * definitions[kind].scale_variation;
+            effect->scale_delta = definitions[kind].shrink;
+            effect->angle = (random_unit(game) - 0.5f) * 360;
+            effect->spin = (random_unit(game) - 0.5f) * definitions[kind].spin * 57.29578f;
+            effect->kind = definitions[kind].triangle;
+            /* Preserve the active legacy manager's lifetime/2 calculation. */
+            effect->life = definitions[kind].lifetime + (int)(-definitions[kind].lifetime * 0.5f + definitions[kind].variation * random_unit(game));
+            if (kind == EFFECT_ENEMY_DEATH || kind == EFFECT_ENEMY_SHOT_HIT) {
+                effect->r = pass ? 102 : 252;
+                effect->g = pass ? 102 : 124;
+                effect->b = pass ? 102 : 85;
+            } else {
+                effect->r = player ? 195 : 247;
+                effect->g = player ? 150 : 208;
+                effect->b = player ? 255 : 74;
+            }
+        }
+    }
+}
+
+static void update_effects(Game *game) {
+    for (int i = 0; i < GAME_EFFECTS; ++i) {
+        Effect *effect = &game->effects[i];
+        if (effect->life <= 0) continue;
+        --effect->life;
+        effect->x += effect->vx;
+        effect->y += effect->vy;
+        effect->scale += effect->scale_delta;
+        effect->angle += effect->spin;
+        if (effect->scale <= 0) effect->life = 0;
+    }
 }
 
 bool game_join(Game *game, int slot) {
@@ -85,9 +147,11 @@ void game_damage_player(Game *game, int slot, float damage) {
     player->health -= damage;
     player->invulnerable = 45;
     ++game->hits;
-    effect_add(game, player->x, player->y, 1);
+    game_effect(game, EFFECT_ARMOR_HIT, player->x, player->y, slot, 0, -2);
     if (player->health > 0) return;
     player->health = 0;
+    ++game->deaths;
+    game_effect(game, EFFECT_PLAYER_DEATH, player->x, player->y, slot, 0, 0);
     --player->lives;
     if (player->lives > 0) {
         player->health = 20;
@@ -115,6 +179,7 @@ static void update_players(Game *game) {
         player->y = clamp(player->y + player->vy, 40, GAME_HEIGHT - 40);
         player->vx *= 0.85f;
         player->vy *= 0.85f;
+        if (player->input.focus) game_effect(game, EFFECT_FOCUS, player->x, player->y, i, player->vx, player->vy - 2.5f);
         if ((player->x <= 30 && player->vx < 0) || (player->x >= GAME_WIDTH - 30 && player->vx > 0)) player->vx = 0;
         if ((player->y <= 40 && player->vy < 0) || (player->y >= GAME_HEIGHT - 40 && player->vy > 0)) player->vy = 0;
         if (player->input.fire && player->cooldown == 0) {
@@ -201,12 +266,13 @@ static void update_bullets(Game *game) {
                 Enemy *enemy = &game->enemies[e];
                 if (!enemy->active || !segment_hits(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y, enemy->radius + bullet->radius)) continue;
                 bullet->active = false;
+                ++game->projectile_hits;
                 enemy->health -= bullet->damage;
                 if (enemy->health <= 0) {
                     enemy->active = false;
                     ++game->kills;
                     game->players[bullet->owner].score += enemy->kind == ENEMY_BOSS ? 5000 : 100;
-                    effect_add(game, enemy->x, enemy->y, enemy->kind == ENEMY_BOSS ? 2 : 0);
+                    game_effect(game, EFFECT_ENEMY_DEATH, enemy->x, enemy->y, 0, 0, -1.25f);
                     if (enemy->kind == ENEMY_BOSS) game->complete = true;
                 }
                 break;
@@ -217,6 +283,7 @@ static void update_bullets(Game *game) {
                 if (!player->joined || player->lives <= 0 || !segment_hits(old_x, old_y, bullet->x, bullet->y,
                     player->x, player->y, 18 + bullet->radius)) continue;
                 game_damage_player(game, p, bullet->damage);
+                game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
                 bullet->active = false;
                 break;
             }
@@ -226,9 +293,10 @@ static void update_bullets(Game *game) {
 }
 
 void game_tick(Game *game) {
-    if (game->paused || game->over || game->complete) return;
+    if (game->paused) return;
+    update_effects(game);
+    if (game->over || game->complete) return;
     ++game->tick;
-    for (int i = 0; i < GAME_EFFECTS; ++i) if (game->effects[i].life > 0) --game->effects[i].life;
     update_players(game);
     spawn_wave(game);
     update_enemies(game);

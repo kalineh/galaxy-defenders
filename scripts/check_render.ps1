@@ -31,8 +31,8 @@ try {
         # These three scene probes catch blank output, vertical inversion, and RGBA/BGRA mistakes.
         $probes = @(
             @{ X = 960; Y = 303; Expected = $source.GetPixel(40, 40) },
-            @{ X = 880; Y = 880; Expected = [Drawing.Color]::FromArgb(255, 212, 79) },
-            @{ X = 1040; Y = 880; Expected = [Drawing.Color]::FromArgb(94, 209, 240) }
+            @{ X = 880; Y = 880; Expected = [Drawing.Color]::FromArgb(247, 208, 74) },
+            @{ X = 1040; Y = 880; Expected = [Drawing.Color]::FromArgb(195, 150, 255) }
         )
         foreach ($probe in $probes) {
             $actual = $image.GetPixel($probe.X, $probe.Y)

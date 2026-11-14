@@ -4,6 +4,11 @@
 
 Port Galaxy Defenders from XNA/C# to simple C with raylib, targeting PC, phones, and web. Preserve the arcade shooter gameplay, two-player local co-op, and keyboard/gamepad support. Defer network multiplayer. Music will be reworked; choose its synthesis approach separately. Human direction owns scope; avoid speculative engine features.
 
+This is a fidelity port of a complete game. Match the legacy UI, text, effects,
+menus, content, and gameplay as closely as possible; do not invent replacements.
+Use original music until replacement is requested. Keep automation quiet, but
+normal human play launches must have audible music. Record genuine parity gaps.
+
 ## Project Structure & References
 
 The original XNA game is preserved in `legacy/`: `galaxy.sln` and `galaxy.csproj` define it. Gameplay lives in its `Ship/`, `Enemy/`, `Weapon/`, `Projectile/`, and `Stage/` directories; authored stages in `StageDefinitions/`, assets in `Content/`, and presentation in `Render/`, `Hud/`, and `Menu/`.

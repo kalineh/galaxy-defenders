@@ -12,8 +12,9 @@
 typedef struct {
     Texture2D ship, enemies[4], shot, hostile_shot;
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[2];
+    Texture2D particle_dot, particle_triangle;
     Music music;
-    Sound shoot, explode, hit;
+    Sound shoot, explode, hit, shot_hit, die;
     bool audio;
 } Assets;
 
@@ -21,7 +22,7 @@ static const Color background = {48, 48, 48, 255};
 static const Color dim = {160, 160, 160, 255};
 static const Color accent = {245, 205, 82, 255};
 static const Color danger = {255, 130, 104, 255};
-static const Color player_colors[2] = {{255, 212, 79, 255}, {94, 209, 240, 255}};
+static const Color player_colors[2] = {{247, 208, 74, 255}, {195, 150, 255, 255}};
 
 static const char *asset_path(const char *name) {
     static char path[2048];
@@ -40,6 +41,8 @@ static void assets_unload(Assets *assets) {
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
+    if (IsTextureValid(assets->particle_dot)) UnloadTexture(assets->particle_dot);
+    if (IsTextureValid(assets->particle_triangle)) UnloadTexture(assets->particle_triangle);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) if (IsTextureValid(hud[i])) UnloadTexture(hud[i]);
@@ -48,6 +51,8 @@ static void assets_unload(Assets *assets) {
         if (IsSoundValid(assets->shoot)) UnloadSound(assets->shoot);
         if (IsSoundValid(assets->explode)) UnloadSound(assets->explode);
         if (IsSoundValid(assets->hit)) UnloadSound(assets->hit);
+        if (IsSoundValid(assets->shot_hit)) UnloadSound(assets->shot_hit);
+        if (IsSoundValid(assets->die)) UnloadSound(assets->die);
         CloseAudioDevice();
     }
 }
@@ -60,6 +65,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->enemies[3] = texture_load("textures/Boss1.png");
     assets->shot = texture_load("textures/MiniShot.png");
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
+    assets->particle_dot = texture_load("textures/DotParticle.png");
+    assets->particle_triangle = texture_load("textures/TriangleParticle.png");
     assets->panel_background = texture_load("textures/PanelBackground.png");
     assets->panel_frames = texture_load("textures/PanelFrames.png");
     assets->armor = texture_load("textures/Armor.png");
@@ -69,6 +76,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->portraits[0] = texture_load("textures/KazukiPortrait.png");
     assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
     bool valid = IsTextureValid(assets->ship) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
+    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
     for (int i = 0; i < 4; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
@@ -83,16 +91,20 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->shoot = LoadSound(asset_path("audio/WeaponShootMiniShot.wav"));
     assets->explode = LoadSound(asset_path("audio/EnemyDie1.wav"));
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
+    assets->shot_hit = LoadSound(asset_path("audio/WeaponHitMiniShot.wav"));
+    assets->die = LoadSound(asset_path("audio/PlayerDie.wav"));
     if (!IsMusicValid(assets->music) || !IsSoundValid(assets->shoot) ||
-        !IsSoundValid(assets->explode) || !IsSoundValid(assets->hit)) {
+        !IsSoundValid(assets->explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
         console_log(console, "ERROR: missing or unsupported audio assets");
         return false;
     }
     assets->music.looping = true;
-    SetMusicVolume(assets->music, 0.4f);
+    SetMusicVolume(assets->music, 1.0f);
     SetSoundVolume(assets->shoot, 0.13f);
     SetSoundVolume(assets->explode, 0.35f);
     SetSoundVolume(assets->hit, 0.45f);
+    SetSoundVolume(assets->shot_hit, 0.2f);
+    SetSoundVolume(assets->die, 0.5f);
     PlayMusicStream(assets->music);
     return true;
 }
@@ -112,30 +124,22 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     int x = slot == 0 ? 0 : 1440;
     DrawTexture(assets->panel_background, x, 0, WHITE);
     if (!player->joined) {
-        text_center("PRESS START", x + 240, 490, 30, dim);
-        text_center("F2 / GAMEPAD 2 START", x + 240, 540, 22, dim);
+        text_center("Press Start", x + 240, 490, 30, dim);
         return;
     }
     /* Positions and original frames from legacy/Hud/Hud.cs + HudManager.cs. */
     DrawTexture(assets->panel_frames, x, 0, WHITE);
-    text_center(slot ? "RABBIT" : "KAZUKI", x + 242, 78, 30, dim);
+    text_center(slot ? "Rabbit" : "Kazuki", x + 242, 78, 30, dim);
     text_center(TextFormat("%d", player->score), x + 242, 154, 32, dim);
     sprite(assets->portraits[slot], (float)x + 238, 356, 256, 0, WHITE);
-    text_center(TextFormat("SHIPS: %d", player->lives), x + 240, 495, 25, dim);
-    DrawText(slot ? "I J K L      MOVE" : "WASD/ARROWS  MOVE", x + 70, 560, 22, dim);
-    DrawText(slot ? "ENTER        FIRE" : "SPACE / Z    FIRE", x + 70, 597, 22, dim);
-    DrawText(slot ? "R-SHIFT      FOCUS" : "L-SHIFT      FOCUS", x + 70, 634, 22, dim);
     DrawTexture(assets->energy_icon, x + 70, 722, Fade(WHITE, 0.35f));
     DrawTexture(assets->shield_icon, x + 70, 805, Fade(WHITE, 0.35f));
-    DrawText("--", x + 260, 744, 23, DARKGRAY);
-    DrawText("--", x + 260, 827, 23, DARKGRAY);
     DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
     DrawTexturePro(assets->armor, (Rectangle){0, 0, 256, 64},
         (Rectangle){(float)x + 140, 876, 281.6f * player->health / 20, 73.6f}, (Vector2){0}, 0, WHITE);
-    text_center(TextFormat("ARMOR %.0f / 20", player->health), x + 280, 980, 22, dim);
 }
 
-static void draw_game(const Game *game, const Assets *assets, bool muted) {
+static void draw_game(const Game *game, const Assets *assets) {
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -161,47 +165,30 @@ static void draw_game(const Game *game, const Assets *assets, bool muted) {
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
         if (effect->life <= 0) continue;
-        float age = 1 - effect->life / 24.0f;
-        float radius = (effect->kind == 2 ? 220 : 50) * age + 5;
-        Color color = Fade(effect->kind == 1 ? SKYBLUE : ORANGE, 1 - age);
-        DrawCircleLines((int)(ARENA_X + effect->x), (int)effect->y, radius, color);
-        for (int p = 0; p < 8; ++p) {
-            float angle = p * PI / 4;
-            DrawRectangle((int)(ARENA_X + effect->x + cosf(angle) * radius),
-                (int)(effect->y + sinf(angle) * radius), 6, 6, color);
-        }
+        Texture2D texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
+        sprite(texture, ARENA_X + effect->x, effect->y, texture.width * effect->scale,
+            effect->angle, (Color){effect->r, effect->g, effect->b, 255});
     }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        DrawTriangle((Vector2){ARENA_X + player->x - 9, player->y + 28},
-            (Vector2){ARENA_X + player->x, player->y + 55 + game->tick % 10},
-            (Vector2){ARENA_X + player->x + 9, player->y + 28}, Fade(color, 0.7f));
         sprite(assets->ship, ARENA_X + player->x, player->y, 80, -90 + player->vx * 1.3f, color);
-        if (player->input.focus) DrawCircleLines((int)(ARENA_X + player->x), (int)player->y, 18, WHITE);
     }
     EndScissorMode();
-    DrawText("NATIVE COMBAT TRIAL", ARENA_X + 18, 16, 20, dim);
-    DrawText(TextFormat("%02d:%02d", game->tick / 3600, game->tick / 60 % 60), ARENA_X + 850, 16, 20, dim);
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->kind != ENEMY_BOSS) continue;
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / 60), 12, danger);
     }
-    DrawRectangle(ARENA_X, 1034, GAME_WIDTH, 46, (Color){25, 29, 36, 235});
-    text_center(muted ? "P PAUSE    R RESTART    M UNMUTE    ` CONSOLE" : "P PAUSE    R RESTART    M MUTE    ` CONSOLE",
-        CANVAS_WIDTH / 2, 1047, 20, dim);
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
     if (game->over || game->complete || game->paused) {
         DrawRectangle(ARENA_X, 375, GAME_WIDTH, 260, (Color){15, 18, 24, 240});
-        const char *title = game->complete ? "TRIAL COMPLETE" : game->over ? "GAME OVER" : "PAUSED";
+        const char *title = game->complete ? "Stage Clear" : game->over ? "Retry!" : "Resume";
         text_center(title, 960, 435, 52, game->over ? danger : accent);
-        text_center(game->paused ? "P / START TO RESUME" : "R / GAMEPAD Y TO RESTART", 960, 525, 26, RAYWHITE);
-        if (game->complete) text_center("Next: the original stages, weapons, and bosses.", 960, 580, 20, dim);
     }
 }
 
@@ -329,6 +316,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsKeyPressed(KEY_M) && assets.audio) { muted = !muted; SetMasterVolume(muted ? 0 : volume); }
         }
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
+        int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
         if (!console_open && !toggled && !game->paused && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
@@ -342,13 +330,15 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (game->shots > old_shots) PlaySound(assets.shoot);
             if (game->kills > old_kills) PlaySound(assets.explode);
             if (game->hits > old_hits) PlaySound(assets.hit);
+            if (game->projectile_hits > old_projectile_hits) PlaySound(assets.shot_hit);
+            if (game->deaths > old_deaths) PlaySound(assets.die);
         }
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
         BeginTextureMode(canvas);
 #endif
-        draw_game(game, &assets, muted);
+        draw_game(game, &assets);
         if (console_open) draw_console(console, command, command_failed, console_full);
 #ifndef GALAXY_MEMORY
         EndTextureMode();
