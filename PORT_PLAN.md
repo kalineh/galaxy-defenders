@@ -47,6 +47,11 @@ inspected, but pixel comparisons against XNA or GPU output are not a prerequisit
 Deliver a Windows build early. Use human playtests for feel, visuals, music, and
 physical controller behavior, with small automated render/input smoke checks.
 Keep checks proportional; do not build a screenshot-baseline project first.
+Do not use computer-use/desktop automation. Expose any required verification via
+the CLI or testable code. Headless checks are silent; bounded graphical runs use
+1% master volume by default. Preserve the original HUD assets/layout and follow
+the established reference console interaction/rendering pattern; do not invent a
+new UI framework or visual redesign.
 
 ## Milestones
 

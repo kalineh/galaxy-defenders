@@ -31,6 +31,12 @@ Use four-space indentation, `snake_case` functions/variables, and explicit const
 
 Use the same console commands for interactive debugging and scripted headless checks. Test actual gameplay without a window/audio device; use fixed ticks and explicit seeds. Prioritize movement, collisions, progression, co-op, and controller disconnects. Build before dependent checks. Deliver playable builds for human feedback; screenshot comparisons are optional. See `PORT_PLAN.md`. Report untested platforms honestly.
 
+Do not use desktop/computer-use automation for this project. Verify through CLI
+scripts, headless tests, and programmatic render captures; humans own interactive
+playtesting. Automated graphical checks default to 1% master volume; headless
+checks never initialize audio. Follow the legacy HUD and reference console/UI
+patterns rather than inventing a new UI system or redesigning the game.
+
 ## Disposable Artifacts
 
 `artifacts/` contains only transient files that may be deleted at any time: logs,
