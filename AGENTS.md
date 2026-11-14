@@ -6,9 +6,9 @@ Port Galaxy Defenders from XNA/C# to simple C with raylib, targeting PC, phones,
 
 ## Project Structure & References
 
-Currently, `galaxy.sln` and `galaxy.csproj` define the XNA game. Gameplay lives in `Ship/`, `Enemy/`, `Weapon/`, `Projectile/`, and `Stage/`; authored stages live in `StageDefinitions/`, assets in `Content/`, and presentation in `Render/`, `Hud/`, and `Menu/`.
+The original XNA game is preserved in `legacy/`: `galaxy.sln` and `galaxy.csproj` define it. Gameplay lives in its `Ship/`, `Enemy/`, `Weapon/`, `Projectile/`, and `Stage/` directories; authored stages in `StageDefinitions/`, assets in `Content/`, and presentation in `Render/`, `Hud/`, and `Menu/`.
 
-At port initialization, move the original project and assets intact into `legacy/`, preserving relative paths and attribution. Develop the native game at the repository root: `src/` for coarse gameplay modules, `assets/` for runtime content, `tools/` for offline utilities, and ignored `build/` for outputs. Create directories when needed.
+Keep the archive's relative paths and attribution intact. Develop the native game at the repository root: `src/` for coarse gameplay modules, `assets/` for runtime content, `tools/` for offline utilities, and ignored `build/` for outputs. Create directories when needed.
 
 Read siblings as optional references, never build/runtime dependencies. They may
 not exist on another machine; keep all required code/assets and setup instructions here:
