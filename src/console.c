@@ -157,15 +157,16 @@ bool console_execute(Console *console, Game *game, const char *line) {
 bool console_chain(Console *console, Game *game, const char *commands) {
     const char *start = commands;
     while (*start && !console->quit) {
-        const char *end = strchr(start, ';');
-        size_t length = end ? (size_t)(end - start) : strlen(start);
+        const char *end = start;
+        while (*end && *end != ';' && *end != '#') ++end;
+        size_t length = (size_t)(end - start);
         char line[CONSOLE_LINE];
         if (length >= sizeof(line)) { console_log(console, "ERROR: command too long"); return false; }
         memcpy(line, start, length);
         line[length] = '\0';
         if (!console_execute(console, game, line)) return false;
-        start += length;
-        if (*start) ++start;
+        if (*end != ';') break; /* A comment consumes the rest of the physical line. */
+        start = end + 1;
     }
     return true;
 }

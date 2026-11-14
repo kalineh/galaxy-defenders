@@ -113,6 +113,8 @@ static void command_failures(void) {
     CHECK(!console_execute(&console, &game, "player.input 3 0 0 1 0"));
     CHECK(!console_execute(&console, &game, "assert p1.health eq 99"));
     CHECK(!console_execute(&console, &game, "assert nonsense eq 0"));
+    CHECK(console_chain(&console, &game, "# comment; not a command"));
+    CHECK(console_chain(&console, &game, "game.reset 7 # inline comment; not a command"));
     CHECK(console_chain(&console, &game, "game.reset 7;game.waves 0;player.join 2;assert p2.joined eq 1"));
     console.steps = CONSOLE_STEP_LIMIT;
     CHECK(!console_execute(&console, &game, "game.step 1"));
