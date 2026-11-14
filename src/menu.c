@@ -57,6 +57,8 @@ void game_retry(Game *game) {
         Player *p = &game->players[i];
         p->chassis = players[i].chassis;
         p->pilot = players[i].pilot;
+        p->weapon_level = players[i].weapon_level;
+        p->friction = game_chassis[p->chassis].friction;
         p->money = players[i].money;
         p->invincible = players[i].invincible;
         p->health = game_chassis[p->chassis].armor;
@@ -76,6 +78,7 @@ static void start_game(Game *game) {
         Player *p = &game->players[i];
         p->pilot = menu.pilot[i];
         p->money = starting_money[menu.difficulty];
+        p->weapon_level = p->pilot == 0 && menu.difficulty < 2 ? 1 : 2;
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
     game_menu_open(game, MENU_NONE);

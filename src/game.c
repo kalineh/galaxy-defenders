@@ -34,9 +34,10 @@ void game_effect(Game *game, EffectKind kind, float x, float y, int player, floa
         {8, 1, 60, 15, 8, 10, 0, 2.5f, 1.4f, 0.2f, -0.1f, 0.5f, 0.1f},
         {24, 1, 60, 15, 0, 8, 0, 3, 2, 0.2f, -0.05f, 1, 0.2f},
         {2, 0, 15, 0, 0, 40, 0, 1, 0.3f, 0, -0.025f, -4, 0.2f},
-        {4, 0, 60, 15, 0, 3, 0, 1, 0.7f, 0, -0.02f, 0, 0}
+        {4, 0, 60, 15, 0, 3, 0, 1, 0.7f, 0, -0.02f, 0, 0},
+        {2, 0, 60, 15, 0, 3, 0, 1, 0.5f, 0, -0.015f, 0, 0}
     };
-    if (kind < 0 || kind > EFFECT_ENEMY_SHOT_HIT) return;
+    if (kind < 0 || kind > EFFECT_LASER_HIT) return;
     int passes = kind == EFFECT_ENEMY_DEATH ? 2 : 1;
     for (int pass = 0; pass < passes; ++pass) {
         for (int i = 0; i < definitions[kind].count; ++i) {
@@ -107,6 +108,7 @@ bool game_equip_chassis(Game *game, int slot, int chassis) {
     if (!player->joined || player->lives <= 0) return false;
     float ratio = player->health / game_chassis[player->chassis].armor;
     player->chassis = chassis;
+    player->friction = game_chassis[chassis].friction;
     player->health = ratio * game_chassis[chassis].armor;
     return true;
 }
@@ -121,6 +123,9 @@ bool game_join(Game *game, int slot) {
     player->health = 20;
     player->lives = 3;
     player->pilot = slot;
+    player->weapon_level = 2;
+    player->energy = 3;
+    player->friction = game_chassis[0].friction;
     player->invulnerable = 90;
     return true;
 }
@@ -184,6 +189,8 @@ void game_damage_player(Game *game, int slot, float damage) {
     --player->lives;
     if (player->lives > 0) {
         player->health = game_chassis[player->chassis].armor;
+        player->energy = 3;
+        player->weapon_cooldown[0] = player->weapon_cooldown[1] = 0;
         player->x = slot == 0 ? 400 : 560;
         player->y = 880;
         player->vx = player->vy = 0;
@@ -191,34 +198,66 @@ void game_damage_player(Game *game, int slot, float damage) {
     }
 }
 
+bool game_upgrade_weapon(Game *game, int slot, int level) {
+    if (slot < 0 || slot >= GAME_PLAYERS || level < 0 || level > 7 || !game->players[slot].joined) return false;
+    game->players[slot].weapon_level = level;
+    return true;
+}
+
+static void fire_front_laser(Game *game, int slot) {
+    /* WeaponDefinitions.cs FrontLaser/FrontLaserFocus, zero-based levels. */
+    static const struct { int count, big_mask; float offsets[8]; } normal[] = {
+        {1, 0, {0}}, {2, 0, {-10, 10}}, {4, 0, {-15, -5, 5, 15}},
+        {5, 4, {-20, -10, 0, 10, 20}}, {6, 12, {-25, -15, -5, 5, 15, 25}},
+        {6, 30, {-25, -15, -5, 5, 15, 25}}, {6, 63, {-25, -15, -5, 5, 15, 25}},
+        {8, 255, {-35, -25, -15, -5, 5, 15, 25, 35}}
+    };
+    static const int focus_count[] = {1, 1, 1, 2, 2, 2, 3, 3};
+    static const float focus_reload[] = {0.06f, 0.05f, 0.04f, 0.05f, 0.04f, 0.03f, 0.04f, 0.03f};
+    Player *p = &game->players[slot];
+    int mode = p->input.focus ? 1 : 0, level = p->weapon_level;
+    if (p->weapon_cooldown[mode] > 0) return;
+    int count = mode ? focus_count[level] : normal[level].count;
+    float cost = 0;
+    for (int i = 0; i < count; ++i) cost += mode ? 0.225f : normal[level].big_mask & (1 << i) ? 0.15f : 0.1f;
+    if (p->energy < cost) return;
+    p->energy -= cost;
+    for (int i = 0; i < count; ++i) {
+        float x = mode ? (i - (count - 1) * 0.5f) * (count == 2 ? 6 : 4) : normal[level].offsets[i];
+        float damage = mode ? 0.175f : normal[level].big_mask & (1 << i) ? 0.225f : 0.1f;
+        if (p->pilot == 2) damage *= 1.15f;
+        game_spawn_bullet(game, slot, p->x + x, p->y - (mode ? 0 : 20), 0, mode ? -19 : -17, damage);
+    }
+    p->weapon_cooldown[mode] = mode ? focus_reload[level] : 0.16f;
+    ++game->shots;
+}
+
 static void update_players(Game *game) {
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
         if (player->invulnerable > 0) --player->invulnerable;
-        if (player->cooldown > 0) --player->cooldown;
+        /* Legacy input/fire runs before generator and cooldown updates. */
+        if (player->input.fire || player->input.focus) fire_front_laser(game, i);
+        player->energy = fminf(3, player->energy + 0.05f);
+        for (int mode = 0; mode < 2; ++mode) player->weapon_cooldown[mode] = fmaxf(0, player->weapon_cooldown[mode] - 1.0f / GAME_HZ);
         float x = player->input.x, y = player->input.y;
         float length = sqrtf(x * x + y * y);
         if (length > 1) { x /= length; y /= length; }
         /* Rookie acceleration and friction from legacy/Ship/ShipDefinitions.cs. */
         const Chassis *chassis = &game_chassis[player->chassis];
-        float acceleration = player->input.focus ? chassis->speed * (0.65f / 1.5f) : chassis->speed;
+        float acceleration = chassis->speed * (player->pilot == 0 ? 1.2f : 1);
         player->vx += x * acceleration;
         player->vy += y * acceleration;
         player->x = clamp(player->x + player->vx, 30, GAME_WIDTH - 30);
         player->y = clamp(player->y + player->vy, 40, GAME_HEIGHT - 40);
-        player->vx *= chassis->friction;
-        player->vy *= chassis->friction;
+        float target_friction = chassis->friction * (player->input.focus ? 0.6f : 1);
+        player->friction += (target_friction - player->friction) * (player->input.focus ? 0.2f : 0.4f);
+        player->vx *= player->friction;
+        player->vy *= player->friction;
         if (player->input.focus) game_effect(game, EFFECT_FOCUS, player->x, player->y, i, player->vx, player->vy - 2.5f);
         if ((player->x <= 30 && player->vx < 0) || (player->x >= GAME_WIDTH - 30 && player->vx > 0)) player->vx = 0;
         if ((player->y <= 40 && player->vy < 0) || (player->y >= GAME_HEIGHT - 40 && player->vy > 0)) player->vy = 0;
-        if (player->input.fire && player->cooldown == 0) {
-            float spread = player->input.focus ? 0 : 0.8f;
-            game_spawn_bullet(game, i, player->x - 13, player->y - 32, -spread, -18, 0.25f);
-            game_spawn_bullet(game, i, player->x + 13, player->y - 32, spread, -18, 0.25f);
-            player->cooldown = 7;
-            ++game->shots;
-        }
     }
 }
 
@@ -297,6 +336,7 @@ static void update_bullets(Game *game) {
                 if (!enemy->active || !segment_hits(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y, enemy->radius + bullet->radius)) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
+                game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
                 enemy->health -= bullet->damage;
                 if (enemy->health <= 0) {
                     enemy->active = false;

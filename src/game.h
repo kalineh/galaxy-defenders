@@ -38,8 +38,9 @@ typedef struct {
 typedef struct {
     bool joined, invincible;
     float x, y, vx, vy, health;
-    int lives, cooldown, invulnerable, score;
-    int money, chassis, pilot;
+    int lives, invulnerable, score;
+    int money, chassis, pilot, weapon_level;
+    float energy, weapon_cooldown[2], friction;
     PlayerInput input;
 } Player;
 
@@ -65,7 +66,7 @@ typedef struct {
 } Effect;
 
 typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
-    EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT } EffectKind;
+    EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT, EFFECT_LASER_HIT } EffectKind;
 
 typedef struct {
     Player players[GAME_PLAYERS];
@@ -89,6 +90,7 @@ const char *game_menu_label(const Game *game, int row);
 bool game_menu_enabled(const Game *game, int row);
 bool game_menu_small(const Game *game, int row);
 void game_retry(Game *game);
+bool game_upgrade_weapon(Game *game, int slot, int level);
 void game_tick(Game *game);
 int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y);
 int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float vy, float damage);

@@ -24,7 +24,7 @@ is pending.
 | --- | --- | --- |
 | Move | WASD or arrows | IJKL |
 | Fire | Space or Z | Enter or right Ctrl |
-| Focus / slow movement | Left Shift | Right Shift |
+| Focus fire / slow movement | Left Shift | Right Shift |
 | Join | Joined at launch | F2 |
 
 Gamepad 1 controls player 1; gamepad 2 controls player 2 (Start joins). Use the
@@ -38,8 +38,10 @@ Escape closes it. Close the window to exit. Gamepad Y restarts after win/loss.
 
 This is a foundation playtest, not a complete stage port. It has movement,
 shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.
-Wave patterns, weapon behavior, and boss attacks are simplified. Original
-authored stages, scenery, weapon selection/upgrades, energy/shields, abilities,
+Wave patterns and boss attacks are simplified. Front Laser has its original
+eight normal/focus levels and Standard Generator energy costs/regeneration;
+other weapons are pending. Original authored stages, scenery, shop-based weapon
+selection/upgrades, shields, abilities,
 saves, and full shop/progression menus are not ported yet; inactive HUD meters remain empty. Web/mobile
 builds are also pending. Existing music remains in use.
 
@@ -86,6 +88,9 @@ Debug equipment commands: `chassis.list`, `player.chassis 1 Demon`,
 `player.money 1 25000` (sets the balance), `player.invincible 1 1` (0 disables),
 and `player.heal 1`. Chassis changes preserve the current armor percentage and
 use the original sprite, armor, acceleration, and friction. They cost no money.
+`player.upgrade 1 7` sets Front Laser's level (zero-based 0–7, matching the legacy
+data). It changes both normal and focus patterns without charging money. Inspect
+`p1.weapon_level` and `p1.energy` through assertions or `state`.
 The shop and currency rewards are still pending. `state` reports these values;
 assertions also support `p1.money`, `p1.chassis`, `p1.armor`, `p1.invincible`
 and their `p2` equivalents. See [content parity](CONTENT_PARITY.md).

@@ -19,7 +19,7 @@ static void movement(void) {
     reset();
     game.players[0].input.x = 1;
     game_tick(&game);
-    CHECK(fabsf(game.players[0].x - 401.5f) < 0.001f);
+    CHECK(fabsf(game.players[0].x - 401.8f) < 0.001f); /* Kazuki +20% speed */
     for (int i = 0; i < 500; ++i) game_tick(&game);
     CHECK(game.players[0].x == GAME_WIDTH - 30);
     CHECK(game.players[0].vx == 0);
@@ -158,7 +158,7 @@ static void debug_equipment(void) {
     CHECK(game.players[0].health == 15);
     game.players[0].input.x = 1;
     game_tick(&game);
-    CHECK(game.players[0].x == 401.75f);
+    CHECK(fabsf(game.players[0].x - 402.1f) < 0.001f);
     CHECK(!console_execute(&console, &game, "player.money 1 -1"));
     CHECK(!console_execute(&console, &game, "player.money 1 2147483648"));
     CHECK(!console_execute(&console, &game, "player.invincible 1 2"));
@@ -207,10 +207,47 @@ static void menu_flow(void) {
     CHECK(!console_execute(&console, &game, "menu.input explode"));
 }
 
+static void weapon_upgrades(void) {
+    reset();
+    CHECK(console_execute(&console, &game, "player.upgrade 1 0"));
+    game.players[0].input.fire = true;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 1 && game.shots == 1);
+    CHECK(fabsf(game.bullets[0].damage - 0.1f) < 0.0001f && game.bullets[0].vy == -17);
+    CHECK(fabsf(game.players[0].energy - 2.95f) < 0.0001f);
+    for (int i = 0; i < 9; ++i) game_tick(&game);
+    CHECK(game.shots == 1);
+    game_tick(&game);
+    CHECK(game.shots == 2);
+    reset();
+    CHECK(console_execute(&console, &game, "player.upgrade 1 7"));
+    game.players[0].input.fire = true;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 8);
+    CHECK(game.bullets[0].x == 365 && game.bullets[7].x == 435);
+    CHECK(fabsf(game.bullets[0].damage - 0.225f) < 0.0001f);
+    game.players[0].input.fire = false;
+    game.players[0].input.focus = true;
+    game_tick(&game); /* Focus has a separate cooldown and fires without FIRE. */
+    CHECK(game_bullet_count(&game) == 11 && game.bullets[8].vy == -19);
+    CHECK(game.bullets[8].x == 396 && game.bullets[10].x == 404);
+    CHECK(fabsf(game.bullets[8].damage - 0.175f) < 0.0001f);
+    CHECK(game.players[0].friction < game_chassis[0].friction);
+    game.players[0].energy = 0;
+    int shots = game.shots;
+    game_tick(&game);
+    CHECK(game.shots == shots && game.players[0].energy == 0.05f);
+    CHECK(!console_execute(&console, &game, "player.upgrade 1 8"));
+    CHECK(!console_execute(&console, &game, "player.upgrade 1 -1"));
+    CHECK(!console_execute(&console, &game, "player.upgrade 2 7"));
+    CHECK(game.players[0].weapon_level == 7);
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();
+    weapon_upgrades();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

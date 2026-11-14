@@ -12,7 +12,7 @@
 typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[4], shot, hostile_shot;
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
-    Texture2D particle_dot, particle_triangle;
+    Texture2D particle_dot, particle_triangle, energy;
     Texture2D menu[6], title, cloud, pilot_arrow;
     Music music, title_music, pause_music;
     int music_mode;
@@ -46,6 +46,7 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
     if (IsTextureValid(assets->particle_dot)) UnloadTexture(assets->particle_dot);
     if (IsTextureValid(assets->particle_triangle)) UnloadTexture(assets->particle_triangle);
+    if (IsTextureValid(assets->energy)) UnloadTexture(assets->energy);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) if (IsTextureValid(hud[i])) UnloadTexture(hud[i]);
@@ -78,7 +79,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->enemies[1] = texture_load("textures/Isosceles.png");
     assets->enemies[2] = texture_load("textures/ShootBall.png");
     assets->enemies[3] = texture_load("textures/Boss1.png");
-    assets->shot = texture_load("textures/MiniShot.png");
+    assets->shot = texture_load("textures/Laser.png");
+    assets->energy = texture_load("textures/Energy.png");
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
     assets->particle_dot = texture_load("textures/DotParticle.png");
     assets->particle_triangle = texture_load("textures/TriangleParticle.png");
@@ -102,7 +104,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     }
     bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
-    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
+    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle) && IsTextureValid(assets->energy);
     for (int i = 0; i < 4; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
@@ -126,10 +128,10 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->menu_sounds[i] = LoadSound(asset_path(path));
         if (!IsSoundValid(assets->menu_sounds[i])) return false;
     }
-    assets->shoot = LoadSound(asset_path("audio/WeaponShootMiniShot.wav"));
+    assets->shoot = LoadSound(asset_path("audio/WeaponShootLaser.wav"));
     assets->explode = LoadSound(asset_path("audio/EnemyDie1.wav"));
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
-    assets->shot_hit = LoadSound(asset_path("audio/WeaponHitMiniShot.wav"));
+    assets->shot_hit = LoadSound(asset_path("audio/WeaponHitLaser.wav"));
     assets->die = LoadSound(asset_path("audio/PlayerDie.wav"));
     if (!IsMusicValid(assets->music) || !IsMusicValid(assets->title_music) || !IsMusicValid(assets->pause_music) || !IsSoundValid(assets->shoot) ||
         !IsSoundValid(assets->explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
@@ -173,7 +175,9 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     text_center(pilot_names[player->pilot], x + 242, 78, 30, dim);
     text_center(TextFormat("%d", player->score), x + 242, 154, 32, dim);
     sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
-    DrawTexture(assets->energy_icon, x + 70, 722, Fade(WHITE, 0.35f));
+    DrawTexture(assets->energy_icon, x + 70, 722, WHITE);
+    DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
+        (Rectangle){(float)x + 140, 716, 281.6f * player->energy / 3, 73.6f}, (Vector2){0}, 0, WHITE);
     DrawTexture(assets->shield_icon, x + 70, 805, Fade(WHITE, 0.35f));
     DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
     DrawTexturePro(assets->armor, (Rectangle){0, 0, 256, 64},
@@ -201,7 +205,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (!bullet->active) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
         sprite(bullet->owner < 0 ? assets->hostile_shot : assets->shot,
-            ARENA_X + bullet->x, bullet->y, bullet->owner < 0 ? 24 : 20, 0, color);
+            ARENA_X + bullet->x, bullet->y, bullet->owner < 0 ? 24 : (float)assets->shot.width, bullet->owner < 0 ? 0 : -90, color);
     }
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
@@ -215,7 +219,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ships[player->chassis], ARENA_X + player->x, player->y, 80, -90 + player->vx * 1.3f, color);
+        sprite(assets->ships[player->chassis], ARENA_X + player->x, player->y, 80, -90, color);
     }
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {

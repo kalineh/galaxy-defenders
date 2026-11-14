@@ -29,3 +29,6 @@ Title, Gunthor portrait, pilot arrow and MenuItem textures come unchanged from
 effects come from `Content/SE/`; title and pause tracks (`Konami's_Moon_Base`,
 `1-X-0`) come from `Content/Music/`. The Pericles font used by XNA is not bundled;
 native text still uses raylib's default font.
+
+Front Laser uses `Content/Textures/Weapons/Laser.png`, the original
+`WeaponShootLaser`/`WeaponHitLaser` sound effects, and `Textures/UI/Energy.png`.

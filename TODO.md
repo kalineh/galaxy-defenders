@@ -28,8 +28,10 @@ Current findings: original effects are `ParticleEffect.cs` +
 Enemy death emits two 24-triangle bursts; player armor damage 8, death 24.
 The active lifetime formula halves the nominal lifetime; preserve it for parity.
 Normal launch volume is now audible; only automated runs use 1%.
-Next action: port primary/focus weapon data and real upgrade commands, then
-original stage/enemy contracts. Do not disguise trial waves as authored stages.
+Next action: port original stage/enemy contracts and remaining weapons/loadouts.
+Do not disguise trial waves as authored stages. Front Laser normal/focus levels,
+Standard Generator energy, focus friction, Kazuki speed and Gunthor damage are
+now ported; `player.upgrade SLOT LEVEL` sets zero-based levels 0–7.
 Completed: money set, invincibility, healing, chassis listing/equipment commands;
 all nine original chassis sprites and base armor/movement values. See
 `CONTENT_PARITY.md` for the remaining behavior contracts.

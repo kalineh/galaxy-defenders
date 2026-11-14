@@ -65,6 +65,8 @@ static bool field_get(const Game *game, const char *name, float *value) {
         else if (!strcmp(name, "armor")) *value = game_chassis[player->chassis].armor;
         else if (!strcmp(name, "invincible")) *value = player->invincible;
         else if (!strcmp(name, "pilot")) *value = (float)player->pilot;
+        else if (!strcmp(name, "weapon_level")) *value = (float)player->weapon_level;
+        else if (!strcmp(name, "energy")) *value = player->energy;
         else return false;
     } else return false;
     return true;
@@ -95,12 +97,18 @@ bool console_execute(Console *console, Game *game, const char *line) {
         console_log(console, "enemy.spawn ball/triangle/turret/boss X Y | state | quit");
         console_log(console, "player.money SLOT AMOUNT (set) | player.invincible SLOT 0/1 | player.heal SLOT");
         console_log(console, "player.chassis SLOT NAME (equip, no cost) | chassis.list");
+        console_log(console, "player.upgrade SLOT LEVEL (FrontLaser, zero-based 0..7, no cost)");
         console_log(console, "menu.open main/pause | menu.input up/down/left/right/confirm/back [SLOT]");
         console_log(console, "assert FIELD eq/ne/lt/le/gt/ge VALUE; p1/p2.x/y/health/lives/score/joined");
         console_log(console, "Fields: tick enemies bullets kills shots hits dropped over complete");
         return true;
     }
     if (!strcmp(command, "quit") && count == 1) { console->quit = true; return true; }
+    if (!strcmp(command, "player.upgrade") && count == 3 && integer(words[1], &slot, 1, 2) && integer(words[2], &value, 0, 7)) {
+        if (!game_upgrade_weapon(game, slot - 1, value)) { console_log(console, "ERROR: player not joined"); return false; }
+        console_log(console, "p%d weapon=FrontLaser level=%d", slot, value);
+        return true;
+    }
     if (!strcmp(command, "menu.open") && count == 2) {
         if (!strcmp(words[1], "main")) { game_menu_open(game, MENU_MAIN); return true; }
         if (!strcmp(words[1], "pause")) { game_menu_open(game, MENU_PAUSE); return true; }
@@ -198,6 +206,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
             console_log(console, "p%d joined=%d x=%.2f y=%.2f health=%.2f lives=%d score=%d",
                 i + 1, p->joined, p->x, p->y, p->health, p->lives, p->score);
             console_log(console, "p%d money=%d chassis=%s invincible=%d", i + 1, p->money, game_chassis[p->chassis].name, p->invincible);
+            console_log(console, "p%d weapon=FrontLaser level=%d energy=%.3f", i + 1, p->weapon_level, p->energy);
         }
         return true;
     }
