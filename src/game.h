@@ -11,6 +11,15 @@
 #define GAME_ENEMIES 96
 #define GAME_BULLETS 768
 #define GAME_EFFECTS 8192
+#define GAME_CHASSIS 9
+
+typedef struct {
+    const char *name;
+    int price;
+    float speed, friction, armor, collision_resistance;
+} Chassis;
+
+extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef struct {
     float x, y;
@@ -18,9 +27,10 @@ typedef struct {
 } PlayerInput;
 
 typedef struct {
-    bool joined;
+    bool joined, invincible;
     float x, y, vx, vy, health;
     int lives, cooldown, invulnerable, score;
+    int money, chassis;
     PlayerInput input;
 } Player;
 
@@ -60,6 +70,7 @@ typedef struct {
 
 void game_reset(Game *game, uint32_t seed);
 bool game_join(Game *game, int slot);
+bool game_equip_chassis(Game *game, int slot, int chassis);
 void game_tick(Game *game);
 int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y);
 int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float vy, float damage);

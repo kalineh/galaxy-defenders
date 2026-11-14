@@ -55,6 +55,10 @@ static bool field_get(const Game *game, const char *name, float *value) {
         else if (!strcmp(name, "lives")) *value = (float)player->lives;
         else if (!strcmp(name, "score")) *value = (float)player->score;
         else if (!strcmp(name, "joined")) *value = player->joined;
+        else if (!strcmp(name, "money")) *value = (float)player->money;
+        else if (!strcmp(name, "chassis")) *value = (float)player->chassis;
+        else if (!strcmp(name, "armor")) *value = game_chassis[player->chassis].armor;
+        else if (!strcmp(name, "invincible")) *value = player->invincible;
         else return false;
     } else return false;
     return true;
@@ -83,11 +87,47 @@ bool console_execute(Console *console, Game *game, const char *line) {
         console_log(console, "game.reset SEED | game.waves 0/1 | game.pause 0/1 | game.step TICKS");
         console_log(console, "player.join 1/2 | player.input SLOT X Y FIRE FOCUS (axes -1..1, flags 0/1)");
         console_log(console, "enemy.spawn ball/triangle/turret/boss X Y | state | quit");
+        console_log(console, "player.money SLOT AMOUNT (set) | player.invincible SLOT 0/1 | player.heal SLOT");
+        console_log(console, "player.chassis SLOT NAME (equip, no cost) | chassis.list");
         console_log(console, "assert FIELD eq/ne/lt/le/gt/ge VALUE; p1/p2.x/y/health/lives/score/joined");
         console_log(console, "Fields: tick enemies bullets kills shots hits dropped over complete");
         return true;
     }
     if (!strcmp(command, "quit") && count == 1) { console->quit = true; return true; }
+    if (!strcmp(command, "chassis.list") && count == 1) {
+        for (int i = 0; i < GAME_CHASSIS; ++i) {
+            const Chassis *c = &game_chassis[i];
+            console_log(console, "%d %s armor=%.0f speed=%.2f friction=%.3f price=%d", i, c->name, c->armor, c->speed, c->friction, c->price);
+        }
+        return true;
+    }
+    if ((!strcmp(command, "player.money") || !strcmp(command, "player.invincible") ||
+         !strcmp(command, "player.chassis") || !strcmp(command, "player.heal")) &&
+        count >= 2 && integer(words[1], &slot, 1, GAME_PLAYERS)) {
+        Player *p = &game->players[slot - 1];
+        if (!p->joined) { console_log(console, "ERROR: player not joined"); return false; }
+        if (!strcmp(command, "player.money") && count == 3 && integer(words[2], &value, 0, 1000000000)) {
+            p->money = value;
+            console_log(console, "p%d money=%d", slot, p->money);
+            return true;
+        }
+        if (!strcmp(command, "player.invincible") && count == 3 && integer(words[2], &value, 0, 1)) {
+            p->invincible = value != 0;
+            console_log(console, "p%d invincible=%d", slot, p->invincible);
+            return true;
+        }
+        if (!strcmp(command, "player.heal") && count == 2 && p->lives > 0) {
+            p->health = game_chassis[p->chassis].armor;
+            return true;
+        }
+        if (!strcmp(command, "player.chassis") && count == 3) {
+            for (int i = 0; i < GAME_CHASSIS; ++i) if (!strcmp(words[2], game_chassis[i].name)) {
+                if (!game_equip_chassis(game, slot - 1, i)) return false;
+                console_log(console, "p%d chassis=%s armor=%.0f", slot, game_chassis[i].name, game_chassis[i].armor);
+                return true;
+            }
+        }
+    }
     if (!strcmp(command, "game.reset") && count == 2 && integer(words[1], &value, 0, 2147483647)) {
         game_reset(game, (uint32_t)value);
         return true;
@@ -135,6 +175,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
             const Player *p = &game->players[i];
             console_log(console, "p%d joined=%d x=%.2f y=%.2f health=%.2f lives=%d score=%d",
                 i + 1, p->joined, p->x, p->y, p->health, p->lives, p->score);
+            console_log(console, "p%d money=%d chassis=%s invincible=%d", i + 1, p->money, game_chassis[p->chassis].name, p->invincible);
         }
         return true;
     }

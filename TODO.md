@@ -27,6 +27,9 @@ Enemy death emits two 24-triangle bursts; player armor damage 8, death 24.
 The active lifetime formula halves the nominal lifetime; preserve it for parity.
 Normal launch volume is now audible; only automated runs use 1%.
 Next action: port original menu flow and add validated progression/debug commands.
+Completed: money set, invincibility, healing, chassis listing/equipment commands;
+all nine original chassis sprites and base armor/movement values. See
+`CONTENT_PARITY.md` for the remaining behavior contracts.
 
 Verification: Git Bash `./test.sh`, `./build.sh native`; native `--headless
 --script scripts/checks/combat.txt`; bounded `--frames`/`--capture` and `--console`

@@ -19,3 +19,7 @@ Original game/code/design credit: Kalin. Music credit: RushJet1, as recorded in
 
 The build copies these files beside the executable. Runtime never reads `legacy/`
 or another repository. Copy the whole `build/native/` folder when sharing a build.
+# Additional chassis
+
+The Eagle, Crusher, Interceptor, Phoenix, Lightning, Dragon, Demon, and Ace
+textures are copied unchanged from `legacy/Content/Textures/Player/`.

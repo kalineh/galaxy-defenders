@@ -72,6 +72,13 @@ comments are supported. `player.input SLOT X Y FIRE FOCUS` holds player actions
 until changed. `game.step N` advances exact 60 Hz ticks. Assertions use fields
 such as `p1.health`, `kills`, and `tick`; example: `assert p1.health eq 20`.
 Commands are bounded to 72,000 requested ticks per process and 4,096 script lines.
+Debug equipment commands: `chassis.list`, `player.chassis 1 Demon`,
+`player.money 1 25000` (sets the balance), `player.invincible 1 1` (0 disables),
+and `player.heal 1`. Chassis changes preserve the current armor percentage and
+use the original sprite, armor, acceleration, and friction. They cost no money.
+The shop and currency rewards are still pending. `state` reports these values;
+assertions also support `p1.money`, `p1.chassis`, `p1.armor`, `p1.invincible`
+and their `p2` equivalents. See [content parity](CONTENT_PARITY.md).
 Unknown commands, invalid arguments, and failed assertions exit nonzero. The
 test runner intentionally exercises failures, so expected `ERROR`/`FAIL` lines
 appear before its final PASS result.

@@ -88,6 +88,29 @@ static void update_effects(Game *game) {
     }
 }
 
+/* legacy/Ship/ShipDefinitions.cs: ChassisDefinitions.Items. */
+const Chassis game_chassis[GAME_CHASSIS] = {
+    {"Rookie", 1000, 1.5f, 0.85f, 20, 0.25f},
+    {"Eagle", 1250, 1.75f, 0.825f, 15, 0.15f},
+    {"Crusher", 2500, 0.7f, 0.92f, 30, 0.60f},
+    {"Interceptor", 7000, 2.0f, 0.80f, 25, 0.35f},
+    {"Phoenix", 9500, 1.8f, 0.85f, 30, 0.50f},
+    {"Lightning", 14000, 3.0f, 0.775f, 25, 0.35f},
+    {"Dragon", 22500, 2.15f, 0.825f, 35, 0.60f},
+    {"Demon", 22500, 0.75f, 0.92f, 50, 0.85f},
+    {"Ace", 25000, 2.75f, 0.75f, 40, 0.75f}
+};
+
+bool game_equip_chassis(Game *game, int slot, int chassis) {
+    if (slot < 0 || slot >= GAME_PLAYERS || chassis < 0 || chassis >= GAME_CHASSIS) return false;
+    Player *player = &game->players[slot];
+    if (!player->joined || player->lives <= 0) return false;
+    float ratio = player->health / game_chassis[player->chassis].armor;
+    player->chassis = chassis;
+    player->health = ratio * game_chassis[chassis].armor;
+    return true;
+}
+
 bool game_join(Game *game, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || game->players[slot].joined || game->over || game->complete) return false;
     Player *player = &game->players[slot];
@@ -143,7 +166,7 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
 void game_damage_player(Game *game, int slot, float damage) {
     if (slot < 0 || slot >= GAME_PLAYERS || damage <= 0 || !isfinite(damage)) return;
     Player *player = &game->players[slot];
-    if (!player->joined || player->lives <= 0 || player->invulnerable > 0) return;
+    if (!player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible) return;
     player->health -= damage;
     player->invulnerable = 45;
     ++game->hits;
@@ -154,7 +177,7 @@ void game_damage_player(Game *game, int slot, float damage) {
     game_effect(game, EFFECT_PLAYER_DEATH, player->x, player->y, slot, 0, 0);
     --player->lives;
     if (player->lives > 0) {
-        player->health = 20;
+        player->health = game_chassis[player->chassis].armor;
         player->x = slot == 0 ? 400 : 560;
         player->y = 880;
         player->vx = player->vy = 0;
@@ -172,13 +195,14 @@ static void update_players(Game *game) {
         float length = sqrtf(x * x + y * y);
         if (length > 1) { x /= length; y /= length; }
         /* Rookie acceleration and friction from legacy/Ship/ShipDefinitions.cs. */
-        float acceleration = player->input.focus ? 0.65f : 1.5f;
+        const Chassis *chassis = &game_chassis[player->chassis];
+        float acceleration = player->input.focus ? chassis->speed * (0.65f / 1.5f) : chassis->speed;
         player->vx += x * acceleration;
         player->vy += y * acceleration;
         player->x = clamp(player->x + player->vx, 30, GAME_WIDTH - 30);
         player->y = clamp(player->y + player->vy, 40, GAME_HEIGHT - 40);
-        player->vx *= 0.85f;
-        player->vy *= 0.85f;
+        player->vx *= chassis->friction;
+        player->vy *= chassis->friction;
         if (player->input.focus) game_effect(game, EFFECT_FOCUS, player->x, player->y, i, player->vx, player->vy - 2.5f);
         if ((player->x <= 30 && player->vx < 0) || (player->x >= GAME_WIDTH - 30 && player->vx > 0)) player->vx = 0;
         if ((player->y <= 40 && player->vy < 0) || (player->y >= GAME_HEIGHT - 40 && player->vy > 0)) player->vy = 0;

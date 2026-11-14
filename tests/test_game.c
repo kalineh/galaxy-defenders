@@ -141,8 +141,37 @@ static void legacy_effects(void) {
     for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
 }
 
+static void debug_equipment(void) {
+    reset();
+    CHECK(console_chain(&console, &game, "player.money 1 25000;player.chassis 1 Demon;assert p1.armor eq 50"));
+    CHECK(game.players[0].health == 50 && game.players[0].money == 25000);
+    game.players[0].invulnerable = 0;
+    CHECK(console_execute(&console, &game, "player.invincible 1 1"));
+    game_damage_player(&game, 0, 100);
+    CHECK(game.players[0].health == 50 && game.players[0].lives == 3 && game.hits == 0);
+    CHECK(console_execute(&console, &game, "player.invincible 1 0"));
+    game_damage_player(&game, 0, 25);
+    CHECK(game.players[0].health == 25);
+    CHECK(console_execute(&console, &game, "player.chassis 1 Eagle"));
+    CHECK(game.players[0].health == 7.5f);
+    CHECK(console_execute(&console, &game, "player.heal 1"));
+    CHECK(game.players[0].health == 15);
+    game.players[0].input.x = 1;
+    game_tick(&game);
+    CHECK(game.players[0].x == 401.75f);
+    CHECK(!console_execute(&console, &game, "player.money 1 -1"));
+    CHECK(!console_execute(&console, &game, "player.money 1 2147483648"));
+    CHECK(!console_execute(&console, &game, "player.invincible 1 2"));
+    CHECK(!console_execute(&console, &game, "player.chassis 1 Missing"));
+    CHECK(!console_execute(&console, &game, "player.chassis 2 Ace"));
+    CHECK(game.players[0].money == 25000 && game.players[0].chassis == 1);
+    game_reset(&game, 1);
+    CHECK(!game.players[0].invincible && game.players[0].money == 0 && game.players[0].chassis == 0);
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
+    debug_equipment();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

@@ -10,7 +10,7 @@
 #define ARENA_X 480
 
 typedef struct {
-    Texture2D ship, enemies[4], shot, hostile_shot;
+    Texture2D ships[GAME_CHASSIS], enemies[4], shot, hostile_shot;
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[2];
     Texture2D particle_dot, particle_triangle;
     Music music;
@@ -37,7 +37,7 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
-    if (IsTextureValid(assets->ship)) UnloadTexture(assets->ship);
+    for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
@@ -58,7 +58,11 @@ static void assets_unload(Assets *assets) {
 }
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
-    assets->ship = texture_load("textures/Rookie.png");
+    for (int i = 0; i < GAME_CHASSIS; ++i) {
+        char path[128];
+        snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
+        assets->ships[i] = texture_load(path);
+    }
     assets->enemies[0] = texture_load("textures/Ball.png");
     assets->enemies[1] = texture_load("textures/Isosceles.png");
     assets->enemies[2] = texture_load("textures/ShootBall.png");
@@ -75,7 +79,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->shield_icon = texture_load("textures/ShieldIcon.png");
     assets->portraits[0] = texture_load("textures/KazukiPortrait.png");
     assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
-    bool valid = IsTextureValid(assets->ship) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
+    bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
+    for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
     for (int i = 0; i < 4; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
@@ -136,7 +141,7 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     DrawTexture(assets->shield_icon, x + 70, 805, Fade(WHITE, 0.35f));
     DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
     DrawTexturePro(assets->armor, (Rectangle){0, 0, 256, 64},
-        (Rectangle){(float)x + 140, 876, 281.6f * player->health / 20, 73.6f}, (Vector2){0}, 0, WHITE);
+        (Rectangle){(float)x + 140, 876, 281.6f * player->health / game_chassis[player->chassis].armor, 73.6f}, (Vector2){0}, 0, WHITE);
 }
 
 static void draw_game(const Game *game, const Assets *assets) {
@@ -174,7 +179,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ship, ARENA_X + player->x, player->y, 80, -90 + player->vx * 1.3f, color);
+        sprite(assets->ships[player->chassis], ARENA_X + player->x, player->y, 80, -90 + player->vx * 1.3f, color);
     }
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
