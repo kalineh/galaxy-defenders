@@ -21,7 +21,8 @@ not exist on another machine; keep all required code/assets and setup instructio
 
 `./build.sh native` builds the Windows client; `./build.sh headless` builds the
 simulation/console runner; `./test.sh` runs focused checks. Run `scripts/setup.ps1`
-once for the local compiler. Web and phone scripts are not implemented yet.
+once for the local compiler. `scripts/check_render.ps1` builds and verifies the
+windowless software renderer. Web and phone scripts are not implemented yet.
 
 On Windows, invoke shell scripts through Git Bash, for example `& 'C:\Program Files\Git\bin\bash.exe' ./build.sh`. Use PowerShell for ad-hoc commands and `rg` for searches. Do not install NPM packages without explicit approval of the exact packages.
 

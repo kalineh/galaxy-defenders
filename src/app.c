@@ -248,20 +248,34 @@ static void draw_console(const Console *console, const char *line, bool failed, 
 
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
+#ifndef GALAXY_MEMORY
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
+#endif
+#ifdef GALAXY_MEMORY
+    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Galaxy Defenders - software check");
+#else
     InitWindow(1280, 720, "Galaxy Defenders - native first pass");
+#endif
     if (!IsWindowReady()) { console_log(console, "ERROR: could not create window"); return 1; }
-    SetWindowMinSize(960, 540);
     SetExitKey(KEY_NULL);
+#ifdef GALAXY_MEMORY
+    SetTargetFPS(0);
+#else
+    SetWindowMinSize(960, 540);
     SetTargetFPS(60);
-    RenderTexture2D canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
-    if (!IsRenderTextureValid(canvas) || !assets_load(&assets, console, mute, volume)) {
+#endif
+    RenderTexture2D canvas = {0};
+#ifndef GALAXY_MEMORY
+    canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
+    if (!IsRenderTextureValid(canvas)) { CloseWindow(); return 1; }
+#endif
+    if (!assets_load(&assets, console, mute, volume)) {
         assets_unload(&assets);
         if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
         CloseWindow();
         return 1;
     }
-    SetTextureFilter(canvas.texture, TEXTURE_FILTER_BILINEAR);
+    if (IsRenderTextureValid(canvas)) SetTextureFilter(canvas.texture, TEXTURE_FILTER_BILINEAR);
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     char command[CONSOLE_LINE] = {0};
     char last_command[CONSOLE_LINE] = {0};
@@ -329,9 +343,14 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (game->kills > old_kills) PlaySound(assets.explode);
             if (game->hits > old_hits) PlaySound(assets.hit);
         }
+#ifdef GALAXY_MEMORY
+        BeginDrawing();
+#else
         BeginTextureMode(canvas);
+#endif
         draw_game(game, &assets, muted);
         if (console_open) draw_console(console, command, command_failed, console_full);
+#ifndef GALAXY_MEMORY
         EndTextureMode();
         BeginDrawing();
         ClearBackground(BLACK);
@@ -339,11 +358,19 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         Rectangle destination = {(GetScreenWidth() - CANVAS_WIDTH * scale) / 2,
             (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
         DrawTexturePro(canvas.texture, (Rectangle){0, 0, CANVAS_WIDTH, -CANVAS_HEIGHT}, destination, (Vector2){0}, 0, WHITE);
+#endif
         EndDrawing();
         if (frames && ++rendered >= frames) {
             if (capture) {
+#ifdef GALAXY_MEMORY
+                /* raylib 6.0 rlsw stubs glGetTexImage; read its screen framebuffer. */
+                Image image = LoadImageFromScreen();
+                /* rlsw rows are top-down; undo rlReadScreenPixels' OpenGL flip. */
+                ImageFlipVertical(&image);
+#else
                 Image image = LoadImageFromTexture(canvas.texture);
                 ImageFlipVertical(&image);
+#endif
                 if (!ExportImage(image, capture)) result = 1;
                 UnloadImage(image);
             }
@@ -352,7 +379,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     }
     console_execute(console, game, "state");
     assets_unload(&assets);
-    UnloadRenderTexture(canvas);
+    if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
     CloseWindow();
     return result;
 }

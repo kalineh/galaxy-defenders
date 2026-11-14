@@ -62,6 +62,13 @@ int main(int argc, char **argv) {
         fputs("--frames/--capture require a graphical run; capture also requires --frames\n", stderr);
         return 2;
     }
+#ifdef GALAXY_MEMORY
+    mute = true; /* Software captures never open an audio device. */
+    if (!headless && !frames) {
+        fputs("Software render checks require --frames N (no interactive window)\n", stderr);
+        return 2;
+    }
+#endif
     game_reset(&game, 1);
     if (script && !console_script(&console, &game, script)) return 1;
     if (commands && !console.quit && !console_chain(&console, &game, commands)) return 1;

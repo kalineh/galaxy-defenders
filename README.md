@@ -42,6 +42,7 @@ Install Git for Windows, then run these commands from the repository in PowerShe
 & 'C:\Program Files\Git\bin\bash.exe' ./build.sh headless
 & 'C:\Program Files\Git\bin\bash.exe' ./build.sh native
 & 'C:\Program Files\Git\bin\bash.exe' ./test.sh
+.\scripts\check_render.ps1
 ```
 
 Setup obtains checksum-verified Zig 0.13.0 in ignored `external/zig/`. Raylib 6.0
@@ -81,6 +82,15 @@ This mode holds scripted player input, advances exactly one tick per frame, and
 exits; `--console --frames 1` captures the console without desktop automation.
 Create the capture directory first. Screenshots are supporting evidence, not a
 pixel-parity gate. Automated tests use no computer-use tools.
+
+Prefer `scripts/check_render.ps1` for visual smoke checks: it builds
+`build/headless/galaxy-render.exe` against raylib's memory/software backend,
+renders a fixed scene, and checks sprite color, channel order, and orientation.
+It creates no window or audio device, requires no GPU, and overwrites the same
+scratch image/log each run. Use `./build.sh render` and then
+`galaxy-render.exe --script PATH --frames 1 --capture PATH` for other scenes.
+Unlike native interactive rendering, this target draws directly into a memory
+framebuffer. Physical input and audible playback remain human playtest checks.
 
 ## Scratch data
 

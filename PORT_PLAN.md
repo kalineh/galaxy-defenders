@@ -38,11 +38,13 @@ for integration flows. Test collision, damage, cooldowns, pool limits, death,
 restart, stage transitions, and co-op independently; then exercise their integration.
 Passing isolated systems is not proof that all content or presentation works.
 
-Raylib's current upstream [memory platform](https://github.com/raysan5/raylib/blob/master/src/platforms/rcore_memory.c)
-uses software rendering and has no input system. It is an optional future path for
-offscreen image checks; pin and validate the chosen revision before adopting it.
-No-render simulation does not depend on that backend. Exported frames can be
-inspected, but pixel comparisons against XNA or GPU output are not a prerequisite.
+Raylib 6.0 is vendored. Its [memory platform](https://github.com/raysan5/raylib/blob/6.0/src/platforms/rcore_memory.c)
+uses software rendering and has no input system. `./build.sh render` and
+`scripts/check_render.ps1` provide windowless, silent render checks. The build
+requests RGBA output; screen readback corrects the software backend's top-down
+row order. Avoid its stubbed texture readback. No-render simulation remains the
+fast default. Exported frames can be inspected, but pixel comparisons against XNA
+or GPU output are not a prerequisite.
 
 Deliver a Windows build early. Use human playtests for feel, visuals, music, and
 physical controller behavior, with small automated render/input smoke checks.

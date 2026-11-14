@@ -3,8 +3,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 target="${1:-native}"
-if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|test)$ ]]; then
-    echo 'Usage: ./build.sh [native|headless|test]' >&2
+if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|render|test)$ ]]; then
+    echo 'Usage: ./build.sh [native|headless|render|test]' >&2
     exit 2
 fi
 zig=./external/zig/zig.exe
@@ -26,25 +26,40 @@ elif [[ "$target" == test ]]; then
     echo 'Built build/headless/test_game.exe'
 else
     ray=third_party/raylib/src
-    mkdir -p build/raylib
+    object_dir=build/raylib
+    output_dir=build/native
+    executable=galaxy.exe
+    platform_flags=(-DPLATFORM_DESKTOP_GLFW -DGRAPHICS_API_OPENGL_33)
+    link_flags=(-lopengl32 -lgdi32 -lwinmm)
+    units=(rcore rshapes rtextures rtext rmodels raudio rglfw)
+    if [[ "$target" == render ]]; then
+        object_dir=build/raylib-memory
+        output_dir=build/headless
+        executable=galaxy-render.exe
+        platform_flags=(-DPLATFORM_MEMORY -DGRAPHICS_API_OPENGL_SOFTWARE -DSW_FRAMEBUFFER_OUTPUT_BGRA=0)
+        flags+=(-DGALAXY_MEMORY)
+        link_flags=(-lwinmm)
+        units=(rcore rshapes rtextures rtext rmodels raudio)
+    fi
+    mkdir -p "$object_dir"
     objects=()
     # Rebuild third-party objects only when source, configuration, or build rules change.
-    for unit in rcore rshapes rtextures rtext rmodels raudio rglfw; do
-        object="build/raylib/$unit.o"
+    for unit in "${units[@]}"; do
+        object="$object_dir/$unit.o"
         if [[ ! -f "$object" ]] || [[ build.sh -nt "$object" ]] ||
            [[ -n "$(find "$ray" -type f -newer "$object" -print -quit)" ]]; then
             echo "Compiling raylib $unit"
             "$zig" cc -std=c99 -target x86_64-windows-gnu -mcpu=x86_64 -O2 -w \
-                -DPLATFORM_DESKTOP_GLFW -DGRAPHICS_API_OPENGL_33 \
-                -I"$ray" -I"$ray/external/glfw/include" -c "$ray/$unit.c" -o "$object"
+                "${platform_flags[@]}" \
+                -I. -I"$ray" -I"$ray/external/glfw/include" -c "$ray/$unit.c" -o "$object"
         fi
         objects+=("$object")
     done
     "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c "${core[@]}" "${objects[@]}" \
-        -lopengl32 -lgdi32 -lwinmm -o build/native/galaxy.exe
+        "${link_flags[@]}" -o "$output_dir/$executable"
     if [[ -d assets ]]; then
-        mkdir -p build/native/assets
-        cp -ru assets/. build/native/assets/
+        mkdir -p "$output_dir/assets"
+        cp -ru assets/. "$output_dir/assets/"
     fi
-    echo 'Built build/native/galaxy.exe'
+    echo "Built $output_dir/$executable"
 fi

@@ -1,0 +1,9 @@
+# Stable scene for readback/orientation checks; not a screenshot baseline.
+game.reset 42
+game.waves 0
+player.join 2
+game.step 120
+enemy.spawn ball 480 300
+assert enemies eq 1
+assert p1.health eq 20
+assert p2.health eq 20

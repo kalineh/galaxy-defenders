@@ -10,14 +10,14 @@ needed for feel and physical controller behavior. Do not use computer-use tools.
 
 ## Remaining work
 
-- [ ] Add a bounded raylib memory/software-render target for windowless captures.
 - [ ] Incorporate first-playtest feedback before expanding the port.
 - [ ] Audit/port the first authored stage and its actual enemy/boss contracts;
   preserve original music. Follow the milestones in `PORT_PLAN.md`.
 
-Next action: prove one software-rendered capture with the existing vendored
-raylib, using fixed output directories and no audio device.
+Next action: collect first-playtest feedback, then inventory Stage1's actual
+spawn/scenery/boss definitions before replacing the simplified combat trial.
 
 Verification: Git Bash `./test.sh`, `./build.sh native`; native `--headless
 --script scripts/checks/combat.txt`; bounded `--frames`/`--capture` and `--console`
-runs. Scratch is always `artifacts/native-port/`; never store durable inputs there.
+runs; `scripts/check_render.ps1` for silent, windowless software rendering.
+Scratch is always `artifacts/native-port/`; never store durable inputs there.
