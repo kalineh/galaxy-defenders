@@ -74,3 +74,10 @@ frameworks or depend on sibling files at build/runtime.
 Use simple build scripts and explicit commands. Commit each verified piece.
 Keep the current execution queue in `TODO.md`; record durable decisions here.
 Never imply proposed commands or deferred features already work.
+
+All sibling references are optional: builds and runtime must work without them.
+Commit and push small verified pieces to `native` throughout implementation.
+Reuse fixed build directories and `artifacts/native-port/` for this task. Everything
+under `artifacts/` is transient and may be deleted at any time; never keep durable
+inputs or saves there. Cleanup previews by default, requires an ownership marker,
+rejects links/junctions, and has no caller-supplied target path.

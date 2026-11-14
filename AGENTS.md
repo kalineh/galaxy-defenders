@@ -10,7 +10,8 @@ Currently, `galaxy.sln` and `galaxy.csproj` define the XNA game. Gameplay lives 
 
 At port initialization, move the original project and assets intact into `legacy/`, preserving relative paths and attribution. Develop the native game at the repository root: `src/` for coarse gameplay modules, `assets/` for runtime content, `tools/` for offline utilities, and ignored `build/` for outputs. Create directories when needed.
 
-Read siblings as references, never dependencies:
+Read siblings as optional references, never build/runtime dependencies. They may
+not exist on another machine; keep all required code/assets and setup instructions here:
 
 - `../solcraft`: architecture, raylib, input, and audio.
 - `../mmoa`: renderer, web integration, and profiling.
@@ -28,8 +29,17 @@ Use four-space indentation, `snake_case` functions/variables, and explicit const
 
 ## Testing Guidelines
 
-No automated framework or coverage threshold exists. Build native debug first, then check affected gameplay. Prioritize movement, collisions, stage progression, two-player input, and controller disconnects. Add focused deterministic regression checks when useful; use `test_<subsystem>.c` for standalone tests. Check visual changes in-game. Validate web/phone targets when affected; report untested platforms honestly.
+Use the same console commands for interactive debugging and scripted headless checks. Test actual gameplay without a window/audio device; use fixed ticks and explicit seeds. Prioritize movement, collisions, progression, co-op, and controller disconnects. Build before dependent checks. Deliver playable builds for human feedback; screenshot comparisons are optional. See `PORT_PLAN.md`. Report untested platforms honestly.
+
+## Disposable Artifacts
+
+`artifacts/` contains only transient files that may be deleted at any time: logs,
+captures, scratch experiments, and disposable reports. Never store source, assets,
+saves, dependencies, or required build inputs there. Reuse `artifacts/native-port/`
+for this task and fixed `build/native/` and `build/headless/` output directories;
+do not create a fresh build tree per check. `scripts/clean_artifacts.ps1` previews
+cleanup by default; `-Apply` explicitly deletes only owned task scratch contents.
 
 ## Agent, Commit & Review Workflow
 
-Work on `native`. Keep unfinished multi-step work in `TODO.md`. Commit each verified, focused change before starting another; preserve unrelated edits. History uses short imperative subjects, such as `Fix bug in update logic.` Follow that convention. Review descriptions should explain behavior, validation, linked issues when applicable, and screenshots for visual changes. Never commit builds, caches, or logs. For documentation-only changes, inspect the diff.
+Work on `native`. Keep unfinished multi-step work in `TODO.md`. Commit and push each verified, focused piece before starting another; preserve unrelated edits. History uses short imperative subjects, such as `Fix bug in update logic.` Follow that convention. Review descriptions should explain behavior, validation, linked issues when applicable, and screenshots for visual changes. Never commit builds, caches, or logs. For documentation-only changes, inspect the diff.
