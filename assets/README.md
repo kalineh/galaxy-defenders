@@ -23,3 +23,9 @@ or another repository. Copy the whole `build/native/` folder when sharing a buil
 
 The Eagle, Crusher, Interceptor, Phoenix, Lightning, Dragon, Demon, and Ace
 textures are copied unchanged from `legacy/Content/Textures/Player/`.
+
+Title, Gunthor portrait, pilot arrow and MenuItem textures come unchanged from
+`legacy/Content/Textures/UI/`; Cloud is from `Textures/Background/`. Menu sound
+effects come from `Content/SE/`; title and pause tracks (`Konami's_Moon_Base`,
+`1-X-0`) come from `Content/Music/`. The Pericles font used by XNA is not bundled;
+native text still uses raylib's default font.

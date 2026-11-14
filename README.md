@@ -7,8 +7,18 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 ## Play the first pass
 
 Run `./play.sh` in Git Bash after building. It starts at 30% master volume. The game
-opens directly into a short combat trial using original sprites, HUD assets,
-music, and sound effects. A simplified boss appears after 45 seconds.
+opens at the original title menu. Choose Solo Game or Coop Game, New Game,
+difficulty, then pilots to enter the combat trial. A simplified boss appears
+after 45 seconds. Continue is disabled until native saves are implemented.
+
+Menus use arrows/Enter/Escape or gamepad D-pad/A/B. During pilot selection,
+player two uses J/L, right Ctrl to confirm, and Backspace to cancel (or gamepad
+two). Difficulty applies the original starting money and enemy health scaling;
+pilots receive their original chassis. Their complete weapon/shield loadouts
+and abilities are still pending. Title, combat, and pause use their original
+music tracks. Options adjust SFX/music volume and screen size for this session.
+Pause-menu Quit currently returns to the title; its original shop destination
+is pending.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
@@ -30,7 +40,7 @@ This is a foundation playtest, not a complete stage port. It has movement,
 shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.
 Wave patterns, weapon behavior, and boss attacks are simplified. Original
 authored stages, scenery, weapon selection/upgrades, energy/shields, abilities,
-menus, and saves are not ported yet; inactive HUD meters remain empty. Web/mobile
+saves, and full shop/progression menus are not ported yet; inactive HUD meters remain empty. Web/mobile
 builds are also pending. Existing music remains in use.
 
 ## Build and test (Windows)
@@ -79,6 +89,9 @@ use the original sprite, armor, acceleration, and friction. They cost no money.
 The shop and currency rewards are still pending. `state` reports these values;
 assertions also support `p1.money`, `p1.chassis`, `p1.armor`, `p1.invincible`
 and their `p2` equivalents. See [content parity](CONTENT_PARITY.md).
+`menu.open main` or `menu.open pause` opens a menu; `menu.input
+up/down/left/right/confirm/back [SLOT]` drives the same navigation as the client.
+Use a script or command at launch to bypass the title for combat debugging.
 Unknown commands, invalid arguments, and failed assertions exit nonzero. The
 test runner intentionally exercises failures, so expected `ERROR`/`FAIL` lines
 appear before its final PASS result.

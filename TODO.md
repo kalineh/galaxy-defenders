@@ -10,7 +10,9 @@ needed for feel and physical controller behavior. Do not use computer-use tools.
 
 ## Remaining work
 
-- [ ] Port the original menu flow and music selection (no invented menu labels).
+- [x] Restore title/new-game/difficulty/pilot, pause/retry/options navigation and title/pause music.
+- [ ] Complete shop/progression menus, saved Continue, original font, transitions,
+  sample ships, pilot loadouts and abilities.
 - [ ] Add testable console stage selection, money, equipment/upgrades, and
   invincibility commands with validated arguments and observable state.
 - [ ] Replace generated trial waves with original authored content, porting the
@@ -26,10 +28,13 @@ Current findings: original effects are `ParticleEffect.cs` +
 Enemy death emits two 24-triangle bursts; player armor damage 8, death 24.
 The active lifetime formula halves the nominal lifetime; preserve it for parity.
 Normal launch volume is now audible; only automated runs use 1%.
-Next action: port original menu flow and add validated progression/debug commands.
+Next action: port primary/focus weapon data and real upgrade commands, then
+original stage/enemy contracts. Do not disguise trial waves as authored stages.
 Completed: money set, invincibility, healing, chassis listing/equipment commands;
 all nine original chassis sprites and base armor/movement values. See
 `CONTENT_PARITY.md` for the remaining behavior contracts.
+Menu navigation is headless-testable through `menu.open` / `menu.input`.
+Title/pilot software captures and a quiet native menu/audio launch passed.
 
 Verification: Git Bash `./test.sh`, `./build.sh native`; native `--headless
 --script scripts/checks/combat.txt`; bounded `--frames`/`--capture` and `--console`

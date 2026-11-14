@@ -11,10 +11,13 @@
 
 typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[4], shot, hostile_shot;
-    Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[2];
+    Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
     Texture2D particle_dot, particle_triangle;
-    Music music;
+    Texture2D menu[6], title, cloud, pilot_arrow;
+    Music music, title_music, pause_music;
+    int music_mode;
     Sound shoot, explode, hit, shot_hit, die;
+    Sound menu_sounds[5];
     bool audio;
 } Assets;
 
@@ -46,8 +49,16 @@ static void assets_unload(Assets *assets) {
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) if (IsTextureValid(hud[i])) UnloadTexture(hud[i]);
+    if (IsTextureValid(assets->portraits[2])) UnloadTexture(assets->portraits[2]);
+    for (int i = 0; i < 6; ++i) if (IsTextureValid(assets->menu[i])) UnloadTexture(assets->menu[i]);
+    if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
+    if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
+    if (IsTextureValid(assets->pilot_arrow)) UnloadTexture(assets->pilot_arrow);
     if (assets->audio) {
         if (IsMusicValid(assets->music)) UnloadMusicStream(assets->music);
+        if (IsMusicValid(assets->title_music)) UnloadMusicStream(assets->title_music);
+        if (IsMusicValid(assets->pause_music)) UnloadMusicStream(assets->pause_music);
+        for (int i = 0; i < 5; ++i) if (IsSoundValid(assets->menu_sounds[i])) UnloadSound(assets->menu_sounds[i]);
         if (IsSoundValid(assets->shoot)) UnloadSound(assets->shoot);
         if (IsSoundValid(assets->explode)) UnloadSound(assets->explode);
         if (IsSoundValid(assets->hit)) UnloadSound(assets->hit);
@@ -79,6 +90,16 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->shield_icon = texture_load("textures/ShieldIcon.png");
     assets->portraits[0] = texture_load("textures/KazukiPortrait.png");
     assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
+    assets->portraits[2] = texture_load("textures/GunthorPortrait.png");
+    assets->title = texture_load("textures/Title.png");
+    assets->cloud = texture_load("textures/Cloud.png");
+    assets->pilot_arrow = texture_load("textures/PilotSelectArrow.png");
+    const char *menu_textures[] = {"MenuItem", "MenuItemSmall", "MenuItemSelected", "MenuItemSelectedSmall", "MenuItemInvalid", "MenuItemInvalidSelected"};
+    for (int i = 0; i < 6; ++i) {
+        char path[128];
+        snprintf(path, sizeof(path), "textures/%s.png", menu_textures[i]);
+        assets->menu[i] = texture_load(path);
+    }
     bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
@@ -86,6 +107,9 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) valid = valid && IsTextureValid(hud[i]);
+    for (int i = 0; i < 6; ++i) valid = valid && IsTextureValid(assets->menu[i]);
+    valid = valid && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
+        IsTextureValid(assets->pilot_arrow) && IsTextureValid(assets->portraits[2]);
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
     if (mute) return true;
     InitAudioDevice();
@@ -93,24 +117,35 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     if (!assets->audio) { console_log(console, "Audio unavailable; continuing without sound."); return true; }
     SetMasterVolume(volume);
     assets->music = LoadMusicStream(asset_path("audio/The_Voyage.wav"));
+    assets->title_music = LoadMusicStream(asset_path("audio/Konami's_Moon_Base.wav"));
+    assets->pause_music = LoadMusicStream(asset_path("audio/1-X-0.wav"));
+    const char *menu_sounds[] = {"MenuMoveItem", "MenuSelect", "MenuCancel", "MenuUpgrade", "MenuDowngrade"};
+    for (int i = 0; i < 5; ++i) {
+        char path[128];
+        snprintf(path, sizeof(path), "audio/%s.wav", menu_sounds[i]);
+        assets->menu_sounds[i] = LoadSound(asset_path(path));
+        if (!IsSoundValid(assets->menu_sounds[i])) return false;
+    }
     assets->shoot = LoadSound(asset_path("audio/WeaponShootMiniShot.wav"));
     assets->explode = LoadSound(asset_path("audio/EnemyDie1.wav"));
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
     assets->shot_hit = LoadSound(asset_path("audio/WeaponHitMiniShot.wav"));
     assets->die = LoadSound(asset_path("audio/PlayerDie.wav"));
-    if (!IsMusicValid(assets->music) || !IsSoundValid(assets->shoot) ||
+    if (!IsMusicValid(assets->music) || !IsMusicValid(assets->title_music) || !IsMusicValid(assets->pause_music) || !IsSoundValid(assets->shoot) ||
         !IsSoundValid(assets->explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
         console_log(console, "ERROR: missing or unsupported audio assets");
         return false;
     }
     assets->music.looping = true;
+    assets->title_music.looping = true;
+    assets->pause_music.looping = true;
+    assets->music_mode = -1;
     SetMusicVolume(assets->music, 1.0f);
     SetSoundVolume(assets->shoot, 0.13f);
     SetSoundVolume(assets->explode, 0.35f);
     SetSoundVolume(assets->hit, 0.45f);
     SetSoundVolume(assets->shot_hit, 0.2f);
     SetSoundVolume(assets->die, 0.5f);
-    PlayMusicStream(assets->music);
     return true;
 }
 
@@ -134,9 +169,10 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     }
     /* Positions and original frames from legacy/Hud/Hud.cs + HudManager.cs. */
     DrawTexture(assets->panel_frames, x, 0, WHITE);
-    text_center(slot ? "Rabbit" : "Kazuki", x + 242, 78, 30, dim);
+    static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
+    text_center(pilot_names[player->pilot], x + 242, 78, 30, dim);
     text_center(TextFormat("%d", player->score), x + 242, 154, 32, dim);
-    sprite(assets->portraits[slot], (float)x + 238, 356, 256, 0, WHITE);
+    sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
     DrawTexture(assets->energy_icon, x + 70, 722, Fade(WHITE, 0.35f));
     DrawTexture(assets->shield_icon, x + 70, 805, Fade(WHITE, 0.35f));
     DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
@@ -190,11 +226,138 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
-    if (game->over || game->complete || game->paused) {
-        DrawRectangle(ARENA_X, 375, GAME_WIDTH, 260, (Color){15, 18, 24, 240});
-        const char *title = game->complete ? "Stage Clear" : game->over ? "Retry!" : "Resume";
-        text_center(title, 960, 435, 52, game->over ? danger : accent);
+    if (game->complete && game->menu.page == MENU_NONE) text_center("Stage Clear", 960, 435, 52, accent);
+}
+
+static bool title_menu(const Game *game) {
+    MenuPage page = game->menu.page;
+    return page == MENU_MAIN || page == MENU_NEW_GAME || page == MENU_DIFFICULTY || page == MENU_PILOT ||
+        ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
+}
+
+static void draw_menu(const Game *game, const Assets *assets, int frame) {
+    if (game->menu.page == MENU_NONE) return;
+    if (title_menu(game)) {
+        ClearBackground((Color){92, 120, 196, 255});
+        BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+        /* BlueSky's two cloud layers, source texture, scales and velocities. */
+        for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
+            float x = (float)((i * 193 + layer * 311) % GAME_WIDTH);
+            float speed = (layer ? 9.0f : 6.0f) * (1 - fabsf(x - 480) * 0.001f);
+            float y = fmodf(i * 137.0f + layer * 317 + frame * speed, GAME_HEIGHT + 64) - 32;
+            sprite(assets->cloud, ARENA_X + x, y, assets->cloud.width * (layer ? 0.8f : 1.2f), 0, WHITE);
+        }
+        EndScissorMode();
+        DrawTexture(assets->panel_background, 0, 0, WHITE);
+        DrawTexture(assets->panel_background, 1440, 0, WHITE);
+        DrawTexture(assets->title, 704, 120, WHITE);
+        DrawText("@kalin_t", 1300, 980, 19, WHITE);
+        DrawText("@RushJet1", 1300, 1000, 19, WHITE);
     }
+    if (game->menu.page == MENU_PILOT) {
+        static const char *info[3][5] = {
+            {"Kazuki", "Japan", "Ace Pilot", "B", "Speed+"},
+            {"Rabbit", "Russia", "Wpn Research", "A", "Money+"},
+            {"Gunthor", "Norway", "Demolitions", "O", "Damage+"}
+        };
+        static const char *keys[] = {"Name", "Country", "Profession", "Blood Type", "Bonus"};
+        for (int slot = 0; slot < game->menu.players; ++slot) {
+            int x = (slot ? 1440 : 0) + 238, y = 472;
+            int pilot = game->menu.pilot[slot];
+            DrawText(game->menu.ready[slot] ? "Waiting..." : "Select Pilot", x - 120, y - 240, 36, WHITE);
+            DrawRectangle(x - 77, y - 101, 159, 201, DARKGRAY);
+            sprite(assets->portraits[pilot], (float)x, (float)y, 256, 0, WHITE);
+            if (!game->menu.ready[slot]) {
+                if (pilot > 0) sprite(assets->pilot_arrow, (float)x - 116, (float)y, 67, 0, WHITE);
+                if (pilot < 2) DrawTexturePro(assets->pilot_arrow, (Rectangle){0, 0, -67, 99},
+                    (Rectangle){(float)x + 116, (float)y, 67, 99}, (Vector2){33.5f, 49.5f}, 0, WHITE);
+            }
+            for (int row = 0; row < 5; ++row) {
+                int text_y = y + 160 + row * 32 + (row == 4 ? 32 : 0);
+                DrawText(keys[row], x - 40 - MeasureText(keys[row], 20), text_y, 20, WHITE);
+                DrawText(":", x - 32, text_y, 20, WHITE);
+                DrawText(info[pilot][row], x - 16, text_y, 20, WHITE);
+            }
+        }
+        return;
+    }
+    for (int row = 0; row < game_menu_count(game); ++row) {
+        bool selected = row == game->menu.cursor, enabled = game_menu_enabled(game, row);
+        int texture = enabled ? (selected ? 2 : 0) + (game_menu_small(game, row) ? 1 : 0) : selected ? 5 : 4;
+        int y = 400 + row * 66;
+        DrawTexture(assets->menu[texture], 832, y, WHITE);
+        text_center(game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
+        if (game->menu.page == MENU_OPTIONS && row < 3) {
+            for (int i = 0; i < 10; ++i) DrawRectangle(864 + i * 20, y + 46, 16, 8,
+                game->menu.options[row] > i ? LIGHTGRAY : GRAY);
+        }
+    }
+}
+
+static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
+    GameMenu before = game->menu;
+    bool valid = before.page == MENU_PILOT || game_menu_enabled(game, before.cursor);
+    game_menu_input(game, action, slot);
+    if (!assets->audio) return;
+    int sound = -1;
+    if (action == MENU_BACK) sound = 2;
+    else if (action == MENU_CONFIRM) sound = valid ? 1 : 2;
+    else if (before.cursor != game->menu.cursor || before.pilot[slot] != game->menu.pilot[slot]) sound = 0;
+    else if (before.page == MENU_OPTIONS && memcmp(before.options, game->menu.options, sizeof(before.options))) sound = action == MENU_RIGHT ? 3 : 4;
+    if (sound >= 0) PlaySound(assets->menu_sounds[sound]);
+}
+
+static void poll_menu(Game *game, Assets *assets) {
+    if (game->menu.page == MENU_PAUSE) {
+        bool resume = IsKeyPressed(KEY_P);
+        for (int slot = 0; slot < GAME_PLAYERS; ++slot) resume |= IsGamepadAvailable(slot) &&
+            IsGamepadButtonPressed(slot, GAMEPAD_BUTTON_MIDDLE_RIGHT);
+        if (resume) { menu_input(game, assets, MENU_BACK, 0); return; }
+    }
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        bool pressed[6] = {false};
+        if (slot == 0) {
+            pressed[MENU_UP] = IsKeyPressed(KEY_UP);
+            pressed[MENU_DOWN] = IsKeyPressed(KEY_DOWN);
+            pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT);
+            pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT);
+            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_ENTER);
+            pressed[MENU_BACK] = IsKeyPressed(KEY_ESCAPE);
+        } else if (game->menu.page == MENU_PILOT) {
+            pressed[MENU_LEFT] = IsKeyPressed(KEY_J);
+            pressed[MENU_RIGHT] = IsKeyPressed(KEY_L);
+            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_RIGHT_CONTROL);
+            pressed[MENU_BACK] = IsKeyPressed(KEY_BACKSPACE);
+        }
+        if (IsGamepadAvailable(slot)) {
+            const int buttons[] = {GAMEPAD_BUTTON_LEFT_FACE_UP, GAMEPAD_BUTTON_LEFT_FACE_DOWN,
+                GAMEPAD_BUTTON_LEFT_FACE_LEFT, GAMEPAD_BUTTON_LEFT_FACE_RIGHT,
+                GAMEPAD_BUTTON_RIGHT_FACE_DOWN, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT};
+            for (int i = 0; i < 6; ++i) pressed[i] |= IsGamepadButtonPressed(slot, buttons[i]);
+        }
+        for (int i = 0; i < 6; ++i) if (pressed[i]) { menu_input(game, assets, (MenuAction)i, slot); break; }
+    }
+}
+
+static void update_audio(const Game *game, Assets *assets) {
+    if (!assets->audio) return;
+    int mode = title_menu(game) ? 1 : game->paused ? 2 : 0;
+    Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
+    if (assets->music_mode != mode) {
+        if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
+        if (mode != 0) StopMusicStream(tracks[mode]);
+        PlayMusicStream(tracks[mode]);
+        assets->music_mode = mode;
+    }
+    float sfx = game->menu.options[0] / 10.0f;
+    SetMusicVolume(tracks[mode], game->menu.options[1] / 10.0f);
+    SetSoundVolume(assets->shoot, 0.13f * sfx);
+    SetSoundVolume(assets->explode, 0.35f * sfx);
+    SetSoundVolume(assets->hit, 0.45f * sfx);
+    SetSoundVolume(assets->shot_hit, 0.2f * sfx);
+    SetSoundVolume(assets->die, 0.5f * sfx);
+    for (int i = 0; i < 5; ++i) SetSoundVolume(assets->menu_sounds[i], sfx);
+    UpdateMusicStream(tracks[mode]);
 }
 
 static PlayerInput poll_input(int slot) {
@@ -271,10 +434,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     char command[CONSOLE_LINE] = {0};
     char last_command[CONSOLE_LINE] = {0};
-    int command_length = 0, rendered = 0, result = 0;
+    int command_length = 0, rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
-    while (!WindowShouldClose() && !console->quit) {
+    while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
+        update_audio(game, &assets);
+        bool was_menu = game->menu.page != MENU_NONE;
         bool toggled = IsKeyPressed(KEY_GRAVE);
         if (toggled) {
             if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
@@ -302,27 +467,27 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 command_length = 0;
                 command[0] = '\0';
             }
+        } else if (!toggled && was_menu) {
+            poll_menu(game, &assets);
         } else if (!toggled) {
             bool start[2] = {false, false};
             for (int i = 0; i < GAME_PLAYERS; ++i) start[i] = IsGamepadAvailable(i) && IsGamepadButtonPressed(i, GAMEPAD_BUTTON_MIDDLE_RIGHT);
             bool joining = !game->players[1].joined && (IsKeyPressed(KEY_F2) || start[1]);
             if (joining) game_join(game, 1);
-            if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE) || start[0] || (start[1] && !joining)) game->paused = !game->paused;
+            if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE) || start[0] || (start[1] && !joining)) game_menu_open(game, MENU_PAUSE);
             bool restart = IsKeyPressed(KEY_R);
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 if ((game->over || game->complete) && IsGamepadAvailable(i) && IsGamepadButtonPressed(i, GAMEPAD_BUTTON_RIGHT_FACE_UP)) restart = true;
             }
             if (restart) {
-                bool co_op = game->players[1].joined;
-                game_reset(game, 1);
-                if (co_op) game_join(game, 1);
+                game_retry(game);
                 if (assets.audio) { StopMusicStream(assets.music); PlayMusicStream(assets.music); }
             }
             if (IsKeyPressed(KEY_M) && assets.audio) { muted = !muted; SetMasterVolume(muted ? 0 : volume); }
         }
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
         int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
-        if (!console_open && !toggled && !game->paused && (IsWindowFocused() || frames)) {
+        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
@@ -331,25 +496,27 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             }
         } else accumulator = 0;
         if (assets.audio) {
-            UpdateMusicStream(assets.music);
             if (game->shots > old_shots) PlaySound(assets.shoot);
             if (game->kills > old_kills) PlaySound(assets.explode);
             if (game->hits > old_hits) PlaySound(assets.hit);
             if (game->projectile_hits > old_projectile_hits) PlaySound(assets.shot_hit);
             if (game->deaths > old_deaths) PlaySound(assets.die);
         }
+        if (game->over && game->menu.page == MENU_NONE) game_menu_open(game, MENU_OVER);
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
         BeginTextureMode(canvas);
 #endif
         draw_game(game, &assets);
+        draw_menu(game, &assets, menu_frame++);
         if (console_open) draw_console(console, command, command_failed, console_full);
 #ifndef GALAXY_MEMORY
         EndTextureMode();
         BeginDrawing();
         ClearBackground(BLACK);
         float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
+        scale *= 0.875f + game->menu.options[2] * 0.0125f;
         Rectangle destination = {(GetScreenWidth() - CANVAS_WIDTH * scale) / 2,
             (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
         DrawTexturePro(canvas.texture, (Rectangle){0, 0, CANVAS_WIDTH, -CANVAS_HEIGHT}, destination, (Vector2){0}, 0, WHITE);

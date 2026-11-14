@@ -169,9 +169,48 @@ static void debug_equipment(void) {
     CHECK(!game.players[0].invincible && game.players[0].money == 0 && game.players[0].chassis == 0);
 }
 
+static void menu_flow(void) {
+    reset();
+    CHECK(console_chain(&console, &game, "menu.open main;menu.input down;menu.input confirm"));
+    CHECK(game.menu.page == MENU_NEW_GAME && game.menu.players == 2);
+    CHECK(console_chain(&console, &game, "menu.input up;menu.input confirm"));
+    CHECK(game.menu.page == MENU_NEW_GAME); /* no pretend save */
+    CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm;menu.input down;menu.input confirm"));
+    CHECK(game.menu.page == MENU_PILOT && game.menu.difficulty == 1);
+    CHECK(console_execute(&console, &game, "menu.input right"));
+    CHECK(game.menu.pilot[0] == 2); /* skip pilot reserved by P2 */
+    CHECK(console_execute(&console, &game, "menu.input confirm"));
+    CHECK(game.menu.page == MENU_PILOT && game.menu.ready[0]);
+    CHECK(console_execute(&console, &game, "menu.input confirm 2"));
+    CHECK(game.menu.page == MENU_NONE && !game.paused && game.players[1].joined);
+    CHECK(game.difficulty == 1 && game.players[0].pilot == 2 && game.players[0].chassis == 2);
+    CHECK(game.players[0].money == 1500 && game.players[1].money == 1500);
+    CHECK(game.players[0].health == 30);
+    int enemy = game_spawn_enemy(&game, ENEMY_BALL, 100, 100);
+    CHECK(game.enemies[enemy].health == 0.625f);
+    CHECK(console_chain(&console, &game, "menu.open pause;menu.input down;menu.input down;menu.input confirm"));
+    CHECK(game.menu.page == MENU_OPTIONS);
+    CHECK(console_execute(&console, &game, "menu.input left"));
+    CHECK(game.menu.options[0] == 9);
+    for (int i = 0; i < 20; ++i) game_menu_input(&game, MENU_LEFT, 0);
+    CHECK(game.menu.options[0] == 0);
+    CHECK(console_chain(&console, &game, "menu.input back;menu.input down;menu.input confirm"));
+    CHECK(game.menu.page == MENU_RETRY);
+    game_tick(&game);
+    CHECK(game.tick == 0);
+    CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm"));
+    CHECK(!game.paused && game.menu.page == MENU_NONE && game_enemy_count(&game) == 0);
+    CHECK(game.players[1].joined && game.players[0].chassis == 2 && game.menu.options[0] == 0);
+    CHECK(console_chain(&console, &game, "menu.open main;menu.input down;menu.input down;menu.input down;menu.input confirm;menu.input back"));
+    CHECK(game.menu.page == MENU_MAIN && !game.menu.quit);
+    CHECK(!console_execute(&console, &game, "menu.input confirm 3"));
+    CHECK(!console_execute(&console, &game, "menu.input explode"));
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
+    menu_flow();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
     }
 #endif
     game_reset(&game, 1);
+    if (!headless && !script && !commands) game_menu_open(&game, MENU_MAIN);
     if (script && !console_script(&console, &game, script)) return 1;
     if (commands && !console.quit && !console_chain(&console, &game, commands)) return 1;
     if (headless || console.quit) {

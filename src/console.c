@@ -46,6 +46,11 @@ static bool field_get(const Game *game, const char *name, float *value) {
     else if (!strcmp(name, "dropped")) *value = (float)game->dropped_spawns;
     else if (!strcmp(name, "over")) *value = game->over;
     else if (!strcmp(name, "complete")) *value = game->complete;
+    else if (!strcmp(name, "menu")) *value = (float)game->menu.page;
+    else if (!strcmp(name, "menu.cursor")) *value = (float)game->menu.cursor;
+    else if (!strcmp(name, "difficulty")) *value = (float)game->difficulty;
+    else if (!strcmp(name, "volume.sfx")) *value = (float)game->menu.options[0];
+    else if (!strcmp(name, "volume.music")) *value = (float)game->menu.options[1];
     else if (!strncmp(name, "p1.", 3) || !strncmp(name, "p2.", 3)) {
         const Player *player = &game->players[name[1] - '1'];
         name += 3;
@@ -59,6 +64,7 @@ static bool field_get(const Game *game, const char *name, float *value) {
         else if (!strcmp(name, "chassis")) *value = (float)player->chassis;
         else if (!strcmp(name, "armor")) *value = game_chassis[player->chassis].armor;
         else if (!strcmp(name, "invincible")) *value = player->invincible;
+        else if (!strcmp(name, "pilot")) *value = (float)player->pilot;
         else return false;
     } else return false;
     return true;
@@ -89,11 +95,25 @@ bool console_execute(Console *console, Game *game, const char *line) {
         console_log(console, "enemy.spawn ball/triangle/turret/boss X Y | state | quit");
         console_log(console, "player.money SLOT AMOUNT (set) | player.invincible SLOT 0/1 | player.heal SLOT");
         console_log(console, "player.chassis SLOT NAME (equip, no cost) | chassis.list");
+        console_log(console, "menu.open main/pause | menu.input up/down/left/right/confirm/back [SLOT]");
         console_log(console, "assert FIELD eq/ne/lt/le/gt/ge VALUE; p1/p2.x/y/health/lives/score/joined");
         console_log(console, "Fields: tick enemies bullets kills shots hits dropped over complete");
         return true;
     }
     if (!strcmp(command, "quit") && count == 1) { console->quit = true; return true; }
+    if (!strcmp(command, "menu.open") && count == 2) {
+        if (!strcmp(words[1], "main")) { game_menu_open(game, MENU_MAIN); return true; }
+        if (!strcmp(words[1], "pause")) { game_menu_open(game, MENU_PAUSE); return true; }
+    }
+    if (!strcmp(command, "menu.input") && (count == 2 || count == 3)) {
+        const char *actions[] = {"up", "down", "left", "right", "confirm", "back"};
+        slot = 1;
+        if (count == 3 && !integer(words[2], &slot, 1, 2)) return false;
+        for (int i = 0; i < 6; ++i) if (!strcmp(words[1], actions[i])) {
+            game_menu_input(game, (MenuAction)i, slot - 1);
+            return true;
+        }
+    }
     if (!strcmp(command, "chassis.list") && count == 1) {
         for (int i = 0; i < GAME_CHASSIS; ++i) {
             const Chassis *c = &game_chassis[i];
@@ -137,7 +157,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
         return true;
     }
     if (!strcmp(command, "game.pause") && count == 2 && integer(words[1], &value, 0, 1)) {
-        game->paused = value != 0;
+        game_menu_open(game, value ? MENU_PAUSE : MENU_NONE);
         return true;
     }
     if (!strcmp(command, "game.step") && count == 2 && integer(words[1], &value, 1, 36000)) {
@@ -169,6 +189,8 @@ bool console_execute(Console *console, Game *game, const char *line) {
         }
     }
     if (!strcmp(command, "state") && count == 1) {
+        console_log(console, "menu=%d cursor=%d difficulty=%d sfx=%d music=%d", game->menu.page,
+            game->menu.cursor, game->difficulty, game->menu.options[0], game->menu.options[1]);
         console_log(console, "tick=%d enemies=%d bullets=%d kills=%d shots=%d hits=%d over=%d complete=%d",
             game->tick, game_enemy_count(game), game_bullet_count(game), game->kills, game->shots, game->hits, game->over, game->complete);
         for (int i = 0; i < GAME_PLAYERS; ++i) {

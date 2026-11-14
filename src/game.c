@@ -120,6 +120,7 @@ bool game_join(Game *game, int slot) {
     player->y = 880;
     player->health = 20;
     player->lives = 3;
+    player->pilot = slot;
     player->invulnerable = 90;
     return true;
 }
@@ -128,6 +129,8 @@ void game_reset(Game *game, uint32_t seed) {
     memset(game, 0, sizeof(*game));
     game->random = seed;
     game->waves = true;
+    game->menu.players = 1;
+    for (int i = 0; i < 3; ++i) game->menu.options[i] = 10;
     game_join(game, 0);
 }
 
@@ -144,6 +147,9 @@ int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y) {
         enemy->vy = kind == ENEMY_TRIANGLE ? 4.5f : 2.5f;
         enemy->radius = kind == ENEMY_BOSS ? 150 : kind == ENEMY_TRIANGLE ? 28 : 36;
         enemy->health = kind == ENEMY_BOSS ? 60 : kind == ENEMY_TURRET ? 1.5f : 0.5f;
+        static const float health_scale[] = {1, 1.25f, 1.55f};
+        static const float boss_scale[] = {1, 1.5f, 2};
+        enemy->health *= kind == ENEMY_BOSS ? boss_scale[game->difficulty] : health_scale[game->difficulty];
         enemy->cooldown = 75;
         return i;
     }
@@ -317,7 +323,7 @@ static void update_bullets(Game *game) {
 }
 
 void game_tick(Game *game) {
-    if (game->paused) return;
+    if (game->paused && !game->over) return;
     update_effects(game);
     if (game->over || game->complete) return;
     ++game->tick;

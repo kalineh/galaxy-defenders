@@ -21,6 +21,15 @@ typedef struct {
 
 extern const Chassis game_chassis[GAME_CHASSIS];
 
+typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER } MenuPage;
+typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK } MenuAction;
+typedef struct {
+    MenuPage page, parent;
+    int cursor, players, difficulty, pilot[2], options[3];
+    bool ready[2], quit;
+} GameMenu;
+
 typedef struct {
     float x, y;
     bool fire, focus;
@@ -30,7 +39,7 @@ typedef struct {
     bool joined, invincible;
     float x, y, vx, vy, health;
     int lives, cooldown, invulnerable, score;
-    int money, chassis;
+    int money, chassis, pilot;
     PlayerInput input;
 } Player;
 
@@ -66,11 +75,20 @@ typedef struct {
     uint32_t random;
     int tick, kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
     bool waves, paused, over, complete, boss_spawned;
+    int difficulty;
+    GameMenu menu;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);
 bool game_join(Game *game, int slot);
 bool game_equip_chassis(Game *game, int slot, int chassis);
+void game_menu_open(Game *game, MenuPage page);
+void game_menu_input(Game *game, MenuAction action, int slot);
+int game_menu_count(const Game *game);
+const char *game_menu_label(const Game *game, int row);
+bool game_menu_enabled(const Game *game, int row);
+bool game_menu_small(const Game *game, int row);
+void game_retry(Game *game);
 void game_tick(Game *game);
 int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y);
 int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float vy, float damage);
