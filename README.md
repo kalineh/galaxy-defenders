@@ -6,7 +6,7 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 
 ## Play the first pass
 
-Double-click `play.bat` after building. It starts at 1% master volume. The game
+Run `./play.sh` in Git Bash after building. It starts at 1% master volume. The game
 opens directly into a short combat trial using original sprites, HUD assets,
 music, and sound effects. A simplified boss appears after 45 seconds.
 

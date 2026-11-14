@@ -2,7 +2,7 @@
 
 ## Current handoff
 
-The first native combat trial is runnable via `play.bat`; controls and explicit
+The first native combat trial is runnable via `./play.sh` in Git Bash; controls and explicit
 parity gaps are in `README.md`. Native build, headless unit/integration checks,
 audio loading, co-op combat render, and console render passed. Original HUD
 assets/layout are reused; there is no new UI framework. Human playtesting is

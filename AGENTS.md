@@ -19,6 +19,8 @@ not exist on another machine; keep all required code/assets and setup instructio
 
 ## Build & Development Commands
 
+Use Git Bash `.sh` entry points for builds and launchers, never `.bat` files.
+
 `./build.sh native` builds the Windows client; `./build.sh headless` builds the
 simulation/console runner; `./test.sh` runs focused checks. Run `scripts/setup.ps1`
 once for the local compiler. `scripts/check_render.ps1` builds and verifies the
