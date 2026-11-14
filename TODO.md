@@ -8,6 +8,14 @@ help, usage errors and positional completion, including chassis and assertion
 fields. Added cursor editing, 32-command history/draft restoration, 256-line
 scrollback, and headless editor checks. No sibling runtime dependencies.
 
+Playtest follow-up: Stage Clear now opens a shared menu state; Enter or either
+gamepad A/B returns to title. This fixes the trial dead end, not campaign
+progression. Verified full new-game restart after clearing, plus effects ending.
+README has the exact starting-loadout audit from `legacy/Pilot.cs`; Rabbit's
+Lightning, all secondaries/shields, and Really Hard's Conduction Generator remain
+missing. The boss is still a trial substitute: original Boss1 has paired bursts,
+aimed sweeps, destructible side guns, and different movement/health.
+
 The first native combat trial is runnable via `./play.sh` in Git Bash; controls and explicit
 parity gaps are in `README.md`. Native build, headless unit/integration checks,
 audio loading, co-op combat render, and console render passed. Original HUD

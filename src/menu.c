@@ -10,7 +10,8 @@ static const char *labels[][4] = {
     [MENU_QUIT] = {"Cancel", "Quit"},
     [MENU_PAUSE] = {"Resume", "Retry", "Options", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},
-    [MENU_OVER] = {"Retry!", "Quit"}
+    [MENU_OVER] = {"Retry!", "Quit"},
+    [MENU_CLEAR] = {"Continue"}
 };
 
 int game_menu_count(const Game *game) {
@@ -34,7 +35,7 @@ bool game_menu_small(const Game *game, int row) {
 }
 
 void game_menu_open(Game *game, MenuPage page) {
-    if (page < MENU_NONE || page > MENU_OVER) return;
+    if (page < MENU_NONE || page > MENU_CLEAR) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     game->menu.page = page;
@@ -87,6 +88,10 @@ static void start_game(Game *game) {
 void game_menu_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
     if (slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
+    if (menu->page == MENU_CLEAR) {
+        if (action == MENU_CONFIRM || action == MENU_BACK) game_menu_open(game, MENU_MAIN);
+        return;
+    }
     if (menu->page == MENU_PILOT) {
         if (slot >= menu->players) return;
         if (action == MENU_BACK) {

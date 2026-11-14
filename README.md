@@ -19,6 +19,26 @@ and abilities are still pending. Title, combat, and pause use their original
 music tracks. Options adjust SFX/music volume and screen size for this session.
 Pause-menu Quit currently returns to the title; its original shop destination
 is pending.
+The trial's Stage Clear screen now accepts Enter or either gamepad's A/B to
+Continue back to the title. It does not advance into an authored second stage;
+the original results/shop/stage progression is still pending.
+
+Starting-loadout audit against `legacy/Pilot.cs`:
+
+| Pilot | Original primary (Normal / Hard / Really Hard) | Original secondary (same order) |
+| --- | --- | --- |
+| Kazuki | Front Laser level 1 / 1 / 2: two / two / four shots | Vulcan level 1 / 2 / 2 |
+| Rabbit | Lightning level 2 / 2 / 3 | SeekBomb level 0 / 1 / 1 |
+| Gunthor | Front Laser level 2 / 2 / 2: four shots, +15% damage | Missile level 0 / 1 / 2 |
+
+Levels above use the source's zero-based numbering. Native Kazuki/Gunthor
+primary patterns match this table; Rabbit still temporarily uses Front Laser.
+All secondary weapons and shields are pending. Really Hard should also start
+with a Conduction Generator; native currently uses Standard Generator for all.
+These missing systems account for the incomplete energy/loadout behavior.
+`game.reset` is a debug trial reset (Rookie, level 2 Front Laser), not pilot-based
+new-game setup. The trial boss uses simplified attacks, not original Boss1's
+paired bursts, aimed sweeps and destructible side guns.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |

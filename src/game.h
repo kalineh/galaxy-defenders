@@ -22,7 +22,7 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER } MenuPage;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR } MenuPage;
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK } MenuAction;
 typedef struct {
     MenuPage page, parent;

@@ -288,12 +288,54 @@ static void console_editor(void) {
     CHECK(console.count == 0 && console.command_count == history);
 }
 
+static void stage_clear_exit(void) {
+    reset();
+    CHECK(game_join(&game, 1));
+    game_spawn_enemy(&game, ENEMY_BOSS, 480, 200);
+    game_spawn_bullet(&game, 0, 480, 400, 0, -200, 60);
+    game_tick(&game);
+    CHECK(game.complete && game.menu.page == MENU_CLEAR);
+    CHECK(!strcmp(game_menu_label(&game, 0), "Continue"));
+    int tick = game.tick;
+    for (int i = 0; i < 90; ++i) game_tick(&game);
+    CHECK(game.tick == tick);
+    for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
+    CHECK(console_execute(&console, &game, "menu.input confirm 2"));
+    CHECK(game.menu.page == MENU_MAIN && !game.menu.quit);
+    CHECK(game.players[0].score == 5000 && game.players[1].joined);
+    CHECK(console_chain(&console, &game, "menu.input confirm;menu.input confirm;menu.input confirm;menu.input confirm"));
+    CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
+}
+
+static void starting_primary_patterns(void) {
+    /* Pilot.cs starting items, paired with WeaponDefinitions.cs shot arrays. */
+    for (int pilot = 0; pilot <= 2; pilot += 2) for (int difficulty = 0; difficulty < 3; ++difficulty) {
+        reset();
+        game_menu_open(&game, MENU_MAIN);
+        game_menu_input(&game, MENU_CONFIRM, 0); /* Solo */
+        game_menu_input(&game, MENU_CONFIRM, 0); /* New Game */
+        for (int i = 0; i < difficulty; ++i) game_menu_input(&game, MENU_DOWN, 0);
+        game_menu_input(&game, MENU_CONFIRM, 0);
+        for (int i = 0; i < pilot; ++i) game_menu_input(&game, MENU_RIGHT, 0);
+        game_menu_input(&game, MENU_CONFIRM, 0);
+        game.waves = false;
+        game.players[0].input.fire = true;
+        game_tick(&game);
+        int shots = pilot == 0 && difficulty < 2 ? 2 : 4;
+        CHECK(game_bullet_count(&game) == shots);
+        CHECK(fabsf(game.bullets[0].damage - (pilot == 2 ? 0.115f : 0.1f)) < 0.0001f);
+        CHECK(game.players[0].energy > 2.6f); /* Primary alone need not empty the generator. */
+    }
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();
     weapon_upgrades();
     console_editor();
+    stage_clear_exit();
+    starting_primary_patterns();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

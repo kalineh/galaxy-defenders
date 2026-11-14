@@ -363,7 +363,7 @@ static void update_bullets(Game *game) {
 }
 
 void game_tick(Game *game) {
-    if (game->paused && !game->over) return;
+    if (game->paused && !game->over && !game->complete) return;
     update_effects(game);
     if (game->over || game->complete) return;
     ++game->tick;
@@ -374,6 +374,7 @@ void game_tick(Game *game) {
     bool alive = false;
     for (int p = 0; p < GAME_PLAYERS; ++p) if (game->players[p].joined && game->players[p].lives > 0) alive = true;
     if (!alive) game->over = true;
+    if (game->complete && !game->over) game_menu_open(game, MENU_CLEAR);
 }
 
 int game_enemy_count(const Game *game) {

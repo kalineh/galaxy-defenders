@@ -260,6 +260,12 @@ static bool title_menu(const Game *game) {
 
 static void draw_menu(const Game *game, const Assets *assets, int frame) {
     if (game->menu.page == MENU_NONE) return;
+    if (game->menu.page == MENU_CLEAR) {
+        /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
+        text_center("Stage Clear", 960, 435, 52, accent);
+        text_center("Continue", 960, 525, 30, WHITE);
+        return;
+    }
     if (title_menu(game)) {
         ClearBackground((Color){92, 120, 196, 255});
         BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -543,7 +549,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
         int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
-        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER) && (IsWindowFocused() || frames)) {
+        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {

@@ -16,6 +16,7 @@ system or stage is ported. The native build still contains a combat trial.
 | Pilots/difficulty | Original names, portraits, unique co-op selection, starting chassis/money, enemy health scaling, Kazuki speed/Gunthor damage | Complete weapon/generator/shield loadouts, abilities and money scaling pending; Rabbit still uses Front Laser until Lightning is ported |
 | Economy | Per-player money state only | Shop, rewards, salvage, saves pending |
 | Stages | Generated trial only | Active Stage1–12 and BonusStage1–7 definitions pending; `OldStage*` are references, not active content |
+| Stage clear | Continue now returns to title, with keyboard and either gamepad | Original results, rewards, shop and next-stage progression remain pending |
 | Enemies/bosses | Four simplified trial behaviors | `Enemy/` and stage behavior contracts pending |
 | Platforms | Windows native and silent software checks | Web, phone, physical controller testing pending |
 
