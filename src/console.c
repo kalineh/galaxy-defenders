@@ -7,6 +7,188 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct {
+    const char *name, *usage, *description;
+    const char *options[5];
+} CommandHelp;
+
+/* One catalog supplies help, usage errors and positional Tab completion. */
+static const CommandHelp commands[] = {
+    {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
+    {"clear", "clear", "Clear console output; retain command history.", {NULL}},
+    {"state", "state", "Show menu, difficulty, combat counters and each player's equipment/state.", {NULL}},
+    {"quit", "quit", "Exit the game or stop the current script.", {NULL}},
+    {"game.reset", "game.reset SEED", "Reset the combat trial. SEED is an integer from 0 to 2147483647.", {NULL}},
+    {"game.waves", "game.waves 0|1", "Disable/enable generated trial waves. These are not authored stages.", {"0 1"}},
+    {"game.pause", "game.pause 0|1", "Resume simulation or open the pause menu.", {"0 1"}},
+    {"game.step", "game.step TICKS", "Advance 1..36000 fixed ticks; maximum 72000 requested ticks per process.", {NULL}},
+    {"player.join", "player.join SLOT", "Join player 1 or 2; fails if already joined or combat has ended.", {"1 2"}},
+    {"player.input", "player.input SLOT X Y FIRE FOCUS", "Hold input: SLOT 1/2, axes -1..1, FIRE/FOCUS 0/1. Focus fires independently.", {"1 2", "-1 0 1", "-1 0 1", "0 1", "0 1"}},
+    {"player.money", "player.money SLOT AMOUNT", "Set money (not add): integer 0..1000000000. Does not purchase equipment.", {"1 2"}},
+    {"player.invincible", "player.invincible SLOT 0|1", "Toggle damage immunity for a joined player.", {"1 2", "0 1"}},
+    {"player.heal", "player.heal SLOT", "Restore a living player's armor to the equipped chassis maximum.", {"1 2"}},
+    {"player.chassis", "player.chassis SLOT NAME", "Equip an original chassis free; preserve current armor percentage. See chassis.list.", {"1 2"}},
+    {"player.upgrade", "player.upgrade SLOT LEVEL", "Set Front Laser normal/focus level free (zero-based 0..7); other weapons are pending.", {"1 2", "0 1 2 3 4 5 6 7"}},
+    {"chassis.list", "chassis.list", "List every supported chassis, its ID, armor, movement values and original price.", {NULL}},
+    {"enemy.spawn", "enemy.spawn KIND X Y", "Spawn a trial enemy. X -200..1160, Y -250..1280; fails when the pool is full.", {"ball triangle turret boss"}},
+    {"menu.open", "menu.open main|pause", "Open the title or pause menu and clear held player input.", {"main pause"}},
+    {"menu.input", "menu.input ACTION [SLOT]", "Navigate the real menu state; SLOT defaults to 1. Player 2 can select its pilot.", {"up down left right confirm back", "1 2"}},
+    {"assert", "assert FIELD OP VALUE", "Check a numeric state field; failure stops a script. Use help fields for all fields.", {NULL, "eq ne lt le gt ge"}}
+};
+static const char *global_fields[] = {"tick", "enemies", "bullets", "kills", "shots", "hits", "dropped",
+    "over", "complete", "menu", "menu.cursor", "difficulty", "volume.sfx", "volume.music"};
+static const char *player_fields[] = {"x", "y", "health", "lives", "score", "joined", "money", "chassis",
+    "armor", "invincible", "pilot", "weapon_level", "energy"};
+
+static const CommandHelp *command_help(const char *name) {
+    for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); ++i)
+        if (!strcmp(name, commands[i].name)) return &commands[i];
+    return NULL;
+}
+
+static bool print_help(Console *console, const char *filter) {
+    if (filter && !strcmp(filter, "fields")) {
+        console_log(console, "Global fields:");
+        for (size_t i = 0; i < sizeof(global_fields) / sizeof(global_fields[0]); ++i) console_log(console, "  %s", global_fields[i]);
+        console_log(console, "Player fields (both slots):");
+        for (size_t i = 0; i < sizeof(player_fields) / sizeof(player_fields[0]); ++i) console_log(console, "  p1.%s  p2.%s", player_fields[i], player_fields[i]);
+        console_log(console, "IDs: chassis.list; pilots 0=Kazuki 1=Rabbit 2=Gunthor; difficulty 0=Normal 1=Hard 2=Really Hard.");
+        console_log(console, "Menu IDs: 0=play 1=main 2=new 3=difficulty 4=pilot 5=options 6=quit 7=pause 8=retry 9=game-over.");
+        return true;
+    }
+    const CommandHelp *exact = filter ? command_help(filter) : NULL;
+    int found = 0;
+    for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); ++i) {
+        const CommandHelp *entry = &commands[i];
+        if ((exact && entry != exact) || (!exact && filter && !strstr(entry->name, filter))) continue;
+        console_log(console, "%s", entry->usage);
+        console_log(console, "  %s", entry->description);
+        ++found;
+    }
+    if (!found) console_log(console, "ERROR: no commands match '%s'", filter);
+    else if (!filter) console_log(console, "Tab completes commands/arguments; Tab again lists choices. PgUp/PgDn or wheel scroll; Up/Down recall commands.");
+    return found != 0;
+}
+
+void console_insert(Console *console, const char *text) {
+    int length = (int)strlen(console->input);
+    for (; *text; ++text) {
+        if ((unsigned char)*text < 32 || (unsigned char)*text > 126 || length == CONSOLE_LINE - 1) continue;
+        memmove(console->input + console->cursor + 1, console->input + console->cursor, (size_t)(length - console->cursor + 1));
+        console->input[console->cursor++] = *text;
+        ++length;
+    }
+    console->completion[0] = '\0';
+}
+
+void console_erase(Console *console, bool backward) {
+    int length = (int)strlen(console->input);
+    if ((backward && console->cursor == 0) || (!backward && console->cursor == length)) return;
+    if (backward) --console->cursor;
+    memmove(console->input + console->cursor, console->input + console->cursor + 1, (size_t)(length - console->cursor));
+    console->completion[0] = '\0';
+}
+
+void console_history(Console *console, int direction) {
+    if (direction < 0 && console->history_offset < console->command_count) {
+        if (!console->history_offset) strcpy(console->draft, console->input);
+        ++console->history_offset;
+    } else if (direction > 0 && console->history_offset > 0) --console->history_offset;
+    else return;
+    strcpy(console->input, console->history_offset ? console->commands[console->command_count - console->history_offset] : console->draft);
+    console->cursor = (int)strlen(console->input);
+    console->completion[0] = '\0';
+}
+
+static void add_match(char matches[][64], int *count, const char *candidate, const char *prefix) {
+    if (*count < 128 && !strncmp(candidate, prefix, strlen(prefix))) {
+        snprintf(matches[(*count)++], 64, "%s", candidate);
+    }
+}
+
+int console_complete(Console *console) {
+    char matches[128][64], prefix[CONSOLE_LINE], command[CONSOLE_LINE];
+    int start = console->cursor, end = console->cursor, segment = 0, argument = 0, count = 0;
+    /* Complete the token under the caret, including inside a semicolon chain. */
+    for (int i = 0; i < console->cursor; ++i) {
+        if (console->input[i] == '#') return 0;
+        if (console->input[i] == ';') segment = i + 1;
+    }
+    while (start > segment && !isspace((unsigned char)console->input[start - 1])) --start;
+    while (console->input[end] && !isspace((unsigned char)console->input[end]) && console->input[end] != ';' && console->input[end] != '#') ++end;
+    memcpy(prefix, console->input + start, (size_t)(console->cursor - start));
+    prefix[console->cursor - start] = '\0';
+    int pos = segment;
+    command[0] = '\0';
+    while (pos < start) {
+        while (pos < start && isspace((unsigned char)console->input[pos])) ++pos;
+        int begin = pos;
+        while (pos < start && !isspace((unsigned char)console->input[pos])) ++pos;
+        if (pos > begin) {
+            if (!argument) { memcpy(command, console->input + begin, (size_t)(pos - begin)); command[pos - begin] = '\0'; }
+            ++argument;
+        }
+    }
+    const CommandHelp *entry = command_help(command);
+    if (!argument || (!strcmp(command, "help") && argument == 1)) {
+        for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); ++i) add_match(matches, &count, commands[i].name, prefix);
+        if (argument) add_match(matches, &count, "fields", prefix);
+    } else if (!strcmp(command, "player.chassis") && argument == 2) {
+        for (int i = 0; i < GAME_CHASSIS; ++i) add_match(matches, &count, game_chassis[i].name, prefix);
+    } else if (!strcmp(command, "assert") && argument == 1) {
+        for (size_t i = 0; i < sizeof(global_fields) / sizeof(global_fields[0]); ++i) add_match(matches, &count, global_fields[i], prefix);
+        for (int slot = 1; slot <= 2; ++slot) for (size_t i = 0; i < sizeof(player_fields) / sizeof(player_fields[0]); ++i) {
+            char name[64]; snprintf(name, sizeof(name), "p%d.%s", slot, player_fields[i]); add_match(matches, &count, name, prefix);
+        }
+    } else if (entry && argument <= 5 && entry->options[argument - 1]) {
+        const char *option = entry->options[argument - 1];
+        while (*option) {
+            char name[64]; int n = 0;
+            while (*option && *option != ' ') { if (n < 63) name[n++] = *option; ++option; }
+            name[n] = '\0'; add_match(matches, &count, name, prefix);
+            if (*option) ++option;
+        }
+    }
+    bool repeat = !strcmp(console->input, console->completion);
+    if (!count) {
+        if (entry) { console_log(console, "%s", entry->usage); console_log(console, "  %s", entry->description); }
+        else console_log(console, "No completion for '%s'. Type help for all commands.", prefix);
+        return 0;
+    }
+    size_t common = strlen(matches[0]);
+    for (int i = 1; i < count; ++i) {
+        size_t n = 0; while (n < common && matches[0][n] == matches[i][n]) ++n; common = n;
+    }
+    int suffix = (int)strlen(console->input + end);
+    bool space = count == 1 && !console->input[end];
+    if (start + common + space + suffix < CONSOLE_LINE) {
+        memmove(console->input + start + common + space, console->input + end, (size_t)suffix + 1);
+        memcpy(console->input + start, matches[0], common);
+        console->cursor = start + (int)common;
+        if (space) console->input[console->cursor++] = ' ';
+    }
+    if (count > 1 && repeat) for (int i = 0; i < count; ++i) console_log(console, "  %s", matches[i]);
+    strcpy(console->completion, console->input);
+    console->scroll = 0;
+    return count;
+}
+
+bool console_submit(Console *console, Game *game) {
+    if (!console->input[0]) return true;
+    if (!console->command_count || strcmp(console->commands[console->command_count - 1], console->input)) {
+        if (console->command_count == CONSOLE_COMMAND_HISTORY) {
+            memmove(console->commands, console->commands + 1, sizeof(console->commands[0]) * (CONSOLE_COMMAND_HISTORY - 1));
+            --console->command_count;
+        }
+        strcpy(console->commands[console->command_count++], console->input);
+    }
+    console_log(console, "> %s", console->input);
+    bool success = console_chain(console, game, console->input);
+    console->input[0] = console->draft[0] = console->completion[0] = '\0';
+    console->cursor = console->history_offset = console->scroll = 0;
+    return success;
+}
+
 void console_log(Console *console, const char *format, ...) {
     if (console->count == CONSOLE_HISTORY) {
         memmove(console->lines, console->lines + 1, sizeof(console->lines[0]) * (CONSOLE_HISTORY - 1));
@@ -91,18 +273,8 @@ bool console_execute(Console *console, Game *game, const char *line) {
     const char *command = words[0];
     int value, slot, fire, focus;
     float x, y, expected;
-    if (!strcmp(command, "help") && count == 1) {
-        console_log(console, "game.reset SEED | game.waves 0/1 | game.pause 0/1 | game.step TICKS");
-        console_log(console, "player.join 1/2 | player.input SLOT X Y FIRE FOCUS (axes -1..1, flags 0/1)");
-        console_log(console, "enemy.spawn ball/triangle/turret/boss X Y | state | quit");
-        console_log(console, "player.money SLOT AMOUNT (set) | player.invincible SLOT 0/1 | player.heal SLOT");
-        console_log(console, "player.chassis SLOT NAME (equip, no cost) | chassis.list");
-        console_log(console, "player.upgrade SLOT LEVEL (FrontLaser, zero-based 0..7, no cost)");
-        console_log(console, "menu.open main/pause | menu.input up/down/left/right/confirm/back [SLOT]");
-        console_log(console, "assert FIELD eq/ne/lt/le/gt/ge VALUE; p1/p2.x/y/health/lives/score/joined");
-        console_log(console, "Fields: tick enemies bullets kills shots hits dropped over complete");
-        return true;
-    }
+    if (!strcmp(command, "help") && count <= 2) return print_help(console, count == 2 ? words[1] : NULL);
+    if (!strcmp(command, "clear") && count == 1) { console->count = console->scroll = 0; return true; }
     if (!strcmp(command, "quit") && count == 1) { console->quit = true; return true; }
     if (!strcmp(command, "player.upgrade") && count == 3 && integer(words[1], &slot, 1, 2) && integer(words[2], &value, 0, 7)) {
         if (!game_upgrade_weapon(game, slot - 1, value)) { console_log(console, "ERROR: player not joined"); return false; }
@@ -223,6 +395,8 @@ bool console_execute(Console *console, Game *game, const char *line) {
         return pass;
     }
     console_log(console, "ERROR: unknown command or invalid arguments: %s (type help)", command);
+    const CommandHelp *entry = command_help(command);
+    if (entry) console_log(console, "Usage: %s", entry->usage);
     return false;
 }
 

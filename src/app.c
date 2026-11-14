@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define CANVAS_WIDTH 1920
@@ -19,6 +20,7 @@ typedef struct {
     Sound shoot, explode, hit, shot_hit, die;
     Sound menu_sounds[5];
     bool audio;
+    Font console_font;
 } Assets;
 
 static const Color background = {48, 48, 48, 255};
@@ -40,6 +42,7 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
@@ -70,6 +73,22 @@ static void assets_unload(Assets *assets) {
 }
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
+    /* Solcraft's fixed-font preference: use the OS font, never copy Windows fonts. */
+    assets->console_font = GetFontDefault();
+    const char *windows = getenv("WINDIR");
+    const char *font_names[] = {"consola.ttf", "cour.ttf"};
+    for (int i = 0; windows && i < 2; ++i) {
+        char path[2048];
+        snprintf(path, sizeof(path), "%s/Fonts/%s", windows, font_names[i]);
+        if (!FileExists(path)) continue;
+        Font font = LoadFontEx(path, 32, NULL, 95);
+        if (font.texture.id && font.texture.id != GetFontDefault().texture.id) {
+            assets->console_font = font;
+            SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
+            console_log(console, "Console font: %s", font_names[i]);
+            break;
+        }
+    }
     for (int i = 0; i < GAME_CHASSIS; ++i) {
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
@@ -391,17 +410,46 @@ static PlayerInput poll_input(int slot) {
     return input;
 }
 
-static void draw_console(const Console *console, const char *line, bool failed, bool full_screen) {
-    /* Solcraft's debug_console_draw pattern: full-width compact output + input strip. */
-    int visible = full_screen ? CONSOLE_HISTORY : 4;
-    int panel_height = full_screen ? CANVAS_HEIGHT : 4 * 30 + 87;
-    if (visible > console->count) visible = console->count;
+static void draw_console(Console *console, Font font, bool failed, bool full_screen) {
+    int panel_height = full_screen ? CANVAS_HEIGHT : 450;
+    int visible = (panel_height - 100) / 31;
+    float cell = MeasureTextEx(font, "M", 26, 0).x;
+    int columns = (int)((CANVAS_WIDTH - 40) / cell);
+    if (columns >= CONSOLE_LINE) columns = CONSOLE_LINE - 1;
+    int total = 0;
+    for (int i = 0; i < console->count; ++i) total += ((int)strlen(console->lines[i]) + columns - 1) / columns + (console->lines[i][0] == '\0');
+    int max_scroll = total > visible ? total - visible : 0;
+    if (console->scroll < 0) console->scroll = 0;
+    if (console->scroll > max_scroll) console->scroll = max_scroll;
+    int first = total - console->scroll - visible;
+    if (first < 0) first = 0;
+#ifdef GALAXY_MEMORY
+    /* rlsw scissor coordinates are top-down; rcore applies an OpenGL Y flip. */
+    BeginScissorMode(0, CANVAS_HEIGHT - panel_height, CANVAS_WIDTH, panel_height);
+#else
     BeginScissorMode(0, 0, CANVAS_WIDTH, panel_height);
-    DrawRectangle(0, 0, CANVAS_WIDTH, panel_height, (Color){5, 8, 12, 224});
-    for (int i = 0; i < visible; ++i) DrawText(console->lines[console->count - visible + i], 18, 15 + i * 30, 25, (Color){210, 224, 214, 255});
+#endif
+    DrawRectangle(0, 0, CANVAS_WIDTH, panel_height, (Color){5, 8, 12, 242});
+    int row = 0, drawn = 0;
+    for (int i = 0; i < console->count; ++i) {
+        int length = (int)strlen(console->lines[i]);
+        for (int offset = 0; offset < length || (offset == 0 && length == 0); offset += columns, ++row) {
+            if (row < first || drawn == visible) continue;
+            char text[CONSOLE_LINE];
+            int n = length - offset < columns ? length - offset : columns;
+            memcpy(text, console->lines[i] + offset, (size_t)n); text[n] = '\0';
+            Color color = !strncmp(console->lines[i], "ERROR", 5) || !strncmp(console->lines[i], "FAIL", 4) ? danger : (Color){210, 224, 214, 255};
+            DrawTextEx(font, text, (Vector2){18, 15 + drawn++ * 31.0f}, 26, 0, color);
+        }
+    }
+    DrawTextEx(font, TextFormat("Tab complete | Up/Down history | PgUp/PgDn / wheel scroll | %d/%d lines", total - console->scroll, total),
+        (Vector2){18, (float)panel_height - 80}, 22, 0, dim);
     DrawRectangle(0, panel_height - 48, CANVAS_WIDTH, 48, (Color){12, 16, 22, 255});
-    DrawText(">", 18, panel_height - 42, 28, accent);
-    DrawText(line, 51, panel_height - 42, 28, failed ? danger : RAYWHITE);
+    DrawTextEx(font, ">", (Vector2){18, (float)panel_height - 42}, 26, 0, accent);
+    int input_columns = columns - 3;
+    int start = console->cursor >= input_columns ? console->cursor - input_columns + 1 : 0;
+    DrawTextEx(font, console->input + start, (Vector2){51, (float)panel_height - 42}, 26, 0, failed ? danger : RAYWHITE);
+    DrawRectangle((int)(51 + (console->cursor - start) * cell), panel_height - 43, 2, 28, accent);
     EndScissorMode();
 }
 
@@ -436,9 +484,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     }
     if (IsRenderTextureValid(canvas)) SetTextureFilter(canvas.texture, TEXTURE_FILTER_BILINEAR);
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
-    char command[CONSOLE_LINE] = {0};
-    char last_command[CONSOLE_LINE] = {0};
-    int command_length = 0, rendered = 0, result = 0, menu_frame = 0;
+    int rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
@@ -456,21 +502,27 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsKeyPressed(KEY_ESCAPE)) console_open = false;
             int character;
             while ((character = GetCharPressed()) != 0) {
-                if (character >= 32 && character < 127 && character != '`' && command_length < CONSOLE_LINE - 1) {
-                    command[command_length++] = (char)character;
-                    command[command_length] = '\0';
+                if (character >= 32 && character < 127 && character != '`') {
+                    char text[] = {(char)character, '\0'}; console_insert(console, text);
                 }
             }
-            if ((IsKeyPressed(KEY_BACKSPACE) || IsKeyPressedRepeat(KEY_BACKSPACE)) && command_length) command[--command_length] = '\0';
-            if (IsKeyPressed(KEY_UP)) { strcpy(command, last_command); command_length = (int)strlen(command); }
-            if (IsKeyPressed(KEY_DOWN)) { command_length = 0; command[0] = '\0'; }
-            if (IsKeyPressed(KEY_ENTER) && command_length) {
-                strcpy(last_command, command);
-                console_log(console, "> %s", command);
-                command_failed = !console_chain(console, game, command);
-                command_length = 0;
-                command[0] = '\0';
+            if (IsKeyPressed(KEY_BACKSPACE) || IsKeyPressedRepeat(KEY_BACKSPACE)) console_erase(console, true);
+            if (IsKeyPressed(KEY_DELETE) || IsKeyPressedRepeat(KEY_DELETE)) console_erase(console, false);
+            if ((IsKeyPressed(KEY_LEFT) || IsKeyPressedRepeat(KEY_LEFT)) && console->cursor > 0) --console->cursor;
+            if ((IsKeyPressed(KEY_RIGHT) || IsKeyPressedRepeat(KEY_RIGHT)) && console->input[console->cursor]) ++console->cursor;
+            if (IsKeyPressed(KEY_HOME)) console->cursor = 0;
+            if (IsKeyPressed(KEY_END)) console->cursor = (int)strlen(console->input);
+            if (IsKeyPressed(KEY_UP) || IsKeyPressedRepeat(KEY_UP)) console_history(console, -1);
+            if (IsKeyPressed(KEY_DOWN) || IsKeyPressedRepeat(KEY_DOWN)) console_history(console, 1);
+            if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_V)) {
+                const char *clipboard = GetClipboardText();
+                if (clipboard) console_insert(console, clipboard);
             }
+            if (IsKeyPressed(KEY_TAB)) console_complete(console);
+            if (IsKeyPressed(KEY_PAGE_UP) || IsKeyPressedRepeat(KEY_PAGE_UP)) console->scroll += console_full ? 28 : 9;
+            if (IsKeyPressed(KEY_PAGE_DOWN) || IsKeyPressedRepeat(KEY_PAGE_DOWN)) console->scroll -= console_full ? 28 : 9;
+            console->scroll += (int)(GetMouseWheelMove() * 3);
+            if (IsKeyPressed(KEY_ENTER)) command_failed = !console_submit(console, game);
         } else if (!toggled && was_menu) {
             poll_menu(game, &assets);
         } else if (!toggled) {
@@ -514,7 +566,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         draw_game(game, &assets);
         draw_menu(game, &assets, menu_frame++);
-        if (console_open) draw_console(console, command, command_failed, console_full);
+        if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
 #ifndef GALAXY_MEMORY
         EndTextureMode();
         BeginDrawing();

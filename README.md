@@ -33,8 +33,14 @@ Keyboard remains available when a controller disconnects. Physical controller
 mapping/disconnect behavior still needs human playtesting.
 
 `P`/Escape pauses, `R` restarts, `M` toggles mute, and backtick opens the console.
-Shift+backtick expands it, Up recalls the last command, Down clears it, and
-Escape closes it. Close the window to exit. Gamepad Y restarts after win/loss.
+Shift+backtick expands it; Escape closes it. The console uses Consolas from
+Windows (Courier New/default-font fallback), without redistributing system fonts.
+`help` lists every command, `help player.` filters, `help player.upgrade` gives
+usage, and `help fields` lists every assertion field. Tab completes command
+names and positional arguments; Tab again lists ambiguous choices. Up/Down
+browse 32 commands and restore your draft. Left/Right/Home/End, Backspace/Delete,
+and Ctrl+V edit input. PgUp/PgDn or the mouse wheel scroll 256 output lines;
+`clear` clears output. Close the window to exit. Gamepad Y restarts after win/loss.
 
 This is a foundation playtest, not a complete stage port. It has movement,
 shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.

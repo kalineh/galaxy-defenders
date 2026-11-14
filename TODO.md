@@ -2,6 +2,12 @@
 
 ## Current handoff
 
+Console follow-up: matched Solcraft's Windows fixed-font selection (Consolas)
+and MMOA's help/completion pattern. Shared command catalog now supplies complete
+help, usage errors and positional completion, including chassis and assertion
+fields. Added cursor editing, 32-command history/draft restoration, 256-line
+scrollback, and headless editor checks. No sibling runtime dependencies.
+
 The first native combat trial is runnable via `./play.sh` in Git Bash; controls and explicit
 parity gaps are in `README.md`. Native build, headless unit/integration checks,
 audio loading, co-op combat render, and console render passed. Original HUD

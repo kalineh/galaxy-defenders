@@ -243,11 +243,57 @@ static void weapon_upgrades(void) {
     CHECK(game.players[0].weapon_level == 7);
 }
 
+static void console_editor(void) {
+    reset();
+    console_insert(&console, "player.inv");
+    CHECK(console_complete(&console) == 1);
+    CHECK(!strcmp(console.input, "player.invincible "));
+    console_insert(&console, "1 ");
+    CHECK(console_complete(&console) == 2);
+    console_insert(&console, "1");
+    CHECK(console_submit(&console, &game) && game.players[0].invincible);
+    console_insert(&console, "player.money 1 42");
+    CHECK(console_submit(&console, &game));
+    console_insert(&console, "unfinished");
+    console_history(&console, -1);
+    CHECK(!strcmp(console.input, "player.money 1 42"));
+    console_history(&console, -1);
+    CHECK(!strcmp(console.input, "player.invincible 1 1"));
+    console_history(&console, 1); console_history(&console, 1);
+    CHECK(!strcmp(console.input, "unfinished"));
+    console.input[0] = '\0'; console.cursor = 0;
+    console_insert(&console, "game.waves 0; player.chassis 1 De");
+    CHECK(console_complete(&console) == 1 && strstr(console.input, "Demon "));
+    CHECK(console_submit(&console, &game) && game.players[0].chassis == 7);
+    console_insert(&console, "assert p1.we eq 2");
+    console.cursor = 12;
+    CHECK(console_complete(&console) == 1);
+    CHECK(!strcmp(console.input, "assert p1.weapon_level eq 2"));
+    CHECK(console_submit(&console, &game));
+    console_insert(&console, "help player.up");
+    CHECK(console_complete(&console) == 1 && !strcmp(console.input, "help player.upgrade "));
+    CHECK(console_submit(&console, &game));
+    CHECK(console_execute(&console, &game, "help fields"));
+    CHECK(console_execute(&console, &game, "help player."));
+    CHECK(!console_execute(&console, &game, "help nonexistent"));
+    console_insert(&console, "state"); console.cursor = 2;
+    console_insert(&console, "X"); CHECK(!strcmp(console.input, "stXate"));
+    console_erase(&console, true); CHECK(!strcmp(console.input, "state"));
+    console_erase(&console, false); CHECK(!strcmp(console.input, "stte"));
+    char large[CONSOLE_LINE * 2]; memset(large, 'x', sizeof(large) - 1); large[sizeof(large) - 1] = 0;
+    console_insert(&console, large);
+    CHECK(strlen(console.input) == CONSOLE_LINE - 1 && console.cursor < CONSOLE_LINE);
+    int history = console.command_count;
+    CHECK(console_execute(&console, &game, "clear"));
+    CHECK(console.count == 0 && console.command_count == history);
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();
     weapon_upgrades();
+    console_editor();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }
