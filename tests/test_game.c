@@ -1,6 +1,7 @@
 #include "game.h"
 #include "console.h"
 #include "stage.h"
+#include "movement.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -341,7 +342,10 @@ static void authored_stage_data(void) {
             finish += event->kind == STAGE_FINISH;
             stop += event->kind == STAGE_CAMERA_STOP;
             CHECK(isfinite(event->x) && isfinite(event->y));
-            if (event->kind == STAGE_ENEMY) CHECK(event->name && event->mover && event->speed >= 0);
+            if (event->kind == STAGE_ENEMY) {
+                CHECK(event->name && event->mover && event->speed >= 0);
+                CHECK(movement_find(event->mover) >= 0);
+            }
         }
         CHECK(finish == 1 && stop == 1);
         total += stage->event_count;
@@ -362,6 +366,29 @@ static void authored_stage_data(void) {
     CHECK(boss == 1 && squares == 32);
 }
 
+static void authored_movement(void) {
+    float vx = 99, vy = 99;
+    movement_velocity(MOVE_DOWN, 0, 6, 1, 4, &vx, &vy);
+    CHECK(vx == 0 && vy == 3.5f); /* Preset anti-camera is fixed, not scroll speed. */
+    movement_velocity(MOVE_IGNORE_CAMERA, 1, 6, 1, 4, &vx, &vy);
+    CHECK(vx == 0 && vy == -4);
+    movement_velocity(MOVE_DOWN_WAIT_UP, 0, 8, 2, 2.5f, &vx, &vy);
+    CHECK(vy == 5.5f);
+    movement_velocity(MOVE_DOWN_WAIT_UP, 120, 8, 2, 2.5f, &vx, &vy);
+    CHECK(vy == 5.5f); /* Boundary is inclusive in MoverSequence. */
+    movement_velocity(MOVE_DOWN_WAIT_UP, 121, 8, 2, 2.5f, &vx, &vy);
+    CHECK(fabsf(vy - 5.34f) < 0.0001f);
+    vx = 0; vy = -2.5f;
+    movement_velocity(MOVE_DOWN_WAIT_UP, 181, 8, 2, 2.5f, &vx, &vy);
+    CHECK(fabsf(vy + 2.66f) < 0.0001f);
+    movement_velocity(MOVE_DOWN_RIGHT, 0, 6, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_DOWN_RIGHT, 61, 6, 2, 2.5f, &vx, &vy);
+    CHECK(fabsf(vx - 0.06f) < 0.0001f && fabsf(vy - 3.44f) < 0.0001f);
+    movement_velocity(MOVE_SIN, 60, 3, 2, 2.5f, &vx, &vy);
+    CHECK(fabsf(vx - cosf(2) * 3) < 0.0001f && vy == 3);
+    CHECK(movement_find("unknown") == -1);
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
@@ -371,6 +398,7 @@ int main(void) {
     stage_clear_exit();
     starting_primary_patterns();
     authored_stage_data();
+    authored_movement();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

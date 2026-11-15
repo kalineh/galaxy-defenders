@@ -18,6 +18,8 @@ Keep small verified commits/pushes, self-contained assets, CLI-only checks.
 Recovered thread `01a1db6e-6640-75d3-aed6-1b8301bb3878`. Imported all 19 active
 stage definitions as 3,448 plain C events with a strict offline converter.
 `python tools/import_stages.py --check` verifies every field and source digest.
+All 14 legacy mover presets are now ported with sequence-boundary checks,
+including fixed anti-camera velocity and smooth direction changes.
 Data checks and existing headless tests pass. Runtime integration is next;
 these data tables alone do not make any authored stage playable.
 
