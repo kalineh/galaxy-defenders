@@ -12,7 +12,7 @@ typedef struct {
     char input[CONSOLE_LINE], draft[CONSOLE_LINE], completion[CONSOLE_LINE];
     char commands[CONSOLE_COMMAND_HISTORY][CONSOLE_LINE];
     int count, steps, cursor, command_count, history_offset, scroll;
-    bool quit;
+    bool quit, perf;
 } Console;
 
 void console_log(Console *console, const char *format, ...);

@@ -63,6 +63,10 @@ names and positional arguments; Tab again lists ambiguous choices. Up/Down
 browse 32 commands and restore your draft. Left/Right/Home/End, Backspace/Delete,
 and Ctrl+V edit input. PgUp/PgDn or the mouse wheel scroll 256 output lines;
 `clear` clears output. Close the window to exit. Gamepad Y restarts after win/loss.
+F3 (or `perf on` / `perf off`) toggles the reference-style top-right frame graph.
+Gold is total frame time including pacing/present; cyan is CPU update/draw work
+before present, not a GPU timer. The scale is fixed at 0..33.33 ms with a 16.67 ms
+guide and 240 samples. F2 remains player-two join.
 
 This is a foundation playtest, not a complete stage port. It has movement,
 shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.

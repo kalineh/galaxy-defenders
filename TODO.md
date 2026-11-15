@@ -9,6 +9,8 @@ Do not present partial content as complete or rename trial waves as Stage 1.
 Add `game.stage STAGE [0..1]` seeking authored state and synchronizing music.
 Replace all raylib built-in text (completed with licensed bundled Noto fonts).
 Also add the reference lightweight top-right frame-time graph/function key.
+Completed graph: F3 / `perf [on|off]`, 240 frame/work samples, top-right,
+fixed 16.67 ms midpoint, clean font. F2 remains co-op joining.
 Keep small verified commits/pushes, self-contained assets, CLI-only checks.
 
 ## Current handoff

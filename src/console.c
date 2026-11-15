@@ -16,6 +16,7 @@ typedef struct {
 static const CommandHelp commands[] = {
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
+    {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph. F2 remains the co-op join key.", {"on off"}},
     {"state", "state", "Show menu, difficulty, combat counters and each player's equipment/state.", {NULL}},
     {"quit", "quit", "Exit the game or stop the current script.", {NULL}},
     {"game.reset", "game.reset SEED", "Reset the combat trial. SEED is an integer from 0 to 2147483647.", {NULL}},
@@ -275,6 +276,11 @@ bool console_execute(Console *console, Game *game, const char *line) {
     float x, y, expected;
     if (!strcmp(command, "help") && count <= 2) return print_help(console, count == 2 ? words[1] : NULL);
     if (!strcmp(command, "clear") && count == 1) { console->count = console->scroll = 0; return true; }
+    if (!strcmp(command, "perf") && (count == 1 || (count == 2 && (!strcmp(words[1], "on") || !strcmp(words[1], "off"))))) {
+        console->perf = count == 1 ? !console->perf : !strcmp(words[1], "on");
+        console_log(console, "Frame/work graph: %s (F3)", console->perf ? "on" : "off");
+        return true;
+    }
     if (!strcmp(command, "quit") && count == 1) { console->quit = true; return true; }
     if (!strcmp(command, "player.upgrade") && count == 3 && integer(words[1], &slot, 1, 2) && integer(words[2], &value, 0, 7)) {
         if (!game_upgrade_weapon(game, slot - 1, value)) { console_log(console, "ERROR: player not joined"); return false; }

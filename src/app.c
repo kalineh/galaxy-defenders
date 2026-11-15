@@ -9,6 +9,12 @@
 #define CANVAS_WIDTH 1920
 #define CANVAS_HEIGHT 1080
 #define ARENA_X 480
+#define FRAME_SAMPLES 240
+
+typedef struct {
+    float frame_ms[FRAME_SAMPLES], work_ms[FRAME_SAMPLES];
+    int cursor, count;
+} FrameGraph;
 
 typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[4], shot, hostile_shot;
@@ -471,6 +477,34 @@ static void draw_console(Console *console, Font font, bool failed, bool full_scr
     EndScissorMode();
 }
 
+static void draw_frame_graph(const FrameGraph *history, Font font) {
+    /* Solcraft/MMOA: fixed 33.33 ms range, frame + CPU work traces, 60 Hz guide. */
+    Rectangle panel = {CANVAS_WIDTH - 495, 15, 480, 189};
+    Rectangle graph = {panel.x + 12, panel.y + 48, panel.width - 24, 126};
+    DrawRectangleRec(panel, (Color){4, 7, 10, 235});
+    DrawRectangleLinesEx(panel, 1, (Color){82, 116, 128, 230});
+    int last = (history->cursor + FRAME_SAMPLES - 1) % FRAME_SAMPLES;
+    float frame_ms = history->count ? history->frame_ms[last] : 0;
+    float work_ms = history->count ? history->work_ms[last] : 0;
+    DrawTextEx(font, TextFormat("%.1f FPS  frame %.2f  work %.2f ms", frame_ms > 0 ? 1000 / frame_ms : 0, frame_ms, work_ms),
+        (Vector2){panel.x + 12, panel.y + 9}, 20, 0, WHITE);
+    DrawRectangleRec(graph, (Color){2, 5, 8, 220});
+    DrawLineV((Vector2){graph.x, graph.y + graph.height / 2}, (Vector2){graph.x + graph.width, graph.y + graph.height / 2}, (Color){104, 132, 140, 150});
+    DrawTextEx(font, "16.67 ms", (Vector2){graph.x + graph.width - 103, graph.y + graph.height / 2 - 21}, 18, 0, dim);
+    int oldest = (history->cursor + FRAME_SAMPLES - history->count) % FRAME_SAMPLES;
+    for (int trace = 0; trace < 2; ++trace) {
+        const float *samples = trace ? history->work_ms : history->frame_ms;
+        Color color = trace ? (Color){83, 206, 232, 255} : (Color){246, 190, 82, 255};
+        for (int i = 1; i < history->count; ++i) {
+            float a = fminf(33.333f, fmaxf(0, samples[(oldest + i - 1) % FRAME_SAMPLES]));
+            float b = fminf(33.333f, fmaxf(0, samples[(oldest + i) % FRAME_SAMPLES]));
+            float x = graph.x + graph.width * (FRAME_SAMPLES - history->count + i) / FRAME_SAMPLES;
+            DrawLineV((Vector2){x - graph.width / FRAME_SAMPLES, graph.y + graph.height * (1 - a / 33.333f)},
+                (Vector2){x, graph.y + graph.height * (1 - b / 33.333f)}, color);
+        }
+    }
+}
+
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
 #ifndef GALAXY_MEMORY
@@ -504,8 +538,11 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     int rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
+    FrameGraph frame_graph = {0};
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
+        double frame_start = GetTime();
+        if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
         update_audio(game, &assets);
         bool was_menu = game->menu.page != MENU_NONE;
         bool toggled = IsKeyPressed(KEY_GRAVE);
@@ -585,6 +622,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         draw_game(game, &assets);
         draw_menu(game, &assets, menu_frame++);
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
+        if (console->perf) draw_frame_graph(&frame_graph, assets.console_font);
 #ifndef GALAXY_MEMORY
         EndTextureMode();
         BeginDrawing();
@@ -595,7 +633,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
         DrawTexturePro(canvas.texture, (Rectangle){0, 0, CANVAS_WIDTH, -CANVAS_HEIGHT}, destination, (Vector2){0}, 0, WHITE);
 #endif
+        double work_end = GetTime();
         EndDrawing();
+        frame_graph.work_ms[frame_graph.cursor] = (float)((work_end - frame_start) * 1000);
+        frame_graph.frame_ms[frame_graph.cursor] = (float)((GetTime() - frame_start) * 1000);
+        frame_graph.cursor = (frame_graph.cursor + 1) % FRAME_SAMPLES;
+        if (frame_graph.count < FRAME_SAMPLES) ++frame_graph.count;
         if (frames && ++rendered >= frames) {
             if (capture) {
 #ifdef GALAXY_MEMORY
