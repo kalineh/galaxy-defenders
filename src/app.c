@@ -20,7 +20,7 @@ typedef struct {
     Sound shoot, explode, hit, shot_hit, die;
     Sound menu_sounds[5];
     bool audio;
-    Font console_font;
+    Font console_font, ui_font;
 } Assets;
 
 static const Color background = {48, 48, 48, 255};
@@ -43,6 +43,7 @@ static Texture2D texture_load(const char *name) {
 
 static void assets_unload(Assets *assets) {
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
+    if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
@@ -74,7 +75,7 @@ static void assets_unload(Assets *assets) {
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
     /* Solcraft's fixed-font preference: use the OS font, never copy Windows fonts. */
-    assets->console_font = GetFontDefault();
+    assets->ui_font = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"), 64, NULL, 95);
     const char *windows = getenv("WINDIR");
     const char *font_names[] = {"consola.ttf", "cour.ttf"};
     for (int i = 0; windows && i < 2; ++i) {
@@ -89,6 +90,17 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
             break;
         }
     }
+    if (!assets->console_font.texture.id) {
+        assets->console_font = LoadFontEx(asset_path("fonts/NotoSansMono-Regular.ttf"), 32, NULL, 95);
+        console_log(console, "Console font: Noto Sans Mono");
+    }
+    if (!IsFontValid(assets->ui_font) || assets->ui_font.texture.id == GetFontDefault().texture.id ||
+        !IsFontValid(assets->console_font) || assets->console_font.texture.id == GetFontDefault().texture.id) {
+        console_log(console, "ERROR: required UI/console font could not load; default raylib text is disabled.");
+        return false;
+    }
+    SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
     for (int i = 0; i < GAME_CHASSIS; ++i) {
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
@@ -176,8 +188,8 @@ static void sprite(Texture2D texture, float x, float y, float width, float rotat
         (Rectangle){x, y, width, height}, (Vector2){width / 2, height / 2}, rotation, color);
 }
 
-static void text_center(const char *text, int x, int y, int size, Color color) {
-    DrawText(text, x - MeasureText(text, size) / 2, y, size, color);
+static void text_center(Font font, const char *text, int x, int y, int size, Color color) {
+    DrawTextEx(font, text, (Vector2){x - MeasureTextEx(font, text, (float)size, 0).x / 2, (float)y}, (float)size, 0, color);
 }
 
 static void draw_player_panel(const Game *game, int slot, const Assets *assets) {
@@ -185,14 +197,14 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     int x = slot == 0 ? 0 : 1440;
     DrawTexture(assets->panel_background, x, 0, WHITE);
     if (!player->joined) {
-        text_center("Press Start", x + 240, 490, 30, dim);
+        text_center(assets->ui_font, "Press Start", x + 240, 490, 30, dim);
         return;
     }
     /* Positions and original frames from legacy/Hud/Hud.cs + HudManager.cs. */
     DrawTexture(assets->panel_frames, x, 0, WHITE);
     static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
-    text_center(pilot_names[player->pilot], x + 242, 78, 30, dim);
-    text_center(TextFormat("%d", player->score), x + 242, 154, 32, dim);
+    text_center(assets->ui_font, pilot_names[player->pilot], x + 242, 78, 30, dim);
+    text_center(assets->ui_font, TextFormat("%d", player->score), x + 242, 154, 32, dim);
     sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
     DrawTexture(assets->energy_icon, x + 70, 722, WHITE);
     DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
@@ -249,7 +261,7 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
-    if (game->complete && game->menu.page == MENU_NONE) text_center("Stage Clear", 960, 435, 52, accent);
+    if (game->complete && game->menu.page == MENU_NONE) text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
 }
 
 static bool title_menu(const Game *game) {
@@ -262,8 +274,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
     if (game->menu.page == MENU_NONE) return;
     if (game->menu.page == MENU_CLEAR) {
         /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
-        text_center("Stage Clear", 960, 435, 52, accent);
-        text_center("Continue", 960, 525, 30, WHITE);
+        text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
+        text_center(assets->ui_font, "Continue", 960, 525, 30, WHITE);
         return;
     }
     if (title_menu(game)) {
@@ -280,8 +292,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         DrawTexture(assets->panel_background, 0, 0, WHITE);
         DrawTexture(assets->panel_background, 1440, 0, WHITE);
         DrawTexture(assets->title, 704, 120, WHITE);
-        DrawText("@kalin_t", 1300, 980, 19, WHITE);
-        DrawText("@RushJet1", 1300, 1000, 19, WHITE);
+        DrawTextEx(assets->ui_font, "@kalin_t", (Vector2){1300, 980}, 19, 0, WHITE);
+        DrawTextEx(assets->ui_font, "@RushJet1", (Vector2){1300, 1000}, 19, 0, WHITE);
     }
     if (game->menu.page == MENU_PILOT) {
         static const char *info[3][5] = {
@@ -293,7 +305,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         for (int slot = 0; slot < game->menu.players; ++slot) {
             int x = (slot ? 1440 : 0) + 238, y = 472;
             int pilot = game->menu.pilot[slot];
-            DrawText(game->menu.ready[slot] ? "Waiting..." : "Select Pilot", x - 120, y - 240, 36, WHITE);
+            DrawTextEx(assets->ui_font, game->menu.ready[slot] ? "Waiting..." : "Select Pilot", (Vector2){x - 120.0f, y - 240.0f}, 36, 0, WHITE);
             DrawRectangle(x - 77, y - 101, 159, 201, DARKGRAY);
             sprite(assets->portraits[pilot], (float)x, (float)y, 256, 0, WHITE);
             if (!game->menu.ready[slot]) {
@@ -303,9 +315,9 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
             }
             for (int row = 0; row < 5; ++row) {
                 int text_y = y + 160 + row * 32 + (row == 4 ? 32 : 0);
-                DrawText(keys[row], x - 40 - MeasureText(keys[row], 20), text_y, 20, WHITE);
-                DrawText(":", x - 32, text_y, 20, WHITE);
-                DrawText(info[pilot][row], x - 16, text_y, 20, WHITE);
+                DrawTextEx(assets->ui_font, keys[row], (Vector2){x - 40 - MeasureTextEx(assets->ui_font, keys[row], 20, 0).x, (float)text_y}, 20, 0, WHITE);
+                DrawTextEx(assets->ui_font, ":", (Vector2){x - 32.0f, (float)text_y}, 20, 0, WHITE);
+                DrawTextEx(assets->ui_font, info[pilot][row], (Vector2){x - 16.0f, (float)text_y}, 20, 0, WHITE);
             }
         }
         return;
@@ -315,7 +327,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         int texture = enabled ? (selected ? 2 : 0) + (game_menu_small(game, row) ? 1 : 0) : selected ? 5 : 4;
         int y = 400 + row * 66;
         DrawTexture(assets->menu[texture], 832, y, WHITE);
-        text_center(game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
+        text_center(assets->ui_font, game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
         if (game->menu.page == MENU_OPTIONS && row < 3) {
             for (int i = 0; i < 10; ++i) DrawRectangle(864 + i * 20, y + 46, 16, 8,
                 game->menu.options[row] > i ? LIGHTGRAY : GRAY);

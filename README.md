@@ -54,7 +54,9 @@ mapping/disconnect behavior still needs human playtesting.
 
 `P`/Escape pauses, `R` restarts, `M` toggles mute, and backtick opens the console.
 Shift+backtick expands it; Escape closes it. The console uses Consolas from
-Windows (Courier New/default-font fallback), without redistributing system fonts.
+Windows (Courier New/bundled Noto Sans Mono fallback), without redistributing system fonts.
+All game UI uses bundled Noto Sans. Missing required fonts cause an explicit
+load error; raylib's built-in font is never used for game or console text.
 `help` lists every command, `help player.` filters, `help player.upgrade` gives
 usage, and `help fields` lists every assertion field. Tab completes command
 names and positional arguments; Tab again lists ambiguous choices. Up/Down

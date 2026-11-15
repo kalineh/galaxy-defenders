@@ -6,6 +6,8 @@ Port Galaxy Defenders from XNA/C# to simple C with raylib, targeting PC, phones,
 
 This is a fidelity port of a complete game. Match the legacy UI, text, effects,
 menus, content, and gameplay as closely as possible; do not invent replacements.
+Never render with raylib's built-in font. Use the bundled licensed Noto UI and
+console fonts (or the explicit system console font); fail visibly if fonts cannot load.
 Use original music until replacement is requested. Keep automation quiet, but
 normal human play launches must have audible music. Record genuine parity gaps.
 

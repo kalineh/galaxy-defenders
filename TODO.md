@@ -1,5 +1,16 @@
 # Active Work
 
+## Updated required scope
+
+User explicitly rejected the trial/placeholder approach. Remove generated trial
+waves and substitute bosses; port all original authored stages, enemies, bosses,
+weapons/loadouts, shop, upgrades, menus, saves and progression one-to-one.
+Do not present partial content as complete or rename trial waves as Stage 1.
+Add `game.stage STAGE [0..1]` seeking authored state and synchronizing music.
+Replace all raylib built-in text (completed with licensed bundled Noto fonts).
+Also add the reference lightweight top-right frame-time graph/function key.
+Keep small verified commits/pushes, self-contained assets, CLI-only checks.
+
 ## Current handoff
 
 Console follow-up: matched Solcraft's Windows fixed-font selection (Consolas)

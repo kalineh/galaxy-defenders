@@ -27,8 +27,9 @@ textures are copied unchanged from `legacy/Content/Textures/Player/`.
 Title, Gunthor portrait, pilot arrow and MenuItem textures come unchanged from
 `legacy/Content/Textures/UI/`; Cloud is from `Textures/Background/`. Menu sound
 effects come from `Content/SE/`; title and pause tracks (`Konami's_Moon_Base`,
-`1-X-0`) come from `Content/Music/`. The Pericles font used by XNA is not bundled;
-native text still uses raylib's default font.
+`1-X-0`) come from `Content/Music/`. Per the requested font change, all UI now
+uses bundled Noto Sans and the console has Noto Sans Mono as a portable fallback.
+See `fonts/README.md` for pinned source and license; no built-in raylib text.
 
 Front Laser uses `Content/Textures/Weapons/Laser.png`, the original
 `WeaponShootLaser`/`WeaponHitLaser` sound effects, and `Textures/UI/Energy.png`.
