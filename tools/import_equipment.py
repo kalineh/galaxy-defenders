@@ -73,11 +73,24 @@ class Program {
 '''
     (OUT / 'Program.cs').write_text(stubs + '\n'.join(declarations) + program)
     (OUT / 'export.csproj').write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>'
-        '<OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework>'
+        '<OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>'
         '<RestoreSources></RestoreSources></PropertyGroup></Project>')
+    (OUT / 'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    subprocess.run(['dotnet', 'build', str(OUT / 'export.csproj'), '--nologo', '-v:q'], check=True, creationflags=flags)
-    return json.loads(subprocess.check_output(['dotnet', str(OUT / 'bin/Debug/net9.0/export.dll')], creationflags=flags))
+    environment = os.environ.copy()
+    if os.name == 'nt' and not environment.get('APPDATA'):
+        environment['APPDATA'] = str(Path.home() / 'AppData/Roaming')
+    if os.name == 'nt':
+        drive = Path.home().anchor
+        environment.setdefault('ProgramData', str(Path(drive) / 'ProgramData'))
+        environment.setdefault('ProgramFiles(x86)', str(Path(drive) / 'Program Files (x86)'))
+        environment.setdefault('ProgramFiles', str(Path(drive) / 'Program Files'))
+    build = subprocess.run(['dotnet', 'build', str(OUT / 'export.csproj'), '--nologo', '-v:q',
+        '-p:RestoreConfigFile=' + str(OUT / 'NuGet.Config'), '-p:RestorePackagesPath=' + str(OUT / 'packages')],
+        capture_output=True, text=True, creationflags=flags, env=environment)
+    if build.returncode:
+        raise SystemExit(build.stdout + build.stderr)
+    return json.loads(subprocess.check_output(['dotnet', str(OUT / 'bin/Debug/net10.0/export.dll')], creationflags=flags))
 
 
 def ident(name):
