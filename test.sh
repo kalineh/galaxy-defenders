@@ -5,6 +5,7 @@ cd "$(dirname "$0")"
 ./build.sh headless
 ./build/headless/test_game.exe
 ./build/headless/galaxy.exe --script scripts/checks/combat.txt
+./build/headless/galaxy.exe --script scripts/checks/progression.txt
 if ./build/headless/galaxy.exe --script scripts/checks/invalid.txt; then
     echo 'FAIL: invalid script returned success' >&2
     exit 1

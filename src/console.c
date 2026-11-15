@@ -14,7 +14,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
-    {"game.stage", "game.stage STAGE [PROGRESS]", "Seek an authored stage (currently 1); PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1", "0 0.25 0.5 0.75 0.9 1"}},
+    {"game.stage", "game.stage STAGE [PROGRESS]", "Seek an authored stage (currently 1/2); PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
     {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph. F2 remains the co-op join key.", {"on off"}},
@@ -33,8 +33,8 @@ static const CommandHelp commands[] = {
     {"player.upgrade", "player.upgrade SLOT LEVEL", "Set Front Laser normal/focus level free (zero-based 0..7); other weapons are pending.", {"1 2", "0 1 2 3 4 5 6 7"}},
     {"chassis.list", "chassis.list", "List every supported chassis, its ID, armor, movement values and original price.", {NULL}},
     {"enemy.spawn", "enemy.spawn KIND X Y", "Spawn an original enemy. X -200..1160, Y -250..1280; fails when the pool is full.", {"ball triangle turret boss MiniSquare BigBall DownTurret"}},
-    {"menu.open", "menu.open main|pause", "Open the title or pause menu and clear held player input.", {"main pause"}},
-    {"menu.input", "menu.input ACTION [SLOT]", "Navigate the real menu state; SLOT defaults to 1. Player 2 can select its pilot.", {"up down left right confirm back", "1 2"}},
+    {"menu.open", "menu.open main|pause|shop", "Open the title or pause menu and clear held player input.", {"main pause shop"}},
+    {"menu.input", "menu.input ACTION [SLOT]", "Navigate the real menu state; SLOT defaults to 1. Player 2 can select its pilot.", {"up down left right confirm back ready", "1 2"}},
     {"assert", "assert FIELD OP VALUE", "Check a numeric state field; failure stops a script. Use help fields for all fields.", {NULL, "eq ne lt le gt ge"}}
 };
 static const char *global_fields[] = {"tick", "enemies", "bullets", "kills", "shots", "hits", "dropped",
@@ -55,7 +55,7 @@ static bool print_help(Console *console, const char *filter) {
         console_log(console, "Player fields (both slots):");
         for (size_t i = 0; i < sizeof(player_fields) / sizeof(player_fields[0]); ++i) console_log(console, "  p1.%s  p2.%s", player_fields[i], player_fields[i]);
         console_log(console, "IDs: chassis.list; pilots 0=Kazuki 1=Rabbit 2=Gunthor; difficulty 0=Normal 1=Hard 2=Really Hard.");
-        console_log(console, "Menu IDs: 0=play 1=main 2=new 3=difficulty 4=pilot 5=options 6=quit 7=pause 8=retry 9=game-over 10=clear.");
+        console_log(console, "Menu IDs: 0=play 1=main 2=new 3=difficulty 4=pilot 5=options 6=quit 7=pause 8=retry 9=game-over 10=clear 11=shop.");
         return true;
     }
     const CommandHelp *exact = filter ? command_help(filter) : NULL;
@@ -293,14 +293,15 @@ bool console_execute(Console *console, Game *game, const char *line) {
         return true;
     }
     if (!strcmp(command, "menu.open") && count == 2) {
+        if (!strcmp(words[1], "shop")) { game_shop_open(game); return true; }
         if (!strcmp(words[1], "main")) { game_menu_open(game, MENU_MAIN); return true; }
         if (!strcmp(words[1], "pause")) { game_menu_open(game, MENU_PAUSE); return true; }
     }
     if (!strcmp(command, "menu.input") && (count == 2 || count == 3)) {
-        const char *actions[] = {"up", "down", "left", "right", "confirm", "back"};
+        const char *actions[] = {"up", "down", "left", "right", "confirm", "back", "ready"};
         slot = 1;
         if (count == 3 && !integer(words[2], &slot, 1, 2)) return false;
-        for (int i = 0; i < 6; ++i) if (!strcmp(words[1], actions[i])) {
+        for (int i = 0; i < 7; ++i) if (!strcmp(words[1], actions[i])) {
             game_menu_input(game, (MenuAction)i, slot - 1);
             return true;
         }
@@ -391,7 +392,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
     if (!strcmp(command, "enemy.spawn") && count == 4 &&
         number(words[2], &x, -200, GAME_WIDTH + 200) && number(words[3], &y, -250, GAME_HEIGHT + 200)) {
         const char *kinds[] = {"ball", "triangle", "turret", "boss"};
-        for (int i = 0; i < ENEMY_KIND_COUNT - 1; ++i) if (!strcmp(words[1], enemy_names[i]) || (i < 4 && !strcmp(words[1], kinds[i]))) {
+        for (int i = 0; i < ENEMY_KIND_COUNT; ++i) if (!strcmp(words[1], enemy_names[i]) || (i < 4 && !strcmp(words[1], kinds[i]))) {
             if (game_spawn_enemy(game, (EnemyKind)i, x, y) < 0) { console_log(console, "ERROR: enemy pool full"); return false; }
             return true;
         }

@@ -1,0 +1,29 @@
+# Real authored bosses, stage clear, shop, and next-stage progression.
+game.reset 42
+player.invincible 1 1
+player.upgrade 1 7
+game.stage 1 0.9
+player.input 1 0 0 1 1
+game.step 6000
+assert complete eq 1
+assert menu eq 10
+menu.input confirm
+assert menu eq 11
+assert p1.score eq 0
+assert p1.money gt 0
+menu.input ready
+assert stage eq 2
+assert tick eq 0
+assert complete eq 0
+assert p1.weapon_level eq 7
+game.stage 2 0.95
+player.input 1 0 0 1 1
+game.step 6000
+assert complete eq 1
+menu.input confirm
+assert menu eq 11
+assert stage eq 2
+# Unsupported next stages must not silently restart the campaign or title.
+menu.input ready
+assert menu eq 11
+assert stage eq 2

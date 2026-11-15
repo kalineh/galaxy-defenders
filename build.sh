@@ -16,7 +16,7 @@ export ZIG_LOCAL_CACHE_DIR="$PWD/build/zig-cache"
 export ZIG_GLOBAL_CACHE_DIR="$PWD/external/zig-cache"
 mkdir -p build/native build/headless
 flags=(-std=c11 -target x86_64-windows-gnu -mcpu=x86_64 -O0 -g -Wall -Wextra -Werror -Isrc)
-core=(src/game.c src/menu.c src/console.c src/stage.c src/movement.c src/enemy.c)
+core=(src/game.c src/menu.c src/console.c src/stage.c src/movement.c src/enemy.c src/shop.c)
 
 if [[ "$target" == headless ]]; then
     "$zig" cc "${flags[@]}" -DGALAXY_HEADLESS src/main.c "${core[@]}" -o build/headless/galaxy.exe

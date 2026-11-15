@@ -75,6 +75,19 @@ static void legacy_circle_sizes(void) {
     game.enemies[ball].x = 439;
     game_tick(&game);
     CHECK(game.players[0].health == 16);
+    reset();
+    game.players[0].invulnerable = 0;
+    shot = game_spawn_bullet(&game, -1, 416, 882, 0, 0, 2);
+    game_tick(&game);
+    CHECK(game.players[0].health == 20 && game.bullets[shot].active); /* Exact tangent: strict <. */
+    reset();
+    ball = game_spawn_enemy(&game, ENEMY_BALL, 400, 300);
+    game_spawn_bullet(&game, 0, 436.01f, 300, 0, 0, 1);
+    game_tick(&game);
+    CHECK(game.enemies[ball].active); /* Laser is a 1 x 0.5 box, not a radius-5 circle. */
+    game_spawn_bullet(&game, 0, 436, 300, 0, 0, 1);
+    game_tick(&game);
+    CHECK(!game.enemies[ball].active);
     /* Boss side guns are 120x120 AABBs, not circles of radius 60. */
     reset();
     game.players[0].invulnerable = 0;
@@ -84,6 +97,82 @@ static void legacy_circle_sizes(void) {
     game.enemies[gun].cooldown = 100;
     game_tick(&game);
     CHECK(game.players[0].health == 16);
+}
+
+static void shop_progression(void) {
+    reset();
+    game.players[0].score = 5000;
+    game.players[0].money = 250;
+    game_shop_open(&game);
+    CHECK(game.menu.page == MENU_SHOP && game.players[0].money == 5250 && game.players[0].score == 0);
+    game_shop_open(&game);
+    CHECK(game.players[0].money == 5250); /* No duplicate reward on reopen. */
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    CHECK(game.menu.shop_item[0] == 3 && game_shop_cost(&game, 0) == 6000);
+    CHECK(!game_shop_buy(&game, 0) && game.players[0].money == 5250 && game.players[0].chassis == 0);
+    game.players[0].money = 10000;
+    CHECK(game_shop_buy(&game, 0));
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 4000);
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_UP, 0);
+    game_menu_input(&game, MENU_BACK, 0);
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 4000); /* Cancel preview. */
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    game_menu_input(&game, MENU_RIGHT, 0);
+    CHECK(game_shop_cost(&game, 0) == 5000 && !game_shop_buy(&game, 0));
+    game.players[0].money = 10000;
+    CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 3 && game.players[0].money == 5000);
+    game_menu_input(&game, MENU_LEFT, 0);
+    CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 2 && game.players[0].money == 10000);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 10000 && game.players[0].weapon_level == 2);
+    CHECK(!strcmp(game_music(&game), "Alkali Earth"));
+    game_retry(&game);
+    CHECK(game.stage.index == 1 && game.players[0].chassis == 3 && game.players[0].money == 10000);
+}
+
+static void stage2_runtime(void) {
+    game_reset(&game, 42);
+    CHECK(game_stage(&game, 1, 0.95f));
+    CHECK(game.stage.index == 1 && game.stage.stopped && game.dropped_spawns == 0);
+    int boss = -1;
+    for (int i = 0; i < GAME_ENEMIES; ++i) if (game.enemies[i].active && game.enemies[i].kind == ENEMY_BOSS2) boss = i;
+    CHECK(boss >= 0);
+    if (boss < 0) return;
+    Enemy *enemy = &game.enemies[boss];
+    CHECK(enemy->health == 70 && enemy->box_width == 420 && enemy->box_height == 160);
+    float x = enemy->x;
+    game.players[0].invincible = true;
+    for (int i = 0; i < 300; ++i) {
+        game_tick(&game);
+        CHECK(fabsf(enemy->x - x) < 8);
+        x = enemy->x;
+    }
+    game_spawn_bullet(&game, 0, enemy->x, enemy->y + 140, 0, -140, 100);
+    game_tick(&game);
+    CHECK(!enemy->active && !game.complete && game_bullet_count(&game) == 0);
+    for (int i = 0; i < 220; ++i) game_tick(&game);
+    CHECK(game.complete && game.menu.page == MENU_CLEAR);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1); /* Never substitute Stage 1 for unavailable Stage 3. */
+    reset();
+    boss = game_spawn_enemy(&game, ENEMY_BOSS2, 480, 200);
+    game_tick(&game);
+    enemy = &game.enemies[boss];
+    CHECK(game_bullet_count(&game) == 0);
+    enemy->attack = 0; enemy->shot_index = 8; enemy->cooldown = 1;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 1 && enemy->cooldown == 8);
+    for (int i = 0; i < 8; ++i) game_tick(&game);
+    CHECK(game_bullet_count(&game) == 33 && enemy->cooldown == 68);
+    for (int i = 1; i < 33; ++i) {
+        CHECK(game.bullets[i].radius == 2 && game.bullets[i].damage == 3);
+        CHECK(fabsf(game.bullets[i].vx * game.bullets[i].vx + game.bullets[i].vy * game.bullets[i].vy - 64) < 0.001f);
+    }
 }
 
 static void death_and_restart(void) {
@@ -335,9 +424,12 @@ static void stage_clear_exit(void) {
     CHECK(game.tick == tick);
     for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
-    CHECK(game.menu.page == MENU_MAIN && !game.menu.quit);
-    CHECK(game.players[0].score == 5000 && game.players[1].joined);
-    CHECK(console_chain(&console, &game, "menu.input confirm;menu.input confirm;menu.input confirm;menu.input confirm"));
+    CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
+    CHECK(game.players[0].score == 0 && game.players[0].money == 5000 && game.players[1].joined);
+    CHECK(console_execute(&console, &game, "menu.input ready 1"));
+    CHECK(game.menu.page == MENU_SHOP && game.menu.ready[0] && !game.menu.ready[1]);
+    CHECK(console_execute(&console, &game, "menu.input ready 2"));
+    CHECK(game.stage.index == 1 && game.players[0].money == 5000);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
 }
 
@@ -463,12 +555,12 @@ static void authored_stage_runtime(void) {
         CHECK(game.complete && game.menu.page == MENU_CLEAR);
     }
     int tick = game.tick;
-    CHECK(!game_stage(&game, 1, 0) && !game_stage(&game, 0, NAN) && !game_stage(&game, 0, 1.1f));
+    CHECK(!game_stage(&game, 2, 0) && !game_stage(&game, 0, NAN) && !game_stage(&game, 0, 1.1f));
     CHECK(game.tick == tick);
     CHECK(console_execute(&console, &game, "game.stage 1 0"));
     CHECK(game.tick == 0 && game.stage.music_event == -1 && !game.complete && !game.paused);
     CHECK(!console_execute(&console, &game, "game.stage 1 -1"));
-    CHECK(!console_execute(&console, &game, "game.stage 2"));
+    CHECK(!console_execute(&console, &game, "game.stage 3"));
 }
 
 static void boss_patterns(void) {
@@ -530,6 +622,8 @@ static void authored_buildings(void) {
 
 int main(void) {
     legacy_circle_sizes();
+    shop_progression();
+    stage2_runtime();
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();

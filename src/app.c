@@ -20,9 +20,10 @@ typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
     Texture2D particle_dot, particle_triangle, energy;
-    Texture2D menu[6], title, cloud, pilot_arrow;
+    Texture2D menu[6], title, cloud, water, pilot_arrow;
+    Texture2D shop[22], star;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
-    int stage_texture_owner[STAGE_MAX_EVENTS];
+    int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
     int music_mode, music_revision, music_event, music_tick;
     const char *music_name;
@@ -31,6 +32,15 @@ typedef struct {
     bool audio, stage_music_started;
     Font console_font, ui_font;
 } Assets;
+
+static const char *shop_texture_names[] = {
+    "ShopPanel", "ShopItemPanel", "ShopUpgradePanel", "ShopPurchaseButtonPanel",
+    "IconCategoryCursor", "IconItemCursor", "IconWeaponFrontLaser",
+    "IconCategoryChassis", "IconCategoryGenerator", "IconCategoryShield",
+    "IconCategoryWeaponPrimary", "IconCategoryWeaponSecondary", "IconCategoryWeaponSidekick",
+    "IconChassisRookie", "IconChassisEagle", "IconChassisCrusher", "IconChassisInterceptor",
+    "IconChassisPhoenix", "IconChassisLightning", "IconChassisDragon", "IconChassisDemon", "IconChassisAce"
+};
 
 static const Color background = {48, 48, 48, 255};
 static const Color dim = {160, 160, 160, 255};
@@ -66,9 +76,12 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->portraits[2])) UnloadTexture(assets->portraits[2]);
     for (int i = 0; i < 6; ++i) if (IsTextureValid(assets->menu[i])) UnloadTexture(assets->menu[i]);
     if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
+    for (int i = 0; i < 22; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
+    if (IsTextureValid(assets->star)) UnloadTexture(assets->star);
+    if (IsTextureValid(assets->water)) UnloadTexture(assets->water);
     if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
     if (IsTextureValid(assets->pilot_arrow)) UnloadTexture(assets->pilot_arrow);
-    for (int i = 0; i < stage_definitions[0].event_count; ++i) {
+    for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
         if (assets->stage_texture_owner[i] != i) continue;
         if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
         if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
@@ -86,6 +99,44 @@ static void assets_unload(Assets *assets) {
         if (IsSoundValid(assets->die)) UnloadSound(assets->die);
         CloseAudioDevice();
     }
+}
+
+static bool stage_assets_load(Assets *assets, int index) {
+    for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
+        if (assets->stage_texture_owner[i] != i) continue;
+        if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
+        if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
+    }
+    memset(assets->stage_textures, 0, sizeof(assets->stage_textures));
+    memset(assets->stage_destroyed, 0, sizeof(assets->stage_destroyed));
+    assets->stage_index = index;
+    bool valid = true;
+    const StageDefinition *stage = &stage_definitions[index];
+    for (int i = 0; i < stage->event_count; ++i) {
+        const StageEvent *event = &stage->events[i];
+        assets->stage_texture_owner[i] = i;
+        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
+        int owner = i;
+        for (int j = 0; j < i; ++j) if (stage->events[j].kind == event->kind &&
+            !strcmp(stage->events[j].name, event->name)) { owner = j; break; }
+        assets->stage_texture_owner[i] = owner;
+        if (owner != i) {
+            assets->stage_textures[i] = assets->stage_textures[owner];
+            assets->stage_destroyed[i] = assets->stage_destroyed[owner];
+            continue;
+        }
+        char path[160];
+        snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
+            event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
+        assets->stage_textures[i] = texture_load(path);
+        valid = valid && IsTextureValid(assets->stage_textures[i]);
+        if (event->kind == STAGE_BUILDING) {
+            snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
+            assets->stage_destroyed[i] = texture_load(path);
+            valid = valid && IsTextureValid(assets->stage_destroyed[i]);
+        }
+    }
+    return valid;
 }
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
@@ -141,6 +192,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
     assets->portraits[2] = texture_load("textures/GunthorPortrait.png");
     assets->title = texture_load("textures/Title.png");
+    assets->water = texture_load("textures/Water.png");
     assets->cloud = texture_load("textures/Cloud.png");
     assets->pilot_arrow = texture_load("textures/PilotSelectArrow.png");
     const char *menu_textures[] = {"MenuItem", "MenuItemSmall", "MenuItemSelected", "MenuItemSelectedSmall", "MenuItemInvalid", "MenuItemInvalidSelected"};
@@ -157,33 +209,16 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) valid = valid && IsTextureValid(hud[i]);
     for (int i = 0; i < 6; ++i) valid = valid && IsTextureValid(assets->menu[i]);
-    valid = valid && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
+    valid = valid && IsTextureValid(assets->water) && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
         IsTextureValid(assets->pilot_arrow) && IsTextureValid(assets->portraits[2]);
-    const StageDefinition *stage = &stage_definitions[0];
-    for (int i = 0; i < stage->event_count; ++i) {
-        const StageEvent *event = &stage->events[i];
-        assets->stage_texture_owner[i] = i;
-        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
-        int owner = i;
-        for (int j = 0; j < i; ++j) if (stage->events[j].kind == event->kind &&
-            !strcmp(stage->events[j].name, event->name)) { owner = j; break; }
-        assets->stage_texture_owner[i] = owner;
-        if (owner != i) {
-            assets->stage_textures[i] = assets->stage_textures[owner];
-            assets->stage_destroyed[i] = assets->stage_destroyed[owner];
-            continue;
-        }
+    for (int i = 0; i < 22; ++i) {
         char path[160];
-        snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
-            event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
-        assets->stage_textures[i] = texture_load(path);
-        valid = valid && IsTextureValid(assets->stage_textures[i]);
-        if (event->kind == STAGE_BUILDING) {
-            snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
-            assets->stage_destroyed[i] = texture_load(path);
-            valid = valid && IsTextureValid(assets->stage_destroyed[i]);
-        }
+        snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
+        assets->shop[i] = texture_load(path);
+        valid = IsTextureValid(assets->shop[i]) && valid;
     }
+    assets->star = texture_load("textures/Star.png");
+    valid = IsTextureValid(assets->star) && stage_assets_load(assets, 0) && valid;
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
     if (mute) return true;
     InitAudioDevice();
@@ -249,7 +284,7 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     DrawTexture(assets->panel_frames, x, 0, WHITE);
     static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
     text_center(assets->ui_font, pilot_names[player->pilot], x + 242, 78, 30, dim);
-    text_center(assets->ui_font, TextFormat("%d", player->score), x + 242, 154, 32, dim);
+    text_center(assets->ui_font, TextFormat("%d", game->menu.page == MENU_SHOP ? player->money : player->score), x + 242, 154, 32, dim);
     sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
     DrawTexture(assets->energy_icon, x + 70, 722, WHITE);
     DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
@@ -264,13 +299,17 @@ static void draw_game(const Game *game, const Assets *assets) {
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    ClearBackground((Color){92, 120, 196, 255});
-    for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
+    bool water = game->stage.index == 1;
+    ClearBackground(water ? (Color){5, 5, 98, 255} : (Color){92, 120, 196, 255});
+    int layers = water ? 4 : 2;
+    for (int layer = 0; layer < layers; ++layer) for (int i = 0; i < 10; ++i) {
         float x = (float)((i * 193 + layer * 311) % GAME_WIDTH);
-        float speed = (layer ? 9.0f : 6.0f) * (1 - fabsf(x - 480) * 0.001f);
+        float velocity = water ? (layer < 3 ? 1.0f : 9.0f) : (layer ? 9.0f : 6.0f);
+        float speed = velocity * (1 - fabsf(x - 480) * 0.001f);
         float y = fmodf(i * 137.0f + layer * 317 + game->tick * speed + 400 - game->stage.camera_y,
                        GAME_HEIGHT + 128) - 64;
-        sprite(assets->cloud, ARENA_X + x, y, (float)assets->cloud.width, 0, WHITE);
+        Texture2D texture = water && layer < 3 ? assets->water : assets->cloud;
+        sprite(texture, ARENA_X + x, y, (float)texture.width, 0, WHITE);
     }
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
@@ -317,7 +356,7 @@ static void draw_game(const Game *game, const Assets *assets) {
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
-        if (!enemy->active || enemy->kind != ENEMY_BOSS) continue;
+        if (!enemy->active || (enemy->kind != ENEMY_BOSS && enemy->kind != ENEMY_BOSS2)) continue;
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
@@ -332,8 +371,73 @@ static bool title_menu(const Game *game) {
         ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
 }
 
+static void draw_shop(const Game *game, const Assets *assets, int frame) {
+    ClearBackground(BLACK);
+    for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
+        float x = ARENA_X + (i * 193 + layer * 311) % GAME_WIDTH;
+        float y = fmodf(i * 137.0f + frame * (layer ? 2.1f : 3.5f), GAME_HEIGHT);
+        sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
+    }
+    draw_player_panel(game, 0, assets);
+    draw_player_panel(game, 1, assets);
+    text_center(assets->ui_font, "Welcome to Randy's Random Item Shop", 960, 50, 28, WHITE);
+    text_center(assets->ui_font, game->stage.index == 0 ? "Press TAB to proceed to Stage 2" :
+        "Stage 3 is not available in this build", 960, 104, 24, dim);
+    static const char *category_names[] = {"Chassis", "Generator", "Shield", "Main Weapon", "Support Weapon", "Sidekick"};
+    static const char *levels[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        const Player *p = &game->players[slot];
+        if (!p->joined) continue;
+        int category = game->menu.shop_category[slot], item = game->menu.shop_item[slot];
+        bool items = game->menu.shop_items[slot], ready = game->menu.ready[slot];
+        float menu_x = CANVAS_WIDTH * (slot ? 0.707f : 0.291f), menu_y = CANVAS_HEIGHT * 0.351f;
+        float panel_x = menu_x - CANVAS_WIDTH * (slot ? 0.047f : 0.065f), panel_y = menu_y - CANVAS_HEIGHT * 0.060f;
+        DrawTexturePro(assets->shop[0], (Rectangle){0, 0, slot ? -220 : 220, 620},
+            (Rectangle){panel_x, panel_y, 220, 620}, (Vector2){0}, 0, WHITE);
+        for (int c = 0; c < 6; ++c) {
+            Color tint = (c == 0 || c == 3) && !ready ? WHITE : (Color){85, 85, 85, 255};
+            sprite(assets->shop[7 + c], menu_x, menu_y + c * 96, 96, 0, tint);
+        }
+        if (!ready) sprite(assets->shop[4], menu_x, menu_y + category * 96, 96, 0, WHITE);
+        if (items && !ready) {
+            int count = 0;
+            for (int c = 0; c < GAME_CHASSIS; ++c) count += game_shop_chassis_available(game, slot, c);
+            if (category == 3) count = 1;
+            float item_x = menu_x + (slot ? -134 : 134);
+            float item_y = menu_y + category * 96 - fmaxf(category * 96 + count * 80 + 20 - 576, 0);
+            DrawTexturePro(assets->shop[1], (Rectangle){(float)(count - 1) * 128, 0, 128, 672},
+                (Rectangle){item_x - 70, item_y - 58, 128, 672}, (Vector2){0}, 0, WHITE);
+            int row = 0;
+            for (int c = 0; c < (category == 0 ? GAME_CHASSIS : 1); ++c) {
+                if (category == 0 && !game_shop_chassis_available(game, slot, c)) continue;
+                float y = item_y + row++ * 80;
+                sprite(assets->shop[category == 0 ? 13 + c : 6], item_x, y, 80, 0, WHITE);
+                if (category == 3 || item == c) sprite(assets->shop[5], item_x, y, 80, 0, WHITE);
+            }
+        }
+        float info_x = CANVAS_WIDTH * (slot ? 0.765f : 0.020f), info_y = CANVAS_HEIGHT * 0.400f;
+        DrawTexture(assets->shop[2], (int)info_x, (int)info_y, WHITE);
+        const char *name = category_names[category];
+        if (items) name = category == 0 ? game_chassis[item].name : TextFormat("Front Laser Mk %s", levels[item]);
+        text_center(assets->ui_font, name, (int)info_x + 207, (int)info_y + 22, 26, WHITE);
+        if (items) {
+            int cost = game_shop_cost(game, slot);
+            Color color = cost <= p->money ? WHITE : dim;
+            text_center(assets->ui_font, TextFormat("Cost: %d", cost), (int)info_x + 207, (int)info_y + 72, 24, color);
+            text_center(assets->ui_font, TextFormat("Money: %d", p->money - cost), (int)info_x + 207, (int)info_y + 112, 24, color);
+            if (category == 3) text_center(assets->ui_font, "<                 >", (int)info_x + 207, (int)info_y + 160, 24, color);
+            DrawTexture(assets->shop[3], (int)menu_x - 54, (int)menu_y + 554, WHITE);
+            text_center(assets->ui_font, "Purchase", (int)menu_x + 58, (int)menu_y + 580, 24, color);
+        }
+        float sample_x = game->players[1].joined ? 960 + (slot ? 90 : -90) : 1115;
+        int chassis = items && category == 0 ? item : p->chassis;
+        sprite(assets->ships[chassis], sample_x, ready ? 700 : 790, 80, -90, player_colors[slot]);
+    }
+}
+
 static void draw_menu(const Game *game, const Assets *assets, int frame) {
     if (game->menu.page == MENU_NONE) return;
+    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame); return; }
     if (game->menu.page == MENU_CLEAR) {
         /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
         text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
@@ -400,11 +504,17 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
 static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
     GameMenu before = game->menu;
     bool valid = before.page == MENU_PILOT || game_menu_enabled(game, before.cursor);
+    if (before.page == MENU_SHOP) valid = before.shop_items[slot] ?
+        game_shop_cost(game, slot) <= game->players[slot].money :
+        before.shop_category[slot] == 0 || before.shop_category[slot] == 3;
     game_menu_input(game, action, slot);
     if (!assets->audio) return;
     int sound = -1;
     if (action == MENU_BACK) sound = 2;
     else if (action == MENU_CONFIRM) sound = valid ? 1 : 2;
+    else if (before.page == MENU_SHOP && action == MENU_READY) sound = game->stage.index == 1 && game->menu.page == MENU_NONE ? 1 : 0;
+    else if (before.page == MENU_SHOP && (before.shop_category[slot] != game->menu.shop_category[slot] ||
+        before.shop_item[slot] != game->menu.shop_item[slot])) sound = 0;
     else if (before.cursor != game->menu.cursor || before.pilot[slot] != game->menu.pilot[slot]) sound = 0;
     else if (before.page == MENU_OPTIONS && memcmp(before.options, game->menu.options, sizeof(before.options))) sound = action == MENU_RIGHT ? 3 : 4;
     if (sound >= 0) PlaySound(assets->menu_sounds[sound]);
@@ -418,15 +528,19 @@ static void poll_menu(Game *game, Assets *assets) {
         if (resume) { menu_input(game, assets, MENU_BACK, 0); return; }
     }
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
-        bool pressed[6] = {false};
+        bool pressed[7] = {false};
         if (slot == 0) {
             pressed[MENU_UP] = IsKeyPressed(KEY_UP);
             pressed[MENU_DOWN] = IsKeyPressed(KEY_DOWN);
             pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT);
             pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT);
             pressed[MENU_CONFIRM] = IsKeyPressed(KEY_ENTER);
+            pressed[MENU_READY] = IsKeyPressed(KEY_TAB);
             pressed[MENU_BACK] = IsKeyPressed(KEY_ESCAPE);
-        } else if (game->menu.page == MENU_PILOT) {
+        } else if (game->menu.page == MENU_PILOT || game->menu.page == MENU_SHOP) {
+            pressed[MENU_UP] = IsKeyPressed(KEY_I);
+            pressed[MENU_DOWN] = IsKeyPressed(KEY_K);
+            pressed[MENU_READY] = IsKeyPressed(KEY_RIGHT_SHIFT);
             pressed[MENU_LEFT] = IsKeyPressed(KEY_J);
             pressed[MENU_RIGHT] = IsKeyPressed(KEY_L);
             pressed[MENU_CONFIRM] = IsKeyPressed(KEY_RIGHT_CONTROL);
@@ -435,10 +549,10 @@ static void poll_menu(Game *game, Assets *assets) {
         if (IsGamepadAvailable(slot)) {
             const int buttons[] = {GAMEPAD_BUTTON_LEFT_FACE_UP, GAMEPAD_BUTTON_LEFT_FACE_DOWN,
                 GAMEPAD_BUTTON_LEFT_FACE_LEFT, GAMEPAD_BUTTON_LEFT_FACE_RIGHT,
-                GAMEPAD_BUTTON_RIGHT_FACE_DOWN, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT};
-            for (int i = 0; i < 6; ++i) pressed[i] |= IsGamepadButtonPressed(slot, buttons[i]);
+                GAMEPAD_BUTTON_RIGHT_FACE_DOWN, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT, GAMEPAD_BUTTON_MIDDLE_RIGHT};
+            for (int i = 0; i < 7; ++i) pressed[i] |= IsGamepadButtonPressed(slot, buttons[i]);
         }
-        for (int i = 0; i < 6; ++i) if (pressed[i]) { menu_input(game, assets, (MenuAction)i, slot); break; }
+        for (int i = 0; i < 7; ++i) if (pressed[i]) { menu_input(game, assets, (MenuAction)i, slot); break; }
     }
 }
 
@@ -459,7 +573,7 @@ static void update_audio(const Game *game, Assets *assets) {
         if (assets->music_mode == 0) assets->music_mode = -1;
     }
     assets->music_tick = game->tick;
-    int mode = title_menu(game) ? 1 : game->paused ? 2 : 0;
+    int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 : game->paused ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
@@ -699,6 +813,11 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (game->hits > old_hits) PlaySound(assets.hit);
             if (game->projectile_hits > old_projectile_hits) PlaySound(assets.shot_hit);
             if (game->deaths > old_deaths) PlaySound(assets.die);
+        }
+        if (assets.stage_index != game->stage.index && !stage_assets_load(&assets, game->stage.index)) {
+            console_log(console, "ERROR: stage assets failed to load");
+            command_failed = true;
+            break;
         }
         if (game->over && game->menu.page == MENU_NONE) game_menu_open(game, MENU_OVER);
 #ifdef GALAXY_MEMORY

@@ -26,12 +26,14 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR } MenuPage;
-typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK } MenuAction;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP } MenuPage;
+typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent;
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
+    int shop_category[2], shop_item[2];
+    bool shop_items[2];
 } GameMenu;
 
 typedef struct {
@@ -50,7 +52,7 @@ typedef struct {
 
 typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
     ENEMY_MINI_SQUARE, ENEMY_BIG_BALL, ENEMY_DOWN_TURRET, ENEMY_BOSS_CHUNK,
-    ENEMY_KIND_COUNT } EnemyKind;
+    ENEMY_SHOOT_BALL, ENEMY_BOSS2, ENEMY_KIND_COUNT } EnemyKind;
 
 extern const char *enemy_names[ENEMY_KIND_COUNT];
 
@@ -60,7 +62,8 @@ typedef struct {
     float x, y, vx, vy, health, radius;
     int age, cooldown;
     float health_max, rotation, base_y, move_from, move_to, aim;
-    int parent, children[2], attack, shot_index, move_wait, move_frame;
+    int parent, children[2], attack, shot_index, move_wait, move_frame, move_phase;
+    float box_width, box_height;
     int coins;
     bool powerup, authored;
     MovementKind movement;
@@ -120,5 +123,10 @@ void enemy_update(Game *game, Enemy *enemy);
 bool game_stage(Game *game, int index, float progress);
 void game_stage_update(Game *game);
 const char *game_music(const Game *game);
+void game_shop_open(Game *game);
+void game_shop_input(Game *game, MenuAction action, int slot);
+int game_shop_cost(const Game *game, int slot);
+bool game_shop_buy(Game *game, int slot);
+bool game_shop_chassis_available(const Game *game, int slot, int chassis);
 
 #endif

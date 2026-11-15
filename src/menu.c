@@ -2,7 +2,7 @@
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-static const char *labels[][4] = {
+static const char *labels[MENU_SHOP + 1][4] = {
     [MENU_MAIN] = {"Solo Game", "Coop Game", "Options", "Quit"},
     [MENU_NEW_GAME] = {"Continue", "New Game", "Back"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
@@ -35,7 +35,7 @@ bool game_menu_small(const Game *game, int row) {
 }
 
 void game_menu_open(Game *game, MenuPage page) {
-    if (page < MENU_NONE || page > MENU_CLEAR) return;
+    if (page < MENU_NONE || page > MENU_SHOP) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     game->menu.page = page;
@@ -49,7 +49,10 @@ void game_retry(Game *game) {
     for (int i = 0; i < GAME_PLAYERS; ++i) players[i] = game->players[i];
     GameMenu menu = game->menu;
     int difficulty = game->difficulty;
+    int stage = game->stage.index;
     game_reset(game, 1);
+    game->stage.index = stage;
+    game->scroll_speed = stage_definitions[stage].scroll_speed;
     game->difficulty = difficulty;
     game->menu = menu;
     for (int i = 0; i < GAME_PLAYERS; ++i) {
@@ -88,8 +91,9 @@ static void start_game(Game *game) {
 void game_menu_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
     if (slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
+    if (menu->page == MENU_SHOP) { game_shop_input(game, action, slot); return; }
     if (menu->page == MENU_CLEAR) {
-        if (action == MENU_CONFIRM || action == MENU_BACK) game_menu_open(game, MENU_MAIN);
+        if (action == MENU_CONFIRM || action == MENU_BACK) game_shop_open(game);
         return;
     }
     if (menu->page == MENU_PILOT) {
