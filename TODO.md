@@ -15,6 +15,12 @@ Keep small verified commits/pushes, self-contained assets, CLI-only checks.
 
 ## Current handoff
 
+Recovered thread `01a1db6e-6640-75d3-aed6-1b8301bb3878`. Imported all 19 active
+stage definitions as 3,448 plain C events with a strict offline converter.
+`python tools/import_stages.py --check` verifies every field and source digest.
+Data checks and existing headless tests pass. Runtime integration is next;
+these data tables alone do not make any authored stage playable.
+
 Console follow-up: matched Solcraft's Windows fixed-font selection (Consolas)
 and MMOA's help/completion pattern. Shared command catalog now supplies complete
 help, usage errors and positional completion, including chassis and assertion

@@ -1,5 +1,6 @@
 #include "game.h"
 #include "console.h"
+#include "stage.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -329,6 +330,38 @@ static void starting_primary_patterns(void) {
     }
 }
 
+static void authored_stage_data(void) {
+    int total = 0;
+    for (int i = 0; i < STAGE_COUNT; ++i) {
+        const StageDefinition *stage = &stage_definitions[i];
+        int finish = 0, stop = 0;
+        CHECK(stage->scroll_speed > 0 && stage->length > 0 && stage->event_count > 0);
+        for (int j = 0; j < stage->event_count; ++j) {
+            const StageEvent *event = &stage->events[j];
+            finish += event->kind == STAGE_FINISH;
+            stop += event->kind == STAGE_CAMERA_STOP;
+            CHECK(isfinite(event->x) && isfinite(event->y));
+            if (event->kind == STAGE_ENEMY) CHECK(event->name && event->mover && event->speed >= 0);
+        }
+        CHECK(finish == 1 && stop == 1);
+        total += stage->event_count;
+    }
+    CHECK(total == 3448);
+    const StageDefinition *first = &stage_definitions[0];
+    CHECK(!strcmp(first->name, "Stage1") && !strcmp(first->music, "The_Voyage") && first->length == 21320);
+    int boss = 0, squares = 0;
+    for (int j = 0; j < first->event_count; ++j) {
+        const StageEvent *event = &first->events[j];
+        if (event->kind != STAGE_ENEMY) continue;
+        squares += !strcmp(event->name, "MiniSquare");
+        if (!strcmp(event->name, "Boss1")) {
+            ++boss;
+            CHECK(event->spawn_x == 8 && event->spawn_y == -18152 && !strcmp(event->mover, "None"));
+        }
+    }
+    CHECK(boss == 1 && squares == 32);
+}
+
 int main(void) {
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
@@ -337,6 +370,7 @@ int main(void) {
     console_editor();
     stage_clear_exit();
     starting_primary_patterns();
+    authored_stage_data();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }
