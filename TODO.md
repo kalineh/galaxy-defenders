@@ -10,6 +10,14 @@ Use the original music and licensed clean fonts, never raylib's built-in font.
 Keep the F3 frame-time graph and scriptable console. No computer-use automation,
 no NPM installs, no sibling runtime dependencies. Commit/push verified pieces.
 
+## Latest playtest follow-up
+
+User reported undersized enemy bullets and Stage Clear returning to title.
+Bullet visual restored to original 40 pixels, hostile radius consistently 2,
+unshielded player radius 16, original circle distance rule and side-gun box
+contact restored. Boundary tests pass. Next: original Stage Clear -> shop ->
+next authored stage flow; do not hide a title restart behind Continue.
+
 ## Current handoff
 
 Thread: `01a1db6e-6640-75d3-aed6-1b8301bb3878`.

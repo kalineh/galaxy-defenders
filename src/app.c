@@ -297,7 +297,8 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (!bullet->active) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
         sprite(bullet->owner < 0 ? assets->hostile_shot : assets->shot,
-            ARENA_X + bullet->x, bullet->y, bullet->owner < 0 ? 24 : (float)assets->shot.width, bullet->owner < 0 ? 0 : -90, color);
+            ARENA_X + bullet->x, bullet->y, bullet->owner < 0 ? (float)assets->hostile_shot.width : (float)assets->shot.width,
+            bullet->owner < 0 ? atan2f(bullet->vy, bullet->vx) * RAD2DEG : -90, color);
     }
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];

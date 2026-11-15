@@ -55,6 +55,37 @@ static void collisions(void) {
     CHECK(game.players[1].health == 18); /* invulnerability */
 }
 
+static void legacy_circle_sizes(void) {
+    reset();
+    game.players[0].invulnerable = 0;
+    int shot = game_spawn_bullet(&game, -1, 417, 880, 0, 0, 2);
+    CHECK(game.bullets[shot].radius == 2);
+    game_tick(&game);
+    CHECK(game.players[0].health == 20 && game.bullets[shot].active);
+    game.bullets[shot].x = 416;
+    game_tick(&game);
+    CHECK(game.players[0].health == 18 && !game.bullets[shot].active);
+    /* Ball radius 36 + player radius 16: original squared threshold is 1552. */
+    reset();
+    game.players[0].invulnerable = 0;
+    int ball = game_spawn_enemy(&game, ENEMY_BALL, 445, 880);
+    CHECK(game.enemies[ball].radius == 36);
+    game_tick(&game);
+    CHECK(game.players[0].health == 20);
+    game.enemies[ball].x = 439;
+    game_tick(&game);
+    CHECK(game.players[0].health == 16);
+    /* Boss side guns are 120x120 AABBs, not circles of radius 60. */
+    reset();
+    game.players[0].invulnerable = 0;
+    int parent = game_spawn_enemy(&game, ENEMY_BOSS, 800, 200);
+    int gun = game_spawn_enemy(&game, ENEMY_BOSS_CHUNK, 470, 950);
+    game.enemies[gun].parent = parent;
+    game.enemies[gun].cooldown = 100;
+    game_tick(&game);
+    CHECK(game.players[0].health == 16);
+}
+
 static void death_and_restart(void) {
     reset();
     for (int i = 0; i < 3; ++i) {
@@ -498,6 +529,7 @@ static void authored_buildings(void) {
 }
 
 int main(void) {
+    legacy_circle_sizes();
     movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();

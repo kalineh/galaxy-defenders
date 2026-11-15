@@ -208,7 +208,7 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
         bullet->owner = owner;
         bullet->x = x; bullet->y = y;
         bullet->vx = vx; bullet->vy = vy;
-        bullet->radius = owner < 0 ? 9 : 5;
+        bullet->radius = owner < 0 ? ENEMY_SHOT_RADIUS : 5;
         bullet->damage = damage;
         return i;
     }
@@ -310,8 +310,17 @@ static void update_enemies(Game *game) {
         enemy_update(game, enemy);
         for (int p = 0; p < GAME_PLAYERS; ++p) {
             Player *player = &game->players[p];
-            if (player->joined && player->lives > 0 && segment_hits(enemy->x, enemy->y, enemy->x, enemy->y,
-                player->x, player->y, enemy->radius + 18)) game_damage_player(game, p, 4);
+            float dx = player->x - enemy->x, dy = player->y - enemy->y;
+            bool touching;
+            if (enemy->kind == ENEMY_BOSS_CHUNK) {
+                dx = fmaxf(fabsf(dx) - 60, 0);
+                dy = fmaxf(fabsf(dy) - 60, 0);
+                touching = dx * dx + dy * dy <= PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS;
+            } else {
+                /* Collision.cs deliberately uses r1*r1 + r2*r2, not (r1+r2)^2. */
+                touching = dx * dx + dy * dy < enemy->radius * enemy->radius + PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS;
+            }
+            if (player->joined && player->lives > 0 && touching) game_damage_player(game, p, 4);
         }
         if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < -150 || enemy->x > GAME_WIDTH + 150) enemy->active = false;
     }
@@ -376,7 +385,7 @@ static void update_bullets(Game *game) {
             for (int p = 0; p < GAME_PLAYERS; ++p) {
                 Player *player = &game->players[p];
                 if (!player->joined || player->lives <= 0 || !segment_hits(old_x, old_y, bullet->x, bullet->y,
-                    player->x, player->y, 18 + bullet->radius)) continue;
+                    player->x, player->y, sqrtf(PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS + bullet->radius * bullet->radius))) continue;
                 game_damage_player(game, p, bullet->damage);
                 game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
                 bullet->active = false;

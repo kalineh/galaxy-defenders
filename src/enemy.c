@@ -22,7 +22,7 @@ static float aim_at_player(const Game *game, const Enemy *enemy) {
 static void shot(Game *game, const Enemy *enemy, float x, float y, float angle, float damage) {
     int i = game_spawn_bullet(game, -1, enemy->x + x, enemy->y + y,
         cosf(angle) * 8, sinf(angle) * 8, damage);
-    if (i >= 0) game->bullets[i].radius = 2; /* EnemyShot.cs */
+    if (i >= 0) game->bullets[i].radius = ENEMY_SHOT_RADIUS;
 }
 
 static bool children_dead(const Game *game, const Enemy *enemy) {

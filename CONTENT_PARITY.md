@@ -24,3 +24,9 @@ Generated trial waves and substitute boss behavior have been removed.
 Stage 1 still has parity gaps: pickups/rewards, turret corpses, stage-clear flyout/fades, randomized cloud initialization,
 complete starting loadouts, player damage/death rules, and exact collision order.
 Other stages are explicitly unavailable rather than using substitute enemies.
+
+Collision audit: EnemyShot renders its native 40x40 texture (previously shrunk
+by a hard-coded 24-pixel width). Its hit radius is 2; the unshielded player
+radius is 16. Circle pairs preserve legacy `r1*r1 + r2*r2` distance threshold.
+Boss1 side guns use 120x120 boxes. Native bullets still use swept tests between
+ticks; primary laser collision geometry and shields remain separate parity work.

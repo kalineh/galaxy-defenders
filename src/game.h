@@ -14,6 +14,8 @@
 #define GAME_BULLETS 768
 #define GAME_EFFECTS 8192
 #define GAME_CHASSIS 9
+#define PLAYER_ARMOR_RADIUS 16.0f
+#define ENEMY_SHOT_RADIUS 2.0f
 
 typedef struct {
     const char *name;
