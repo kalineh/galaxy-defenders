@@ -14,13 +14,14 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
+    {"game.stage", "game.stage STAGE [PROGRESS]", "Seek an authored stage (currently 1); PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
     {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph. F2 remains the co-op join key.", {"on off"}},
     {"state", "state", "Show menu, difficulty, combat counters and each player's equipment/state.", {NULL}},
     {"quit", "quit", "Exit the game or stop the current script.", {NULL}},
-    {"game.reset", "game.reset SEED", "Reset the combat trial. SEED is an integer from 0 to 2147483647.", {NULL}},
-    {"game.waves", "game.waves 0|1", "Disable/enable generated trial waves. These are not authored stages.", {"0 1"}},
+    {"game.reset", "game.reset SEED", "Reset Stage 1 and debug loadout. SEED is an integer from 0 to 2147483647.", {NULL}},
+    {"game.waves", "game.waves 0|1", "Disable/enable authored stage events and camera scrolling.", {"0 1"}},
     {"game.pause", "game.pause 0|1", "Resume simulation or open the pause menu.", {"0 1"}},
     {"game.step", "game.step TICKS", "Advance 1..36000 fixed ticks; maximum 72000 requested ticks per process.", {NULL}},
     {"player.join", "player.join SLOT", "Join player 1 or 2; fails if already joined or combat has ended.", {"1 2"}},
@@ -31,13 +32,13 @@ static const CommandHelp commands[] = {
     {"player.chassis", "player.chassis SLOT NAME", "Equip an original chassis free; preserve current armor percentage. See chassis.list.", {"1 2"}},
     {"player.upgrade", "player.upgrade SLOT LEVEL", "Set Front Laser normal/focus level free (zero-based 0..7); other weapons are pending.", {"1 2", "0 1 2 3 4 5 6 7"}},
     {"chassis.list", "chassis.list", "List every supported chassis, its ID, armor, movement values and original price.", {NULL}},
-    {"enemy.spawn", "enemy.spawn KIND X Y", "Spawn a trial enemy. X -200..1160, Y -250..1280; fails when the pool is full.", {"ball triangle turret boss"}},
+    {"enemy.spawn", "enemy.spawn KIND X Y", "Spawn an original enemy. X -200..1160, Y -250..1280; fails when the pool is full.", {"ball triangle turret boss MiniSquare BigBall DownTurret"}},
     {"menu.open", "menu.open main|pause", "Open the title or pause menu and clear held player input.", {"main pause"}},
     {"menu.input", "menu.input ACTION [SLOT]", "Navigate the real menu state; SLOT defaults to 1. Player 2 can select its pilot.", {"up down left right confirm back", "1 2"}},
     {"assert", "assert FIELD OP VALUE", "Check a numeric state field; failure stops a script. Use help fields for all fields.", {NULL, "eq ne lt le gt ge"}}
 };
 static const char *global_fields[] = {"tick", "enemies", "bullets", "kills", "shots", "hits", "dropped",
-    "over", "complete", "menu", "menu.cursor", "difficulty", "volume.sfx", "volume.music"};
+    "over", "complete", "menu", "menu.cursor", "difficulty", "volume.sfx", "volume.music", "stage", "stage.camera", "stage.stopped", "stage.music_time"};
 static const char *player_fields[] = {"x", "y", "health", "lives", "score", "joined", "money", "chassis",
     "armor", "invincible", "pilot", "weapon_level", "energy"};
 
@@ -220,7 +221,11 @@ static bool integer(const char *text, int *value, int low, int high) {
 }
 
 static bool field_get(const Game *game, const char *name, float *value) {
-    if (!strcmp(name, "tick")) *value = (float)game->tick;
+    if (!strcmp(name, "stage")) *value = (float)(game->stage.index + 1);
+    else if (!strcmp(name, "stage.camera")) *value = game->stage.camera_y;
+    else if (!strcmp(name, "stage.stopped")) *value = game->stage.stopped;
+    else if (!strcmp(name, "stage.music_time")) *value = (game->tick - game->stage.music_tick) / 60.0f;
+    else if (!strcmp(name, "tick")) *value = (float)game->tick;
     else if (!strcmp(name, "enemies")) *value = (float)game_enemy_count(game);
     else if (!strcmp(name, "bullets")) *value = (float)game_bullet_count(game);
     else if (!strcmp(name, "kills")) *value = (float)game->kills;
@@ -338,6 +343,23 @@ bool console_execute(Console *console, Game *game, const char *line) {
         game_reset(game, (uint32_t)value);
         return true;
     }
+    if (!strcmp(command, "game.stage") && (count == 2 || count == 3) && integer(words[1], &value, 1, STAGE_COUNT)) {
+        x = 0;
+        if (count == 3 && !number(words[2], &x, 0, 1)) return false;
+        int ticks = (int)(x * (stage_definitions[value - 1].length + 400) / stage_definitions[value - 1].scroll_speed);
+        if (ticks > CONSOLE_STEP_LIMIT - console->steps) {
+            console_log(console, "ERROR: script exceeded %d requested ticks", CONSOLE_STEP_LIMIT);
+            return false;
+        }
+        if (!game_stage(game, value - 1, x)) {
+            console_log(console, "ERROR: stage %d behavior is not ported yet", value);
+            return false;
+        }
+        console->steps += ticks;
+        console_log(console, "stage=%d tick=%d camera=%.2f music=%s music_time=%.2f", value, game->tick,
+            game->stage.camera_y, game_music(game), (game->tick - game->stage.music_tick) / 60.0f);
+        return true;
+    }
     if (!strcmp(command, "game.waves") && count == 2 && integer(words[1], &value, 0, 1)) {
         game->waves = value != 0;
         return true;
@@ -369,7 +391,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
     if (!strcmp(command, "enemy.spawn") && count == 4 &&
         number(words[2], &x, -200, GAME_WIDTH + 200) && number(words[3], &y, -250, GAME_HEIGHT + 200)) {
         const char *kinds[] = {"ball", "triangle", "turret", "boss"};
-        for (int i = 0; i < 4; ++i) if (!strcmp(words[1], kinds[i])) {
+        for (int i = 0; i < ENEMY_KIND_COUNT - 1; ++i) if (!strcmp(words[1], enemy_names[i]) || (i < 4 && !strcmp(words[1], kinds[i]))) {
             if (game_spawn_enemy(game, (EnemyKind)i, x, y) < 0) { console_log(console, "ERROR: enemy pool full"); return false; }
             return true;
         }

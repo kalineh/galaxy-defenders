@@ -368,25 +368,133 @@ static void authored_stage_data(void) {
 
 static void authored_movement(void) {
     float vx = 99, vy = 99;
-    movement_velocity(MOVE_DOWN, 0, 6, 1, 4, &vx, &vy);
+    movement_velocity(MOVE_DOWN, 0, 6, 1, &vx, &vy);
     CHECK(vx == 0 && vy == 3.5f); /* Preset anti-camera is fixed, not scroll speed. */
-    movement_velocity(MOVE_IGNORE_CAMERA, 1, 6, 1, 4, &vx, &vy);
-    CHECK(vx == 0 && vy == -4);
-    movement_velocity(MOVE_DOWN_WAIT_UP, 0, 8, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_IGNORE_CAMERA, 1, 6, 1, &vx, &vy);
+    CHECK(vx == 0 && vy == 3.5f); /* IgnoreCamera preserves physical velocity. */
+    movement_velocity(MOVE_DOWN_WAIT_UP, 0, 8, 2, &vx, &vy);
     CHECK(vy == 5.5f);
-    movement_velocity(MOVE_DOWN_WAIT_UP, 120, 8, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_DOWN_WAIT_UP, 120, 8, 2, &vx, &vy);
     CHECK(vy == 5.5f); /* Boundary is inclusive in MoverSequence. */
-    movement_velocity(MOVE_DOWN_WAIT_UP, 121, 8, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_DOWN_WAIT_UP, 121, 8, 2, &vx, &vy);
     CHECK(fabsf(vy - 5.34f) < 0.0001f);
     vx = 0; vy = -2.5f;
-    movement_velocity(MOVE_DOWN_WAIT_UP, 181, 8, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_DOWN_WAIT_UP, 181, 8, 2, &vx, &vy);
     CHECK(fabsf(vy + 2.66f) < 0.0001f);
-    movement_velocity(MOVE_DOWN_RIGHT, 0, 6, 2, 2.5f, &vx, &vy);
-    movement_velocity(MOVE_DOWN_RIGHT, 61, 6, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_DOWN_RIGHT, 0, 6, 2, &vx, &vy);
+    movement_velocity(MOVE_DOWN_RIGHT, 61, 6, 2, &vx, &vy);
     CHECK(fabsf(vx - 0.06f) < 0.0001f && fabsf(vy - 3.44f) < 0.0001f);
-    movement_velocity(MOVE_SIN, 60, 3, 2, 2.5f, &vx, &vy);
+    movement_velocity(MOVE_SIN, 60, 3, 2, &vx, &vy);
     CHECK(fabsf(vx - cosf(2) * 3) < 0.0001f && vy == 3);
     CHECK(movement_find("unknown") == -1);
+}
+
+static void authored_stage_runtime(void) {
+    game_reset(&game, 42);
+    game.players[0].invincible = true;
+    game.players[0].money = 1234;
+    CHECK(game_stage(&game, 0, 0.5f));
+    CHECK(game.tick == 4344 && !game.stage.stopped && !strcmp(game_music(&game), "The_Voyage"));
+    CHECK(game.players[0].money == 1234 && game.players[0].invincible);
+    game_reset(&repeat, 42);
+    repeat.players[0].invincible = true;
+    for (int i = 0; i < game.tick; ++i) game_tick(&repeat);
+    CHECK(!memcmp(game.enemies, repeat.enemies, sizeof(game.enemies)));
+    CHECK(game.stage.camera_y == repeat.stage.camera_y);
+    CHECK(!memcmp(game.stage.activated, repeat.stage.activated, sizeof(game.stage.activated)));
+    CHECK(game_stage(&game, 0, 0.9f));
+    CHECK(game.stage.stopped && !strcmp(game_music(&game), "Boss 9"));
+    CHECK(game.tick > game.stage.music_tick && game.dropped_spawns == 0);
+    int boss = -1;
+    for (int i = 0; i < GAME_ENEMIES; ++i) if (game.enemies[i].active && game.enemies[i].kind == ENEMY_BOSS) boss = i;
+    CHECK(boss >= 0);
+    if (boss >= 0) {
+        Enemy *b = &game.enemies[boss];
+        CHECK(b->health == 25 && b->y > 150 && b->y < 260);
+        for (int i = 0; i < 2; ++i) {
+            CHECK(b->children[i] >= 0);
+            Enemy *child = &game.enemies[b->children[i]];
+            CHECK(child->active && child->health == 8 && child->parent == boss);
+            CHECK(fabsf(child->x - b->x - (i ? 150 : -150)) < 0.001f);
+        }
+        /* Destroy only one side gun; body and other gun must survive. */
+        Enemy *left = &game.enemies[b->children[0]];
+        game_spawn_bullet(&game, 0, left->x - 35, left->y + 100, 0, -100, 9);
+        game_tick(&game);
+        CHECK(!left->active && b->active && b->health == 25);
+        CHECK(game.enemies[b->children[1]].active);
+        game_spawn_bullet(&game, 0, b->x, b->y + 200, 0, -200, 100);
+        game_tick(&game);
+        CHECK(!game.complete && game_enemy_count(&game) == 0 && game_bullet_count(&game) == 0);
+        for (int i = 0; i < 219; ++i) game_tick(&game);
+        CHECK(!game.complete);
+        game_tick(&game);
+        CHECK(game.complete && game.menu.page == MENU_CLEAR);
+    }
+    int tick = game.tick;
+    CHECK(!game_stage(&game, 1, 0) && !game_stage(&game, 0, NAN) && !game_stage(&game, 0, 1.1f));
+    CHECK(game.tick == tick);
+    CHECK(console_execute(&console, &game, "game.stage 1 0"));
+    CHECK(game.tick == 0 && game.stage.music_event == -1 && !game.complete && !game.paused);
+    CHECK(!console_execute(&console, &game, "game.stage 1 -1"));
+    CHECK(!console_execute(&console, &game, "game.stage 2"));
+}
+
+static void boss_patterns(void) {
+    reset();
+    int index = game_spawn_enemy(&game, ENEMY_BOSS, 480, 200);
+    game_tick(&game);
+    Enemy *boss = &game.enemies[index];
+    CHECK(game_enemy_count(&game) == 3 && game_bullet_count(&game) == 8);
+    /* Force a continuation of a paired downward burst. */
+    memset(game.bullets, 0, sizeof(game.bullets));
+    boss->attack = 0; boss->shot_index = 1; boss->cooldown = 1;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 2 && boss->cooldown == 4);
+    CHECK(fabsf(game.bullets[0].vx) < 0.0001f && game.bullets[0].vy == 8 && game.bullets[0].damage == 3);
+    CHECK(fabsf(game.bullets[0].x - game.bullets[1].x - 76) < 0.0001f);
+    /* Unarmed boss must choose the eight-pair aimed sweep. */
+    game.enemies[boss->children[0]].active = false;
+    game.enemies[boss->children[1]].active = false;
+    memset(game.bullets, 0, sizeof(game.bullets));
+    boss->shot_index = 0; boss->cooldown = 1;
+    game_tick(&game);
+    CHECK(boss->attack == 2 && game_bullet_count(&game) == 2);
+    for (int i = 0; i < 14; ++i) game_tick(&game);
+    CHECK(game_bullet_count(&game) == 16 && boss->shot_index == 0 && boss->cooldown == 62);
+    float last_x = boss->x;
+    for (int i = 0; i < 200; ++i) {
+        game_tick(&game);
+        CHECK(fabsf(boss->x - last_x) < 10);
+        last_x = boss->x;
+    }
+}
+
+static void authored_buildings(void) {
+    reset();
+    int index = -1;
+    for (int i = 0; i < stage_definitions[0].event_count; ++i) {
+        if (stage_definitions[0].events[i].kind == STAGE_BUILDING) { index = i; break; }
+    }
+    CHECK(index >= 0);
+    if (index < 0) return;
+    const StageEvent *event = &stage_definitions[0].events[index];
+    game.stage.camera_y = event->y + 200;
+    game.stage.activated[index] = true;
+    game.stage.building_health[index] = 1;
+    float x = event->x + GAME_WIDTH * 0.5f;
+    game_spawn_bullet(&game, 0, x, 440, 0, -100, 1);
+    game_tick(&game);
+    CHECK(game.stage.building_health[index] == 0 && game.building_kills == 0);
+    game_spawn_bullet(&game, 0, x, 440, 0, -100, 0.1f);
+    game_tick(&game);
+    CHECK(game.stage.building_health[index] < 0 && game.building_kills == 1);
+    int triangles = 0;
+    for (int i = 0; i < GAME_EFFECTS; ++i) if (game.effects[i].life > 0 && game.effects[i].kind == 1) ++triangles;
+    CHECK(triangles == 32); /* Two original sixteen-particle building bursts. */
+    game_spawn_bullet(&game, 0, x, 440, 0, -100, 1);
+    game_tick(&game);
+    CHECK(game.building_kills == 1 && game_bullet_count(&game) == 1);
 }
 
 int main(void) {
@@ -399,6 +507,9 @@ int main(void) {
     starting_primary_patterns();
     authored_stage_data();
     authored_movement();
+    authored_stage_runtime();
+    boss_patterns();
+    authored_buildings();
     printf("Game/console checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
     return failures ? 1 : 0;
 }

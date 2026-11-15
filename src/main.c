@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 #endif
     for (int i = 1; i < argc; ++i) {
         if (!strcmp(argv[i], "--help")) {
-            puts("Galaxy Defenders native combat slice\n"
+            puts("Galaxy Defenders native port\n"
                  "  --headless           no window/audio; exits after commands\n"
                  "  --script PATH        bounded command file\n"
                  "  --command COMMANDS   semicolon-separated console commands\n"

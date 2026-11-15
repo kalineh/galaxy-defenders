@@ -2,3 +2,4 @@
 /artifacts/
 /external/
 /save/
+__pycache__/

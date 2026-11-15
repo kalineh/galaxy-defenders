@@ -17,13 +17,16 @@ typedef struct {
 } FrameGraph;
 
 typedef struct {
-    Texture2D ships[GAME_CHASSIS], enemies[4], shot, hostile_shot;
+    Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
     Texture2D particle_dot, particle_triangle, energy;
     Texture2D menu[6], title, cloud, pilot_arrow;
+    Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
+    int stage_texture_owner[STAGE_MAX_EVENTS];
     Music music, title_music, pause_music;
-    int music_mode;
-    Sound shoot, explode, hit, shot_hit, die;
+    int music_mode, music_revision, music_event, music_tick;
+    const char *music_name;
+    Sound shoot, explode, building_explode, hit, shot_hit, die;
     Sound menu_sounds[5];
     bool audio;
     Font console_font, ui_font;
@@ -51,7 +54,7 @@ static void assets_unload(Assets *assets) {
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
-    for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
+    for (int i = 0; i < ENEMY_KIND_COUNT; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
     if (IsTextureValid(assets->particle_dot)) UnloadTexture(assets->particle_dot);
@@ -65,12 +68,18 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
     if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
     if (IsTextureValid(assets->pilot_arrow)) UnloadTexture(assets->pilot_arrow);
+    for (int i = 0; i < stage_definitions[0].event_count; ++i) {
+        if (assets->stage_texture_owner[i] != i) continue;
+        if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
+        if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
+    }
     if (assets->audio) {
         if (IsMusicValid(assets->music)) UnloadMusicStream(assets->music);
         if (IsMusicValid(assets->title_music)) UnloadMusicStream(assets->title_music);
         if (IsMusicValid(assets->pause_music)) UnloadMusicStream(assets->pause_music);
         for (int i = 0; i < 5; ++i) if (IsSoundValid(assets->menu_sounds[i])) UnloadSound(assets->menu_sounds[i]);
         if (IsSoundValid(assets->shoot)) UnloadSound(assets->shoot);
+        if (IsSoundValid(assets->building_explode)) UnloadSound(assets->building_explode);
         if (IsSoundValid(assets->explode)) UnloadSound(assets->explode);
         if (IsSoundValid(assets->hit)) UnloadSound(assets->hit);
         if (IsSoundValid(assets->shot_hit)) UnloadSound(assets->shot_hit);
@@ -112,10 +121,11 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
         assets->ships[i] = texture_load(path);
     }
-    assets->enemies[0] = texture_load("textures/Ball.png");
-    assets->enemies[1] = texture_load("textures/Isosceles.png");
-    assets->enemies[2] = texture_load("textures/ShootBall.png");
-    assets->enemies[3] = texture_load("textures/Boss1.png");
+    for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
+        char path[128];
+        snprintf(path, sizeof(path), "textures/%s.png", enemy_names[i]);
+        assets->enemies[i] = texture_load(path);
+    }
     assets->shot = texture_load("textures/Laser.png");
     assets->energy = texture_load("textures/Energy.png");
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
@@ -142,13 +152,38 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle) && IsTextureValid(assets->energy);
-    for (int i = 0; i < 4; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
+    for (int i = 0; i < ENEMY_KIND_COUNT; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) valid = valid && IsTextureValid(hud[i]);
     for (int i = 0; i < 6; ++i) valid = valid && IsTextureValid(assets->menu[i]);
     valid = valid && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
         IsTextureValid(assets->pilot_arrow) && IsTextureValid(assets->portraits[2]);
+    const StageDefinition *stage = &stage_definitions[0];
+    for (int i = 0; i < stage->event_count; ++i) {
+        const StageEvent *event = &stage->events[i];
+        assets->stage_texture_owner[i] = i;
+        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
+        int owner = i;
+        for (int j = 0; j < i; ++j) if (stage->events[j].kind == event->kind &&
+            !strcmp(stage->events[j].name, event->name)) { owner = j; break; }
+        assets->stage_texture_owner[i] = owner;
+        if (owner != i) {
+            assets->stage_textures[i] = assets->stage_textures[owner];
+            assets->stage_destroyed[i] = assets->stage_destroyed[owner];
+            continue;
+        }
+        char path[160];
+        snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
+            event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
+        assets->stage_textures[i] = texture_load(path);
+        valid = valid && IsTextureValid(assets->stage_textures[i]);
+        if (event->kind == STAGE_BUILDING) {
+            snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
+            assets->stage_destroyed[i] = texture_load(path);
+            valid = valid && IsTextureValid(assets->stage_destroyed[i]);
+        }
+    }
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
     if (mute) return true;
     InitAudioDevice();
@@ -166,12 +201,13 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         if (!IsSoundValid(assets->menu_sounds[i])) return false;
     }
     assets->shoot = LoadSound(asset_path("audio/WeaponShootLaser.wav"));
+    assets->building_explode = LoadSound(asset_path("audio/BuildingExplode.wav"));
     assets->explode = LoadSound(asset_path("audio/EnemyDie1.wav"));
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
     assets->shot_hit = LoadSound(asset_path("audio/WeaponHitLaser.wav"));
     assets->die = LoadSound(asset_path("audio/PlayerDie.wav"));
     if (!IsMusicValid(assets->music) || !IsMusicValid(assets->title_music) || !IsMusicValid(assets->pause_music) || !IsSoundValid(assets->shoot) ||
-        !IsSoundValid(assets->explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
+        !IsSoundValid(assets->explode) || !IsSoundValid(assets->building_explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
         console_log(console, "ERROR: missing or unsupported audio assets");
         return false;
     }
@@ -179,6 +215,9 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->title_music.looping = true;
     assets->pause_music.looping = true;
     assets->music_mode = -1;
+    assets->music_name = "The_Voyage";
+    assets->music_revision = -1;
+    assets->music_event = -2;
     SetMusicVolume(assets->music, 1.0f);
     SetSoundVolume(assets->shoot, 0.13f);
     SetSoundVolume(assets->explode, 0.35f);
@@ -225,17 +264,33 @@ static void draw_game(const Game *game, const Assets *assets) {
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    /* Simple trial backdrop; authored stage scenery is not ported yet. */
-    for (int i = 0; i < 60; ++i) {
-        int x = ARENA_X + (i * 193 + 17) % GAME_WIDTH;
-        int y = (i * 137 + game->tick * (i % 3 + 2)) % (GAME_HEIGHT + 80) - 40;
-        DrawLine(x, y, x, y + 12 + i % 30, (Color){60, 66, 73, 255});
+    ClearBackground((Color){92, 120, 196, 255});
+    for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
+        float x = (float)((i * 193 + layer * 311) % GAME_WIDTH);
+        float speed = (layer ? 9.0f : 6.0f) * (1 - fabsf(x - 480) * 0.001f);
+        float y = fmodf(i * 137.0f + layer * 317 + game->tick * speed + 400 - game->stage.camera_y,
+                       GAME_HEIGHT + 128) - 64;
+        sprite(assets->cloud, ARENA_X + x, y, (float)assets->cloud.width, 0, WHITE);
+    }
+    /* Legacy decoration depth offsets precede the main carrier tiles. */
+    const StageDefinition *stage = &stage_definitions[game->stage.index];
+    for (int pass = 0; pass < 3; ++pass) for (int i = 0; i < stage->event_count; ++i) {
+        const StageEvent *event = &stage->events[i];
+        if (!game->stage.activated[i]) continue;
+        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
+        int depth = event->kind == STAGE_BUILDING ? 2 : event->depth < 0 ? 0 : 1;
+        if (depth != pass) continue;
+        float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+        if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
+        Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
+            assets->stage_destroyed[i] : assets->stage_textures[i];
+        sprite(texture, ARENA_X + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
     }
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active) continue;
-        float width = enemy->kind == ENEMY_BOSS ? 360 : 80;
-        sprite(assets->enemies[enemy->kind], ARENA_X + enemy->x, enemy->y, width, 0, WHITE);
+        float width = (float)assets->enemies[enemy->kind].width;
+        sprite(assets->enemies[enemy->kind], ARENA_X + enemy->x, enemy->y, width, enemy->rotation * RAD2DEG, WHITE);
     }
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
@@ -263,7 +318,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->kind != ENEMY_BOSS) continue;
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
-        DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / 60), 12, danger);
+        DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
@@ -388,18 +443,45 @@ static void poll_menu(Game *game, Assets *assets) {
 
 static void update_audio(const Game *game, Assets *assets) {
     if (!assets->audio) return;
+    const char *music_name = game_music(game);
+    bool music_changed = strcmp(assets->music_name, music_name) != 0;
+    bool seek = game->tick < assets->music_tick || assets->music_revision != game->stage.revision || assets->music_event != game->stage.music_event;
+    if (music_changed) {
+        StopMusicStream(assets->music);
+        UnloadMusicStream(assets->music);
+        char path[160];
+        snprintf(path, sizeof(path), "audio/%s.wav", music_name);
+        assets->music = LoadMusicStream(asset_path(path));
+        assets->music.looping = true;
+        assets->music_name = music_name;
+        if (assets->music_mode == 0) assets->music_mode = -1;
+    }
+    assets->music_tick = game->tick;
     int mode = title_menu(game) ? 1 : game->paused ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
         if (mode != 0) StopMusicStream(tracks[mode]);
-        PlayMusicStream(tracks[mode]);
+        if (mode == 0 && !seek && !music_changed && assets->music_mode >= 0) ResumeMusicStream(tracks[mode]);
+        else PlayMusicStream(tracks[mode]);
         assets->music_mode = mode;
+    }
+    if (seek || music_changed) {
+        float seconds = (game->tick - game->stage.music_tick) / (float)GAME_HZ;
+        float duration = GetMusicTimeLength(assets->music);
+        if (duration > 0) {
+            float offset = fmodf(seconds, duration);
+            SeekMusicStream(assets->music, offset);
+            TraceLog(LOG_INFO, "Stage music: %s seek=%.3f reported=%.3f", music_name, offset, GetMusicTimePlayed(assets->music));
+        }
+        assets->music_revision = game->stage.revision;
+        assets->music_event = game->stage.music_event;
     }
     float sfx = game->menu.options[0] / 10.0f;
     SetMusicVolume(tracks[mode], game->menu.options[1] / 10.0f);
     SetSoundVolume(assets->shoot, 0.13f * sfx);
     SetSoundVolume(assets->explode, 0.35f * sfx);
+    SetSoundVolume(assets->building_explode, sfx);
     SetSoundVolume(assets->hit, 0.45f * sfx);
     SetSoundVolume(assets->shot_hit, 0.2f * sfx);
     SetSoundVolume(assets->die, 0.5f * sfx);
@@ -596,6 +678,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             }
             if (IsKeyPressed(KEY_M) && assets.audio) { muted = !muted; SetMasterVolume(muted ? 0 : volume); }
         }
+        int old_buildings = game->building_kills;
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
         int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
         if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR) && (IsWindowFocused() || frames)) {
@@ -608,6 +691,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         } else accumulator = 0;
         if (assets.audio) {
             if (game->shots > old_shots) PlaySound(assets.shoot);
+            if (game->building_kills > old_buildings) PlaySound(assets.building_explode);
             if (game->kills > old_kills) PlaySound(assets.explode);
             if (game->hits > old_hits) PlaySound(assets.hit);
             if (game->projectile_hits > old_projectile_hits) PlaySound(assets.shot_hit);

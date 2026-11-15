@@ -1,79 +1,55 @@
 # Active Work
 
-## Updated required scope
+## Required scope
 
-User explicitly rejected the trial/placeholder approach. Remove generated trial
-waves and substitute bosses; port all original authored stages, enemies, bosses,
-weapons/loadouts, shop, upgrades, menus, saves and progression one-to-one.
-Do not present partial content as complete or rename trial waves as Stage 1.
-Add `game.stage STAGE [0..1]` seeking authored state and synchronizing music.
-Replace all raylib built-in text (completed with licensed bundled Noto fonts).
-Also add the reference lightweight top-right frame-time graph/function key.
-Completed graph: F3 / `perf [on|off]`, 240 frame/work samples, top-right,
-fixed 16.67 ms midpoint, clean font. F2 remains co-op joining.
-Keep small verified commits/pushes, self-contained assets, CLI-only checks.
+Faithful port of the complete original game: all authored main/bonus stages,
+enemies, bosses, weapons, loadouts, abilities, shops, upgrades, menus, saves,
+progression and effects. The user rejected substitute waves and placeholder
+bosses. Preserve legacy behavior and text; never claim data imports are playable.
+Use the original music and licensed clean fonts, never raylib's built-in font.
+Keep the F3 frame-time graph and scriptable console. No computer-use automation,
+no NPM installs, no sibling runtime dependencies. Commit/push verified pieces.
 
 ## Current handoff
 
-Recovered thread `01a1db6e-6640-75d3-aed6-1b8301bb3878`. Imported all 19 active
-stage definitions as 3,448 plain C events with a strict offline converter.
-`python tools/import_stages.py --check` verifies every field and source digest.
-All 14 legacy mover presets are now ported with sequence-boundary checks,
-including fixed anti-camera velocity and smooth direction changes.
-Data checks and existing headless tests pass. Runtime integration is next;
-these data tables alone do not make any authored stage playable.
+Thread: `01a1db6e-6640-75d3-aed6-1b8301bb3878`.
 
-Console follow-up: matched Solcraft's Windows fixed-font selection (Consolas)
-and MMOA's help/completion pattern. Shared command catalog now supplies complete
-help, usage errors and positional completion, including chassis and assertion
-fields. Added cursor editing, 32-command history/draft restoration, 256-line
-scrollback, and headless editor checks. No sibling runtime dependencies.
-
-Playtest follow-up: Stage Clear now opens a shared menu state; Enter or either
-gamepad A/B returns to title. This fixes the trial dead end, not campaign
-progression. Verified full new-game restart after clearing, plus effects ending.
-README has the exact starting-loadout audit from `legacy/Pilot.cs`; Rabbit's
-Lightning, all secondaries/shields, and Really Hard's Conduction Generator remain
-missing. The boss is still a trial substitute: original Boss1 has paired bursts,
-aimed sweeps, destructible side guns, and different movement/health.
-
-The first native combat trial is runnable via `./play.sh` in Git Bash; controls and explicit
-parity gaps are in `README.md`. Native build, headless unit/integration checks,
-audio loading, co-op combat render, and console render passed. Original HUD
-assets/layout are reused; there is no new UI framework. Human playtesting is
-needed for feel and physical controller behavior. Do not use computer-use tools.
+- All 19 active stage definitions are imported as 3,448 C events. The strict
+  importer accounts for every source field and texture size; `--check` verifies
+  generated output. All 14 mover presets have native implementations.
+- Generated trial waves are removed. Stage 1 runs authored spawns, movement,
+  carrier layout, damageable buildings/destroyed art, original building effects,
+  music change and camera stop. Boss1 has original health scaling, paired bursts,
+  aimed sweeps, smooth movement and independently destructible side guns.
+- `game.stage 1 [0..1]` replays nominal stage time to reconstruct enemies,
+  projectiles, camera and music. Equipment/money survive; armor is restored.
+  0.9 reaches the boss. Other stage IDs explicitly fail until implemented.
+- Title/new-game/difficulty/pilot/pause/options navigation, console help,
+  completion/history/editing/scrollback, money/invincibility/chassis commands,
+  Front Laser's eight normal/focus levels, Standard Generator and F3 graph work.
+- Stage Clear waits for enemies and 220 ticks, then Continue returns to title.
+  Campaign results/shop/next-stage behavior remains unfinished.
 
 ## Remaining work
 
-- [x] Restore title/new-game/difficulty/pilot, pause/retry/options navigation and title/pause music.
-- [ ] Complete shop/progression menus, saved Continue, original font, transitions,
-  sample ships, pilot loadouts and abilities.
-- [ ] Add testable console stage selection, money, equipment/upgrades, and
-  invincibility commands with validated arguments and observable state.
-- [ ] Replace generated trial waves with original authored content, porting the
-  required enemy/movement/boss contracts without substituting generic behaviors.
-- [ ] Maintain an explicit content parity inventory; do not claim completeness
-  from importing stage names or assets alone.
+- Port pickups/rewards and exact enemy/building scoring, co-op damage, turret
+  corpses, collision/player-death behavior, stage-end explosions/flyout/fades,
+  randomized cloud initialization, remaining presentation details.
+- Complete primary/secondary/sidekick weapons, shield/generator choices, pilot
+  loadouts and abilities. Rabbit still uses Front Laser; secondaries are absent.
+- Port Stage2?12 and BonusStage1?7 runtime enemies/bosses/scenery/secret handling.
+  Their imported event tables are not yet playable.
+- Port shop/results/upgrades, saved Continue, complete menu transitions and
+  sample ships. Web/phone builds and physical controller testing remain pending.
 
-Purpose: the prototype works; the user now requires a faithful port of the
-complete existing game. New labels, invented effects, and replacement gameplay
-are not acceptable. Preserve legacy source as the behavioral specification.
-Current findings: original effects are `ParticleEffect.cs` +
-`ParticleEffectDefinitions.cs`, not most of the unused `AnimationEffects.cs`.
-Enemy death emits two 24-triangle bursts; player armor damage 8, death 24.
-The active lifetime formula halves the nominal lifetime; preserve it for parity.
-Normal launch volume is now audible; only automated runs use 1%.
-Next action: port original stage/enemy contracts and remaining weapons/loadouts.
-Do not disguise trial waves as authored stages. Front Laser normal/focus levels,
-Standard Generator energy, focus friction, Kazuki speed and Gunthor damage are
-now ported; `player.upgrade SLOT LEVEL` sets zero-based levels 0–7.
-Completed: money set, invincibility, healing, chassis listing/equipment commands;
-all nine original chassis sprites and base armor/movement values. See
-`CONTENT_PARITY.md` for the remaining behavior contracts.
-Menu navigation is headless-testable through `menu.open` / `menu.input`.
-Title/pilot software captures and a quiet native menu/audio launch passed.
+See CONTENT_PARITY.md for the inventory; legacy source is the specification.
 
-Verification: Git Bash `./test.sh`, `./build.sh native`; native `--headless
---script scripts/checks/combat.txt`; bounded `--frames`/`--capture` and `--console`
-runs; `scripts/check_render.ps1` for silent, windowless software rendering.
-Scratch is always `artifacts/native-port/`; never store durable inputs there.
+## Verification
+
+Git Bash `./test.sh`, `./build.sh native`; `scripts/check_render.ps1` uses silent
+windowless software rendering. New checks cover natural-run/seek reconstruction,
+boss cadence, independent side-gun destruction, smooth movement, camera stop,
+delayed clear, damageable buildings and strict invalid-seek rejection. Native
+quiet audio check confirmed Boss 9 seek=10.933 and reported=10.933 seconds.
+Stage 1 carrier/boss captures were inspected. Human playtesting is still needed.
+Scratch stays in `artifacts/native-port/`; durable inputs never go there.

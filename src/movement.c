@@ -14,12 +14,12 @@ int movement_find(const char *name) {
 }
 
 void movement_velocity(MovementKind kind, int age, float speed, float transition,
-                       float scroll_speed, float *vx, float *vy) {
+                       float *vx, float *vy) {
     /* MoverPresets.cs uses a fixed -2.5 anti-camera term, even on fast stages. */
     float x = 0, y = 0, seconds = age / 60.0f, rate = 1;
     switch (kind) {
         case MOVE_NONE: return;
-        case MOVE_IGNORE_CAMERA: y = -scroll_speed; break;
+        case MOVE_IGNORE_CAMERA: return; /* Position compensation belongs to the caller. */
         case MOVE_SIN: x = cosf(seconds * transition) * speed; y = speed; break;
         case MOVE_SIN_HORIZONTAL: x = speed; y = cosf(seconds * transition) * speed; break;
         case MOVE_UP: y = -speed - 2.5f; break;

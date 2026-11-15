@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import struct
 
 ROOT = Path(__file__).resolve().parents[1]
 TOKEN = re.compile(r'\s*("(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?f?|[A-Za-z_][\w.]*|[(){},=])')
@@ -106,6 +107,10 @@ def event_row(event):
                    f'.no_coins={str(event["NoDropCoins"]).lower()}', f'.powerup={str(event["Powerup"]).lower()}']
     elif kind in ('Decoration', 'Building'):
         output += [f'.name={quoted(event["TextureName"])}']
+        folder = 'Decoration' if kind == 'Decoration' else 'Static'
+        png = ROOT / 'legacy' / 'Content' / 'Textures' / folder / (event['TextureName'] + '.png')
+        width, height = struct.unpack('>II', png.read_bytes()[16:24])
+        output += [f'.width={width}', f'.height={height}']
         if kind == 'Decoration':
             output += [f'.rotation={number(event["Rotation"])}', f'.depth={number(event["DepthOffset"])}']
         else:

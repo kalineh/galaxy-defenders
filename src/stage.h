@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #define STAGE_COUNT 19
+#define STAGE_MAX_EVENTS 512
 
 typedef enum {
     STAGE_DECORATION, STAGE_BUILDING, STAGE_ENEMY, STAGE_CAMERA_STOP,
@@ -17,6 +18,7 @@ typedef struct {
     float spawn_x, spawn_y, speed, transition, rotation, depth;
     int coins;
     bool powerup, no_coins, expired;
+    int width, height;
 } StageEvent;
 
 typedef struct {
@@ -27,5 +29,13 @@ typedef struct {
 } StageDefinition;
 
 extern const StageDefinition stage_definitions[STAGE_COUNT];
+
+typedef struct {
+    int index, end_countdown, music_event, music_tick, revision;
+    float camera_y, previous_line;
+    bool stopped, health_bar;
+    bool activated[STAGE_MAX_EVENTS];
+    float building_health[STAGE_MAX_EVENTS];
+} StageState;
 
 #endif

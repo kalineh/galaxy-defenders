@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "movement.h"
+#include "stage.h"
 
 #define GAME_WIDTH 960
 #define GAME_HEIGHT 1080
@@ -44,13 +46,23 @@ typedef struct {
     PlayerInput input;
 } Player;
 
-typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS } EnemyKind;
+typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
+    ENEMY_MINI_SQUARE, ENEMY_BIG_BALL, ENEMY_DOWN_TURRET, ENEMY_BOSS_CHUNK,
+    ENEMY_KIND_COUNT } EnemyKind;
+
+extern const char *enemy_names[ENEMY_KIND_COUNT];
 
 typedef struct {
     bool active;
     EnemyKind kind;
     float x, y, vx, vy, health, radius;
     int age, cooldown;
+    float health_max, rotation, base_y, move_from, move_to, aim;
+    int parent, children[2], attack, shot_index, move_wait, move_frame;
+    int coins;
+    bool powerup, authored;
+    MovementKind movement;
+    float move_speed, move_transition;
 } Enemy;
 
 typedef struct {
@@ -66,17 +78,20 @@ typedef struct {
 } Effect;
 
 typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
-    EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT, EFFECT_LASER_HIT } EffectKind;
+    EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT, EFFECT_LASER_HIT,
+    EFFECT_BUILDING_SMALL, EFFECT_BUILDING_BIG } EffectKind;
 
 typedef struct {
     Player players[GAME_PLAYERS];
     Enemy enemies[GAME_ENEMIES];
     Bullet bullets[GAME_BULLETS];
     Effect effects[GAME_EFFECTS];
-    uint32_t random;
-    int tick, kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
-    bool waves, paused, over, complete, boss_spawned;
+    uint32_t random, seed;
+    int tick, kills, building_kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
+    bool waves, paused, over, complete, boss_spawned, seeking;
     int difficulty;
+    float scroll_speed;
+    StageState stage;
     GameMenu menu;
 } Game;
 
@@ -98,5 +113,10 @@ void game_damage_player(Game *game, int slot, float damage);
 int game_enemy_count(const Game *game);
 int game_bullet_count(const Game *game);
 void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy);
+uint32_t game_random(Game *game);
+void enemy_update(Game *game, Enemy *enemy);
+bool game_stage(Game *game, int index, float progress);
+void game_stage_update(Game *game);
+const char *game_music(const Game *game);
 
 #endif

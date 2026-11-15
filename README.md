@@ -8,8 +8,8 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 
 Run `./play.sh` in Git Bash after building. It starts at 30% master volume. The game
 opens at the original title menu. Choose Solo Game or Coop Game, New Game,
-difficulty, then pilots to enter the combat trial. A simplified boss appears
-after 45 seconds. Continue is disabled until native saves are implemented.
+difficulty, then pilots to enter the original authored Stage 1. The carrier
+layout, enemy waves, music change and Boss1 now follow the legacy stage data. Continue is disabled until native saves are implemented.
 
 Menus use arrows/Enter/Escape or gamepad D-pad/A/B. During pilot selection,
 player two uses J/L, right Ctrl to confirm, and Backspace to cancel (or gamepad
@@ -19,7 +19,7 @@ and abilities are still pending. Title, combat, and pause use their original
 music tracks. Options adjust SFX/music volume and screen size for this session.
 Pause-menu Quit currently returns to the title; its original shop destination
 is pending.
-The trial's Stage Clear screen now accepts Enter or either gamepad's A/B to
+The Stage Clear screen now accepts Enter or either gamepad's A/B to
 Continue back to the title. It does not advance into an authored second stage;
 the original results/shop/stage progression is still pending.
 
@@ -36,9 +36,10 @@ primary patterns match this table; Rabbit still temporarily uses Front Laser.
 All secondary weapons and shields are pending. Really Hard should also start
 with a Conduction Generator; native currently uses Standard Generator for all.
 These missing systems account for the incomplete energy/loadout behavior.
-`game.reset` is a debug trial reset (Rookie, level 2 Front Laser), not pilot-based
-new-game setup. The trial boss uses simplified attacks, not original Boss1's
-paired bursts, aimed sweeps and destructible side guns.
+`game.reset` is a debug stage reset (Rookie, level 2 Front Laser), not pilot-based
+new-game setup. Boss1 now has its paired bursts, aimed sweeps, smooth lateral
+movement and independently destructible side guns. Remaining stages, rewards,
+loadouts and progression are still incomplete; see CONTENT_PARITY.md.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
@@ -68,14 +69,12 @@ Gold is total frame time including pacing/present; cyan is CPU update/draw work
 before present, not a GPU timer. The scale is fixed at 0..33.33 ms with a 16.67 ms
 guide and 240 samples. F2 remains player-two join.
 
-This is a foundation playtest, not a complete stage port. It has movement,
-shooting, three enemy types, a trial boss, armor, lives, scoring, and local co-op.
-Wave patterns and boss attacks are simplified. Front Laser has its original
-eight normal/focus levels and Standard Generator energy costs/regeneration;
-other weapons are pending. Original authored stages, scenery, shop-based weapon
-selection/upgrades, shields, abilities,
-saves, and full shop/progression menus are not ported yet; inactive HUD meters remain empty. Web/mobile
-builds are also pending. Existing music remains in use.
+The port is incomplete. Authored Stage 1 is playable; other main and bonus
+stages are not yet enabled. Front Laser has its original eight normal/focus
+levels and Standard Generator energy costs/regeneration. Other weapons,
+shields, abilities, pickups/rewards, saves, shop and campaign progression remain
+pending. Inactive HUD meters stay empty. Web/mobile builds are also pending.
+See CONTENT_PARITY.md for specific gaps.
 
 ## Build and test (Windows)
 
@@ -93,7 +92,7 @@ Setup obtains checksum-verified Zig 0.13.0 in ignored `external/zig/`. Raylib 6.
 source is vendored. No other checkout, NPM, global compiler, or XNA installation is
 required. Build outputs reuse `build/headless/` and `build/native/`.
 
-The headless combat slice runs the same fixed-tick simulation as the client,
+The headless runner runs the same fixed-tick simulation as the client,
 without linking raylib,
 opening a window, initializing audio, or waiting for wall-clock time.
 
@@ -123,6 +122,14 @@ use the original sprite, armor, acceleration, and friction. They cost no money.
 `player.upgrade 1 7` sets Front Laser's level (zero-based 0–7, matching the legacy
 data). It changes both normal and focus patterns without charging money. Inspect
 `p1.weapon_level` and `p1.energy` through assertions or `state`.
+`game.stage 1 [PROGRESS]` seeks Stage 1, with normalized progress from 0 to 1.
+It replays nominal stage time (0 = start; 0.9 = boss section), rebuilding enemy
+positions, bullets, camera stop and music events. The camera waits at the boss,
+so progress 1 does not kill it. Equipment/money survive; armor is restored.
+Music seeks to the current track's elapsed time, including the boss-track switch.
+Other stage IDs fail explicitly until their behavior is ported. Importing their
+source data does not make those stages playable.
+
 The shop and currency rewards are still pending. `state` reports these values;
 assertions also support `p1.money`, `p1.chassis`, `p1.armor`, `p1.invincible`
 and their `p2` equivalents. See [content parity](CONTENT_PARITY.md).

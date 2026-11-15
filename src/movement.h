@@ -12,6 +12,6 @@ extern const char *movement_names[MOVE_COUNT];
 int movement_find(const char *name);
 /* World-space velocity, before camera displacement. Age starts at zero. */
 void movement_velocity(MovementKind kind, int age, float speed, float transition,
-                       float scroll_speed, float *vx, float *vy);
+                       float *vx, float *vy);
 
 #endif
