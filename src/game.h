@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "movement.h"
 #include "stage.h"
+#include "equipment.h"
 
 #define GAME_WIDTH 960
 #define GAME_HEIGHT 1080
@@ -32,13 +33,14 @@ typedef struct {
     MenuPage page, parent;
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
-    int shop_category[2], shop_item[2];
+    int shop_category[2], shop_item[2], shop_level[2];
     bool shop_items[2];
 } GameMenu;
 
 typedef struct {
     float x, y;
     bool fire, focus;
+    bool sidekick_left, sidekick_right;
 } PlayerInput;
 
 typedef struct {
@@ -46,6 +48,9 @@ typedef struct {
     float x, y, vx, vy, health;
     int lives, invulnerable, score;
     int money, chassis, pilot, weapon_level;
+    int primary, secondary, secondary_level, sidekick, generator, shield;
+    float shield_health;
+    WeaponState weapons[WEAPON_GROUPS][WEAPON_EMITTERS];
     float energy, weapon_cooldown[2], friction;
     PlayerInput input;
 } Player;
@@ -74,6 +79,10 @@ typedef struct {
     bool active;
     int owner; /* Player slot, or -1 for hostile shots. */
     float x, y, vx, vy, radius, damage;
+    int weapon, age, lifetime, bounces, target, ignore_enemy, group, emitter;
+    float speed, base_damage, rotation, curve_speed, curve_magnitude, curve_offset;
+    float direction_x, direction_y, friction, scale, offset_x, offset_y, width;
+    bool splash;
 } Bullet;
 
 typedef struct {
@@ -128,5 +137,10 @@ void game_shop_input(Game *game, MenuAction action, int slot);
 int game_shop_cost(const Game *game, int slot);
 bool game_shop_buy(Game *game, int slot);
 bool game_shop_chassis_available(const Game *game, int slot, int chassis);
+int game_shop_equipped(const Player *player, int category);
+bool game_shop_item_available(int category, int item);
+void game_update_weapons(Game *game, int slot);
+void game_update_projectile(Game *game, Bullet *bullet);
+void game_projectile_hit(Game *game, Bullet *bullet, int enemy);
 
 #endif

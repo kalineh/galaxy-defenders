@@ -1,5 +1,21 @@
 # Active Work
 
+## November 15 completion request
+
+User explicitly requested all weapons, enemies, stages, and upgrades, including
+working shop purchases and their gameplay effects. Continue until the original
+content is playable; do not treat an imported catalog as completed gameplay.
+
+- [x] Fix Stage 1 music startup from title; real audio start/advance/pause/resume check.
+- [x] Verify and commit existing Stage 2/shop progression work.
+- [x] Import exact equipment/weapon level data and connect all weapon variants.
+- [ ] Audit projectile collision/effects/audio parity during final campaign verification.
+- [x] Implement generators/shields, pilot loadouts, all shop categories and upgrades.
+- [ ] Implement remaining enemies and bosses with their authored attacks.
+- [ ] Enable all 12 main and 7 bonus stages, secrets and campaign progression.
+- [ ] Import required original assets; validate native build, headless campaign,
+      equipment behavior, audio and software captures; update parity inventory.
+
 ## Required scope
 
 Faithful port of the complete original game: all authored main/bonus stages,

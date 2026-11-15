@@ -62,6 +62,14 @@ void game_retry(Game *game) {
         p->chassis = players[i].chassis;
         p->pilot = players[i].pilot;
         p->weapon_level = players[i].weapon_level;
+        p->primary = players[i].primary;
+        p->secondary = players[i].secondary;
+        p->secondary_level = players[i].secondary_level;
+        p->sidekick = players[i].sidekick;
+        p->generator = players[i].generator;
+        p->shield = players[i].shield;
+        p->energy = game_generators[p->generator].capacity;
+        p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
         p->friction = game_chassis[p->chassis].friction;
         p->money = players[i].money;
         p->invincible = players[i].invincible;
@@ -83,6 +91,15 @@ static void start_game(Game *game) {
         p->pilot = menu.pilot[i];
         p->money = starting_money[menu.difficulty];
         p->weapon_level = p->pilot == 0 && menu.difficulty < 2 ? 1 : 2;
+        p->primary = p->pilot == 1 ? WEAPON_LIGHTNING : WEAPON_FRONT_LASER;
+        if (p->pilot == 1 && menu.difficulty == 2) p->weapon_level = 3;
+        p->secondary = p->pilot == 0 ? WEAPON_VULCAN : p->pilot == 1 ? WEAPON_SEEK_BOMB : WEAPON_MISSILE;
+        p->secondary_level = p->pilot == 0 ? (menu.difficulty == 0 ? 1 : 2) :
+            p->pilot == 1 ? (menu.difficulty > 0 ? 1 : 0) : menu.difficulty;
+        p->generator = menu.difficulty == 2 ? 1 : 0;
+        p->shield = menu.difficulty > 0 ? 1 : 0;
+        p->energy = game_generators[p->generator].capacity;
+        p->shield_health = game_shields[p->shield].capacity;
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
     game_menu_open(game, MENU_NONE);

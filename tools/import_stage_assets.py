@@ -32,4 +32,7 @@ for number in (1, 2):
     for name in music:
         copy(ROOT / 'legacy/Content/Music' / (name + '.wav'), ROOT / 'assets/audio' / (name + '.wav'))
 copy(ROOT / 'legacy/Content/Textures/Background/Water.png', ROOT / 'assets/textures/Water.png')
+for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 'shop')]:
+    for source in (ROOT / 'legacy/Content/Textures' / source_folder).glob('*.png'):
+        copy(source, ROOT / 'assets/textures' / destination_folder / source.name)
 print('Copied original assets for Stage 1 and Stage 2')

@@ -22,6 +22,8 @@ typedef struct {
     Texture2D particle_dot, particle_triangle, energy;
     Texture2D menu[6], title, cloud, water, pilot_arrow;
     Texture2D shop[22], star;
+    Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
+    Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
@@ -40,6 +42,12 @@ static const char *shop_texture_names[] = {
     "IconCategoryWeaponPrimary", "IconCategoryWeaponSecondary", "IconCategoryWeaponSidekick",
     "IconChassisRookie", "IconChassisEagle", "IconChassisCrusher", "IconChassisInterceptor",
     "IconChassisPhoenix", "IconChassisLightning", "IconChassisDragon", "IconChassisDemon", "IconChassisAce"
+};
+
+static const char *weapon_texture_names[WEAPON_COUNT] = {
+    "Laser", "Laser", "Laser", "Laser", "SmallPlasma", "BigPlasma", "Flame", "Flame", "Vulcan", "Bomblet",
+    "Lightning", "Lightning", "Beam", "BeamFocus", "Missile", "SeekBomb", "Boomerang", "DrunkMissile",
+    "MiniShot", "ChargeShot", "Blade", "DrunkMissile", "Missile", "Laser"
 };
 
 static const Color background = {48, 48, 48, 255};
@@ -77,6 +85,14 @@ static void assets_unload(Assets *assets) {
     for (int i = 0; i < 6; ++i) if (IsTextureValid(assets->menu[i])) UnloadTexture(assets->menu[i]);
     if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
     for (int i = 0; i < 22; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
+    for (int i = 0; i < WEAPON_COUNT; ++i) {
+        if (IsTextureValid(assets->weapon_icons[i])) UnloadTexture(assets->weapon_icons[i]);
+        if (IsTextureValid(assets->weapon_textures[i])) UnloadTexture(assets->weapon_textures[i]);
+    }
+    for (int i = 0; i < GENERATOR_COUNT; ++i) if (IsTextureValid(assets->generator_icons[i])) UnloadTexture(assets->generator_icons[i]);
+    for (int i = 0; i < SHIELD_COUNT; ++i) if (IsTextureValid(assets->shield_icons[i])) UnloadTexture(assets->shield_icons[i]);
+    if (IsTextureValid(assets->item_none)) UnloadTexture(assets->item_none);
+    if (IsTextureValid(assets->sidekick)) UnloadTexture(assets->sidekick);
     if (IsTextureValid(assets->star)) UnloadTexture(assets->star);
     if (IsTextureValid(assets->water)) UnloadTexture(assets->water);
     if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
@@ -218,6 +234,31 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         valid = IsTextureValid(assets->shop[i]) && valid;
     }
     assets->star = texture_load("textures/Star.png");
+    for (int i = 0; i < WEAPON_COUNT; ++i) {
+        char path[160];
+        snprintf(path, sizeof(path), "textures/weapons/%s.png", weapon_texture_names[i]);
+        assets->weapon_textures[i] = texture_load(path);
+        valid = IsTextureValid(assets->weapon_textures[i]) && valid;
+        if (equipment_weapon_category(i) >= 0) {
+            snprintf(path, sizeof(path), "textures/shop/IconWeapon%s.png", game_weapons[i].name);
+            assets->weapon_icons[i] = texture_load(path);
+            valid = IsTextureValid(assets->weapon_icons[i]) && valid;
+        }
+    }
+    for (int i = 0; i < GENERATOR_COUNT; ++i) {
+        char path[160];
+        snprintf(path, sizeof(path), "textures/shop/%s.png", game_generators[i].icon);
+        assets->generator_icons[i] = texture_load(path);
+        valid = IsTextureValid(assets->generator_icons[i]) && valid;
+    }
+    for (int i = 0; i < SHIELD_COUNT; ++i) {
+        char path[160];
+        snprintf(path, sizeof(path), "textures/shop/%s.png", game_shields[i].icon);
+        assets->shield_icons[i] = texture_load(path);
+        valid = IsTextureValid(assets->shield_icons[i]) && valid;
+    }
+    assets->item_none = texture_load("textures/shop/IconItemNone.png");
+    valid = IsTextureValid(assets->item_none) && valid;
     valid = IsTextureValid(assets->star) && stage_assets_load(assets, 0) && valid;
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
     if (mute) return true;
@@ -288,8 +329,10 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
     sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
     DrawTexture(assets->energy_icon, x + 70, 722, WHITE);
     DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
-        (Rectangle){(float)x + 140, 716, 281.6f * player->energy / 3, 73.6f}, (Vector2){0}, 0, WHITE);
-    DrawTexture(assets->shield_icon, x + 70, 805, Fade(WHITE, 0.35f));
+        (Rectangle){(float)x + 140, 716, 281.6f * player->energy / game_generators[player->generator].capacity, 73.6f}, (Vector2){0}, 0, WHITE);
+    DrawTexture(assets->shield_icon, x + 70, 805, WHITE);
+    if (player->shield >= 0) DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
+        (Rectangle){(float)x + 140, 800, 281.6f * player->shield_health / game_shields[player->shield].capacity, 73.6f}, (Vector2){0}, 0, SKYBLUE);
     DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
     DrawTexturePro(assets->armor, (Rectangle){0, 0, 256, 64},
         (Rectangle){(float)x + 140, 876, 281.6f * player->health / game_chassis[player->chassis].armor, 73.6f}, (Vector2){0}, 0, WHITE);
@@ -335,9 +378,17 @@ static void draw_game(const Game *game, const Assets *assets) {
         const Bullet *bullet = &game->bullets[i];
         if (!bullet->active) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
-        sprite(bullet->owner < 0 ? assets->hostile_shot : assets->shot,
-            ARENA_X + bullet->x, bullet->y, bullet->owner < 0 ? (float)assets->hostile_shot.width : (float)assets->shot.width,
-            bullet->owner < 0 ? atan2f(bullet->vy, bullet->vx) * RAD2DEG : -90, color);
+        Texture2D texture = bullet->owner < 0 ? assets->hostile_shot : assets->weapon_textures[bullet->weapon];
+        if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
+            DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
+                (Rectangle){ARENA_X + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
+                (Vector2){540, bullet->width}, -90, color);
+        } else {
+            float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
+            if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
+            float rotation = bullet->owner < 0 ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
+            sprite(texture, ARENA_X + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
+        }
     }
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
@@ -394,41 +445,56 @@ static void draw_shop(const Game *game, const Assets *assets, int frame) {
         float panel_x = menu_x - CANVAS_WIDTH * (slot ? 0.047f : 0.065f), panel_y = menu_y - CANVAS_HEIGHT * 0.060f;
         DrawTexturePro(assets->shop[0], (Rectangle){0, 0, slot ? -220 : 220, 620},
             (Rectangle){panel_x, panel_y, 220, 620}, (Vector2){0}, 0, WHITE);
-        for (int c = 0; c < 6; ++c) {
-            Color tint = (c == 0 || c == 3) && !ready ? WHITE : (Color){85, 85, 85, 255};
-            sprite(assets->shop[7 + c], menu_x, menu_y + c * 96, 96, 0, tint);
-        }
+        for (int c = 0; c < 6; ++c)
+            sprite(assets->shop[7 + c], menu_x, menu_y + c * 96, 96, 0, ready ? dim : WHITE);
         if (!ready) sprite(assets->shop[4], menu_x, menu_y + category * 96, 96, 0, WHITE);
         if (items && !ready) {
-            int count = 0;
-            for (int c = 0; c < GAME_CHASSIS; ++c) count += game_shop_chassis_available(game, slot, c);
-            if (category == 3) count = 1;
+            int available[WEAPON_COUNT + 1], count = 0, selected = 0;
+            for (int c = -1; c < WEAPON_COUNT; ++c) if (game_shop_item_available(category, c)) {
+                if (c == item) selected = count;
+                available[count++] = c;
+            }
+            int first = selected > 5 ? selected - 5 : 0;
+            int shown = count - first < 7 ? count - first : 7;
             float item_x = menu_x + (slot ? -134 : 134);
-            float item_y = menu_y + category * 96 - fmaxf(category * 96 + count * 80 + 20 - 576, 0);
-            DrawTexturePro(assets->shop[1], (Rectangle){(float)(count - 1) * 128, 0, 128, 672},
+            float item_y = menu_y;
+            DrawTexturePro(assets->shop[1], (Rectangle){(float)(shown - 1) * 128, 0, 128, 672},
                 (Rectangle){item_x - 70, item_y - 58, 128, 672}, (Vector2){0}, 0, WHITE);
-            int row = 0;
-            for (int c = 0; c < (category == 0 ? GAME_CHASSIS : 1); ++c) {
-                if (category == 0 && !game_shop_chassis_available(game, slot, c)) continue;
-                float y = item_y + row++ * 80;
-                sprite(assets->shop[category == 0 ? 13 + c : 6], item_x, y, 80, 0, WHITE);
-                if (category == 3 || item == c) sprite(assets->shop[5], item_x, y, 80, 0, WHITE);
+            for (int row = 0; row < shown; ++row) {
+                int c = available[first + row];
+                Texture2D icon = c < 0 ? assets->item_none : category == 0 ? assets->shop[13 + c] :
+                    category == 1 ? assets->generator_icons[c] : category == 2 ? assets->shield_icons[c] : assets->weapon_icons[c];
+                float y = item_y + row * 80;
+                sprite(icon, item_x, y, 80, 0, WHITE);
+                if (item == c) sprite(assets->shop[5], item_x, y, 80, 0, WHITE);
             }
         }
         float info_x = CANVAS_WIDTH * (slot ? 0.765f : 0.020f), info_y = CANVAS_HEIGHT * 0.400f;
         DrawTexture(assets->shop[2], (int)info_x, (int)info_y, WHITE);
         const char *name = category_names[category];
-        if (items) name = category == 0 ? game_chassis[item].name : TextFormat("Front Laser Mk %s", levels[item]);
-        text_center(assets->ui_font, name, (int)info_x + 207, (int)info_y + 22, 26, WHITE);
+        if (items) name = item < 0 ? "None" : category == 0 ? game_chassis[item].name :
+            category == 1 ? game_generators[item].name : category == 2 ? game_shields[item].name : game_weapons[item].display_name;
+        text_center(assets->ui_font, name, (int)info_x + 207, (int)info_y + 22, 24, WHITE);
         if (items) {
             int cost = game_shop_cost(game, slot);
             Color color = cost <= p->money ? WHITE : dim;
             text_center(assets->ui_font, TextFormat("Cost: %d", cost), (int)info_x + 207, (int)info_y + 72, 24, color);
             text_center(assets->ui_font, TextFormat("Money: %d", p->money - cost), (int)info_x + 207, (int)info_y + 112, 24, color);
-            if (category == 3) text_center(assets->ui_font, "<                 >", (int)info_x + 207, (int)info_y + 160, 24, color);
+            if (category >= 3 && item >= 0) {
+                int level = game->menu.shop_level[slot];
+                text_center(assets->ui_font, TextFormat("<  Mk %s / %s  >", levels[level], levels[game_weapons[item].level_count - 1]),
+                    (int)info_x + 207, (int)info_y + 160, 24, WHITE);
+            }
+            if (category == 1) text_center(assets->ui_font, TextFormat("Energy %.1f   Regen %.2f", game_generators[item].capacity, game_generators[item].regen),
+                (int)info_x + 207, (int)info_y + 160, 22, WHITE);
+            if (category == 2) text_center(assets->ui_font, TextFormat("Shield %.1f   Efficiency %.0f%%", game_shields[item].capacity, game_shields[item].efficiency * 100),
+                (int)info_x + 207, (int)info_y + 160, 22, WHITE);
+            text_center(assets->ui_font, "Up/Down: item   Left/Right: level", (int)info_x + 207, (int)info_y + 220, 19, dim);
+            text_center(assets->ui_font, "Enter: purchase   Esc: back", (int)info_x + 207, (int)info_y + 252, 20, WHITE);
+            if (cost > p->money) text_center(assets->ui_font, "Not enough money", (int)info_x + 207, (int)info_y + 300, 23, dim);
             DrawTexture(assets->shop[3], (int)menu_x - 54, (int)menu_y + 554, WHITE);
             text_center(assets->ui_font, "Purchase", (int)menu_x + 58, (int)menu_y + 580, 24, color);
-        }
+        } else text_center(assets->ui_font, "Up/Down: category   Enter: browse", (int)info_x + 207, (int)info_y + 80, 20, WHITE);
         float sample_x = game->players[1].joined ? 960 + (slot ? 90 : -90) : 1115;
         int chassis = items && category == 0 ? item : p->chassis;
         sprite(assets->ships[chassis], sample_x, ready ? 700 : 790, 80, -90, player_colors[slot]);
@@ -506,7 +572,7 @@ static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) 
     bool valid = before.page == MENU_PILOT || game_menu_enabled(game, before.cursor);
     if (before.page == MENU_SHOP) valid = before.shop_items[slot] ?
         game_shop_cost(game, slot) <= game->players[slot].money :
-        before.shop_category[slot] == 0 || before.shop_category[slot] == 3;
+        true;
     game_menu_input(game, action, slot);
     if (!assets->audio) return;
     int sound = -1;
@@ -613,11 +679,13 @@ static PlayerInput poll_input(int slot) {
         input.y = (float)((IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) - (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)));
         input.fire = IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_Z);
         input.focus = IsKeyDown(KEY_LEFT_SHIFT);
+        input.sidekick_left = input.sidekick_right = IsKeyDown(KEY_X);
     } else {
         input.x = (float)(IsKeyDown(KEY_L) - IsKeyDown(KEY_J));
         input.y = (float)(IsKeyDown(KEY_K) - IsKeyDown(KEY_I));
         input.fire = IsKeyDown(KEY_ENTER) || IsKeyDown(KEY_RIGHT_CONTROL);
         input.focus = IsKeyDown(KEY_RIGHT_SHIFT);
+        input.sidekick_left = input.sidekick_right = IsKeyDown(KEY_O);
     }
     if (IsGamepadAvailable(slot)) {
         float x = GetGamepadAxisMovement(slot, GAMEPAD_AXIS_LEFT_X);
@@ -629,6 +697,8 @@ static PlayerInput poll_input(int slot) {
         input.fire = input.fire || IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_FACE_DOWN) ||
             GetGamepadAxisMovement(slot, GAMEPAD_AXIS_RIGHT_TRIGGER) > 0.2f;
         input.focus = input.focus || IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_TRIGGER_1);
+        input.sidekick_left |= IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
+        input.sidekick_right |= IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
     }
     return input;
 }

@@ -16,7 +16,7 @@ export ZIG_LOCAL_CACHE_DIR="$PWD/build/zig-cache"
 export ZIG_GLOBAL_CACHE_DIR="$PWD/external/zig-cache"
 mkdir -p build/native build/headless
 flags=(-std=c11 -target x86_64-windows-gnu -mcpu=x86_64 -O0 -g -Wall -Wextra -Werror -Isrc)
-core=(src/game.c src/menu.c src/console.c src/stage.c src/movement.c src/enemy.c src/shop.c)
+core=(src/game.c src/menu.c src/console.c src/stage.c src/movement.c src/enemy.c src/shop.c src/equipment.c src/weapon.c)
 
 if [[ "$target" == headless ]]; then
     "$zig" cc "${flags[@]}" -DGALAXY_HEADLESS src/main.c "${core[@]}" -o build/headless/galaxy.exe
@@ -36,7 +36,7 @@ else
         object_dir=build/raylib-memory
         output_dir=build/headless
         executable=galaxy-render.exe
-        platform_flags=(-DPLATFORM_MEMORY -DGRAPHICS_API_OPENGL_SOFTWARE -DSW_FRAMEBUFFER_OUTPUT_BGRA=0)
+        platform_flags=(-DPLATFORM_MEMORY -DGRAPHICS_API_OPENGL_SOFTWARE -DSW_FRAMEBUFFER_OUTPUT_BGRA=0 -DSW_MAX_TEXTURES=1024)
         flags+=(-DGALAXY_MEMORY)
         link_flags=(-lwinmm)
         units=(rcore rshapes rtextures rtext rmodels raudio)

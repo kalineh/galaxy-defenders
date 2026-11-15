@@ -162,6 +162,8 @@ bool game_join(Game *game, int slot) {
     player->lives = 3;
     player->pilot = slot;
     player->weapon_level = 2;
+    player->primary = WEAPON_FRONT_LASER;
+    player->secondary = player->sidekick = player->shield = -1;
     player->energy = 3;
     player->friction = game_chassis[0].friction;
     player->invulnerable = 90;
@@ -228,6 +230,8 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
         bullet->vx = vx; bullet->vy = vy;
         bullet->radius = owner < 0 ? ENEMY_SHOT_RADIUS : 0; /* Player laser is an AABB. */
         bullet->damage = damage;
+        bullet->friction = bullet->scale = 1;
+        bullet->ignore_enemy = bullet->target = -1;
         return i;
     }
     ++game->dropped_spawns;
@@ -238,7 +242,9 @@ void game_damage_player(Game *game, int slot, float damage) {
     if (game->seeking || slot < 0 || slot >= GAME_PLAYERS || damage <= 0 || !isfinite(damage)) return;
     Player *player = &game->players[slot];
     if (!player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible) return;
-    player->health -= damage;
+    float shield_damage = fminf(player->shield_health, damage);
+    player->shield_health -= shield_damage;
+    player->health -= damage - shield_damage;
     player->invulnerable = 45;
     ++game->hits;
     game_effect(game, EFFECT_ARMOR_HIT, player->x, player->y, slot, 0, -2);
@@ -249,7 +255,9 @@ void game_damage_player(Game *game, int slot, float damage) {
     --player->lives;
     if (player->lives > 0) {
         player->health = game_chassis[player->chassis].armor;
-        player->energy = 3;
+        player->energy = game_generators[player->generator].capacity;
+        player->shield_health = player->shield >= 0 ? game_shields[player->shield].capacity : 0;
+        memset(player->weapons, 0, sizeof(player->weapons));
         player->weapon_cooldown[0] = player->weapon_cooldown[1] = 0;
         player->x = slot == 0 ? 400 : 560;
         player->y = 880;
@@ -264,43 +272,13 @@ bool game_upgrade_weapon(Game *game, int slot, int level) {
     return true;
 }
 
-static void fire_front_laser(Game *game, int slot) {
-    /* WeaponDefinitions.cs FrontLaser/FrontLaserFocus, zero-based levels. */
-    static const struct { int count, big_mask; float offsets[8]; } normal[] = {
-        {1, 0, {0}}, {2, 0, {-10, 10}}, {4, 0, {-15, -5, 5, 15}},
-        {5, 4, {-20, -10, 0, 10, 20}}, {6, 12, {-25, -15, -5, 5, 15, 25}},
-        {6, 30, {-25, -15, -5, 5, 15, 25}}, {6, 63, {-25, -15, -5, 5, 15, 25}},
-        {8, 255, {-35, -25, -15, -5, 5, 15, 25, 35}}
-    };
-    static const int focus_count[] = {1, 1, 1, 2, 2, 2, 3, 3};
-    static const float focus_reload[] = {0.06f, 0.05f, 0.04f, 0.05f, 0.04f, 0.03f, 0.04f, 0.03f};
-    Player *p = &game->players[slot];
-    int mode = p->input.focus ? 1 : 0, level = p->weapon_level;
-    if (p->weapon_cooldown[mode] > 0) return;
-    int count = mode ? focus_count[level] : normal[level].count;
-    float cost = 0;
-    for (int i = 0; i < count; ++i) cost += mode ? 0.225f : normal[level].big_mask & (1 << i) ? 0.15f : 0.1f;
-    if (p->energy < cost) return;
-    p->energy -= cost;
-    for (int i = 0; i < count; ++i) {
-        float x = mode ? (i - (count - 1) * 0.5f) * (count == 2 ? 6 : 4) : normal[level].offsets[i];
-        float damage = mode ? 0.175f : normal[level].big_mask & (1 << i) ? 0.225f : 0.1f;
-        if (p->pilot == 2) damage *= 1.15f;
-        game_spawn_bullet(game, slot, p->x + x, p->y - (mode ? 0 : 20), 0, mode ? -19 : -17, damage);
-    }
-    p->weapon_cooldown[mode] = mode ? focus_reload[level] : 0.16f;
-    ++game->shots;
-}
-
 static void update_players(Game *game) {
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
         if (player->invulnerable > 0) --player->invulnerable;
         /* Legacy input/fire runs before generator and cooldown updates. */
-        if (player->input.fire || player->input.focus) fire_front_laser(game, i);
-        player->energy = fminf(3, player->energy + 0.05f);
-        for (int mode = 0; mode < 2; ++mode) player->weapon_cooldown[mode] = fmaxf(0, player->weapon_cooldown[mode] - 1.0f / GAME_HZ);
+        game_update_weapons(game, i);
         float x = player->input.x, y = player->input.y;
         float length = sqrtf(x * x + y * y);
         if (length > 1) { x /= length; y /= length; }
@@ -328,17 +306,22 @@ static void update_enemies(Game *game) {
         enemy_update(game, enemy);
         for (int p = 0; p < GAME_PLAYERS; ++p) {
             Player *player = &game->players[p];
+            float player_radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
             float dx = player->x - enemy->x, dy = player->y - enemy->y;
             bool touching;
             if (enemy->box_width > 0) {
                 dx = fmaxf(fabsf(dx) - enemy->box_width * 0.5f, 0);
                 dy = fmaxf(fabsf(dy) - enemy->box_height * 0.5f, 0);
-                touching = dx * dx + dy * dy <= PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS;
+                touching = dx * dx + dy * dy <= player_radius * player_radius;
             } else {
                 /* Collision.cs deliberately uses r1*r1 + r2*r2, not (r1+r2)^2. */
-                touching = dx * dx + dy * dy < enemy->radius * enemy->radius + PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS;
+                touching = dx * dx + dy * dy < enemy->radius * enemy->radius + player_radius * player_radius;
             }
-            if (player->joined && player->lives > 0 && touching) game_damage_player(game, p, 4);
+            if (player->joined && player->lives > 0 && touching) {
+                if (player->invulnerable <= 0) player->energy = fminf(game_generators[player->generator].capacity,
+                    player->energy + 4 * game_generators[player->generator].on_collision);
+                game_damage_player(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance));
+            }
         }
         if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < -150 || enemy->x > GAME_WIDTH + 150) enemy->active = false;
     }
@@ -347,6 +330,8 @@ static void update_enemies(Game *game) {
 static void update_bullets(Game *game) {
     for (int i = 0; i < GAME_BULLETS; ++i) {
         Bullet *bullet = &game->bullets[i];
+        if (!bullet->active) continue;
+        game_update_projectile(game, bullet);
         if (!bullet->active) continue;
         float old_x = bullet->x, old_y = bullet->y;
         bullet->x += bullet->vx;
@@ -358,7 +343,15 @@ static void update_bullets(Game *game) {
                     segment_box(old_x + 0.5f, old_y + 0.25f, bullet->x + 0.5f, bullet->y + 0.25f, enemy->x, enemy->y,
                         enemy->box_width * 0.5f + 0.5f, enemy->box_height * 0.5f + 0.25f) :
                     laser_hits_circle(old_x, old_y, bullet->x, bullet->y, enemy);
-                if (!enemy->active || !hit) continue;
+                if (bullet->radius > 0) hit = enemy->box_width > 0 ?
+                    segment_box(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y,
+                        enemy->box_width * 0.5f + bullet->radius, enemy->box_height * 0.5f + bullet->radius) :
+                    segment_distance_squared(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y) <
+                        bullet->radius * bullet->radius + enemy->radius * enemy->radius;
+                if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
+                    enemy->x, enemy->y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
+                    enemy->box_height > 0 ? enemy->box_height * 0.5f : enemy->radius);
+                if (!enemy->active || !hit || bullet->ignore_enemy == e) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
@@ -376,7 +369,8 @@ static void update_bullets(Game *game) {
                         return;
                     }
                 }
-                break;
+                game_projectile_hit(game, bullet, e);
+                if (!bullet->active || bullet->weapon == WEAPON_LIGHTNING || bullet->weapon == WEAPON_LIGHTNING_FOCUS) break;
             }
             if (bullet->active) {
                 const StageDefinition *stage = &stage_definitions[game->stage.index];
@@ -384,8 +378,11 @@ static void update_bullets(Game *game) {
                     const StageEvent *event = &stage->events[i];
                     if (event->kind != STAGE_BUILDING || !game->stage.activated[i] || game->stage.building_health[i] < 0) continue;
                     float x = event->x + GAME_WIDTH * 0.5f, y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
-                    if (!segment_box(old_x + 0.5f, old_y + 0.25f, bullet->x + 0.5f, bullet->y + 0.25f, x, y,
-                        event->width * 0.4f + 0.5f, event->height * 0.4f + 0.25f)) continue;
+                    float radius = bullet->radius > 0 ? bullet->radius : 0.5f;
+                    float start_y = bullet->weapon == WEAPON_BEAM ? bullet->y - 1080 : old_y;
+                    float half_width = bullet->weapon == WEAPON_BEAM ? bullet->width * 0.5f : radius;
+                    if (!segment_box(old_x, start_y, bullet->x, bullet->y, x, y,
+                        event->width * 0.4f + half_width, event->height * 0.4f + radius)) continue;
                     game->stage.building_health[i] -= bullet->damage;
                     bullet->active = false;
                     ++game->projectile_hits;
@@ -397,14 +394,16 @@ static void update_bullets(Game *game) {
                         game_effect(game, !strncmp(event->name, "Small", 5) ? EFFECT_BUILDING_SMALL : EFFECT_BUILDING_BIG,
                             x, y, 0, cosf(angle) * 0.75f, sinf(angle) * 0.75f);
                     }
-                    break;
+                    game_projectile_hit(game, bullet, -1);
+                    if (!bullet->active || bullet->weapon == WEAPON_LIGHTNING || bullet->weapon == WEAPON_LIGHTNING_FOCUS) break;
                 }
             }
         } else {
             for (int p = 0; p < GAME_PLAYERS; ++p) {
                 Player *player = &game->players[p];
+                float radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
                 if (!player->joined || player->lives <= 0 || segment_distance_squared(old_x, old_y, bullet->x, bullet->y,
-                    player->x, player->y) >= PLAYER_ARMOR_RADIUS * PLAYER_ARMOR_RADIUS + bullet->radius * bullet->radius) continue;
+                    player->x, player->y) >= radius * radius + bullet->radius * bullet->radius) continue;
                 game_damage_player(game, p, bullet->damage);
                 game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
                 bullet->active = false;

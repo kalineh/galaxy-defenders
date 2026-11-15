@@ -74,7 +74,7 @@ static void legacy_circle_sizes(void) {
     CHECK(game.players[0].health == 20);
     game.enemies[ball].x = 439;
     game_tick(&game);
-    CHECK(game.players[0].health == 16);
+    CHECK(game.players[0].health == 17); /* Rookie collision resistance absorbs 25%. */
     reset();
     game.players[0].invulnerable = 0;
     shot = game_spawn_bullet(&game, -1, 416, 882, 0, 0, 2);
@@ -96,7 +96,7 @@ static void legacy_circle_sizes(void) {
     game.enemies[gun].parent = parent;
     game.enemies[gun].cooldown = 100;
     game_tick(&game);
-    CHECK(game.players[0].health == 16);
+    CHECK(game.players[0].health == 17); /* Rookie collision resistance absorbs 25%. */
 }
 
 static void shop_progression(void) {
@@ -217,7 +217,7 @@ static void determinism(void) {
     game_join(&game, 1);
     game_join(&repeat, 1);
     for (int i = 0; i < 4000; ++i) {
-        PlayerInput input = {(i / 120) % 2 ? 1 : -1, 0, true, false};
+        PlayerInput input = {.x=(i / 120) % 2 ? 1 : -1, .fire=true};
         game.players[0].input = repeat.players[0].input = input;
         game_tick(&game);
         game_tick(&repeat);
@@ -448,9 +448,11 @@ static void starting_primary_patterns(void) {
         game.players[0].input.fire = true;
         game_tick(&game);
         int shots = pilot == 0 && difficulty < 2 ? 2 : 4;
-        CHECK(game_bullet_count(&game) == shots);
+        int primary_shots = 0;
+        for (int b = 0; b < GAME_BULLETS; ++b) if (game.bullets[b].active && game.bullets[b].weapon == WEAPON_FRONT_LASER) ++primary_shots;
+        CHECK(primary_shots == shots && game_bullet_count(&game) > shots);
         CHECK(fabsf(game.bullets[0].damage - (pilot == 2 ? 0.115f : 0.1f)) < 0.0001f);
-        CHECK(game.players[0].energy > 2.6f); /* Primary alone need not empty the generator. */
+        CHECK(game.players[0].energy > 0); /* Starting primary/support loadout can fire together. */
     }
 }
 
@@ -620,7 +622,61 @@ static void authored_buildings(void) {
     CHECK(game.building_kills == 1 && game_bullet_count(&game) == 1);
 }
 
+static void complete_equipment(void) {
+    for (int kind = 0; kind < WEAPON_COUNT; ++kind) {
+        for (int level = 0; level < game_weapons[kind].level_count; ++level) {
+            reset();
+            Player *p = &game.players[0];
+            p->generator = 11; p->energy = 13;
+            int category = equipment_weapon_category(kind);
+            if (category == 5) p->sidekick = kind;
+            else if (category == 4) { p->secondary = kind; p->secondary_level = level; }
+            else { p->primary = kind; p->weapon_level = level; }
+            p->input.fire = category != 5;
+            p->input.sidekick_left = p->input.sidekick_right = category == 5;
+            for (int tick = 0; tick < 60; ++tick) game_tick(&game);
+            p->input.sidekick_left = p->input.sidekick_right = false;
+            game_tick(&game);
+            bool fired = false;
+            for (int i = 0; i < GAME_BULLETS; ++i) {
+                const Bullet *b = &game.bullets[i];
+                fired |= b->weapon == kind && b->base_damage > 0;
+                CHECK(isfinite(b->x) && isfinite(b->y) && isfinite(b->damage));
+            }
+            CHECK(fired && p->energy >= 0 && game.dropped_spawns == 0);
+        }
+    }
+    reset();
+    game.players[0].money = 1000000;
+    game_shop_open(&game);
+    for (int category = 0; category < 6; ++category) {
+        game.menu.shop_category[0] = category;
+        game.menu.shop_items[0] = true;
+        for (int item = -1; item < WEAPON_COUNT; ++item) {
+            if (!game_shop_item_available(category, item)) continue;
+            game.menu.shop_item[0] = item;
+            game.menu.shop_level[0] = category >= 3 && item >= 0 ? game_weapons[item].level_count - 1 : 0;
+            CHECK(game_shop_buy(&game, 0));
+            CHECK(game_shop_equipped(&game.players[0], category) == item);
+        }
+    }
+    Player equipment = game.players[0];
+    game_retry(&game);
+    CHECK(game.players[0].primary == equipment.primary && game.players[0].secondary == equipment.secondary);
+    CHECK(game.players[0].sidekick == equipment.sidekick && game.players[0].generator == equipment.generator);
+    CHECK(game.players[0].shield == equipment.shield);
+    reset();
+    Player *p = &game.players[0];
+    p->shield = 0; p->shield_health = 6; p->invulnerable = 0;
+    game_damage_player(&game, 0, 8);
+    CHECK(p->shield_health == 0 && p->health == 18);
+    float energy = p->energy;
+    game_tick(&game);
+    CHECK(p->shield_health > 0 && p->energy < energy);
+}
+
 int main(void) {
+    complete_equipment();
     legacy_circle_sizes();
     shop_progression();
     stage2_runtime();

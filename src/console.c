@@ -30,7 +30,11 @@ static const CommandHelp commands[] = {
     {"player.invincible", "player.invincible SLOT 0|1", "Toggle damage immunity for a joined player.", {"1 2", "0 1"}},
     {"player.heal", "player.heal SLOT", "Restore a living player's armor to the equipped chassis maximum.", {"1 2"}},
     {"player.chassis", "player.chassis SLOT NAME", "Equip an original chassis free; preserve current armor percentage. See chassis.list.", {"1 2"}},
-    {"player.upgrade", "player.upgrade SLOT LEVEL", "Set Front Laser normal/focus level free (zero-based 0..7); other weapons are pending.", {"1 2", "0 1 2 3 4 5 6 7"}},
+    {"player.upgrade", "player.upgrade SLOT LEVEL", "Set the equipped primary weapon level free (zero-based 0..7).", {"1 2", "0 1 2 3 4 5 6 7"}},
+    {"equipment.list", "equipment.list", "List original weapons, generators and shields with IDs.", {0}},
+    {"player.weapon", "player.weapon SLOT primary|secondary|sidekick NAME LEVEL", "Equip a weapon free; use None for empty support/sidekick slots.", {"1 2", "primary secondary sidekick"}},
+    {"player.generator", "player.generator SLOT ID", "Equip a generator free (0..11).", {"1 2"}},
+    {"player.shield", "player.shield SLOT ID", "Equip a shield free (0..8).", {"1 2"}},
     {"chassis.list", "chassis.list", "List every supported chassis, its ID, armor, movement values and original price.", {NULL}},
     {"enemy.spawn", "enemy.spawn KIND X Y", "Spawn an original enemy. X -200..1160, Y -250..1280; fails when the pool is full.", {"ball triangle turret boss MiniSquare BigBall DownTurret"}},
     {"menu.open", "menu.open main|pause|shop", "Open the title or pause menu and clear held player input.", {"main pause shop"}},
@@ -340,6 +344,34 @@ bool console_execute(Console *console, Game *game, const char *line) {
             }
         }
     }
+    if (!strcmp(command, "equipment.list") && count == 1) {
+        for (int i = 0; i < WEAPON_COUNT; ++i) if (equipment_weapon_category(i) >= 0)
+            console_log(console, "%s: category=%d levels=0..%d", game_weapons[i].name, equipment_weapon_category(i), game_weapons[i].level_count - 1);
+        for (int i = 0; i < GENERATOR_COUNT; ++i) console_log(console, "generator %d: %s", i, game_generators[i].name);
+        for (int i = 0; i < SHIELD_COUNT; ++i) console_log(console, "shield %d: %s", i, game_shields[i].name);
+        return true;
+    }
+    if (!strcmp(command, "player.weapon") && count == 5 && integer(words[1], &slot, 1, 2) && integer(words[4], &value, 0, 7)) {
+        Player *p = &game->players[slot - 1];
+        int category = !strcmp(words[2], "primary") ? 3 : !strcmp(words[2], "secondary") ? 4 : !strcmp(words[2], "sidekick") ? 5 : -1;
+        int kind = equipment_find_weapon(words[3]);
+        bool none = !strcmp(words[3], "None") && category >= 4;
+        if (!p->joined || (!none && (kind < 0 || equipment_weapon_category(kind) != category || value >= game_weapons[kind].level_count))) return false;
+        if (category == 3) { p->primary = kind; p->weapon_level = value; }
+        else if (category == 4) { p->secondary = kind; p->secondary_level = value; }
+        else if (category == 5) p->sidekick = kind;
+        else return false;
+        memset(p->weapons, 0, sizeof(p->weapons));
+        return true;
+    }
+    if ((!strcmp(command, "player.generator") || !strcmp(command, "player.shield")) && count == 3 && integer(words[1], &slot, 1, 2)) {
+        Player *p = &game->players[slot - 1];
+        bool generator = !strcmp(command, "player.generator");
+        if (!p->joined || !integer(words[2], &value, 0, (generator ? GENERATOR_COUNT : SHIELD_COUNT) - 1)) return false;
+        if (generator) { p->generator = value; p->energy = game_generators[value].capacity; }
+        else { p->shield = value; p->shield_health = game_shields[value].capacity; }
+        return true;
+    }
     if (!strcmp(command, "game.reset") && count == 2 && integer(words[1], &value, 0, 2147483647)) {
         game_reset(game, (uint32_t)value);
         return true;
@@ -386,7 +418,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
         number(words[2], &x, -1, 1) && number(words[3], &y, -1, 1) &&
         integer(words[4], &fire, 0, 1) && integer(words[5], &focus, 0, 1)) {
         if (!game->players[slot - 1].joined) { console_log(console, "ERROR: player not joined"); return false; }
-        game->players[slot - 1].input = (PlayerInput){x, y, fire != 0, focus != 0};
+        game->players[slot - 1].input = (PlayerInput){.x=x, .y=y, .fire=fire != 0, .focus=focus != 0};
         return true;
     }
     if (!strcmp(command, "enemy.spawn") && count == 4 &&
@@ -407,7 +439,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
             console_log(console, "p%d joined=%d x=%.2f y=%.2f health=%.2f lives=%d score=%d",
                 i + 1, p->joined, p->x, p->y, p->health, p->lives, p->score);
             console_log(console, "p%d money=%d chassis=%s invincible=%d", i + 1, p->money, game_chassis[p->chassis].name, p->invincible);
-            console_log(console, "p%d weapon=FrontLaser level=%d energy=%.3f", i + 1, p->weapon_level, p->energy);
+            console_log(console, "p%d weapon=%s level=%d energy=%.3f shield=%.3f", i + 1, game_weapons[p->primary].name, p->weapon_level, p->energy, p->shield_health);
         }
         return true;
     }
