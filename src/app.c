@@ -28,7 +28,7 @@ typedef struct {
     const char *music_name;
     Sound shoot, explode, building_explode, hit, shot_hit, die;
     Sound menu_sounds[5];
-    bool audio;
+    bool audio, stage_music_started;
     Font console_font, ui_font;
 } Assets;
 
@@ -455,6 +455,7 @@ static void update_audio(const Game *game, Assets *assets) {
         assets->music = LoadMusicStream(asset_path(path));
         assets->music.looping = true;
         assets->music_name = music_name;
+        assets->stage_music_started = false;
         if (assets->music_mode == 0) assets->music_mode = -1;
     }
     assets->music_tick = game->tick;
@@ -463,8 +464,9 @@ static void update_audio(const Game *game, Assets *assets) {
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
         if (mode != 0) StopMusicStream(tracks[mode]);
-        if (mode == 0 && !seek && !music_changed && assets->music_mode >= 0) ResumeMusicStream(tracks[mode]);
+        if (mode == 0 && assets->stage_music_started && !seek && !music_changed) ResumeMusicStream(tracks[mode]);
         else PlayMusicStream(tracks[mode]);
+        if (mode == 0) assets->stage_music_started = true;
         assets->music_mode = mode;
     }
     if (seek || music_changed) {
