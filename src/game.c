@@ -198,16 +198,18 @@ int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y) {
         static const int coins[] = {1, 1, 3, 0, 1, 5, 2, 0, 2, 0};
         static const float health_scale[] = {1, 1.25f, 1.55f};
         static const float boss_scale[] = {1, 1.5f, 2};
-        enemy->health = health[kind] * health_scale[game->difficulty];
+        enemy->health = (kind < ENEMY_AIRSHIP ? health[kind] : 1) * health_scale[game->difficulty];
         if (kind == ENEMY_BOSS || kind == ENEMY_BOSS2 || kind == ENEMY_BOSS_CHUNK) enemy->health *= boss_scale[game->difficulty];
         enemy->health_max = enemy->health;
-        enemy->radius = radius[kind];
-        enemy->coins = coins[kind];
+        enemy->radius = kind < ENEMY_AIRSHIP ? radius[kind] : 32;
+        enemy->coins = kind < ENEMY_AIRSHIP ? coins[kind] : 3;
         if (kind == ENEMY_BOSS_CHUNK) enemy->box_width = enemy->box_height = 120;
         if (kind == ENEMY_BOSS2) { enemy->box_width = 420; enemy->box_height = 160; }
-        enemy->parent = enemy->children[0] = enemy->children[1] = -1;
+        enemy->parent = enemy->target = -1;
+        for (int n = 0; n < 8; ++n) enemy->children[n] = -1;
         enemy->move_frame = -1;
         enemy->move_speed = enemy->move_transition = 1;
+        if (kind >= ENEMY_AIRSHIP) enemy_init_extended(game, enemy);
         if (kind == ENEMY_TURRET || kind == ENEMY_DOWN_TURRET || kind == ENEMY_SHOOT_BALL)
             enemy->cooldown = (int)(random_unit(game) * (kind == ENEMY_TURRET ? 45 : kind == ENEMY_DOWN_TURRET ? 60 : 90));
         return i;
@@ -317,7 +319,7 @@ static void update_enemies(Game *game) {
                 /* Collision.cs deliberately uses r1*r1 + r2*r2, not (r1+r2)^2. */
                 touching = dx * dx + dy * dy < enemy->radius * enemy->radius + player_radius * player_radius;
             }
-            if (player->joined && player->lives > 0 && touching) {
+            if (player->joined && player->lives > 0 && touching && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB) {
                 if (player->invulnerable <= 0) player->energy = fminf(game_generators[player->generator].capacity,
                     player->energy + 4 * game_generators[player->generator].on_collision);
                 game_damage_player(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance));
@@ -337,6 +339,19 @@ static void update_bullets(Game *game) {
         bullet->x += bullet->vx;
         bullet->y += bullet->vy + game->scroll_speed;
         if (bullet->owner >= 0) {
+            for (int n = 0; n < GAME_BULLETS && bullet->active; ++n) {
+                Bullet *hostile = &game->bullets[n];
+                if (!hostile->active || hostile->owner >= 0 ||
+                    (hostile->hostile_kind != HOSTILE_PELLET && hostile->hostile_kind != HOSTILE_MISSILE)) continue;
+                if (segment_distance_squared(old_x, old_y, bullet->x, bullet->y, hostile->x, hostile->y) >=
+                    hostile->radius * hostile->radius + bullet->radius * bullet->radius) continue;
+                if (hostile->hostile_kind == HOSTILE_PELLET) {
+                    if (--hostile->health <= 0 || bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
+                } else if (bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
+                bullet->active = false;
+                game_projectile_hit(game, bullet, -1);
+            }
+            if (!bullet->active) continue;
             for (int e = 0; e < GAME_ENEMIES; ++e) {
                 Enemy *enemy = &game->enemies[e];
                 bool hit = enemy->box_width > 0 ?
@@ -351,22 +366,20 @@ static void update_bullets(Game *game) {
                 if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
                     enemy->x, enemy->y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
                     enemy->box_height > 0 ? enemy->box_height * 0.5f : enemy->radius);
-                if (!enemy->active || !hit || bullet->ignore_enemy == e) continue;
+                if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || !hit || bullet->ignore_enemy == e) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
-                enemy->health -= bullet->damage;
-                if (enemy->health <= 0) {
-                    enemy->active = false;
-                    ++game->kills;
-                    game->players[bullet->owner].score += enemy->kind == ENEMY_BOSS ? 5000 : 100;
-                    game_effect(game, EFFECT_ENEMY_DEATH, enemy->x, enemy->y, 0, 0, -1.25f);
-                    if (enemy->kind == ENEMY_BOSS || enemy->kind == ENEMY_BOSS2) {
-                        /* Boss1.OnDie clears enemies/projectiles before results. */
-                        if (!enemy->authored) game->complete = true;
-                        for (int n = 0; n < GAME_BULLETS; ++n) game->bullets[n].active = false;
-                        for (int n = 0; n < GAME_ENEMIES; ++n) game->enemies[n].active = false;
-                        return;
+                if (enemy->kind == ENEMY_SWIRL_BALL && enemy->parent >= 0 && game->enemies[enemy->parent].active)
+                    enemy = &game->enemies[enemy->parent];
+                if (enemy->kind != ENEMY_CUTTER_BALL && enemy->kind != ENEMY_FENCE_BEAM) {
+                    enemy->health -= bullet->damage;
+                    if (enemy->kind == ENEMY_RAID_TURRET) enemy->cooldown = 16;
+                    if (enemy->kind == ENEMY_TELEPORTER && ++enemy->hit_count > 6 && enemy->attack < 0) { enemy->hit_count = 0; enemy->attack = 0; }
+                    if (enemy->health <= 0) {
+                        bool boss = enemy->kind == ENEMY_BOSS || enemy->kind == ENEMY_BOSS2;
+                        enemy_die(game, enemy, bullet->owner);
+                        if (boss) return;
                     }
                 }
                 game_projectile_hit(game, bullet, e);

@@ -2,7 +2,10 @@
 #include <math.h>
 
 const char *enemy_names[ENEMY_KIND_COUNT] = {
-    "Ball", "Isosceles", "Turret", "Boss1", "MiniSquare", "BigBall", "DownTurret", "Boss1Chunk", "ShootBall", "Boss2"
+    "Ball", "Isosceles", "Turret", "Boss1", "MiniSquare", "BigBall", "DownTurret", "Boss1Chunk", "ShootBall", "Boss2",
+    "Airship", "Beamer", "BlackHole", "Cannon", "Cutter", "CutterBall", "DoubleTurret", "Fence", "FenceBeam", "Glob",
+    "MissilePod", "MissileStorm", "MissileTriple", "Pyramid", "RaidTurret", "RotateTurret", "Spike", "Splitter",
+    "SplitterFragment", "Swirl", "SwirlBall", "Teleporter", "TripleShot", "BonusShip"
 };
 
 static float aim_at_player(const Game *game, const Enemy *enemy) {
@@ -148,6 +151,7 @@ static void boss2_update(Game *game, Enemy *enemy) {
 }
 
 void enemy_update(Game *game, Enemy *enemy) {
+    if (enemy->kind >= ENEMY_AIRSHIP) { enemy_update_extended(game, enemy); return; }
     if (enemy->kind != ENEMY_BOSS_CHUNK) {
         if (enemy->authored) {
             movement_velocity(enemy->movement, enemy->age, enemy->move_speed, enemy->move_transition,

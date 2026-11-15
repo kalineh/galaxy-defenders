@@ -57,9 +57,15 @@ typedef struct {
 
 typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
     ENEMY_MINI_SQUARE, ENEMY_BIG_BALL, ENEMY_DOWN_TURRET, ENEMY_BOSS_CHUNK,
-    ENEMY_SHOOT_BALL, ENEMY_BOSS2, ENEMY_KIND_COUNT } EnemyKind;
+    ENEMY_SHOOT_BALL, ENEMY_BOSS2,
+    ENEMY_AIRSHIP, ENEMY_BEAMER, ENEMY_BLACK_HOLE, ENEMY_CANNON, ENEMY_CUTTER, ENEMY_CUTTER_BALL,
+    ENEMY_DOUBLE_TURRET, ENEMY_FENCE, ENEMY_FENCE_BEAM, ENEMY_GLOB, ENEMY_MISSILE_POD, ENEMY_MISSILE_STORM,
+    ENEMY_MISSILE_TRIPLE, ENEMY_PYRAMID, ENEMY_RAID_TURRET, ENEMY_ROTATE_TURRET, ENEMY_SPIKE,
+    ENEMY_SPLITTER, ENEMY_SPLITTER_FRAGMENT, ENEMY_SWIRL, ENEMY_SWIRL_BALL, ENEMY_TELEPORTER,
+    ENEMY_TRIPLE_SHOT, ENEMY_BONUS_SHIP, ENEMY_KIND_COUNT } EnemyKind;
 
 extern const char *enemy_names[ENEMY_KIND_COUNT];
+typedef enum { HOSTILE_SHOT, HOSTILE_LASER, HOSTILE_MISSILE, HOSTILE_CANNON, HOSTILE_PELLET, HOSTILE_MINI, HOSTILE_COUNT } HostileKind;
 
 typedef struct {
     bool active;
@@ -67,7 +73,9 @@ typedef struct {
     float x, y, vx, vy, health, radius;
     int age, cooldown;
     float health_max, rotation, base_y, move_from, move_to, aim;
-    int parent, children[2], attack, shot_index, move_wait, move_frame, move_phase;
+    int parent, children[8], attack, shot_index, move_wait, move_frame, move_phase;
+    int target, timer, invisible, hit_count;
+    float spin;
     float box_width, box_height;
     int coins;
     bool powerup, authored;
@@ -79,7 +87,7 @@ typedef struct {
     bool active;
     int owner; /* Player slot, or -1 for hostile shots. */
     float x, y, vx, vy, radius, damage;
-    int weapon, age, lifetime, bounces, target, ignore_enemy, group, emitter;
+    int weapon, age, lifetime, bounces, target, ignore_enemy, group, emitter, hostile_kind, health;
     float speed, base_damage, rotation, curve_speed, curve_magnitude, curve_offset;
     float direction_x, direction_y, friction, scale, offset_x, offset_y, width;
     bool splash;
@@ -129,6 +137,10 @@ int game_bullet_count(const Game *game);
 void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy);
 uint32_t game_random(Game *game);
 void enemy_update(Game *game, Enemy *enemy);
+void enemy_init_extended(Game *game, Enemy *enemy);
+void enemy_update_extended(Game *game, Enemy *enemy);
+void enemy_die(Game *game, Enemy *enemy, int owner);
+int enemy_shot(Game *game, const Enemy *enemy, int kind, float x, float y, float angle, float speed, float damage);
 bool game_stage(Game *game, int index, float progress);
 void game_stage_update(Game *game);
 const char *game_music(const Game *game);

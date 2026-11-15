@@ -675,7 +675,49 @@ static void complete_equipment(void) {
     CHECK(p->shield_health > 0 && p->energy < energy);
 }
 
+static void extended_enemies(void) {
+    for (int kind = ENEMY_AIRSHIP; kind < ENEMY_KIND_COUNT; ++kind) {
+        reset();
+        game.players[0].invincible = true;
+        int index = game_spawn_enemy(&game, (EnemyKind)kind, 480, 220);
+        CHECK(index >= 0 && game.enemies[index].health > 0);
+        for (int tick = 0; tick < 180; ++tick) game_tick(&game);
+        for (int i = 0; i < GAME_ENEMIES; ++i) CHECK(isfinite(game.enemies[i].x) && isfinite(game.enemies[i].y));
+        CHECK(game.dropped_spawns == 0);
+    }
+    reset();
+    int index = game_spawn_enemy(&game, ENEMY_AIRSHIP, 480, 200);
+    for (int tick = 0; tick < 15; ++tick) game_tick(&game);
+    CHECK(game_bullet_count(&game) == 2 && game.bullets[0].hostile_kind == HOSTILE_LASER);
+    CHECK(game.bullets[0].damage == 3 && fabsf(game.bullets[1].x - game.bullets[0].x - 97) < 0.001f);
+    reset();
+    index = game_spawn_enemy(&game, ENEMY_SPLITTER, 480, 200);
+    enemy_die(&game, &game.enemies[index], 0);
+    CHECK(game_enemy_count(&game) == 2 && !game.enemies[index].active);
+    reset();
+    index = game_spawn_enemy(&game, ENEMY_SWIRL, 480, 200);
+    game_tick(&game);
+    CHECK(game_enemy_count(&game) == 4);
+    enemy_die(&game, &game.enemies[index], 0);
+    game_tick(&game);
+    CHECK(game_enemy_count(&game) == 3);
+    reset();
+    index = game_spawn_enemy(&game, ENEMY_BLACK_HOLE, 480, 200);
+    game_spawn_bullet(&game, 0, 480, 200, 0, 0, 100);
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 0 && game.enemies[index].health == 100000);
+    reset();
+    index = game_spawn_enemy(&game, ENEMY_MISSILE_POD, 480, 200);
+    game.enemies[index].cooldown = 1;
+    game_tick(&game);
+    CHECK(game.bullets[0].hostile_kind == HOSTILE_MISSILE);
+    float speed = game.bullets[0].speed;
+    game_tick(&game);
+    CHECK(game.bullets[0].speed > speed);
+}
+
 int main(void) {
+    extended_enemies();
     complete_equipment();
     legacy_circle_sizes();
     shop_progression();

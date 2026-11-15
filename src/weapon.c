@@ -11,7 +11,8 @@ static int nearest_enemy(const Game *game, const Bullet *b, bool forward) {
     float nearest = 1e20f;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *e = &game->enemies[i];
-        if (!e->active || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT) continue;
+        if (!e->active || e->invisible || e->kind == ENEMY_BLACK_HOLE || e->kind == ENEMY_FENCE ||
+            e->kind == ENEMY_FENCE_BEAM || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT) continue;
         float dx = e->x - b->x, dy = e->y - b->y, distance = dx * dx + dy * dy;
         if (forward && dx * b->vx + dy * b->vy < 0) continue;
         if (distance < nearest) { nearest = distance; result = i; }
@@ -143,7 +144,25 @@ void game_update_weapons(Game *game, int slot) {
 
 void game_update_projectile(Game *game, Bullet *b) {
     ++b->age;
-    if (b->owner < 0) return;
+    if (b->owner < 0) {
+        if (b->hostile_kind == HOSTILE_MISSILE) {
+            int target = -1;
+            float nearest = 1e20f;
+            for (int i = 0; i < GAME_PLAYERS; ++i) {
+                const Player *p = &game->players[i];
+                float d = hypotf(p->x-b->x,p->y-b->y);
+                if (p->joined && p->lives > 0 && d < nearest) { target=i; nearest=d; }
+            }
+            if (target >= 0) {
+                const Player *p=&game->players[target];
+                float cross=(p->x-b->x)*-sinf(b->rotation)+(p->y-b->y)*cosf(b->rotation);
+                b->rotation += cross > 0 ? 0.0035f : cross < 0 ? -0.0035f : 0;
+                b->vx=cosf(b->rotation)*b->speed; b->vy=sinf(b->rotation)*b->speed;
+                b->speed+=0.075f;
+            }
+        } else if (b->hostile_kind == HOSTILE_PELLET) b->rotation+=0.45f;
+        return;
+    }
     Player *p = &game->players[b->owner];
     if (b->lifetime > 0 && b->age > b->lifetime) { b->active = false; return; }
     switch (b->weapon) {

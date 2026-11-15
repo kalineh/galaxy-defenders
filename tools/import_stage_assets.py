@@ -35,4 +35,6 @@ copy(ROOT / 'legacy/Content/Textures/Background/Water.png', ROOT / 'assets/textu
 for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 'shop')]:
     for source in (ROOT / 'legacy/Content/Textures' / source_folder).glob('*.png'):
         copy(source, ROOT / 'assets/textures' / destination_folder / source.name)
+for source in (ROOT / 'legacy/Content/Textures/Enemy').glob('*.png'):
+    copy(source, ROOT / 'assets/textures' / source.name)
 print('Copied original assets for Stage 1 and Stage 2')

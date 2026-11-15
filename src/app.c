@@ -23,6 +23,7 @@ typedef struct {
     Texture2D menu[6], title, cloud, water, pilot_arrow;
     Texture2D shop[22], star;
     Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
+    Texture2D hostile_textures[HOSTILE_COUNT];
     Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
@@ -89,6 +90,7 @@ static void assets_unload(Assets *assets) {
         if (IsTextureValid(assets->weapon_icons[i])) UnloadTexture(assets->weapon_icons[i]);
         if (IsTextureValid(assets->weapon_textures[i])) UnloadTexture(assets->weapon_textures[i]);
     }
+    for (int i = 0; i < HOSTILE_COUNT; ++i) if (IsTextureValid(assets->hostile_textures[i])) UnloadTexture(assets->hostile_textures[i]);
     for (int i = 0; i < GENERATOR_COUNT; ++i) if (IsTextureValid(assets->generator_icons[i])) UnloadTexture(assets->generator_icons[i]);
     for (int i = 0; i < SHIELD_COUNT; ++i) if (IsTextureValid(assets->shield_icons[i])) UnloadTexture(assets->shield_icons[i]);
     if (IsTextureValid(assets->item_none)) UnloadTexture(assets->item_none);
@@ -190,7 +192,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
         char path[128];
-        snprintf(path, sizeof(path), "textures/%s.png", enemy_names[i]);
+        snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_names[i]);
         assets->enemies[i] = texture_load(path);
     }
     assets->shot = texture_load("textures/Laser.png");
@@ -234,6 +236,13 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         valid = IsTextureValid(assets->shop[i]) && valid;
     }
     assets->star = texture_load("textures/Star.png");
+    static const char *hostile_names[] = {"EnemyShot", "EnemyLaser", "EnemyMissile", "EnemyCannonShot", "EnemyPellet", "EnemyMiniShot"};
+    for (int i = 0; i < HOSTILE_COUNT; ++i) {
+        char path[160];
+        snprintf(path, sizeof(path), "textures/weapons/%s.png", hostile_names[i]);
+        assets->hostile_textures[i] = texture_load(path);
+        valid = IsTextureValid(assets->hostile_textures[i]) && valid;
+    }
     for (int i = 0; i < WEAPON_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/weapons/%s.png", weapon_texture_names[i]);
@@ -370,7 +379,7 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
-        if (!enemy->active) continue;
+        if (!enemy->active || enemy->invisible) continue;
         float width = (float)assets->enemies[enemy->kind].width;
         sprite(assets->enemies[enemy->kind], ARENA_X + enemy->x, enemy->y, width, enemy->rotation * RAD2DEG, WHITE);
     }
@@ -378,7 +387,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         const Bullet *bullet = &game->bullets[i];
         if (!bullet->active) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
-        Texture2D texture = bullet->owner < 0 ? assets->hostile_shot : assets->weapon_textures[bullet->weapon];
+        Texture2D texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
             DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
                 (Rectangle){ARENA_X + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
