@@ -639,11 +639,11 @@ static void stage_clear_exit(void) {
     CHECK(game.menu.page == MENU_CLEAR);
     game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
-    CHECK(game.players[0].score == 0 && game.players[0].money == 500 && game.players[1].joined);
+    CHECK(game.players[0].score == 0 && game.players[0].money == 8000 && game.players[1].joined);
     CHECK(console_execute(&console, &game, "menu.input ready 1"));
     CHECK(game.menu.page == MENU_SHOP && game.menu.ready[0] && !game.menu.ready[1]);
     CHECK(console_execute(&console, &game, "menu.input ready 2"));
-    CHECK(game.stage.index == 1 && game.players[0].money == 500);
+    CHECK(game.stage.index == 1 && game.players[0].money == 8000);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
 }
 
@@ -1313,11 +1313,38 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void stage_awards(void) {
+    reset();
+    game.stage.stats = (StageStats){.coins_total=20, .coins_collected=20,
+        .enemy_total=10, .enemy_kills=10, .building_total=5, .building_kills=5};
+    CHECK(game_stage_medal(&game) == 5);
+    CHECK(game_stats_percent(1, 8) == 12 && game_stats_percent(3, 8) == 38);
+    CHECK(game_stats_percent(10, 1) == 100 && game_stats_percent(1, 0) == 0);
+    game.complete = true;
+    game_menu_open(&game, MENU_CLEAR);
+    for (int i = 0; i < 239; ++i) game_tick(&game);
+    CHECK(game.players[0].score == 0);
+    game_tick(&game);
+    CHECK(game.players[0].score == 10000);
+    for (int i = 0; i < 20; ++i) game_tick(&game);
+    CHECK(game.players[0].score == 11500);
+    for (int i = 0; i < 200; ++i) game_tick(&game);
+    CHECK(game.players[0].score == 11500);
+    game_shop_open(&game);
+    CHECK(game.saves[0].stage_scores[0] == 11500 && game.saves[0].stage_medals[0] == 5);
+    game.players[0].money -= 1000;
+    game_checkpoint(&game, true);
+    CHECK(game.saves[0].stage_scores[0] == 11500);
+}
+
 static void saved_continue(void) {
     reset();
     game.seed = 987654321u;
     CHECK(game_stage(&game, 4, 0));
     game.players[0].money = 12345;
+    game.stage.stats.coins_total = game.stage.stats.coins_collected = 20;
+    game.stage.stats.enemy_total = game.stage.stats.enemy_kills = 10;
+    game.stage.stats.building_total = game.stage.stats.building_kills = 5;
     game.players[0].secondary = WEAPON_MISSILE;
     game.players[0].secondary_level = 2;
     game.complete = true;
@@ -1328,6 +1355,7 @@ static void saved_continue(void) {
     SavedGame save = {0};
     CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
     CHECK(save.seed == 987654321u);
+    CHECK(save.stage_scores[4] == 12345 && save.stage_medals[4] == 5);
     int stock[WEAPON_COUNT+1], restored[WEAPON_COUNT+1];
     int stock_count = game_shop_stock(&game, 0, 3, stock);
     save.player[0].money = 10000;
@@ -1338,6 +1366,7 @@ static void saved_continue(void) {
     CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
     CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
     CHECK(game.seed == 987654321u);
+    CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 5);
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     game_menu_input(&game, MENU_READY, 0);
@@ -1373,7 +1402,7 @@ int main(int argc, char **argv) {
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    saved_continue();
+    stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

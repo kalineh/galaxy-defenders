@@ -349,3 +349,9 @@ to confirm any of the explicit mismatches listed here.
   world, return fade-in, launch vector from the previous ship position, original
   +280 camera jump with corresponding native screen-coordinate adjustment.
   Full suite, all authored secret routes, native and software-render checks pass.
+- Clear-screen stats/rewards restored: authored enemy/building totals, pickup
+  counts, damage-kill counts, capped rounded percentages, timed clear/skill
+  bonuses, co-op award multiplier, original medal/button assets and panel layout.
+  Save version 3 keeps latest per-stage scores/medals across checkpoints and
+  Continue; versions 1/2 still load. Full suite, award/save checks, native build,
+  software render and inspected clear-screen capture pass.

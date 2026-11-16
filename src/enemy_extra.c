@@ -298,7 +298,10 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     e->health -= damage;
     if (e->kind == ENEMY_RAID_TURRET) e->cooldown = 16;
     if (e->kind == ENEMY_TELEPORTER && ++e->hit_count > 6 && e->attack < 0) { e->hit_count = 0; e->attack = 0; }
-    if (e->health <= 0) enemy_die(g, e, owner);
+    if (e->health <= 0) {
+        if (e->kind != ENEMY_FENCE) ++g->stage.stats.enemy_kills;
+        enemy_die(g, e, owner);
+    }
 }
 
 static void death_burst(Game *g, const Enemy *e, float scale, bool drift) {

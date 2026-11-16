@@ -120,6 +120,7 @@ bool game_shop_buy(Game *game, int slot) {
 void game_shop_open(Game *game) {
     game->menu.next_stage = (game->complete || game->menu.page == MENU_CLEAR) && game->stage.index < 11 ?
         game->stage.index + 1 : game->stage.index;
+    game_record_stage(game);
     /* World.SetScoreSaveData transfers score exactly once before the shop. */
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &game->players[i];

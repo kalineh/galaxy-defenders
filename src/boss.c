@@ -546,6 +546,6 @@ bool boss_damage(Game *g,Enemy *e,float damage,int owner) {
         e->cooldown=30; e->shot_index=0;
     }
     e->health-=damage*(g->players[0].joined && g->players[1].joined?0.75f:1);
-    if(e->health<=0)enemy_die(g,e,owner);
+    if(e->health<=0) { ++g->stage.stats.enemy_kills; enemy_die(g,e,owner); }
     return true;
 }

@@ -56,7 +56,7 @@ void game_retry(Game *game) {
     GameMenu menu = game->menu;
     int difficulty = game->difficulty;
     int stage = game->stage.index;
-    game_reset_session(game, 1);
+    game_reset_session(game, game->seed);
     game->stage.index = stage;
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[stage].scroll_speed;
@@ -82,6 +82,7 @@ void game_retry(Game *game) {
         p->invincible = players[i].invincible;
         p->health = game_chassis[p->chassis].armor;
     }
+    game_stats_init(game);
     game_menu_open(game, MENU_NONE);
 }
 
@@ -110,6 +111,8 @@ static void start_game(Game *game) {
         p->shield_health = game_shields[p->shield].capacity;
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
+    game_stats_init(game);
+    memset(&game->saves[menu.players - 1], 0, sizeof(SavedGame));
     game_menu_open(game, MENU_NONE);
     game_checkpoint(game, false);
 }

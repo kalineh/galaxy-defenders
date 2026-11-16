@@ -31,7 +31,7 @@ typedef struct {
     Texture2D boss4_cover, boss5_cover, boss6_center;
     Texture2D rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Texture2D enemy_corpses[ENEMY_KIND_COUNT];
-    Texture2D pickups[3];
+    Texture2D pickups[3], medals[5], continue_button;
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
     int music_mode, music_revision, music_event, music_tick;
@@ -78,6 +78,8 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    for (int i = 0; i < 5; ++i) if (IsTextureValid(assets->medals[i])) UnloadTexture(assets->medals[i]);
+    if (IsTextureValid(assets->continue_button)) UnloadTexture(assets->continue_button);
     for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
     if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
     if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
@@ -197,7 +199,10 @@ static bool stage_assets_load(Assets *assets, int index) {
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
     /* Solcraft's fixed-font preference: use the OS font, never copy Windows fonts. */
-    assets->ui_font = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"), 64, NULL, 95);
+    int ui_glyphs[96];
+    for (int i = 0; i < 95; ++i) ui_glyphs[i] = 32 + i;
+    ui_glyphs[95] = 0x00a5;
+    assets->ui_font = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"), 64, ui_glyphs, 96);
     const char *windows = getenv("WINDIR");
     const char *font_names[] = {"consola.ttf", "cour.ttf"};
     for (int i = 0; windows && i < 2; ++i) {
@@ -241,6 +246,15 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         snprintf(path, sizeof(path), "textures/%s.png", name);
         assets->enemy_corpses[i] = texture_load(path);
     }
+    static const char *medals[] = {"Clear", "Bronze", "Silver", "Gold", "Platinum"};
+    for (int i = 0; i < 5; ++i) {
+        char path[128];
+        snprintf(path, sizeof(path), "textures/Medal%s.png", medals[i]);
+        assets->medals[i] = texture_load(path);
+        if (!IsTextureValid(assets->medals[i])) return false;
+    }
+    assets->continue_button = texture_load("textures/xboxControllerButtonX.png");
+    if (!IsTextureValid(assets->continue_button)) return false;
     assets->pyramid_turret = texture_load("textures/PyramidTurret.png");
     assets->cutter_beam = texture_load("textures/CutterBeam.png");
     assets->rotate_turret_base = texture_load("textures/RotateTurretBase.png");
@@ -768,9 +782,39 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         float alpha = game->clear_exit ? fminf(1, 0.5f + (game->menu.frame - 360) / 60.0f) :
             fminf(0.5f, game->menu.frame / 60.0f);
         DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
-        if (game->menu.frame >= 60) text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
-        if (game->menu.frame > 380 && !game->clear_exit)
-            text_center(assets->ui_font, "Continue", 960, 525, 30, WHITE);
+        int counter = game->clear_exit ? 440 : game->menu.frame;
+        if (counter >= 60) {
+            DrawRectangle(745, 115, 450, 570, (Color){76,76,76,255});
+            DrawRectangle(755, 125, 430, 550, (Color){30,30,30,255});
+            text_center(assets->ui_font, "Stage Clear", 968, 180, 40, WHITE);
+        }
+        const StageStats *stats = &game->stage.stats;
+        int percent[] = {game_stats_percent(stats->coins_collected, stats->coins_total),
+            game_stats_percent(stats->enemy_kills, stats->enemy_total),
+            game_stats_percent(stats->building_kills, stats->building_total), 0};
+        percent[3] = percent[0] + percent[1] + percent[2];
+        static const char *labels[] = {"Coins", "Enemies", "Buildings", "Total", "Stage Clear", "Skill Bonus"};
+        static const int times[] = {100,120,140,180,240,260};
+        static const int bonus[] = {0,0,250,500,1000,1500};
+        int medal = game_stage_medal(game);
+        for (int i = 0; i < 6; ++i) {
+            if (counter < times[i] || (i == 5 && medal == 1)) continue;
+            int y = i < 4 ? 280 + i * 30 : 460 + (i - 4) * 30;
+            float width = MeasureTextEx(assets->ui_font, labels[i], 26, 0).x;
+            DrawTextEx(assets->ui_font, labels[i], (Vector2){960 - width, (float)y}, 26, 0, WHITE);
+            const char *value = i < 4 ? TextFormat("%d%%", percent[i]) :
+                TextFormat("+%d\xc2\xa5", i == 4 ? 10000 : bonus[medal]);
+            DrawTextEx(assets->ui_font, value, (Vector2){976, (float)y}, 26, 0, i < 4 ? WHITE : GREEN);
+        }
+        if (counter >= 300) {
+            Texture2D texture = assets->medals[medal - 1];
+            float scale = fmaxf(1, 2 - (counter - 299) * 0.125f);
+            sprite(texture, 968, 540, texture.width * scale, 0, WHITE);
+        }
+        if (counter >= 360) {
+            DrawTextEx(assets->ui_font, "Continue", (Vector2){908,630}, 26, 0, LIGHTGRAY);
+            sprite(assets->continue_button, 888, 630, assets->continue_button.width, 0, WHITE);
+        }
         return;
     }
     if (title_menu(game)) {

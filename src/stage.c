@@ -4,6 +4,33 @@
 #include <string.h>
 #include <math.h>
 
+void game_stats_init(Game *game) {
+    StageStats *stats = &game->stage.stats;
+    memset(stats, 0, sizeof(*stats));
+    for (int i = 0; i < GAME_PLAYERS; ++i)
+        if (game->players[i].joined) stats->starting_money += game->players[i].money;
+    const StageDefinition *stage = &stage_definitions[game->stage.index];
+    for (int i = 0; i < stage->event_count; ++i) {
+        const StageEvent *event = &stage->events[i];
+        if (event->kind == STAGE_BUILDING) ++stats->building_total;
+        if (event->kind != STAGE_ENEMY || !strcmp(event->name, "Fence") || !strcmp(event->name, "BlackHole")) continue;
+        ++stats->enemy_total;
+        if (!strcmp(event->name, "Swirl") || !strcmp(event->name, "Pyramid")) stats->enemy_total += 3;
+        if (!strcmp(event->name, "Splitter")) stats->enemy_total += 2;
+    }
+}
+
+int game_stats_percent(int count, int total) {
+    return total ? (int)fminf(100, nearbyintf(count * 100.0f / total)) : 0;
+}
+
+int game_stage_medal(const Game *game) {
+    const StageStats *s = &game->stage.stats;
+    int total = game_stats_percent(s->coins_collected, s->coins_total) +
+        game_stats_percent(s->enemy_kills, s->enemy_total) + game_stats_percent(s->building_kills, s->building_total);
+    return total >= 300 ? 5 : total >= 250 ? 4 : total >= 200 ? 3 : total >= 150 ? 2 : 1;
+}
+
 void game_secret_enter(Game *game, int index) {
     if (index < 12 || index >= STAGE_COUNT || game->secret_return.active) return;
     SecretReturn *saved = &game->secret_return;
@@ -22,6 +49,7 @@ void game_secret_enter(Game *game, int index) {
     int revision = game->stage.revision + 1;
     memset(&game->stage, 0, sizeof(game->stage));
     game->stage.index = index;
+    game_stats_init(game);
     game->stage.revision = revision;
     game->stage.camera_y = 400;
     game->stage.previous_line = 100000;

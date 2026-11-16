@@ -163,6 +163,7 @@ bool game_join(Game *game, int slot) {
 void game_reset(Game *game, uint32_t seed) {
     memset(game, 0, sizeof(*game));
     game->random = game->seed = seed;
+    game_stats_init(game);
     game->stage.camera_y = 400;
     game->stage.previous_line = 100000;
     game->stage.music_event = -1;
@@ -295,6 +296,7 @@ void game_drop_pickups(Game *game, float x, float y, int coins, bool powerup, bo
         *p = (Pickup){0};
         p->active = true;
         p->kind = n < big ? 1 : n < big + small ? 0 : 2;
+        ++game->stage.stats.coins_total;
         p->x = x; p->y = y;
         p->vx = (random_unit(game) * 2 - 1) * 3;
         p->vy = (random_unit(game) * 2 - 1) * 3;
@@ -335,6 +337,7 @@ static void update_pickups(Game *game) {
                     if (p->weapon_level + 1 < game_weapons[p->primary].level_count) { ++p->weapon_level; ++p->powerup_levels; }
                     memset(p->weapons[0], 0, sizeof(p->weapons[0]));
                 } else {
+                    game->stage.stats.coins_collected += pickup->kind == 1 ? 10 : 1;
                     p->score += pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0);
                     if (pickup->kind == 1) p->energy = fminf(game_generators[p->generator].capacity,
                         p->energy + game_generators[p->generator].on_coin);
@@ -528,6 +531,7 @@ static void update_bullets(Game *game) {
                     if (game->stage.building_health[i] < 0) {
                         /* Keep the original strict <0 destruction boundary. */
                         ++game->building_kills;
+                        ++game->stage.stats.building_kills;
                         static const float big_health[] = {2.5f,2.5f,3,5,5,6,7,8,9};
                         static const float small_health[] = {1,1.5f,1.5f,2,2.5f,5,6};
                         bool small = !strncmp(event->name, "Small", 5);
@@ -593,6 +597,12 @@ void game_tick(Game *game) {
         if (game->menu.page == MENU_CLEAR) {
             if (game->clear_exit && game->menu.frame > 440) { game_shop_open(game); return; }
             if (game->clear_exit || game->menu.frame <= 440) ++game->menu.frame;
+            if (!game->clear_exit && (game->menu.frame == 240 || game->menu.frame == 260)) {
+                static const int skill_bonus[] = {0, 0, 250, 500, 1000, 1500};
+                int bonus = game->menu.frame == 240 ? 10000 : skill_bonus[game_stage_medal(game)];
+                if (game->players[1].joined) bonus = bonus * 3 / 4;
+                for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined) game->players[i].score += bonus;
+            }
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];
                 if (!p->joined || p->lives <= 0) continue;
@@ -621,6 +631,7 @@ void game_tick(Game *game) {
     if (game->complete && game->secret_return.active) game->secret_finish_frames = 1;
     else if (game->complete && !game->over) {
         if (game->stage.index == 11 && !game->cleared_game) {
+            game_record_stage(game);
             for (int i = 0; i < GAME_PLAYERS; ++i)
                 if (game->players[i].joined) game->players[i].money = 999999999;
             game_menu_open(game, MENU_FINISH);
@@ -654,6 +665,7 @@ bool game_stage(Game *game, int index, float progress) {
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));
     game->stage.index = index;
+    game_stats_init(game);
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[index].scroll_speed;
     game->stage.revision = revision;

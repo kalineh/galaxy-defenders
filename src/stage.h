@@ -47,6 +47,13 @@ typedef struct { bool active; int kind; float x, y; } EnemyCorpse;
 extern const SceneryDefinition stage_scenery[14];
 
 typedef struct {
+    int coins_total, coins_collected, enemy_total, enemy_kills, building_total, building_kills;
+    int starting_money;
+    bool recorded;
+} StageStats;
+
+typedef struct {
+    StageStats stats;
     int index, end_countdown, music_event, music_tick, revision;
     float camera_x, camera_y, previous_line;
     bool stopped, health_bar;

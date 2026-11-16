@@ -67,6 +67,7 @@ typedef struct {
     bool valid, shop, cleared;
     int stage, difficulty, players;
     uint32_t seed;
+    int stage_scores[12], stage_medals[12];
     SavedPlayer player[GAME_PLAYERS];
 } SavedGame;
 
@@ -175,6 +176,10 @@ typedef struct {
 void game_reset(Game *game, uint32_t seed);
 void game_reset_session(Game *game, uint32_t seed);
 void game_checkpoint(Game *game, bool shop);
+void game_stats_init(Game *game);
+int game_stats_percent(int count, int total);
+int game_stage_medal(const Game *game);
+void game_record_stage(Game *game);
 bool game_continue(Game *game, int players);
 bool game_save_read(SavedGame *save, const char *path);
 bool game_save_write(const SavedGame *save, const char *path);

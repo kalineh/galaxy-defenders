@@ -37,3 +37,7 @@ Front Laser uses `Content/Textures/Weapons/Laser.png`, the original
 Stage 1 uses the original `Enemy/{Turret,DownTurret,MiniSquare,BigBall,Boss1Chunk}`
 PNGs, `Music/Boss 9.wav`, and its referenced `Textures/Decoration` and
 `Textures/Static` (including destroyed variants) under `textures/stage/`.
+
+Clear-screen MedalClear/Bronze/Silver/Gold/Platinum PNGs are unchanged copies of
+`legacy/Content/Textures/UI/`. The Continue button is a lossless PNG conversion
+of `legacy/Content/Textures/UI/Xbox/xboxControllerButtonX.tga`.
