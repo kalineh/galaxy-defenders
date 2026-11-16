@@ -21,6 +21,8 @@ automation. No npm installs. Commit and push verified focused changes to `native
 - Original Stage12 ending text/music and victory money.
 - Separate solo/co-op saves, validated atomic persistence, Continue to the correct
   stage/shop and unlocked replay selection after winning. Pause Quit opens shop.
+- Legacy chassis resistance on impacts, shield/armor hit feedback and knockback;
+  removed the invented immunity interval after ordinary damage.
 - Original coin/big-coin/upgrade pickups, magnet behavior, Rabbit coin bonus,
   generator coin recovery, health-based kill/building scores and co-op damage scale.
 - Console equipment/spawn/seek commands, completion/history and F3 frame graph.
@@ -28,7 +30,8 @@ automation. No npm installs. Commit and push verified focused changes to `native
 ## Remaining parity work
 
 - Audit every projectile's collision, special effects and sound against legacy;
-  finish salvage and player death behavior.
+  finish salvage and player death behavior. Enemy contact still needs its original
+  health-based damage, reciprocal damage and collision impulse (currently fixed damage).
 - Audit boss attack timing/movement in detail (current coverage checks all phases,
   shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
 - Sample ships, shop inventory restrictions,

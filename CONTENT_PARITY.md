@@ -22,6 +22,10 @@ Circle collisions retain the original `r1*r1 + r2*r2` threshold. EnemyShot uses
 its original 40-pixel visual and radius 2; unshielded player radius is 16. Laser
 collision geometry uses its original small box with swept detection between ticks.
 Boss component collision offsets apply to both contact and projectile tests.
+Ordinary impacts apply chassis resistance and shield overflow, without an invented
+post-hit immunity interval. Shield and armor feedback use distinct original sounds
+and particles; armor impacts apply the legacy velocity response. Enemy contact
+still needs health-based/reciprocal damage and its separate collision impulse.
 
 Automated campaign checks run all 19 stages with no dropped spawns and exercise
 all boss phases; they do not establish that every fight has been beaten with each

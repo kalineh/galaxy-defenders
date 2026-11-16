@@ -50,9 +50,35 @@ static void collisions(void) {
     CHECK(game.players[1].health == 20);
     game_spawn_bullet(&game, -1, 560, 950, 0, -100, 2);
     game_tick(&game);
-    CHECK(game.players[1].health == 18);
+    CHECK(game.players[1].health == 18.125f);
     game_damage_player(&game, 1, 5);
-    CHECK(game.players[1].health == 18); /* invulnerability */
+    CHECK(game.players[1].health == 13.125f); /* No automatic immunity after a hit. */
+}
+
+static void player_impact_damage(void) {
+    reset();
+    Player *p = &game.players[0];
+    p->invulnerable = 0;
+    p->shield_health = 5;
+    game_spawn_bullet(&game, -1, p->x, p->y, 0, 0, 2);
+    game_spawn_bullet(&game, -1, p->x, p->y, 0, 0, 4);
+    game_tick(&game);
+    CHECK(p->shield_health == 0 && p->health == 19.375f);
+    CHECK(game.hits == 2 && game.shield_hits == 1 && game.armor_hits == 1);
+    CHECK(p->invulnerable == 0); /* Both bullets hit in the same tick. */
+    CHECK(game.effect_cursor == 19); /* 3 shield + 8 armor + two 4-dot shot effects. */
+    p->invincible = true;
+    game_spawn_bullet(&game, -1, p->x, p->y, 0, 0, 100);
+    game_tick(&game);
+    CHECK(p->health == 19.375f && game.hits == 2);
+    reset();
+    p = &game.players[0];
+    p->invulnerable = 0;
+    p->chassis = 7; /* Demon absorbs 21.25% of ordinary bullet damage. */
+    game_spawn_bullet(&game, -1, p->x, p->y - 10, 0, 10, 4);
+    game_tick(&game);
+    CHECK(fabsf(p->health - 16.85f) < 0.0001f);
+    CHECK(fabsf(p->vy - 6.3f) < 0.0001f);
 }
 
 static void legacy_circle_sizes(void) {
@@ -64,7 +90,7 @@ static void legacy_circle_sizes(void) {
     CHECK(game.players[0].health == 20 && game.bullets[shot].active);
     game.bullets[shot].x = 416;
     game_tick(&game);
-    CHECK(game.players[0].health == 18 && !game.bullets[shot].active);
+    CHECK(game.players[0].health == 18.125f && !game.bullets[shot].active);
     /* Ball radius 36 + player radius 16: original squared threshold is 1552. */
     reset();
     game.players[0].invulnerable = 0;
@@ -74,7 +100,7 @@ static void legacy_circle_sizes(void) {
     CHECK(game.players[0].health == 20);
     game.enemies[ball].x = 439;
     game_tick(&game);
-    CHECK(game.players[0].health == 17); /* Rookie collision resistance absorbs 25%. */
+    CHECK(game.players[0].health == 17.1875f); /* Collision resistance, then the ordinary impact reduction. */
     reset();
     game.players[0].invulnerable = 0;
     shot = game_spawn_bullet(&game, -1, 416, 882, 0, 0, 2);
@@ -96,7 +122,7 @@ static void legacy_circle_sizes(void) {
     game.enemies[gun].parent = parent;
     game.enemies[gun].cooldown = 100;
     game_tick(&game);
-    CHECK(game.players[0].health == 17); /* Rookie collision resistance absorbs 25%. */
+    CHECK(game.players[0].health == 17.1875f); /* Collision resistance, then the ordinary impact reduction. */
 }
 
 static void shop_progression(void) {
@@ -257,7 +283,7 @@ static void legacy_effects(void) {
     game.players[0].lives = 1;
     game.players[0].invulnerable = 0;
     game_damage_player(&game, 0, 20);
-    CHECK(game.deaths == 1 && game.effect_cursor == 32);
+    CHECK(game.deaths == 1 && game.effect_cursor == 24);
     game_tick(&game);
     CHECK(game.over);
     for (int frame = 0; frame < 90; ++frame) game_tick(&game);
@@ -908,7 +934,7 @@ int main(void) {
     legacy_circle_sizes();
     shop_progression();
     stage2_runtime();
-    movement(); collisions(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
+    movement(); collisions(); player_impact_damage(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();
     menu_flow();
     weapon_upgrades();

@@ -69,9 +69,10 @@ void game_effect(Game *game, EffectKind kind, float x, float y, int player, floa
         {4, 0, 60, 15, 0, 3, 0, 1, 0.7f, 0, -0.02f, 0, 0},
         {2, 0, 60, 15, 0, 3, 0, 1, 0.5f, 0, -0.015f, 0, 0},
         {16, 1, 60, 15, 0, 0, 32, 2.5f, 1.5f, 0.2f, -0.06f, 2.5f, 0.1f},
-        {24, 1, 60, 15, 0, 0, 64, 3.5f, 2.2f, 0.2f, -0.085f, 3.5f, 0.1f}
+        {24, 1, 60, 15, 0, 0, 64, 3.5f, 2.2f, 0.2f, -0.085f, 3.5f, 0.1f},
+        {3, 0, 60, 15, 12, 24, 0, 1, 0.5f, 0, -0.01f, 0.5f, 0}
     };
-    if (kind < 0 || kind > EFFECT_BUILDING_BIG) return;
+    if (kind < 0 || kind > EFFECT_SHIELD_HIT) return;
     bool building = kind == EFFECT_BUILDING_SMALL || kind == EFFECT_BUILDING_BIG;
     int passes = kind == EFFECT_ENEMY_DEATH || building ? 2 : 1;
     for (int pass = 0; pass < passes; ++pass) {
@@ -81,6 +82,7 @@ void game_effect(Game *game, EffectKind kind, float x, float y, int player, floa
             float angle = random_unit(game) * 6.2831853f;
             float dx = (random_unit(game) - 0.5f) * definitions[kind].box + cosf(angle) * definitions[kind].circle + definitions[kind].offset;
             float dy = (random_unit(game) - 0.5f) * definitions[kind].box + sinf(angle) * definitions[kind].circle + definitions[kind].offset;
+            if (kind == EFFECT_SHIELD_HIT) dy -= 4; /* Legacy offset is (12, 8). */
             float length = sqrtf(dx * dx + dy * dy);
             *effect = (Effect){0};
             effect->x = x + dx;
@@ -248,9 +250,7 @@ void game_damage_player(Game *game, int slot, float damage) {
     float shield_damage = fminf(player->shield_health, damage);
     player->shield_health -= shield_damage;
     player->health -= damage - shield_damage;
-    player->invulnerable = 45;
     ++game->hits;
-    game_effect(game, EFFECT_ARMOR_HIT, player->x, player->y, slot, 0, -2);
     if (player->health > 0) return;
     player->health = 0;
     ++game->deaths;
@@ -266,6 +266,28 @@ void game_damage_player(Game *game, int slot, float damage) {
         player->y = 880;
         player->vx = player->vy = 0;
         player->invulnerable = 120;
+    }
+}
+
+/* Ship.TakeDamage: ordinary impacts apply chassis resistance; direct damage does not. */
+static void player_impact(Game *game, int slot, float damage, float x, float y, float vx, float vy) {
+    Player *player = &game->players[slot];
+    if (game->seeking || !player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible) return;
+    float adjusted = damage * (1 - game_chassis[player->chassis].collision_resistance * 0.25f);
+    float effect_x = player->x + (x - player->x) * 0.35f;
+    float effect_y = player->y + (y - player->y) * 0.35f;
+    bool shield = player->shield_health > adjusted;
+    float speed = sqrtf(vx * vx + vy * vy);
+    game_damage_player(game, slot, adjusted);
+    if (shield) {
+        ++game->shield_hits;
+        game_effect(game, EFFECT_SHIELD_HIT, effect_x, effect_y, slot, 0, 0);
+    } else {
+        ++game->armor_hits;
+        game_effect(game, EFFECT_ARMOR_HIT, effect_x, effect_y, slot,
+            speed > 0 ? -2 * vx / speed : 0, speed > 0 ? -2 * vy / speed : 0);
+        player->vx = player->vx * 0.15f + vx * 0.20f * adjusted;
+        player->vy = player->vy * 0.15f + vy * 0.20f * adjusted;
     }
 }
 
@@ -402,7 +424,8 @@ static void update_enemies(Game *game) {
             if (player->joined && player->lives > 0 && touching && !enemy->intangible && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB && enemy->kind != ENEMY_BOSS10_BALL) {
                 if (player->invulnerable <= 0) player->energy = fminf(game_generators[player->generator].capacity,
                     player->energy + 4 * game_generators[player->generator].on_collision);
-                game_damage_player(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance));
+                player_impact(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance),
+                    enemy->x, enemy->y, player->vx, player->vy);
             }
         }
         if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) enemy->active = false;
@@ -507,7 +530,7 @@ static void update_bullets(Game *game) {
                 float radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
                 if (!player->joined || player->lives <= 0 || segment_distance_squared(old_x, old_y, bullet->x, bullet->y,
                     player->x, player->y) >= radius * radius + bullet->radius * bullet->radius) continue;
-                game_damage_player(game, p, bullet->damage);
+                player_impact(game, p, bullet->damage, bullet->x, bullet->y, bullet->vx, bullet->vy);
                 game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
                 bullet->active = false;
                 break;

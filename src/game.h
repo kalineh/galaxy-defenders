@@ -125,7 +125,7 @@ typedef struct {
 
 typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
     EFFECT_FOCUS, EFFECT_ENEMY_SHOT_HIT, EFFECT_LASER_HIT,
-    EFFECT_BUILDING_SMALL, EFFECT_BUILDING_BIG } EffectKind;
+    EFFECT_BUILDING_SMALL, EFFECT_BUILDING_BIG, EFFECT_SHIELD_HIT } EffectKind;
 
 typedef struct {
     bool active, magnet;
@@ -153,6 +153,7 @@ typedef struct {
     Effect effects[GAME_EFFECTS];
     Pickup pickups[GAME_PICKUPS];
     uint32_t random, seed;
+    int armor_hits, shield_hits;
     int tick, kills, building_kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
     int pickups_collected;
     int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], overheats;
