@@ -13,7 +13,8 @@ assert shots eq 12
 assert p2.health eq 20
 player.input 1 1 0 0 0
 game.step 120
-assert p1.x eq 930
+assert p1.x gt 950
+assert p1.x lt 960
 game.pause 1
 game.step 10
 assert tick eq 155

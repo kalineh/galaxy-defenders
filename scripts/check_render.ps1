@@ -30,9 +30,9 @@ try {
         if ($image.Width -ne 1920 -or $image.Height -ne 1080) { throw 'Wrong render dimensions.' }
         # These three scene probes catch blank output, vertical inversion, and RGBA/BGRA mistakes.
         $probes = @(
-            @{ X = 960; Y = 303; Expected = $source.GetPixel(40, 40) },
-            @{ X = 880; Y = 880; Expected = [Drawing.Color]::FromArgb(247, 208, 74) },
-            @{ X = 1040; Y = 880; Expected = [Drawing.Color]::FromArgb(195, 150, 255) }
+            @{ X = 952; Y = 303; Expected = $source.GetPixel(40, 40) },
+            @{ X = 872; Y = 880; Expected = [Drawing.Color]::FromArgb(247, 208, 74) },
+            @{ X = 1032; Y = 880; Expected = [Drawing.Color]::FromArgb(195, 150, 255) }
         )
         foreach ($probe in $probes) {
             $actual = $image.GetPixel($probe.X, $probe.Y)

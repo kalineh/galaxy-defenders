@@ -10,7 +10,7 @@ frame-identical gameplay or complete presentation parity.
 | Equipment | All generators/shields and nine chassis; pilot starting equipment | Full visual HUD details; unused legacy abilities remain dormant |
 | Shop | Six categories, purchases, trade-ins, levels, energy/shield effects, co-op ready | Stage-specific stock, sample ships, exact layout/transitions |
 | Enemies | All regular types, hostile projectile kinds, Boss1-Boss12 and parts | Detailed attack timing/movement traces, death art and sound |
-| Stages | All 12 main and seven bonus stages; authored 3,448 events; original assets | Playtest balance, secret entrance reachability and fade/return timing |
+| Stages | All 12 main and seven bonus stages; authored 3,448 events; original assets; all secret entrances verified | Playtest balance and fade/return timing |
 | Progression | Clear -> shop -> next main stage; secrets; ending; solo/co-op saves and Continue; unlocked replay selection | Stage-clear flyout and explosions |
 | Scenery | Original textures, gradients, foreground layers, deterministic cloud motion | Animated blending gradients and exact legacy RNG sequencing |
 | Audio | Original title/combat/pause/ending tracks and music-event seeking | Remaining weapon/enemy/pickup sound mapping |

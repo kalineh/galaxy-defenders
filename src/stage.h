@@ -47,7 +47,7 @@ extern const SceneryDefinition stage_scenery[14];
 
 typedef struct {
     int index, end_countdown, music_event, music_tick, revision;
-    float camera_y, previous_line;
+    float camera_x, camera_y, previous_line;
     bool stopped, health_bar;
     bool ignore_secrets;
     int secret_target, secret_countdown;

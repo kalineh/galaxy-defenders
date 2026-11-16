@@ -411,12 +411,13 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
         for (int i = 0; i < definition->count; ++i) {
             const SceneryParticle *p = &game->stage.scenery[layer][i];
             Texture2D texture = assets->scenery[layer];
-            sprite(texture, ARENA_X + p->x, p->y, texture.width * definition->scale, 0, WHITE);
+            sprite(texture, ARENA_X - game->stage.camera_x + p->x, p->y, texture.width * definition->scale, 0, WHITE);
         }
     }
 }
 
 static void draw_game(const Game *game, const Assets *assets) {
+    float view_x = ARENA_X - game->stage.camera_x;
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -433,7 +434,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
         Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
             assets->stage_destroyed[i] : assets->stage_textures[i];
-        sprite(texture, ARENA_X + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
+        sprite(texture, view_x + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
     }
     for (int layer = -2; layer <= 1; ++layer) for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
@@ -449,12 +450,12 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
-            (Rectangle){ARENA_X + enemy->x,enemy->y,(float)texture.width,(float)texture.height}, origin, rotation * RAD2DEG, WHITE);
+            (Rectangle){view_x + enemy->x,enemy->y,(float)texture.width,(float)texture.height}, origin, rotation * RAD2DEG, WHITE);
         Texture2D cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
             enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Texture2D){0};
         float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
             enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
-        if (IsTextureValid(cover)) sprite(cover, ARENA_X + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
+        if (IsTextureValid(cover)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
     }
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
@@ -463,34 +464,34 @@ static void draw_game(const Game *game, const Assets *assets) {
         Texture2D texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
             DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
-                (Rectangle){ARENA_X + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
+                (Rectangle){view_x + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
                 (Vector2){540, bullet->width}, -90, color);
         } else {
             float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
             float rotation = bullet->owner < 0 ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
-            sprite(texture, ARENA_X + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
+            sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
         }
     }
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
         if (effect->life <= 0) continue;
         Texture2D texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
-        sprite(texture, ARENA_X + effect->x, effect->y, texture.width * effect->scale,
+        sprite(texture, view_x + effect->x, effect->y, texture.width * effect->scale,
             effect->angle, (Color){effect->r, effect->g, effect->b, 255});
     }
     for (int i = 0; i < GAME_PICKUPS; ++i) {
         const Pickup *p = &game->pickups[i];
         if (!p->active) continue;
         Texture2D texture = assets->pickups[p->kind];
-        sprite(texture, ARENA_X + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
+        sprite(texture, view_x + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
     }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ships[player->chassis], ARENA_X + player->x, player->y, 80, -90, color);
+        sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
     }
     draw_scenery(game, assets, true);
     if (game->stage.secret_countdown)

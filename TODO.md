@@ -16,6 +16,8 @@ automation. No npm installs. Commit and push verified focused changes to `native
 - All 12 main and seven bonus stage event streams, original required assets,
   scenery layers, music changes, camera stops, clear/shop/next-stage progression.
 - Secret entry/return retains the main encounter and transfers bonus rewards.
+- Original horizontal camera pan and radius-based player bounds; all seven secret
+  entrances pass actual entry, bonus playback and return tests.
 - Original Stage12 ending text/music and victory money.
 - Separate solo/co-op saves, validated atomic persistence, Continue to the correct
   stage/shop and unlocked replay selection after winning. Pause Quit opens shop.
@@ -31,8 +33,7 @@ automation. No npm installs. Commit and push verified focused changes to `native
   shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
 - Sample ships, shop inventory restrictions,
   menu transitions/fades, stage-clear explosion/flyout presentation.
-- Validate secret entrance reachability at arena edges; preserve source coordinates.
-  Secret return/fade timing and scrolling need closer legacy comparison.
+- Secret return/fade timing and scrolling need closer legacy comparison.
 - Blending gradient scenery, remaining boss visual details, turret corpses.
 - Pilot ability classes are dormant in the legacy game: TryEnable has no callers,
   no purchase UI exists, and ability HUD drawing is commented out. Do not invent

@@ -364,15 +364,20 @@ static void update_players(Game *game) {
         float acceleration = chassis->speed * (player->pilot == 0 ? 1.2f : 1);
         player->vx += x * acceleration;
         player->vy += y * acceleration;
-        player->x = clamp(player->x + player->vx, 30, GAME_WIDTH - 30);
-        player->y = clamp(player->y + player->vy, 40, GAME_HEIGHT - 40);
+        float radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
+        float left = game->stage.camera_x + radius, right = game->stage.camera_x + GAME_WIDTH - radius;
+        player->x = clamp(player->x + player->vx, left, right);
+        player->y = clamp(player->y + player->vy, radius, GAME_HEIGHT - radius);
         float target_friction = chassis->friction * (player->input.focus ? 0.6f : 1);
         player->friction += (target_friction - player->friction) * (player->input.focus ? 0.2f : 0.4f);
         player->vx *= player->friction;
         player->vy *= player->friction;
         if (player->input.focus) game_effect(game, EFFECT_FOCUS, player->x, player->y, i, player->vx, player->vy - 2.5f);
-        if ((player->x <= 30 && player->vx < 0) || (player->x >= GAME_WIDTH - 30 && player->vx > 0)) player->vx = 0;
-        if ((player->y <= 40 && player->vy < 0) || (player->y >= GAME_HEIGHT - 40 && player->vy > 0)) player->vy = 0;
+        if ((player->x <= left && player->vx < 0) || (player->x >= right && player->vx > 0)) player->vx = 0;
+        if ((player->y <= radius && player->vy < 0) || (player->y >= GAME_HEIGHT - radius && player->vy > 0)) player->vy = 0;
+        /* Ship.Update binds the camera to each living ship in update order. */
+        if (!game->stage.secret_countdown)
+            game->stage.camera_x = (player->x - GAME_WIDTH * 0.5f) / (GAME_WIDTH * 0.5f) * 50;
     }
 }
 
@@ -400,7 +405,7 @@ static void update_enemies(Game *game) {
                 game_damage_player(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance));
             }
         }
-        if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < -150 || enemy->x > GAME_WIDTH + 150) enemy->active = false;
+        if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) enemy->active = false;
     }
 }
 
@@ -508,7 +513,7 @@ static void update_bullets(Game *game) {
                 break;
             }
         }
-        if (bullet->x < -100 || bullet->x > GAME_WIDTH + 100 || bullet->y < -250 || bullet->y > GAME_HEIGHT + 100) bullet->active = false;
+        if (bullet->x < game->stage.camera_x - 100 || bullet->x > game->stage.camera_x + GAME_WIDTH + 100 || bullet->y < -250 || bullet->y > GAME_HEIGHT + 100) bullet->active = false;
     }
 }
 
@@ -519,6 +524,9 @@ void game_tick(Game *game) {
     if (game->over || game->complete) return;
     ++game->tick;
     if (!game->seeking) update_players(game);
+    else for (int p = 0; p < GAME_PLAYERS; ++p)
+        if (game->players[p].joined && game->players[p].lives > 0)
+            game->stage.camera_x = (game->players[p].x - GAME_WIDTH * 0.5f) / (GAME_WIDTH * 0.5f) * 50;
     if (game->waves) game_stage_update(game);
     else game->scroll_speed = 0;
     game_scenery_update(game);

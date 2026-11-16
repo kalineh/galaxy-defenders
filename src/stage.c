@@ -63,7 +63,7 @@ void game_secret_return(Game *game) {
         float energy = p->energy, shield = p->shield_health, health = p->health;
         *p = saved->players[i];
         p->score = score; p->energy = energy; p->shield_health = shield; p->health = health;
-        p->x = fmaxf(32, fminf(GAME_WIDTH - 32, game->stage.secret_x));
+        p->x = fmaxf(game->stage.camera_x + 32, fminf(game->stage.camera_x + GAME_WIDTH - 32, game->stage.secret_x));
         p->y = fmaxf(32, fminf(GAME_HEIGHT - 32, game->stage.secret_y));
         float dx = GAME_WIDTH * 0.5f - p->x, dy = GAME_HEIGHT * 0.5f - p->y, length = hypotf(dx, dy);
         p->vx = length > 0 ? dx / length * 40 : 0;

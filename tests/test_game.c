@@ -23,11 +23,11 @@ static void movement(void) {
     game_tick(&game);
     CHECK(fabsf(game.players[0].x - 401.8f) < 0.001f); /* Kazuki +20% speed */
     for (int i = 0; i < 500; ++i) game_tick(&game);
-    CHECK(game.players[0].x == GAME_WIDTH - 30);
+    CHECK(fabsf(game.players[0].x - (480 + 464.0f * 480 / 430)) < 0.001f);
     CHECK(game.players[0].vx == 0);
     game.players[0].input.x = -1;
     game_tick(&game);
-    CHECK(game.players[0].x < GAME_WIDTH - 30);
+    CHECK(game.players[0].x < 480 + 464.0f * 480 / 430);
     int tick = game.tick;
     game.paused = true;
     game_tick(&game);
@@ -813,6 +813,29 @@ static void secret_stage_roundtrip(void) {
     CHECK(game.players[0].vx < 0 && game.menu.page == MENU_NONE);
 }
 
+static void authored_secret_entries(void) {
+    for (int stage = 0; stage < 12; ++stage) {
+        const StageDefinition *definition = &stage_definitions[stage];
+        for (int event = 0; event < definition->event_count; ++event) {
+            const StageEvent *entry = &definition->events[event];
+            if (entry->kind != STAGE_SECRET) continue;
+            reset();
+            game.players[0].invincible = true;
+            CHECK(game_stage(&game, stage, (-entry->y - 240) / (definition->length + 400)));
+            game.players[0].x = 480;
+            game.players[0].y = 540;
+            game.players[0].input.x = entry->x > 0 ? 1 : -1;
+            for (int tick = 0; tick < 500 && !game.secret_return.active; ++tick) game_tick(&game);
+            if (!game.secret_return.active) fprintf(stderr, "Unreachable secret: %s %s x=%.2f camera=%.2f\n",
+                definition->name, entry->name, game.players[0].x, game.stage.camera_x);
+            CHECK(game.secret_return.active && !strcmp(stage_definitions[game.stage.index].name, entry->name));
+            game.players[0].input.x = 0;
+            for (int tick = 0; tick < 3000 && game.secret_return.active; ++tick) game_tick(&game);
+            CHECK(!game.secret_return.active && game.stage.index == stage && !game.complete);
+        }
+    }
+}
+
 static void collectible_rewards(void) {
     reset();
     Player *p = &game.players[0];
@@ -874,6 +897,7 @@ static void saved_continue(void) {
 }
 
 int main(void) {
+    authored_secret_entries();
     saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
