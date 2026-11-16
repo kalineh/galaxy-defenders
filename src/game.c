@@ -467,7 +467,10 @@ static void update_bullets(Game *game) {
                 if (!hit) continue;
                 if (hostile->hostile_kind == HOSTILE_PELLET) {
                     if (--hostile->health <= 0 || bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
-                } else if (bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
+                } else if (bullet->weapon == WEAPON_BOMBLET) {
+                    hostile->active = false;
+                    game_particle(game, PARTICLE_WEAPON_MISSILE_HIT, hostile->x, hostile->y, 2, 1, 0, 0);
+                }
                 if (hostile->hostile_kind == HOSTILE_PELLET && (bullet->splash || bullet->weapon == WEAPON_BOMBLET ||
                     bullet->weapon == WEAPON_BEAM || bullet->weapon == WEAPON_BEAM_FOCUS)) continue;
                 bullet->active = false;

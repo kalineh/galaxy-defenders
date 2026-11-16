@@ -336,3 +336,8 @@ to confirm any of the explicit mismatches listed here.
   stage stock stable; version 1 remains readable with its original default seed.
   Roundtrip/stock/backward-compatibility checks, full suite and native build pass.
   Per-stage score and medal records remain pending.
+- Hostile missile destruction by Bomblet now emits its original orange missile
+  explosion; focused collision/effect checks and native build pass.
+- Audit correction: Beam/BeamFocus Cue fields are never assigned or played, and
+  their WeaponDefinitions Sound entries are commented out. Native empty sound
+  definitions already match; no looping audio should be added.

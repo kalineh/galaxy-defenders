@@ -352,6 +352,13 @@ static void hostile_collision_rules(void) {
         game_tick(&game);
         CHECK(!game.bullets[shot].active);
         CHECK(game.bullets[bullet].active == (kind == HOSTILE_PELLET));
+        if (kind == HOSTILE_MISSILE) {
+            bool orange_burst = false;
+            for (int i = 0; i < GAME_EFFECTS; ++i)
+                if (game.effects[i].life > 0 && game.effects[i].r == 252 && game.effects[i].g == 124)
+                    orange_burst = true;
+            CHECK(orange_burst);
+        }
     }
 }
 
