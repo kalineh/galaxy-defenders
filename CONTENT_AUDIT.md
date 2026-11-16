@@ -345,3 +345,7 @@ to confirm any of the explicit mismatches listed here.
   the arena, rejects confirmation through frame 380 and delays shop entry until
   the exit fade completes. Full suite (including actual progression script),
   native build and windowless render pass. Stats/award panel remains pending.
+- Secret return repairs: 30-frame finish hold followed by fade to the main
+  world, return fade-in, launch vector from the previous ship position, original
+  +280 camera jump with corresponding native screen-coordinate adjustment.
+  Full suite, all authored secret routes, native and software-render checks pass.

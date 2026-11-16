@@ -579,12 +579,17 @@ static void update_bullets(Game *game) {
 void game_tick(Game *game) {
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
+    if (game->secret_fade_frames > 0) --game->secret_fade_frames;
     update_effects(game);
     if (game->over) {
         if (game->over_frames < 120 && ++game->over_frames == 120) game_menu_open(game, MENU_OVER);
         return;
     }
     if (game->complete) {
+        if (game->secret_return.active) {
+            if (++game->secret_finish_frames > 38) game_secret_return(game);
+            return;
+        }
         if (game->menu.page == MENU_CLEAR) {
             if (game->clear_exit && game->menu.frame > 440) { game_shop_open(game); return; }
             if (game->clear_exit || game->menu.frame <= 440) ++game->menu.frame;
@@ -613,7 +618,7 @@ void game_tick(Game *game) {
     bool alive = false;
     for (int p = 0; p < GAME_PLAYERS; ++p) if (game->players[p].joined && game->players[p].lives > 0) alive = true;
     if (!alive && !game->seeking) game->over = true;
-    if (game->complete && game->secret_return.active) game_secret_return(game);
+    if (game->complete && game->secret_return.active) game->secret_finish_frames = 1;
     else if (game->complete && !game->over) {
         if (game->stage.index == 11 && !game->cleared_game) {
             for (int i = 0; i < GAME_PLAYERS; ++i)

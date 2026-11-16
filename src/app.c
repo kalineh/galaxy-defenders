@@ -605,6 +605,12 @@ static void draw_game(const Game *game, const Assets *assets) {
     draw_scenery(game, assets, true);
     if (game->stage.secret_countdown)
         DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
+    if (game->secret_finish_frames || game->secret_fade_frames) {
+        float alpha = game->secret_fade_frames ? game->secret_fade_frames / 15.0f :
+            game->secret_finish_frames <= 30 ? fminf(0.5f, (game->secret_finish_frames - 1) / 15.0f) :
+            fminf(1, 0.5f + (game->secret_finish_frames - 30) / 15.0f);
+        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
+    }
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];

@@ -163,7 +163,7 @@ typedef struct {
     int pickups_collected;
     int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], overheats;
     bool waves, paused, over, complete, boss_spawned, seeking;
-    int difficulty, over_frames;
+    int difficulty, over_frames, secret_finish_frames, secret_fade_frames;
     float scroll_speed;
     StageState stage;
     GameMenu menu;

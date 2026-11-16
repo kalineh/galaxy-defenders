@@ -1245,17 +1245,26 @@ static void secret_stage_roundtrip(void) {
     game.stage.secret_y = 500;
     game.players[0].health = 7;
     game.players[0].score = 100;
+    game.players[0].x = 800;
+    game.players[0].y = 600;
     repeat = game;
     game_secret_enter(&game, 12);
     CHECK(game.stage.index == 12 && game.secret_return.active);
     CHECK(game.players[0].health == 7 && game.players[0].score == 100);
     game.players[0].score += 250;
     game.players[0].health = 6;
-    game_secret_return(&game);
+    game.complete = true;
+    for (int i = 0; i < 38; ++i) game_tick(&game);
+    CHECK(game.secret_return.active && game.stage.index == 12);
+    game_tick(&game);
     CHECK(game.stage.index == 1 && !game.secret_return.active && game.stage.ignore_secrets);
-    CHECK(game.tick == repeat.tick && game.stage.camera_y == repeat.stage.camera_y);
-    CHECK(!memcmp(game.enemies, repeat.enemies, sizeof(game.enemies)));
-    CHECK(!memcmp(game.bullets, repeat.bullets, sizeof(game.bullets)));
+    CHECK(game.tick == repeat.tick && game.stage.camera_y == repeat.stage.camera_y + 280);
+    for (int i = 0; i < GAME_ENEMIES; ++i) if (repeat.enemies[i].active)
+        CHECK(game.enemies[i].y == repeat.enemies[i].y - 280);
+    for (int i = 0; i < GAME_BULLETS; ++i) if (repeat.bullets[i].active)
+        CHECK(game.bullets[i].y == repeat.bullets[i].y - 280);
+    CHECK(game.players[0].y == 220 && game.players[0].vy < 0);
+    CHECK(game.secret_fade_frames == 15);
     CHECK(game.players[0].health == 6 && game.players[0].score == 350);
     CHECK(game.players[0].vx < 0 && game.menu.page == MENU_NONE);
 }

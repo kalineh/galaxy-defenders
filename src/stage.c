@@ -63,12 +63,30 @@ void game_secret_return(Game *game) {
         float energy = p->energy, shield = p->shield_health, health = p->health;
         *p = saved->players[i];
         p->score = score; p->energy = energy; p->shield_health = shield; p->health = health;
+        float dx = game->stage.camera_x + GAME_WIDTH * 0.5f - p->x;
+        float dy = GAME_HEIGHT * 0.5f - p->y, length = hypotf(dx, dy);
         p->x = fmaxf(game->stage.camera_x + 32, fminf(game->stage.camera_x + GAME_WIDTH - 32, game->stage.secret_x));
         p->y = fmaxf(32, fminf(GAME_HEIGHT - 32, game->stage.secret_y));
-        float dx = GAME_WIDTH * 0.5f - p->x, dy = GAME_HEIGHT * 0.5f - p->y, length = hypotf(dx, dy);
         p->vx = length > 0 ? dx / length * 40 : 0;
         p->vy = length > 0 ? dy / length * 40 : 0;
     }
+    /* Native entities use screen coordinates; preserve their world positions when
+       applying the legacy return camera jump after snapping the ships. */
+    game->stage.camera_y += 280;
+    game->stage.secret_y -= 280;
+    for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].y -= 280;
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        Enemy *e = &game->enemies[i];
+        if (!e->active) continue;
+        e->y -= 280; e->base_y -= 280; e->anchor_y -= 280;
+        if (e->kind == ENEMY_BOSS5_CHUNK) { e->move_from -= 280; e->move_to -= 280; }
+        if (e->kind == ENEMY_BOSS6) e->move_to -= 280;
+    }
+    for (int i = 0; i < GAME_BULLETS; ++i) if (game->bullets[i].active) game->bullets[i].y -= 280;
+    for (int i = 0; i < GAME_PICKUPS; ++i) if (game->pickups[i].active) game->pickups[i].y -= 280;
+    for (int i = 0; i < GAME_EFFECTS; ++i) if (game->effects[i].life > 0) game->effects[i].y -= 280;
+    game->secret_finish_frames = 0;
+    game->secret_fade_frames = 15;
     saved->active = false;
     game->complete = game->over = false;
     game_menu_open(game, MENU_NONE);
