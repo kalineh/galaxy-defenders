@@ -1,6 +1,7 @@
 """Compile the explicit audition arrangement into sample-addressed C events."""
 import argparse
 import json
+import math
 from pathlib import Path
 import wave
 
@@ -52,12 +53,14 @@ def compile_events(score):
         start, end = section['start'], section['end']
         assert abs(start - previous_end) < .0001 and end > start
         previous_end = end
-        i = 0
-        while start + i * step < end - .000001:
-            time = start + i * step
+        song_clock = score.get('clock') == 'song'
+        i = math.ceil(start / step - 1e-9) if song_clock else 0
+        while (i * step if song_clock else start + i * step) < end - .000001:
+            time = i * step if song_clock else start + i * step
             # Continue harmony across section changes instead of restarting the intro.
-            bar = int(time / (step * 16))
-            chord_index = bar % len(score['roots'])
+            bar = i // 16 if song_clock else int(time / (step * 16))
+            phrase_bar = score['bar_order'][bar] if 'bar_order' in score else bar
+            chord_index = phrase_bar % len(score['roots'])
             root, chord = score['roots'][chord_index], score['chords'][chord_index]
             for role_index, role in enumerate(ROLES):
                 enabled = section.get(role, False)
@@ -67,22 +70,31 @@ def compile_events(score):
                     continue
                 part = score['parts'][role]
                 slot = i % part['steps']
+                # Keep sustained notes across orchestration cuts if the part stays on.
+                limit = end
+                if song_clock and section_index + 1 < len(score['sections']):
+                    following = score['sections'][section_index + 1]
+                    if following.get(role, False):
+                        limit = min(frames / RATE, (bar + 1) * 16 * step)
                 if role == 'pad':
                     if slot in part['onsets']:
-                        for j, interval in enumerate(chord):
-                            note(time, min(step * part['gate'], end-time), role_index,
-                                 root+24+interval, part['velocity'], (j-1)*40)
+                        pitches = score.get('voicings', [])[chord_index] if 'voicings' in score else [root+24+x for x in chord]
+                        for j, pitch in enumerate(pitches):
+                            note(time, min(step * part['gate'], limit-time), role_index,
+                                 pitch, part['velocity'], (j-1)*40)
                     continue
                 patterns = part['patterns']
-                pattern = patterns[(i // part['steps'] + section_index) % len(patterns)]
+                pattern_number = phrase_bar if song_clock and part['steps'] == 16 else i // part['steps']
+                pattern = patterns[(pattern_number + (0 if song_clock else section_index)) % len(patterns)]
                 for onset, pitch, length, velocity in pattern:
                     if slot != onset:
                         continue
-                    if role in ('lead','bells'):
+                    if role in ('lead','bells') or part.get('pitch_base') == 'tonic':
                         pitch += score['tonic'] + part['register']
                     elif role in ('bass','arp'):
                         pitch += root + part['register']
-                    note(time, min(step*length, end-time), role_index, pitch, velocity, part.get('pan',0))
+                    velocity = max(1, round(velocity * section.get('velocity_scale', {}).get(role, 1)))
+                    note(time, min(step*length, limit-time), role_index, pitch, velocity, part.get('pan',0))
             i += 1
     assert abs(previous_end * RATE - frames) <= 1
     events.sort()

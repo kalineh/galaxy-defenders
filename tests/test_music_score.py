@@ -74,6 +74,26 @@ class MusicScoreTests(unittest.TestCase):
         self.assertEqual(len(palettes), 19)
         self.assertEqual(len(harmonies), 19)
 
+    def test_title_grid_and_harmony(self):
+        title = self.scores[8]
+        self.assertEqual(title['reference_duration'], "Konami's_Moon_Base")
+        events, frames = compiler.compile_events(title)
+        step_frames = compiler.RATE * 60 / title['bpm'] / 4
+        for frame, gate, role, pitch, _, _ in events:
+            step = round(frame / step_frames)
+            self.assertLessEqual(abs(frame - step * step_frames), .501)
+            self.assertLessEqual(frame + gate, frames + 1)
+            if role >= 5:
+                continue
+            self.assertIn(pitch % 12, (0, 2, 4, 5, 7, 9, 11))
+            phrase = title['bar_order'][step // 16]
+            chord = {(title['roots'][phrase] + x) % 12 for x in title['chords'][phrase]}
+            # The lead may use passing notes on weak eighths; accompaniment and
+            # quarter-beat melody attacks must support the sounding chord.
+            if role != 1 or step % 4 == 0:
+                self.assertIn(pitch % 12, chord, (frame, role, pitch))
+        self.assertEqual(title['roots'][title['bar_order'][-1]] % 12, 0)
+
 
 if __name__ == '__main__':
     unittest.main()
