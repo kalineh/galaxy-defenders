@@ -369,3 +369,8 @@ to confirm any of the explicit mismatches listed here.
   Secret camera jumps retain scenery world positions. Full campaign suite,
   count/respawn checks, native build and software-render checks pass.
   Native deterministic RNG algorithm still differs from .NET Random.
+- State changes now use the legacy half-second fade: freeze the source, switch
+  at full black after 15 frames, then update/fade in the destination. Covers new
+  game, Continue, Retry, shop exits, stage selection, title return and ending.
+  Menu navigation remains immediate. Full suite, fade/input timing checks,
+  native and software-render builds pass.

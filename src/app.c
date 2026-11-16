@@ -641,7 +641,6 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
-    if (game->complete && game->menu.page == MENU_NONE) text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
 }
 
 static bool title_menu(const Game *game) {
@@ -1206,19 +1205,19 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_weapon_shots, game->weapon_shots, sizeof(old_weapon_shots));
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
-        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP) && (IsWindowFocused() || frames)) {
+        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
                 game_tick(game);
-                if (game->menu.page == MENU_SHOP) {
+                if (game->menu.page == MENU_SHOP && game->transition_frames <= 15) {
                     int shots[WEAPON_COUNT];
                     memcpy(shots, shop_preview.weapon_shots, sizeof(shots));
                     game_shop_preview_update(&shop_preview, game);
                     if (assets.audio) for (int i = 0; i < WEAPON_COUNT; ++i)
                         if (shop_preview.weapon_shots[i] > shots[i] && IsSoundValid(assets.weapon_fire[i]))
                             PlaySound(assets.weapon_fire[i]);
-                } else shop_preview.tick = 0;
+                } else if (game->menu.page != MENU_SHOP) shop_preview.tick = 0;
                 accumulator -= 1.0 / GAME_HZ;
             }
         } else accumulator = 0;
@@ -1252,6 +1251,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         draw_game(game, &assets);
         draw_menu(game, &assets, menu_frame++);
+        if (game->transition_frames > 0) {
+            float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
+            DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
+        }
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
         if (console->perf) draw_frame_graph(&frame_graph, assets.console_font);
 #ifndef GALAXY_MEMORY

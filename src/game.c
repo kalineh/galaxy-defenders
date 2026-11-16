@@ -596,6 +596,7 @@ void game_preview_tick(Game *preview) {
 }
 
 void game_tick(Game *game) {
+    if (game_transition_update(game)) return;
     if (game->menu.page == MENU_SHOP) { game_shop_update(game); return; }
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
@@ -647,13 +648,7 @@ void game_tick(Game *game) {
     if (game->complete && game->secret_return.active) game->secret_finish_frames = 1;
     else if (game->complete && !game->over) {
         if (game->stage.index == 11 && !game->cleared_game) {
-            game_record_stage(game);
-            for (int i = 0; i < GAME_PLAYERS; ++i)
-                if (game->players[i].joined) game->players[i].money = 999999999;
-            game_menu_open(game, MENU_FINISH);
-            game->cleared_game = true;
-            game->menu.next_stage = 0;
-            game_checkpoint(game, true);
+            game_transition(game, TRANSITION_FINISH, 0);
         } else game_menu_open(game, MENU_CLEAR);
     }
 }

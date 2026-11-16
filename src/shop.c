@@ -147,22 +147,8 @@ void game_shop_update(Game *game) {
         else if (menu->shop_fly_frames[i] < 34) ++menu->shop_fly_frames[i];
     }
     for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined && menu->shop_fly_frames[i] < 34) all_ready = false;
-    if (all_ready) {
-        if (game->cleared_game) { game_menu_open(game, MENU_STAGE_SELECT); return; }
-        int next = menu->next_stage;
-        game_stage(game, next, 0);
-        for (int i = 0; i < GAME_PLAYERS; ++i) {
-            Player *p = &game->players[i];
-            if (!p->joined) continue;
-            p->x = i ? 560 : 400; p->y = 880;
-            p->vx = p->vy = 0;
-            p->energy = game_generators[p->generator].capacity;
-            p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
-            memset(p->weapons, 0, sizeof(p->weapons));
-            p->weapon_cooldown[0] = p->weapon_cooldown[1] = 0;
-        }
-        game_checkpoint(game, false);
-    }
+    if (all_ready && game->transition_frames == 0)
+        game_transition(game, game->cleared_game ? TRANSITION_STAGE_SELECT : TRANSITION_STAGE, menu->next_stage);
 }
 
 void game_shop_input(Game *game, MenuAction action, int slot) {

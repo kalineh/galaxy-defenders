@@ -155,7 +155,7 @@ static void shop_progression(void) {
     game_menu_input(&game, MENU_LEFT, 0);
     CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 2 && game.players[0].money == 10000);
     game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
+    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 10000 && game.players[0].weapon_level == 2);
     CHECK(!strcmp(game_music(&game), "Alkali Earth"));
@@ -190,7 +190,7 @@ static void stage2_runtime(void) {
     for (int i = 0; i < 82; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
     game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
+    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && game.stage.index == 2);
     reset();
     boss = game_spawn_enemy(&game, ENEMY_BOSS2, 480, 200);
@@ -513,6 +513,10 @@ static void menu_flow(void) {
     CHECK(console_execute(&console, &game, "menu.input confirm"));
     CHECK(game.menu.page == MENU_PILOT && game.menu.ready[0]);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
+    CHECK(game.transition_frames == 30 && game.menu.page == MENU_PILOT);
+    for (int i = 0; i < 14; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_PILOT);
+    game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && !game.paused && game.players[1].joined);
     CHECK(game.difficulty == 1 && game.players[0].pilot == 2 && game.players[0].chassis == 2);
     CHECK(game.players[0].money == 1500 && game.players[1].money == 1500);
@@ -530,6 +534,7 @@ static void menu_flow(void) {
     game_tick(&game);
     CHECK(game.tick == 0);
     CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm"));
+    for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(!game.paused && game.menu.page == MENU_NONE && game_enemy_count(&game) == 0);
     CHECK(game.players[1].joined && game.players[0].chassis == 2 && game.menu.options[0] == 0);
     CHECK(console_chain(&console, &game, "menu.open main;menu.input down;menu.input down;menu.input down;menu.input confirm;menu.input back"));
@@ -648,6 +653,8 @@ static void stage_clear_exit(void) {
     for (int fly = 0; fly < 33; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP);
     game_tick(&game);
+    CHECK(game.menu.page == MENU_SHOP && game.transition_frames == 30);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.stage.index == 1 && game.players[0].money == 8000);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
 }
@@ -663,6 +670,7 @@ static void starting_primary_patterns(void) {
         game_menu_input(&game, MENU_CONFIRM, 0);
         for (int i = 0; i < pilot; ++i) game_menu_input(&game, MENU_RIGHT, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
+        for (int i = 0; i < 15; ++i) game_tick(&game);
         game.waves = false;
         game.players[0].input.fire = true;
         game_tick(&game);
@@ -1238,7 +1246,7 @@ static void campaign_stages(void) {
             game_menu_input(&game, MENU_CONFIRM, 0);
             for (int i = 0; i < 82; ++i) game_tick(&game);
             game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
+    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
             CHECK(game.stage.index == stage + 1 && game.menu.page == MENU_NONE);
         }
     }
@@ -1317,6 +1325,23 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 30);
     game.difficulty = 2;
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
+}
+
+static void state_fades(void) {
+    reset();
+    game_menu_open(&game, MENU_MAIN);
+    game_transition(&game, TRANSITION_STAGE, 2);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_MAIN);
+    for (int i = 0; i < 14; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_MAIN && game.tick == 0);
+    game_tick(&game);
+    CHECK(game.stage.index == 2 && game.menu.page == MENU_NONE && game.tick == 0);
+    game_tick(&game);
+    CHECK(game.tick == 1 && game.transition_frames == 14);
+    game_transition(&game, TRANSITION_FINISH, 0);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_FINISH && game.cleared_game && game.players[0].money == 999999999);
 }
 
 static void scenery_sequence(void) {
@@ -1419,7 +1444,7 @@ static void saved_continue(void) {
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
+    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 5 && game.menu.page == MENU_NONE);
     game_shop_open(&game); /* Quit mid-stage must not skip it. */
     CHECK(game.menu.next_stage == 5);
@@ -1427,10 +1452,11 @@ static void saved_continue(void) {
     game_checkpoint(&game, true);
     CHECK(game_continue(&game, 1));
     game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
+    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
     for (int i = 0; i < 8; ++i) game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.stage.index == 8 && game.menu.page == MENU_NONE && game.cleared_game);
     FILE *file = fopen(path, "wb");
     CHECK(file != NULL);
@@ -1447,13 +1473,13 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
+    state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

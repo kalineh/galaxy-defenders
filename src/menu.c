@@ -118,11 +118,60 @@ static void start_game(Game *game) {
     game_checkpoint(game, false);
 }
 
+void game_transition(Game *game, Transition transition, int stage) {
+    if (game->transition_frames > 15) return;
+    game->transition = transition;
+    game->transition_stage = stage;
+    game->transition_frames = 30;
+}
+
+bool game_transition_update(Game *game) {
+    if (game->transition_frames <= 0) return false;
+    if (--game->transition_frames > 15) return true;
+    if (game->transition_frames != 15) return false;
+    Transition transition = game->transition;
+    int stage = game->transition_stage;
+    switch (transition) {
+        case TRANSITION_NEW_GAME: start_game(game); break;
+        case TRANSITION_CONTINUE: game_continue(game, game->menu.players); break;
+        case TRANSITION_RETRY: game_retry(game); break;
+        case TRANSITION_SHOP: game_shop_open(game); break;
+        case TRANSITION_STAGE_SELECT: game_menu_open(game, MENU_STAGE_SELECT); break;
+        case TRANSITION_MAIN: game_menu_open(game, MENU_MAIN); break;
+        case TRANSITION_FINISH:
+            game_record_stage(game);
+            for (int i = 0; i < GAME_PLAYERS; ++i)
+                if (game->players[i].joined) game->players[i].money = 999999999;
+            game_menu_open(game, MENU_FINISH);
+            game->cleared_game = true;
+            game->menu.next_stage = 0;
+            game_checkpoint(game, true);
+            break;
+        case TRANSITION_STAGE:
+            game_stage(game, stage, 0);
+            for (int i = 0; i < GAME_PLAYERS; ++i) {
+                Player *p = &game->players[i];
+                if (!p->joined) continue;
+                p->x = i ? 560 : 400; p->y = 880; p->vx = p->vy = 0;
+                p->energy = game_generators[p->generator].capacity;
+                p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
+                memset(p->weapons, 0, sizeof(p->weapons));
+                p->weapon_cooldown[0] = p->weapon_cooldown[1] = 0;
+            }
+            game_checkpoint(game, false);
+            break;
+        default: break;
+    }
+    game->transition = TRANSITION_NONE;
+    game->transition_frames = 15;
+    return true;
+}
+
 void game_menu_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
-    if (slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
+    if (game->transition_frames > 15 || slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
     if (menu->page == MENU_FINISH) {
-        if (action == MENU_BACK && menu->frame > 3200) game_menu_open(game, MENU_MAIN);
+        if (action == MENU_BACK && menu->frame > 3200) game_transition(game, TRANSITION_MAIN, 0);
         return;
     }
     if (menu->page == MENU_SHOP) { game_shop_input(game, action, slot); return; }
@@ -130,11 +179,9 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         if (slot != 0) return;
         if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
         if (action == MENU_DOWN && menu->cursor < 12) ++menu->cursor;
-        if (action == MENU_BACK || (action == MENU_CONFIRM && menu->cursor == 12)) game_shop_open(game);
+        if (action == MENU_BACK || (action == MENU_CONFIRM && menu->cursor == 12)) game_transition(game, TRANSITION_SHOP, 0);
         else if (action == MENU_CONFIRM) {
-            int stage = menu->cursor;
-            game_stage(game, stage, 0);
-            game_checkpoint(game, false);
+            game_transition(game, TRANSITION_STAGE, menu->cursor);
         }
         return;
     }
@@ -157,7 +204,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             if (pilot >= 0 && pilot < 3) menu->pilot[slot] = pilot;
         } else if (action == MENU_CONFIRM) {
             menu->ready[slot] = true;
-            if (menu->ready[0] && (menu->players == 1 || menu->ready[1])) start_game(game);
+            if (menu->ready[0] && (menu->players == 1 || menu->ready[1])) game_transition(game, TRANSITION_NEW_GAME, 0);
         }
         return;
     }
@@ -190,7 +237,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             else game_menu_open(game, row == 2 ? MENU_OPTIONS : MENU_QUIT);
             break;
         case MENU_NEW_GAME:
-            if (row == 0) game_continue(game, menu->players);
+            if (row == 0) game_transition(game, TRANSITION_CONTINUE, 0);
             else game_menu_open(game, row == 1 ? MENU_DIFFICULTY : MENU_MAIN);
             break;
         case MENU_DIFFICULTY:
@@ -206,13 +253,13 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         case MENU_QUIT:
             if (row == 0) game_menu_open(game, menu->parent);
             else if (menu->parent == MENU_MAIN) menu->quit = true;
-            else game_shop_open(game);
+            else game_transition(game, TRANSITION_SHOP, 0);
             break;
         case MENU_PAUSE:
             game_menu_open(game, row == 0 ? MENU_NONE : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);
             break;
-        case MENU_RETRY: if (row == 0) game_menu_open(game, MENU_PAUSE); else game_retry(game); break;
-        case MENU_OVER: if (row == 0) game_retry(game); else game_menu_open(game, MENU_MAIN); break;
+        case MENU_RETRY: if (row == 0) game_menu_open(game, MENU_PAUSE); else game_transition(game, TRANSITION_RETRY, 0); break;
+        case MENU_OVER: game_transition(game, row == 0 ? TRANSITION_RETRY : TRANSITION_MAIN, 0); break;
         default: break;
     }
 }

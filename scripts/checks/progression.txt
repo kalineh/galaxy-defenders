@@ -14,7 +14,7 @@ assert menu eq 11
 assert p1.score eq 0
 assert p1.money gt 0
 menu.input ready
-game.step 34
+game.step 49
 assert stage eq 2
 assert tick eq 0
 assert complete eq 0
@@ -30,6 +30,6 @@ assert menu eq 11
 assert stage eq 2
 # The second shop continues into the authored third stage.
 menu.input ready
-game.step 34
+game.step 49
 assert menu eq 0
 assert stage eq 3

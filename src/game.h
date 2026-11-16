@@ -30,6 +30,8 @@ extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
     MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT } MenuPage;
+typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSITION_RETRY,
+    TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent;
@@ -165,6 +167,8 @@ typedef struct {
     int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], overheats;
     bool waves, paused, over, complete, boss_spawned, seeking;
     int difficulty, over_frames, secret_finish_frames, secret_fade_frames;
+    Transition transition;
+    int transition_frames, transition_stage;
     float scroll_speed;
     StageState stage;
     GameMenu menu;
@@ -224,6 +228,8 @@ void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
 void game_shop_update(Game *game);
+void game_transition(Game *game, Transition transition, int stage);
+bool game_transition_update(Game *game);
 void game_shop_preview_update(Game *preview, const Game *game);
 void game_preview_tick(Game *preview);
 void game_shop_input(Game *game, MenuAction action, int slot);
