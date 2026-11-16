@@ -52,6 +52,17 @@ int main(void) {
     CHECK(block[0] == 0 && block[1] == 0 && block[2] == 0 && block[3] == 0);
     CHECK(sought.position == 1);
     CHECK(synth_seek(&sought, 0) && sought.position == 0);
+    /* Selecting/seeking must retain each song's own patch bank and delay. */
+    for (int track = 1; track <= SYNTH_TRACK_COUNT; ++track) {
+        CHECK(synth_select(&sequential, track));
+        for (int i = 0; i < 8; ++i) synth_render(&sequential, block, 1024);
+        synth_render(&sequential, reference[0], 1024);
+        CHECK(synth_select(&sought, track));
+        CHECK(synth_seek(&sought, 8192.01 / synth_track_frames(track)));
+        CHECK(sought.track == track && sought.position == 8192);
+        synth_render(&sought, block, 1024);
+        CHECK(!memcmp(block, reference[0], sizeof(block)));
+    }
     printf("Synth checks: %s; peak %.3f, RMS %.3f; deterministic seek/chunks, loop and voice capacity\n",
         failures ? "FAIL" : "PASS", peak, sqrt(energy / (length * 2)));
     return failures ? 1 : 0;

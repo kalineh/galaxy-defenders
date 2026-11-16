@@ -6,7 +6,7 @@
 
 #define SYNTH_RATE 48000
 #define SYNTH_VOICES 24
-#define SYNTH_DELAY 24000
+#define SYNTH_DELAY 32000
 #define SYNTH_TRACK_COUNT 19
 
 typedef struct {

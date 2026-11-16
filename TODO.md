@@ -1,13 +1,17 @@
-# Active work
+# Completed music rewrite
 
-Focus: tracks 3 and 7 sounded alike at the opening. Root cause: shared hardcoded
-triad/eighth-note pulse arpeggio, identical opening orchestration, and derivative
-lead motifs across the album. Added explicit per-track arpeggio phrases/patches.
-Track 3: syncopated FM fanfare with wide leaps; track 7: low sparse bell warning.
-Rewrote their lead motifs and opening orchestration. Other tracks deliberately
-unchanged in this focused pass; broad template reuse remains future musical work.
-Verified: native build and all renders pass (no clipping/voice stealing), score
-regeneration check passes, durations/section cuts preserved. Only scores 3/7
-changed; the other 17 generated event streams are byte-identical. Opening previews
-are in artifacts/native-port/skyward-opening.wav and predator-opening.wav.
-Human listening remains the musical-quality check.
+All 19 scores now have authored lead/answer phrases, bass/counter parts, chord
+cycles, grooves, opening orchestration and per-song instrument banks/mix.
+Removed shared compiler riffs, stock backbeat/bell/fill and fixed delay defaults.
+
+Timing protected by music/timing/score_constraints.json: existing BPM, source
+mapping, every section cut and later-section layer changes are unchanged. Source
+recordings/stage definitions and the switch/loop evidence are hash-checked.
+
+Verified: full ./test.sh; added all-track patch-bank seek check; native build;
+windowless software-render check; all 19 full renders finite with headroom and
+zero voice stealing, durations exactly match reference resampling to 48 kHz.
+No copied/transposed patterns, shared four-note lead/counter hooks, duplicate
+rotated chord cycles, drum grooves or complete instrument banks in score checks.
+Human listening remains necessary for musical quality and subjective distinction.
+Use debug.music to audition the rebuilt album. Legacy music is never played.

@@ -19,8 +19,9 @@ not initialize audio. Seeking is immediate through pre-rendered PCM streams.
 
 Edit `album.json`, then run `python tools/compile_music.py`. It contains each
 track's title, source mapping, tempo, motifs, chord cycle and section arrangement.
-The 19 arrangements are first drafts sharing a synth palette and compositional
-vocabulary; they are not transcriptions or listening-approved final compositions.
+All 19 arrangements have individually authored melodic sentences, bass/counter
+patterns, chord cycles, drum grooves, openings and instrument banks. They remain
+drafts for listening review, not transcriptions or approved final compositions.
 Candidate section cuts come from the analysis; original recording lengths are
 preserved to the nearest 48 kHz sample. Stage data and music-switch events are
 unchanged. See ../MUSIC_TIMING.md for exact anchors versus tentative musical cues.
@@ -28,9 +29,10 @@ unchanged. See ../MUSIC_TIMING.md for exact anchors versus tentative musical cue
 Native/render builds compile the C renderer and cache WAVs in build/music, then
 copy them beside the executable under assets/synth. No generated WAV is committed.
 Initial builds take longer to render the album; subsequent builds reuse it.
-The same 24-voice, nine-patch C synth produces all tracks. Bass/kick gain and mix
-drive are stronger than the first prototype. FM, pulse, bell/pad voices, drums,
-filtering, vibrato and stereo delay remain editable in src/synth.c.
+The 24-voice C synth has nine part slots per song, each with its own patch.
+FM, pulse, saw, triangle, bell/pad voices and synthesized drums are available.
+Instrument kinds/envelopes/gains/filtering/vibrato and tempo-linked delay mix
+are authored in album.json; oscillator implementation remains in src/synth.c.
 
 `./scripts/render_music.sh` renders track 1 standalone. The built renderer also
 accepts `OUTPUT.wav TRACK_ID`. Audio renders are checked for finite samples,
@@ -38,17 +40,52 @@ headroom and voice stealing. ./test.sh checks sample-identical seek/chunk output
 loop endpoints, console parsing and game-state isolation. Musical quality and
 live device playback still require human listening; automated checks are silent.
 
-## Focused identity pass: tracks 3 and 7
+## Album-wide identity rewrite
 
-The first album compiler imposed a repeating eighth-note root/third/fifth pulse
-arpeggio on every track. Track 3 began F-A-C and track 7 F#-A-C#, at 160/154 BPM,
-with the same pulse/pad/bell opening. That template, plus related lead motifs,
-made different tracks sound like transpositions of one piece.
+Removed the shared root/third/fifth pulse, fixed bass ostinato, stock lead pair,
+repeated bell accents, universal backbeat/fill and fixed 150-BPM delay. The compiler
+now schedules explicit parts; it has no fallback that silently inserts a riff.
+Harmony continues across section cuts instead of restarting every intro.
+Shared synthesis primitives/drum sounds are intentional; complete instrument banks,
+grooves and phrases differ. Automated comparison detects transposed copies and
+shared four-note pitch/rhythm hooks; it does not prove subjective distinctiveness.
 
-Track 3 now uses an explicit syncopated FM phrase with fifth/octave leaps and a
-fuller rhythmic opening. Track 7 uses low bell calls, semitone tension, longer
-rests and a stripped opening. Both have newly written lead motifs. Their section
-boundaries and durations are unchanged. The optional arp_pattern/arp_patch/
-arp_register fields let composition specify notes, rhythm and sound directly.
-The other seventeen tracks are unchanged in this pass and still use the shared
-arpeggio fallback; further identity work is not claimed complete.
+### Protected timing
+
+music/timing/score_constraints.json freezes the pre-rewrite BPM choices, track
+mappings, every section boundary and later-section layer shifts. Openings have
+new orchestration. The compiler rejects drift in these values, original recording
+hashes, stage source hashes or the timing evidence containing switch/loop anchors.
+WAV lengths retain the nearest 48 kHz sample. Original candidate musical boundaries
+remain candidates; this rewrite does not claim to have confirmed them by listening.
+
+### Listening guide
+
+| Track | Identity | Lead / counter sound |
+| --- | --- | --- |
+| 01 Departure | Open fifths, clipped brass calls and offbeat engine bass | brass / square |
+| 02 Signal Grid | Dry circuit bleeps, chromatic cell and broken electro beat | clav / organ |
+| 03 Skyward Assault | Skyward brass fanfare and syncopated octave launches | brass / brass |
+| 04 Night Watch | Breathy reed nocturne, long rests and half-time sub bass | reed / hollow |
+| 05 Alkaline Skies | Bright mallet jazz extensions over a loping bass line | hollow / clav |
+| 06 Dreadnought | Distorted saw siege riff, tritone stabs and double-kick pressure | saw / clav |
+| 07 Predator Orbit | Low inharmonic bell warning, semitone tension and empty space | reed / glass |
+| 08 Homeward | Round organ hook with delayed answer and rolling hand-drum pulse | organ / reed |
+| 09 Control Circuit | Warm square anthem, sustained console chords and uncluttered backbeat | square / piano |
+| 10 Uprising | Glass cascade against a displaced snare and wide stereo strings | glass / hollow |
+| 11 Moon Base | Clocked pluck in a 3+3+4+3+3 accent cycle | clav / square |
+| 12 Luminous Wake | Airy string melody, suspended voicings and shimmering high replies | strings / glass |
+| 13 Clockwork Orbit | Staccato metal plucks, pickup notes and restless sixteenth hats | clav / hollow |
+| 14 Sirius Drive | Hollow marimba discovery motif over soft triangle bass | hollow / piano |
+| 15 Afterimage | Slow detuned string descent and distant bell echoes | strings / reed |
+| 16 Hidden Passage | Resilient reed call with a marching offbeat response | reed / organ |
+| 17 Dream Fracture | Fast pulse chase, ascending fifths and clipped clavinet response | square / clav |
+| 18 Another Flight | Quiet electric-piano farewell, long release and no driving ostinato | piano / hollow |
+| 19 Overdrive | Saw-and-square motor riff, broken kick grid and chromatic turnaround | saw / square |
+
+Instrument parameter arrays are: kind, attack seconds, decay seconds, sustain,
+release seconds, gain, modulator ratio, FM index, low-pass coefficient, vibrato.
+Kinds 0/1 are FM, 2 pulse, 3 bell, 4 detuned pad, 5 kick, 6 snare, 7 hat, 8 tom,
+9 band-limited saw, 10 triangle. Part events are [sixteenth onset, pitch/interval,
+gate in sixteenths, velocity]. Lead/bell intervals use the song tonic; bass/counter
+intervals follow the current chord root. Pattern lengths and registers are explicit.

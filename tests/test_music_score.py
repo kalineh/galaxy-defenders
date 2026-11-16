@@ -1,0 +1,79 @@
+"""Guard timing and catch a return to transposed copies of one album template."""
+import copy
+import importlib.util
+import itertools
+import json
+from pathlib import Path
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location('compile_music', ROOT / 'tools/compile_music.py')
+compiler = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(compiler)
+
+
+class MusicScoreTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.scores = json.loads((ROOT / 'music/album.json').read_text())
+
+    def test_protected_timing(self):
+        compiler.validate_timing(self.scores)
+        for edit in ('bpm', 'boundary', 'source', 'layers'):
+            changed = copy.deepcopy(self.scores)
+            if edit == 'bpm':
+                changed[0]['bpm'] += 1
+            elif edit == 'boundary':
+                changed[0]['sections'][0]['end'] += .1
+            elif edit == 'layers':
+                changed[0]['sections'][1]['bass'] = not changed[0]['sections'][1]['bass']
+            else:
+                changed[0]['reference_duration'] = 'Sirius'
+            with self.assertRaises(ValueError):
+                compiler.validate_timing(changed)
+
+    def test_no_transposed_pattern_copies(self):
+        for role in ('lead', 'bass', 'arp'):
+            signatures = []
+            for score in self.scores:
+                part = score['parts'][role]
+                notes = part['patterns'][0]
+                origin = notes[0][1]
+                signatures.append((part['steps'], tuple((t, p-origin, gate) for t, p, gate, _ in notes)))
+            self.assertEqual(len(set(signatures)), 19, role)
+
+    def test_no_shared_four_note_hook(self):
+        # Relative pitch/time catches copying a riff into a different key or tempo.
+        for role in ('lead', 'arp'):
+            hooks = []
+            for score in self.scores:
+                phrases = set()
+                for notes in score['parts'][role]['patterns']:
+                    notes = sorted(notes)
+                    intervals = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(notes, notes[1:])]
+                    phrases.update(tuple(intervals[i:i+3]) for i in range(len(intervals)-2))
+                hooks.append(phrases)
+            for i, j in itertools.combinations(range(19), 2):
+                self.assertFalse(hooks[i] & hooks[j], f'{role}: tracks {i+1}/{j+1}')
+
+    def test_distinct_grooves_and_palettes(self):
+        grooves, palettes, harmonies = set(), set(), set()
+        for score in self.scores:
+            grooves.add(json.dumps([score['parts'][r] for r in ('kick', 'snare', 'hat')], sort_keys=True))
+            palettes.add(json.dumps(score['instruments'], sort_keys=True))
+            roots, chords = score['roots'], score['chords']
+            rotations = [tuple(((roots[(j+k) % len(roots)] - roots[j]) % 12,
+                                tuple(chords[(j+k) % len(roots)]))
+                               for k in range(len(roots))) for j in range(len(roots))]
+            harmonies.add(min(rotations))
+            for part in score['parts'].values():
+                for pattern in part.get('patterns', []):
+                    for onset, _, gate, velocity in pattern:
+                        self.assertTrue(0 <= onset < part['steps'] and gate > 0 and 0 < velocity < 128)
+        self.assertEqual(len(grooves), 19)
+        self.assertEqual(len(palettes), 19)
+        self.assertEqual(len(harmonies), 19)
+
+
+if __name__ == '__main__':
+    unittest.main()
