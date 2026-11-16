@@ -1,9 +1,11 @@
 #include "game.h"
 #include <string.h>
+#include <math.h>
 
 bool game_shop_chassis_available(const Game *game, int slot, int chassis) {
-    (void)game;
-    return slot >= 0 && slot < GAME_PLAYERS && chassis >= 0 && chassis < GAME_CHASSIS;
+    int items[WEAPON_COUNT+1], count=game_shop_stock(game,slot,0,items);
+    for(int i=0;i<count;++i)if(items[i]==chassis)return true;
+    return false;
 }
 
 int game_shop_equipped(const Player *p, int category) {
@@ -34,6 +36,53 @@ static int item_price(int category, int item, int level) {
     return equipment_weapon_price(item, level);
 }
 
+static float stock_random(uint32_t *state) {
+    *state=*state*1664525u+1013904223u;
+    return (*state>>8)/16777216.0f*2-1;
+}
+
+int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_COUNT+1]) {
+    if(slot<0 || slot>=GAME_PLAYERS || category<0 || category>5)return 0;
+    static const int weapons[3][6]={
+        {WEAPON_FRONT_LASER,WEAPON_SPREAD_LASER,WEAPON_PLASMA,WEAPON_FLAME,WEAPON_LIGHTNING,WEAPON_BEAM},
+        {WEAPON_MISSILE,WEAPON_DRUNK_MISSILE,WEAPON_SEEK_BOMB,WEAPON_BOOMERANG,WEAPON_VULCAN,WEAPON_BOMBLET},
+        {WEAPON_MINI_SHOT,WEAPON_CHARGE_SHOT,WEAPON_BLADE,WEAPON_MISSILE_VOLLEY,WEAPON_MISSILE_LAUNCHER,WEAPON_LASER_SHOT}
+    };
+    int total=category==0?GAME_CHASSIS:category==1?GENERATOR_COUNT:category==2?SHIELD_COUNT:6;
+    bool chosen[WEAPON_COUNT]={0};
+    int stage=game->menu.next_stage;
+    uint32_t seed=game->seed+(stage+1)*2654435761u+(category<3?category+4:category-2);
+    float ratio=category<3?stage/12.0f+0.20f:0.5f;
+    int desired=(int)nearbyintf(total*(0.4f+(category<3?0.4f:0.5f)*stock_random(&seed)));
+    if(desired<2)desired=2; if(desired>total)desired=total;
+    int center=(int)nearbyintf(total*ratio), selected=0;
+    for(int attempt=0;attempt<30 && selected<desired;++attempt) {
+        int index=center+(int)(stock_random(&seed)*total*ratio);
+        if(index<0)index=0; if(index>=total)index=total-1;
+        if(!chosen[index]) {chosen[index]=true;++selected;}
+    }
+    int count=0, owned=game_shop_equipped(&game->players[slot],category);
+    if(!game->cleared_game && owned>=0)items[count++]=owned;
+    if(category>=4)items[count++]=-1;
+    for(int i=0;i<total;++i) {
+        int id=category<3?i:weapons[category-3][i];
+        bool available=game->cleared_game?(category>=3 || i>=(category==1?6:3)):chosen[i];
+        if(available && (game->cleared_game || id!=owned))items[count++]=id;
+    }
+    for(int i=1;i<count;++i) {
+        int id=items[i], at=i;
+        while(at>0 && item_price(category,items[at-1],0)>item_price(category,id,0)) {items[at]=items[at-1];--at;}
+        items[at]=id;
+    }
+    return count;
+}
+
+static bool in_stock(const Game *game,int slot,int category,int item) {
+    int items[WEAPON_COUNT+1], count=game_shop_stock(game,slot,category,items);
+    for(int i=0;i<count;++i)if(items[i]==item)return true;
+    return false;
+}
+
 int game_shop_cost(const Game *game, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || !game->players[slot].joined) return 0;
     const Player *p = &game->players[slot];
@@ -49,7 +98,7 @@ bool game_shop_buy(Game *game, int slot) {
         !game->menu.shop_items[slot] || game->menu.ready[slot]) return false;
     Player *p = &game->players[slot];
     int category = game->menu.shop_category[slot], item = game->menu.shop_item[slot], level = game->menu.shop_level[slot];
-    if (!game_shop_item_available(category, item)) return false;
+    if (!game_shop_item_available(category, item) || !in_stock(game,slot,category,item)) return false;
     if (category >= 3 && item >= 0 && (level < 0 || level >= game_weapons[item].level_count)) return false;
     int cost = game_shop_cost(game, slot);
     if (cost > p->money) return false;
@@ -132,11 +181,11 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
         }
     } else {
         if (action == MENU_UP || action == MENU_DOWN) {
-            int step = action == MENU_UP ? -1 : 1, candidate = *item + step;
-            int maximum = *category == 0 ? GAME_CHASSIS : *category == 1 ? GENERATOR_COUNT :
-                *category == 2 ? SHIELD_COUNT : WEAPON_COUNT;
-            while (candidate >= -1 && candidate < maximum && !game_shop_item_available(*category, candidate)) candidate += step;
-            if (candidate >= -1 && candidate < maximum) {
+            int stock[WEAPON_COUNT+1],count=game_shop_stock(game,slot,*category,stock),selected=-1;
+            for(int i=0;i<count;++i)if(stock[i]==*item)selected=i;
+            selected+=action==MENU_UP?-1:1;
+            if (selected>=0 && selected<count) {
+                int candidate=stock[selected];
                 *item = candidate;
                 const Player *p = &game->players[slot];
                 menu->shop_level[slot] = candidate == game_shop_equipped(p, *category) ?

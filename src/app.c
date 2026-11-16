@@ -649,11 +649,9 @@ static void draw_shop(const Game *game, const Assets *assets, int frame) {
             sprite(assets->shop[7 + c], menu_x, menu_y + c * 96, 96, 0, ready ? dim : WHITE);
         if (!ready) sprite(assets->shop[4], menu_x, menu_y + category * 96, 96, 0, WHITE);
         if (items && !ready) {
-            int available[WEAPON_COUNT + 1], count = 0, selected = 0;
-            for (int c = -1; c < WEAPON_COUNT; ++c) if (game_shop_item_available(category, c)) {
-                if (c == item) selected = count;
-                available[count++] = c;
-            }
+            int available[WEAPON_COUNT + 1], selected = 0;
+            int count=game_shop_stock(game,slot,category,available);
+            for(int i=0;i<count;++i)if(available[i]==item)selected=i;
             int first = selected > 5 ? selected - 5 : 0;
             int shown = count - first < 7 ? count - first : 7;
             float item_x = menu_x + (slot ? -134 : 134);

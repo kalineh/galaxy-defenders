@@ -11,10 +11,11 @@ Active request: fix every Not OK item in CONTENT_AUDIT.md. Work through shared
 gameplay/collision defects, projectile visuals/effects, boss behavior/effects,
 then shop/progression/UI/scenery and standalone archived content. Verify focused
 pieces and commit/push each to native. Do not stop after the first batch.
-Current batch: imported particle definitions and weapon impact/trail/charge effects.
-Completed/pushed: 148d7fc death/contact, 9294846 collisions, 9188248 weapon
-motion/targeting/sprites. Remaining: enemy/boss effects and behavior, movement/
-powerups, shop, transitions, scenery, audio loops, save records, archived content.
+Current batch: shop stock verified; next restore save records and transitions.
+Completed/pushed: death/contact, collisions, weapon motion/targeting/sprites,
+authored particles, enemy/boss behavior/effects, player/pickups and scenery.
+Remaining: shop preview/departure, transitions, audio loops, save records,
+archived content and final audit reconciliation.
 Do not run the legacy game to establish differences explicit in source.
 
 ## Implemented

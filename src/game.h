@@ -221,6 +221,7 @@ void game_shop_input(Game *game, MenuAction action, int slot);
 int game_shop_cost(const Game *game, int slot);
 bool game_shop_buy(Game *game, int slot);
 bool game_shop_chassis_available(const Game *game, int slot, int chassis);
+int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_COUNT + 1]);
 int game_shop_equipped(const Player *player, int category);
 bool game_shop_item_available(int category, int item);
 void game_update_weapons(Game *game, int slot);

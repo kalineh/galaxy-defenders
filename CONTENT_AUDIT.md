@@ -327,3 +327,8 @@ to confirm any of the explicit mismatches listed here.
 - Scenery presentation repairs: TempestNebula/BonusStage1 four-corner color
   cycles and smoothstep interpolation; stable sorting of decorations by actual
   depth rather than sign buckets. Software-render check and native build pass.
+- Shop inventory repairs: release-style seeded per-stage stock, equipped item
+  inclusion, original category ordering and price sorting; purchases and UI use
+  the same list. Clear-game component ranges and all weapons restored. The audit
+  previously conflated debug map stock with release randomized stock. Native RNG
+  remains different from .NET Random. Full suite, native and render checks pass.
