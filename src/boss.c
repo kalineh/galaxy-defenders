@@ -44,13 +44,13 @@ void boss_init(Game *g,Enemy *e) {
         case ENEMY_BOSS4: health=100; e->box_width=260; e->box_height=215; e->collision_y=-12.5f; break;
         case ENEMY_BOSS5: health=120; e->box_width=e->box_height=170; break;
         case ENEMY_BOSS6: health=100; e->radius=110; e->cooldown=150; break;
-        case ENEMY_BOSS7: health=140; e->box_width=409; e->box_height=103; e->collision_y=-12.5f; break;
+        case ENEMY_BOSS7: health=140; e->box_width=409; e->box_height=103; e->collision_x=-0.5f; e->collision_y=-12.5f; break;
         case ENEMY_BOSS8: health=180; e->box_width=360; e->box_height=170; e->collision_y=5; break;
         case ENEMY_BOSS9: health=210; e->radius=75; break;
         case ENEMY_BOSS10: health=60; e->radius=60; e->cooldown=150; e->aux_cooldown=300; break;
         case ENEMY_BOSS11: health=180; e->box_width=280; e->box_height=144; break;
-        case ENEMY_BOSS12: health=250; e->box_width=400; e->box_height=144; break;
-        case ENEMY_BOSS3_CHUNK: e->box_width=e->box_height=120; e->cooldown=30; break;
+        case ENEMY_BOSS12: health=250; e->box_width=400; e->box_height=144; e->collision_y=-8; break;
+        case ENEMY_BOSS3_CHUNK: health=100; e->box_width=e->box_height=120; e->cooldown=30; break;
         case ENEMY_BOSS4_CHUNK: e->box_width=e->box_height=70; e->timer=30+(int)(game_random(g)%120); break;
         case ENEMY_BOSS5_CHUNK: health=40; e->radius=36; e->cooldown=240+(int)(game_random(g)%30); break;
         case ENEMY_BOSS6_SPHERE: health=130; e->radius=38; break;
@@ -59,7 +59,7 @@ void boss_init(Game *g,Enemy *e) {
         case ENEMY_BOSS9_BALL: e->radius=32; e->timer=60+(int)(random_float(g)*180); break;
         case ENEMY_BOSS9_BAR: e->intangible=true; break;
         case ENEMY_BOSS10_BALL: e->radius=31; break;
-        case ENEMY_BOSS10_BLOCK: health=100000; e->box_width=110; e->box_height=89; e->invisible=60; break;
+        case ENEMY_BOSS10_BLOCK: health=100000; e->box_width=110; e->box_height=89; e->collision_x=-1; e->collision_y=1.5f; e->timer=60; e->intangible=true; break;
         case ENEMY_BOSS11_HAND: e->radius=51; break;
         case ENEMY_BOSS11_ARM: e->box_width=100; e->box_height=32; break;
         case ENEMY_BOSS12_EYE: case ENEMY_BOSS12_ARM: e->intangible=true; break;
@@ -148,9 +148,22 @@ static void boss6(Game *g,Enemy *e) {
     if(e->age==1) for(int i=0;i<6;++i) make_child(g,e,i,ENEMY_BOSS6_SPHERE,0,0);
     int phase=e->health<e->health_max*0.45f?2:e->health<e->health_max*0.75f?1:0;
     if(phase!=e->phase) { e->phase=phase; e->shot_index=0; e->cooldown=60+game_random(g)%30; e->move_wait=0; }
-    e->orbit_radius+=((e->age<90?120:145)-e->orbit_radius)*0.02f;
-    e->spin+=((phase==2?0.1f:phase==1?0.05f:e->age>=90?0.02f:0)-e->spin)*0.025f;
-    e->orbit_angle+=e->spin; e->rotation+=phase==2?-0.05f:phase==1?-0.02f:-0.01f;
+    /* The core and orbit accelerate independently; neither spins during the opening. */
+    for (int pass = 0; pass < (e->age == 1 ? 2 : 1); ++pass) {
+        for (int i = 0; i < 6; ++i) {
+            Enemy *c = child(g, e, i);
+            if (!c) continue;
+            float angle = e->orbit_angle + i * 2 * PI / 6;
+            c->x = e->x + cosf(angle) * e->orbit_radius;
+            c->y = e->y + sinf(angle) * e->orbit_radius;
+            if (e->health < 2.5f + 0.5f * i) c->active = false;
+        }
+        e->orbit_radius += ((e->age < 90 ? 120 : 145) - e->orbit_radius) * 0.02f;
+        e->spin += ((phase == 2 ? 0.1f : phase == 1 ? 0.05f : e->age >= 90 ? 0.02f : 0) - e->spin) * 0.025f;
+        e->orbit_angle += e->spin;
+        e->center_spin += ((phase == 2 ? -0.05f : phase == 1 ? -0.02f : e->age >= 90 ? -0.01f : 0) - e->center_spin) * 0.01f;
+        e->rotation += e->center_spin;
+    }
     if(e->age>=90) {
         if(!phase) idle(e,0.01f);
         else {
@@ -158,7 +171,6 @@ static void boss6(Game *g,Enemy *e) {
             float speed=phase==2?0.02f:0.01f; e->x+=(e->move_from-e->x)*speed; e->y+=(e->move_to-e->y)*speed;
         }
     }
-    for(int i=0;i<6;++i) { Enemy *c=child(g,e,i); if(c) { float a=e->orbit_angle+i*2*PI/6; c->x=e->x+cosf(a)*e->orbit_radius; c->y=e->y+sinf(a)*e->orbit_radius; if(e->health<2.5f+0.5f*i)c->active=false; } }
     if(--e->cooldown>0) return;
     if(!e->shot_index) { e->attack=game_random(g)%3; e->aim=angle_to_player(g,e,phase==2?32:0); }
     int index=e->shot_index,count=1,delay=3;
@@ -224,15 +236,21 @@ static void boss8(Game *g,Enemy *e) {
 }
 
 static void boss9(Game *g,Enemy *e) {
-    if(e->age==1) { make_child(g,e,0,ENEMY_BOSS9_BAR,0,0); for(int i=1;i<=2;++i) make_child(g,e,i,ENEMY_BOSS9_BALL,0,0); }
+    if(e->age==1) {
+        make_child(g,e,0,ENEMY_BOSS9_BAR,0,0);
+        for(int i=1;i<=2;++i) { Enemy *c=make_child(g,e,i,ENEMY_BOSS9_BALL,0,0); if(c)c->orbit_radius=120; }
+    }
     idle(e,0.1f); e->orbit_angle+=0.02f+0.075f*(1-e->health/e->health_max);
     Enemy *bar=child(g,e,0);if(bar){bar->x=e->x;bar->y=e->y;bar->rotation=e->orbit_angle;}
     for(int i=1;i<=2;++i) {
         Enemy *c=child(g,e,i);
-        if(!c) { if(++e->aux_index>=60) {c=make_child(g,e,i,ENEMY_BOSS9_BALL,0,0);e->aux_index=0;} else continue; }
+        if(!c) {
+            int *wait = i == 1 ? &e->aux_cooldown : &e->aux_index;
+            if(++*wait>=60) {c=make_child(g,e,i,ENEMY_BOSS9_BALL,0,0);*wait=0;} else continue;
+        }
         if(!c) continue;
         float a=e->orbit_angle+(i==1?PI:0),nx=cosf(a),ny=sinf(a);
-        c->orbit_radius=fminf(120,c->orbit_radius+4);c->x=e->x+nx*c->orbit_radius;c->y=e->y+ny*c->orbit_radius;
+        c->x=e->x+nx*c->orbit_radius;c->y=e->y+ny*c->orbit_radius;c->orbit_radius=fminf(120,c->orbit_radius+4);
         float target=angle_to_player(g,c,0),dot=cosf(target)*nx+sinf(target)*ny,front=cosf(target)*-ny+sinf(target)*nx;
         if(--c->timer<=0 && fabsf(dot)<=0.05f && front>0) { float speed=4+6*(1-e->health/e->health_max);c->vx=-ny*speed;c->vy=nx*speed;c->parent=-1;e->children[i]=-1; }
     }
@@ -380,7 +398,7 @@ static void boss12(Game *g, Enemy *e) {
 static void part_update(Game *g,Enemy *e) {
     Enemy *boss=e->parent>=0?&g->enemies[e->parent]:NULL;
     if(boss && !boss->active){e->active=false;return;}
-    if(e->kind==ENEMY_BOSS9_BALL && !boss){e->x+=e->vx;e->y+=e->vy;return;}
+    if(e->kind==ENEMY_BOSS9_BALL && !boss){e->x+=e->vx;e->y+=e->vy+g->scroll_speed;return;}
     if(!boss)return;
     if(e->kind==ENEMY_BOSS3_CHUNK){
         if(boss->phase && --e->cooldown<=0){for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)shot(g,e,x*34,y*44,PI*0.5f);e->cooldown=boss->phase==2?60:90;}
@@ -409,12 +427,21 @@ static void part_update(Game *g,Enemy *e) {
     } else if(e->kind==ENEMY_BOSS11_HAND && e->phase){
         if(++e->timer>30){int phase=(e->timer-30)%285;if(phase<120)e->spin+=0.004f;else if(phase<240)e->spin-=0.004f;else e->spin=0;e->rotation+=e->spin;
             if((e->spin>=0.4f || e->shot_index>0) && --e->cooldown<=0){float angle=e->rotation+e->shot_index%4*PI*0.5f;shot(g,e,cosf(angle)*14,sinf(angle)*14,angle_to_player(g,e,0));e->cooldown=4;e->shot_index=(e->shot_index+1)%15;}}
-    } else if(e->kind==ENEMY_BOSS10_BLOCK){if(e->invisible>0)--e->invisible;}
+    } else if(e->kind==ENEMY_BOSS10_BLOCK){
+        if (e->timer > 0) { --e->timer; e->orbit_radius += 1.0f/60; }
+        else if (e->timer < 0) {
+            ++e->timer;
+            e->orbit_radius = e->timer > -60 ? e->orbit_radius + 1.0f/60 : fmaxf(0, e->orbit_radius - 1.0f/60);
+        }
+        if (!e->timer) { e->orbit_radius = 1; e->intangible = false; }
+    }
     else if(e->kind==ENEMY_BOSS10_BALL){
         e->x+=e->vx;e->y+=e->vy;if(e->timer>0)--e->timer;
         if(e->x<31 || e->x>GAME_WIDTH-31){e->x=fmaxf(31,fminf(GAME_WIDTH-31,e->x));e->vx=-e->vx;}
         if(e->y<31 || e->y>GAME_HEIGHT-31){e->y=fmaxf(31,fminf(GAME_HEIGHT-31,e->y));e->vy=-e->vy;}
-        for(int i=0;i<GAME_ENEMIES;++i){Enemy *block=&g->enemies[i];if(!block->active || block->kind!=ENEMY_BOSS10_BLOCK || block->invisible)continue;float dx=e->x-block->x,dy=e->y-block->y;if(fabsf(dx)>86 || fabsf(dy)>75)continue;bool horizontal=fabsf(dx)>fabsf(dy);if((horizontal?dx*e->vx:dy*e->vy)>0)continue;if(horizontal)e->vx=-e->vx;else e->vy=-e->vy;float d=hypotf(e->vx,e->vy);if(d>0){e->vx=e->vx/d*6;e->vy=e->vy/d*6;}if(e->timer){block->invisible=3600;e->timer=0;}}
+        for(int i=0;i<GAME_ENEMIES;++i){Enemy *block=&g->enemies[i];if(!block->active || block->kind!=ENEMY_BOSS10_BLOCK || block->intangible)continue;float dx=e->x-block->x-block->collision_x,dy=e->y-block->y-block->collision_y;
+            float near_x=fmaxf(fabsf(dx)-55,0),near_y=fmaxf(fabsf(dy)-44.5f,0);
+            if(near_x*near_x+near_y*near_y>31*31)continue;bool horizontal=fabsf(dx)>fabsf(dy);if((horizontal?dx*e->vx:dy*e->vy)>0)continue;if(horizontal)e->vx=-e->vx;else e->vy=-e->vy;float d=hypotf(e->vx,e->vy);if(d>0){e->vx=e->vx/d*6;e->vy=e->vy/d*6;}if(e->timer){block->timer=-3600;block->intangible=true;e->timer=0;}}
         for(int i=0;i<GAME_PLAYERS;++i){Player *p=&g->players[i];if(!p->joined || p->lives<=0 || hypotf(p->x-e->x,p->y-e->y)>55)continue;e->vx=(e->x<p->x?-1:1)*fabsf(e->vx);e->vy=-fabsf(e->vy);float d=hypotf(e->vx,e->vy);if(d>0){e->vx=e->vx/d*8;e->vy=e->vy/d*8;}e->timer=6000;}
     }
 }
@@ -436,8 +463,7 @@ void boss_update_all(Game *g,Enemy *e) {
 bool boss_damage(Game *g,Enemy *e,float damage,int owner) {
     if(e->kind<ENEMY_BOSS3)return false;
     if(e->intangible || e->invisible || e->kind==ENEMY_BOSS10_BLOCK)return true;
-    if(e->kind==ENEMY_BOSS10_BALL){e->timer=6000;return true;}
-    bool shared=e->kind==ENEMY_BOSS3_CHUNK || e->kind==ENEMY_BOSS4_CHUNK || e->kind==ENEMY_BOSS6_SPHERE ||
+        bool shared=e->kind==ENEMY_BOSS3_CHUNK || e->kind==ENEMY_BOSS4_CHUNK || e->kind==ENEMY_BOSS6_SPHERE ||
         e->kind==ENEMY_BOSS8_COLLISION || e->kind==ENEMY_BOSS11_HAND || e->kind==ENEMY_BOSS11_ARM;
     if(shared){e->damage_taken+=damage;if(e->parent<0 || !g->enemies[e->parent].active)return true;e=&g->enemies[e->parent];}
     else if(e->kind==ENEMY_BOSS4 && e->health>e->health_max*0.6f)return true;

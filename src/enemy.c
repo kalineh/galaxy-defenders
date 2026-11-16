@@ -35,14 +35,17 @@ const char *enemy_corpse_name(EnemyKind kind) {
 int enemy_draw_layer(EnemyKind kind) {
     switch (kind) {
         case ENEMY_FENCE_BEAM: case ENEMY_TELEPORTER:
-        case ENEMY_BOSS9_BAR: case ENEMY_BOSS11_ARM: case ENEMY_BOSS12_ARM: return -2;
+        case ENEMY_BOSS4_CHUNK: case ENEMY_BOSS5_CHUNK: case ENEMY_BOSS6: case ENEMY_BOSS7:
+        case ENEMY_BOSS10_BLOCK: case ENEMY_BOSS9_BAR: case ENEMY_BOSS11_ARM: case ENEMY_BOSS12_ARM: return -2;
         case ENEMY_TURRET: case ENEMY_DOWN_TURRET: case ENEMY_DOUBLE_TURRET:
         case ENEMY_CANNON: case ENEMY_FENCE: case ENEMY_MISSILE_POD:
         case ENEMY_MISSILE_STORM: case ENEMY_MISSILE_TRIPLE: case ENEMY_RAID_TURRET:
+        case ENEMY_BOSS: case ENEMY_BOSS2: case ENEMY_BOSS3: case ENEMY_BOSS4: case ENEMY_BOSS5: case ENEMY_BOSS8:
         case ENEMY_BOSS9_BALL: case ENEMY_BOSS11_HAND: return -1;
         case ENEMY_BOSS12_EYE: return 1;
-        case ENEMY_BLACK_HOLE: return 2;
-        case ENEMY_GLOB: return 3;
+        case ENEMY_BOSS10_BALL: return ENEMY_LAYER_ENTITY;
+        case ENEMY_BLACK_HOLE: return ENEMY_LAYER_WEAPON_OVERLAY;
+        case ENEMY_GLOB: return ENEMY_LAYER_PLAYER_OVERLAY;
         default: return 0;
     }
 }

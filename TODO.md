@@ -7,8 +7,9 @@ User requested all weapons, enemies, stages and upgrades, with original behavior
 Use headless CLI checks; never launch visible PowerShell windows or use desktop
 automation. No npm installs. Commit and push verified focused changes to `native`.
 
-Current pass: audit all regular enemies for sprite layers, animation frames,
-collision geometry and spawned parts, then audit Boss1-Boss12 the same way.
+Completed current request: regular enemies first, then Boss1-Boss12 audited for
+sprite layers/origins, animation frames, collision geometry and spawned parts.
+See CONTENT_PARITY.md for findings and verification limits.
 
 ## Implemented
 
@@ -18,6 +19,9 @@ collision geometry and spawned parts, then audit Boss1-Boss12 the same way.
 - All regular enemies and Boss1-Boss12 combat, component damage and phase changes.
 - All 12 main and seven bonus stage event streams, original required assets,
   scenery layers, music changes, camera stops, clear/shop/next-stage progression.
+- Boss sprite/geometry audit: corrected body/arm/cover layers, Boss6 center spin,
+  Boss9 initial ball offsets/replacement timers, Boss10 block fades and offsets,
+  and round-projectile collisions near rectangular corners.
 - Regular-enemy sprite/geometry/attachment audit: layered Pyramid/Cutter visuals,
   Spike/FenceBeam frames, correct Pyramid fragments and Cutter/Swirl transforms,
   linked Fence cleanup, stationary turret corpses and Glob/BlackHole layers.
@@ -46,7 +50,7 @@ collision geometry and spawned parts, then audit Boss1-Boss12 the same way.
 - Sample ships, shop inventory restrictions,
   menu transitions/fades, stage-clear explosion/flyout presentation.
 - Secret return/fade timing and scrolling need closer legacy comparison.
-- Blending gradient scenery, remaining boss visual details.
+- Blending gradient scenery, special enemy/boss particles and death presentation.
 - Pilot ability classes are dormant in the legacy game: TryEnable has no callers,
   no purchase UI exists, and ability HUD drawing is commented out. Do not invent
   activation or purchasing for those unused definitions.

@@ -442,6 +442,13 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
 
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     float view_x = ARENA_X - game->stage.camera_x;
+    if (layer == 0) for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
+        const EnemyCorpse *corpse = &game->stage.corpses[i];
+        if (!corpse->active) continue;
+        Texture2D texture = assets->enemy_corpses[corpse->kind];
+        float y = corpse->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+        sprite(texture, view_x + corpse->x, y, (float)texture.width, 0, WHITE);
+    }
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
@@ -451,6 +458,12 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
             sprite(assets->pyramid_turret, view_x + enemy->x, enemy->y, (float)assets->pyramid_turret.width, (enemy->aim - PI/2) * RAD2DEG, WHITE);
         if (enemy->kind == ENEMY_ROTATE_TURRET && layer == 0)
             sprite(assets->rotate_turret_base, view_x + enemy->x, enemy->y, (float)assets->rotate_turret_base.width, 0, WHITE);
+        Texture2D cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
+            enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Texture2D){0};
+        float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
+            enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
+        int cover_layer = enemy->kind == ENEMY_BOSS6 ? -1 : 2;
+        if (layer == cover_layer && IsTextureValid(cover)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
         if (depth != layer) continue;
         Texture2D texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
@@ -460,17 +473,14 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_SPIKE) { source.width /= 2; source.x = (enemy->age / 20 % 2) * source.width; }
         if (enemy->kind == ENEMY_FENCE_BEAM) { source.height /= 4; source.y = (enemy->age / 4 % 4) * source.height; }
         float scale = enemy->kind == ENEMY_GLOB ? 1 + sinf(game->tick * (enemy->attack ? 0.3f : 0.1f)) * (enemy->attack ? 0.08f : 0.04f) : 1;
+        if (enemy->kind == ENEMY_BOSS10_BLOCK) scale = enemy->orbit_radius;
         Vector2 origin = {source.width * 0.5f * scale, source.height * 0.5f * scale};
         if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         DrawTexturePro(texture, source,
             (Rectangle){view_x + enemy->x,enemy->y,source.width * scale,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
-        Texture2D cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
-            enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Texture2D){0};
-        float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
-            enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
-        if (IsTextureValid(cover)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
+
     }
 }
 
@@ -480,13 +490,6 @@ static void draw_game(const Game *game, const Assets *assets) {
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     draw_scenery(game, assets, false);
-    for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
-        const EnemyCorpse *corpse = &game->stage.corpses[i];
-        if (!corpse->active) continue;
-        Texture2D texture = assets->enemy_corpses[corpse->kind];
-        float y = corpse->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
-        sprite(texture, view_x + corpse->x, y, (float)texture.width, 0, WHITE);
-    }
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
     for (int pass = 0; pass < 3; ++pass) for (int i = 0; i < stage->event_count; ++i) {
@@ -501,7 +504,8 @@ static void draw_game(const Game *game, const Assets *assets) {
             assets->stage_destroyed[i] : assets->stage_textures[i];
         sprite(texture, view_x + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
     }
-    for (int layer = -2; layer <= 1; ++layer) draw_enemies(game, assets, layer);
+    for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
+    draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
     for (int i = 0; i < GAME_PICKUPS; ++i) {
         const Pickup *p = &game->pickups[i];
         if (!p->active) continue;
@@ -515,7 +519,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
         sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
     }
-    draw_enemies(game, assets, 3);
+    draw_enemies(game, assets, ENEMY_LAYER_PLAYER_OVERLAY);
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
         if (!bullet->active) continue;
@@ -532,7 +536,7 @@ static void draw_game(const Game *game, const Assets *assets) {
             sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
         }
     }
-    draw_enemies(game, assets, 2);
+    draw_enemies(game, assets, ENEMY_LAYER_WEAPON_OVERLAY);
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
         if (effect->life <= 0) continue;

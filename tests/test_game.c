@@ -924,6 +924,95 @@ static void remaining_bosses(void) {
     CHECK(game.bullets[0].hostile_kind == HOSTILE_MINI && game.bullets[0].damage == 1.25f);
 }
 
+static void boss_visual_collision_parity(void) {
+    static const struct { EnemyKind kind; float radius, width, height, x, y; int layer; } shapes[] = {
+        {ENEMY_BOSS,150,0,0,0,0,-1}, {ENEMY_BOSS2,210,420,160,0,0,-1},
+        {ENEMY_BOSS3,60,0,0,0,0,-1}, {ENEMY_BOSS4,0,260,215,0,-12.5f,-1},
+        {ENEMY_BOSS5,0,170,170,0,0,-1}, {ENEMY_BOSS6,110,0,0,0,0,-2},
+        {ENEMY_BOSS7,0,409,103,-0.5f,-12.5f,-2}, {ENEMY_BOSS8,0,360,170,0,5,-1},
+        {ENEMY_BOSS9,75,0,0,0,0,0}, {ENEMY_BOSS10,60,0,0,0,0,0},
+        {ENEMY_BOSS11,0,280,144,0,0,0}, {ENEMY_BOSS12,0,400,144,0,-8,0},
+        {ENEMY_BOSS_CHUNK,60,120,120,0,0,0}, {ENEMY_BOSS3_CHUNK,0,120,120,0,0,0},
+        {ENEMY_BOSS4_CHUNK,0,70,70,0,0,-2}, {ENEMY_BOSS5_CHUNK,36,0,0,0,0,-2},
+        {ENEMY_BOSS6_SPHERE,38,0,0,0,0,0}, {ENEMY_BOSS9_BALL,32,0,0,0,0,-1},
+        {ENEMY_BOSS10_BALL,31,0,0,0,0,ENEMY_LAYER_ENTITY},
+        {ENEMY_BOSS10_BLOCK,0,110,89,-1,1.5f,-2},
+        {ENEMY_BOSS11_HAND,51,0,0,0,0,-1}, {ENEMY_BOSS11_ARM,0,100,32,0,0,-2}
+    };
+    reset();
+    for (unsigned i = 0; i < sizeof(shapes) / sizeof(shapes[0]); ++i) {
+        int n = game_spawn_enemy(&game, shapes[i].kind, 480, 300);
+        Enemy *e = &game.enemies[n];
+        CHECK(e->radius == shapes[i].radius && e->box_width == shapes[i].width && e->box_height == shapes[i].height);
+        CHECK(e->collision_x == shapes[i].x && e->collision_y == shapes[i].y);
+        CHECK(enemy_draw_layer(e->kind) == shapes[i].layer);
+    }
+    reset();
+    int n = game_spawn_enemy(&game, ENEMY_BOSS4, 480, 300);
+    game_tick(&game);
+    Enemy *boss = &game.enemies[n];
+    static const float cx[] = {-1,175,-179}, cy[] = {175,3,3};
+    for (int i = 0; i < 3; ++i) {
+        Enemy *arm = &game.enemies[boss->children[i]];
+        CHECK(arm->collision_x == cx[i] && arm->collision_y == cy[i]);
+        CHECK(enemy_draw_layer(arm->kind) < enemy_draw_layer(boss->kind));
+    }
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_BOSS5, 480, 300);
+    boss = &game.enemies[n]; boss->age = 100; boss->cooldown = 1000;
+    int shot = game_spawn_bullet(&game, 0, 584, 404, 0, 0, 1);
+    game.bullets[shot].radius = 20; game.bullets[shot].weapon = WEAPON_PLASMA;
+    game_tick(&game);
+    CHECK(boss->health == boss->health_max && game.bullets[shot].active); /* Outside the rounded corner. */
+    game.bullets[shot].x = 577; game.bullets[shot].y = 397;
+    game_tick(&game);
+    CHECK(boss->health == boss->health_max - 1 && !game.bullets[shot].active);
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_BOSS6, 480, 300);
+    for (int tick = 0; tick < 89; ++tick) game_tick(&game);
+    boss = &game.enemies[n];
+    CHECK(boss->rotation == 0 && boss->center_spin == 0);
+    game_tick(&game);
+    CHECK(fabsf(boss->center_spin + 0.0001f) < 0.00001f);
+    CHECK(enemy_draw_layer(boss->kind) < enemy_draw_layer(ENEMY_BOSS6_SPHERE));
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_BOSS9, 480, 300);
+    game_tick(&game);
+    boss = &game.enemies[n];
+    for (int i = 1; i <= 2; ++i) {
+        Enemy *ball = &game.enemies[boss->children[i]];
+        CHECK(fabsf(hypotf(ball->x - boss->x, ball->y - boss->y) - 120) < 0.001f);
+        ball->active = false;
+    }
+    for (int i = 0; i < 59; ++i) game_tick(&game);
+    CHECK(!game.enemies[boss->children[1]].active && !game.enemies[boss->children[2]].active);
+    game_tick(&game);
+    CHECK(game.enemies[boss->children[1]].active && game.enemies[boss->children[2]].active);
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_BOSS10_BLOCK, 480, 300);
+    Enemy *block = &game.enemies[n];
+    int parent = game_spawn_enemy(&game, ENEMY_BOSS10, 480, 100);
+    block->parent = parent; game.enemies[parent].age = 100;
+    for (int i = 0; i < 30; ++i) boss_update_all(&game, block);
+    CHECK(block->intangible && fabsf(block->orbit_radius - 0.5f) < 0.0001f);
+    for (int i = 0; i < 30; ++i) boss_update_all(&game, block);
+    CHECK(!block->intangible && block->orbit_radius == 1);
+    block->timer = -3600; block->intangible = true;
+    for (int i = 0; i < 61; ++i) boss_update_all(&game, block);
+    CHECK(block->intangible && block->orbit_radius == 0);
+    for (int i = 61; i < 3600; ++i) boss_update_all(&game, block);
+    CHECK(!block->intangible && block->orbit_radius == 1);
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_BOSS12, 480, 300);
+    game_tick(&game);
+    boss = &game.enemies[n];
+    for (int i = 0; i < 8; ++i) {
+        Enemy *part = &game.enemies[boss->children[i]];
+        CHECK(part->intangible);
+        CHECK(i < 6 ? enemy_draw_layer(part->kind) < enemy_draw_layer(boss->kind) : enemy_draw_layer(part->kind) > enemy_draw_layer(boss->kind));
+    }
+}
+
 static void campaign_stages(void) {
     for (int stage = 0; stage < STAGE_COUNT; ++stage) {
         reset();
@@ -1066,6 +1155,7 @@ int main(void) {
     saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
+    boss_visual_collision_parity();
     campaign_stages();
     pellet_turret_splitter_parity();
     regular_enemy_parity();

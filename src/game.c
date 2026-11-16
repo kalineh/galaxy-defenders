@@ -40,16 +40,20 @@ static bool segment_box(float ax, float ay, float bx, float by, float x, float y
     return true;
 }
 
-static bool laser_hits_circle(float ax, float ay, float bx, float by, const Enemy *enemy) {
-    /* Laser.cs uses a 1 x 0.5 AABB whose top-left is the projectile position.
-       Sweep its center through the circle's exact rounded-rectangle expansion. */
-    ax += 0.5f; bx += 0.5f; ay += 0.25f; by += 0.25f;
-    float r = enemy->radius, x = enemy->x + enemy->collision_x, y = enemy->y + enemy->collision_y;
-    if (segment_box(ax, ay, bx, by, x, y, r + 0.5f, 0.25f) ||
-        segment_box(ax, ay, bx, by, x, y, 0.5f, r + 0.25f)) return true;
+static bool swept_circle_box(float ax, float ay, float bx, float by,
+                             float x, float y, float half_x, float half_y, float radius) {
+    /* Rounded rectangle expansion: square-expanded corners produce false hits. */
+    if (segment_box(ax, ay, bx, by, x, y, half_x + radius, half_y) ||
+        segment_box(ax, ay, bx, by, x, y, half_x, half_y + radius)) return true;
     for (int sx = -1; sx <= 1; sx += 2) for (int sy = -1; sy <= 1; sy += 2)
-        if (segment_hits(ax, ay, bx, by, x + sx * 0.5f, y + sy * 0.25f, r)) return true;
+        if (segment_hits(ax, ay, bx, by, x + sx * half_x, y + sy * half_y, radius)) return true;
     return false;
+}
+
+static bool laser_hits_circle(float ax, float ay, float bx, float by, const Enemy *enemy) {
+    /* Laser.cs uses a 1 x 0.5 AABB whose top-left is the projectile position. */
+    return swept_circle_box(ax + 0.5f, ay + 0.25f, bx + 0.5f, by + 0.25f,
+        enemy->x + enemy->collision_x, enemy->y + enemy->collision_y, 0.5f, 0.25f, enemy->radius);
 }
 
 static float random_unit(Game *game) {
@@ -451,8 +455,8 @@ static void update_bullets(Game *game) {
                     segment_distance_squared(old_x, old_y, bullet->x, bullet->y, hostile->x, hostile->y) <
                         hostile->radius * hostile->radius + bullet->radius * bullet->radius :
                     laser_hits_circle(old_x, old_y, bullet->x, bullet->y, &circle);
-                if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
-                    hostile->x, hostile->y, hostile->radius + bullet->width * 0.5f, hostile->radius);
+                if (bullet->weapon == WEAPON_BEAM) hit = swept_circle_box(hostile->x, hostile->y, hostile->x, hostile->y,
+                    bullet->x, bullet->y - 540, bullet->width * 0.5f, 540, hostile->radius);
                 if (!hit) continue;
                 if (hostile->hostile_kind == HOSTILE_PELLET) {
                     if (--hostile->health <= 0 || bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
@@ -471,13 +475,17 @@ static void update_bullets(Game *game) {
                         enemy->box_width * 0.5f + 0.5f, enemy->box_height * 0.5f + 0.25f) :
                     laser_hits_circle(old_x, old_y, bullet->x, bullet->y, enemy);
                 if (bullet->radius > 0) hit = enemy->box_width > 0 ?
-                    segment_box(old_x, old_y, bullet->x, bullet->y, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
-                        enemy->box_width * 0.5f + bullet->radius, enemy->box_height * 0.5f + bullet->radius) :
+                    swept_circle_box(old_x, old_y, bullet->x, bullet->y, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
+                        enemy->box_width * 0.5f, enemy->box_height * 0.5f, bullet->radius) :
                     segment_distance_squared(old_x, old_y, bullet->x, bullet->y, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y) <
                         bullet->radius * bullet->radius + enemy->radius * enemy->radius;
-                if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
-                    enemy->x + enemy->collision_x, enemy->y + enemy->collision_y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
-                    enemy->box_height > 0 ? enemy->box_height * 0.5f : enemy->radius);
+                if (bullet->weapon == WEAPON_BEAM) hit = enemy->box_width > 0 ?
+                    segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
+                        enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
+                        enemy->box_width * 0.5f + bullet->width * 0.5f, enemy->box_height * 0.5f) :
+                    swept_circle_box(enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
+                        enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
+                        bullet->x, bullet->y - 540, bullet->width * 0.5f, 540, enemy->radius);
                 if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || enemy->kind == ENEMY_FENCE_BEAM || !hit || bullet->ignore_enemy == e) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
