@@ -324,3 +324,6 @@ to confirm any of the explicit mismatches listed here.
   before physics, powerups rebuild only primary emitters and retain the focus
   level/support state, coins confine to panned camera bounds and use the original
   32-pixel removal margin. Headless suite and native build pass.
+- Scenery presentation repairs: TempestNebula/BonusStage1 four-corner color
+  cycles and smoothstep interpolation; stable sorting of decorations by actual
+  depth rather than sign buckets. Software-render check and native build pass.

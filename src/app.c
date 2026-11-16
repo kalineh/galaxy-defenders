@@ -438,6 +438,25 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
         Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
         Color bottom = {scene->bottom[0], scene->bottom[1], scene->bottom[2], 255};
         DrawRectangleGradientV(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, top, bottom);
+        if (game->stage.index == 6 || game->stage.index == 12) {
+            /* SceneryPresets: TempestNebulaBG and BonusStage1, TL/TR/BR/BL. */
+            static const Color nebula[4][4] = {
+                {{0,32,0,16},{0,32,0,16},{0,0,0,16},{0,0,0,16}},
+                {{0,32,0,16},{0,32,0,16},{0,32,0,16},{0,32,0,16}},
+                {{0,32,0,16},{0,32,0,16},{0,32,0,16},{0,32,0,16}},
+                {{0,0,0,0},{0,0,0,0},{0,32,0,16},{0,32,0,16}}
+            };
+            static const Color bonus[] = {{0,196,0,128},{0,64,0,64},{0,0,0,0},{0,64,0,64}};
+            int frame=game->tick>0?game->tick-1:0, cycle=frame/60%4;
+            float t=frame%60/60.0f; t=t*t*(3-2*t);
+            Color corners[4];
+            for(int i=0;i<4;++i) {
+                Color a=game->stage.index==6?nebula[cycle][i]:bonus[(i-cycle+4)%4];
+                Color b=game->stage.index==6?nebula[(cycle+1)%4][i]:bonus[(i-cycle+3)%4];
+                corners[i]=(Color){a.r+(b.r-a.r)*t,a.g+(b.g-a.g)*t,a.b+(b.b-a.b)*t,a.a+(b.a-a.a)*t};
+            }
+            DrawRectangleGradientEx((Rectangle){ARENA_X,0,GAME_WIDTH,GAME_HEIGHT},corners[0],corners[3],corners[2],corners[1]);
+        }
     }
     for (int layer = 0; layer < 4; ++layer) {
         const SceneryLayer *definition = &scene->layers[layer];
@@ -502,12 +521,25 @@ static void draw_game(const Game *game, const Assets *assets) {
     draw_scenery(game, assets, false);
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
-    for (int pass = 0; pass < 3; ++pass) for (int i = 0; i < stage->event_count; ++i) {
+    int order[STAGE_MAX_EVENTS], count=0;
+    for(int i=0;i<stage->event_count;++i) {
+        const StageEvent *event=&stage->events[i];
+        if(!game->stage.activated[i] || (event->kind!=STAGE_DECORATION && event->kind!=STAGE_BUILDING)) continue;
+        float depth=event->kind==STAGE_BUILDING?0.15f:0.10f+event->depth;
+        int at=count;
+        while(at>0) {
+            const StageEvent *previous=&stage->events[order[at-1]];
+            float previous_depth=previous->kind==STAGE_BUILDING?0.15f:0.10f+previous->depth;
+            if(previous_depth<=depth)break;
+            order[at]=order[at-1]; --at;
+        }
+        order[at]=i; ++count;
+    }
+    for (int row = 0; row < count; ++row) {
+        int i=order[row];
         const StageEvent *event = &stage->events[i];
         if (!game->stage.activated[i]) continue;
         if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
-        int depth = event->kind == STAGE_BUILDING ? 2 : event->depth < 0 ? 0 : 1;
-        if (depth != pass) continue;
         float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
         if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
         Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
