@@ -126,7 +126,7 @@ def generate():
         lines.append('    {')
         for role in ROLES:
             values = score['instruments'][role]['parameters']
-            assert len(values) == 10 and 0 <= values[0] <= 10
+            assert len(values) == 10 and 0 <= values[0] <= 11
             lines.append('        {' + str(values[0]) + ',' + ','.join(f'{float(x)}f' for x in values[1:]) + '},')
         lines.append('    },')
     lines += ['};', 'static const SynthTrack synth_tracks[] = {', *entries, '};', '']

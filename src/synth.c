@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct { const char *name, *source; uint32_t frames, count; const SynthEvent *events; unsigned delay; float wet, feedback; } SynthTrack;
 
-enum { FM_BASS, FM_LEAD, PULSE, BELL, PAD, KICK, SNARE, HAT, TOM, SAW, TRIANGLE, PATCH_COUNT };
+enum { FM_BASS, FM_LEAD, PULSE, BELL, PAD, KICK, SNARE, HAT, TOM, SAW, TRIANGLE, LAYERED_PULSE, PATCH_COUNT };
 typedef struct {
     int kind;
     float attack, decay, sustain, release, gain;
@@ -99,10 +99,18 @@ static float voice_sample(SynthVoice *v, const Patch *p) {
             sample = 2 * phase - 1 - blep(phase, delta);
         } else if (p->kind == TRIANGLE) {
             sample = 4 * fabsf(phase - .5f) - 1;
-        } else if (p->kind == PULSE) {
+        } else if (p->kind == PULSE || p->kind == LAYERED_PULSE) {
             float width = .25f + .06f * sine(time * 1.7f);
             float shifted = phase - width; if (shifted < 0) shifted += 1;
             sample = (phase < width ? 2.0f : 0.0f) - 2 * width + blep(phase, delta) - blep(shifted, delta);
+            if (p->kind == LAYERED_PULSE) {
+                /* Quiet detuned square adds motion; sine adds body without extra voices. */
+                float second = v->phase[3], second_delta = delta * 1.002f;
+                float edge = second - .5f; if (edge < 0) edge += 1;
+                float square = (second < .5f ? 1.0f : -1.0f)
+                    + blep(second, second_delta) - blep(edge, second_delta);
+                sample = .65f * sample + .2f * square + .15f * sine(v->phase[1]);
+            }
         } else if (p->kind == KICK || p->kind == TOM) {
             sample = sine(phase) + .12f * sine(v->phase[1]) / (1 + time * 500);
         } else if (p->kind == SNARE || p->kind == HAT) {

@@ -86,8 +86,9 @@ remain candidates; this rewrite does not claim to have confirmed them by listeni
 Instrument parameter arrays are: kind, attack seconds, decay seconds, sustain,
 release seconds, gain, modulator ratio, FM index, low-pass coefficient, vibrato.
 Kinds 0/1 are FM, 2 pulse, 3 bell, 4 detuned pad, 5 kick, 6 snare, 7 hat, 8 tom,
-9 band-limited saw, 10 triangle. Part events are [sixteenth onset, pitch/interval,
-gate in sixteenths, velocity]. Lead/bell intervals use the song tonic; bass/counter
+9 band-limited saw, 10 triangle, 11 layered pulse. For layered pulse, ratio sets
+the sine-body frequency multiplier. Part events are [sixteenth onset,
+pitch/interval, gate in sixteenths, velocity]. Lead/bell intervals use the song tonic; bass/counter
 intervals follow the current chord root. Pattern lengths and registers are explicit.
 
 ## Title-screen composition (track 9 only)
@@ -105,6 +106,13 @@ can connect them. The high pulse gets quieter once the main riff takes over.
 A Dm-A-Dm coda returns to the broader theme. The title's later layer flags were
 explicitly revised for this reorchestration; the boundaries, BPM, original timing
 evidence and exact length remain unchanged. Other tracks retain their prior locks.
+
+The title uses layered pulses: a main pulse, a quiet detuned square and a sine
+body (an octave below the lead, in unison for the high pattern). Both pulse
+oscillators use band-limited edges. A fuller FM bass, slightly stronger quiet pad
+and modest stereo delay support them. This changes timbre/mix, not note events;
+all layers fit within one synth voice per event. Other tracks may adopt or adapt
+this palette after listening; their current sound is not a musical constraint.
 Human listening remains the musical-quality check.
 
 `voicings` supplies absolute pad notes; `bar_order` selects the harmonic/melodic

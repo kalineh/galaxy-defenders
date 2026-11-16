@@ -55,11 +55,13 @@ int main(void) {
     /* Selecting/seeking must retain each song's own patch bank and delay. */
     for (int track = 1; track <= SYNTH_TRACK_COUNT; ++track) {
         CHECK(synth_select(&sequential, track));
-        for (int i = 0; i < 8; ++i) synth_render(&sequential, block, 1024);
+        /* Include the title lead/bass entry, not only its opening upper pulse. */
+        int preroll = track == 9 ? 320 : 8;
+        for (int i = 0; i < preroll; ++i) synth_render(&sequential, block, 1024);
         synth_render(&sequential, reference[0], 1024);
         CHECK(synth_select(&sought, track));
-        CHECK(synth_seek(&sought, 8192.01 / synth_track_frames(track)));
-        CHECK(sought.track == track && sought.position == 8192);
+        CHECK(synth_seek(&sought, (preroll * 1024 + .01) / synth_track_frames(track)));
+        CHECK(sought.track == track && sought.position == (uint32_t)(preroll * 1024));
         synth_render(&sought, block, 1024);
         CHECK(!memcmp(block, reference[0], sizeof(block)));
     }

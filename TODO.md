@@ -1,19 +1,17 @@
-# Completed title reference-energy pass
+# Completed title instrument pass
 
-Track 9 (Control Circuit) now uses original Dm-C-Bb-A material informed by the
-original title MIDI's arranging ideas: fast upper pulse, slower lower melody,
-descending bass tension and a clipped later lead/bass riff. New instrument balance.
-The original melody, ostinato and bass line are not reused.
+Title track 9 now uses layered pulses (main pulse, quiet detuned square, sine
+body), fuller FM bass, slightly stronger pad and modest stereo delay. All notes,
+gates, velocities, pans, section times and stage timing remain unchanged.
 
-Only title composition/events changed. All 19 BPM values and section boundaries,
-original timing evidence and exact recording lengths are unchanged. Title-only
-layer flags revised for this reorchestration; other eighteen locks unchanged.
-
-Verified: full ./test.sh suite and native build pass. Title harmony/grid and
-section-variant checks pass; repeated-hook checks include variant patterns.
-All renders finite, with headroom and no voice stealing. Title is 5,570,560 frames
-at 48 kHz (116.053333 s), peak 0.3819, RMS 0.0873. No interactive playtest performed.
+Verified: native build and full ./test.sh pass, including deterministic title
+seek after the lead/bass entry. Full title render has no voice stealing or
+clipping: peak 0.3781, RMS 0.0898, DC 0.001888, length 5,570,560 frames at 48 kHz.
+Other eighteen renders currently identical. Their sound is not protected: the
+user considers the other compositions unfinished and open to broader improvement.
+Keep stage timing constraints when revisiting them; use title as a working reference.
 
 Audition debug.music 9 or artifacts/native-port/title-theme-preview.wav (35 s).
-Human listening is the remaining musical-quality review before any broader pass.
-Original MIDI-to-WAV alignment is still unverified; see music/README.md.
+Comparison: artifacts/native-port/title-before-texture.wav. Human listening is
+the remaining musical-quality review. No interactive playtest performed.
+Original MIDI-to-WAV alignment remains unverified; see music/README.md.
