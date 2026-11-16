@@ -64,10 +64,13 @@ bool game_shop_buy(Game *game, int slot) {
     }
     memset(p->weapons, 0, sizeof(p->weapons));
     p->money -= cost;
+    game_checkpoint(game, true);
     return true;
 }
 
 void game_shop_open(Game *game) {
+    game->menu.next_stage = (game->complete || game->menu.page == MENU_CLEAR) && game->stage.index < 11 ?
+        game->stage.index + 1 : game->stage.index;
     /* World.SetScoreSaveData transfers score exactly once before the shop. */
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &game->players[i];
@@ -82,6 +85,7 @@ void game_shop_open(Game *game) {
         game->menu.shop_items[i] = false;
     }
     game_menu_open(game, MENU_SHOP);
+    game_checkpoint(game, true);
 }
 
 void game_shop_input(Game *game, MenuAction action, int slot) {
@@ -97,7 +101,8 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
         bool all_ready = true;
         for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined && !menu->ready[i]) all_ready = false;
         if (all_ready) {
-            int next = game->stage.index < 11 ? game->stage.index + 1 : 0;
+            if (game->cleared_game) { game_menu_open(game, MENU_STAGE_SELECT); return; }
+            int next = menu->next_stage;
             game_stage(game, next, 0);
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];
@@ -109,6 +114,7 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
                 memset(p->weapons, 0, sizeof(p->weapons));
                 p->weapon_cooldown[0] = p->weapon_cooldown[1] = 0;
             }
+            game_checkpoint(game, false);
         }
         return;
     }

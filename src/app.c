@@ -620,6 +620,14 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         return;
     }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame); return; }
+    if (game->menu.page == MENU_STAGE_SELECT) {
+        ClearBackground(BLACK);
+        for (int i = 0; i < 20; ++i) {
+            float x = (float)((i * 193) % CANVAS_WIDTH);
+            float y = fmodf(i * 137.0f + frame * (i % 2 ? 14 : 18), GAME_HEIGHT);
+            sprite(assets->star, x, y, (float)assets->star.width, 0, WHITE);
+        }
+    }
     if (game->menu.page == MENU_CLEAR) {
         /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
         text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
@@ -673,7 +681,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
     for (int row = 0; row < game_menu_count(game); ++row) {
         bool selected = row == game->menu.cursor, enabled = game_menu_enabled(game, row);
         int texture = enabled ? (selected ? 2 : 0) + (game_menu_small(game, row) ? 1 : 0) : selected ? 5 : 4;
-        int y = 400 + row * 66;
+        int y = game->menu.page == MENU_STAGE_SELECT ? 150 + row * 66 : 400 + row * 66;
         DrawTexture(assets->menu[texture], 832, y, WHITE);
         text_center(assets->ui_font, game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
         if (game->menu.page == MENU_OPTIONS && row < 3) {
@@ -756,7 +764,7 @@ static void update_audio(const Game *game, Assets *assets) {
     }
     assets->music_tick = game->tick;
     int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 :
-        game->paused && game->menu.page != MENU_FINISH ? 2 : 0;
+        game->paused && game->menu.page != MENU_FINISH && game->menu.page != MENU_STAGE_SELECT ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
@@ -770,7 +778,7 @@ static void update_audio(const Game *game, Assets *assets) {
         float seconds = (game->tick - game->stage.music_tick) / (float)GAME_HZ;
         float duration = GetMusicTimeLength(assets->music);
         if (duration > 0) {
-            float offset = game->menu.page == MENU_FINISH ? 0 : fmodf(seconds, duration);
+            float offset = game->menu.page == MENU_FINISH || game->menu.page == MENU_STAGE_SELECT ? 0 : fmodf(seconds, duration);
             SeekMusicStream(assets->music, offset);
             TraceLog(LOG_INFO, "Stage music: %s seek=%.3f reported=%.3f", music_name, offset, GetMusicTimePlayed(assets->music));
         }
@@ -894,6 +902,19 @@ static void draw_frame_graph(const FrameGraph *history, Font font) {
 
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
+    char save_paths[2][2048] = {{0}};
+    if (!frames) {
+        const char *root = getenv("LOCALAPPDATA");
+        char directory[1800];
+        int length = snprintf(directory, sizeof(directory), "%s/GalaxyDefenders", root ? root : ".");
+        if (length > 0 && length < (int)sizeof(directory) && (DirectoryExists(directory) || MakeDirectory(directory) == 0)) {
+            for (int i = 0; i < 2; ++i) {
+                snprintf(save_paths[i], sizeof(save_paths[i]), "%s/%s.save", directory, i ? "coop" : "solo");
+                if (FileExists(save_paths[i]) && !game_save_read(&game->saves[i], save_paths[i]))
+                    console_log(console, "ERROR: could not read %s save", i ? "co-op" : "solo");
+            }
+        } else console_log(console, "ERROR: could not create save directory");
+    }
 #ifndef GALAXY_MEMORY
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
 #endif
@@ -1010,6 +1031,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             break;
         }
         if (game->over && game->menu.page == MENU_NONE) game_menu_open(game, MENU_OVER);
+        if (!frames && game->saves_dirty) {
+            for (int i = 0; i < 2; ++i) if (game->saves[i].valid &&
+                (!save_paths[i][0] || !game_save_write(&game->saves[i], save_paths[i])))
+                console_log(console, "ERROR: could not write %s save", i ? "co-op" : "solo");
+            game->saves_dirty = false;
+        }
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else

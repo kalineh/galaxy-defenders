@@ -7,14 +7,14 @@ frame-identical gameplay or complete presentation parity.
 | Area | Native state | Remaining verification / work |
 | --- | --- | --- |
 | Weapons | Original level tables; all primary, support and sidekick variants | Audit special collision/effect/audio behavior |
-| Equipment | All generators/shields and nine chassis; pilot starting equipment | Chassis/pilot special abilities and full visual HUD details |
+| Equipment | All generators/shields and nine chassis; pilot starting equipment | Full visual HUD details; unused legacy abilities remain dormant |
 | Shop | Six categories, purchases, trade-ins, levels, energy/shield effects, co-op ready | Stage-specific stock, sample ships, exact layout/transitions |
 | Enemies | All regular types, hostile projectile kinds, Boss1-Boss12 and parts | Detailed attack timing/movement traces, death art and sound |
 | Stages | All 12 main and seven bonus stages; authored 3,448 events; original assets | Playtest balance, secret entrance reachability and fade/return timing |
-| Progression | Clear -> shop -> next main stage; secret return restores encounter; original final ending | Saves/Continue, replay selection, stage-clear flyout and explosions |
+| Progression | Clear -> shop -> next main stage; secrets; ending; solo/co-op saves and Continue; unlocked replay selection | Stage-clear flyout and explosions |
 | Scenery | Original textures, gradients, foreground layers, deterministic cloud motion | Animated blending gradients and exact legacy RNG sequencing |
 | Audio | Original title/combat/pause/ending tracks and music-event seeking | Remaining weapon/enemy/pickup sound mapping |
-| Economy | Working purchases and score transfer | Original coin pickups, salvage and per-enemy rewards |
+| Economy | Purchases, coin/powerup drops, magnet collection, original health-based rewards | Salvage/player death behavior |
 | UI/debug | Original menu labels/art, licensed Noto fonts, scriptable console, F3 timing graph | Remaining menu transitions and HUD state details |
 | Platforms | Windows native/headless/software renderer verified | Web/phone packaging and physical controller tests |
 

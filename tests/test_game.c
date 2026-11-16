@@ -101,6 +101,7 @@ static void legacy_circle_sizes(void) {
 
 static void shop_progression(void) {
     reset();
+    game.complete = true;
     game.players[0].score = 5000;
     game.players[0].money = 250;
     game_shop_open(&game);
@@ -831,7 +832,49 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void saved_continue(void) {
+    reset();
+    CHECK(game_stage(&game, 4, 0));
+    game.players[0].money = 12345;
+    game.players[0].secondary = WEAPON_MISSILE;
+    game.players[0].secondary_level = 2;
+    game.complete = true;
+    game_shop_open(&game);
+    CHECK(game.saves[0].valid && game.saves[0].shop && game.saves[0].stage == 5);
+    const char *path = "artifacts/native-port/test-save.txt";
+    CHECK(game_save_write(&game.saves[0], path));
+    SavedGame save = {0};
+    CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
+    save.player[0].money = 10000;
+    CHECK(game_save_write(&save, path));
+    reset();
+    CHECK(game_save_read(&game.saves[0], path));
+    CHECK(game_continue(&game, 1));
+    CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
+    CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.stage.index == 5 && game.menu.page == MENU_NONE);
+    game_shop_open(&game); /* Quit mid-stage must not skip it. */
+    CHECK(game.menu.next_stage == 5);
+    game.cleared_game = true;
+    game_checkpoint(&game, true);
+    CHECK(game_continue(&game, 1));
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
+    for (int i = 0; i < 8; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.stage.index == 8 && game.menu.page == MENU_NONE && game.cleared_game);
+    FILE *file = fopen(path, "wb");
+    CHECK(file != NULL);
+    if (file) { fputs("GALAXY_SAVE 1 99 0 1 0 0\n", file); fclose(file); }
+    SavedGame before = game.saves[0];
+    CHECK(!game_save_read(&game.saves[0], path));
+    CHECK(!memcmp(&before, &game.saves[0], sizeof(before)));
+    remove(path);
+}
+
 int main(void) {
+    saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     campaign_stages();

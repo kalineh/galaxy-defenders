@@ -2,7 +2,7 @@
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-static const char *labels[MENU_FINISH + 1][4] = {
+static const char *labels[MENU_STAGE_SELECT + 1][4] = {
     [MENU_MAIN] = {"Solo Game", "Coop Game", "Options", "Quit"},
     [MENU_NEW_GAME] = {"Continue", "New Game", "Back"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
@@ -15,18 +15,22 @@ static const char *labels[MENU_FINISH + 1][4] = {
 };
 
 int game_menu_count(const Game *game) {
+    if (game->menu.page == MENU_STAGE_SELECT) return 13;
     int count = 0;
     while (count < 4 && labels[game->menu.page][count]) ++count;
     return count;
 }
 
 const char *game_menu_label(const Game *game, int row) {
+    static const char *stages[] = {"Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6",
+        "Stage 7", "Stage 8", "Stage 9", "Stage 10", "Stage 11", "Stage 12", "Back"};
+    if (game->menu.page == MENU_STAGE_SELECT) return row >= 0 && row < 13 ? stages[row] : "";
     return row >= 0 && row < game_menu_count(game) ? labels[game->menu.page][row] : "";
 }
 
 bool game_menu_enabled(const Game *game, int row) {
-    /* Continue stays disabled until native persistence exists. */
-    return row >= 0 && row < game_menu_count(game) && !(game->menu.page == MENU_NEW_GAME && row == 0);
+    return row >= 0 && row < game_menu_count(game) && !(game->menu.page == MENU_NEW_GAME && row == 0 &&
+        !game->saves[game->menu.players == 2 ? 1 : 0].valid);
 }
 
 bool game_menu_small(const Game *game, int row) {
@@ -35,12 +39,12 @@ bool game_menu_small(const Game *game, int row) {
 }
 
 void game_menu_open(Game *game, MenuPage page) {
-    if (page < MENU_NONE || page > MENU_FINISH) return;
+    if (page < MENU_NONE || page > MENU_STAGE_SELECT) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     game->menu.page = page;
     game->menu.frame = 0;
-    game->menu.cursor = page == MENU_NEW_GAME ? 1 : 0;
+    game->menu.cursor = page == MENU_NEW_GAME && !game->saves[game->menu.players == 2 ? 1 : 0].valid ? 1 : 0;
     game->paused = page != MENU_NONE;
     for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = (PlayerInput){0};
 }
@@ -51,7 +55,7 @@ void game_retry(Game *game) {
     GameMenu menu = game->menu;
     int difficulty = game->difficulty;
     int stage = game->stage.index;
-    game_reset(game, 1);
+    game_reset_session(game, 1);
     game->stage.index = stage;
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[stage].scroll_speed;
@@ -84,7 +88,8 @@ static void start_game(Game *game) {
     static const int starting_money[] = {0, 1500, 2500};
     static const int starting_chassis[] = {1, 0, 2};
     GameMenu menu = game->menu;
-    game_reset(game, 1);
+    game_reset_session(game, 1);
+    game->cleared_game = false;
     game->menu = menu;
     game->difficulty = menu.difficulty;
     if (menu.players == 2) game_join(game, 1);
@@ -105,6 +110,7 @@ static void start_game(Game *game) {
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
     game_menu_open(game, MENU_NONE);
+    game_checkpoint(game, false);
 }
 
 void game_menu_input(Game *game, MenuAction action, int slot) {
@@ -115,6 +121,18 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         return;
     }
     if (menu->page == MENU_SHOP) { game_shop_input(game, action, slot); return; }
+    if (menu->page == MENU_STAGE_SELECT) {
+        if (slot != 0) return;
+        if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
+        if (action == MENU_DOWN && menu->cursor < 12) ++menu->cursor;
+        if (action == MENU_BACK || (action == MENU_CONFIRM && menu->cursor == 12)) game_shop_open(game);
+        else if (action == MENU_CONFIRM) {
+            int stage = menu->cursor;
+            game_stage(game, stage, 0);
+            game_checkpoint(game, false);
+        }
+        return;
+    }
     if (menu->page == MENU_CLEAR) {
         if (action == MENU_CONFIRM || action == MENU_BACK) game_shop_open(game);
         return;
@@ -163,7 +181,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             if (row < 2) { menu->players = row + 1; game_menu_open(game, MENU_NEW_GAME); }
             else game_menu_open(game, row == 2 ? MENU_OPTIONS : MENU_QUIT);
             break;
-        case MENU_NEW_GAME: game_menu_open(game, row == 1 ? MENU_DIFFICULTY : MENU_MAIN); break;
+        case MENU_NEW_GAME:
+            if (row == 0) game_continue(game, menu->players);
+            else game_menu_open(game, row == 1 ? MENU_DIFFICULTY : MENU_MAIN);
+            break;
         case MENU_DIFFICULTY:
             if (row == 3) game_menu_open(game, MENU_NEW_GAME);
             else {
@@ -177,7 +198,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         case MENU_QUIT:
             if (row == 0) game_menu_open(game, menu->parent);
             else if (menu->parent == MENU_MAIN) menu->quit = true;
-            else game_menu_open(game, MENU_MAIN); /* Shop is not ported yet. */
+            else game_shop_open(game);
             break;
         case MENU_PAUSE:
             game_menu_open(game, row == 0 ? MENU_NONE : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);

@@ -76,6 +76,7 @@ void game_secret_return(Game *game) {
 
 const char *game_music(const Game *game) {
     if (game->menu.page == MENU_FINISH) return "fading-memories";
+    if (game->menu.page == MENU_STAGE_SELECT) return "Konami's_Moon_Base";
     const StageDefinition *definition = &stage_definitions[game->stage.index];
     return game->stage.music_event >= 0 ? definition->events[game->stage.music_event].name : definition->music;
 }

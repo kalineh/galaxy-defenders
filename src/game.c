@@ -530,10 +530,13 @@ void game_tick(Game *game) {
     if (!alive && !game->seeking) game->over = true;
     if (game->complete && game->secret_return.active) game_secret_return(game);
     else if (game->complete && !game->over) {
-        if (game->stage.index == 11) {
+        if (game->stage.index == 11 && !game->cleared_game) {
             for (int i = 0; i < GAME_PLAYERS; ++i)
                 if (game->players[i].joined) game->players[i].money = 999999999;
             game_menu_open(game, MENU_FINISH);
+            game->cleared_game = true;
+            game->menu.next_stage = 0;
+            game_checkpoint(game, true);
         } else game_menu_open(game, MENU_CLEAR);
     }
 }
@@ -556,7 +559,7 @@ bool game_stage(Game *game, int index, float progress) {
     memcpy(players, game->players, sizeof(players));
     GameMenu menu = game->menu;
     int difficulty = game->difficulty, revision = game->stage.revision + 1;
-    game_reset(game, game->seed);
+    game_reset_session(game, game->seed);
     game->difficulty = difficulty;
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));

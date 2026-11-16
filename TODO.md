@@ -17,6 +17,8 @@ automation. No npm installs. Commit and push verified focused changes to `native
   scenery layers, music changes, camera stops, clear/shop/next-stage progression.
 - Secret entry/return retains the main encounter and transfers bonus rewards.
 - Original Stage12 ending text/music and victory money.
+- Separate solo/co-op saves, validated atomic persistence, Continue to the correct
+  stage/shop and unlocked replay selection after winning. Pause Quit opens shop.
 - Original coin/big-coin/upgrade pickups, magnet behavior, Rabbit coin bonus,
   generator coin recovery, health-based kill/building scores and co-op damage scale.
 - Console equipment/spawn/seek commands, completion/history and F3 frame graph.
@@ -27,7 +29,6 @@ automation. No npm installs. Commit and push verified focused changes to `native
   finish salvage and player death behavior.
 - Audit boss attack timing/movement in detail (current coverage checks all phases,
   shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
-- Native saves/Continue and replay stage selection after winning.
 - Sample ships, shop inventory restrictions,
   menu transitions/fades, stage-clear explosion/flyout presentation.
 - Validate secret entrance reachability at arena edges; preserve source coordinates.

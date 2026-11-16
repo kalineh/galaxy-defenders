@@ -28,7 +28,7 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH } MenuPage;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT } MenuPage;
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent;
@@ -37,6 +37,7 @@ typedef struct {
     int shop_category[2], shop_item[2], shop_level[2];
     bool shop_items[2];
     int frame;
+    int next_stage;
 } GameMenu;
 
 typedef struct {
@@ -56,6 +57,16 @@ typedef struct {
     float energy, weapon_cooldown[2], friction;
     PlayerInput input;
 } Player;
+
+typedef struct {
+    int pilot, chassis, primary, level, secondary, secondary_level, sidekick, generator, shield, money;
+} SavedPlayer;
+
+typedef struct {
+    bool valid, shop, cleared;
+    int stage, difficulty, players;
+    SavedPlayer player[GAME_PLAYERS];
+} SavedGame;
 
 typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
     ENEMY_MINI_SQUARE, ENEMY_BIG_BALL, ENEMY_DOWN_TURRET, ENEMY_BOSS_CHUNK,
@@ -150,9 +161,16 @@ typedef struct {
     StageState stage;
     GameMenu menu;
     SecretReturn secret_return;
+    SavedGame saves[2];
+    bool saves_dirty, cleared_game;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);
+void game_reset_session(Game *game, uint32_t seed);
+void game_checkpoint(Game *game, bool shop);
+bool game_continue(Game *game, int players);
+bool game_save_read(SavedGame *save, const char *path);
+bool game_save_write(const SavedGame *save, const char *path);
 bool game_join(Game *game, int slot);
 bool game_equip_chassis(Game *game, int slot, int chassis);
 void game_menu_open(Game *game, MenuPage page);
