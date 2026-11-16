@@ -66,6 +66,7 @@ typedef struct {
 typedef struct {
     bool valid, shop, cleared;
     int stage, difficulty, players;
+    uint32_t seed;
     SavedPlayer player[GAME_PLAYERS];
 } SavedGame;
 

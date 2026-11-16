@@ -28,7 +28,7 @@ bool game_save_read(SavedGame *save, const char *path) {
     SavedGame candidate = {0};
     int version, shop, cleared;
     bool ok = fscanf(file, "GALAXY_SAVE %d %d %d %d %d %d", &version, &candidate.stage,
-        &candidate.difficulty, &candidate.players, &shop, &cleared) == 6 && version == 1 &&
+        &candidate.difficulty, &candidate.players, &shop, &cleared) == 6 && (version == 1 || version == 2) &&
         (shop == 0 || shop == 1) && (cleared == 0 || cleared == 1) && candidate.players >= 1 && candidate.players <= 2;
     candidate.valid = true;
     candidate.shop = ok && shop != 0; candidate.cleared = ok && cleared != 0;
@@ -37,6 +37,8 @@ bool game_save_read(SavedGame *save, const char *path) {
         ok = fscanf(file, "%d %d %d %d %d %d %d %d %d %d", &p->pilot, &p->chassis, &p->primary,
             &p->level, &p->secondary, &p->secondary_level, &p->sidekick, &p->generator, &p->shield, &p->money) == 10;
     }
+    candidate.seed = 1;
+    if (ok && version == 2) ok = fscanf(file, "%u", &candidate.seed) == 1;
     char extra;
     ok = ok && fscanf(file, " %c", &extra) == EOF && valid_save(&candidate);
     fclose(file);
@@ -51,13 +53,14 @@ bool game_save_write(const SavedGame *save, const char *path) {
     if (length < 0 || length >= (int)sizeof(temporary)) return false;
     FILE *file = fopen(temporary, "wb");
     if (!file) return false;
-    bool ok = fprintf(file, "GALAXY_SAVE 1 %d %d %d %d %d\n", save->stage, save->difficulty,
+    bool ok = fprintf(file, "GALAXY_SAVE 2 %d %d %d %d %d\n", save->stage, save->difficulty,
         save->players, save->shop, save->cleared) > 0;
     for (int i = 0; i < save->players; ++i) {
         const SavedPlayer *p = &save->player[i];
         ok = fprintf(file, "%d %d %d %d %d %d %d %d %d %d\n", p->pilot, p->chassis, p->primary,
             p->level, p->secondary, p->secondary_level, p->sidekick, p->generator, p->shield, p->money) > 0 && ok;
     }
+    ok = fprintf(file, "%u\n", save->seed) > 0 && ok;
     if (fclose(file)) ok = false;
     if (!ok) { remove(temporary); return false; }
 #ifdef _WIN32
@@ -84,7 +87,7 @@ void game_checkpoint(Game *game, bool shop) {
     int players = game->players[1].joined ? 2 : 1;
     SavedGame *save = &game->saves[players - 1];
     *save = (SavedGame){.valid = true, .shop = shop, .cleared = game->cleared_game,
-        .stage = shop ? game->menu.next_stage : game->stage.index, .difficulty = game->difficulty, .players = players};
+        .stage = shop ? game->menu.next_stage : game->stage.index, .difficulty = game->difficulty, .players = players, .seed = game->seed};
     for (int i = 0; i < players; ++i) {
         const Player *p = &game->players[i];
         save->player[i] = (SavedPlayer){p->pilot, p->chassis, p->primary, p->weapon_level, p->secondary,
@@ -98,7 +101,7 @@ bool game_continue(Game *game, int players) {
     SavedGame save = game->saves[players - 1];
     int options[3];
     memcpy(options, game->menu.options, sizeof(options));
-    game_reset_session(game, 1);
+    game_reset_session(game, save.seed);
     memcpy(game->menu.options, options, sizeof(options));
     game->difficulty = save.difficulty;
     game->menu.players = players;

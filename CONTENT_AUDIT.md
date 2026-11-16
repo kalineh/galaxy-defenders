@@ -332,3 +332,7 @@ to confirm any of the explicit mismatches listed here.
   the same list. Clear-game component ranges and all weapons restored. The audit
   previously conflated debug map stock with release randomized stock. Native RNG
   remains different from .NET Random. Full suite, native and render checks pass.
+- Save persistence repair: version 2 retains the campaign seed so Continue keeps
+  stage stock stable; version 1 remains readable with its original default seed.
+  Roundtrip/stock/backward-compatibility checks, full suite and native build pass.
+  Per-stage score and medal records remain pending.

@@ -1288,6 +1288,7 @@ static void collectible_rewards(void) {
 
 static void saved_continue(void) {
     reset();
+    game.seed = 987654321u;
     CHECK(game_stage(&game, 4, 0));
     game.players[0].money = 12345;
     game.players[0].secondary = WEAPON_MISSILE;
@@ -1299,6 +1300,9 @@ static void saved_continue(void) {
     CHECK(game_save_write(&game.saves[0], path));
     SavedGame save = {0};
     CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
+    CHECK(save.seed == 987654321u);
+    int stock[WEAPON_COUNT+1], restored[WEAPON_COUNT+1];
+    int stock_count = game_shop_stock(&game, 0, 3, stock);
     save.player[0].money = 10000;
     CHECK(game_save_write(&save, path));
     reset();
@@ -1306,6 +1310,9 @@ static void saved_continue(void) {
     CHECK(game_continue(&game, 1));
     CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
     CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
+    CHECK(game.seed == 987654321u);
+    CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
+    CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     game_menu_input(&game, MENU_READY, 0);
     CHECK(game.stage.index == 5 && game.menu.page == MENU_NONE);
     game_shop_open(&game); /* Quit mid-stage must not skip it. */
@@ -1324,6 +1331,10 @@ static void saved_continue(void) {
     SavedGame before = game.saves[0];
     CHECK(!game_save_read(&game.saves[0], path));
     CHECK(!memcmp(&before, &game.saves[0], sizeof(before)));
+    file = fopen(path, "wb");
+    CHECK(file != NULL);
+    if (file) { fputs("GALAXY_SAVE 1 0 0 1 1 0\n0 0 0 0 -1 0 -1 0 -1 2000\n", file); fclose(file); }
+    CHECK(game_save_read(&save, path) && save.seed == 1);
     remove(path);
 }
 
