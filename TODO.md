@@ -11,11 +11,14 @@ Active request: fix every Not OK item in CONTENT_AUDIT.md. Work through shared
 gameplay/collision defects, projectile visuals/effects, boss behavior/effects,
 then shop/progression/UI/scenery and standalone archived content. Verify focused
 pieces and commit/push each to native. Do not stop after the first batch.
-Current batch: shop stock verified; next restore save records and transitions.
+Current batch: stage-clear flyout/gate/fade verified; next secret return timing.
 Completed/pushed: death/contact, collisions, weapon motion/targeting/sprites,
-authored particles, enemy/boss behavior/effects, player/pickups and scenery.
-Remaining: shop preview/departure, transitions, audio loops, save records,
-archived content and final audit reconciliation.
+authored particles, enemy/boss behavior/effects, player/pickups, scenery,
+release shop stock (2d25a50), persistent seed (47643c7), missile effects (e3d1fca).
+Remaining: shop preview/departure, secret return/camera/fades, clear statistics/
+awards/medals and save records, general menu fades, archived content and audit
+reconciliation. Beam looping audio was a false audit finding: Cue fields unused,
+firing Sound commented out in legacy; do not add it.
 Do not run the legacy game to establish differences explicit in source.
 
 ## Implemented
@@ -49,19 +52,14 @@ Do not run the legacy game to establish differences explicit in source.
 
 ## Remaining parity work
 
-- Follow the confirmed findings and repair order in CONTENT_AUDIT.md. Highest
-  priority: invented three-life respawns, contact/reciprocal damage and impulse,
-  Spike/FenceBeam contact, cannon repeat hits, projectile interaction dispatch,
-  missing primary muzzle offset, sidekick visuals and boss attack differences.
-- Audit every projectile's collision, special effects and sound against legacy;
-  finish salvage and player death behavior. Enemy contact still needs its original
-  health-based damage, reciprocal damage and collision impulse (currently fixed damage).
-- Audit boss attack timing/movement in detail (current coverage checks all phases,
-  shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
-- Sample ships, shop inventory restrictions,
-  menu transitions/fades, stage-clear explosion/flyout presentation.
-- Secret return/fade timing and scrolling need closer legacy comparison.
-- Blending gradient scenery, special enemy/boss particles and death presentation.
+- Finish the remaining findings in CONTENT_AUDIT.md; historical Not OK rows need
+  reconciliation with repair progress, not reimplementation of completed fixes.
+- Shop sample-ship firing previews and fly-to-stage animation.
+- Stage-clear stats/awards/medal presentation and per-stage save records.
+- Secret return: 30-frame delay/fade, +280 camera, direction before entry snap.
+- General menu fade transitions; scenery RNG/update sequencing; archived content.
+- Boss coverage checks phases/shared parts/death/authored spawns, not exhaustive
+  frame-identical traces against the legacy runtime.
 - Pilot ability classes are dormant in the legacy game: TryEnable has no callers,
   no purchase UI exists, and ability HUD drawing is commented out. Do not invent
   activation or purchasing for those unused definitions.

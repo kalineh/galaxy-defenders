@@ -135,7 +135,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         return;
     }
     if (menu->page == MENU_CLEAR) {
-        if (action == MENU_CONFIRM || action == MENU_BACK) game_shop_open(game);
+        if ((action == MENU_CONFIRM || action == MENU_BACK) && menu->frame > 380 && !game->clear_exit) {
+            game->clear_exit = true;
+            menu->frame = 360;
+        }
         return;
     }
     if (menu->page == MENU_PILOT) {

@@ -759,9 +759,12 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         }
     }
     if (game->menu.page == MENU_CLEAR) {
-        /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
-        text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
-        text_center(assets->ui_font, "Continue", 960, 525, 30, WHITE);
+        float alpha = game->clear_exit ? fminf(1, 0.5f + (game->menu.frame - 360) / 60.0f) :
+            fminf(0.5f, game->menu.frame / 60.0f);
+        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
+        if (game->menu.frame >= 60) text_center(assets->ui_font, "Stage Clear", 960, 435, 52, accent);
+        if (game->menu.frame > 380 && !game->clear_exit)
+            text_center(assets->ui_font, "Continue", 960, 525, 30, WHITE);
         return;
     }
     if (title_menu(game)) {

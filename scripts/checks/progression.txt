@@ -7,7 +7,9 @@ player.input 1 0 0 1 1
 game.step 6000
 assert complete eq 1
 assert menu eq 10
+game.step 381
 menu.input confirm
+game.step 82
 assert menu eq 11
 assert p1.score eq 0
 assert p1.money gt 0
@@ -20,7 +22,9 @@ game.stage 2 0.95
 player.input 1 0 0 1 1
 game.step 6000
 assert complete eq 1
+game.step 381
 menu.input confirm
+game.step 82
 assert menu eq 11
 assert stage eq 2
 # The second shop continues into the authored third stage.

@@ -169,7 +169,7 @@ typedef struct {
     GameMenu menu;
     SecretReturn secret_return;
     SavedGame saves[2];
-    bool saves_dirty, cleared_game;
+    bool saves_dirty, cleared_game, clear_exit;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);

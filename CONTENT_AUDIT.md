@@ -341,3 +341,7 @@ to confirm any of the explicit mismatches listed here.
 - Audit correction: Beam/BeamFocus Cue fields are never assigned or played, and
   their WeaponDefinitions Sound entries are commented out. Native empty sound
   definitions already match; no looping audio should be added.
+- Main-stage clear now flies living ships upward with authored trails, fades
+  the arena, rejects confirmation through frame 380 and delays shop entry until
+  the exit fade completes. Full suite (including actual progression script),
+  native build and windowless render pass. Stats/award panel remains pending.

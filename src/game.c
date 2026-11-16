@@ -584,7 +584,21 @@ void game_tick(Game *game) {
         if (game->over_frames < 120 && ++game->over_frames == 120) game_menu_open(game, MENU_OVER);
         return;
     }
-    if (game->complete) return;
+    if (game->complete) {
+        if (game->menu.page == MENU_CLEAR) {
+            if (game->clear_exit && game->menu.frame > 440) { game_shop_open(game); return; }
+            if (game->clear_exit || game->menu.frame <= 440) ++game->menu.frame;
+            for (int i = 0; i < GAME_PLAYERS; ++i) {
+                Player *p = &game->players[i];
+                if (!p->joined || p->lives <= 0) continue;
+                p->vy -= 0.1f * game->menu.frame;
+                game_particle(game, PARTICLE_PLAYER_STAGE_END_SHIP_TRAIL, p->x, p->y, i, 1, 0, 0);
+                p->x += p->vx; p->y += p->vy;
+                p->vx *= p->friction; p->vy *= p->friction;
+            }
+        }
+        return;
+    }
     ++game->tick;
     if (!game->seeking) update_players(game);
     else for (int p = 0; p < GAME_PLAYERS; ++p)

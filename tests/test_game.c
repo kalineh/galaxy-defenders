@@ -184,7 +184,9 @@ static void stage2_runtime(void) {
     CHECK(!enemy->active && !game.complete && game_bullet_count(&game) == 0);
     for (int i = 0; i < 220; ++i) game_tick(&game);
     CHECK(game.complete && game.menu.page == MENU_CLEAR);
+    while (game.menu.frame <= 380) game_tick(&game);
     game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int i = 0; i < 82; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
     game_menu_input(&game, MENU_READY, 0);
     CHECK(game.menu.page == MENU_NONE && game.stage.index == 2);
@@ -627,8 +629,15 @@ static void stage_clear_exit(void) {
     int tick = game.tick;
     for (int i = 0; i < 90; ++i) game_tick(&game);
     CHECK(game.tick == tick);
-    for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
+    CHECK(game.players[0].y < 0 && game.players[1].y < 0);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
+    CHECK(game.menu.page == MENU_CLEAR && !game.clear_exit);
+    while (game.menu.frame <= 380) game_tick(&game);
+    CHECK(console_execute(&console, &game, "menu.input confirm 2"));
+    CHECK(game.menu.page == MENU_CLEAR && game.clear_exit && game.menu.frame == 360);
+    for (int i = 0; i < 81; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_CLEAR);
+    game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
     CHECK(game.players[0].score == 0 && game.players[0].money == 500 && game.players[1].joined);
     CHECK(console_execute(&console, &game, "menu.input ready 1"));
@@ -1220,7 +1229,9 @@ static void campaign_stages(void) {
         CHECK(game.complete && (stage >= 12 || boss_seen));
         CHECK(game.dropped_spawns == 0);
         if (stage < 11) {
+            while (game.menu.frame <= 380) game_tick(&game);
             game_menu_input(&game, MENU_CONFIRM, 0);
+            for (int i = 0; i < 82; ++i) game_tick(&game);
             game_menu_input(&game, MENU_READY, 0);
             CHECK(game.stage.index == stage + 1 && game.menu.page == MENU_NONE);
         }
