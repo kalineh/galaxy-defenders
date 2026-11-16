@@ -40,7 +40,7 @@ static void collisions(void) {
     game_spawn_bullet(&game, 0, 400, 500, 0, -400, 1);
     game_tick(&game);
     CHECK(!game.enemies[enemy].active);
-    CHECK(game.kills == 1 && game.players[0].score == 100);
+    CHECK(game.kills == 1 && game.players[0].score == 10);
     CHECK(game_bullet_count(&game) == 0);
     /* Friendly fire is disabled, including for the other player. */
     CHECK(game_join(&game, 1));
@@ -208,7 +208,7 @@ static void pools_and_completion(void) {
     game_spawn_enemy(&game, ENEMY_BOSS, 480, 200);
     game_spawn_bullet(&game, 0, 480, 400, 0, -200, 60);
     game_tick(&game);
-    CHECK(game.complete && game.players[0].score == 5000);
+    CHECK(game.complete && game.players[0].score == 500);
 }
 
 static void determinism(void) {
@@ -425,11 +425,11 @@ static void stage_clear_exit(void) {
     for (int i = 0; i < GAME_EFFECTS; ++i) CHECK(game.effects[i].life <= 0);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
-    CHECK(game.players[0].score == 0 && game.players[0].money == 5000 && game.players[1].joined);
+    CHECK(game.players[0].score == 0 && game.players[0].money == 500 && game.players[1].joined);
     CHECK(console_execute(&console, &game, "menu.input ready 1"));
     CHECK(game.menu.page == MENU_SHOP && game.menu.ready[0] && !game.menu.ready[1]);
     CHECK(console_execute(&console, &game, "menu.input ready 2"));
-    CHECK(game.stage.index == 1 && game.players[0].money == 5000);
+    CHECK(game.stage.index == 1 && game.players[0].money == 500);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
 }
 
@@ -812,7 +812,27 @@ static void secret_stage_roundtrip(void) {
     CHECK(game.players[0].vx < 0 && game.menu.page == MENU_NONE);
 }
 
+static void collectible_rewards(void) {
+    reset();
+    Player *p = &game.players[0];
+    p->pilot = 1;
+    game_drop_pickups(&game, p->x, p->y, 21, true, true);
+    CHECK(game.pickups[0].kind == 1 && game.pickups[1].kind == 1);
+    CHECK(game.pickups[2].kind == 0 && game.pickups[3].kind == 2);
+    int level = p->weapon_level;
+    game_tick(&game);
+    CHECK(p->score == 518 && p->weapon_level == level + 1 && game.pickups_collected == 4);
+    reset();
+    game_drop_pickups(&game, 400, 650, 1, false, false);
+    for (int tick = 0; tick < 120; ++tick) game_tick(&game);
+    CHECK(game.players[0].score == 15 && game.pickups_collected == 1);
+    CHECK(game_health_score(&game, 2.5f, 15) == 30);
+    game.difficulty = 2;
+    CHECK(game_health_score(&game, 2.5f, 15) == 40);
+}
+
 int main(void) {
+    collectible_rewards();
     secret_stage_roundtrip();
     campaign_stages();
     remaining_bosses();

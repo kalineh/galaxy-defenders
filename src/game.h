@@ -14,6 +14,7 @@
 #define GAME_ENEMIES 256
 #define GAME_BULLETS 768
 #define GAME_EFFECTS 8192
+#define GAME_PICKUPS 512
 #define GAME_CHASSIS 9
 #define PLAYER_ARMOR_RADIUS 16.0f
 #define ENEMY_SHOT_RADIUS 2.0f
@@ -116,11 +117,18 @@ typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
     EFFECT_BUILDING_SMALL, EFFECT_BUILDING_BIG } EffectKind;
 
 typedef struct {
+    bool active, magnet;
+    int kind, age; /* 0: coin, 1: big coin, 2: primary upgrade. */
+    float x, y, vx, vy, friction, force;
+} Pickup;
+
+typedef struct {
     bool active, boss_spawned;
     Player players[GAME_PLAYERS];
     Enemy enemies[GAME_ENEMIES];
     Bullet bullets[GAME_BULLETS];
     Effect effects[GAME_EFFECTS];
+    Pickup pickups[GAME_PICKUPS];
     StageState stage;
     uint32_t random;
     int tick;
@@ -132,8 +140,10 @@ typedef struct {
     Enemy enemies[GAME_ENEMIES];
     Bullet bullets[GAME_BULLETS];
     Effect effects[GAME_EFFECTS];
+    Pickup pickups[GAME_PICKUPS];
     uint32_t random, seed;
     int tick, kills, building_kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
+    int pickups_collected;
     bool waves, paused, over, complete, boss_spawned, seeking;
     int difficulty;
     float scroll_speed;
@@ -157,6 +167,8 @@ void game_tick(Game *game);
 int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y);
 int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float vy, float damage);
 void game_damage_player(Game *game, int slot, float damage);
+void game_drop_pickups(Game *game, float x, float y, int coins, bool powerup, bool combine);
+int game_health_score(const Game *game, float health, float multiplier);
 int game_enemy_count(const Game *game);
 int game_bullet_count(const Game *game);
 void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy);

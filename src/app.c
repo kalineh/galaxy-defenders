@@ -28,11 +28,13 @@ typedef struct {
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
     Texture2D boss4_cover, boss5_cover, boss6_center;
+    Texture2D pickups[3];
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
     int music_mode, music_revision, music_event, music_tick;
     const char *music_name;
     Sound shoot, explode, building_explode, hit, shot_hit, die;
+    Sound bonus_get;
     Sound menu_sounds[5];
     bool audio, stage_music_started;
     Font console_font, ui_font;
@@ -72,6 +74,7 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
     if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
     if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
     if (IsTextureValid(assets->boss6_center)) UnloadTexture(assets->boss6_center);
@@ -111,6 +114,7 @@ static void assets_unload(Assets *assets) {
         if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
     }
     if (assets->audio) {
+        if (IsSoundValid(assets->bonus_get)) UnloadSound(assets->bonus_get);
         if (IsMusicValid(assets->music)) UnloadMusicStream(assets->music);
         if (IsMusicValid(assets->title_music)) UnloadMusicStream(assets->title_music);
         if (IsMusicValid(assets->pause_music)) UnloadMusicStream(assets->pause_music);
@@ -213,6 +217,9 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->enemies[i] = texture_load(path);
     }
     assets->shot = texture_load("textures/Laser.png");
+    assets->pickups[0] = texture_load("textures/Bonus.png");
+    assets->pickups[1] = texture_load("textures/BigBonus.png");
+    assets->pickups[2] = texture_load("textures/Powerup.png");
     assets->boss4_cover = texture_load("textures/Boss4Cover.png");
     assets->boss5_cover = texture_load("textures/Boss5Cover.png");
     assets->boss6_center = texture_load("textures/Boss6Center.png");
@@ -312,6 +319,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
     assets->shot_hit = LoadSound(asset_path("audio/WeaponHitLaser.wav"));
     assets->die = LoadSound(asset_path("audio/PlayerDie.wav"));
+    assets->bonus_get = LoadSound(asset_path("audio/BonusGet.wav"));
     if (!IsMusicValid(assets->music) || !IsMusicValid(assets->title_music) || !IsMusicValid(assets->pause_music) || !IsSoundValid(assets->shoot) ||
         !IsSoundValid(assets->explode) || !IsSoundValid(assets->building_explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
         console_log(console, "ERROR: missing or unsupported audio assets");
@@ -448,6 +456,12 @@ static void draw_game(const Game *game, const Assets *assets) {
         Texture2D texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
         sprite(texture, ARENA_X + effect->x, effect->y, texture.width * effect->scale,
             effect->angle, (Color){effect->r, effect->g, effect->b, 255});
+    }
+    for (int i = 0; i < GAME_PICKUPS; ++i) {
+        const Pickup *p = &game->pickups[i];
+        if (!p->active) continue;
+        Texture2D texture = assets->pickups[p->kind];
+        sprite(texture, ARENA_X + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
     }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
@@ -764,6 +778,7 @@ static void update_audio(const Game *game, Assets *assets) {
         assets->music_event = game->stage.music_event;
     }
     float sfx = game->menu.options[0] / 10.0f;
+    SetSoundVolume(assets->bonus_get, sfx);
     SetMusicVolume(tracks[mode], game->menu.options[1] / 10.0f);
     SetSoundVolume(assets->shoot, 0.13f * sfx);
     SetSoundVolume(assets->explode, 0.35f * sfx);
@@ -969,6 +984,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsKeyPressed(KEY_M) && assets.audio) { muted = !muted; SetMasterVolume(muted ? 0 : volume); }
         }
         int old_buildings = game->building_kills;
+        int old_pickups = game->pickups_collected;
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
         int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
         if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH) && (IsWindowFocused() || frames)) {
@@ -980,6 +996,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             }
         } else accumulator = 0;
         if (assets.audio) {
+            if (game->pickups_collected > old_pickups) PlaySound(assets.bonus_get);
             if (game->shots > old_shots) PlaySound(assets.shoot);
             if (game->building_kills > old_buildings) PlaySound(assets.building_explode);
             if (game->kills > old_kills) PlaySound(assets.explode);

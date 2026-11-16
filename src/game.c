@@ -275,6 +275,80 @@ bool game_upgrade_weapon(Game *game, int slot, int level) {
     return true;
 }
 
+int game_health_score(const Game *game, float health, float multiplier) {
+    static const float scale[] = {1, 1.1f, 1.25f};
+    int score = (int)(health * multiplier * scale[game->difficulty]);
+    return score - score % 10;
+}
+
+void game_drop_pickups(Game *game, float x, float y, int coins, bool powerup, bool combine) {
+    int big = combine ? coins / 10 : 0;
+    int small = coins - big * 10;
+    int count = big + small + (powerup ? 1 : 0);
+    for (int n = 0; n < count; ++n) {
+        int slot = -1;
+        for (int i = 0; i < GAME_PICKUPS; ++i) if (!game->pickups[i].active) { slot = i; break; }
+        if (slot < 0) { ++game->dropped_spawns; return; }
+        Pickup *p = &game->pickups[slot];
+        *p = (Pickup){0};
+        p->active = true;
+        p->kind = n < big ? 1 : n < big + small ? 0 : 2;
+        p->x = x; p->y = y;
+        p->vx = (random_unit(game) * 2 - 1) * 3;
+        p->vy = (random_unit(game) * 2 - 1) * 3;
+        p->friction = 0.95f + random_unit(game) * 0.03f;
+    }
+}
+
+static void update_pickups(Game *game) {
+    for (int i = 0; i < GAME_PICKUPS; ++i) {
+        Pickup *pickup = &game->pickups[i];
+        if (!pickup->active) continue;
+        ++pickup->age;
+        pickup->x += pickup->vx; pickup->y += pickup->vy;
+        pickup->vx *= pickup->friction * 0.97f;
+        pickup->vy = pickup->vy * pickup->friction * 0.97f + 0.06f;
+        int nearest = -1;
+        float distance = 1e20f;
+        for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+            Player *p = &game->players[slot];
+            if (!p->joined || p->lives <= 0) continue;
+            float length = hypotf(p->x - pickup->x, p->y - pickup->y);
+            if (length < distance) { nearest = slot; distance = length; }
+        }
+        if (nearest >= 0 && !game->seeking) {
+            Player *p = &game->players[nearest];
+            if (pickup->age >= 20 && distance < 275) pickup->magnet = true;
+            if (pickup->magnet && distance > 0) {
+                pickup->force += 2;
+                float power = fmaxf(pickup->force, 275 - distance);
+                float dx = (p->x - pickup->x) / distance, dy = (p->y - pickup->y) / distance;
+                pickup->x += dx * power * 0.04f; pickup->y += dy * power * 0.04f;
+                pickup->vx += dx * power * 0.0125f; pickup->vy += dy * power * 0.0125f;
+            }
+            float radius = p->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
+            float dx = p->x - pickup->x, dy = p->y - pickup->y;
+            if (dx * dx + dy * dy < 16 * 16 + radius * radius) {
+                if (pickup->kind == 2) {
+                    if (p->weapon_level + 1 < game_weapons[p->primary].level_count) ++p->weapon_level;
+                    memset(p->weapons, 0, sizeof(p->weapons));
+                } else {
+                    p->score += pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0);
+                    if (pickup->kind == 1) p->energy = fminf(game_generators[p->generator].capacity,
+                        p->energy + game_generators[p->generator].on_coin);
+                }
+                pickup->active = false;
+                ++game->pickups_collected;
+            }
+        } else pickup->magnet = false;
+        if (pickup->age <= 20 || pickup->magnet) {
+            pickup->x = clamp(pickup->x, 0, GAME_WIDTH);
+            pickup->y = fminf(pickup->y, GAME_HEIGHT);
+        }
+        if (pickup->y > GAME_HEIGHT + 48) pickup->active = false;
+    }
+}
+
 static void update_players(Game *game) {
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *player = &game->players[i];
@@ -373,10 +447,11 @@ static void update_bullets(Game *game) {
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
                 if (enemy->kind == ENEMY_SWIRL_BALL && enemy->parent >= 0 && game->enemies[enemy->parent].active)
                     enemy = &game->enemies[enemy->parent];
-                if (boss_damage(game, enemy, bullet->damage, bullet->owner)) {
+                float damage = bullet->damage * (game->players[0].joined && game->players[1].joined ? 0.75f : 1);
+                if (boss_damage(game, enemy, damage, bullet->owner)) {
                     if (game->boss_spawned && game_enemy_count(game) == 0) return;
                 } else if (enemy->kind != ENEMY_CUTTER_BALL && enemy->kind != ENEMY_FENCE_BEAM) {
-                    enemy->health -= bullet->damage;
+                    enemy->health -= damage;
                     if (enemy->kind == ENEMY_RAID_TURRET) enemy->cooldown = 16;
                     if (enemy->kind == ENEMY_TELEPORTER && ++enemy->hit_count > 6 && enemy->attack < 0) { enemy->hit_count = 0; enemy->attack = 0; }
                     if (enemy->health <= 0) {
@@ -406,6 +481,13 @@ static void update_bullets(Game *game) {
                     if (game->stage.building_health[i] < 0) {
                         /* Keep the original strict <0 destruction boundary. */
                         ++game->building_kills;
+                        static const float big_health[] = {2.5f,2.5f,3,5,5,6,7,8,9};
+                        static const float small_health[] = {1,1.5f,1.5f,2,2.5f,5,6};
+                        bool small = !strncmp(event->name, "Small", 5);
+                        int number = event->name[strlen(event->name) - 1] - '1';
+                        game->players[bullet->owner].score += game_health_score(game,
+                            small ? small_health[number] : big_health[number], 15);
+                        game_drop_pickups(game, x, y, event->coins, event->powerup, false);
                         float angle = random_unit(game) * 6.2831853f;
                         game_effect(game, !strncmp(event->name, "Small", 5) ? EFFECT_BUILDING_SMALL : EFFECT_BUILDING_BIG,
                             x, y, 0, cosf(angle) * 0.75f, sinf(angle) * 0.75f);
@@ -442,6 +524,7 @@ void game_tick(Game *game) {
     game_scenery_update(game);
     update_enemies(game);
     update_bullets(game);
+    update_pickups(game);
     bool alive = false;
     for (int p = 0; p < GAME_PLAYERS; ++p) if (game->players[p].joined && game->players[p].lives > 0) alive = true;
     if (!alive && !game->seeking) game->over = true;

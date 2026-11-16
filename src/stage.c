@@ -18,6 +18,7 @@ void game_secret_enter(Game *game, int index) {
     memcpy(saved->enemies, game->enemies, sizeof(saved->enemies));
     memcpy(saved->bullets, game->bullets, sizeof(saved->bullets));
     memcpy(saved->effects, game->effects, sizeof(saved->effects));
+    memcpy(saved->pickups, game->pickups, sizeof(saved->pickups));
     int revision = game->stage.revision + 1;
     memset(&game->stage, 0, sizeof(game->stage));
     game->stage.index = index;
@@ -33,6 +34,7 @@ void game_secret_enter(Game *game, int index) {
     memset(game->enemies, 0, sizeof(game->enemies));
     memset(game->bullets, 0, sizeof(game->bullets));
     memset(game->effects, 0, sizeof(game->effects));
+    memset(game->pickups, 0, sizeof(game->pickups));
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         game->players[i].x = i ? 560 : 400;
         game->players[i].y = 880;
@@ -54,6 +56,7 @@ void game_secret_return(Game *game) {
     memcpy(game->enemies, saved->enemies, sizeof(game->enemies));
     memcpy(game->bullets, saved->bullets, sizeof(game->bullets));
     memcpy(game->effects, saved->effects, sizeof(game->effects));
+    memcpy(game->pickups, saved->pickups, sizeof(game->pickups));
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &game->players[i];
         int score = p->score;

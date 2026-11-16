@@ -7,7 +7,7 @@ player.input 1 0 0 1 1
 enemy.spawn ball 400 600
 game.step 35
 assert kills eq 1
-assert p1.score eq 100
+assert p1.score eq 10
 # Level 2 focus reload is 0.04 seconds (three fixed ticks).
 assert shots eq 12
 assert p2.health eq 20

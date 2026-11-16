@@ -237,7 +237,8 @@ void enemy_update_extended(Game *g, Enemy *e) {
 
 void enemy_die(Game *g, Enemy *e, int owner) {
     ++g->kills;
-    if (owner>=0) g->players[owner].score+=e->kind==ENEMY_BOSS?5000:100;
+    if (owner>=0) g->players[owner].score += game_health_score(g, e->health_max, 20);
+    game_drop_pickups(g, e->x, e->y, e->coins, e->powerup, true);
     game_effect(g,EFFECT_ENEMY_DEATH,e->x,e->y,0,0,-1.25f);
     if (e->kind==ENEMY_SPLITTER || e->kind==ENEMY_PYRAMID) {
         int count=e->kind==ENEMY_SPLITTER?2:3;

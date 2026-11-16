@@ -17,20 +17,25 @@ automation. No npm installs. Commit and push verified focused changes to `native
   scenery layers, music changes, camera stops, clear/shop/next-stage progression.
 - Secret entry/return retains the main encounter and transfers bonus rewards.
 - Original Stage12 ending text/music and victory money.
+- Original coin/big-coin/upgrade pickups, magnet behavior, Rabbit coin bonus,
+  generator coin recovery, health-based kill/building scores and co-op damage scale.
 - Console equipment/spawn/seek commands, completion/history and F3 frame graph.
 
 ## Remaining parity work
 
 - Audit every projectile's collision, special effects and sound against legacy;
-  finish pickups, original coin/score awards, salvage and player death behavior.
+  finish salvage and player death behavior.
 - Audit boss attack timing/movement in detail (current coverage checks all phases,
   shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
 - Native saves/Continue and replay stage selection after winning.
-- Original chassis/pilot abilities, sample ships, shop inventory restrictions,
+- Sample ships, shop inventory restrictions,
   menu transitions/fades, stage-clear explosion/flyout presentation.
 - Validate secret entrance reachability at arena edges; preserve source coordinates.
   Secret return/fade timing and scrolling need closer legacy comparison.
 - Blending gradient scenery, remaining boss visual details, turret corpses.
+- Pilot ability classes are dormant in the legacy game: TryEnable has no callers,
+  no purchase UI exists, and ability HUD drawing is commented out. Do not invent
+  activation or purchasing for those unused definitions.
 - Web/phone builds and physical controller playtests remain outside verified Windows.
 
 ## Verification

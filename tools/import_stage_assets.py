@@ -36,6 +36,9 @@ for folder in ('Background', 'Sky'):
     for source in (ROOT / 'legacy/Content/Textures' / folder).glob('*.png'):
         copy(source, ROOT / 'assets/textures' / source.name)
 copy(ROOT / 'legacy/Content/Music/fading-memories.wav', ROOT / 'assets/audio/fading-memories.wav')
+for name in ('Bonus', 'BigBonus', 'Powerup'):
+    copy(ROOT / 'legacy/Content/Textures/Entity' / (name + '.png'), ROOT / 'assets/textures' / (name + '.png'))
+copy(ROOT / 'legacy/Content/SE/BonusGet.wav', ROOT / 'assets/audio/BonusGet.wav')
 for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 'shop')]:
     for source in (ROOT / 'legacy/Content/Textures' / source_folder).glob('*.png'):
         copy(source, ROOT / 'assets/textures' / destination_folder / source.name)
