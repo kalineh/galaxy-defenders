@@ -305,3 +305,9 @@ to confirm any of the explicit mismatches listed here.
   beam impact positions, Bomblet expiry and Boomerang terminal effects. MiniShot
   no longer emits laser particles. Importer check, headless suite, focused impact
   checks and software-render check pass.
+- E1/B1 repairs: random death drift and camera compensation, MiniSquare scale,
+  BigBall/Airship/Pyramid/chunk bursts, boss multi-explosion counts and child/
+  projectile death callbacks. Glob retains attachment/grips/dies; BlackHole
+  particles and missile exclusion; Teleporter effects/spin/exit/friction; Pyramid
+  fragment difficulty scaling. Headless suite, focused death/Glob checks and
+  native build pass.

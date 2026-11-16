@@ -418,7 +418,8 @@ static void update_enemies(Game *game) {
                 if (enemy->kind != ENEMY_FENCE_BEAM)
                     enemy_take_damage(game, enemy, player->invincible ? 10 : 0.5f, p);
                 if (enemy->kind == ENEMY_SPIKE) {
-                    game_effect(game, EFFECT_ENEMY_DEATH, enemy->x, enemy->y, 0, enemy->vx * 0.25f, enemy->vy * 0.25f);
+                    for (int color = 2; color <= 3; ++color)
+                        game_particle(game, PARTICLE_ENEMY_DEATH_EXPLOSION, enemy->x, enemy->y, color, 1.25f, enemy->vx * 0.25f, enemy->vy * 0.25f);
                     player_impact(game, p, 7.5f, enemy->x, enemy->y, enemy->vx, enemy->vy);
                     enemy_die(game, enemy, -1);
                 }

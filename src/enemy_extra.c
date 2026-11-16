@@ -95,21 +95,27 @@ static void orbit(Game *g, Enemy *e, int count, EnemyKind kind, float radius, fl
 
 static void black_hole(Game *g, Enemy *e) {
     e->rotation+=0.075f;
+    game_particle(g, PARTICLE_ENEMY_BLACK_HOLE_CENTER, e->x, e->y, 2, 1, 0, 0);
+    float angle = random_float(g) * 2 * PI;
+    game_particle(g, PARTICLE_ENEMY_BLACK_HOLE_CENTER, e->x - cosf(angle) * 72, e->y - sinf(angle) * 72, -1, 1, 0, 0);
     for (int i=0; i<GAME_PLAYERS; ++i) {
         Player *p=&g->players[i];
         float dx=e->x-p->x,dy=e->y-p->y,d=hypotf(dx,dy);
         if (!p->joined || p->lives<=0 || d>=300) continue;
         float scale=dx*p->input.x+dy*p->input.y<0 ? 0.5f : 0.75f;
         if (d>0) { p->vx=(p->vx+dx/d*1.5f*scale)*0.9f; p->vy=(p->vy+dy/d*1.5f*scale)*0.9f; }
+        if (d>0) game_particle(g, PARTICLE_ENEMY_BLACK_HOLE_PULL_SHIP, p->x, p->y, -1, 1, dx/d*4, dy/d*4);
         if (d<1) game_damage_player(g,i,10000);
     }
     for (int i=0; i<GAME_BULLETS; ++i) {
         Bullet *b=&g->bullets[i];
         if (!b->active || (b->owner>=0 && (b->weapon==WEAPON_BEAM || b->weapon==WEAPON_BEAM_FOCUS))) continue;
+        if (b->owner < 0 && b->hostile_kind == HOSTILE_MISSILE) continue;
         float dx=e->x-b->x,dy=e->y-b->y,d=hypotf(dx,dy);
         if (d>=300) continue;
         float strength=(300-d)*(300-d)*0.0000025f;
         b->vx=(b->vx+dx*strength)*0.97f; b->vy=(b->vy+dy*strength)*0.97f;
+        if (d>0) game_particle(g, PARTICLE_ENEMY_BLACK_HOLE_PULL, e->x-dx/d*58, e->y-dy/d*58, -1, 1, 0, 0);
         if (d<42) b->active=false;
     }
 }
@@ -157,21 +163,38 @@ void enemy_update_extended(Game *g, Enemy *e) {
     if (e->kind==ENEMY_SWIRL) { orbit(g,e,3,ENEMY_SWIRL_BALL,48,0.1f); return; }
     if (e->kind==ENEMY_FENCE) { fence(g,e); return; }
     if (chaser) {
-        int slot=nearest_player(g,e);
+        int slot=e->kind == ENEMY_GLOB && e->target >= 0 ? e->target : nearest_player(g,e);
         if (slot<0) return;
+        if (e->kind == ENEMY_GLOB) e->target = slot;
         Player *p=&g->players[slot];
         float dx=p->x-e->x,dy=p->y-e->y,d=hypotf(dx,dy);
         if (e->kind==ENEMY_GLOB) {
-            if (d<32 || e->attack) {
-                e->attack=1; e->intangible=true; e->x+=dx*0.35f; e->y+=dy*0.35f; e->vx=e->vy=0;
+            if (p->lives <= 0) { enemy_die(g,e,-1); return; }
+            if (e->attack) {
+                if (d < 12) e->attack = 2;
+                e->intangible=true;
+                if (e->attack == 2) { e->x=p->x; e->y=p->y; }
+                else { e->x+=dx*0.35f; e->y+=dy*0.35f; }
+                e->vx=e->vy=0;
                 float shield=p->shield_health; p->shield_health=0;
-                if (!p->invincible && !g->seeking) { p->invulnerable=0; game_damage_player(g,slot,0.05f); }
+                if (!p->invincible && !g->seeking) {
+                    int ignore=p->invulnerable; p->invulnerable=0;
+                    game_damage_player(g,slot,0.05f); p->invulnerable=ignore;
+                }
                 p->shield_health=shield; p->vx*=0.6f; p->vy*=0.6f; e->health+=0.5f;
-                if (--e->timer<=0) e->active=false;
+                if (--e->timer<=0) enemy_die(g,e,-1);
             } else {
                 e->vx+=dx*0.0075f; e->vy+=dy*0.0075f;
                 float length=hypotf(e->vx,e->vy),speed=3.5f+sinf(g->tick*0.075f+e->aim)*3;
                 if (length>0) { e->vx=e->vx/length*speed; e->vy=e->vy/length*speed; }
+                for (int i=0; i<GAME_PLAYERS; ++i) {
+                    Player *candidate=&g->players[i];
+                    float px=candidate->x-e->x, py=candidate->y-e->y;
+                    float radius=candidate->shield_health>0?24:PLAYER_ARMOR_RADIUS;
+                    if (!g->seeking && candidate->joined && candidate->lives>0 && px*px+py*py<32*32+radius*radius) {
+                        e->target=i; e->attack=1; break;
+                    }
+                }
             }
         } else {
             e->spin=fminf(0.275f,e->spin+0.0075f);
@@ -197,9 +220,16 @@ void enemy_update_extended(Game *g, Enemy *e) {
         return;
     }
     if (e->kind==ENEMY_TELEPORTER) {
+        if (e->aux_index) { e->vx*=0.99f; e->vy*=0.99f; }
+        if (e->invisible == 15) game_particle(g, PARTICLE_ENEMY_TELEPORTER_APPEAR, e->x,e->y,-1,1,0,0);
+        if (e->timer>0) e->spin+=0.01f;
         if (e->timer>0 && --e->timer==0) {
-            e->x=GAME_WIDTH*0.5f+random_float(g)*300*sign(g); e->y=-150+random_float(g)*100;
-            float angle=aim(g,e,0)+PI*0.5f*sign(g); e->vx=cosf(angle)*2; e->vy=sinf(angle)*2+2;
+            game_particle(g, PARTICLE_ENEMY_TELEPORTER_VANISH,e->x,e->y,-1,1,0,0);
+            e->x=g->stage.camera_x+GAME_WIDTH*0.5f+random_float(g)*300*sign(g); e->y=-150+random_float(g)*100;
+            float angle=aim(g,e,0)+PI*0.5f*sign(g);
+            float center=atan2f(GAME_HEIGHT*0.5f-e->y,g->stage.camera_x+GAME_WIDTH*0.5f-e->x);
+            e->vx=cosf(angle)*2+cosf(center)*2; e->vy=sinf(angle)*2+sinf(center)*2;
+            e->spin=0.005f; e->aux_index=1; e->cooldown=0;
             e->invisible=90; e->attack=-1;
         }
         if (e->invisible || e->timer || e->attack<0) return;
@@ -271,8 +301,17 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     if (e->health <= 0) enemy_die(g, e, owner);
 }
 
+static void death_burst(Game *g, const Enemy *e, float scale, bool drift) {
+    float angle = random_float(g) * 2 * PI;
+    float vx = drift ? cosf(angle) * 1.5f : 0;
+    float vy = drift ? sinf(angle) * 1.5f - (e->authored && e->movement != MOVE_NONE ? g->scroll_speed * 0.5f : 0) : 0;
+    for (int color = 2; color <= 3; ++color)
+        game_particle(g, PARTICLE_ENEMY_DEATH_EXPLOSION, e->x, e->y, color, scale, vx, vy);
+}
+
 void enemy_die(Game *g, Enemy *e, int owner) {
     if (!e->active) return;
+    if (e->kind==ENEMY_FENCE_BEAM) { e->active=false; return; }
     if (e->kind != ENEMY_FENCE) ++g->kills;
     if (enemy_corpse_name(e->kind) && e->movement == MOVE_NONE) {
         for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
@@ -286,8 +325,41 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         }
     }
     if (owner>=0) g->players[owner].score += game_health_score(g, e->health_max, 20);
+    if (enemy_is_boss(e->kind)) {
+        Enemy body = *e;
+        e->active = false;
+        bool victims[GAME_ENEMIES];
+        for (int i=0;i<GAME_ENEMIES;++i) victims[i]=g->enemies[i].active && g->enemies[i].kind!=ENEMY_FENCE;
+        for (int i=0;i<GAME_BULLETS;++i) {
+            Bullet *b=&g->bullets[i];
+            if (!b->active) continue;
+            game_particle(g,PARTICLE_OBJECT_DESTROYED,b->x,b->y,-1,1,0,0);
+            b->bounces=0;
+            if (b->owner>=0 && !b->splash) game_projectile_hit(g,b,-1);
+            else if (b->hostile_kind==HOSTILE_MISSILE) game_particle(g,PARTICLE_WEAPON_MISSILE_HIT,b->x,b->y,2,1,0,0);
+            b->active=false;
+        }
+        for (int i=0;i<GAME_PICKUPS;++i) if (g->pickups[i].active && g->pickups[i].kind==0) {
+            game_particle(g,PARTICLE_OBJECT_DESTROYED,g->pickups[i].x,g->pickups[i].y,-1,1,0,0);
+            g->pickups[i].active=false;
+        }
+        for (int i=0;i<GAME_ENEMIES;++i) if (victims[i] && g->enemies[i].active) {
+            enemy_die(g,&g->enemies[i],-1);
+        }
+        bool final=body.kind==ENEMY_BOSS12;
+        for (int i=0;i<(final?30:14);++i) for (int color=2;color<=3;++color) {
+            float angle=random_float(g)*2*PI, radius=(random_float(g)*2-1)*(final?440:240);
+            game_particle(g,PARTICLE_ENEMY_DEATH_EXPLOSION,body.x+cosf(angle)*radius,body.y+sinf(angle)*radius,
+                color,final?1.75f:1.5f,0,0);
+        }
+        if (!body.authored) g->complete=true;
+        return;
+    }
     game_drop_pickups(g, e->x, e->y, e->coins, e->powerup, true);
-    game_effect(g,EFFECT_ENEMY_DEATH,e->x,e->y,0,0,-1.25f);
+    bool part = e->kind==ENEMY_BOSS3_CHUNK || e->kind==ENEMY_BOSS6_SPHERE;
+    death_burst(g,e,part?1.5f:e->kind==ENEMY_MINI_SQUARE?0.5f:1,!part);
+    if (e->kind==ENEMY_BIG_BALL || e->kind==ENEMY_AIRSHIP || e->kind==ENEMY_PYRAMID || e->kind==ENEMY_BOSS_CHUNK)
+        death_burst(g,e,1.5f,e->kind!=ENEMY_BOSS_CHUNK);
     if (e->kind == ENEMY_SPLITTER) {
         for (int side = -1; side <= 1; side += 2) {
             int n = game_spawn_enemy(g, ENEMY_SPLITTER_FRAGMENT, e->x + side * 11, e->y);
@@ -310,7 +382,8 @@ void enemy_die(Game *g, Enemy *e, int owner) {
             float speed = random_float(g) * 0.5f, angle = random_float(g) * 2 * PI;
             part->vx = vx[i] + cosf(angle) * speed; part->vy = vy[i] + sinf(angle) * speed;
             part->spin = i == 2 ? -0.025f : 0.025f;
-            part->health = part->health_max *= 1.5f;
+            static const float scale[] = {1,1.25f,1.55f};
+            part->health = part->health_max *= 1.5f * scale[g->difficulty];
         }
     }
     if (e->kind == ENEMY_FENCE) {
@@ -329,12 +402,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         if(e->kind==ENEMY_SWIRL) {
             float angle=g->tick*0.1f+i*2*PI/3+PI*0.5f+0.1f;
             child->vx=cosf(angle)*2.5f; child->vy=sinf(angle)*2.5f; child->parent=-1; child->authored=false;
-        } else child->active=false;
+        } else enemy_die(g, child, -1);
     }
     e->active=false;
-    if(enemy_is_boss(e->kind)) {
-        if(!e->authored) g->complete=true;
-        for(int i=0;i<GAME_BULLETS;++i) g->bullets[i].active=false;
-        for(int i=0;i<GAME_ENEMIES;++i) g->enemies[i].active=false;
-    }
 }

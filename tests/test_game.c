@@ -227,6 +227,19 @@ static void death_and_restart(void) {
 
 static void weapon_motion_rules(void) {
     reset();
+    int boss = game_spawn_enemy(&game, ENEMY_BOSS2, 480, 300);
+    enemy_die(&game, &game.enemies[boss], 0);
+    CHECK(game.effect_cursor == 14 * 2 * 24 && !game.enemies[boss].active);
+    reset();
+    int glob = game_spawn_enemy(&game, ENEMY_GLOB, 400, 880);
+    game_tick(&game);
+    CHECK(game.enemies[glob].target == 0 && game.enemies[glob].attack == 1);
+    game_join(&game, 1);
+    game.players[0].x = 450;
+    game.players[1].x = game.enemies[glob].x;
+    game_tick(&game);
+    CHECK(game.enemies[glob].target == 0 && game.players[0].health < 20 && game.players[1].health == 20);
+    reset();
     int effect_shot = game_spawn_bullet(&game, 0, 400, 600, 0, -10, 1);
     game.bullets[effect_shot].weapon = WEAPON_MINI_SHOT;
     game_projectile_hit(&game, &game.bullets[effect_shot], -1);
