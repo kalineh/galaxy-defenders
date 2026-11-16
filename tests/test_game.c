@@ -810,6 +810,78 @@ static void pellet_turret_splitter_parity(void) {
     CHECK(fragments == 2);
 }
 
+static void regular_enemy_parity(void) {
+    /* Geometry from each legacy Initialize/UpdateCollision, including invisible attachments. */
+    static const struct { EnemyKind kind; float radius, width, height; } shapes[] = {
+        {ENEMY_BALL,36,0,0}, {ENEMY_TRIANGLE,28,0,0}, {ENEMY_TURRET,28,0,0},
+        {ENEMY_MINI_SQUARE,25,0,0}, {ENEMY_BIG_BALL,64,0,0}, {ENEMY_DOWN_TURRET,28,0,0},
+        {ENEMY_SHOOT_BALL,36,0,0}, {ENEMY_AIRSHIP,32,72,104}, {ENEMY_BEAMER,32,0,0},
+        {ENEMY_BLACK_HOLE,300,0,0}, {ENEMY_CANNON,34,0,0}, {ENEMY_CUTTER,32,72,72},
+        {ENEMY_CUTTER_BALL,30,0,0}, {ENEMY_DOUBLE_TURRET,34,0,0}, {ENEMY_FENCE,28,0,0},
+        {ENEMY_GLOB,32,0,0}, {ENEMY_MISSILE_POD,32,0,0}, {ENEMY_MISSILE_STORM,58,0,0},
+        {ENEMY_MISSILE_TRIPLE,34,0,0}, {ENEMY_PYRAMID,56,0,0}, {ENEMY_RAID_TURRET,28,0,0},
+        {ENEMY_ROTATE_TURRET,32,56,56}, {ENEMY_SPIKE,34,0,0}, {ENEMY_SPLITTER,36,0,0},
+        {ENEMY_SPLITTER_FRAGMENT,30,0,0}, {ENEMY_SWIRL,32,0,0}, {ENEMY_SWIRL_BALL,16,0,0},
+        {ENEMY_TELEPORTER,34,0,0}, {ENEMY_TRIPLE_SHOT,34,0,0}, {ENEMY_BONUS_SHIP,32,0,0}
+    };
+    reset();
+    for (unsigned i = 0; i < sizeof(shapes) / sizeof(shapes[0]); ++i) {
+        int n = game_spawn_enemy(&game, shapes[i].kind, 480, 300);
+        Enemy *e = &game.enemies[n];
+        CHECK(e->radius == shapes[i].radius && e->box_width == shapes[i].width && e->box_height == shapes[i].height);
+    }
+    reset();
+    game.tick = 400; /* Cutter's orbit starts at its own spawn, not the global frame. */
+    int n = game_spawn_enemy(&game, ENEMY_CUTTER, 600, 300);
+    game_tick(&game);
+    Enemy *e = &game.enemies[n];
+    CHECK(game.enemies[e->children[0]].x == 726 && game.enemies[e->children[1]].x == 474);
+    game_tick(&game);
+    CHECK(fabsf(game.enemies[e->children[0]].rotation - 0.09f) < 0.0001f);
+    CHECK(fabsf(game.enemies[e->children[1]].rotation + 0.09f) < 0.0001f);
+    float health = e->health;
+    Enemy *ball = &game.enemies[e->children[0]];
+    game_spawn_bullet(&game, 0, ball->x, ball->y, 0, 0, 100);
+    game_tick(&game);
+    CHECK(e->health == health && ball->active); /* Cutter endpoints absorb fire. */
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_PYRAMID, 480, 300);
+    e = &game.enemies[n];
+    CHECK(fabsf(e->aim - 1.5707963f) < 0.0001f); /* Turret initially faces down. */
+    enemy_die(&game, e, 0);
+    int parts = 0;
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        Enemy *part = &game.enemies[i];
+        if (!part->active) continue;
+        CHECK(part->kind == ENEMY_TRIANGLE && part->health == 1.125f);
+        CHECK((part->x == 480 && part->y == 268) || (part->x == 432 && part->y == 332) || (part->x == 480 && part->y == 332));
+        float vx = part->x == 432 ? -0.5f : 0, vy = part->y == 268 ? -0.2f : 0.2f;
+        CHECK(hypotf(part->vx - vx, part->vy - vy) <= 0.50001f);
+        CHECK(part->spin == (part->x == 480 && part->y == 332 ? -0.025f : 0.025f));
+        ++parts;
+    }
+    CHECK(parts == 3);
+    reset();
+    int left = game_spawn_enemy(&game, ENEMY_FENCE, 300, 300);
+    int right = game_spawn_enemy(&game, ENEMY_FENCE, 600, 300);
+    game_tick(&game);
+    int beam = game.enemies[left].children[1];
+    CHECK(beam >= 0 && game.enemies[beam].box_width == 300 && game.enemies[beam].box_height == 8);
+    game_spawn_bullet(&game, 0, 450, 310, 0, -20, 100);
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 1); /* Beam is a ship hazard, not a shot blocker. */
+    enemy_die(&game, &game.enemies[right], 0);
+    CHECK(!game.enemies[left].active && !game.enemies[right].active && !game.enemies[beam].active);
+    CHECK(game.kills == 0 && game.stage.corpses[0].active && game.stage.corpses[1].active);
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_TURRET, 480, 300);
+    game.enemies[n].movement = MOVE_DOWN;
+    enemy_die(&game, &game.enemies[n], 0);
+    CHECK(!game.stage.corpses[0].active); /* Moving turrets leave no stationary corpse. */
+    CHECK(enemy_draw_layer(ENEMY_TELEPORTER) < enemy_draw_layer(ENEMY_TURRET));
+    CHECK(enemy_draw_layer(ENEMY_TURRET) < enemy_draw_layer(ENEMY_BALL));
+}
+
 static void remaining_bosses(void) {
     for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
         reset();
@@ -996,6 +1068,7 @@ int main(void) {
     secret_stage_roundtrip();
     campaign_stages();
     pellet_turret_splitter_parity();
+    regular_enemy_parity();
     remaining_bosses();
     extended_enemies();
     complete_equipment();

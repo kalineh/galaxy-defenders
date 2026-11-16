@@ -85,6 +85,8 @@ typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
     ENEMY_KIND_COUNT } EnemyKind;
 
 extern const char *enemy_names[ENEMY_KIND_COUNT];
+const char *enemy_corpse_name(EnemyKind kind);
+int enemy_draw_layer(EnemyKind kind);
 typedef enum { HOSTILE_SHOT, HOSTILE_LASER, HOSTILE_MISSILE, HOSTILE_CANNON, HOSTILE_PELLET, HOSTILE_MINI, HOSTILE_COUNT } HostileKind;
 
 typedef struct {

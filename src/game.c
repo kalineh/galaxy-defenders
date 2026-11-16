@@ -478,7 +478,7 @@ static void update_bullets(Game *game) {
                 if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
                     enemy->x + enemy->collision_x, enemy->y + enemy->collision_y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
                     enemy->box_height > 0 ? enemy->box_height * 0.5f : enemy->radius);
-                if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || !hit || bullet->ignore_enemy == e) continue;
+                if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || enemy->kind == ENEMY_FENCE_BEAM || !hit || bullet->ignore_enemy == e) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);

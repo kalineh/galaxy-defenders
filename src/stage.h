@@ -43,6 +43,7 @@ typedef struct {
 } SceneryDefinition;
 
 typedef struct { float x, y, vx, vy, target_x, target_y; } SceneryParticle;
+typedef struct { bool active; int kind; float x, y; } EnemyCorpse;
 extern const SceneryDefinition stage_scenery[14];
 
 typedef struct {
@@ -54,6 +55,7 @@ typedef struct {
     float secret_x, secret_y;
     unsigned int scenery_random;
     SceneryParticle scenery[4][15];
+    EnemyCorpse corpses[STAGE_MAX_EVENTS];
     bool activated[STAGE_MAX_EVENTS];
     float building_health[STAGE_MAX_EVENTS];
 } StageState;

@@ -7,6 +7,9 @@ User requested all weapons, enemies, stages and upgrades, with original behavior
 Use headless CLI checks; never launch visible PowerShell windows or use desktop
 automation. No npm installs. Commit and push verified focused changes to `native`.
 
+Current pass: audit all regular enemies for sprite layers, animation frames,
+collision geometry and spawned parts, then audit Boss1-Boss12 the same way.
+
 ## Implemented
 
 - Original title/combat/pause music, including Stage 1 startup and seek synchronization.
@@ -15,6 +18,9 @@ automation. No npm installs. Commit and push verified focused changes to `native
 - All regular enemies and Boss1-Boss12 combat, component damage and phase changes.
 - All 12 main and seven bonus stage event streams, original required assets,
   scenery layers, music changes, camera stops, clear/shop/next-stage progression.
+- Regular-enemy sprite/geometry/attachment audit: layered Pyramid/Cutter visuals,
+  Spike/FenceBeam frames, correct Pyramid fragments and Cutter/Swirl transforms,
+  linked Fence cleanup, stationary turret corpses and Glob/BlackHole layers.
 - Secret entry/return retains the main encounter and transfers bonus rewards.
 - Original horizontal camera pan and radius-based player bounds; all seven secret
   entrances pass actual entry, bonus playback and return tests.
@@ -40,7 +46,7 @@ automation. No npm installs. Commit and push verified focused changes to `native
 - Sample ships, shop inventory restrictions,
   menu transitions/fades, stage-clear explosion/flyout presentation.
 - Secret return/fade timing and scrolling need closer legacy comparison.
-- Blending gradient scenery, remaining boss visual details, turret corpses.
+- Blending gradient scenery, remaining boss visual details.
 - Pilot ability classes are dormant in the legacy game: TryEnable has no callers,
   no purchase UI exists, and ability HUD drawing is commented out. Do not invent
   activation or purchasing for those unused definitions.

@@ -58,7 +58,7 @@ void enemy_init_extended(Game *g, Enemy *e) {
         case ENEMY_MISSILE_POD: health=2; delay=random_float(g)*90; break;
         case ENEMY_MISSILE_STORM: health=5; radius=58; e->timer=60; e->attack=sign(g); e->aim=PI*0.5f*(1-e->attack); break;
         case ENEMY_MISSILE_TRIPLE: health=3; radius=34; delay=random_float(g)*111; break;
-        case ENEMY_PYRAMID: health=6; radius=56; e->spin=0.005f*sign(g); break;
+        case ENEMY_PYRAMID: health=6; radius=56; e->aim=PI*0.5f; e->spin=0.005f*sign(g); break;
         case ENEMY_RAID_TURRET: health=2; radius=28; delay=random_float(g)*24; break;
         case ENEMY_ROTATE_TURRET: health=2.25f; e->box_width=e->box_height=56; delay=random_float(g)*45; break;
         case ENEMY_SPIKE: health=2; radius=34; e->coins=0; e->timer=60; break;
@@ -87,9 +87,9 @@ static void orbit(Game *g, Enemy *e, int count, EnemyKind kind, float radius, fl
         if (index<0) continue;
         Enemy *child=&g->enemies[index];
         if (!child->active || child->parent!=(int)(e-g->enemies)) continue;
-        float angle=g->tick*speed+i*2*PI/count;
+        float angle=(kind == ENEMY_CUTTER_BALL ? e->orbit_angle : g->tick*speed)+i*2*PI/count;
         child->x=e->x+cosf(angle)*radius; child->y=e->y+sinf(angle)*radius;
-        child->rotation=angle*3;
+        if (kind == ENEMY_CUTTER_BALL) child->rotation=e->orbit_angle*(i ? -3 : 3);
     }
 }
 
@@ -122,7 +122,7 @@ static void fence(Game *g, Enemy *e) {
         e->children[0]=i; other->parent=(int)(e-g->enemies);
         int beam=game_spawn_enemy(g,ENEMY_FENCE_BEAM,(e->x+other->x)*0.5f,e->y);
         e->children[1]=beam;
-        if (beam>=0) { g->enemies[beam].parent=(int)(e-g->enemies); g->enemies[beam].box_width=fabsf(e->x-other->x); }
+        if (beam>=0) { g->enemies[beam].parent=(int)(e-g->enemies); g->enemies[beam].box_width=fabsf(e->x-other->x); g->enemies[beam].collision_y=4; }
         break;
     }
     int beam=e->children[1], child=e->children[0];
@@ -144,12 +144,16 @@ void enemy_update_extended(Game *g, Enemy *e) {
             if (e->movement!=MOVE_IGNORE_CAMERA && !pause) e->y+=g->scroll_speed;
         }
         if (!pause) { e->x+=e->vx; e->y+=e->vy; }
-        if (!e->authored && e->kind == ENEMY_SPLITTER_FRAGMENT) e->y += g->scroll_speed;
+        if (!e->authored && (e->kind == ENEMY_SPLITTER_FRAGMENT || (e->kind == ENEMY_SWIRL_BALL && e->parent < 0))) e->y += g->scroll_speed;
     }
     ++e->age; e->rotation+=e->spin;
     if (e->invisible>0) --e->invisible;
     if (e->kind==ENEMY_BLACK_HOLE) { black_hole(g,e); return; }
-    if (e->kind==ENEMY_CUTTER) { orbit(g,e,2,ENEMY_CUTTER_BALL,126,0.03f*(e->x<GAME_WIDTH*0.5f?-1:1)); return; }
+    if (e->kind==ENEMY_CUTTER) {
+        orbit(g,e,2,ENEMY_CUTTER_BALL,126,0);
+        e->orbit_angle += 0.03f * (e->x < GAME_WIDTH * 0.5f ? -1 : e->x > GAME_WIDTH * 0.5f ? 1 : 0);
+        return;
+    }
     if (e->kind==ENEMY_SWIRL) { orbit(g,e,3,ENEMY_SWIRL_BALL,48,0.1f); return; }
     if (e->kind==ENEMY_FENCE) { fence(g,e); return; }
     if (chaser) {
@@ -159,7 +163,7 @@ void enemy_update_extended(Game *g, Enemy *e) {
         float dx=p->x-e->x,dy=p->y-e->y,d=hypotf(dx,dy);
         if (e->kind==ENEMY_GLOB) {
             if (d<32 || e->attack) {
-                e->attack=1; e->x+=dx*0.35f; e->y+=dy*0.35f; e->vx=e->vy=0;
+                e->attack=1; e->intangible=true; e->x+=dx*0.35f; e->y+=dy*0.35f; e->vx=e->vy=0;
                 float shield=p->shield_health; p->shield_health=0;
                 if (!p->invincible && !g->seeking) { p->invulnerable=0; game_damage_player(g,slot,0.05f); }
                 p->shield_health=shield; p->vx*=0.6f; p->vy*=0.6f; e->health+=0.5f;
@@ -183,7 +187,7 @@ void enemy_update_extended(Game *g, Enemy *e) {
     }
     if (e->kind==ENEMY_PYRAMID) {
         int phase=e->age%60;
-        if (phase<20) {
+        if (phase>0 && phase<20) {
             float target=aim(g,e,5),difference=remainderf(target-e->aim,2*PI);
             e->aim+=fmaxf(-0.03f,fminf(0.03f,difference));
         } else if (phase<40 && phase%4==0) {
@@ -256,7 +260,16 @@ void enemy_update_extended(Game *g, Enemy *e) {
 }
 
 void enemy_die(Game *g, Enemy *e, int owner) {
-    ++g->kills;
+    if (!e->active) return;
+    if (e->kind != ENEMY_FENCE) ++g->kills;
+    if (enemy_corpse_name(e->kind) && e->movement == MOVE_NONE) {
+        for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
+            EnemyCorpse *corpse = &g->stage.corpses[i];
+            if (corpse->active && corpse->y - g->stage.camera_y + GAME_HEIGHT * 0.5f < GAME_HEIGHT + 200) continue;
+            *corpse = (EnemyCorpse){true, e->kind, e->x, e->y + g->stage.camera_y - GAME_HEIGHT * 0.5f};
+            break;
+        }
+    }
     if (owner>=0) g->players[owner].score += game_health_score(g, e->health_max, 20);
     game_drop_pickups(g, e->x, e->y, e->coins, e->powerup, true);
     game_effect(g,EFFECT_ENEMY_DEATH,e->x,e->y,0,0,-1.25f);
@@ -273,10 +286,25 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         }
     }
     if (e->kind==ENEMY_PYRAMID) {
-        for(int i=0;i<3;++i) {
-            int n=game_spawn_enemy(g,ENEMY_TRIANGLE,e->x+(i-1)*24,e->y);
-            if(n>=0) { g->enemies[n].vx=(i-1)*0.5f; g->enemies[n].vy=1; g->enemies[n].spin=0.025f; }
+        static const float x[] = {0, -48, 0}, y[] = {-32, 32, 32};
+        static const float vx[] = {0, -0.5f, 0}, vy[] = {-0.2f, 0.2f, 0.2f};
+        for (int i = 0; i < 3; ++i) {
+            int n = game_spawn_enemy(g, ENEMY_TRIANGLE, e->x + x[i], e->y + y[i]);
+            if (n < 0) continue;
+            Enemy *part = &g->enemies[n];
+            float speed = random_float(g) * 0.5f, angle = random_float(g) * 2 * PI;
+            part->vx = vx[i] + cosf(angle) * speed; part->vy = vy[i] + sinf(angle) * speed;
+            part->spin = i == 2 ? -0.025f : 0.025f;
+            part->health = part->health_max *= 1.5f;
         }
+    }
+    if (e->kind == ENEMY_FENCE) {
+        e->active = false;
+        if (e->parent >= 0 && g->enemies[e->parent].active && g->enemies[e->parent].kind == ENEMY_FENCE)
+            enemy_die(g, &g->enemies[e->parent], -1);
+        int other = e->children[0];
+        if (other >= 0 && g->enemies[other].active && g->enemies[other].kind == ENEMY_FENCE)
+            enemy_die(g, &g->enemies[other], -1);
     }
     for(int i=0;i<8;++i) {
         int n=e->children[i];

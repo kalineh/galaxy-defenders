@@ -1,5 +1,6 @@
 #include "game.h"
 #include <math.h>
+#include <stddef.h>
 
 const char *enemy_names[ENEMY_KIND_COUNT] = {
     "Ball", "Isosceles", "Turret", "Boss1", "MiniSquare", "BigBall", "DownTurret", "Boss1Chunk", "ShootBall", "Boss2",
@@ -10,6 +11,41 @@ const char *enemy_names[ENEMY_KIND_COUNT] = {
     "Boss3Chunk", "Boss4Chunk", "Boss5Chunk", "Boss6Sphere", "Boss7CannonBig", "Boss7CannonSmall", "Boss8Collision",
     "Boss9Ball", "Boss9Bar", "Boss10Ball", "Boss10Block", "Boss11Hand", "Boss11Arm", "Boss12Eye", "Boss12Arm"
 };
+
+const char *enemy_corpse_name(EnemyKind kind) {
+    switch (kind) {
+        case ENEMY_TURRET: return "TurretDead";
+        case ENEMY_DOWN_TURRET: return "DownTurretDead";
+        case ENEMY_SHOOT_BALL: return "ShootBallDead";
+        case ENEMY_BEAMER: return "BeamerDead";
+        case ENEMY_CANNON: return "CannonDead";
+        case ENEMY_DOUBLE_TURRET: return "DoubleTurretDead";
+        case ENEMY_FENCE: return "FenceDead";
+        case ENEMY_MISSILE_POD: return "MissilePodDead";
+        case ENEMY_MISSILE_STORM: return "MissileStormDead";
+        case ENEMY_MISSILE_TRIPLE: return "MissileTripleDead";
+        case ENEMY_RAID_TURRET: return "RaidTurretDead";
+        case ENEMY_ROTATE_TURRET: return "RotateTurretBaseDead";
+        case ENEMY_TRIPLE_SHOT: return "TripleShotDead";
+        default: return NULL;
+    }
+}
+
+/* Enemy sublayers, plus explicit later passes for player/weapon overlays. */
+int enemy_draw_layer(EnemyKind kind) {
+    switch (kind) {
+        case ENEMY_FENCE_BEAM: case ENEMY_TELEPORTER:
+        case ENEMY_BOSS9_BAR: case ENEMY_BOSS11_ARM: case ENEMY_BOSS12_ARM: return -2;
+        case ENEMY_TURRET: case ENEMY_DOWN_TURRET: case ENEMY_DOUBLE_TURRET:
+        case ENEMY_CANNON: case ENEMY_FENCE: case ENEMY_MISSILE_POD:
+        case ENEMY_MISSILE_STORM: case ENEMY_MISSILE_TRIPLE: case ENEMY_RAID_TURRET:
+        case ENEMY_BOSS9_BALL: case ENEMY_BOSS11_HAND: return -1;
+        case ENEMY_BOSS12_EYE: return 1;
+        case ENEMY_BLACK_HOLE: return 2;
+        case ENEMY_GLOB: return 3;
+        default: return 0;
+    }
+}
 
 static float aim_at_player(const Game *game, const Enemy *enemy) {
     float distance = 1e30f, angle = 1.570796327f;
@@ -160,6 +196,7 @@ void enemy_update(Game *game, Enemy *enemy) {
     if (enemy->kind >= ENEMY_BOSS3) { boss_update_all(game, enemy); return; }
     if (enemy->kind >= ENEMY_AIRSHIP) { enemy_update_extended(game, enemy); return; }
     if (enemy->kind != ENEMY_BOSS_CHUNK) {
+        if (!enemy->authored && enemy->kind == ENEMY_TRIANGLE) enemy->y += game->scroll_speed;
         if (enemy->authored) {
             movement_velocity(enemy->movement, enemy->age, enemy->move_speed, enemy->move_transition,
                               &enemy->vx, &enemy->vy);
@@ -169,6 +206,7 @@ void enemy_update(Game *game, Enemy *enemy) {
         enemy->y += enemy->vy;
     }
     ++enemy->age;
+    enemy->rotation += enemy->spin;
     if (enemy->kind == ENEMY_BOSS) boss_update(game, enemy);
     else if (enemy->kind == ENEMY_BOSS2) boss2_update(game, enemy);
     else if (enemy->kind == ENEMY_MINI_SQUARE) enemy->rotation += 0.01f;

@@ -9,7 +9,7 @@ frame-identical gameplay or complete presentation parity.
 | Weapons | Original level tables; all primary, support and sidekick variants | Audit special collision/effect/audio behavior |
 | Equipment | All generators/shields and nine chassis; pilot starting equipment | Full visual HUD details; unused legacy abilities remain dormant |
 | Shop | Six categories, purchases, trade-ins, levels, energy/shield effects, co-op ready | Stage-specific stock, sample ships, exact layout/transitions |
-| Enemies | All regular types, hostile projectile kinds, Boss1-Boss12 and parts | Detailed attack timing/movement traces, death art and sound |
+| Enemies | All regular types, hostile projectile kinds, Boss1-Boss12 and parts | Regular sprite/geometry/attachment audit complete; boss audit underway; detailed timing and effect traces remain |
 | Stages | All 12 main and seven bonus stages; authored 3,448 events; original assets; all secret entrances verified | Playtest balance and fade/return timing |
 | Progression | Clear -> shop -> next main stage; secrets; ending; solo/co-op saves and Continue; unlocked replay selection | Stage-clear flyout and explosions |
 | Scenery | Original textures, gradients, foreground layers, deterministic cloud motion | Animated blending gradients and exact legacy RNG sequencing |
@@ -31,3 +31,13 @@ Automated campaign checks run all 19 stages with no dropped spawns and exercise
 all boss phases; they do not establish that every fight has been beaten with each
 pilot/loadout. Humans own interactive playtesting. No generated substitute waves
 or fallback enemy types are used.
+
+Regular-enemy audit (2026-11-15): checked all 30 regular enemy/part definitions
+against their legacy sprite names, animation frames, collision dimensions and
+relative layers. Restored Pyramid/Cutter overlays, Spike/FenceBeam animation,
+Pyramid fragments, Cutter/Swirl attachment transforms, linked Fence teardown,
+stationary turret corpses, and Glob/BlackHole draw order. Tests cover the shape
+matrix, spawned part positions/velocities, blocking and fence cleanup. Windowless
+galleries cover all regular body sprites; this is not a frame-by-frame AI/effects
+comparison. Enemy contact damage and special death/teleport particles still need
+the separate gameplay/effects pass noted in TODO.md.
