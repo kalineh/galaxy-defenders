@@ -568,7 +568,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (effect->life <= 0) continue;
         Texture2D texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
         sprite(texture, view_x + effect->x, effect->y, texture.width * effect->scale,
-            effect->angle, (Color){effect->r, effect->g, effect->b, 255});
+            effect->angle, (Color){effect->r, effect->g, effect->b, (unsigned char)(fminf(1, fmaxf(0, effect->alpha)) * 255)});
     }
     draw_scenery(game, assets, true);
     if (game->stage.secret_countdown)

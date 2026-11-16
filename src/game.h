@@ -6,6 +6,7 @@
 #include "movement.h"
 #include "stage.h"
 #include "equipment.h"
+#include "effects_data.h"
 
 #define GAME_WIDTH 960
 #define GAME_HEIGHT 1080
@@ -121,7 +122,7 @@ typedef struct {
 } Bullet;
 
 typedef struct {
-    float x, y, vx, vy, scale, scale_delta, angle, spin;
+    float x, y, vx, vy, scale, scale_delta, angle, spin, alpha, alpha_delta;
     int life, kind;
     uint8_t r, g, b;
 } Effect;
@@ -201,6 +202,8 @@ void enemy_init_extended(Game *game, Enemy *enemy);
 void enemy_update_extended(Game *game, Enemy *enemy);
 void enemy_die(Game *game, Enemy *enemy, int owner);
 void enemy_take_damage(Game *game, Enemy *enemy, float damage, int owner);
+/* color: -1 authored, 0/1 player, 2 orange, 3 gray, 4 building gray, 5 building cream. */
+void game_particle(Game *game, ParticleKind kind, float x, float y, int color, float scale, float vx, float vy);
 bool enemy_is_boss(EnemyKind kind);
 void boss_init(Game *game, Enemy *enemy);
 void boss_update_all(Game *game, Enemy *enemy);

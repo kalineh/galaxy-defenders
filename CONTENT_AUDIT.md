@@ -300,3 +300,8 @@ to confirm any of the explicit mismatches listed here.
   state, seekable/unclaimed target selection, Lightning building chains and
   bounce position steps. Sidekick ships, BigLaser/BigFlame and shield overlay
   restored. Full headless suite and windowless software render pass.
+- W2/W4 particle repairs: generated original particle definitions, alpha/lifetime
+  handling, weapon-specific impacts, missile/plasma trails, charge particles,
+  beam impact positions, Bomblet expiry and Boomerang terminal effects. MiniShot
+  no longer emits laser particles. Importer check, headless suite, focused impact
+  checks and software-render check pass.

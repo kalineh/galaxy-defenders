@@ -1,3 +1,4 @@
+#define GALAXY_EFFECTS_IMPLEMENTATION
 #include "game.h"
 #include <math.h>
 #include <string.h>
@@ -60,64 +61,46 @@ static float random_unit(Game *game) {
     return (game_random(game) >> 8) / 16777216.0f;
 }
 
-void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy) {
-    /* Active definitions from legacy/Effects/ParticleEffectDefinitions.cs. */
-    static const struct {
-        int count, triangle, lifetime, variation;
-        float offset, circle, box, speed, scale, scale_variation, shrink, outward, spin;
-    } definitions[] = {
-        {24, 1, 90, 0, 0, 0, 24, 2, 1.5f, 0.2f, -0.06f, 2.5f, 0.2f},
-        {8, 1, 60, 15, 8, 10, 0, 2.5f, 1.4f, 0.2f, -0.1f, 0.5f, 0.1f},
-        {24, 1, 60, 15, 0, 8, 0, 3, 2, 0.2f, -0.05f, 1, 0.2f},
-        {2, 0, 15, 0, 0, 40, 0, 1, 0.3f, 0, -0.025f, -4, 0.2f},
-        {4, 0, 60, 15, 0, 3, 0, 1, 0.7f, 0, -0.02f, 0, 0},
-        {2, 0, 60, 15, 0, 3, 0, 1, 0.5f, 0, -0.015f, 0, 0},
-        {16, 1, 60, 15, 0, 0, 32, 2.5f, 1.5f, 0.2f, -0.06f, 2.5f, 0.1f},
-        {24, 1, 60, 15, 0, 0, 64, 3.5f, 2.2f, 0.2f, -0.085f, 3.5f, 0.1f},
-        {3, 0, 60, 15, 12, 24, 0, 1, 0.5f, 0, -0.01f, 0.5f, 0}
-    };
-    if (kind < 0 || kind > EFFECT_SHIELD_HIT) return;
-    bool building = kind == EFFECT_BUILDING_SMALL || kind == EFFECT_BUILDING_BIG;
-    int passes = kind == EFFECT_ENEMY_DEATH || building ? 2 : 1;
-    for (int pass = 0; pass < passes; ++pass) {
-        for (int i = 0; i < definitions[kind].count; ++i) {
-            Effect *effect = &game->effects[game->effect_cursor];
-            game->effect_cursor = (game->effect_cursor + 1) % GAME_EFFECTS;
-            float angle = random_unit(game) * 6.2831853f;
-            float dx = (random_unit(game) - 0.5f) * definitions[kind].box + cosf(angle) * definitions[kind].circle + definitions[kind].offset;
-            float dy = (random_unit(game) - 0.5f) * definitions[kind].box + sinf(angle) * definitions[kind].circle + definitions[kind].offset;
-            if (kind == EFFECT_SHIELD_HIT) dy -= 4; /* Legacy offset is (12, 8). */
-            float length = sqrtf(dx * dx + dy * dy);
-            *effect = (Effect){0};
-            effect->x = x + dx;
-            effect->y = y + dy;
-            effect->vx = vx + (random_unit(game) - 0.5f) * definitions[kind].speed;
-            effect->vy = vy + (random_unit(game) - 0.5f) * definitions[kind].speed;
-            if (length > 0.001f) {
-                effect->vx += dx / length * definitions[kind].outward;
-                effect->vy += dy / length * definitions[kind].outward;
-            }
-            effect->scale = definitions[kind].scale + (random_unit(game) - 0.5f) * definitions[kind].scale_variation;
-            effect->scale_delta = definitions[kind].shrink;
-            effect->angle = (random_unit(game) - 0.5f) * 360;
-            effect->spin = (random_unit(game) - 0.5f) * definitions[kind].spin * 57.29578f;
-            effect->kind = definitions[kind].triangle;
-            /* Preserve the active legacy manager's lifetime/2 calculation. */
-            effect->life = definitions[kind].lifetime + (int)(-definitions[kind].lifetime * 0.5f + definitions[kind].variation * random_unit(game));
-            if (building) {
-                effect->r = pass ? 229 : 102;
-                effect->g = effect->b = pass ? 214 : 102;
-            } else if (kind == EFFECT_ENEMY_DEATH || kind == EFFECT_ENEMY_SHOT_HIT) {
-                effect->r = pass ? 102 : 252;
-                effect->g = pass ? 102 : 124;
-                effect->b = pass ? 102 : 85;
-            } else {
-                effect->r = player ? 195 : 247;
-                effect->g = player ? 150 : 208;
-                effect->b = player ? 255 : 74;
-            }
-        }
+void game_particle(Game *game, ParticleKind kind, float x, float y, int color, float scale, float vx, float vy) {
+    if (kind < 0 || kind >= PARTICLE_COUNT) return;
+    const ParticleDefinition *d = &particle_definitions[kind];
+    static const uint8_t colors[][3] = {{247,208,74},{195,150,255},{252,124,85},{102,102,102},{102,102,102},{229,214,214}};
+    for (int i = 0; i < d->count; ++i) {
+        Effect *e = &game->effects[game->effect_cursor];
+        game->effect_cursor = (game->effect_cursor + 1) % GAME_EFFECTS;
+        memset(e, 0, sizeof(*e));
+        float angle = random_unit(game) * 6.2831853f;
+        float dx = d->Position[0] + (random_unit(game) - 0.5f) * d->PositionVariationBox[0] + cosf(angle) * d->PositionVariationCircle[0];
+        float dy = d->Position[1] + (random_unit(game) - 0.5f) * d->PositionVariationBox[1] + sinf(angle) * d->PositionVariationCircle[1];
+        float length = hypotf(dx, dy);
+        e->x = x + dx; e->y = y + dy;
+        e->vx = vx + (random_unit(game) - 0.5f) * d->PositionDeltaVariation[0];
+        e->vy = vy + (random_unit(game) - 0.5f) * d->PositionDeltaVariation[1];
+        if (length > 0.001f) { e->vx += dx / length * d->OutDelta; e->vy += dy / length * d->OutDelta; }
+        e->scale = scale * (d->Scale[0] + (random_unit(game) - 0.5f) * d->ScaleVariation[0]);
+        e->scale_delta = d->ScaleDelta[0];
+        e->angle = (d->Angle + (random_unit(game) - 0.5f) * d->AngleVariation) * 57.29578f;
+        e->spin = (d->AngleDelta + (random_unit(game) - 0.5f) * d->AngleDeltaVariation) * 57.29578f;
+        e->alpha = d->Alpha + (random_unit(game) - 0.5f) * d->AlphaVariation;
+        e->alpha_delta = d->AlphaDelta + (random_unit(game) - 0.5f) * d->AlphaDeltaVariation;
+        e->life = d->lifetime + (int)(-d->lifetime * 0.5f + d->variation * random_unit(game));
+        e->kind = d->triangle;
+        const uint8_t *rgb = color >= 0 && color < 6 ? colors[color] : d->color;
+        e->r = rgb[0]; e->g = rgb[1]; e->b = rgb[2];
     }
+}
+
+void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy) {
+    static const ParticleKind types[] = {PARTICLE_ENEMY_DEATH_EXPLOSION, PARTICLE_PLAYER_SHIP_ARMOR_DAMAGE,
+        PARTICLE_PLAYER_SHIP_DESTROYED, PARTICLE_PLAYER_FOCUS_MODE, PARTICLE_ENEMY_SHOT_HIT,
+        PARTICLE_WEAPON_LASER_HIT, PARTICLE_BUILDING_DESTROYED_SMALL, PARTICLE_BUILDING_DESTROYED_BIG,
+        PARTICLE_PLAYER_SHIP_SHIELD_DAMAGE};
+    if (kind < 0 || kind > EFFECT_SHIELD_HIT) return;
+    if (kind == EFFECT_ENEMY_DEATH || kind == EFFECT_BUILDING_SMALL || kind == EFFECT_BUILDING_BIG) {
+        int color = kind == EFFECT_ENEMY_DEATH ? 2 : 4;
+        game_particle(game, types[kind], x, y, color, 1, vx, vy);
+        game_particle(game, types[kind], x, y, color + 1, 1, vx, vy);
+    } else game_particle(game, types[kind], x, y, kind == EFFECT_ENEMY_SHOT_HIT ? 2 : player, 1, vx, vy);
 }
 
 static void update_effects(Game *game) {
@@ -129,7 +112,8 @@ static void update_effects(Game *game) {
         effect->y += effect->vy;
         effect->scale += effect->scale_delta;
         effect->angle += effect->spin;
-        if (effect->scale <= 0) effect->life = 0;
+        effect->alpha += effect->alpha_delta;
+        if (effect->scale <= 0 || effect->alpha <= 0) effect->life = 0;
     }
 }
 
@@ -513,7 +497,6 @@ static void update_bullets(Game *game) {
                 if (bullet->weapon == WEAPON_SEEK_BOMB && (enemy->kind == ENEMY_FENCE || enemy->kind == ENEMY_BOSS10_BALL)) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
-                game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
                 bool boss = enemy_is_boss(enemy->kind);
                 enemy_take_damage(game, enemy, bullet->damage, bullet->owner);
                 if ((boss && !enemy->active) || (game->boss_spawned && game_enemy_count(game) == 0)) return;
@@ -537,7 +520,6 @@ static void update_bullets(Game *game) {
                     game->stage.building_health[i] -= bullet->damage;
                     bullet->active = false;
                     ++game->projectile_hits;
-                    game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
                     if (game->stage.building_health[i] < 0) {
                         /* Keep the original strict <0 destruction boundary. */
                         ++game->building_kills;
@@ -578,7 +560,9 @@ static void update_bullets(Game *game) {
                     if (--bullet->health <= 0) bullet->active = false;
                     break;
                 }
-                game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
+                game_particle(game, bullet->hostile_kind == HOSTILE_MISSILE ? PARTICLE_WEAPON_MISSILE_HIT :
+                    bullet->hostile_kind == HOSTILE_MINI ? PARTICLE_ENEMY_MINI_SHOT_HIT : PARTICLE_ENEMY_SHOT_HIT,
+                    bullet->x, bullet->y, 2, 1, 0, 0);
                 bullet->active = false;
                 break;
             }

@@ -227,6 +227,14 @@ static void death_and_restart(void) {
 
 static void weapon_motion_rules(void) {
     reset();
+    int effect_shot = game_spawn_bullet(&game, 0, 400, 600, 0, -10, 1);
+    game.bullets[effect_shot].weapon = WEAPON_MINI_SHOT;
+    game_projectile_hit(&game, &game.bullets[effect_shot], -1);
+    CHECK(game.effect_cursor == 0 && game.impact_sounds[1] == 1);
+    game.bullets[effect_shot].weapon = WEAPON_CHARGE_SHOT;
+    game_projectile_hit(&game, &game.bullets[effect_shot], -1);
+    CHECK(game.effect_cursor == 5);
+    reset();
     Player *p = &game.players[0];
     p->input.fire = true;
     game_update_weapons(&game, 0);
