@@ -446,13 +446,22 @@ static void update_bullets(Game *game) {
                 Bullet *hostile = &game->bullets[n];
                 if (!hostile->active || hostile->owner >= 0 ||
                     (hostile->hostile_kind != HOSTILE_PELLET && hostile->hostile_kind != HOSTILE_MISSILE)) continue;
-                if (segment_distance_squared(old_x, old_y, bullet->x, bullet->y, hostile->x, hostile->y) >=
-                    hostile->radius * hostile->radius + bullet->radius * bullet->radius) continue;
+                const Enemy circle = {.x = hostile->x, .y = hostile->y, .radius = hostile->radius};
+                bool hit = bullet->radius > 0 ?
+                    segment_distance_squared(old_x, old_y, bullet->x, bullet->y, hostile->x, hostile->y) <
+                        hostile->radius * hostile->radius + bullet->radius * bullet->radius :
+                    laser_hits_circle(old_x, old_y, bullet->x, bullet->y, &circle);
+                if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
+                    hostile->x, hostile->y, hostile->radius + bullet->width * 0.5f, hostile->radius);
+                if (!hit) continue;
                 if (hostile->hostile_kind == HOSTILE_PELLET) {
                     if (--hostile->health <= 0 || bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
                 } else if (bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
                 bullet->active = false;
                 game_projectile_hit(game, bullet, -1);
+                if (hostile->hostile_kind == HOSTILE_PELLET &&
+                    (bullet->weapon == WEAPON_BLADE || bullet->weapon == WEAPON_LIGHTNING || bullet->weapon == WEAPON_LIGHTNING_FOCUS))
+                    bullet->active = false; /* Pellet handlers consume these instead of piercing/chaining. */
             }
             if (!bullet->active) continue;
             for (int e = 0; e < GAME_ENEMIES; ++e) {

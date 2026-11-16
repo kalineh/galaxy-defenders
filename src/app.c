@@ -28,6 +28,7 @@ typedef struct {
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
     Texture2D boss4_cover, boss5_cover, boss6_center;
+    Texture2D rotate_turret_base, splitter_right;
     Texture2D pickups[3];
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
@@ -83,6 +84,8 @@ static void assets_unload(Assets *assets) {
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
+    if (IsTextureValid(assets->rotate_turret_base)) UnloadTexture(assets->rotate_turret_base);
+    if (IsTextureValid(assets->splitter_right)) UnloadTexture(assets->splitter_right);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
     if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
@@ -222,6 +225,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_names[i]);
         assets->enemies[i] = texture_load(path);
     }
+    assets->rotate_turret_base = texture_load("textures/RotateTurretBase.png");
+    assets->splitter_right = texture_load("textures/SplitterFragmentRight.png");
     assets->shot = texture_load("textures/Laser.png");
     assets->pickups[0] = texture_load("textures/Bonus.png");
     assets->pickups[1] = texture_load("textures/BigBonus.png");
@@ -252,7 +257,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         snprintf(path, sizeof(path), "textures/%s.png", menu_textures[i]);
         assets->menu[i] = texture_load(path);
     }
-    bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
+    bool valid = IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle) && IsTextureValid(assets->energy);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
@@ -446,7 +451,10 @@ static void draw_game(const Game *game, const Assets *assets) {
             enemy->kind == ENEMY_BOSS9_BALL || enemy->kind == ENEMY_BOSS11_HAND ? -1 :
             enemy->kind == ENEMY_BOSS12_EYE ? 1 : 0;
         if (depth != layer) continue;
-        Texture2D texture = assets->enemies[enemy->kind];
+        if (enemy->kind == ENEMY_ROTATE_TURRET)
+            sprite(assets->rotate_turret_base, view_x + enemy->x, enemy->y, (float)assets->rotate_turret_base.width, 0, WHITE);
+        Texture2D texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
+            assets->splitter_right : assets->enemies[enemy->kind];
         float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : enemy->rotation;
         Vector2 origin = {texture.width * 0.5f, texture.height * 0.5f};
         if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
@@ -472,7 +480,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         } else {
             float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
-            float rotation = bullet->owner < 0 ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
+            float rotation = bullet->owner < 0 && bullet->hostile_kind != HOSTILE_PELLET ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
             sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
         }
     }

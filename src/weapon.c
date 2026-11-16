@@ -164,7 +164,7 @@ void game_update_projectile(Game *game, Bullet *b) {
                 b->vx=cosf(b->rotation)*b->speed; b->vy=sinf(b->rotation)*b->speed;
                 b->speed+=0.075f;
             }
-        } else if (b->hostile_kind == HOSTILE_PELLET) b->rotation+=0.45f;
+        } else if (b->hostile_kind == HOSTILE_PELLET) b->rotation+=b->curve_speed;
         return;
     }
     Player *p = &game->players[b->owner];

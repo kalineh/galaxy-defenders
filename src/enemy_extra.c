@@ -34,6 +34,7 @@ int enemy_shot(Game *g, const Enemy *e, int kind, float x, float y, float angle,
         static const float radius[] = {2, 0.5f, 10, 21, 14, 1};
         b->hostile_kind = kind; b->radius = radius[kind]; b->speed = speed; b->rotation = angle;
         b->health = kind == HOSTILE_PELLET ? 3 : 4;
+        if (kind == HOSTILE_PELLET) b->curve_speed = 0.45f * sign(g);
         ++g->enemy_shots[kind == HOSTILE_CANNON || e->kind == ENEMY_BOSS12 || e->kind == ENEMY_PYRAMID ||
             (e->kind == ENEMY_BOSS10 && kind == HOSTILE_LASER) ? 1 : 0];
     }
@@ -143,6 +144,7 @@ void enemy_update_extended(Game *g, Enemy *e) {
             if (e->movement!=MOVE_IGNORE_CAMERA && !pause) e->y+=g->scroll_speed;
         }
         if (!pause) { e->x+=e->vx; e->y+=e->vy; }
+        if (!e->authored && e->kind == ENEMY_SPLITTER_FRAGMENT) e->y += g->scroll_speed;
     }
     ++e->age; e->rotation+=e->spin;
     if (e->invisible>0) --e->invisible;
@@ -202,6 +204,24 @@ void enemy_update_extended(Game *g, Enemy *e) {
         if (e->timer < -26) { e->timer=120; e->attack=sign(g); e->aim=PI*0.5f*(1-e->attack); }
         if (--e->timer>0) return;
     }
+    if (e->kind == ENEMY_ROTATE_TURRET) {
+        if (--e->cooldown <= 0) {
+            if (e->shot_index < 3) {
+                float angle = e->rotation + e->attack * PI * 0.5f;
+                enemy_shot(g, e, HOSTILE_SHOT, 0, 0, angle, 8, 3);
+                enemy_shot(g, e, HOSTILE_SHOT, 0, 0, angle + PI, 8, 3);
+                ++e->shot_index;
+                e->cooldown = 9;
+            } else {
+                e->shot_index = 0;
+                ++e->attack;
+                e->aim += PI * 0.25f;
+                e->cooldown = reload(g, 45);
+            }
+        }
+        if (!e->shot_index) e->rotation = fminf(e->aim, e->rotation + 0.03f);
+        return;
+    }
     if (--e->cooldown>0) return;
     switch (e->kind) {
         case ENEMY_AIRSHIP:
@@ -220,15 +240,13 @@ void enemy_update_extended(Game *g, Enemy *e) {
         case ENEMY_MISSILE_STORM:
             enemy_shot(g,e,HOSTILE_MISSILE,0,0,e->aim,2.5f,6); e->aim+=PI/8*e->attack; e->cooldown=reload(g,3); break;
         case ENEMY_RAID_TURRET: enemy_shot(g,e,HOSTILE_PELLET,0,0,aim(g,e,0)+random_float(g)*2*PI*0.015f,2.5f,2); e->cooldown=reload(g,24); break;
-        case ENEMY_TRIPLE_SHOT: case ENEMY_ROTATE_TURRET:
+        case ENEMY_TRIPLE_SHOT:
             if (e->shot_index<3) {
-                bool rotate=e->kind==ENEMY_ROTATE_TURRET;
-                if (!e->shot_index && !rotate) e->aim=aim(g,e,10);
-                float angle=e->aim+(rotate?e->attack*PI*0.5f:random_float(g)*2*PI*0.015f);
+                if (!e->shot_index) e->aim=aim(g,e,10);
+                float angle=e->aim+random_float(g)*2*PI*0.015f;
                 enemy_shot(g,e,HOSTILE_SHOT,0,0,angle,8,3);
-                if (rotate) enemy_shot(g,e,HOSTILE_SHOT,0,0,angle+PI,8,3);
                 ++e->shot_index; e->cooldown=9;
-            } else { e->shot_index=0; ++e->attack; e->aim+=PI*0.25f; e->cooldown=reload(g,e->kind==ENEMY_ROTATE_TURRET?45:90+random_float(g)*60); }
+            } else { e->shot_index=0; ++e->attack; e->aim+=PI*0.25f; e->cooldown=reload(g,90+random_float(g)*60); }
             break;
         case ENEMY_TELEPORTER:
             for(int i=0;i<4;++i) enemy_shot(g,e,HOSTILE_MISSILE,0,0,aim(g,e,0)+e->attack*PI*0.25f+i*PI*0.5f,4,6);
@@ -242,10 +260,21 @@ void enemy_die(Game *g, Enemy *e, int owner) {
     if (owner>=0) g->players[owner].score += game_health_score(g, e->health_max, 20);
     game_drop_pickups(g, e->x, e->y, e->coins, e->powerup, true);
     game_effect(g,EFFECT_ENEMY_DEATH,e->x,e->y,0,0,-1.25f);
-    if (e->kind==ENEMY_SPLITTER || e->kind==ENEMY_PYRAMID) {
-        int count=e->kind==ENEMY_SPLITTER?2:3;
-        for(int i=0;i<count;++i) {
-            int n=game_spawn_enemy(g,count==2?ENEMY_SPLITTER_FRAGMENT:ENEMY_TRIANGLE,e->x+(i-1)*24,e->y);
+    if (e->kind == ENEMY_SPLITTER) {
+        for (int side = -1; side <= 1; side += 2) {
+            int n = game_spawn_enemy(g, ENEMY_SPLITTER_FRAGMENT, e->x + side * 11, e->y);
+            if (n < 0) continue;
+            Enemy *fragment = &g->enemies[n];
+            float angle = random_float(g) * 2 * PI;
+            fragment->vx = e->vx + side + cosf(angle) * 0.5f;
+            fragment->vy = e->vy + sinf(angle) * 0.5f;
+            fragment->spin = -side * 0.1f;
+            fragment->aux_index = side > 0; /* Original right-hand shell sprite. */
+        }
+    }
+    if (e->kind==ENEMY_PYRAMID) {
+        for(int i=0;i<3;++i) {
+            int n=game_spawn_enemy(g,ENEMY_TRIANGLE,e->x+(i-1)*24,e->y);
             if(n>=0) { g->enemies[n].vx=(i-1)*0.5f; g->enemies[n].vy=1; g->enemies[n].spin=0.025f; }
         }
     }

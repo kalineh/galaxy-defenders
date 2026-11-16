@@ -26,6 +26,9 @@ automation. No npm installs. Commit and push verified focused changes to `native
 - Original coin/big-coin/upgrade pickups, magnet behavior, Rabbit coin bonus,
   generator coin recovery, health-based kill/building scores and co-op damage scale.
 - Console equipment/spawn/seek commands, completion/history and F3 frame graph.
+- Pellet blocking uses laser/beam collision shapes and original spin; rotating
+  turrets render both layers and interpolate between volleys; splitter halves use
+  distinct sprites, original offsets, inherited velocity and opposite spins.
 
 ## Remaining parity work
 

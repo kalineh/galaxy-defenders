@@ -743,6 +743,73 @@ static void extended_enemies(void) {
     CHECK(game.bullets[0].speed > speed);
 }
 
+static void pellet_turret_splitter_parity(void) {
+    reset();
+    Enemy source = {.x = 480, .y = 300};
+    int pellet = enemy_shot(&game, &source, HOSTILE_PELLET, 0, 0, 0, 0, 2);
+    CHECK(game.bullets[pellet].radius == 14 && game.bullets[pellet].health == 3);
+    int laser = game_spawn_bullet(&game, 0, 465, 300, 0, 0, 10);
+    game_tick(&game);
+    CHECK(!game.bullets[laser].active && game.bullets[pellet].health == 2); /* Laser box reaches x=466. */
+    CHECK(fabsf(fabsf(game.bullets[pellet].rotation) - 0.45f) < 0.0001f);
+    laser = game_spawn_bullet(&game, 0, 464.99f, 300, 0, 0, 10);
+    game_tick(&game);
+    CHECK(game.bullets[laser].active && game.bullets[pellet].health == 2);
+    game.bullets[laser].active = false;
+    for (int i = 0; i < 2; ++i) {
+        game_spawn_bullet(&game, 0, 480, 300, 0, 0, 0.01f);
+        game_tick(&game);
+    }
+    CHECK(!game.bullets[pellet].active); /* Three hits, independent of weapon damage. */
+    reset();
+    pellet = enemy_shot(&game, &source, HOSTILE_PELLET, 0, 0, 0, 0, 2);
+    int beam = game_spawn_bullet(&game, 0, 400, 800, 0, 0, 1);
+    game.bullets[beam].weapon = WEAPON_BEAM;
+    game.bullets[beam].offset_x = 80;
+    game.bullets[beam].width = 8;
+    game.bullets[beam].group = 2;
+    game.players[0].weapons[2][0].toggled = true;
+    game_tick(&game);
+    CHECK(game.bullets[pellet].health == 2 && game.bullets[beam].active);
+    reset();
+    int turret = game_spawn_enemy(&game, ENEMY_ROTATE_TURRET, 480, 300);
+    Enemy *e = &game.enemies[turret];
+    e->cooldown = 1;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 2 && e->rotation == 0);
+    for (int i = 0; i < 27; ++i) game_tick(&game);
+    CHECK(game_bullet_count(&game) == 6 && e->shot_index == 0);
+    CHECK(fabsf(e->rotation - 0.03f) < 0.0001f);
+    for (int i = 0; i < 49; ++i) game_tick(&game);
+    CHECK(e->shot_index == 1 && fabsf(e->rotation - 0.78539816f) < 0.0001f);
+    int diagonal = 0;
+    for (int i = 0; i < GAME_BULLETS; ++i) {
+        Bullet *b = &game.bullets[i];
+        if (b->active && b->age == 1 && fabsf(b->vx + 5.656854f) < 0.001f && fabsf(b->vy - 5.656854f) < 0.001f) ++diagonal;
+    }
+    CHECK(diagonal == 1);
+    reset();
+    int parent = game_spawn_enemy(&game, ENEMY_SPLITTER, 480, 300);
+    game.enemies[parent].vx = 2; game.enemies[parent].vy = -3;
+    enemy_die(&game, &game.enemies[parent], 0);
+    int fragments = 0;
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        Enemy *f = &game.enemies[i];
+        if (!f->active || f->kind != ENEMY_SPLITTER_FRAGMENT) continue;
+        int side = f->aux_index ? 1 : -1;
+        CHECK(f->x == 480 + side * 11 && f->y == 300);
+        CHECK(fabsf(f->spin + side * 0.1f) < 0.0001f);
+        CHECK(fabsf(hypotf(f->vx - 2 - side, f->vy + 3) - 0.5f) < 0.0001f);
+        CHECK(f->radius == 30 && f->coins == 3);
+        float y = f->y, vy = f->vy;
+        game.scroll_speed = 2;
+        enemy_update_extended(&game, f);
+        CHECK(fabsf(f->y - y - vy - 2) < 0.0001f);
+        ++fragments;
+    }
+    CHECK(fragments == 2);
+}
+
 static void remaining_bosses(void) {
     for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
         reset();
@@ -928,6 +995,7 @@ int main(void) {
     collectible_rewards();
     secret_stage_roundtrip();
     campaign_stages();
+    pellet_turret_splitter_parity();
     remaining_bosses();
     extended_enemies();
     complete_equipment();
