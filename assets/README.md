@@ -44,3 +44,8 @@ of `legacy/Content/Textures/UI/Xbox/xboxControllerButtonX.tga`.
 
 Asteroid and Cracks are unchanged `legacy/Content/Textures/Entity/` PNGs;
 EnemyDie2/3 are unchanged original `legacy/Content/SE/` WAVs.
+
+Archived OldStage decorations are copied unchanged from the matching legacy
+Decoration folder. `game.stage OldStage1` through `OldStage12` (IDs 20..31)
+select archived definitions; OldStage4 is rejected for its original unnamed
+building. The 19-stage campaign remains the normal progression path.

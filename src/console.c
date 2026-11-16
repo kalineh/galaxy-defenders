@@ -14,7 +14,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
-    {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main stage 1..12 or bonus 13..19; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
+    {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, archived 20..31, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 OldStage1 OldStage2 OldStage3 OldStage4 OldStage5 OldStage6 OldStage7 OldStage8 OldStage9 OldStage10 OldStage11 OldStage12", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
     {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph. F2 remains the co-op join key.", {"on off"}},
@@ -376,7 +376,13 @@ bool console_execute(Console *console, Game *game, const char *line) {
         game_reset(game, (uint32_t)value);
         return true;
     }
-    if (!strcmp(command, "game.stage") && (count == 2 || count == 3) && integer(words[1], &value, 1, STAGE_COUNT)) {
+    if (!strcmp(command, "game.stage") && (count == 2 || count == 3)) {
+        if (!integer(words[1], &value, 1, STAGE_COUNT)) {
+            value = 0;
+            for (int i = 0; i < STAGE_COUNT; ++i)
+                if (!strcmp(words[1], stage_definitions[i].name)) value = i + 1;
+            if (!value) return false;
+        }
         x = 0;
         if (count == 3 && !number(words[2], &x, 0, 1)) return false;
         int ticks = (int)(x * (stage_definitions[value - 1].length + 400) / stage_definitions[value - 1].scroll_speed);
@@ -385,7 +391,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
             return false;
         }
         if (!game_stage(game, value - 1, x)) {
-            console_log(console, "ERROR: stage %d behavior is not ported yet", value);
+            console_log(console, "ERROR: stage %d contains an unnamed legacy building/decoration; source data cannot be loaded", value);
             return false;
         }
         console->steps += ticks;

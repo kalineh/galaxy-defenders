@@ -27,7 +27,7 @@ typedef struct {
     Texture2D big_laser, big_flame, shield_overlay, asteroid_cracks;
     Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
-    Texture2D scenery[4];
+    Texture2D scenery[SCENERY_LAYERS];
     Texture2D boss4_cover, boss5_cover, boss6_center;
     Texture2D rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Texture2D enemy_corpses[ENEMY_KIND_COUNT];
@@ -85,7 +85,7 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
     if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
     if (IsTextureValid(assets->boss6_center)) UnloadTexture(assets->boss6_center);
-    for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
+    for (int i = 0; i < SCENERY_LAYERS; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
@@ -151,9 +151,9 @@ static void assets_unload(Assets *assets) {
 }
 
 static bool stage_assets_load(Assets *assets, int index) {
-    const SceneryDefinition *scene = &stage_scenery[index < 13 ? index : 13];
+    const SceneryDefinition *scene = &stage_scenery[game_scenery_index(index)];
     bool valid = true;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < SCENERY_LAYERS; ++i) {
         if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
         assets->scenery[i] = (Texture2D){0};
         if (!scene->layers[i].texture) continue;
@@ -455,7 +455,7 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
 }
 
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
-    const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
+    const SceneryDefinition *scene = &stage_scenery[game_scenery_index(game->stage.index)];
     if (!foreground) {
         Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
         Color bottom = {scene->bottom[0], scene->bottom[1], scene->bottom[2], 255};
@@ -480,7 +480,7 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
             DrawRectangleGradientEx((Rectangle){ARENA_X,0,GAME_WIDTH,GAME_HEIGHT},corners[0],corners[3],corners[2],corners[1]);
         }
     }
-    for (int layer = 0; layer < 4; ++layer) {
+    for (int layer = 0; layer < SCENERY_LAYERS; ++layer) {
         const SceneryLayer *definition = &scene->layers[layer];
         if (definition->foreground != foreground) continue;
         for (int i = 0; i < game->stage.scenery_count[layer]; ++i) {

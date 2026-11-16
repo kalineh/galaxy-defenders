@@ -2,7 +2,7 @@
 #include <math.h>
 
 /* SceneryPresets.cs: texture, scale, velocity, wandering, count, foreground, stars. */
-const SceneryDefinition stage_scenery[14] = {
+const SceneryDefinition stage_scenery[20] = {
     {{92,120,196},{92,120,196},{{"Cloud",1,0,6,0,10,0,0},{"Cloud",1,0,9,0,10,0,0}}},
     {{5,5,98},{5,5,98},{{"Water",1,0,1,0,10,0,0},{"Water",1,0,1,0,10,0,0},{"Water",1,0,1,0,10,0,0},{"Cloud",1,0,9,0,10,0,0}}},
     {{27,40,87},{47,76,87},{{"Droplet",1,0,6,0,10,0,0},{"Droplet",1,0,7,0,10,0,0}}},
@@ -16,8 +16,21 @@ const SceneryDefinition stage_scenery[14] = {
     {{92,120,196},{92,120,196},{{"Snow",1,3,11,0,8,1,0},{"Snow",0.8f,2,14,0,8,1,0},{"Snow",0.8f,3,12,2,8,1,0}}},
     {{0,0,0},{0,0,0},{{"Star",1.2f,0,6,3,12,0,0},{"Star",0.8f,0,9,2,15,0,0}}},
     {{46,46,170},{46,46,170},{{"Snow",1,0,8,0,10,0,1},{"Snow",1,0,11,0,10,0,1}}},
-    {{0,0,0},{0,0,0},{{"Star",1,0,6,0,10,0,1},{"Star",1,0,9,0,10,0,1}}}
+    {{0,0,0},{0,0,0},{{"Star",1,0,6,0,10,0,1},{"Star",1,0,9,0,10,0,1}}},
+    {{92,120,196},{92,120,196},{{"Cloud",1.2f,0,6,0,10,0,0},{"Cloud",0.8f,0,9,0,10,0,0}}},
+    {{57,54,93},{57,54,93},{{"SpaceCloud1",1.2f,0,6,0,3,1,0},{"SpaceCloud2",0.7f,0,9,0,3,1,0},{"SpaceCloud3",0.8f,0,9,0,3,1,0}}},
+    {{8,28,68},{8,28,68},{{"BoxCloud",1.2f,2,3,0,10,0,0},{"BoxCloud",0.8f,-2,3,0,10,0,0}}},
+    {{27,76,87},{77,76,87},{{"Droplet",0.6f,0,11,0,10,0,0},{"Droplet",0.6f,0,12,0,10,0,0}}},
+    {{5,5,93},{5,5,93},{{"Water",1,0,1,0,10,0,0},{"Water",1,0,1,0,10,0,0},{"Water",1,0,1,0,10,0,0},
+        {"SpaceCloud1",1.2f,0,6,0,3,1,0},{"SpaceCloud2",0.7f,0,9,0,3,1,0},{"SpaceCloud3",0.8f,0,9,0,3,1,0}}},
+    {{0,0,0},{0,0,0},{{"Star",1.2f,0,6,0,10,0,1},{"Star",0.8f,0,9,0,10,0,1}}}
+
 };
+
+int game_scenery_index(int stage) {
+    static const int archived[] = {14,15,16,19,17,14,19,18,19,19,19,19};
+    return stage < STAGE_CAMPAIGN_COUNT ? (stage < 13 ? stage : 13) : archived[stage - STAGE_CAMPAIGN_COUNT];
+}
 
 static float random_unit(Game *game) {
     return game_random_float(game);
@@ -42,8 +55,8 @@ static void grow_layer(Game *game, int layer, const SceneryLayer *definition) {
 }
 
 void game_scenery_init(Game *game) {
-    const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
-    for (int layer = 0; layer < 4; ++layer) {
+    const SceneryDefinition *scene = &stage_scenery[game_scenery_index(game->stage.index)];
+    for (int layer = 0; layer < SCENERY_LAYERS; ++layer) {
         game->stage.scenery_count[layer] = 0;
         grow_layer(game, layer, &scene->layers[layer]);
     }
@@ -51,8 +64,8 @@ void game_scenery_init(Game *game) {
 
 void game_scenery_update(Game *game) {
     StageState *state = &game->stage;
-    const SceneryDefinition *scene = &stage_scenery[state->index < 13 ? state->index : 13];
-    for (int layer = 0; layer < 4; ++layer) {
+    const SceneryDefinition *scene = &stage_scenery[game_scenery_index(state->index)];
+    for (int layer = 0; layer < SCENERY_LAYERS; ++layer) {
         const SceneryLayer *definition = &scene->layers[layer];
         grow_layer(game, layer, definition);
         for (int i = 0; i < state->scenery_count[layer]; ++i) {

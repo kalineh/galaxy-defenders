@@ -392,3 +392,10 @@ to confirm any of the explicit mismatches listed here.
   suite, collision/reward checks, native and render builds pass.
 - Archive correction: SpacePlatform.cs contains only an empty namespace; there
   is no missing platform implementation to port.
+- Imported all twelve archived OldStage definitions (1,835 additional events)
+  with C# defaults for omitted historical fields, original assets and six-layer
+  scenery. Console accepts names or IDs 20..31. Eleven archives pass playback;
+  OldStage4 is rejected explicitly because its original building at
+  (325.51, -16555.24) has TextureName="". No replacement is invented; the intended
+  building texture has been requested from the user. Full suite, importer checks,
+  native/render builds and inspected OldStage8 capture pass.

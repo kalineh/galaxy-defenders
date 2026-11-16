@@ -10,7 +10,7 @@ def copy(source, destination):
     shutil.copyfile(source, destination)
 
 
-stages = [f'Stage{n}' for n in range(1, 13)] + [f'BonusStage{n}' for n in range(1, 8)]
+stages = [f'Stage{n}' for n in range(1, 13)] + [f'BonusStage{n}' for n in range(1, 8)] + [f'OldStage{n}' for n in range(1, 13)]
 for stage in stages:
     source = (ROOT / 'legacy/StageDefinitions' / f'{stage}.cs').read_text(encoding='utf-8-sig')
     events = [ObjectReader(body).value() for body in re.findall(r'stage\.AddElement\(0,\s*(.*?)\);', source, re.S)]
@@ -23,6 +23,9 @@ for stage in stages:
         elif kind == 'MusicChanger':
             music.add(event['MusicName'])
         elif kind in ('Decoration', 'Building'):
+            if not event['TextureName']:
+                print(f'{stage}: preserving invalid unnamed building; no replacement asset invented')
+                continue
             folder = 'Decoration' if kind == 'Decoration' else 'Static'
             name = event['TextureName'] + '.png'
             copy(ROOT / 'legacy/Content/Textures' / folder / name, ROOT / 'assets/textures/stage' / folder / name)
@@ -48,4 +51,4 @@ for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 's
         copy(source, ROOT / 'assets/textures' / destination_folder / source.name)
 for source in (ROOT / 'legacy/Content/Textures/Enemy').glob('*.png'):
     copy(source, ROOT / 'assets/textures' / source.name)
-print('Copied original assets for all 12 main and 7 bonus stages')
+print('Copied original assets for all 12 main, 7 bonus and 12 archived stages')

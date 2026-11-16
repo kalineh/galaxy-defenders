@@ -3,7 +3,9 @@
 
 #include <stdbool.h>
 
-#define STAGE_COUNT 19
+#define STAGE_CAMPAIGN_COUNT 19
+#define STAGE_COUNT 31
+#define SCENERY_LAYERS 6
 #define STAGE_MAX_EVENTS 512
 
 typedef enum {
@@ -39,12 +41,13 @@ typedef struct {
 
 typedef struct {
     unsigned char top[3], bottom[3];
-    SceneryLayer layers[4];
+    SceneryLayer layers[SCENERY_LAYERS];
 } SceneryDefinition;
 
 typedef struct { float x, y, vx, vy, target_x, target_y; } SceneryParticle;
 typedef struct { bool active; int kind; float x, y; } EnemyCorpse;
-extern const SceneryDefinition stage_scenery[14];
+extern const SceneryDefinition stage_scenery[20];
+int game_scenery_index(int stage);
 
 typedef struct {
     int coins_total, coins_collected, enemy_total, enemy_kills, building_total, building_kills;
@@ -60,8 +63,8 @@ typedef struct {
     bool ignore_secrets;
     int secret_target, secret_countdown;
     float secret_x, secret_y;
-    int scenery_count[4];
-    SceneryParticle scenery[4][15];
+    int scenery_count[SCENERY_LAYERS];
+    SceneryParticle scenery[SCENERY_LAYERS][15];
     EnemyCorpse corpses[STAGE_MAX_EVENTS];
     bool activated[STAGE_MAX_EVENTS];
     float building_health[STAGE_MAX_EVENTS];

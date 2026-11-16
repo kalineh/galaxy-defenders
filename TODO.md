@@ -11,12 +11,13 @@ Active request: fix every Not OK item in CONTENT_AUDIT.md. Work through shared
 gameplay/collision defects, projectile visuals/effects, boss behavior/effects,
 then shop/progression/UI/scenery and standalone archived content. Verify focused
 pieces and commit/push each to native. Do not stop after the first batch.
-Current batch: scenery sequencing and state fades verified; review archived scope and reconcile audit.
+Current batch: archived stages verified (11 playable, OldStage4 source defect); final effect review and audit.
 Completed/pushed: death/contact, collisions, weapon motion/targeting/sprites,
 authored particles, enemy/boss behavior/effects, player/pickups, scenery,
 release shop stock (2d25a50), persistent seed (47643c7), missile effects (e3d1fca).
-Remaining: archived content, final audio/effect review and audit
-reconciliation. Beam looping audio was a false audit finding: Cue fields unused,
+Remaining: final effect review and audit reconciliation. Pending user input:
+OldStage4 building at (325.51, -16555.24) has an empty original TextureName;
+asked which original building asset should be used. Do not invent a replacement. Beam looping audio was a false audit finding: Cue fields unused,
 firing Sound commented out in legacy; do not add it.
 Do not run the legacy game to establish differences explicit in source.
 
