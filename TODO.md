@@ -1,20 +1,21 @@
 # Active work
 
-Request: remove obsolete OldStage content and shader experiments.
-Work on native; commit and push the verified cleanup.
+Request: map all original music against stage playback; preserve song structure
+without changing layouts. Then build a richer small C synth prototype and add
+`debug.music 1 0.5` normalized audition override plus `debug.music off`.
 
-## Cleanup completed
+## In progress
 
-- Removed twelve unused OldStage definitions and native imports, exclusive assets,
-  scenery presets, console entries and archived-stage tests.
-- Removed unused shader experiments, background test state, effect loader,
-  exclusive noise texture and empty SpacePlatform; cleaned legacy project entries.
-- Updated the audit: OldStage4 no longer requires a replacement texture.
-- Full headless suite, native build and software-render check pass.
-- Retained campaign sources are unchanged; legacy project XML parses.
+- Implemented headless stage trace and standard-library audio/binary timing analysis.
+- Analysis verified: all 19 recordings and stages; 3,448 authored events accounted
+  for (3,423 triggered, 25 unreachable in the bounded run). Stage1 captures at
+  19/35/113 seconds inspected. PCM 60 Hz/band probe passes.
+- MUSIC_TIMING.md and music/timing contain exact stage anchors, loop times,
+  waveform/channel candidates and a local listening worksheet. Musical section
+  candidates still require listening review; no invented approvals.
+- Then implement sample-clock synth, offline demo, console override and checks.
+- Keep original music as default. Candidate section boundaries/BPM must not be
+  called listening-approved or exact; binary data is derived from NSF-to-MIDI.
 
-## Remaining verification limits
-
-Identified active-campaign audit blockers are repaired. Human playtesting,
-physical controllers, web/phone builds and exhaustive legacy frame traces remain
-unverified. See CONTENT_AUDIT.md and CONTENT_PARITY.md.
+Human musical approval, physical audio latency, web/phone builds and interactive
+playtesting remain separate verification steps.
