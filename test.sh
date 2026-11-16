@@ -8,6 +8,8 @@ if [[ ! -e artifacts/native-port/.scratch-owner ]]; then
     printf '%s\n' 'galaxy-defenders/native-port/v1' > artifacts/native-port/.scratch-owner
 fi
 ./build/headless/test_game.exe
+python tools/compile_music.py --check
+./build/headless/test_synth.exe
 ./build/headless/galaxy.exe --script scripts/checks/combat.txt
 ./build/headless/galaxy.exe --script scripts/checks/progression.txt
 if ./build/headless/galaxy.exe --script scripts/checks/invalid.txt; then

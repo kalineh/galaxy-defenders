@@ -13,6 +13,9 @@ typedef struct {
     char commands[CONSOLE_COMMAND_HISTORY][CONSOLE_LINE];
     int count, steps, cursor, command_count, history_offset, scroll;
     bool quit, perf;
+    int music_track;
+    unsigned music_revision;
+    float music_progress;
 } Console;
 
 void console_log(Console *console, const char *format, ...);

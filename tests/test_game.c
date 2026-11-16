@@ -1529,7 +1529,32 @@ static void saved_continue(void) {
     remove(path);
 }
 
+static void music_override_commands(void) {
+    reset();
+    repeat = game;
+    CHECK(console_execute(&console, &game, "debug.music"));
+    CHECK(console_execute(&console, &game, "debug.music 1 0.5"));
+    CHECK(console.music_track == 1 && console.music_progress == .5f && console.music_revision == 1);
+    CHECK(!memcmp(&game, &repeat, sizeof(game)));
+    CHECK(!console_execute(&console, &game, "debug.music 2"));
+    CHECK(!console_execute(&console, &game, "debug.music 1 nan"));
+    CHECK(!console_execute(&console, &game, "debug.music 1 -0.1"));
+    CHECK(!console_execute(&console, &game, "debug.music 1 1.1"));
+    CHECK(!console_execute(&console, &game, "debug.music off 0"));
+    CHECK(console.music_revision == 1 && console.music_progress == .5f);
+    CHECK(console_execute(&console, &game, "debug.music 1 1"));
+    CHECK(console.music_progress == 1);
+    CHECK(console_execute(&console, &game, "game.reset 2"));
+    CHECK(console.music_track == 1); /* Override is presentation state, not a stage save. */
+    game_menu_open(&game, MENU_MAIN);
+    CHECK(console_execute(&console, &game, "debug.music 1"));
+    CHECK(console.music_progress == 0);
+    CHECK(console_execute(&console, &game, "debug.music off"));
+    CHECK(console.music_track == 0);
+}
+
 int main(int argc, char **argv) {
+    music_override_commands();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);

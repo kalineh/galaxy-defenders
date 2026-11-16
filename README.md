@@ -26,6 +26,11 @@ SFX/music volume and screen size for the session.
 setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.
 Seeking preserves equipment/money, restores armor and synchronizes music.
 
+`debug.music 1 [0..1]` auditions the new synth study from normalized progress;
+`debug.music off` restores normal music. It works in menus and during play.
+See [music audition instructions](music/README.md) and the
+[stage/music timing analysis](MUSIC_TIMING.md). Original campaign music remains the default.
+
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
 | Move | WASD or arrows | IJKL |

@@ -4,7 +4,7 @@ Request: map all original music against stage playback; preserve song structure
 without changing layouts. Then build a richer small C synth prototype and add
 `debug.music 1 0.5` normalized audition override plus `debug.music off`.
 
-## In progress
+## Completed implementation
 
 - Implemented headless stage trace and standard-library audio/binary timing analysis.
 - Analysis verified: all 19 recordings and stages; 3,448 authored events accounted
@@ -13,7 +13,14 @@ without changing layouts. Then build a richer small C synth prototype and add
 - MUSIC_TIMING.md and music/timing contain exact stage anchors, loop times,
   waveform/channel candidates and a local listening worksheet. Musical section
   candidates still require listening review; no invented approvals.
-- Then implement sample-clock synth, offline demo, console override and checks.
+- Timing analysis committed/pushed as aed483d.
+- Added 24-voice C synth, nine instrument patches, explicit original study score,
+  offline renderer and independent debug.music audition override.
+- Full test suite passes; latest DSP adjustment passed core and whole-score synth
+  checks. Native/software-render builds pass. Seek/chunk output is sample-identical.
+- Audition: debug.music 1 0.5; debug.music off restores normal audio.
+  music/README.md documents score editing and waveform rendering.
+- Temporary listening file: artifacts/native-port/departure-study.wav.
 - Keep original music as default. Candidate section boundaries/BPM must not be
   called listening-approved or exact; binary data is derived from NSF-to-MIDI.
 

@@ -1,4 +1,5 @@
 #include "console.h"
+#include "synth.h"
 #include <ctype.h>
 #include <errno.h>
 #include <math.h>
@@ -14,6 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
+    {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1, PROGRESS 0..1. Off restores normal music. No arguments lists tracks/status.", {"1 off", "0 0.25 0.5 0.75 1"}},
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
@@ -281,6 +283,30 @@ bool console_execute(Console *console, Game *game, const char *line) {
     }
     if (!count) return true;
     const char *command = words[0];
+    if (!strcmp(command, "debug.music")) {
+        if (count == 1) {
+            console_log(console, "Music override: %s; last requested progress %.3f", console->music_track ? "on" : "off", console->music_progress);
+            for (int track = 1; track <= SYNTH_TRACK_COUNT; ++track)
+                console_log(console, "%d: %s (%.3fs)", track, synth_track_name(track), synth_track_frames(track) / (float)SYNTH_RATE);
+            return true;
+        }
+        if (count == 2 && !strcmp(words[1], "off")) {
+            console->music_track = 0;
+            ++console->music_revision;
+            console_log(console, "Music override off; normal music restored.");
+            return true;
+        }
+        int track;
+        float progress = 0;
+        if ((count != 2 && count != 3) || !integer(words[1], &track, 1, SYNTH_TRACK_COUNT) ||
+            (count == 3 && !number(words[2], &progress, 0, 1))) return false;
+        console->music_track = track;
+        console->music_progress = progress;
+        ++console->music_revision;
+        console_log(console, "Music override %d: %s at %.3f (%.3fs); headless/mute has no audio.",
+            track, synth_track_name(track), progress, progress * synth_track_frames(track) / SYNTH_RATE);
+        return true;
+    }
     int value, slot, fire, focus;
     float x, y, expected;
     if (!strcmp(command, "help") && count <= 2) return print_help(console, count == 2 ? words[1] : NULL);

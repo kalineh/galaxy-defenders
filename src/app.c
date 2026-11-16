@@ -1,5 +1,6 @@
 #include "game.h"
 #include "console.h"
+#include "synth.h"
 #include "raylib.h"
 #include <math.h>
 #include <stdio.h>
@@ -34,6 +35,9 @@ typedef struct {
     Texture2D pickups[3], medals[5], continue_button;
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
+    AudioStream audition_stream;
+    unsigned audition_revision;
+    bool audition_active;
     int music_mode, music_revision, music_event, music_tick;
     const char *music_name;
     Sound shoot, explode[3], building_explode, hit, shield_hit, shot_hit, die;
@@ -130,6 +134,7 @@ static void assets_unload(Assets *assets) {
         if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
     }
     if (assets->audio) {
+        if (IsAudioStreamValid(assets->audition_stream)) UnloadAudioStream(assets->audition_stream);
         for (int i = 0; i < WEAPON_COUNT; ++i) if (IsSoundValid(assets->weapon_fire[i])) UnloadSound(assets->weapon_fire[i]);
         for (int i = 0; i < 4; ++i) if (IsSoundValid(assets->impacts[i])) UnloadSound(assets->impacts[i]);
         for (int i = 0; i < 2; ++i) if (IsSoundValid(assets->enemy_fire[i])) UnloadSound(assets->enemy_fire[i]);
@@ -946,8 +951,43 @@ static void poll_menu(Game *game, Assets *assets) {
     }
 }
 
-static void update_audio(const Game *game, Assets *assets) {
+/* One audition stream. Main thread may seek only after StopAudioStream has
+   synchronized with raylib's audio mutex; the callback alone advances it. */
+static Synth audition_synth;
+
+static void audition_callback(void *buffer, unsigned frames) {
+    synth_render(&audition_synth, buffer, (int)frames);
+}
+
+static void update_music_override(const Game *game, Console *console, Assets *assets) {
+    if (assets->audition_revision != console->music_revision) {
+        assets->audition_revision = console->music_revision;
+        if (IsAudioStreamValid(assets->audition_stream)) StopAudioStream(assets->audition_stream);
+        assets->audition_active = false;
+        if (console->music_track) {
+            if (!IsAudioStreamValid(assets->audition_stream)) {
+                assets->audition_stream = LoadAudioStream(SYNTH_RATE, 32, 2);
+                if (IsAudioStreamValid(assets->audition_stream)) SetAudioStreamCallback(assets->audition_stream, audition_callback);
+            }
+            if (!IsAudioStreamValid(assets->audition_stream)) {
+                console_log(console, "ERROR: synth audio stream could not load; normal music retained.");
+                console->music_track = 0;
+            } else {
+                synth_seek(&audition_synth, console->music_progress);
+                assets->audition_active = true;
+                SetAudioStreamVolume(assets->audition_stream, game->menu.options[1] / 10.0f);
+                PlayAudioStream(assets->audition_stream);
+            }
+        }
+    }
+    if (assets->audition_active) {
+        SetAudioStreamVolume(assets->audition_stream, game->menu.options[1] / 10.0f);
+    }
+}
+
+static void update_audio(const Game *game, Console *console, Assets *assets) {
     if (!assets->audio) return;
+    update_music_override(game, console, assets);
     const char *music_name = game_music(game);
     bool music_changed = strcmp(assets->music_name, music_name) != 0;
     bool seek = game->tick < assets->music_tick || assets->music_revision != game->stage.revision || assets->music_event != game->stage.music_event;
@@ -991,7 +1031,7 @@ static void update_audio(const Game *game, Assets *assets) {
     for (int i = 0; i < 2; ++i) SetSoundVolume(assets->enemy_fire[i], 0.2f * sfx);
     SetSoundVolume(assets->overheat, 0.3f * sfx);
     SetSoundVolume(assets->bonus_get, sfx);
-    SetMusicVolume(tracks[mode], game->menu.options[1] / 10.0f);
+    SetMusicVolume(tracks[mode], assets->audition_active ? 0 : game->menu.options[1] / 10.0f);
     SetSoundVolume(assets->shoot, 0.13f * sfx);
     for (int i = 0; i < 3; ++i) SetSoundVolume(assets->explode[i], 0.35f * sfx);
     SetSoundVolume(assets->building_explode, sfx);
@@ -1156,7 +1196,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
         double frame_start = GetTime();
         if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
-        update_audio(game, &assets);
+        update_audio(game, console, &assets);
         bool was_menu = game->menu.page != MENU_NONE;
         bool toggled = IsKeyPressed(KEY_GRAVE);
         if (toggled) {
