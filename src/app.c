@@ -527,47 +527,10 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     }
 }
 
-static void draw_game(const Game *game, const Assets *assets) {
+static Game shop_preview;
+
+static void draw_combat_sprites(const Game *game, const Assets *assets) {
     float view_x = ARENA_X - game->stage.camera_x;
-    ClearBackground(background);
-    DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
-    BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    draw_scenery(game, assets, false);
-    /* Legacy decoration depth offsets precede the main carrier tiles. */
-    const StageDefinition *stage = &stage_definitions[game->stage.index];
-    int order[STAGE_MAX_EVENTS], count=0;
-    for(int i=0;i<stage->event_count;++i) {
-        const StageEvent *event=&stage->events[i];
-        if(!game->stage.activated[i] || (event->kind!=STAGE_DECORATION && event->kind!=STAGE_BUILDING)) continue;
-        float depth=event->kind==STAGE_BUILDING?0.15f:0.10f+event->depth;
-        int at=count;
-        while(at>0) {
-            const StageEvent *previous=&stage->events[order[at-1]];
-            float previous_depth=previous->kind==STAGE_BUILDING?0.15f:0.10f+previous->depth;
-            if(previous_depth<=depth)break;
-            order[at]=order[at-1]; --at;
-        }
-        order[at]=i; ++count;
-    }
-    for (int row = 0; row < count; ++row) {
-        int i=order[row];
-        const StageEvent *event = &stage->events[i];
-        if (!game->stage.activated[i]) continue;
-        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
-        float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
-        if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
-        Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
-            assets->stage_destroyed[i] : assets->stage_textures[i];
-        sprite(texture, view_x + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
-    }
-    for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
-    draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
-    for (int i = 0; i < GAME_PICKUPS; ++i) {
-        const Pickup *p = &game->pickups[i];
-        if (!p->active) continue;
-        Texture2D texture = assets->pickups[p->kind];
-        sprite(texture, view_x + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
-    }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
@@ -616,6 +579,50 @@ static void draw_game(const Game *game, const Assets *assets) {
         sprite(texture, view_x + effect->x, effect->y, texture.width * effect->scale,
             effect->angle, (Color){effect->r, effect->g, effect->b, (unsigned char)(fminf(1, fmaxf(0, effect->alpha)) * 255)});
     }
+}
+
+static void draw_game(const Game *game, const Assets *assets) {
+    float view_x = ARENA_X - game->stage.camera_x;
+    ClearBackground(background);
+    DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
+    BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    draw_scenery(game, assets, false);
+    /* Legacy decoration depth offsets precede the main carrier tiles. */
+    const StageDefinition *stage = &stage_definitions[game->stage.index];
+    int order[STAGE_MAX_EVENTS], count=0;
+    for(int i=0;i<stage->event_count;++i) {
+        const StageEvent *event=&stage->events[i];
+        if(!game->stage.activated[i] || (event->kind!=STAGE_DECORATION && event->kind!=STAGE_BUILDING)) continue;
+        float depth=event->kind==STAGE_BUILDING?0.15f:0.10f+event->depth;
+        int at=count;
+        while(at>0) {
+            const StageEvent *previous=&stage->events[order[at-1]];
+            float previous_depth=previous->kind==STAGE_BUILDING?0.15f:0.10f+previous->depth;
+            if(previous_depth<=depth)break;
+            order[at]=order[at-1]; --at;
+        }
+        order[at]=i; ++count;
+    }
+    for (int row = 0; row < count; ++row) {
+        int i=order[row];
+        const StageEvent *event = &stage->events[i];
+        if (!game->stage.activated[i]) continue;
+        if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
+        float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+        if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
+        Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
+            assets->stage_destroyed[i] : assets->stage_textures[i];
+        sprite(texture, view_x + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
+    }
+    for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
+    draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
+    for (int i = 0; i < GAME_PICKUPS; ++i) {
+        const Pickup *p = &game->pickups[i];
+        if (!p->active) continue;
+        Texture2D texture = assets->pickups[p->kind];
+        sprite(texture, view_x + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
+    }
+    draw_combat_sprites(game, assets);
     draw_scenery(game, assets, true);
     if (game->stage.secret_countdown)
         DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
@@ -713,10 +720,10 @@ static void draw_shop(const Game *game, const Assets *assets, int frame) {
             DrawTexture(assets->shop[3], (int)menu_x - 54, (int)menu_y + 554, WHITE);
             text_center(assets->ui_font, "Purchase", (int)menu_x + 58, (int)menu_y + 580, 24, color);
         } else text_center(assets->ui_font, "Up/Down: category   Enter: browse", (int)info_x + 207, (int)info_y + 80, 20, WHITE);
-        float sample_x = game->players[1].joined ? 960 + (slot ? 90 : -90) : 1115;
-        int chassis = items && category == 0 ? item : p->chassis;
-        sprite(assets->ships[chassis], sample_x, ready ? 700 : 790, 80, -90, player_colors[slot]);
     }
+    BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    draw_combat_sprites(&shop_preview, assets);
+    EndScissorMode();
 }
 
 static void draw_menu(const Game *game, const Assets *assets, int frame) {
@@ -1199,11 +1206,19 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_weapon_shots, game->weapon_shots, sizeof(old_weapon_shots));
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
-        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH) && (IsWindowFocused() || frames)) {
+        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
                 game_tick(game);
+                if (game->menu.page == MENU_SHOP) {
+                    int shots[WEAPON_COUNT];
+                    memcpy(shots, shop_preview.weapon_shots, sizeof(shots));
+                    game_shop_preview_update(&shop_preview, game);
+                    if (assets.audio) for (int i = 0; i < WEAPON_COUNT; ++i)
+                        if (shop_preview.weapon_shots[i] > shots[i] && IsSoundValid(assets.weapon_fire[i]))
+                            PlaySound(assets.weapon_fire[i]);
+                } else shop_preview.tick = 0;
                 accumulator -= 1.0 / GAME_HZ;
             }
         } else accumulator = 0;

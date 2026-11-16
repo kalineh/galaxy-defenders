@@ -223,6 +223,8 @@ void game_scenery_init(Game *game);
 void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
+void game_shop_preview_update(Game *preview, const Game *game);
+void game_preview_tick(Game *preview);
 void game_shop_input(Game *game, MenuAction action, int slot);
 int game_shop_cost(const Game *game, int slot);
 bool game_shop_buy(Game *game, int slot);

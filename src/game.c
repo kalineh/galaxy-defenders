@@ -580,6 +580,21 @@ static void update_bullets(Game *game) {
     }
 }
 
+void game_preview_tick(Game *preview) {
+    ++preview->tick;
+    update_effects(preview);
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        Player *p = &preview->players[i];
+        if (!p->joined) continue;
+        ++p->age;
+        p->input.fire = p->age >= 15;
+        bool charge = p->weapons[3][0].charge < 60;
+        p->input.sidekick_left = p->input.sidekick_right = charge;
+        if (p->age >= 15) game_update_weapons(preview, i);
+    }
+    update_bullets(preview);
+}
+
 void game_tick(Game *game) {
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;

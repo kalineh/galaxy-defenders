@@ -1313,6 +1313,26 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void shop_previews(void) {
+    reset();
+    game_shop_open(&game);
+    game.menu.shop_items[0] = true;
+    game.menu.shop_category[0] = 3;
+    game.menu.shop_item[0] = WEAPON_BEAM;
+    game.menu.shop_level[0] = 2;
+    repeat.tick = 0;
+    for (int i = 0; i < 14; ++i) game_shop_preview_update(&repeat, &game);
+    CHECK(repeat.shots == 0 && game.players[0].primary == WEAPON_FRONT_LASER);
+    game_shop_preview_update(&repeat, &game);
+    CHECK(repeat.weapon_shots[WEAPON_BEAM] > 0 && repeat.players[0].primary == WEAPON_BEAM);
+    game.menu.shop_item[0] = WEAPON_FLAME;
+    game_shop_preview_update(&repeat, &game);
+    CHECK(repeat.players[0].age == 1 && repeat.players[0].primary == WEAPON_FLAME);
+    for (int i = 0; i < GAME_BULLETS; ++i)
+        CHECK(!repeat.bullets[i].active || repeat.bullets[i].weapon != WEAPON_BEAM);
+    CHECK(game.players[0].money == 0 && game.players[0].primary == WEAPON_FRONT_LASER);
+}
+
 static void stage_awards(void) {
     reset();
     game.stage.stats = (StageStats){.coins_total=20, .coins_collected=20,
@@ -1402,7 +1422,7 @@ int main(int argc, char **argv) {
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    stage_awards(); saved_continue();
+    shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

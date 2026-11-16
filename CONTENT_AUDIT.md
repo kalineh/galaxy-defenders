@@ -355,3 +355,8 @@ to confirm any of the explicit mismatches listed here.
   Save version 3 keeps latest per-stage scores/medals across checkpoints and
   Continue; versions 1/2 still load. Full suite, award/save checks, native build,
   software render and inspected clear-screen capture pass.
+- Shop sample ships now preview selected equipment with primary/support firing,
+  sidekick charging, original projectile rendering/effects and firing sounds.
+  Selection rebuilds emitters after the original 15-frame delay without changing
+  purchased equipment. Shared draw code serves gameplay and previews. Full suite,
+  preview-isolation checks, builds and inspected software-render capture pass.

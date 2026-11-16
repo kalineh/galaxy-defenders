@@ -201,3 +201,49 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
         if (action == MENU_CONFIRM) game_shop_buy(game, slot);
     }
 }
+
+void game_shop_preview_update(Game *preview, const Game *game) {
+    if (preview->tick == 0) {
+        game_reset(preview, game->seed);
+        preview->waves = false;
+        preview->scroll_speed = 0;
+        memset(preview->players, 0, sizeof(preview->players));
+    }
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        Player desired = game->players[slot];
+        Player *p = &preview->players[slot];
+        if (game->menu.shop_items[slot] && !game->menu.ready[slot]) {
+            int item = game->menu.shop_item[slot], level = game->menu.shop_level[slot];
+            switch (game->menu.shop_category[slot]) {
+                case 0: desired.chassis = item; break;
+                case 1: desired.generator = item; break;
+                case 2: desired.shield = item; break;
+                case 3: desired.primary = item; desired.weapon_level = level; break;
+                case 4: desired.secondary = item; desired.secondary_level = level; break;
+                case 5: desired.sidekick = item; break;
+            }
+        }
+        bool changed = p->joined != desired.joined || p->weapon_level != desired.weapon_level ||
+            p->secondary_level != desired.secondary_level;
+        for (int category = 0; category < 6; ++category)
+            changed |= game_shop_equipped(p, category) != game_shop_equipped(&desired, category);
+        if (changed) {
+            *p = desired;
+            p->age = 0; p->powerup_levels = 0;
+            p->lives = 1; p->invincible = true;
+            p->health = game_chassis[p->chassis].armor;
+            p->energy = game_generators[p->generator].capacity;
+            p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
+            memset(p->weapons, 0, sizeof(p->weapons));
+            for (int i = 0; i < GAME_BULLETS; ++i) {
+                Bullet *b = &preview->bullets[i];
+                if (b->owner == slot && (b->weapon == WEAPON_BEAM || b->weapon == WEAPON_BEAM_FOCUS)) b->active = false;
+            }
+        }
+        p->x = game->players[1].joined ? 480 + (slot ? 90 : -90) : 635;
+        p->y = 790;
+        p->vx = p->vy = 0;
+        p->input = (PlayerInput){0};
+    }
+    game_preview_tick(preview);
+}
