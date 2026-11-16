@@ -320,3 +320,7 @@ to confirm any of the explicit mismatches listed here.
   focused boss timing/threshold checks and native build pass.
 - Audit correction: Boss4's UpdateMovement coroutine exists but its Fork call is
   commented out. Its stationary body is correct; do not enable dormant movement.
+- Player/pickup repairs: movement force precedes weapon firing, friction is set
+  before physics, powerups rebuild only primary emitters and retain the focus
+  level/support state, coins confine to panned camera bounds and use the original
+  32-pixel removal margin. Headless suite and native build pass.

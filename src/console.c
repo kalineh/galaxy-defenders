@@ -357,7 +357,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
         int kind = equipment_find_weapon(words[3]);
         bool none = !strcmp(words[3], "None") && category >= 4;
         if (!p->joined || (!none && (kind < 0 || equipment_weapon_category(kind) != category || value >= game_weapons[kind].level_count))) return false;
-        if (category == 3) { p->primary = kind; p->weapon_level = value; }
+        if (category == 3) { p->primary = kind; p->weapon_level = value; p->powerup_levels = 0; }
         else if (category == 4) { p->secondary = kind; p->secondary_level = value; }
         else if (category == 5) p->sidekick = kind;
         else return false;

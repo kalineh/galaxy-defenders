@@ -1269,8 +1269,10 @@ static void collectible_rewards(void) {
     CHECK(game.pickups[0].kind == 1 && game.pickups[1].kind == 1);
     CHECK(game.pickups[2].kind == 0 && game.pickups[3].kind == 2);
     int level = p->weapon_level;
+    p->weapons[2][0].charge = 17;
     game_tick(&game);
     CHECK(p->score == 518 && p->weapon_level == level + 1 && game.pickups_collected == 4);
+    CHECK(p->powerup_levels == 1 && p->weapon_level-p->powerup_levels == level && p->weapons[2][0].charge == 17);
     reset();
     game_drop_pickups(&game, 400, 650, 1, false, false);
     for (int tick = 0; tick < 120; ++tick) game_tick(&game);

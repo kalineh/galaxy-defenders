@@ -273,6 +273,7 @@ static void player_impact(Game *game, int slot, float damage, float x, float y, 
 bool game_upgrade_weapon(Game *game, int slot, int level) {
     if (slot < 0 || slot >= GAME_PLAYERS || level < 0 || level > 7 || !game->players[slot].joined) return false;
     game->players[slot].weapon_level = level;
+    game->players[slot].powerup_levels = 0;
     return true;
 }
 
@@ -331,8 +332,8 @@ static void update_pickups(Game *game) {
             float dx = p->x - pickup->x, dy = p->y - pickup->y;
             if (dx * dx + dy * dy < 16 * 16 + radius * radius) {
                 if (pickup->kind == 2) {
-                    if (p->weapon_level + 1 < game_weapons[p->primary].level_count) ++p->weapon_level;
-                    memset(p->weapons, 0, sizeof(p->weapons));
+                    if (p->weapon_level + 1 < game_weapons[p->primary].level_count) { ++p->weapon_level; ++p->powerup_levels; }
+                    memset(p->weapons[0], 0, sizeof(p->weapons[0]));
                 } else {
                     p->score += pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0);
                     if (pickup->kind == 1) p->energy = fminf(game_generators[p->generator].capacity,
@@ -343,10 +344,10 @@ static void update_pickups(Game *game) {
             }
         } else pickup->magnet = false;
         if (pickup->age <= 20 || pickup->magnet) {
-            pickup->x = clamp(pickup->x, 0, GAME_WIDTH);
+            pickup->x = clamp(pickup->x, game->stage.camera_x, game->stage.camera_x + GAME_WIDTH);
             pickup->y = fminf(pickup->y, GAME_HEIGHT);
         }
-        if (pickup->y > GAME_HEIGHT + 48) pickup->active = false;
+        if (pickup->y > GAME_HEIGHT + 32) pickup->active = false;
     }
 }
 
@@ -357,8 +358,6 @@ static void update_players(Game *game) {
         ++player->age;
         if (player->shield_hit_frames > 0) --player->shield_hit_frames;
         if (player->invulnerable > 0) --player->invulnerable;
-        /* Legacy input/fire runs before generator and cooldown updates. */
-        game_update_weapons(game, i);
         float x = player->input.x, y = player->input.y;
         float length = sqrtf(x * x + y * y);
         if (length > 1) { x /= length; y /= length; }
@@ -367,12 +366,14 @@ static void update_players(Game *game) {
         float acceleration = chassis->speed * (player->pilot == 0 ? 1.2f : 1);
         player->vx += x * acceleration;
         player->vy += y * acceleration;
+        /* Ship.UpdateInput applies movement force before firing. */
+        game_update_weapons(game, i);
+        float target_friction = chassis->friction * (player->input.focus ? 0.6f : 1);
+        player->friction += (target_friction - player->friction) * (player->input.focus ? 0.2f : 0.4f);
         float radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
         float left = game->stage.camera_x + radius, right = game->stage.camera_x + GAME_WIDTH - radius;
         player->x = clamp(player->x + player->vx, left, right);
         player->y = clamp(player->y + player->vy, radius, GAME_HEIGHT - radius);
-        float target_friction = chassis->friction * (player->input.focus ? 0.6f : 1);
-        player->friction += (target_friction - player->friction) * (player->input.focus ? 0.2f : 0.4f);
         player->vx *= player->friction;
         player->vy *= player->friction;
         if (player->input.focus) game_effect(game, EFFECT_FOCUS, player->x, player->y, i, player->vx, player->vy - 2.5f);

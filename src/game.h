@@ -51,7 +51,7 @@ typedef struct {
     bool joined, invincible;
     float x, y, vx, vy, health;
     int lives, invulnerable, score, age, shield_hit_frames;
-    int money, chassis, pilot, weapon_level;
+    int money, chassis, pilot, weapon_level, powerup_levels;
     int primary, secondary, secondary_level, sidekick, generator, shield;
     float shield_health;
     WeaponState weapons[WEAPON_GROUPS][WEAPON_EMITTERS];

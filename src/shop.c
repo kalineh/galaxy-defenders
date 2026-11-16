@@ -57,7 +57,7 @@ bool game_shop_buy(Game *game, int slot) {
         case 0: if (!game_equip_chassis(game, slot, item)) return false; break;
         case 1: p->generator = item; p->energy = game_generators[item].capacity; break;
         case 2: p->shield = item; p->shield_health = game_shields[item].capacity; break;
-        case 3: p->primary = item; p->weapon_level = level; break;
+        case 3: p->primary = item; p->weapon_level = level; p->powerup_levels = 0; break;
         case 4: p->secondary = item; p->secondary_level = level; break;
         case 5: p->sidekick = item; break;
         default: return false;
