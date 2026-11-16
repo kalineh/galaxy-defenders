@@ -36,7 +36,7 @@ typedef struct {
     Music music, title_music, pause_music;
     int music_mode, music_revision, music_event, music_tick;
     const char *music_name;
-    Sound shoot, explode, building_explode, hit, shield_hit, shot_hit, die;
+    Sound shoot, explode[3], building_explode, hit, shield_hit, shot_hit, die;
     Sound bonus_get;
     Sound weapon_fire[WEAPON_COUNT], impacts[4], enemy_fire[2], overheat;
     Sound menu_sounds[5];
@@ -140,7 +140,7 @@ static void assets_unload(Assets *assets) {
         for (int i = 0; i < 5; ++i) if (IsSoundValid(assets->menu_sounds[i])) UnloadSound(assets->menu_sounds[i]);
         if (IsSoundValid(assets->shoot)) UnloadSound(assets->shoot);
         if (IsSoundValid(assets->building_explode)) UnloadSound(assets->building_explode);
-        if (IsSoundValid(assets->explode)) UnloadSound(assets->explode);
+        for (int i = 0; i < 3; ++i) if (IsSoundValid(assets->explode[i])) UnloadSound(assets->explode[i]);
         if (IsSoundValid(assets->hit)) UnloadSound(assets->hit);
         if (IsSoundValid(assets->shield_hit)) UnloadSound(assets->shield_hit);
         if (IsSoundValid(assets->shot_hit)) UnloadSound(assets->shot_hit);
@@ -366,7 +366,12 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     }
     assets->shoot = LoadSound(asset_path("audio/WeaponShootLaser.wav"));
     assets->building_explode = LoadSound(asset_path("audio/BuildingExplode.wav"));
-    assets->explode = LoadSound(asset_path("audio/EnemyDie1.wav"));
+    for (int i = 0; i < 3; ++i) {
+        char path[64];
+        snprintf(path, sizeof(path), "audio/EnemyDie%d.wav", i + 1);
+        assets->explode[i] = LoadSound(asset_path(path));
+        if (!IsSoundValid(assets->explode[i])) return false;
+    }
     assets->hit = LoadSound(asset_path("audio/PlayerArmorHit.wav"));
     assets->shield_hit = LoadSound(asset_path("audio/PlayerShieldHit.wav"));
     assets->shot_hit = LoadSound(asset_path("audio/WeaponHitLaser.wav"));
@@ -390,7 +395,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->enemy_fire[1] = LoadSound(asset_path("audio/EnemyCannonShoot.wav"));
     assets->overheat = LoadSound(asset_path("audio/WeaponOverheat.wav"));
     if (!IsMusicValid(assets->music) || !IsMusicValid(assets->title_music) || !IsMusicValid(assets->pause_music) || !IsSoundValid(assets->shoot) ||
-        !IsSoundValid(assets->explode) || !IsSoundValid(assets->building_explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shield_hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
+        !IsSoundValid(assets->building_explode) || !IsSoundValid(assets->hit) || !IsSoundValid(assets->shield_hit) || !IsSoundValid(assets->shot_hit) || !IsSoundValid(assets->die)) {
         console_log(console, "ERROR: missing or unsupported audio assets");
         return false;
     }
@@ -403,7 +408,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->music_event = -2;
     SetMusicVolume(assets->music, 1.0f);
     SetSoundVolume(assets->shoot, 0.13f);
-    SetSoundVolume(assets->explode, 0.35f);
+    for (int i = 0; i < 3; ++i) SetSoundVolume(assets->explode[i], 0.35f);
     SetSoundVolume(assets->hit, 0.45f);
     SetSoundVolume(assets->shield_hit, 0.45f);
     SetSoundVolume(assets->shot_hit, 0.2f);
@@ -982,7 +987,7 @@ static void update_audio(const Game *game, Assets *assets) {
     SetSoundVolume(assets->bonus_get, sfx);
     SetMusicVolume(tracks[mode], game->menu.options[1] / 10.0f);
     SetSoundVolume(assets->shoot, 0.13f * sfx);
-    SetSoundVolume(assets->explode, 0.35f * sfx);
+    for (int i = 0; i < 3; ++i) SetSoundVolume(assets->explode[i], 0.35f * sfx);
     SetSoundVolume(assets->building_explode, sfx);
     SetSoundVolume(assets->hit, 0.45f * sfx);
     SetSoundVolume(assets->shield_hit, 0.45f * sfx);
@@ -1200,7 +1205,9 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         int old_buildings = game->building_kills;
         int old_pickups = game->pickups_collected;
-        int old_kills = game->kills, old_hits = game->armor_hits, old_shield_hits = game->shield_hits, old_deaths = game->deaths;
+        int old_hits = game->armor_hits, old_shield_hits = game->shield_hits, old_deaths = game->deaths;
+        int old_enemy_deaths[3];
+        memcpy(old_enemy_deaths, game->enemy_deaths, sizeof(old_enemy_deaths));
         int old_weapon_shots[WEAPON_COUNT], old_impacts[4], old_enemy_shots[2], old_overheats = game->overheats;
         memcpy(old_weapon_shots, game->weapon_shots, sizeof(old_weapon_shots));
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
@@ -1228,7 +1235,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             for (int i = 0; i < 2; ++i) if (game->enemy_shots[i] > old_enemy_shots[i]) PlaySound(assets.enemy_fire[i]);
             if (game->overheats > old_overheats) PlaySound(assets.overheat);
             if (game->building_kills > old_buildings) PlaySound(assets.building_explode);
-            if (game->kills > old_kills) PlaySound(assets.explode);
+            for (int i = 0; i < 3; ++i) if (game->enemy_deaths[i] > old_enemy_deaths[i]) PlaySound(assets.explode[i]);
             if (game->armor_hits > old_hits) PlaySound(assets.hit);
             if (game->shield_hits > old_shield_hits) PlaySound(assets.shield_hit);
             if (game->deaths > old_deaths) PlaySound(assets.die);

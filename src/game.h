@@ -169,7 +169,7 @@ typedef struct {
     int armor_hits, shield_hits;
     int tick, kills, building_kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
     int pickups_collected;
-    int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], overheats;
+    int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], enemy_deaths[3], overheats;
     bool waves, paused, over, complete, boss_spawned, seeking;
     int difficulty, over_frames, secret_finish_frames, secret_fade_frames;
     Transition transition;

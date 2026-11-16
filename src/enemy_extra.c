@@ -358,6 +358,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         if (!body.authored) g->complete=true;
         return;
     }
+    if (e->kind != ENEMY_BOSS3_CHUNK) ++g->enemy_deaths[game_random(g) % 3];
     game_drop_pickups(g, e->x, e->y, e->coins, e->powerup, true);
     bool part = e->kind==ENEMY_BOSS3_CHUNK || e->kind==ENEMY_BOSS6_SPHERE;
     death_burst(g,e,part?1.5f:e->kind==ENEMY_MINI_SQUARE?0.5f:1,!part);

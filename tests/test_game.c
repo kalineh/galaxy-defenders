@@ -1327,6 +1327,20 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void enemy_death_sounds(void) {
+    reset();
+    for (int i = 0; i < 30; ++i) {
+        int enemy = game_spawn_enemy(&game, ENEMY_BALL, 400, 400);
+        enemy_die(&game, &game.enemies[enemy], 0);
+    }
+    int total = 0;
+    for (int i = 0; i < 3; ++i) { CHECK(game.enemy_deaths[i] > 0); total += game.enemy_deaths[i]; }
+    CHECK(total == 30);
+    int enemy = game_spawn_enemy(&game, ENEMY_BOSS3_CHUNK, 400, 400);
+    enemy_die(&game, &game.enemies[enemy], 0);
+    CHECK(game.enemy_deaths[0] + game.enemy_deaths[1] + game.enemy_deaths[2] == total);
+}
+
 static void legacy_random_sequence(void) {
     static const uint32_t expected[] = {1434747710,302596119,269548474,1122627734,361709742,563913476};
     GameRandom random;
@@ -1488,13 +1502,13 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
+    enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

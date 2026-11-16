@@ -381,3 +381,6 @@ to confirm any of the explicit mismatches listed here.
   sequences for normal/negative/extreme seeds, full suite and builds pass.
   This repairs the RNG algorithm gap noted above; it is not a claim that every
   entity consumes an identical random sequence on every frame.
+- Enemy deaths now select the original three sound variants; boss/part paths
+  that omit the base death sound stay silent. Original EnemyDie2/3 assets added.
+  Full suite, sound-event checks, native build and software-render checks pass.
