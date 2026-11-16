@@ -81,7 +81,6 @@
     <None Include="Editor\Entities\EditorEntityMusicChanger.cs" />
     <None Include="Editor\Entities\EditorEntityParticleEffectPlayer.cs" />
     <None Include="Editor\Entities\EditorEntityHealthBar.cs" />
-    <Compile Include="EffectLoader.cs" />
     <Compile Include="MusicBin.cs" />
     <Compile Include="Effects\AnimationEffects.cs" />
     <Compile Include="Effects\NewParticleEffect.cs" />
@@ -141,8 +140,6 @@
     <Compile Include="Projectile\Vulcan.cs" />
     <Compile Include="SampleShip.cs" />
     <Compile Include="SampleShipManager.cs" />
-    <Compile Include="Scenery\Sceneries\FunkyClouds.cs" />
-    <Compile Include="Scenery\Sceneries\ShaderSceneries.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="SpriteBatchExtensions.cs" />
     <Compile Include="StageClearPanel.cs" />
@@ -152,18 +149,6 @@
     <Compile Include="StageDefinitions\BonusStage5.cs" />
     <Compile Include="StageDefinitions\BonusStage6.cs" />
     <Compile Include="StageDefinitions\BonusStage7.cs" />
-    <Compile Include="StageDefinitions\OldStage1.cs" />
-    <Compile Include="StageDefinitions\OldStage10.cs" />
-    <Compile Include="StageDefinitions\OldStage11.cs" />
-    <Compile Include="StageDefinitions\OldStage12.cs" />
-    <Compile Include="StageDefinitions\OldStage2.cs" />
-    <Compile Include="StageDefinitions\OldStage3.cs" />
-    <Compile Include="StageDefinitions\OldStage4.cs" />
-    <Compile Include="StageDefinitions\OldStage5.cs" />
-    <Compile Include="StageDefinitions\OldStage6.cs" />
-    <Compile Include="StageDefinitions\OldStage7.cs" />
-    <Compile Include="StageDefinitions\OldStage8.cs" />
-    <Compile Include="StageDefinitions\OldStage9.cs" />
     <Compile Include="StageDefinitions\Stage10.cs" />
     <Compile Include="StageDefinitions\Stage11.cs" />
     <Compile Include="StageDefinitions\Stage12.cs" />
@@ -175,7 +160,6 @@
     <Compile Include="Stage\Elements\StageElementParticleEffectPlayer.cs" />
     <Compile Include="Stage\Elements\StageElementSecretEntry.cs" />
     <Compile Include="ShopMenu.cs" />
-    <Compile Include="State\StateBackgroundTest.cs" />
     <Compile Include="State\StateGameFinish.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="Detonation.cs" />
@@ -245,7 +229,6 @@
     <Compile Include="Entities\Bonus.cs" />
     <Compile Include="Enemy\Isosceles.cs" />
     <Compile Include="Entities\Building.cs" />
-    <Compile Include="Entities\SpacePlatform.cs" />
     <Compile Include="FrameRate.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Fader.cs" />

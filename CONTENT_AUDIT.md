@@ -9,11 +9,11 @@ means that the named blocker was implemented and checked; it does not certify
 frame-identical execution of every possible encounter. `OK` retains the original
 narrow approval. Repair evidence and source-audit corrections follow the tables.
 
-Remaining source issue: archived `OldStage4` contains an unnamed building at
-(325.51, -16555.24). Its data is preserved and its loader rejects it explicitly;
-the intended original texture has been requested from the user. Dormant editor
-shader experiments remain archived, outside the playable campaign and stage
-importer; a native editor/shader demonstration is not implemented.
+Obsolete content cleanup (2026-11-16): at the user's direction, removed the twelve
+unused OldStage definitions, their native imports/assets/scenery, the empty
+SpacePlatform placeholder, and unused shader experiments/test harness. These are
+outside the retained twelve-main/seven-bonus campaign. The unnamed OldStage4
+building is no longer a pending issue; no replacement texture is needed.
 
 ## Shared findings
 
@@ -226,8 +226,7 @@ been restored for the original `ShieldHitDisplayFrames` interval.
 
 ## Stages and environment
 
-`python tools/import_stages.py --check` passes: **19 campaign stages / 3,448 events, plus
-12 archived stages / 1,835 events, all source fields accounted for**. The data column covers authored events and fields.
+`python tools/import_stages.py --check` passes: **19 campaign stages / 3,448 events, all source fields accounted for**. The data column covers authored events and fields.
 Whole-stage verdicts include the enemies/projectiles above and transition behavior.
 
 | Stage | Authored data | Whole-stage verdict |
@@ -267,10 +266,6 @@ Whole-stage verdicts include the enemies/projectiles above and transition behavi
 | Audio behavior | Repaired | Weapon loops/trails/hit mappings differ; native `game_music` has no game-over `Try_Harder` selection, which legacy `CheckGameOverConditions` requests. |
 | Saves / progression records | Repaired | Native saves support Continue, but legacy also saves per-stage scores/medals (`World.SetScoreSaveData`); native checkpoint format lacks those records. |
 | Asteroid / BigAsteroid | Repaired | Original custom motion/size, crack overlay, contact/shot dispatch and strict death threshold; available through console spawning. |
-| SpacePlatform | No implementation in source | Empty legacy namespace; original audit incorrectly implied a missing platform feature. |
-| OldStage1-3, OldStage5-12 | Repaired | Original definitions/defaults/assets/scenery imported; console-loadable by name or IDs 20..31, separate from campaign progression. |
-| OldStage4 | Source defect / awaiting input | Original building has TextureName="". Native reports the invalid source; intended asset must be specified before repair. |
-| Editor-only shader experiments | Archived | Unused by authored stages. Original source retained; no native editor or standalone shader demonstration. |
 
 ## Original repair order (completed for campaign blockers)
 
@@ -395,10 +390,7 @@ to confirm any of the explicit mismatches listed here.
   suite, collision/reward checks, native and render builds pass.
 - Archive correction: SpacePlatform.cs contains only an empty namespace; there
   is no missing platform implementation to port.
-- Imported all twelve archived OldStage definitions (1,835 additional events)
-  with C# defaults for omitted historical fields, original assets and six-layer
-  scenery. Console accepts names or IDs 20..31. Eleven archives pass playback;
-  OldStage4 is rejected explicitly because its original building at
-  (325.51, -16555.24) has TextureName="". No replacement is invented; the intended
-  building texture has been requested from the user. Full suite, importer checks,
-  native/render builds and inspected OldStage8 capture pass.
+- The archived-stage import was subsequently removed at the user's request,
+  along with obsolete stage source, exclusive native decorations/scenery, empty
+  SpacePlatform, shader experiments and their test state/loader/project entries.
+  Active campaign source and all 3,448 authored events remain intact.

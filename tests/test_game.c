@@ -702,7 +702,7 @@ static void authored_stage_data(void) {
         CHECK(finish == 1 && stop == 1);
         total += stage->event_count;
     }
-    CHECK(total == 5283);
+    CHECK(total == 3448);
     const StageDefinition *first = &stage_definitions[0];
     CHECK(!strcmp(first->name, "Stage1") && !strcmp(first->music, "The_Voyage") && first->length == 21320);
     int boss = 0, squares = 0;
@@ -790,7 +790,7 @@ static void authored_stage_runtime(void) {
     CHECK(console_execute(&console, &game, "game.stage 1 0"));
     CHECK(game.tick == 0 && game.stage.music_event == -1 && !game.complete && !game.paused);
     CHECK(!console_execute(&console, &game, "game.stage 1 -1"));
-    CHECK(!console_execute(&console, &game, "game.stage 32"));
+    CHECK(!console_execute(&console, &game, "game.stage 20"));
 }
 
 static void boss_patterns(void) {
@@ -1218,7 +1218,7 @@ static void boss_visual_collision_parity(void) {
 }
 
 static void campaign_stages(void) {
-    for (int stage = 0; stage < STAGE_CAMPAIGN_COUNT; ++stage) {
+    for (int stage = 0; stage < STAGE_COUNT; ++stage) {
         reset();
         game.players[0].invincible = true;
         CHECK(game_stage(&game, stage, 0));
@@ -1325,31 +1325,6 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 30);
     game.difficulty = 2;
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
-}
-
-static void archived_stages(void) {
-    for (int stage = STAGE_CAMPAIGN_COUNT; stage < STAGE_COUNT; ++stage) {
-        reset();
-        if (stage == STAGE_CAMPAIGN_COUNT + 3) {
-            CHECK(!game_stage(&game, stage, 0)); /* Original OldStage4 has an unnamed building. */
-            CHECK(game.stage.index == 0);
-            continue;
-        }
-        CHECK(game_stage(&game, stage, 0));
-        game.players[0].invincible = true;
-        for (int tick = 0; tick < 15000 && !game.complete; ++tick) {
-            game_tick(&game);
-            for (int i = 0; i < GAME_ENEMIES; ++i) {
-                Enemy *e = &game.enemies[i];
-                if (e->active && e->age >= 600) enemy_die(&game, e, 0);
-            }
-        }
-        CHECK(game.complete && game.dropped_spawns == 0);
-    }
-    reset();
-    CHECK(console_execute(&console, &game, "game.stage OldStage8"));
-    CHECK(game.stage.index == 26 && game_scenery_index(game.stage.index) == 18);
-    CHECK(!console_execute(&console, &game, "game.stage OldStage4"));
 }
 
 static void archived_asteroids(void) {
@@ -1566,7 +1541,7 @@ int main(int argc, char **argv) {
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();
-    campaign_stages(); archived_stages();
+    campaign_stages();
     pellet_turret_splitter_parity();
     regular_enemy_parity();
     remaining_bosses();

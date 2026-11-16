@@ -715,11 +715,6 @@ int game_bullet_count(const Game *game) {
 
 bool game_stage(Game *game, int index, float progress) {
     if (index < 0 || index >= STAGE_COUNT || !isfinite(progress) || progress < 0 || progress > 1) return false;
-    const StageDefinition *definition = &stage_definitions[index];
-    for (int i = 0; i < definition->event_count; ++i) {
-        const StageEvent *e = &definition->events[i];
-        if ((e->kind == STAGE_BUILDING || e->kind == STAGE_DECORATION) && (!e->name || !e->name[0])) return false;
-    }
     Player players[GAME_PLAYERS];
     memcpy(players, game->players, sizeof(players));
     GameMenu menu = game->menu;

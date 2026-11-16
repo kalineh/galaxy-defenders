@@ -125,7 +125,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EffectLoader.cs" />
     <Compile Include="Editor\Entities\EditorEntityHealthBar.cs" />
     <Compile Include="Enemy\Boss1.cs" />
     <Compile Include="Enemy\Boss2.cs" />
@@ -153,8 +152,6 @@
     <Compile Include="Projectile\Lightning.cs" />
     <Compile Include="Projectile\Flame.cs" />
     <Compile Include="Projectile\EnemyMiniShot.cs" />
-    <Compile Include="Scenery\Sceneries\FunkyClouds.cs" />
-    <Compile Include="Scenery\Sceneries\ShaderSceneries.cs" />
     <Compile Include="ScorePanel.cs" />
     <Compile Include="ShopMenu.cs" />
     <Compile Include="StageDefinitions\BonusStage4.cs" />
@@ -163,7 +160,6 @@
     <Compile Include="StageDefinitions\BonusStage7.cs" />
     <Compile Include="Stage\Elements\StageElementHealthBar.cs" />
     <Compile Include="State\StateGameFinish.cs" />
-    <Compile Include="State\StateBackgroundTest.cs" />
     <Compile Include="StringBuilderExtFormat.cs" />
     <Compile Include="StringBuilderExtNumeric.cs" />
     <Compile Include="Weapon\WeaponLaserShot.cs" />
@@ -272,7 +268,6 @@
     <Compile Include="Entities\Bonus.cs" />
     <Compile Include="Enemy\Isosceles.cs" />
     <Compile Include="Entities\Building.cs" />
-    <Compile Include="Entities\SpacePlatform.cs" />
     <Compile Include="FrameRate.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Fader.cs" />
@@ -286,18 +281,6 @@
     <Compile Include="StageDefinitions\BonusStage2.cs" />
     <Compile Include="StageDefinitions\BonusStage3.cs" />
     <Compile Include="StageDefinitions\StageDefinitionSerializable.cs" />
-    <Compile Include="StageDefinitions\OldStage1.cs" />
-    <Compile Include="StageDefinitions\OldStage10.cs" />
-    <Compile Include="StageDefinitions\OldStage11.cs" />
-    <Compile Include="StageDefinitions\OldStage12.cs" />
-    <Compile Include="StageDefinitions\OldStage2.cs" />
-    <Compile Include="StageDefinitions\OldStage3.cs" />
-    <Compile Include="StageDefinitions\OldStage4.cs" />
-    <Compile Include="StageDefinitions\OldStage5.cs" />
-    <Compile Include="StageDefinitions\OldStage6.cs" />
-    <Compile Include="StageDefinitions\OldStage7.cs" />
-    <Compile Include="StageDefinitions\OldStage8.cs" />
-    <Compile Include="StageDefinitions\OldStage9.cs" />
     <Compile Include="StageDefinitions\Stage12.cs" />
     <Compile Include="StageDefinitions\Stage11.cs" />
     <Compile Include="StageDefinitions\Stage10.cs" />

@@ -26,10 +26,6 @@ namespace Galaxy
 
         public static CScenery FlyingOverCarrierBG(CWorld world)
         {
-            //return new CSceneryChain(world,
-                //new CFunkyClouds(world)
-            //);
-
             return new CSceneryChain(world,
                 new CGradientBackground(world,
                     new Color(92, 120, 196),

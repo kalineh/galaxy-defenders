@@ -32,7 +32,7 @@ int game_stage_medal(const Game *game) {
 }
 
 void game_secret_enter(Game *game, int index) {
-    if (index < 12 || index >= STAGE_CAMPAIGN_COUNT || game->secret_return.active) return;
+    if (index < 12 || index >= STAGE_COUNT || game->secret_return.active) return;
     SecretReturn *saved = &game->secret_return;
     game->stage.ignore_secrets = true;
     saved->active = true;
@@ -102,7 +102,7 @@ void game_secret_return(Game *game) {
        applying the legacy return camera jump after snapping the ships. */
     game->stage.camera_y += 280;
     game->stage.secret_y -= 280;
-    for (int layer = 0; layer < SCENERY_LAYERS; ++layer)
+    for (int layer = 0; layer < 4; ++layer)
         for (int i = 0; i < game->stage.scenery_count[layer]; ++i) game->stage.scenery[layer][i].y -= 280;
     for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].y -= 280;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
@@ -161,7 +161,7 @@ void game_stage_update(Game *game) {
             state->music_event = i;
             state->music_tick = game->tick;
         } else if (event->kind == STAGE_CAMERA_STOP) state->stopped = true;
-        else if (event->kind == STAGE_FINISH && state->index >= 12 && state->index < STAGE_CAMPAIGN_COUNT) {
+        else if (event->kind == STAGE_FINISH && state->index >= 12) {
             memset(game->bullets, 0, sizeof(game->bullets));
             game->complete = true;
         }
@@ -183,7 +183,7 @@ void game_stage_update(Game *game) {
             for (int p = 0; p < GAME_PLAYERS; ++p) {
                 const Player *player = &game->players[p];
                 if (!player->joined || player->lives <= 0 || hypotf(player->x - x, player->y - y) >= 64) continue;
-                for (int target = 12; target < STAGE_CAMPAIGN_COUNT; ++target) {
+                for (int target = 12; target < STAGE_COUNT; ++target) {
                     if (strcmp(event->name, stage_definitions[target].name)) continue;
                     state->ignore_secrets = true;
                     state->secret_target = target;
@@ -197,7 +197,7 @@ void game_stage_update(Game *game) {
         bool enemies = false;
         for (int i = 0; i < GAME_ENEMIES; ++i)
             if (game->enemies[i].active && game->enemies[i].kind != ENEMY_FENCE && !enemy_is_asteroid(game->enemies[i].kind)) enemies = true;
-        if ((state->index < 12 || state->index >= STAGE_CAMPAIGN_COUNT) && enemies) game->scroll_speed *= 0.95f;
+        if (state->index < 12 && enemies) game->scroll_speed *= 0.95f;
         else if (++state->end_countdown >= 220) {
             memset(game->bullets, 0, sizeof(game->bullets));
             game->complete = true;
