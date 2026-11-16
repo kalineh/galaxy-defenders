@@ -14,3 +14,9 @@ all renders finite with headroom/no voice stealing. Human listening still requir
 Audition debug.music 9, or artifacts/native-port/title-theme-preview.wav (30 sec).
 Other tracks retain their prior scheduling/composition; this is the listening
 reference before considering a wider musical pass.
+
+Original title MIDI found in legacy/PreprocessFFT/PreprocessFFT/Content. Initial
+claim that only MusicBin activity survived was incorrect. See music/README.md
+for measured note/rhythm evidence. No music changed during reference analysis;
+next musical pass should restore original tension/drive rather than major-key
+background-music energy. Scratch note CSV/JSON: artifacts/native-port/title-midi.*.

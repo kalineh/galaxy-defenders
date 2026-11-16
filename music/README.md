@@ -110,3 +110,26 @@ counter melody rather than blindly adding one interval set to every chord root.
 `velocity_scale` balances roles per section without moving their entry/exit times.
 Sustained parts that remain enabled can finish their notes across a section cut;
 parts being removed are still gated at that cut. No notes extend past the loop.
+
+## Original title note reference recovered
+
+The actual NSF-converted MIDI is checked in at
+`legacy/PreprocessFFT/PreprocessFFT/Content/Konami's_Moon_Base.mid`.
+The earlier search missed this directory; the reduced MusicBin files are not
+our only reference. The MIDI metadata credits RushJet1, Capcom and nsf2midi.
+This is a conversion, not an original authoring project or authoritative timbre map.
+
+Direct event inspection: channel 0 opens with F#5, C#6, F#6, G#6, C#6, F#6,
+G#6, C#6, B6, C#6, B6, A#6, C#6, A#6, G#6, F#6, at roughly 167 ms per note.
+Channel 1 enters in a lower register with longer melodic notes. Channel 2 starts
+with roots F#2, E2, D#2, D2, using fifth/octave gestures. At MIDI time ~18.35s,
+channels 1/2 move into short F#/E/A/D-based riffs with ~133 ms note spacing.
+Those are MIDI times, not verified WAV sync markers. The file has startup events,
+117.25s total duration versus 116.053333s audio, and two final unclosed note-ons.
+Its 30-BPM tempo event represents the converter's timing grid, not musical tempo.
+
+This evidence suggests a high running ostinato against a slower melody, descending
+chromatic bass tension and a later harder riff. It is a more useful direction
+than the replacement's relaxed C-major cadence. No playback music changed during
+this reference inspection. Further work should use these actual notes/rhythms as
+an analysis reference and verify their alignment with the original recording.
