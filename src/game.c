@@ -274,6 +274,7 @@ static void player_impact(Game *game, int slot, float damage, float x, float y, 
     float speed = sqrtf(vx * vx + vy * vy);
     game_damage_player(game, slot, adjusted);
     if (shield) {
+        player->shield_hit_frames = 4;
         ++game->shield_hits;
         game_effect(game, EFFECT_SHIELD_HIT, effect_x, effect_y, slot, 0, 0);
     } else {
@@ -369,6 +370,8 @@ static void update_players(Game *game) {
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
+        ++player->age;
+        if (player->shield_hit_frames > 0) --player->shield_hit_frames;
         if (player->invulnerable > 0) --player->invulnerable;
         /* Legacy input/fire runs before generator and cooldown updates. */
         game_update_weapons(game, i);
@@ -507,6 +510,7 @@ static void update_bullets(Game *game) {
                         enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
                         bullet->x, bullet->y - 540, bullet->width * 0.5f, 540, enemy->radius);
                 if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || enemy->kind == ENEMY_FENCE_BEAM || !hit || bullet->ignore_enemy == e) continue;
+                if (bullet->weapon == WEAPON_SEEK_BOMB && (enemy->kind == ENEMY_FENCE || enemy->kind == ENEMY_BOSS10_BALL)) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
@@ -521,6 +525,7 @@ static void update_bullets(Game *game) {
                 for (int i = 0; i < stage->event_count; ++i) {
                     const StageEvent *event = &stage->events[i];
                     if (event->kind != STAGE_BUILDING || !game->stage.activated[i] || game->stage.building_health[i] < 0) continue;
+                    if (bullet->ignore_enemy == GAME_ENEMIES + i) continue;
                     float x = event->x + GAME_WIDTH * 0.5f, y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
                     bool hit = bullet->radius > 0 ? swept_circle_box(bullet->x, bullet->y, bullet->x, bullet->y,
                         x, y, event->width * 0.4f, event->height * 0.4f, bullet->radius) :
@@ -547,7 +552,7 @@ static void update_bullets(Game *game) {
                         game_effect(game, !strncmp(event->name, "Small", 5) ? EFFECT_BUILDING_SMALL : EFFECT_BUILDING_BIG,
                             x, y, 0, cosf(angle) * 0.75f, sinf(angle) * 0.75f);
                     }
-                    game_projectile_hit(game, bullet, -1);
+                    game_projectile_hit(game, bullet, GAME_ENEMIES + i);
                     if (!bullet->active || bullet->weapon == WEAPON_LIGHTNING || bullet->weapon == WEAPON_LIGHTNING_FOCUS) break;
                 }
             }

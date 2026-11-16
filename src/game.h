@@ -49,7 +49,7 @@ typedef struct {
 typedef struct {
     bool joined, invincible;
     float x, y, vx, vy, health;
-    int lives, invulnerable, score;
+    int lives, invulnerable, score, age, shield_hit_frames;
     int money, chassis, pilot, weapon_level;
     int primary, secondary, secondary_level, sidekick, generator, shield;
     float shield_health;
@@ -115,9 +115,9 @@ typedef struct {
     int owner; /* Player slot, or -1 for hostile shots. */
     float x, y, vx, vy, radius, damage;
     int weapon, age, lifetime, bounces, target, ignore_enemy, group, emitter, hostile_kind, health, collide_wait;
-    float speed, base_damage, rotation, curve_speed, curve_magnitude, curve_offset;
+    float speed, base_damage, rotation, base_rotation, spin, curve_speed, curve_magnitude, curve_offset;
     float direction_x, direction_y, friction, scale, offset_x, offset_y, width;
-    bool splash;
+    bool splash, was_hit;
 } Bullet;
 
 typedef struct {

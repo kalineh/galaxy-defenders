@@ -225,6 +225,50 @@ static void death_and_restart(void) {
     CHECK(!game.over);
 }
 
+static void weapon_motion_rules(void) {
+    reset();
+    Player *p = &game.players[0];
+    p->input.fire = true;
+    game_update_weapons(&game, 0);
+    CHECK(game.bullets[0].y == p->y - game_weapons[p->primary].levels[p->weapon_level].emitters[0].offset_x - 20);
+    reset();
+    int first = game_spawn_enemy(&game, ENEMY_BALL, 400, 300);
+    int second = game_spawn_enemy(&game, ENEMY_BALL, 450, 300);
+    int bomb = game_spawn_bullet(&game, 0, 400, 600, 0, -1, 1);
+    game.bullets[bomb].weapon = WEAPON_SEEK_BOMB;
+    game_update_projectile(&game, &game.bullets[bomb]);
+    CHECK(game.bullets[bomb].target == first);
+    int other = game_spawn_bullet(&game, 0, 400, 600, 0, -1, 1);
+    game.bullets[other].weapon = WEAPON_SEEK_BOMB;
+    game_update_projectile(&game, &game.bullets[other]);
+    CHECK(game.bullets[other].target == second);
+    game.enemies[first].y = -100;
+    game_update_projectile(&game, &game.bullets[bomb]);
+    CHECK(game.bullets[bomb].target == -1);
+    reset();
+    int shot = game_spawn_bullet(&game, 0, 400, 600, 0, 0, 1);
+    Bullet *b = &game.bullets[shot];
+    b->weapon = WEAPON_BLADE; b->offset_x = -40;
+    game_update_projectile(&game, b);
+    CHECK(fabsf(b->rotation + 0.15f) < 0.00001f);
+    b->weapon = WEAPON_DRUNK_MISSILE; b->base_rotation = -2; b->curve_magnitude = 0.3f;
+    b->curve_offset = 1; b->curve_speed = 0.04f; b->speed = 5;
+    game_update_projectile(&game, b);
+    CHECK(fabsf(b->vx - cosf(b->rotation) * 5) < 0.00001f);
+    reset();
+    const StageDefinition *stage = &stage_definitions[0];
+    int building = -1;
+    for (int i = 0; i < stage->event_count; ++i) if (stage->events[i].kind == STAGE_BUILDING) { building = i; break; }
+    CHECK(building >= 0);
+    const StageEvent *event = &stage->events[building];
+    game.stage.camera_y = event->y + GAME_HEIGHT * 0.5f - 300;
+    game.stage.activated[building] = true; game.stage.building_health[building] = 10;
+    shot = game_spawn_bullet(&game, 0, event->x + GAME_WIDTH * 0.5f, 600, 0, -20, 1);
+    b = &game.bullets[shot]; b->weapon = WEAPON_LIGHTNING; b->speed = 20; b->bounces = 2;
+    game_projectile_hit(&game, b, -1);
+    CHECK(b->active && b->bounces == 1 && b->y < 561 && b->y > 559);
+}
+
 static void hostile_collision_rules(void) {
     reset();
     Enemy source = {.x=400, .y=880};
@@ -1234,11 +1278,11 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
-    hostile_collision_rules(); contact_rules();
+    weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
     saved_continue();
     collectible_rewards();

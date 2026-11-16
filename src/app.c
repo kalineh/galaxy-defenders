@@ -24,6 +24,7 @@ typedef struct {
     Texture2D shop[22], star;
     Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
     Texture2D hostile_textures[HOSTILE_COUNT];
+    Texture2D big_laser, big_flame, shield_overlay;
     Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
@@ -113,6 +114,9 @@ static void assets_unload(Assets *assets) {
     for (int i = 0; i < SHIELD_COUNT; ++i) if (IsTextureValid(assets->shield_icons[i])) UnloadTexture(assets->shield_icons[i]);
     if (IsTextureValid(assets->item_none)) UnloadTexture(assets->item_none);
     if (IsTextureValid(assets->sidekick)) UnloadTexture(assets->sidekick);
+    if (IsTextureValid(assets->big_laser)) UnloadTexture(assets->big_laser);
+    if (IsTextureValid(assets->big_flame)) UnloadTexture(assets->big_flame);
+    if (IsTextureValid(assets->shield_overlay)) UnloadTexture(assets->shield_overlay);
     if (IsTextureValid(assets->star)) UnloadTexture(assets->star);
     if (IsTextureValid(assets->water)) UnloadTexture(assets->water);
     if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
@@ -292,6 +296,12 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     }
     assets->star = texture_load("textures/Star.png");
     static const char *hostile_names[] = {"EnemyShot", "EnemyLaser", "EnemyMissile", "EnemyCannonShot", "EnemyPellet", "EnemyMiniShot"};
+    assets->sidekick = texture_load("textures/player/Sidekick.png");
+    assets->shield_overlay = texture_load("textures/effects/PlayerShieldHit.png");
+    assets->big_laser = texture_load("textures/weapons/BigLaser.png");
+    assets->big_flame = texture_load("textures/weapons/BigFlame.png");
+    valid = valid && IsTextureValid(assets->sidekick) && IsTextureValid(assets->shield_overlay) &&
+        IsTextureValid(assets->big_laser) && IsTextureValid(assets->big_flame);
     for (int i = 0; i < HOSTILE_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/weapons/%s.png", hostile_names[i]);
@@ -518,13 +528,25 @@ static void draw_game(const Game *game, const Assets *assets) {
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
         sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
+        if (player->sidekick >= 0) for (int side = -1; side <= 1; side += 2)
+            sprite(assets->sidekick, view_x + player->x + side * 40, player->y, assets->sidekick.width, 0, color);
+        if (player->shield_hit_frames > 0)
+            sprite(assets->shield_overlay, view_x + player->x, player->y, assets->shield_overlay.width * 1.25f,
+                -90, Fade(player_colors[i], 128.0f / 255));
     }
     draw_enemies(game, assets, ENEMY_LAYER_PLAYER_OVERLAY);
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
-        if (!bullet->active) continue;
+        if (!bullet->active || bullet->splash) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
         Texture2D texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
+        if (bullet->owner >= 0) {
+            if ((bullet->weapon == WEAPON_FRONT_LASER || bullet->weapon == WEAPON_FRONT_LASER_FOCUS ||
+                 bullet->weapon == WEAPON_SPREAD_LASER || bullet->weapon == WEAPON_SPREAD_LASER_FOCUS ||
+                 bullet->weapon == WEAPON_LASER_SHOT) && bullet->base_damage >= 0.4f) texture = assets->big_laser;
+            if ((bullet->weapon == WEAPON_FLAME || bullet->weapon == WEAPON_FLAME_FOCUS) && bullet->base_damage >= 1)
+                texture = assets->big_flame;
+        }
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
             DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
                 (Rectangle){view_x + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
@@ -533,7 +555,11 @@ static void draw_game(const Game *game, const Assets *assets) {
             float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
             float rotation = bullet->owner < 0 && bullet->hostile_kind != HOSTILE_PELLET ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
-            sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
+            if (bullet->owner >= 0 && bullet->weapon == WEAPON_BLADE && bullet->offset_x < 0) {
+                float height = width * texture.height / texture.width;
+                DrawTexturePro(texture, (Rectangle){0, 0, texture.width, -texture.height},
+                    (Rectangle){view_x + bullet->x, bullet->y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color);
+            } else sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
         }
     }
     draw_enemies(game, assets, ENEMY_LAYER_WEAPON_OVERLAY);

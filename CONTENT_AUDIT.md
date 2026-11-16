@@ -294,3 +294,9 @@ to confirm any of the explicit mismatches listed here.
   rounded building intersections, exact hostile laser/cannon boxes, cannon repeat
   hits/recoil, immunity preserves shots, missiles retain targets, weapon-specific
   pellet/missile blocking. Full headless suite and native build pass.
+- W1 and projectile motion/visual fixes: primary +20 muzzle offset, per-emitter
+  Flame rotation/spin/growth, Blade spin/flip, Missile/DrunkMissile/BeamFocus
+  rotation, random Boomerang spin, invisible two-frame Plasma splash with hit
+  state, seekable/unclaimed target selection, Lightning building chains and
+  bounce position steps. Sidekick ships, BigLaser/BigFlame and shield overlay
+  restored. Full headless suite and windowless software render pass.

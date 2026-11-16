@@ -6,16 +6,51 @@
 static float random_float(Game *game) { return (game_random(game) >> 8) / 16777216.0f; }
 static float random_signed(Game *game) { return random_float(game) * 2 - 1; }
 
-static int nearest_enemy(const Game *game, const Bullet *b, bool forward) {
+static bool seekable(const Game *game, const Enemy *e) {
+    return e->active && e->health > 0 && !e->intangible && !e->invisible && e->kind != ENEMY_BLACK_HOLE &&
+        e->kind != ENEMY_FENCE && e->kind != ENEMY_FENCE_BEAM && e->kind != ENEMY_BOSS10_BALL &&
+        e->x >= game->stage.camera_x && e->x <= game->stage.camera_x + GAME_WIDTH && e->y >= 0 && e->y <= GAME_HEIGHT;
+}
+
+static void target_position(const Game *game, int target, float *x, float *y) {
+    if (target < GAME_ENEMIES) { *x = game->enemies[target].x; *y = game->enemies[target].y; }
+    else {
+        const StageEvent *event = &stage_definitions[game->stage.index].events[target - GAME_ENEMIES];
+        *x = event->x + GAME_WIDTH * 0.5f;
+        *y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+    }
+}
+
+static int nearest_enemy(const Game *game, const Bullet *b, bool forward, bool unclaimed) {
     int result = -1;
     float nearest = 1e20f;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *e = &game->enemies[i];
-        if (!e->active || e->invisible || e->kind == ENEMY_BLACK_HOLE || e->kind == ENEMY_FENCE ||
-            e->kind == ENEMY_FENCE_BEAM || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT) continue;
+        if (!e->active || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT ||
+            e->x < game->stage.camera_x || e->x > game->stage.camera_x + GAME_WIDTH) continue;
+        if (!forward && !seekable(game, e)) continue;
+        if (unclaimed) {
+            bool claimed = false;
+            for (int j = 0; j < GAME_BULLETS; ++j)
+                if (&game->bullets[j] != b && game->bullets[j].active && game->bullets[j].owner >= 0 &&
+                    game->bullets[j].weapon == WEAPON_SEEK_BOMB && game->bullets[j].target == i) { claimed = true; break; }
+            if (claimed) continue;
+        }
         float dx = e->x - b->x, dy = e->y - b->y, distance = dx * dx + dy * dy;
         if (forward && dx * b->vx + dy * b->vy < 0) continue;
         if (distance < nearest) { nearest = distance; result = i; }
+    }
+    if (forward) {
+        const StageDefinition *stage = &stage_definitions[game->stage.index];
+        for (int i = 0; i < stage->event_count; ++i) {
+            if (stage->events[i].kind != STAGE_BUILDING || !game->stage.activated[i] || game->stage.building_health[i] < 0 ||
+                b->ignore_enemy == GAME_ENEMIES + i) continue;
+            float x, y; target_position(game, GAME_ENEMIES + i, &x, &y);
+            if (x < game->stage.camera_x || x > game->stage.camera_x + GAME_WIDTH || y < 0 || y > GAME_HEIGHT) continue;
+            float dx = x - b->x, dy = y - b->y, distance = dx * dx + dy * dy;
+            if (dx * b->vx + dy * b->vy < 0) continue;
+            if (distance < nearest) { nearest = distance; result = GAME_ENEMIES + i; }
+        }
     }
     return result;
 }
@@ -27,10 +62,13 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
     float damage = e->damage * (p->pilot == 2 ? 1.15f : 1);
     if (kind == WEAPON_CHARGE_SHOT) damage *= fminf(charge / 60.0f, 1);
     if (kind == WEAPON_VULCAN || kind == WEAPON_BOOMERANG) angle += random_signed(game) * e->spray_angle;
-    if (kind == WEAPON_FLAME || kind == WEAPON_FLAME_FOCUS)
-        angle = game->tick * e->fire_rotation_speed + e->start_rotation + random_signed(game) * e->spray_angle;
+    if (kind == WEAPON_FLAME || kind == WEAPON_FLAME_FOCUS) {
+        WeaponState *state = &p->weapons[group][emitter];
+        angle = state->fire_rotation + e->start_rotation + random_signed(game) * e->spray_angle;
+        state->fire_rotation = p->age * e->fire_rotation_speed;
+    }
     if (kind == WEAPON_BOMBLET) angle = random_float(game) * 2 * PI;
-    int index = game_spawn_bullet(game, slot, p->x + e->offset_y + side, p->y - e->offset_x,
+    int index = game_spawn_bullet(game, slot, p->x + e->offset_y + side, p->y - e->offset_x - (group == 0 ? 20 : 0),
         cosf(angle) * e->speed, sinf(angle) * e->speed, damage);
     if (index < 0) return;
     Bullet *b = &game->bullets[index];
@@ -47,6 +85,9 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
         case WEAPON_PLASMA: case WEAPON_PLASMA_FOCUS: b->radius = damage < 0.5f ? 2 : 38; break;
         case WEAPON_FLAME: case WEAPON_FLAME_FOCUS:
             b->radius = damage < 1 ? 16 : 30;
+            b->rotation = random_signed(game) * PI;
+            b->spin = random_signed(game) * PI * 0.05f;
+            b->width = e->scale_override;
             b->vy -= game->scroll_speed * e->anti_camera_speed;
             p->vx *= 1.15f; p->vy *= 1.15f;
             break;
@@ -55,19 +96,21 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
             b->radius = 12; b->friction = 0.98f; b->lifetime = 481;
             b->vy -= game->scroll_speed * 3.5f;
             break;
-        case WEAPON_BOOMERANG: b->radius = 16; break;
+        case WEAPON_BOOMERANG: b->radius = 16; b->rotation = random_signed(game) * PI; break;
         case WEAPON_CHARGE_SHOT: b->radius = 12 * damage; b->scale = 0.25f + damage * 0.5f; break;
         case WEAPON_BLADE: b->radius = 22; b->lifetime = 9; break;
         case WEAPON_BEAM: b->width = 8 * e->width; break;
         case WEAPON_BEAM_FOCUS: b->width = e->radius; break;
         case WEAPON_MISSILE: case WEAPON_MISSILE_LAUNCHER:
             b->vx = b->direction_x * 6; b->vy = b->direction_y * 6;
+            b->rotation -= PI;
             break;
         case WEAPON_DRUNK_MISSILE: case WEAPON_MISSILE_VOLLEY:
             b->curve_speed = 0.03f + random_float(game) * 0.03f;
             b->curve_magnitude = (game_random(game) & 1 ? 0.3f : -0.3f) + random_signed(game) * 0.2f;
             b->curve_offset = game_random(game) & 1 ? 1 : -1;
             b->rotation -= PI - random_signed(game) * 0.25f;
+            b->base_rotation = b->rotation;
             break;
         default: break;
     }
@@ -171,7 +214,7 @@ void game_update_projectile(Game *game, Bullet *b) {
         return;
     }
     Player *p = &game->players[b->owner];
-    if (b->lifetime > 0 && b->age > b->lifetime) { b->active = false; return; }
+    if ((b->splash && b->was_hit) || (b->lifetime > 0 && b->age > b->lifetime)) { b->active = false; return; }
     switch (b->weapon) {
         case WEAPON_MISSILE: case WEAPON_MISSILE_LAUNCHER:
             b->vx += (-b->direction_x * b->speed - b->vx) * 0.05f;
@@ -179,12 +222,17 @@ void game_update_projectile(Game *game, Bullet *b) {
             break;
         case WEAPON_DRUNK_MISSILE: case WEAPON_MISSILE_VOLLEY: {
             float curve = sinf(b->curve_offset + b->age * b->curve_speed) * b->curve_magnitude;
-            float angle = b->rotation + (curve - b->rotation) * curve;
+            float angle = b->base_rotation + (curve - b->base_rotation) * curve;
+            b->rotation = angle;
             b->vx = cosf(angle) * b->speed; b->vy = sinf(angle) * b->speed;
             break;
         }
         case WEAPON_SEEK_BOMB: {
-            if (b->target < 0 || !game->enemies[b->target].active) b->target = nearest_enemy(game, b, false);
+            if (b->target < 0) {
+                b->target = nearest_enemy(game, b, false, true);
+                if (b->target < 0) b->target = nearest_enemy(game, b, false, false);
+            }
+            if (b->target >= 0 && !seekable(game, &game->enemies[b->target])) b->target = -1;
             float dx = b->vx, dy = b->vy;
             if (b->age < 90) {
                 dx = b->target < 0 ? 0 : game->enemies[b->target].x - b->x;
@@ -197,10 +245,13 @@ void game_update_projectile(Game *game, Bullet *b) {
         }
         case WEAPON_FLAME: case WEAPON_FLAME_FOCUS:
             b->damage = b->base_damage * (1 - 0.5f * b->age / b->lifetime);
+            b->rotation += b->spin;
+            b->scale = b->width > 0 ? b->width : 0.5f + 0.5f * b->age / b->lifetime;
             break;
         case WEAPON_BOMBLET: b->y -= game->scroll_speed; b->vy -= 0.005f; b->rotation += 0.02f + b->age * 0.0001f; break;
         case WEAPON_BOOMERANG: b->rotation += 0.175f; b->radius = 16 * b->scale; break;
         case WEAPON_BLADE: {
+            b->rotation += b->offset_x < 0 ? -0.15f : 0.15f;
             float angle = b->age * 0.22f * (b->offset_x < 0 ? -1 : 1);
             b->x = p->x + b->offset_x + 38 * sinf(angle);
             b->y = p->y + b->offset_y - 38 * cosf(angle) - game->scroll_speed;
@@ -213,7 +264,10 @@ void game_update_projectile(Game *game, Bullet *b) {
             b->x = p->x + (b->weapon == WEAPON_BEAM ? b->offset_x : 0);
             b->y = p->y + (b->weapon == WEAPON_BEAM ? b->offset_y + 42 : 0) - game->scroll_speed;
             b->vx = b->vy = 0;
-            if (b->weapon == WEAPON_BEAM_FOCUS) b->radius = fminf(b->age * 20, b->width) * 0.46f;
+            if (b->weapon == WEAPON_BEAM_FOCUS) {
+                b->radius = fminf(b->age * 20, b->width) * 0.46f;
+                b->rotation = b->age * 0.25f;
+            }
             break;
         default: break;
     }
@@ -221,7 +275,7 @@ void game_update_projectile(Game *game, Bullet *b) {
 }
 
 void game_projectile_hit(Game *game, Bullet *b, int enemy) {
-    if (b->splash) { b->active = true; return; }
+    if (b->splash) { b->active = true; b->was_hit = true; return; }
     switch (b->weapon) {
         case WEAPON_LIGHTNING: case WEAPON_LIGHTNING_FOCUS: case WEAPON_CHARGE_SHOT:
         case WEAPON_BEAM: case WEAPON_BEAM_FOCUS: case WEAPON_BLADE: ++game->impact_sounds[0]; break;
@@ -237,15 +291,19 @@ void game_projectile_hit(Game *game, Bullet *b, int enemy) {
         if (index >= 0) {
             Bullet *splash = &game->bullets[index];
             splash->splash = true; splash->weapon = WEAPON_PLASMA_FOCUS;
-            splash->radius = 210; splash->lifetime = 1; splash->scale = 2;
+            splash->radius = 210; splash->lifetime = 2; splash->scale = 2;
         }
         b->active = false;
     } else if (b->weapon == WEAPON_LIGHTNING || b->weapon == WEAPON_LIGHTNING_FOCUS) {
         b->ignore_enemy = enemy;
-        int target = nearest_enemy(game, b, true);
+        int target = nearest_enemy(game, b, true, false);
         if (--b->bounces >= 0 && target >= 0) {
-            float angle = atan2f(game->enemies[target].y - b->y, game->enemies[target].x - b->x) + random_signed(game) * 0.3f;
+            float x, y; target_position(game, target, &x, &y);
+            float angle = atan2f(y - b->y, x - b->x) + random_signed(game) * 0.3f;
+            b->x += b->vx; b->y += b->vy;
             b->vx = cosf(angle) * b->speed; b->vy = sinf(angle) * b->speed;
+            b->x += b->vx; b->y += b->vy;
+            b->rotation = angle;
             b->active = true;
         }
     } else if (b->weapon == WEAPON_BOOMERANG) {

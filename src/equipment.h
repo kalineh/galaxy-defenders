@@ -32,7 +32,7 @@ typedef struct {
     float capacity, drain, efficiency;
 } Shield;
 typedef struct {
-    float cooldown;
+    float cooldown, fire_rotation;
     int charge, overheat;
     bool toggled;
 } WeaponState;
