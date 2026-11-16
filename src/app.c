@@ -26,6 +26,8 @@ typedef struct {
     Texture2D hostile_textures[HOSTILE_COUNT];
     Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
+    Texture2D scenery[4];
+    Texture2D boss4_cover, boss5_cover, boss6_center;
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
     int music_mode, music_revision, music_event, music_tick;
@@ -70,6 +72,10 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
+    if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
+    if (IsTextureValid(assets->boss6_center)) UnloadTexture(assets->boss6_center);
+    for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
@@ -120,6 +126,17 @@ static void assets_unload(Assets *assets) {
 }
 
 static bool stage_assets_load(Assets *assets, int index) {
+    const SceneryDefinition *scene = &stage_scenery[index < 13 ? index : 13];
+    bool valid = true;
+    for (int i = 0; i < 4; ++i) {
+        if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
+        assets->scenery[i] = (Texture2D){0};
+        if (!scene->layers[i].texture) continue;
+        char path[160];
+        snprintf(path, sizeof(path), "textures/%s.png", scene->layers[i].texture);
+        assets->scenery[i] = texture_load(path);
+        valid = valid && IsTextureValid(assets->scenery[i]);
+    }
     for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
         if (assets->stage_texture_owner[i] != i) continue;
         if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
@@ -128,7 +145,6 @@ static bool stage_assets_load(Assets *assets, int index) {
     memset(assets->stage_textures, 0, sizeof(assets->stage_textures));
     memset(assets->stage_destroyed, 0, sizeof(assets->stage_destroyed));
     assets->stage_index = index;
-    bool valid = true;
     const StageDefinition *stage = &stage_definitions[index];
     for (int i = 0; i < stage->event_count; ++i) {
         const StageEvent *event = &stage->events[i];
@@ -197,6 +213,9 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->enemies[i] = texture_load(path);
     }
     assets->shot = texture_load("textures/Laser.png");
+    assets->boss4_cover = texture_load("textures/Boss4Cover.png");
+    assets->boss5_cover = texture_load("textures/Boss5Cover.png");
+    assets->boss6_center = texture_load("textures/Boss6Center.png");
     assets->energy = texture_load("textures/Energy.png");
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
     assets->particle_dot = texture_load("textures/DotParticle.png");
@@ -349,22 +368,29 @@ static void draw_player_panel(const Game *game, int slot, const Assets *assets) 
         (Rectangle){(float)x + 140, 876, 281.6f * player->health / game_chassis[player->chassis].armor, 73.6f}, (Vector2){0}, 0, WHITE);
 }
 
+static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
+    const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
+    if (!foreground) {
+        Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
+        Color bottom = {scene->bottom[0], scene->bottom[1], scene->bottom[2], 255};
+        DrawRectangleGradientV(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, top, bottom);
+    }
+    for (int layer = 0; layer < 4; ++layer) {
+        const SceneryLayer *definition = &scene->layers[layer];
+        if (definition->foreground != foreground) continue;
+        for (int i = 0; i < definition->count; ++i) {
+            const SceneryParticle *p = &game->stage.scenery[layer][i];
+            Texture2D texture = assets->scenery[layer];
+            sprite(texture, ARENA_X + p->x, p->y, texture.width * definition->scale, 0, WHITE);
+        }
+    }
+}
+
 static void draw_game(const Game *game, const Assets *assets) {
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    bool water = game->stage.index == 1;
-    ClearBackground(water ? (Color){5, 5, 98, 255} : (Color){92, 120, 196, 255});
-    int layers = water ? 4 : 2;
-    for (int layer = 0; layer < layers; ++layer) for (int i = 0; i < 10; ++i) {
-        float x = (float)((i * 193 + layer * 311) % GAME_WIDTH);
-        float velocity = water ? (layer < 3 ? 1.0f : 9.0f) : (layer ? 9.0f : 6.0f);
-        float speed = velocity * (1 - fabsf(x - 480) * 0.001f);
-        float y = fmodf(i * 137.0f + layer * 317 + game->tick * speed + 400 - game->stage.camera_y,
-                       GAME_HEIGHT + 128) - 64;
-        Texture2D texture = water && layer < 3 ? assets->water : assets->cloud;
-        sprite(texture, ARENA_X + x, y, (float)texture.width, 0, WHITE);
-    }
+    draw_scenery(game, assets, false);
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
     for (int pass = 0; pass < 3; ++pass) for (int i = 0; i < stage->event_count; ++i) {
@@ -379,11 +405,26 @@ static void draw_game(const Game *game, const Assets *assets) {
             assets->stage_destroyed[i] : assets->stage_textures[i];
         sprite(texture, ARENA_X + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
     }
-    for (int i = 0; i < GAME_ENEMIES; ++i) {
+    for (int layer = -2; layer <= 1; ++layer) for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
-        float width = (float)assets->enemies[enemy->kind].width;
-        sprite(assets->enemies[enemy->kind], ARENA_X + enemy->x, enemy->y, width, enemy->rotation * RAD2DEG, WHITE);
+        int depth = enemy->kind == ENEMY_BOSS9_BAR || enemy->kind == ENEMY_BOSS11_ARM || enemy->kind == ENEMY_BOSS12_ARM ? -2 :
+            enemy->kind == ENEMY_BOSS9_BALL || enemy->kind == ENEMY_BOSS11_HAND ? -1 :
+            enemy->kind == ENEMY_BOSS12_EYE ? 1 : 0;
+        if (depth != layer) continue;
+        Texture2D texture = assets->enemies[enemy->kind];
+        float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : enemy->rotation;
+        Vector2 origin = {texture.width * 0.5f, texture.height * 0.5f};
+        if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
+        if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
+        if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
+        DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
+            (Rectangle){ARENA_X + enemy->x,enemy->y,(float)texture.width,(float)texture.height}, origin, rotation * RAD2DEG, WHITE);
+        Texture2D cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
+            enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Texture2D){0};
+        float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
+            enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
+        if (IsTextureValid(cover)) sprite(cover, ARENA_X + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
     }
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
@@ -415,6 +456,9 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
         sprite(assets->ships[player->chassis], ARENA_X + player->x, player->y, 80, -90, color);
     }
+    draw_scenery(game, assets, true);
+    if (game->stage.secret_countdown)
+        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
@@ -443,8 +487,7 @@ static void draw_shop(const Game *game, const Assets *assets, int frame) {
     draw_player_panel(game, 0, assets);
     draw_player_panel(game, 1, assets);
     text_center(assets->ui_font, "Welcome to Randy's Random Item Shop", 960, 50, 28, WHITE);
-    text_center(assets->ui_font, game->stage.index == 0 ? "Press TAB to proceed to Stage 2" :
-        "Stage 3 is not available in this build", 960, 104, 24, dim);
+    text_center(assets->ui_font, "Press TAB to proceed", 960, 104, 24, dim);
     static const char *category_names[] = {"Chassis", "Generator", "Shield", "Main Weapon", "Support Weapon", "Sidekick"};
     static const char *levels[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
@@ -514,6 +557,54 @@ static void draw_shop(const Game *game, const Assets *assets, int frame) {
 
 static void draw_menu(const Game *game, const Assets *assets, int frame) {
     if (game->menu.page == MENU_NONE) return;
+    if (game->menu.page == MENU_FINISH) {
+        static const char *lines[] = {
+            "",
+            "",
+            "AS THE EVIL KURGLON EMPIRE",
+            "RECEIVED DEFEAT",
+            "",
+            "",
+            "OUR VALLIANT HERO COULD",
+            "ENJOY TRIUMPH FROM THE",
+            "PLANET POPULATION",
+            "",
+            "",
+            "THE TASTE OF FREEDOM AND PEACE",
+            "COULD IT LAST FOREVER?",
+            "",
+            "",
+            "THE TALE OF YOUR TREMENDOUS",
+            "VICTORY OVER THE KURGLON EMPIRE",
+            "SHALL BE PASSED DOWN FROM",
+            "GENERATION TO GENERATION",
+            "",
+            "",
+            "AS THE HERO WHO BROUGHT PEACE",
+            "PEACE TO FANTORA-K",
+            "",
+            "",
+            "EVEN THOUGH THE WAR HAS BEEN OVER",
+            "THE SCAR OF DECIMATED POPULATION",
+            "IS REMEMBERED",
+            "",
+            "",
+            "ONLY CONTINUED PEACE WILL",
+            "ADVENGE IT",
+            "",
+            "",
+            "UNTIL A TRUE HERO CAN PERFORM....."
+        };
+        ClearBackground(BLACK);
+        for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
+            float x = (float)((i * 193 + layer * 311) % CANVAS_WIDTH);
+            float y = fmodf(i * 137.0f + game->menu.frame * (layer ? 2.1f : 3.5f), GAME_HEIGHT);
+            sprite(assets->star, x, y, (float)assets->star.width, 0, WHITE);
+        }
+        for (unsigned int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i)
+            text_center(assets->ui_font, lines[i], 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
+        return;
+    }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame); return; }
     if (game->menu.page == MENU_CLEAR) {
         /* StageClearPanel.cs heading and Continue action; campaign stats/shop pending. */
@@ -650,7 +741,8 @@ static void update_audio(const Game *game, Assets *assets) {
         if (assets->music_mode == 0) assets->music_mode = -1;
     }
     assets->music_tick = game->tick;
-    int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 : game->paused ? 2 : 0;
+    int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 :
+        game->paused && game->menu.page != MENU_FINISH ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
@@ -664,7 +756,7 @@ static void update_audio(const Game *game, Assets *assets) {
         float seconds = (game->tick - game->stage.music_tick) / (float)GAME_HZ;
         float duration = GetMusicTimeLength(assets->music);
         if (duration > 0) {
-            float offset = fmodf(seconds, duration);
+            float offset = game->menu.page == MENU_FINISH ? 0 : fmodf(seconds, duration);
             SeekMusicStream(assets->music, offset);
             TraceLog(LOG_INFO, "Stage music: %s seek=%.3f reported=%.3f", music_name, offset, GetMusicTimePlayed(assets->music));
         }
@@ -879,7 +971,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         int old_buildings = game->building_kills;
         int old_shots = game->shots, old_kills = game->kills, old_hits = game->hits;
         int old_projectile_hits = game->projectile_hits, old_deaths = game->deaths;
-        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR) && (IsWindowFocused() || frames)) {
+        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {

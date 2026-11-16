@@ -23,7 +23,7 @@ assert complete eq 1
 menu.input confirm
 assert menu eq 11
 assert stage eq 2
-# Unsupported next stages must not silently restart the campaign or title.
+# The second shop continues into the authored third stage.
 menu.input ready
-assert menu eq 11
-assert stage eq 2
+assert menu eq 0
+assert stage eq 3

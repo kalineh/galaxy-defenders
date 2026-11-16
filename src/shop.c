@@ -93,12 +93,11 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
         return;
     }
     if (action == MENU_READY) {
-        if (game->stage.index + 1 > 1) return; /* No substitute stages. */
         menu->ready[slot] = true;
         bool all_ready = true;
         for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined && !menu->ready[i]) all_ready = false;
         if (all_ready) {
-            int next = game->stage.index + 1;
+            int next = game->stage.index < 11 ? game->stage.index + 1 : 0;
             game_stage(game, next, 0);
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];

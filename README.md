@@ -4,42 +4,24 @@ A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).
 Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.md).
 
-## Play the first pass
+## Play
 
-Run `./play.sh` in Git Bash after building. It starts at 30% master volume. The game
-opens at the original title menu. Choose Solo Game or Coop Game, New Game,
-difficulty, then pilots to enter the original authored Stage 1. The carrier
-layout, enemy waves, music change and Boss1 now follow the legacy stage data. Continue is disabled until native saves are implemented.
+Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
+volume. Choose Solo Game or Coop Game, New Game, difficulty and pilots. All
+12 main stages and seven bonus stages use their authored event data and original
+music. Stage Clear continues into the shop; TAB (both players in co-op) proceeds
+to the next stage. All six shop categories support purchases and weapon levels.
+The last main stage opens the original ending. Continue is still disabled pending
+native save support.
 
-Menus use arrows/Enter/Escape or gamepad D-pad/A/B. During pilot selection,
-player two uses J/L, right Ctrl to confirm, and Backspace to cancel (or gamepad
-two). Difficulty applies the original starting money and enemy health scaling;
-pilots receive their original chassis. Their complete weapon/shield loadouts
-and abilities are still pending. Title, combat, and pause use their original
-music tracks. Options adjust SFX/music volume and screen size for this session.
-Pause-menu Quit currently returns to the title; its original shop destination
-is pending.
-The Stage Clear screen now accepts Enter or either gamepad's A/B to
-Continue back to the title. It does not advance into an authored second stage;
-the original results/shop/stage progression is still pending.
+Menus use arrows/Enter/Escape or gamepad D-pad/A/B. Player two uses J/L,
+right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
+generators and shields are connected; Rabbit starts with Lightning. Options adjust
+SFX/music volume and screen size for the session.
 
-Starting-loadout audit against `legacy/Pilot.cs`:
-
-| Pilot | Original primary (Normal / Hard / Really Hard) | Original secondary (same order) |
-| --- | --- | --- |
-| Kazuki | Front Laser level 1 / 1 / 2: two / two / four shots | Vulcan level 1 / 2 / 2 |
-| Rabbit | Lightning level 2 / 2 / 3 | SeekBomb level 0 / 1 / 1 |
-| Gunthor | Front Laser level 2 / 2 / 2: four shots, +15% damage | Missile level 0 / 1 / 2 |
-
-Levels above use the source's zero-based numbering. Native Kazuki/Gunthor
-primary patterns match this table; Rabbit still temporarily uses Front Laser.
-All secondary weapons and shields are pending. Really Hard should also start
-with a Conduction Generator; native currently uses Standard Generator for all.
-These missing systems account for the incomplete energy/loadout behavior.
-`game.reset` is a debug stage reset (Rookie, level 2 Front Laser), not pilot-based
-new-game setup. Boss1 now has its paired bursts, aimed sweeps, smooth lateral
-movement and independently destructible side guns. Remaining stages, rewards,
-loadouts and progression are still incomplete; see CONTENT_PARITY.md.
+`game.reset` is a debug reset (Rookie, level 2 Front Laser), not pilot new-game
+setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.
+Seeking preserves equipment/money, restores armor and synchronizes music.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
@@ -69,12 +51,9 @@ Gold is total frame time including pacing/present; cyan is CPU update/draw work
 before present, not a GPU timer. The scale is fixed at 0..33.33 ms with a 16.67 ms
 guide and 240 samples. F2 remains player-two join.
 
-The port is incomplete. Authored Stage 1 is playable; other main and bonus
-stages are not yet enabled. Front Laser has its original eight normal/focus
-levels and Standard Generator energy costs/regeneration. Other weapons,
-shields, abilities, pickups/rewards, saves, shop and campaign progression remain
-pending. Inactive HUD meters stay empty. Web/mobile builds are also pending.
-See CONTENT_PARITY.md for specific gaps.
+The content is playable, with remaining fidelity work tracked in CONTENT_PARITY.md:
+projectile effects/audio, coin rewards, abilities, saves, menu transitions and
+precise boss timing. Windows is verified; web/phone builds remain pending.
 
 ## Build and test (Windows)
 

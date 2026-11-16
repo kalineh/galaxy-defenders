@@ -31,9 +31,29 @@ typedef struct {
 extern const StageDefinition stage_definitions[STAGE_COUNT];
 
 typedef struct {
+    const char *texture;
+    float scale, vx, vy, random_lerp;
+    int count;
+    bool foreground, stars;
+} SceneryLayer;
+
+typedef struct {
+    unsigned char top[3], bottom[3];
+    SceneryLayer layers[4];
+} SceneryDefinition;
+
+typedef struct { float x, y, vx, vy, target_x, target_y; } SceneryParticle;
+extern const SceneryDefinition stage_scenery[14];
+
+typedef struct {
     int index, end_countdown, music_event, music_tick, revision;
     float camera_y, previous_line;
     bool stopped, health_bar;
+    bool ignore_secrets;
+    int secret_target, secret_countdown;
+    float secret_x, secret_y;
+    unsigned int scenery_random;
+    SceneryParticle scenery[4][15];
     bool activated[STAGE_MAX_EVENTS];
     float building_health[STAGE_MAX_EVENTS];
 } StageState;

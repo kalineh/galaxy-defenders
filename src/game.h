@@ -11,7 +11,7 @@
 #define GAME_HEIGHT 1080
 #define GAME_HZ 60
 #define GAME_PLAYERS 2
-#define GAME_ENEMIES 96
+#define GAME_ENEMIES 256
 #define GAME_BULLETS 768
 #define GAME_EFFECTS 8192
 #define GAME_CHASSIS 9
@@ -27,7 +27,7 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP } MenuPage;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH } MenuPage;
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent;
@@ -35,6 +35,7 @@ typedef struct {
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
     bool shop_items[2];
+    int frame;
 } GameMenu;
 
 typedef struct {
@@ -115,6 +116,18 @@ typedef enum { EFFECT_ENEMY_DEATH, EFFECT_ARMOR_HIT, EFFECT_PLAYER_DEATH,
     EFFECT_BUILDING_SMALL, EFFECT_BUILDING_BIG } EffectKind;
 
 typedef struct {
+    bool active, boss_spawned;
+    Player players[GAME_PLAYERS];
+    Enemy enemies[GAME_ENEMIES];
+    Bullet bullets[GAME_BULLETS];
+    Effect effects[GAME_EFFECTS];
+    StageState stage;
+    uint32_t random;
+    int tick;
+    float scroll_speed;
+} SecretReturn;
+
+typedef struct {
     Player players[GAME_PLAYERS];
     Enemy enemies[GAME_ENEMIES];
     Bullet bullets[GAME_BULLETS];
@@ -126,6 +139,7 @@ typedef struct {
     float scroll_speed;
     StageState stage;
     GameMenu menu;
+    SecretReturn secret_return;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);
@@ -158,6 +172,10 @@ bool boss_damage(Game *game, Enemy *enemy, float damage, int owner);
 int enemy_shot(Game *game, const Enemy *enemy, int kind, float x, float y, float angle, float speed, float damage);
 bool game_stage(Game *game, int index, float progress);
 void game_stage_update(Game *game);
+void game_secret_enter(Game *game, int index);
+void game_secret_return(Game *game);
+void game_scenery_init(Game *game);
+void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
 void game_shop_input(Game *game, MenuAction action, int slot);

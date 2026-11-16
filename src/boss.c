@@ -130,6 +130,7 @@ static void boss5(Game *g,Enemy *e) {
     int phase=e->health<e->health_max*0.5f?2:e->health<e->health_max*0.8f?1:0;
     if(phase==2 && e->phase<2) { e->cooldown=150; e->shot_index=0; }
     e->phase=phase;
+    if (phase == 2 && e->orbit_angle < PI * 0.5f) e->orbit_angle = fminf(PI * 0.5f, e->orbit_angle + PI / 240);
     if(--e->cooldown>0) return;
     if(!e->shot_index) { e->attack=game_random(g)%2; e->timer=4+game_random(g)%4; e->aim=angle_to_player(g,e,0); }
     int count=e->phase==2?6:4;

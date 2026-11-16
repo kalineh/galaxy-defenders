@@ -181,6 +181,7 @@ void game_reset(Game *game, uint32_t seed) {
     game->menu.players = 1;
     for (int i = 0; i < 3; ++i) game->menu.options[i] = 10;
     game_join(game, 0);
+    game_scenery_init(game);
 }
 
 int game_spawn_enemy(Game *game, EnemyKind kind, float x, float y) {
@@ -430,6 +431,7 @@ static void update_bullets(Game *game) {
 }
 
 void game_tick(Game *game) {
+    if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
     update_effects(game);
     if (game->over || game->complete) return;
@@ -437,12 +439,20 @@ void game_tick(Game *game) {
     if (!game->seeking) update_players(game);
     if (game->waves) game_stage_update(game);
     else game->scroll_speed = 0;
+    game_scenery_update(game);
     update_enemies(game);
     update_bullets(game);
     bool alive = false;
     for (int p = 0; p < GAME_PLAYERS; ++p) if (game->players[p].joined && game->players[p].lives > 0) alive = true;
     if (!alive && !game->seeking) game->over = true;
-    if (game->complete && !game->over) game_menu_open(game, MENU_CLEAR);
+    if (game->complete && game->secret_return.active) game_secret_return(game);
+    else if (game->complete && !game->over) {
+        if (game->stage.index == 11) {
+            for (int i = 0; i < GAME_PLAYERS; ++i)
+                if (game->players[i].joined) game->players[i].money = 999999999;
+            game_menu_open(game, MENU_FINISH);
+        } else game_menu_open(game, MENU_CLEAR);
+    }
 }
 
 int game_enemy_count(const Game *game) {
@@ -458,8 +468,7 @@ int game_bullet_count(const Game *game) {
 }
 
 bool game_stage(Game *game, int index, float progress) {
-    /* Other stages remain unavailable until all their behavior contracts exist. */
-    if (index < 0 || index > 1 || !isfinite(progress) || progress < 0 || progress > 1) return false;
+    if (index < 0 || index >= STAGE_COUNT || !isfinite(progress) || progress < 0 || progress > 1) return false;
     Player players[GAME_PLAYERS];
     memcpy(players, game->players, sizeof(players));
     GameMenu menu = game->menu;
@@ -469,6 +478,7 @@ bool game_stage(Game *game, int index, float progress) {
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));
     game->stage.index = index;
+    game_scenery_init(game);
     game->scroll_speed = stage_definitions[index].scroll_speed;
     game->stage.revision = revision;
     game_menu_open(game, MENU_NONE);

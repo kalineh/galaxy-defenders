@@ -1,83 +1,47 @@
 # Active Work
 
-## November 15 completion request
-
-User explicitly requested all weapons, enemies, stages, and upgrades, including
-working shop purchases and their gameplay effects. Continue until the original
-content is playable; do not treat an imported catalog as completed gameplay.
-
-- [x] Fix Stage 1 music startup from title; real audio start/advance/pause/resume check.
-- [x] Verify and commit existing Stage 2/shop progression work.
-- [x] Import exact equipment/weapon level data and connect all weapon variants.
-- [ ] Audit projectile collision/effects/audio parity during final campaign verification.
-- [x] Implement generators/shields, pilot loadouts, all shop categories and upgrades.
-- [ ] Implement remaining enemies and bosses with their authored attacks.
-  Regular enemies and Boss3–Boss12 update/damage paths are implemented. Headless
-  checks cover attacks at three health bands, child damage, and death cleanup.
-  Native/software builds pass. Later stages, boss visual layering and detailed
-  attack-timing parity still need campaign verification before completion.
-- [ ] Enable all 12 main and 7 bonus stages, secrets and campaign progression.
-- [ ] Import required original assets; validate native build, headless campaign,
-      equipment behavior, audio and software captures; update parity inventory.
-
-## Required scope
-
-Faithful port of the complete original game: all authored main/bonus stages,
-enemies, bosses, weapons, loadouts, abilities, shops, upgrades, menus, saves,
-progression and effects. The user rejected substitute waves and placeholder
-bosses. Preserve legacy behavior and text; never claim data imports are playable.
-Use the original music and licensed clean fonts, never raylib's built-in font.
-Keep the F3 frame-time graph and scriptable console. No computer-use automation,
-no NPM installs, no sibling runtime dependencies. Commit/push verified pieces.
-
-## Latest playtest follow-up
-
-User reported undersized enemy bullets and Stage Clear returning to title.
-Bullet visual restored to original 40 pixels, hostile radius consistently 2,
-unshielded player radius 16, original circle distance rule and side-gun box
-contact restored. Boundary tests pass. Next: original Stage Clear -> shop ->
-next authored stage flow; do not hide a title restart behind Continue.
-
-## Current handoff
+## Current request and handoff
 
 Thread: `01a1db6e-6640-75d3-aed6-1b8301bb3878`.
+User requested all weapons, enemies, stages and upgrades, with original behavior.
+Use headless CLI checks; never launch visible PowerShell windows or use desktop
+automation. No npm installs. Commit and push verified focused changes to `native`.
 
-- All 19 active stage definitions are imported as 3,448 C events. The strict
-  importer accounts for every source field and texture size; `--check` verifies
-  generated output. All 14 mover presets have native implementations.
-- Generated trial waves are removed. Stage 1 runs authored spawns, movement,
-  carrier layout, damageable buildings/destroyed art, original building effects,
-  music change and camera stop. Boss1 has original health scaling, paired bursts,
-  aimed sweeps, smooth movement and independently destructible side guns.
-- `game.stage 1 [0..1]` replays nominal stage time to reconstruct enemies,
-  projectiles, camera and music. Equipment/money survive; armor is restored.
-  0.9 reaches the boss. Other stage IDs explicitly fail until implemented.
-- Title/new-game/difficulty/pilot/pause/options navigation, console help,
-  completion/history/editing/scrollback, money/invincibility/chassis commands,
-  Front Laser's eight normal/focus levels, Standard Generator and F3 graph work.
-- Stage Clear waits for enemies and 220 ticks, then Continue returns to title.
-  Campaign results/shop/next-stage behavior remains unfinished.
+## Implemented
 
-## Remaining work
+- Original title/combat/pause music, including Stage 1 startup and seek synchronization.
+- All weapon definitions and level tables, primary/support/sidekick firing,
+  generators, shields, original pilot loadouts, six working shop categories.
+- All regular enemies and Boss1-Boss12 combat, component damage and phase changes.
+- All 12 main and seven bonus stage event streams, original required assets,
+  scenery layers, music changes, camera stops, clear/shop/next-stage progression.
+- Secret entry/return retains the main encounter and transfers bonus rewards.
+- Original Stage12 ending text/music and victory money.
+- Console equipment/spawn/seek commands, completion/history and F3 frame graph.
 
-- Port pickups/rewards and exact enemy/building scoring, co-op damage, turret
-  corpses, collision/player-death behavior, stage-end explosions/flyout/fades,
-  randomized cloud initialization, remaining presentation details.
-- Complete primary/secondary/sidekick weapons, shield/generator choices, pilot
-  loadouts and abilities. Rabbit still uses Front Laser; secondaries are absent.
-- Port Stage2?12 and BonusStage1?7 runtime enemies/bosses/scenery/secret handling.
-  Their imported event tables are not yet playable.
-- Port shop/results/upgrades, saved Continue, complete menu transitions and
-  sample ships. Web/phone builds and physical controller testing remain pending.
+## Remaining parity work
 
-See CONTENT_PARITY.md for the inventory; legacy source is the specification.
+- Audit every projectile's collision, special effects and sound against legacy;
+  finish pickups, original coin/score awards, salvage and player death behavior.
+- Audit boss attack timing/movement in detail (current coverage checks all phases,
+  shared parts, death cleanup and authored spawn/clear, not frame-identical traces).
+- Native saves/Continue and replay stage selection after winning.
+- Original chassis/pilot abilities, sample ships, shop inventory restrictions,
+  menu transitions/fades, stage-clear explosion/flyout presentation.
+- Validate secret entrance reachability at arena edges; preserve source coordinates.
+  Secret return/fade timing and scrolling need closer legacy comparison.
+- Blending gradient scenery, remaining boss visual details, turret corpses.
+- Web/phone builds and physical controller playtests remain outside verified Windows.
 
 ## Verification
 
-Git Bash `./test.sh`, `./build.sh native`; `scripts/check_render.ps1` uses silent
-windowless software rendering. New checks cover natural-run/seek reconstruction,
-boss cadence, independent side-gun destruction, smooth movement, camera stop,
-delayed clear, damageable buildings and strict invalid-seek rejection. Native
-quiet audio check confirmed Boss 9 seek=10.933 and reported=10.933 seconds.
-Stage 1 carrier/boss captures were inspected. Human playtesting is still needed.
-Scratch stays in `artifacts/native-port/`; durable inputs never go there.
+`./test.sh`: all 19 stages run from start through clear; no dropped spawns after
+increasing enemy capacity for BonusStage6. All 12 bosses are encountered; checks
+kill later bosses after 600 ticks to validate progression, not difficulty balance.
+Tests cover shop/loadouts, phase attacks, collision boundaries and secret state
+roundtrip. `./build.sh native` and `scripts/check_render.ps1` pass. All 19 stages
+have windowless software captures in `artifacts/native-port/stage-N.png`.
+Legacy stage importer `--check` verifies 3,448 events without omitted source fields.
+
+See CONTENT_PARITY.md for current scope and limitations. Scratch artifacts are
+transient; source and required assets stay in the repository.

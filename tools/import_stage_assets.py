@@ -1,4 +1,4 @@
-"""Copy original assets referenced by the currently playable authored stages."""
+"""Copy original assets referenced by all authored main and bonus stages."""
 import re
 import shutil
 from pathlib import Path
@@ -10,11 +10,12 @@ def copy(source, destination):
     shutil.copyfile(source, destination)
 
 
-for number in (1, 2):
-    source = (ROOT / 'legacy/StageDefinitions' / f'Stage{number}.cs').read_text(encoding='utf-8-sig')
+stages = [f'Stage{n}' for n in range(1, 13)] + [f'BonusStage{n}' for n in range(1, 8)]
+for stage in stages:
+    source = (ROOT / 'legacy/StageDefinitions' / f'{stage}.cs').read_text(encoding='utf-8-sig')
     events = [ObjectReader(body).value() for body in re.findall(r'stage\.AddElement\(0,\s*(.*?)\);', source, re.S)]
     music = {re.search(r'stage.MusicName = "([^"]+)"', source)[1]}
-    enemies = {'Boss1Chunk'} if number == 1 else set()
+    enemies = set()
     for event in events:
         kind = event['type'].removeprefix('Galaxy.CStageElement')
         if kind == 'SpawnerEnemy':
@@ -31,10 +32,13 @@ for number in (1, 2):
         copy(ROOT / 'legacy/Content/Textures/Enemy' / (name + '.png'), ROOT / 'assets/textures' / (name + '.png'))
     for name in music:
         copy(ROOT / 'legacy/Content/Music' / (name + '.wav'), ROOT / 'assets/audio' / (name + '.wav'))
-copy(ROOT / 'legacy/Content/Textures/Background/Water.png', ROOT / 'assets/textures/Water.png')
+for folder in ('Background', 'Sky'):
+    for source in (ROOT / 'legacy/Content/Textures' / folder).glob('*.png'):
+        copy(source, ROOT / 'assets/textures' / source.name)
+copy(ROOT / 'legacy/Content/Music/fading-memories.wav', ROOT / 'assets/audio/fading-memories.wav')
 for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 'shop')]:
     for source in (ROOT / 'legacy/Content/Textures' / source_folder).glob('*.png'):
         copy(source, ROOT / 'assets/textures' / destination_folder / source.name)
 for source in (ROOT / 'legacy/Content/Textures/Enemy').glob('*.png'):
     copy(source, ROOT / 'assets/textures' / source.name)
-print('Copied original assets for Stage 1 and Stage 2')
+print('Copied original assets for all 12 main and 7 bonus stages')

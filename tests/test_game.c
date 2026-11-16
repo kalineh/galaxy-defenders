@@ -158,7 +158,7 @@ static void stage2_runtime(void) {
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
     game_menu_input(&game, MENU_READY, 0);
-    CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1); /* Never substitute Stage 1 for unavailable Stage 3. */
+    CHECK(game.menu.page == MENU_NONE && game.stage.index == 2);
     reset();
     boss = game_spawn_enemy(&game, ENEMY_BOSS2, 480, 200);
     game_tick(&game);
@@ -557,12 +557,12 @@ static void authored_stage_runtime(void) {
         CHECK(game.complete && game.menu.page == MENU_CLEAR);
     }
     int tick = game.tick;
-    CHECK(!game_stage(&game, 2, 0) && !game_stage(&game, 0, NAN) && !game_stage(&game, 0, 1.1f));
+    CHECK(!game_stage(&game, STAGE_COUNT, 0) && !game_stage(&game, 0, NAN) && !game_stage(&game, 0, 1.1f));
     CHECK(game.tick == tick);
     CHECK(console_execute(&console, &game, "game.stage 1 0"));
     CHECK(game.tick == 0 && game.stage.music_event == -1 && !game.complete && !game.paused);
     CHECK(!console_execute(&console, &game, "game.stage 1 -1"));
-    CHECK(!console_execute(&console, &game, "game.stage 3"));
+    CHECK(!console_execute(&console, &game, "game.stage 20"));
 }
 
 static void boss_patterns(void) {
@@ -758,7 +758,63 @@ static void remaining_bosses(void) {
     CHECK(game.bullets[0].hostile_kind == HOSTILE_MINI && game.bullets[0].damage == 1.25f);
 }
 
+static void campaign_stages(void) {
+    for (int stage = 0; stage < STAGE_COUNT; ++stage) {
+        reset();
+        game.players[0].invincible = true;
+        CHECK(game_stage(&game, stage, 0));
+        bool boss_seen = false;
+        int max_enemies = 0, max_bullets = 0;
+        for (int tick = 0; tick < 15000 && !game.complete; ++tick) {
+            game_tick(&game);
+            if (game_enemy_count(&game) > max_enemies) max_enemies = game_enemy_count(&game);
+            if (game_bullet_count(&game) > max_bullets) max_bullets = game_bullet_count(&game);
+            for (int i = 0; i < GAME_ENEMIES; ++i) {
+                Enemy *enemy = &game.enemies[i];
+                if (!enemy->active || !enemy_is_boss(enemy->kind)) continue;
+                boss_seen = true;
+                /* Let the authored encounter run before testing its clear path. */
+                if (enemy->age >= 600) enemy_die(&game, enemy, 0);
+            }
+        }
+        if (!game.complete || (stage < 12 && !boss_seen) || game.dropped_spawns)
+            fprintf(stderr, "stage %d: complete=%d boss=%d dropped=%d peak_enemies=%d peak_bullets=%d camera=%f\n",
+                stage + 1, game.complete, boss_seen, game.dropped_spawns, max_enemies, max_bullets, game.stage.camera_y);
+        CHECK(game.complete && (stage >= 12 || boss_seen));
+        CHECK(game.dropped_spawns == 0);
+        if (stage < 11) {
+            game_menu_input(&game, MENU_CONFIRM, 0);
+            game_menu_input(&game, MENU_READY, 0);
+            CHECK(game.stage.index == stage + 1 && game.menu.page == MENU_NONE);
+        }
+    }
+}
+
+static void secret_stage_roundtrip(void) {
+    reset();
+    CHECK(game_stage(&game, 1, 0.3f));
+    game.stage.secret_x = 920;
+    game.stage.secret_y = 500;
+    game.players[0].health = 7;
+    game.players[0].score = 100;
+    repeat = game;
+    game_secret_enter(&game, 12);
+    CHECK(game.stage.index == 12 && game.secret_return.active);
+    CHECK(game.players[0].health == 7 && game.players[0].score == 100);
+    game.players[0].score += 250;
+    game.players[0].health = 6;
+    game_secret_return(&game);
+    CHECK(game.stage.index == 1 && !game.secret_return.active && game.stage.ignore_secrets);
+    CHECK(game.tick == repeat.tick && game.stage.camera_y == repeat.stage.camera_y);
+    CHECK(!memcmp(game.enemies, repeat.enemies, sizeof(game.enemies)));
+    CHECK(!memcmp(game.bullets, repeat.bullets, sizeof(game.bullets)));
+    CHECK(game.players[0].health == 6 && game.players[0].score == 350);
+    CHECK(game.players[0].vx < 0 && game.menu.page == MENU_NONE);
+}
+
 int main(void) {
+    secret_stage_roundtrip();
+    campaign_stages();
     remaining_bosses();
     extended_enemies();
     complete_equipment();
