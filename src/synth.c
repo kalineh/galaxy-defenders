@@ -9,6 +9,7 @@ typedef struct {
     signed char pan;
 } SynthEvent;
 
+typedef struct { const char *name, *source; uint32_t frames, count; const SynthEvent *events; } SynthTrack;
 #include "synth_score.inc"
 
 enum { FM_BASS, FM_LEAD, PULSE, BELL, PAD, KICK, SNARE, HAT, TOM, PATCH_COUNT };
@@ -18,12 +19,12 @@ typedef struct {
 } Patch;
 
 static const Patch patches[PATCH_COUNT] = {
-    {.003f,.12f,.52f,.075f,.19f, 1,3.6f,.25f,0},
+    {.003f,.12f,.52f,.075f,.25f, 1,4.8f,.25f,0},
     {.008f,.14f,.65f,.16f,.12f, 2,2.4f,.38f,.0028f},
     {.004f,.10f,.40f,.09f,.08f, 1,0,.55f,.0015f},
     {.002f,.75f,.07f,.45f,.10f, 3.5f,4.5f,.65f,0},
     {.12f,.35f,.55f,.30f,.065f, 1,.8f,.12f,.001f},
-    {.001f,.20f,0,.015f,.38f, 1,0,1,0},
+    {.001f,.20f,0,.015f,.48f, 1,0,1,0},
     {.001f,.15f,0,.02f,.18f, 1,0,.75f,0},
     {.001f,.05f,0,.01f,.055f, 1,0,1,0},
     {.002f,.18f,0,.02f,.22f, 1,0,.6f,0}
@@ -46,8 +47,16 @@ static float blep(float phase, float delta) {
     return 0;
 }
 
-const char *synth_track_name(int track) { return track == 1 ? "Departure study (prototype)" : NULL; }
-uint32_t synth_track_frames(int track) { return track == 1 ? SYNTH_SCORE_FRAMES : 0; }
+const char *synth_track_name(int track) { return track >= 1 && track <= SYNTH_TRACK_COUNT ? synth_tracks[track-1].name : NULL; }
+uint32_t synth_track_frames(int track) { return track >= 1 && track <= SYNTH_TRACK_COUNT ? synth_tracks[track-1].frames : 0; }
+int synth_track_find(const char *source) {
+    for (int i = 0; i < SYNTH_TRACK_COUNT; ++i) if (!strcmp(source, synth_tracks[i].source)) return i+1;
+    return 0;
+}
+bool synth_select(Synth *synth, int track) {
+    if (!synth_track_name(track)) return false;
+    synth_init(synth); synth->track = track; return true;
+}
 
 void synth_init(Synth *synth) {
     if (!sine_ready) {
@@ -55,6 +64,7 @@ void synth_init(Synth *synth) {
         sine_ready = true;
     }
     memset(synth, 0, sizeof(*synth));
+    synth->track = 1;
 }
 
 static float envelope(const Patch *p, float time) {
@@ -126,10 +136,11 @@ static float voice_sample(SynthVoice *v) {
 }
 
 void synth_render(Synth *synth, float *stereo, int frames) {
+    const SynthTrack *track = &synth_tracks[synth->track - 1];
     for (int i = 0; i < frames; ++i) {
-        if (synth->position >= SYNTH_SCORE_FRAMES) synth_init(synth);
-        while (synth->next_event < sizeof(synth_score) / sizeof(synth_score[0]) && synth_score[synth->next_event].frame == synth->position) {
-            note_on(synth, &synth_score[synth->next_event], synth->next_event);
+        if (synth->position >= track->frames) synth_select(synth, synth->track);
+        while (synth->next_event < track->count && track->events[synth->next_event].frame == synth->position) {
+            note_on(synth, &track->events[synth->next_event], synth->next_event);
             ++synth->next_event;
         }
         float left = 0, right = 0;
@@ -145,8 +156,8 @@ void synth_render(Synth *synth, float *stereo, int frames) {
         synth->delay_left[at] = left * .22f + dr * .30f;
         synth->delay_right[at] = right * .22f + dl * .30f;
         synth->delay_cursor = (at + 1) % SYNTH_DELAY;
-        left += dl; right += dr;
-        float fade = fminf(1, fminf(synth->position / 960.0f, (SYNTH_SCORE_FRAMES - 1 - synth->position) / 960.0f));
+        left = (left + dl) * 1.8f; right = (right + dr) * 1.8f;
+        float fade = fminf(1, fminf(synth->position / 960.0f, (track->frames - 1 - synth->position) / 960.0f));
         /* Bounded soft saturation plus headroom; do not hard-clip the mix. */
         stereo[i * 2] = .85f * fade * left / (1 + fabsf(left));
         stereo[i * 2 + 1] = .85f * fade * right / (1 + fabsf(right));
@@ -156,9 +167,11 @@ void synth_render(Synth *synth, float *stereo, int frames) {
 
 bool synth_seek(Synth *synth, double progress) {
     if (!isfinite(progress) || progress < 0 || progress > 1) return false;
-    uint32_t target = (uint32_t)(progress * SYNTH_SCORE_FRAMES);
-    if (target >= SYNTH_SCORE_FRAMES) target = SYNTH_SCORE_FRAMES - 1;
-    synth_init(synth);
+    if (!synth->track) synth_init(synth);
+    const SynthTrack *track = &synth_tracks[synth->track - 1];
+    uint32_t target = (uint32_t)(progress * track->frames);
+    if (target >= track->frames) target = track->frames - 1;
+    synth_select(synth, synth->track);
     float discard[1024 * 2];
     while (synth->position < target) {
         uint32_t remaining = target - synth->position;

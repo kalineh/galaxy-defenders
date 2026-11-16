@@ -11,7 +11,7 @@ static int failures;
 int main(void) {
     uint32_t length = synth_track_frames(1);
     CHECK(length > SYNTH_RATE * 120 && length < SYNTH_RATE * 121);
-    CHECK(!synth_track_name(0) && synth_track_frames(2) == 0);
+    CHECK(!synth_track_name(0) && synth_track_frames(20) == 0);
     synth_init(&sequential);
     double energy = 0, dc = 0, stereo = 0;
     float peak = 0;

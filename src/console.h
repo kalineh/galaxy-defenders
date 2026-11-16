@@ -14,6 +14,7 @@ typedef struct {
     int count, steps, cursor, command_count, history_offset, scroll;
     bool quit, perf;
     int music_track;
+    bool music_album;
     unsigned music_revision;
     float music_progress;
 } Console;

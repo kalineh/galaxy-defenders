@@ -35,9 +35,9 @@ typedef struct {
     Texture2D pickups[3], medals[5], continue_button;
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
-    AudioStream audition_stream;
+    Music audition_stream;
     unsigned audition_revision;
-    bool audition_active;
+    bool audition_active, album_paused;
     int music_mode, music_revision, music_event, music_tick;
     const char *music_name;
     Sound shoot, explode[3], building_explode, hit, shield_hit, shot_hit, die;
@@ -47,6 +47,8 @@ typedef struct {
     bool audio, stage_music_started;
     Font console_font, ui_font;
 } Assets;
+
+static const char *synth_path(const char *source);
 
 static const char *shop_texture_names[] = {
     "ShopPanel", "ShopItemPanel", "ShopUpgradePanel", "ShopPurchaseButtonPanel",
@@ -134,7 +136,7 @@ static void assets_unload(Assets *assets) {
         if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
     }
     if (assets->audio) {
-        if (IsAudioStreamValid(assets->audition_stream)) UnloadAudioStream(assets->audition_stream);
+        if (IsMusicValid(assets->audition_stream)) UnloadMusicStream(assets->audition_stream);
         for (int i = 0; i < WEAPON_COUNT; ++i) if (IsSoundValid(assets->weapon_fire[i])) UnloadSound(assets->weapon_fire[i]);
         for (int i = 0; i < 4; ++i) if (IsSoundValid(assets->impacts[i])) UnloadSound(assets->impacts[i]);
         for (int i = 0; i < 2; ++i) if (IsSoundValid(assets->enemy_fire[i])) UnloadSound(assets->enemy_fire[i]);
@@ -362,9 +364,9 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->audio = IsAudioDeviceReady();
     if (!assets->audio) { console_log(console, "Audio unavailable; continuing without sound."); return true; }
     SetMasterVolume(volume);
-    assets->music = LoadMusicStream(asset_path("audio/The_Voyage.wav"));
-    assets->title_music = LoadMusicStream(asset_path("audio/Konami's_Moon_Base.wav"));
-    assets->pause_music = LoadMusicStream(asset_path("audio/1-X-0.wav"));
+    assets->music = LoadMusicStream(synth_path("The_Voyage"));
+    assets->title_music = LoadMusicStream(synth_path("Konami's_Moon_Base"));
+    assets->pause_music = LoadMusicStream(synth_path("1-X-0"));
     const char *menu_sounds[] = {"MenuMoveItem", "MenuSelect", "MenuCancel", "MenuUpgrade", "MenuDowngrade"};
     for (int i = 0; i < 5; ++i) {
         char path[128];
@@ -951,37 +953,33 @@ static void poll_menu(Game *game, Assets *assets) {
     }
 }
 
-/* One audition stream. Main thread may seek only after StopAudioStream has
-   synchronized with raylib's audio mutex; the callback alone advances it. */
-static Synth audition_synth;
-
-static void audition_callback(void *buffer, unsigned frames) {
-    synth_render(&audition_synth, buffer, (int)frames);
+static const char *synth_path(const char *source) {
+    static char path[80];
+    snprintf(path, sizeof(path), "synth/%d.wav", synth_track_find(source));
+    return asset_path(path);
 }
 
 static void update_music_override(const Game *game, Console *console, Assets *assets) {
     if (assets->audition_revision != console->music_revision) {
         assets->audition_revision = console->music_revision;
-        if (IsAudioStreamValid(assets->audition_stream)) StopAudioStream(assets->audition_stream);
+        if (IsMusicValid(assets->audition_stream)) UnloadMusicStream(assets->audition_stream);
+        assets->audition_stream = (Music){0};
         assets->audition_active = false;
         if (console->music_track) {
-            if (!IsAudioStreamValid(assets->audition_stream)) {
-                assets->audition_stream = LoadAudioStream(SYNTH_RATE, 32, 2);
-                if (IsAudioStreamValid(assets->audition_stream)) SetAudioStreamCallback(assets->audition_stream, audition_callback);
-            }
-            if (!IsAudioStreamValid(assets->audition_stream)) {
-                console_log(console, "ERROR: synth audio stream could not load; normal music retained.");
-                console->music_track = 0;
-            } else {
-                synth_seek(&audition_synth, console->music_progress);
+            char path[80]; snprintf(path, sizeof(path), "synth/%d.wav", console->music_track);
+            assets->audition_stream = LoadMusicStream(asset_path(path));
+            if (!IsMusicValid(assets->audition_stream)) console_log(console, "ERROR: synth track missing; rebuild native.");
+            else {
                 assets->audition_active = true;
-                SetAudioStreamVolume(assets->audition_stream, game->menu.options[1] / 10.0f);
-                PlayAudioStream(assets->audition_stream);
+                assets->audition_stream.looping = true;
+                PlayMusicStream(assets->audition_stream);
+                SeekMusicStream(assets->audition_stream, console->music_progress * (GetMusicTimeLength(assets->audition_stream) - .001f));
             }
         }
     }
     if (assets->audition_active) {
-        SetAudioStreamVolume(assets->audition_stream, game->menu.options[1] / 10.0f);
+        SetMusicVolume(assets->audition_stream, game->menu.options[1] / 10.0f);
+        UpdateMusicStream(assets->audition_stream);
     }
 }
 
@@ -994,9 +992,7 @@ static void update_audio(const Game *game, Console *console, Assets *assets) {
     if (music_changed) {
         StopMusicStream(assets->music);
         UnloadMusicStream(assets->music);
-        char path[160];
-        snprintf(path, sizeof(path), "audio/%s.wav", music_name);
-        assets->music = LoadMusicStream(asset_path(path));
+        assets->music = LoadMusicStream(synth_path(music_name));
         assets->music.looping = true;
         assets->music_name = music_name;
         assets->stage_music_started = false;
@@ -1004,7 +1000,7 @@ static void update_audio(const Game *game, Console *console, Assets *assets) {
     }
     assets->music_tick = game->tick;
     int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 :
-        game->paused && game->menu.page != MENU_FINISH && game->menu.page != MENU_STAGE_SELECT ? 2 : 0;
+        game->paused && !game->over && !game->complete && game->menu.page != MENU_FINISH && game->menu.page != MENU_STAGE_SELECT ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
         if (assets->music_mode >= 0) PauseMusicStream(tracks[assets->music_mode]);
@@ -1040,7 +1036,48 @@ static void update_audio(const Game *game, Console *console, Assets *assets) {
     SetSoundVolume(assets->shot_hit, 0.2f * sfx);
     SetSoundVolume(assets->die, 0.5f * sfx);
     for (int i = 0; i < 5; ++i) SetSoundVolume(assets->menu_sounds[i], sfx);
-    UpdateMusicStream(tracks[mode]);
+    if (console->music_album) {
+        PauseMusicStream(tracks[mode]);
+        assets->album_paused = true;
+    } else {
+        if (assets->album_paused) ResumeMusicStream(tracks[mode]);
+        assets->album_paused = false;
+        UpdateMusicStream(tracks[mode]);
+    }
+}
+
+static void music_album_input(Console *console, Game *game, Assets *assets) {
+    int track = console->music_track ? console->music_track : 1;
+    float progress = console->music_progress;
+    if (assets->audition_active) progress = GetMusicTimePlayed(assets->audition_stream) / GetMusicTimeLength(assets->audition_stream);
+    bool change = !console->music_track;
+    if (IsKeyPressed(KEY_UP)) { track = track == 1 ? SYNTH_TRACK_COUNT : track - 1; progress = 0; change = true; }
+    if (IsKeyPressed(KEY_DOWN)) { track = track % SYNTH_TRACK_COUNT + 1; progress = 0; change = true; }
+    if (IsKeyPressed(KEY_LEFT) || IsKeyPressedRepeat(KEY_LEFT)) { progress = fmaxf(0, progress - .05f); change = true; }
+    if (IsKeyPressed(KEY_RIGHT) || IsKeyPressedRepeat(KEY_RIGHT)) { progress = fminf(.999f, progress + .05f); change = true; }
+    if (IsKeyPressed(KEY_ENTER)) { progress = 0; change = true; }
+    if (change) {
+        char command[80]; snprintf(command, sizeof(command), "debug.music %d %.6f", track, progress);
+        console_execute(console, game, command);
+    }
+    if (IsKeyPressed(KEY_ESCAPE)) console_execute(console, game, "debug.music off");
+}
+
+static void draw_music_album(const Console *console, const Assets *assets) {
+    DrawRectangle(340, 100, 1240, 880, (Color){8,14,24,250});
+    DrawTextEx(assets->console_font, "DEVELOPER MUSIC ALBUM", (Vector2){380,130}, 32, 0, accent);
+    DrawTextEx(assets->console_font, "Up/Down: track   Left/Right: seek 5%   Enter: restart   Esc: close", (Vector2){380,180}, 22, 0, WHITE);
+    for (int i = 1; i <= SYNTH_TRACK_COUNT; ++i) {
+        bool selected = console->music_track == i;
+        if (selected) DrawRectangle(370, 224 + (i-1)*34, 1180, 33, (Color){38,62,85,255});
+        DrawTextEx(assets->console_font, TextFormat("%02d  %-28s  %6.1fs", i, synth_track_name(i), synth_track_frames(i)/(float)SYNTH_RATE),
+            (Vector2){390,228+(i-1)*34.0f}, 24, 0, selected ? accent : WHITE);
+    }
+    float progress = console->music_progress;
+    if (assets->audio && assets->audition_active) progress = GetMusicTimePlayed(assets->audition_stream)/GetMusicTimeLength(assets->audition_stream);
+    DrawRectangle(390, 905, 1140, 10, (Color){40,48,60,255});
+    DrawRectangle(390, 905, (int)(1140*fminf(1,progress)), 10, accent);
+    DrawTextEx(assets->console_font, TextFormat("%.1f%%  |  C synth soundtrack - first drafts", progress*100), (Vector2){390,930}, 22, 0, WHITE);
 }
 
 static PlayerInput poll_input(int slot) {
@@ -1206,7 +1243,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             } else { console_open = !console_open; console_full = false; }
             while (GetCharPressed()) {} /* Don't insert the opening backtick. */
         }
-        if (console_open) {
+        if (console->music_album) {
+            console_open = false;
+            music_album_input(console, game, &assets);
+        } else if (console_open) {
             if (IsKeyPressed(KEY_ESCAPE)) console_open = false;
             int character;
             while ((character = GetCharPressed()) != 0) {
@@ -1258,7 +1298,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_weapon_shots, game->weapon_shots, sizeof(old_weapon_shots));
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
-        if (!console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
+        if (!console->music_album && !console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
@@ -1308,6 +1348,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
             DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
         }
+        if (console->music_album) draw_music_album(console, &assets);
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
         if (console->perf) draw_frame_graph(&frame_graph, assets.console_font);
 #ifndef GALAXY_MEMORY

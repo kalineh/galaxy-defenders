@@ -15,7 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
-    {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1, PROGRESS 0..1. Off restores normal music. No arguments lists tracks/status.", {"1 off", "0 0.25 0.5 0.75 1"}},
+    {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
@@ -285,6 +285,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
     const char *command = words[0];
     if (!strcmp(command, "debug.music")) {
         if (count == 1) {
+            console->music_album = true;
             console_log(console, "Music override: %s; last requested progress %.3f", console->music_track ? "on" : "off", console->music_progress);
             for (int track = 1; track <= SYNTH_TRACK_COUNT; ++track)
                 console_log(console, "%d: %s (%.3fs)", track, synth_track_name(track), synth_track_frames(track) / (float)SYNTH_RATE);
@@ -292,6 +293,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
         }
         if (count == 2 && !strcmp(words[1], "off")) {
             console->music_track = 0;
+            console->music_album = false;
             ++console->music_revision;
             console_log(console, "Music override off; normal music restored.");
             return true;

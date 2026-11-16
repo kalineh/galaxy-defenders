@@ -1,5 +1,6 @@
 #include "game.h"
 #include "console.h"
+#include "synth.h"
 #include "stage.h"
 #include "movement.h"
 #include <math.h>
@@ -1530,13 +1531,20 @@ static void saved_continue(void) {
 }
 
 static void music_override_commands(void) {
+    for (int stage = 0; stage < STAGE_COUNT; ++stage) {
+        const StageDefinition *d = &stage_definitions[stage];
+        CHECK(synth_track_find(d->music) > 0);
+        for (int i = 0; i < d->event_count; ++i)
+            if (d->events[i].kind == STAGE_MUSIC) CHECK(synth_track_find(d->events[i].name) > 0);
+    }
+    CHECK(synth_track_find("1-X-0") && synth_track_find("Konami's_Moon_Base") && synth_track_find("Try_Harder") && synth_track_find("fading-memories"));
     reset();
     repeat = game;
     CHECK(console_execute(&console, &game, "debug.music"));
     CHECK(console_execute(&console, &game, "debug.music 1 0.5"));
     CHECK(console.music_track == 1 && console.music_progress == .5f && console.music_revision == 1);
     CHECK(!memcmp(&game, &repeat, sizeof(game)));
-    CHECK(!console_execute(&console, &game, "debug.music 2"));
+    CHECK(!console_execute(&console, &game, "debug.music 20"));
     CHECK(!console_execute(&console, &game, "debug.music 1 nan"));
     CHECK(!console_execute(&console, &game, "debug.music 1 -0.1"));
     CHECK(!console_execute(&console, &game, "debug.music 1 1.1"));

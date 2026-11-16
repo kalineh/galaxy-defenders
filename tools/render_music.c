@@ -10,14 +10,16 @@ static void write_u(FILE *f, unsigned value, int bytes) {
 }
 
 int main(int argc, char **argv) {
-    if (argc != 2) { fprintf(stderr, "Usage: render-music OUTPUT.wav\n"); return 1; }
+    if (argc != 2 && argc != 3) { fprintf(stderr, "Usage: render-music OUTPUT.wav\n"); return 1; }
     FILE *f = fopen(argv[1], "wb");
     if (!f) return 1;
-    unsigned frames = synth_track_frames(1), bytes = frames * 4;
+    int track = argc == 3 ? atoi(argv[2]) : 1;
+    if (!synth_track_name(track)) { fclose(f); return 1; }
+    unsigned frames = synth_track_frames(track), bytes = frames * 4;
     fwrite("RIFF", 1, 4, f); write_u(f, 36 + bytes, 4); fwrite("WAVEfmt ", 1, 8, f);
     write_u(f, 16, 4); write_u(f, 1, 2); write_u(f, 2, 2); write_u(f, SYNTH_RATE, 4);
     write_u(f, SYNTH_RATE * 4, 4); write_u(f, 4, 2); write_u(f, 16, 2); fwrite("data", 1, 4, f); write_u(f, bytes, 4);
-    synth_init(&synth);
+    synth_select(&synth, track);
     float buffer[2048 * 2], peak = 0;
     double energy = 0;
     for (unsigned at = 0; at < frames;) {

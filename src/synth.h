@@ -7,7 +7,7 @@
 #define SYNTH_RATE 48000
 #define SYNTH_VOICES 24
 #define SYNTH_DELAY 24000
-#define SYNTH_TRACK_COUNT 1
+#define SYNTH_TRACK_COUNT 19
 
 typedef struct {
     uint32_t age, gate, release, noise;
@@ -18,7 +18,7 @@ typedef struct {
 
 typedef struct {
     uint32_t position, next_event, stolen_voices;
-    int delay_cursor;
+    int delay_cursor, track;
     SynthVoice voices[SYNTH_VOICES];
     float delay_left[SYNTH_DELAY], delay_right[SYNTH_DELAY];
 } Synth;
@@ -26,6 +26,8 @@ typedef struct {
 const char *synth_track_name(int track);
 uint32_t synth_track_frames(int track);
 void synth_init(Synth *synth);
+bool synth_select(Synth *synth, int track);
+int synth_track_find(const char *source);
 /* Deterministic preroll restores envelopes, oscillator phase, noise and delay. */
 bool synth_seek(Synth *synth, double progress);
 /* Interleaved float stereo, sample-clock scheduling; no allocation or audio API. */

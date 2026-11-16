@@ -63,6 +63,17 @@ else
     done
     "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c "${core[@]}" "${objects[@]}" \
         "${link_flags[@]}" -o "$output_dir/$executable"
+    python tools/compile_music.py --check
+    # Render the C score bank once; runtime never loads legacy music recordings.
+    "$zig" cc "${flags[@]}" -O2 tools/render_music.c "$synth_object" -o build/headless/render-music.exe
+    mkdir -p build/music "$output_dir/assets/synth"
+    for track in {1..19}; do
+        wav="build/music/$track.wav"
+        if [[ ! -f "$wav" || src/synth.c -nt "$wav" || src/synth_score.inc -nt "$wav" || src/synth.h -nt "$wav" || tools/render_music.c -nt "$wav" ]]; then
+            ./build/headless/render-music.exe "$wav" "$track"
+        fi
+        cp -u "$wav" "$output_dir/assets/synth/$track.wav"
+    done
     if [[ -d assets ]]; then
         mkdir -p "$output_dir/assets"
         cp -ru assets/. "$output_dir/assets/"

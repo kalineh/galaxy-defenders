@@ -1,69 +1,39 @@
-# Music analysis and synth audition
+# Synth soundtrack
 
-Normal gameplay still uses the original RushJet1 recordings. The new score is an
-original instrument/arrangement study, not a transcription or approved replacement.
-No stage layout or campaign music assignment has changed.
+All campaign, boss, bonus, title/shop, pause, game-over and ending music now uses
+the C synth album. Legacy recordings remain analysis references and are never
+loaded for playback. SFX remain the original assets.
 
-## Audition
+## Developer album
 
-Build with `./build.sh native`, launch with `./play.sh`, open the backtick console:
+Open the console and enter `debug.music`. Up/Down selects and immediately plays
+one of 19 tracks. Left/Right seeks by 5% of its duration, Enter restarts, Escape
+closes the album and restores the current game's synth music. The album freezes
+gameplay and its background music while open and uses the bundled console font. It is not a player menu.
 
-```text
-debug.music             # list tracks and override status
-debug.music 1           # start Departure study
-debug.music 1 0.5       # start halfway through its 120.498646-second loop
-debug.music 1 0.94      # hear the approach section
-debug.music off         # restore normal music
-```
+`debug.music 1..19 [0..1]` also auditions directly; `debug.music off` restores the
+game soundtrack. Volume follows music/master settings. Headless/muted runs do
+not initialize audio. Seeking is immediate through pre-rendered PCM streams.
 
-The override survives stage changes and game resets, plays in menus and while
-paused, and respects music/master volume. Gameplay, saves and SFX are unaffected.
-Normal music continues silently under the override so it can resume when disabled.
-Headless/muted runs accept the command but never create an audio device.
-Progress must be finite and between 0 and 1; 1 means the final sample, then loop.
-Seeking prerolls the score to restore its exact phase/envelope/delay state; a late
-seek may briefly stall the debug UI (up to a few seconds on the development PC).
+## Scores and build
 
-`./scripts/render_music.sh` writes a standalone 48 kHz stereo WAV to
-`artifacts/native-port/departure-study.wav`, without a window/audio device.
-Pass a different output path as the first argument. The renderer uses the same
-synth as the live audition. This temporary WAV is regenerated, not committed.
+Edit `album.json`, then run `python tools/compile_music.py`. It contains each
+track's title, source mapping, tempo, motifs, chord cycle and section arrangement.
+The 19 arrangements are first drafts sharing a synth palette and compositional
+vocabulary; they are not transcriptions or listening-approved final compositions.
+Candidate section cuts come from the analysis; original recording lengths are
+preserved to the nearest 48 kHz sample. Stage data and music-switch events are
+unchanged. See ../MUSIC_TIMING.md for exact anchors versus tentative musical cues.
 
-## Sound and score
+Native/render builds compile the C renderer and cache WAVs in build/music, then
+copy them beside the executable under assets/synth. No generated WAV is committed.
+Initial builds take longer to render the album; subsequent builds reuse it.
+The same 24-voice, nine-patch C synth produces all tracks. Bass/kick gain and mix
+drive are stronger than the first prototype. FM, pulse, bell/pad voices, drums,
+filtering, vibrato and stereo delay remain editable in src/synth.c.
 
-`src/synth.c` has 24 fixed voices and nine patches: four-operator FM bass/lead,
-band-limited pulse accents, FM bells, detuned pad voices, pitch-swept kick/tom,
-noise/tone snare and metallic/noise hats. Envelopes, delayed vibrato, tone filtering,
-two synthesis substeps per output sample, equal-power panning and stereo feedback
-delay provide the palette. It is a hybrid 16-bit-inspired synth, not console-chip
-emulation. The mix has soft saturation/headroom and short loop-edge fades.
-
-The callback advances an integer sample clock and allocates nothing. Stop/seek
-uses raylib's audio synchronization before changing synthesis state. Rendering is
-independent of game FPS. Original audio files/attribution remain intact.
-
-Edit `prototype.json`, then run `python tools/compile_music.py` to regenerate
-`src/synth_score.inc`. The score contains explicit motifs, chords, section times,
-arrangement and note articulation; there is no runtime random composition.
-Its 150 BPM is a new composition choice, **not a verified original tempo**.
-Section starts at 4/11/19/35/113 seconds borrow analysis candidates for audition;
-they are not yet approved as the original song's structural boundaries. The
-119.383333-second handoff is an exact Stage1 engine anchor. Duration matches the
-original recording to the nearest 48 kHz sample.
-
-## Timing evidence and remaining review
-
-See [MUSIC_TIMING.md](../MUSIC_TIMING.md) and open `timing/review.html` locally.
-The worksheet provides original audio, candidate cue buttons and actual stage
-spawn/visibility summaries. Run `./scripts/analyze_music.sh` to reproduce it.
-The analysis uses pinned Zig and Python's standard library, with no extra packages.
-
-Engine anchors/loop lengths are measured. Musical phrase boundaries, exact tempo
-maps, instrument quality and playback latency still need listening review. MIDI
-activity alignment is explicitly tentative, including competing periodic offsets.
-Do not promote the study to campaign music or change stages based on those estimates.
-
-`./test.sh` includes whole-score finiteness/headroom/DC/stereo/voice-capacity checks,
-sample-identical seeks across different rendering block sizes, loop endpoints,
-score regeneration and console parsing/state isolation. Native and memory-render
-builds are checked separately. Automated checks do not claim live-device audition.
+`./scripts/render_music.sh` renders track 1 standalone. The built renderer also
+accepts `OUTPUT.wav TRACK_ID`. Audio renders are checked for finite samples,
+headroom and voice stealing. ./test.sh checks sample-identical seek/chunk output,
+loop endpoints, console parsing and game-state isolation. Musical quality and
+live device playback still require human listening; automated checks are silent.

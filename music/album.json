@@ -1,0 +1,3921 @@
+[
+  {
+    "name": "Departure",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "The_Voyage",
+    "bpm": 150,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      40,
+      36,
+      43,
+      38,
+      40,
+      36,
+      45,
+      35
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        76,
+        0,
+        79,
+        78,
+        76,
+        0,
+        71,
+        74,
+        76,
+        0,
+        81,
+        81,
+        79,
+        78,
+        76,
+        0,
+        74,
+        0,
+        76,
+        78,
+        79,
+        0,
+        78,
+        76,
+        74,
+        73,
+        74,
+        76,
+        78,
+        0,
+        69,
+        0
+      ],
+      [
+        83,
+        0,
+        81,
+        79,
+        78,
+        0,
+        79,
+        81,
+        83,
+        0,
+        84,
+        83,
+        81,
+        79,
+        78,
+        0,
+        79,
+        0,
+        78,
+        76,
+        74,
+        0,
+        76,
+        78,
+        79,
+        80,
+        76,
+        74,
+        71,
+        0,
+        72,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 11,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 11,
+        "end": 19,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 19,
+        "end": 35,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 35,
+        "end": 113,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 113,
+        "end": 120.498639,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Signal Grid",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "1-X-0",
+    "bpm": 144,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      38,
+      45,
+      40,
+      42,
+      38,
+      47,
+      37,
+      42
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        78,
+        0,
+        81,
+        80,
+        78,
+        0,
+        73,
+        76,
+        78,
+        0,
+        85,
+        83,
+        81,
+        80,
+        78,
+        0,
+        78,
+        0,
+        78,
+        80,
+        81,
+        0,
+        80,
+        78,
+        76,
+        73,
+        76,
+        78,
+        80,
+        0,
+        73,
+        0
+      ],
+      [
+        85,
+        0,
+        83,
+        81,
+        80,
+        0,
+        81,
+        83,
+        85,
+        0,
+        88,
+        85,
+        83,
+        81,
+        80,
+        0,
+        83,
+        0,
+        80,
+        78,
+        76,
+        0,
+        78,
+        80,
+        81,
+        80,
+        78,
+        76,
+        73,
+        0,
+        76,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 26,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 26,
+        "end": 38,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 38,
+        "end": 115,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 115,
+        "end": 140,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 140,
+        "end": 153,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 153,
+        "end": 164,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 164,
+        "end": 168.429729,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Skyward Assault",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Aerial_Assault",
+    "bpm": 160,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      41,
+      36,
+      38,
+      34,
+      43,
+      33,
+      38,
+      34
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        74,
+        0,
+        77,
+        76,
+        74,
+        0,
+        69,
+        74,
+        74,
+        0,
+        81,
+        79,
+        75,
+        76,
+        74,
+        0,
+        72,
+        0,
+        74,
+        76,
+        77,
+        0,
+        76,
+        74,
+        72,
+        69,
+        72,
+        76,
+        76,
+        0,
+        69,
+        0
+      ],
+      [
+        81,
+        0,
+        79,
+        77,
+        76,
+        0,
+        77,
+        81,
+        81,
+        0,
+        84,
+        81,
+        77,
+        77,
+        76,
+        0,
+        77,
+        0,
+        76,
+        74,
+        72,
+        0,
+        74,
+        76,
+        77,
+        76,
+        74,
+        74,
+        69,
+        0,
+        72,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 67,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 67,
+        "end": 132,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 132,
+        "end": 139,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 139,
+        "end": 143.620479,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Night Watch",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Afraid_of_Darkness",
+    "bpm": 138,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      33,
+      35,
+      31,
+      40,
+      30,
+      35,
+      31,
+      38
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        71,
+        0,
+        74,
+        71,
+        71,
+        0,
+        66,
+        69,
+        71,
+        0,
+        78,
+        76,
+        74,
+        73,
+        71,
+        0,
+        69,
+        0,
+        73,
+        73,
+        74,
+        0,
+        73,
+        69,
+        69,
+        66,
+        69,
+        71,
+        73,
+        0,
+        66,
+        0
+      ],
+      [
+        78,
+        0,
+        76,
+        72,
+        73,
+        0,
+        74,
+        76,
+        78,
+        0,
+        81,
+        78,
+        76,
+        74,
+        73,
+        0,
+        74,
+        0,
+        75,
+        71,
+        69,
+        0,
+        71,
+        71,
+        74,
+        73,
+        71,
+        69,
+        66,
+        0,
+        69,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 11,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 11,
+        "end": 21,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 21,
+        "end": 64,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 64,
+        "end": 75,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 75,
+        "end": 86,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 86,
+        "end": 107,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 107,
+        "end": 128,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 128,
+        "end": 149,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 149,
+        "end": 160,
+        "name": "phrase 10",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 160,
+        "end": 180,
+        "name": "phrase 11",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 180,
+        "end": 184.405333,
+        "name": "phrase 12",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Alkaline Skies",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Alkali Earth",
+    "bpm": 152,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      43,
+      39,
+      48,
+      38,
+      43,
+      39,
+      46,
+      41
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        79,
+        0,
+        82,
+        81,
+        79,
+        0,
+        74,
+        77,
+        79,
+        0,
+        86,
+        84,
+        82,
+        81,
+        77,
+        0,
+        77,
+        0,
+        79,
+        81,
+        82,
+        0,
+        81,
+        79,
+        77,
+        74,
+        77,
+        79,
+        81,
+        0,
+        74,
+        0
+      ],
+      [
+        86,
+        0,
+        84,
+        82,
+        81,
+        0,
+        82,
+        84,
+        86,
+        0,
+        89,
+        86,
+        84,
+        82,
+        79,
+        0,
+        82,
+        0,
+        81,
+        79,
+        77,
+        0,
+        79,
+        81,
+        82,
+        81,
+        79,
+        77,
+        74,
+        0,
+        77,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 7,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 7,
+        "end": 52,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 52,
+        "end": 59,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 59,
+        "end": 83,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 83,
+        "end": 159,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 159,
+        "end": 166,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 166,
+        "end": 190,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 190,
+        "end": 211,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 211,
+        "end": 221,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 221,
+        "end": 228,
+        "name": "phrase 10",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 228,
+        "end": 235,
+        "name": "phrase 11",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 235,
+        "end": 239.576042,
+        "name": "phrase 12",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Dreadnought",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Boss 9",
+    "bpm": 168,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      35,
+      44,
+      34,
+      39,
+      35,
+      42,
+      37,
+      39
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        77,
+        0,
+        78,
+        77,
+        75,
+        0,
+        70,
+        73,
+        75,
+        0,
+        82,
+        80,
+        78,
+        77,
+        75,
+        0,
+        73,
+        0,
+        75,
+        77,
+        80,
+        0,
+        77,
+        75,
+        73,
+        68,
+        73,
+        75,
+        77,
+        0,
+        70,
+        0
+      ],
+      [
+        84,
+        0,
+        80,
+        78,
+        77,
+        0,
+        78,
+        80,
+        82,
+        0,
+        85,
+        82,
+        80,
+        78,
+        77,
+        0,
+        78,
+        0,
+        77,
+        75,
+        75,
+        0,
+        75,
+        77,
+        78,
+        75,
+        75,
+        73,
+        70,
+        0,
+        73,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 25,
+        "name": "phrase 1",
+        "bass": true,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 25,
+        "end": 32,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 32,
+        "end": 44,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 44,
+        "end": 57,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 57,
+        "end": 73,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 73,
+        "end": 77.42898,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Predator Orbit",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Eye_of_the_Predator",
+    "bpm": 154,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      42,
+      32,
+      37,
+      33,
+      40,
+      35,
+      37,
+      33
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        73,
+        0,
+        76,
+        75,
+        73,
+        0,
+        68,
+        71,
+        73,
+        0,
+        80,
+        80,
+        76,
+        75,
+        73,
+        0,
+        69,
+        0,
+        73,
+        75,
+        76,
+        0,
+        75,
+        73,
+        71,
+        68,
+        71,
+        73,
+        75,
+        0,
+        68,
+        0
+      ],
+      [
+        80,
+        0,
+        78,
+        76,
+        75,
+        0,
+        76,
+        78,
+        80,
+        0,
+        83,
+        82,
+        78,
+        76,
+        75,
+        0,
+        74,
+        0,
+        75,
+        73,
+        71,
+        0,
+        73,
+        75,
+        76,
+        75,
+        73,
+        71,
+        68,
+        0,
+        71,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 7,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 7,
+        "end": 14,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 14,
+        "end": 124,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 124,
+        "end": 152,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 152,
+        "end": 212,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 212,
+        "end": 234,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 234,
+        "end": 245,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 245,
+        "end": 254,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 254,
+        "end": 258.346667,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Homeward",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Insurrection",
+    "bpm": 108,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      35,
+      40,
+      36,
+      43,
+      38,
+      40,
+      36,
+      45
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        76,
+        0,
+        81,
+        78,
+        76,
+        0,
+        71,
+        72,
+        76,
+        0,
+        83,
+        81,
+        79,
+        78,
+        76,
+        0,
+        74,
+        0,
+        76,
+        78,
+        79,
+        0,
+        80,
+        76,
+        74,
+        71,
+        74,
+        74,
+        78,
+        0,
+        71,
+        0
+      ],
+      [
+        83,
+        0,
+        83,
+        79,
+        78,
+        0,
+        79,
+        79,
+        83,
+        0,
+        86,
+        83,
+        81,
+        79,
+        78,
+        0,
+        79,
+        0,
+        78,
+        76,
+        74,
+        0,
+        78,
+        78,
+        79,
+        78,
+        76,
+        72,
+        71,
+        0,
+        74,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 29,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 29,
+        "end": 106,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 106,
+        "end": 119,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 119,
+        "end": 132,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 132,
+        "end": 136.661333,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Control Circuit",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Konami's_Moon_Base",
+    "bpm": 162,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      42,
+      38,
+      45,
+      40,
+      42,
+      38,
+      47,
+      37
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        78,
+        0,
+        81,
+        80,
+        78,
+        0,
+        73,
+        76,
+        78,
+        0,
+        85,
+        83,
+        81,
+        82,
+        78,
+        0,
+        76,
+        0,
+        76,
+        80,
+        81,
+        0,
+        80,
+        78,
+        76,
+        73,
+        76,
+        78,
+        80,
+        0,
+        73,
+        0
+      ],
+      [
+        85,
+        0,
+        83,
+        81,
+        80,
+        0,
+        81,
+        83,
+        85,
+        0,
+        88,
+        85,
+        83,
+        83,
+        80,
+        0,
+        81,
+        0,
+        78,
+        78,
+        76,
+        0,
+        78,
+        80,
+        81,
+        80,
+        78,
+        76,
+        73,
+        0,
+        76,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 5,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 5,
+        "end": 18,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 18,
+        "end": 29,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 29,
+        "end": 112,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 112,
+        "end": 116.053333,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Uprising",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Luminosity_and_Viscosity",
+    "bpm": 156,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      34,
+      41,
+      36,
+      38,
+      34,
+      43,
+      33,
+      38
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        74,
+        0,
+        77,
+        76,
+        76,
+        0,
+        69,
+        72,
+        74,
+        0,
+        81,
+        79,
+        77,
+        76,
+        74,
+        0,
+        72,
+        0,
+        74,
+        76,
+        77,
+        0,
+        76,
+        74,
+        74,
+        69,
+        72,
+        74,
+        76,
+        0,
+        69,
+        0
+      ],
+      [
+        81,
+        0,
+        79,
+        77,
+        78,
+        0,
+        77,
+        79,
+        81,
+        0,
+        84,
+        81,
+        79,
+        77,
+        76,
+        0,
+        77,
+        0,
+        76,
+        74,
+        72,
+        0,
+        74,
+        76,
+        79,
+        76,
+        74,
+        72,
+        69,
+        0,
+        72,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 7,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 7,
+        "end": 18,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 18,
+        "end": 28,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 28,
+        "end": 55,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 55,
+        "end": 76,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 76,
+        "end": 87,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 87,
+        "end": 98,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 98,
+        "end": 147,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 147,
+        "end": 154,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 154,
+        "end": 158.421333,
+        "name": "phrase 10",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Moon Base",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Math_Party",
+    "bpm": 126,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      48,
+      43,
+      45,
+      41,
+      50,
+      40,
+      45,
+      41
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        79,
+        0,
+        84,
+        83,
+        81,
+        0,
+        76,
+        79,
+        81,
+        0,
+        88,
+        86,
+        84,
+        83,
+        81,
+        0,
+        79,
+        0,
+        81,
+        83,
+        82,
+        0,
+        83,
+        81,
+        79,
+        76,
+        79,
+        81,
+        83,
+        0,
+        76,
+        0
+      ],
+      [
+        86,
+        0,
+        86,
+        84,
+        83,
+        0,
+        84,
+        86,
+        88,
+        0,
+        91,
+        88,
+        86,
+        84,
+        83,
+        0,
+        84,
+        0,
+        83,
+        81,
+        77,
+        0,
+        81,
+        83,
+        84,
+        83,
+        81,
+        79,
+        76,
+        0,
+        79,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 35,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 35,
+        "end": 51,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 51,
+        "end": 60,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 60,
+        "end": 69,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 69,
+        "end": 78,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 78,
+        "end": 120,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 120,
+        "end": 133,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 133,
+        "end": 141,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 141,
+        "end": 150.314667,
+        "name": "phrase 10",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Luminous Wake",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Sirius",
+    "bpm": 148,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      38,
+      40,
+      36,
+      45,
+      35,
+      40,
+      36,
+      43
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        76,
+        0,
+        79,
+        78,
+        76,
+        0,
+        73,
+        74,
+        76,
+        0,
+        83,
+        79,
+        79,
+        78,
+        76,
+        0,
+        74,
+        0,
+        76,
+        78,
+        79,
+        0,
+        78,
+        76,
+        74,
+        71,
+        76,
+        76,
+        78,
+        0,
+        71,
+        0
+      ],
+      [
+        83,
+        0,
+        81,
+        79,
+        78,
+        0,
+        81,
+        81,
+        83,
+        0,
+        86,
+        81,
+        81,
+        79,
+        78,
+        0,
+        79,
+        0,
+        78,
+        76,
+        74,
+        0,
+        76,
+        78,
+        79,
+        78,
+        78,
+        74,
+        71,
+        0,
+        74,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 13,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 13,
+        "end": 58,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 58,
+        "end": 83,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 83,
+        "end": 90,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 90,
+        "end": 114,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 114,
+        "end": 118.656,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Clockwork Orbit",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Still_Afraid_of_Darkness",
+    "bpm": 174,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      42,
+      38,
+      47,
+      37,
+      42,
+      38,
+      45,
+      40
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        78,
+        0,
+        79,
+        80,
+        78,
+        0,
+        73,
+        76,
+        78,
+        0,
+        85,
+        83,
+        81,
+        80,
+        78,
+        0,
+        76,
+        0,
+        78,
+        80,
+        81,
+        0,
+        78,
+        78,
+        76,
+        73,
+        76,
+        78,
+        80,
+        0,
+        73,
+        0
+      ],
+      [
+        85,
+        0,
+        81,
+        81,
+        80,
+        0,
+        81,
+        83,
+        85,
+        0,
+        88,
+        85,
+        83,
+        81,
+        80,
+        0,
+        81,
+        0,
+        80,
+        78,
+        76,
+        0,
+        76,
+        80,
+        81,
+        80,
+        78,
+        76,
+        73,
+        0,
+        76,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 11,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 11,
+        "end": 43,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 43,
+        "end": 53,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 53,
+        "end": 63,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 63,
+        "end": 70,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 70,
+        "end": 77,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 77,
+        "end": 89,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 89,
+        "end": 93.546771,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Sirius Drive",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "The_Hidden_Answer",
+    "bpm": 164,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      31,
+      40,
+      30,
+      35,
+      31,
+      38,
+      33,
+      35
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        71,
+        0,
+        74,
+        73,
+        71,
+        0,
+        66,
+        69,
+        73,
+        0,
+        78,
+        76,
+        74,
+        71,
+        71,
+        0,
+        69,
+        0,
+        71,
+        73,
+        74,
+        0,
+        73,
+        71,
+        69,
+        66,
+        69,
+        71,
+        75,
+        0,
+        66,
+        0
+      ],
+      [
+        78,
+        0,
+        76,
+        74,
+        73,
+        0,
+        74,
+        76,
+        80,
+        0,
+        81,
+        78,
+        76,
+        72,
+        73,
+        0,
+        74,
+        0,
+        73,
+        71,
+        69,
+        0,
+        71,
+        73,
+        74,
+        73,
+        71,
+        69,
+        68,
+        0,
+        69,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 9,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 9,
+        "end": 26,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 26,
+        "end": 85,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 85,
+        "end": 89.088,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Afterimage",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Troubled_Dreams",
+    "bpm": 132,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      42,
+      32,
+      37,
+      33,
+      40,
+      35,
+      37,
+      33
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        73,
+        0,
+        76,
+        75,
+        71,
+        0,
+        68,
+        71,
+        73,
+        0,
+        80,
+        78,
+        76,
+        75,
+        73,
+        0,
+        71,
+        0,
+        73,
+        77,
+        76,
+        0,
+        75,
+        73,
+        69,
+        68,
+        71,
+        73,
+        75,
+        0,
+        68,
+        0
+      ],
+      [
+        80,
+        0,
+        78,
+        76,
+        73,
+        0,
+        76,
+        78,
+        80,
+        0,
+        83,
+        80,
+        78,
+        76,
+        75,
+        0,
+        76,
+        0,
+        75,
+        75,
+        71,
+        0,
+        73,
+        75,
+        74,
+        75,
+        73,
+        71,
+        68,
+        0,
+        71,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 8,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 8,
+        "end": 64,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 64,
+        "end": 119,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 119,
+        "end": 123.904,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Hidden Passage",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Try_Harder",
+    "bpm": 142,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      35,
+      40,
+      36,
+      43,
+      38,
+      40,
+      36,
+      45
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        76,
+        0,
+        79,
+        78,
+        76,
+        0,
+        71,
+        74,
+        76,
+        0,
+        85,
+        81,
+        79,
+        78,
+        76,
+        0,
+        74,
+        0,
+        76,
+        78,
+        79,
+        0,
+        78,
+        76,
+        74,
+        71,
+        74,
+        76,
+        78,
+        0,
+        73,
+        0
+      ],
+      [
+        83,
+        0,
+        81,
+        79,
+        78,
+        0,
+        79,
+        81,
+        83,
+        0,
+        88,
+        83,
+        81,
+        79,
+        78,
+        0,
+        79,
+        0,
+        78,
+        76,
+        74,
+        0,
+        76,
+        78,
+        79,
+        78,
+        76,
+        74,
+        71,
+        0,
+        76,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 13,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 13,
+        "end": 25,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 25,
+        "end": 32,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 32,
+        "end": 51,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 51,
+        "end": 63,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 63,
+        "end": 76,
+        "name": "phrase 6",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 76,
+        "end": 83,
+        "name": "phrase 7",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 83,
+        "end": 95,
+        "name": "phrase 8",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 95,
+        "end": 102,
+        "name": "phrase 9",
+        "bass": true,
+        "drums": 1,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 102,
+        "end": 107.376032,
+        "name": "phrase 10",
+        "bass": true,
+        "drums": 3,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      }
+    ]
+  },
+  {
+    "name": "Dream Fracture",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "Turbo",
+    "bpm": 146,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      38,
+      34,
+      41,
+      36,
+      38,
+      34,
+      43,
+      33
+    ],
+    "chords": [
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        74,
+        0,
+        77,
+        76,
+        74,
+        0,
+        67,
+        72,
+        74,
+        0,
+        81,
+        79,
+        77,
+        76,
+        74,
+        0,
+        72,
+        0,
+        74,
+        76,
+        77,
+        0,
+        76,
+        74,
+        72,
+        69,
+        70,
+        74,
+        76,
+        0,
+        69,
+        0
+      ],
+      [
+        81,
+        0,
+        79,
+        77,
+        76,
+        0,
+        75,
+        79,
+        81,
+        0,
+        84,
+        81,
+        79,
+        77,
+        76,
+        0,
+        77,
+        0,
+        76,
+        74,
+        72,
+        0,
+        74,
+        76,
+        77,
+        76,
+        72,
+        72,
+        69,
+        0,
+        72,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 4,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 4,
+        "end": 19,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 19,
+        "end": 150,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 150,
+        "end": 166,
+        "name": "phrase 4",
+        "bass": true,
+        "drums": 1,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 166,
+        "end": 170.250583,
+        "name": "phrase 5",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Another Flight",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "fading-memories",
+    "bpm": 158,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      39,
+      46,
+      41,
+      43,
+      39,
+      48,
+      38,
+      43
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        79,
+        0,
+        82,
+        81,
+        79,
+        0,
+        74,
+        77,
+        79,
+        0,
+        86,
+        84,
+        84,
+        81,
+        79,
+        0,
+        77,
+        0,
+        79,
+        81,
+        82,
+        0,
+        81,
+        79,
+        77,
+        74,
+        77,
+        79,
+        81,
+        0,
+        74,
+        0
+      ],
+      [
+        86,
+        0,
+        84,
+        82,
+        81,
+        0,
+        82,
+        84,
+        86,
+        0,
+        89,
+        86,
+        86,
+        82,
+        81,
+        0,
+        82,
+        0,
+        81,
+        79,
+        77,
+        0,
+        79,
+        81,
+        82,
+        81,
+        79,
+        77,
+        74,
+        0,
+        77,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 21,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      },
+      {
+        "start": 21,
+        "end": 49,
+        "name": "phrase 2",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": false,
+        "pad": true,
+        "bells": false
+      },
+      {
+        "start": 49,
+        "end": 53.592018,
+        "name": "phrase 3",
+        "bass": true,
+        "drums": 3,
+        "lead": true,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  },
+  {
+    "name": "Overdrive",
+    "status": "First-draft replacement; listening review pending",
+    "reference_duration": "fighting_for_control",
+    "bpm": 176,
+    "timing_note": "150 BPM is a composition choice, not an inferred original tempo. Section starts borrow unapproved waveform candidates; 119.383333 is the exact Stage1 boss-music switch.",
+    "roots": [
+      45,
+      40,
+      42,
+      38,
+      47,
+      37,
+      42,
+      38
+    ],
+    "chords": [
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ],
+      [
+        0,
+        3,
+        7
+      ],
+      [
+        0,
+        4,
+        7
+      ]
+    ],
+    "melodies": [
+      [
+        78,
+        0,
+        81,
+        82,
+        78,
+        0,
+        73,
+        76,
+        76,
+        0,
+        85,
+        83,
+        81,
+        80,
+        78,
+        0,
+        76,
+        0,
+        78,
+        80,
+        81,
+        0,
+        80,
+        80,
+        76,
+        73,
+        76,
+        78,
+        78,
+        0,
+        73,
+        0
+      ],
+      [
+        85,
+        0,
+        83,
+        83,
+        80,
+        0,
+        81,
+        83,
+        83,
+        0,
+        88,
+        85,
+        83,
+        81,
+        80,
+        0,
+        81,
+        0,
+        80,
+        78,
+        76,
+        0,
+        78,
+        82,
+        81,
+        80,
+        78,
+        76,
+        71,
+        0,
+        76,
+        0
+      ]
+    ],
+    "sections": [
+      {
+        "start": 0,
+        "end": 107.852154,
+        "name": "phrase 1",
+        "bass": false,
+        "drums": 2,
+        "lead": false,
+        "arp": true,
+        "pad": true,
+        "bells": true
+      }
+    ]
+  }
+]

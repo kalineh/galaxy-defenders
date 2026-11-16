@@ -1,4 +1,4 @@
-# Galaxy Defenders — Native Port
+# Galaxy Defenders â€” Native Port
 
 A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).
@@ -8,7 +8,7 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Solo Game or Coop Game, New Game, difficulty and pilots. All
-12 main stages and seven bonus stages use their authored event data and original
+12 main stages and seven bonus stages use their authored event data and synth
 music. Stage Clear continues into the shop; TAB (both players in co-op) proceeds
 to the next stage. All six shop categories support purchases and weapon levels.
 The last main stage opens the original ending and unlocks stage selection.
@@ -26,10 +26,11 @@ SFX/music volume and screen size for the session.
 setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.
 Seeking preserves equipment/money, restores armor and synchronizes music.
 
-`debug.music 1 [0..1]` auditions the new synth study from normalized progress;
+`debug.music` opens the developer album (Up/Down selects; Left/Right seeks).
+`debug.music 1..19 [0..1]` auditions a track from normalized progress;
 `debug.music off` restores normal music. It works in menus and during play.
 See [music audition instructions](music/README.md) and the
-[stage/music timing analysis](MUSIC_TIMING.md). Original campaign music remains the default.
+[stage/music timing analysis](MUSIC_TIMING.md). The C synth album supplies all campaign and menu music.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
@@ -106,10 +107,10 @@ Debug equipment commands: `chassis.list`, `player.chassis 1 Demon`,
 `player.money 1 25000` (sets the balance), `player.invincible 1 1` (0 disables),
 and `player.heal 1`. Chassis changes preserve the current armor percentage and
 use the original sprite, armor, acceleration, and friction. They cost no money.
-`player.upgrade 1 7` sets the current primary's level (zero-based 0–7, matching the legacy
+`player.upgrade 1 7` sets the current primary's level (zero-based 0â€“7, matching the legacy
 data). It changes both normal and focus patterns without charging money. Inspect
 `p1.weapon_level` and `p1.energy` through assertions or `state`.
-`game.stage STAGE [PROGRESS]` seeks stages 1–12 or bonuses 13–19, with normalized progress from 0 to 1.
+`game.stage STAGE [PROGRESS]` seeks stages 1â€“12 or bonuses 13â€“19, with normalized progress from 0 to 1.
 It replays nominal stage time (0 = start; 0.9 = boss section), rebuilding enemy
 positions, bullets, camera stop and music events. The camera waits at the boss,
 so progress 1 does not kill it. Equipment/money survive; armor is restored.

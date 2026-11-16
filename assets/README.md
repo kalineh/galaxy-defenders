@@ -15,7 +15,7 @@ These are unmodified copies from the preserved XNA game:
 - Other `audio/*.wav`: corresponding files in `legacy/Content/SE/`.
 
 Original game/code/design credit: Kalin. Music credit: RushJet1, as recorded in
-`legacy/README.md`. Preserve that attribution. Replacement music is deferred.
+`legacy/README.md`. Preserve that attribution. Playback now uses the C synth album; these recordings remain timing references.
 
 The build copies these files beside the executable. Runtime never reads `legacy/`
 or another repository. Copy the whole `build/native/` folder when sharing a build.
