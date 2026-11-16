@@ -161,7 +161,7 @@ typedef struct {
     int pickups_collected;
     int weapon_shots[WEAPON_COUNT], impact_sounds[4], enemy_shots[2], overheats;
     bool waves, paused, over, complete, boss_spawned, seeking;
-    int difficulty;
+    int difficulty, over_frames;
     float scroll_speed;
     StageState stage;
     GameMenu menu;
@@ -200,6 +200,7 @@ void enemy_update(Game *game, Enemy *enemy);
 void enemy_init_extended(Game *game, Enemy *enemy);
 void enemy_update_extended(Game *game, Enemy *enemy);
 void enemy_die(Game *game, Enemy *enemy, int owner);
+void enemy_take_damage(Game *game, Enemy *enemy, float damage, int owner);
 bool enemy_is_boss(EnemyKind kind);
 void boss_init(Game *game, Enemy *enemy);
 void boss_update_all(Game *game, Enemy *enemy);

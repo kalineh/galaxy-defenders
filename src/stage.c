@@ -75,6 +75,7 @@ void game_secret_return(Game *game) {
 }
 
 const char *game_music(const Game *game) {
+    if (game->over) return "Try_Harder";
     if (game->menu.page == MENU_FINISH) return "fading-memories";
     if (game->menu.page == MENU_STAGE_SELECT) return "Konami's_Moon_Base";
     const StageDefinition *definition = &stage_definitions[game->stage.index];

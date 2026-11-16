@@ -77,7 +77,7 @@ void game_shop_open(Game *game) {
         if (!p->joined) continue;
         p->money += p->score;
         p->score = 0;
-        p->lives = 3;
+        p->lives = 1;
         p->health = game_chassis[p->chassis].armor;
         game->menu.ready[i] = false;
         game->menu.shop_category[i] = 0;

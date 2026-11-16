@@ -283,3 +283,10 @@ Use narrow headless regression checks derived from these source rules as fixes
 land. A passing full-campaign run is useful for stability, but cannot turn these
 known differences into an OK verdict. Legacy gameplay execution is not required
 to confirm any of the explicit mismatches listed here.
+
+## Repair progress (2026-11-15)
+
+- C1/P1 gameplay repaired: no automatic respawn; health-based reciprocal contact,
+  collision impulse and Kinetic regeneration; Spike/FenceBeam special contact;
+  120-frame game-over menu delay and Try_Harder music. Full headless suite and
+  Windows native build pass. Death/transition presentation remains tracked below.

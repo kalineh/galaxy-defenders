@@ -1,4 +1,5 @@
 #include "game.h"
+#include <string.h>
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
@@ -46,7 +47,7 @@ void game_menu_open(Game *game, MenuPage page) {
     game->menu.frame = 0;
     game->menu.cursor = page == MENU_NEW_GAME && !game->saves[game->menu.players == 2 ? 1 : 0].valid ? 1 : 0;
     game->paused = page != MENU_NONE;
-    for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = (PlayerInput){0};
+    for (int i = 0; i < GAME_PLAYERS; ++i) memset(&game->players[i].input, 0, sizeof(game->players[i].input));
 }
 
 void game_retry(Game *game) {

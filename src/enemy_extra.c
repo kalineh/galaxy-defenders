@@ -50,7 +50,7 @@ void enemy_init_extended(Game *g, Enemy *e) {
         case ENEMY_BLACK_HOLE: health=100000; radius=300; e->coins=0; break;
         case ENEMY_CANNON: health=4; radius=34; delay=random_float(g)*75; e->coins=8; break;
         case ENEMY_CUTTER: health=5; e->box_width=e->box_height=72; e->coins=6; break;
-        case ENEMY_CUTTER_BALL: health=100000; radius=30; e->coins=0; break;
+        case ENEMY_CUTTER_BALL: health=0; radius=30; e->coins=3; break;
         case ENEMY_DOUBLE_TURRET: health=2; radius=34; e->coins=4; delay=random_float(g)*45; break;
         case ENEMY_FENCE: health=4; radius=28; e->coins=0; break;
         case ENEMY_FENCE_BEAM: health=100000; e->box_width=1; e->box_height=8; e->coins=0; break;
@@ -259,6 +259,18 @@ void enemy_update_extended(Game *g, Enemy *e) {
     }
 }
 
+void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
+    if (!e->active || e->intangible || e->invisible || e->kind == ENEMY_CUTTER_BALL || e->kind == ENEMY_FENCE_BEAM) return;
+    if (e->kind == ENEMY_SWIRL_BALL && e->parent >= 0 && g->enemies[e->parent].active)
+        e = &g->enemies[e->parent];
+    damage *= g->players[0].joined && g->players[1].joined ? 0.75f : 1;
+    if (boss_damage(g, e, damage, owner)) return;
+    e->health -= damage;
+    if (e->kind == ENEMY_RAID_TURRET) e->cooldown = 16;
+    if (e->kind == ENEMY_TELEPORTER && ++e->hit_count > 6 && e->attack < 0) { e->hit_count = 0; e->attack = 0; }
+    if (e->health <= 0) enemy_die(g, e, owner);
+}
+
 void enemy_die(Game *g, Enemy *e, int owner) {
     if (!e->active) return;
     if (e->kind != ENEMY_FENCE) ++g->kills;
@@ -266,7 +278,10 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
             EnemyCorpse *corpse = &g->stage.corpses[i];
             if (corpse->active && corpse->y - g->stage.camera_y + GAME_HEIGHT * 0.5f < GAME_HEIGHT + 200) continue;
-            *corpse = (EnemyCorpse){true, e->kind, e->x, e->y + g->stage.camera_y - GAME_HEIGHT * 0.5f};
+            corpse->active = true;
+            corpse->kind = e->kind;
+            corpse->x = e->x;
+            corpse->y = e->y + g->stage.camera_y - GAME_HEIGHT * 0.5f;
             break;
         }
     }

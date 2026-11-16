@@ -7,11 +7,13 @@ User requested all weapons, enemies, stages and upgrades, with original behavior
 Use headless CLI checks; never launch visible PowerShell windows or use desktop
 automation. No npm installs. Commit and push verified focused changes to `native`.
 
-Completed latest request: source-to-source audit of all game content, with
-OK / Not OK verdicts and concrete mismatches in CONTENT_AUDIT.md. The earlier
-sprite/geometry/attachment pass is complete, but is not full behavior parity.
-See CONTENT_PARITY.md for those earlier fixes. No gameplay code changed in the
-audit. Do not run the legacy game to establish differences explicit in source.
+Active request: fix every Not OK item in CONTENT_AUDIT.md. Work through shared
+gameplay/collision defects, projectile visuals/effects, boss behavior/effects,
+then shop/progression/UI/scenery and standalone archived content. Verify focused
+pieces and commit/push each to native. Do not stop after the first batch.
+Current batch: remove invented respawns; restore contact damage, reciprocal
+damage, impulse, Spike/FenceBeam special handling, game-over delay/music.
+Do not run the legacy game to establish differences explicit in source.
 
 ## Implemented
 

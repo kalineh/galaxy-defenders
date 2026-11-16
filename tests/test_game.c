@@ -100,7 +100,8 @@ static void legacy_circle_sizes(void) {
     CHECK(game.players[0].health == 20);
     game.enemies[ball].x = 439;
     game_tick(&game);
-    CHECK(game.players[0].health == 17.1875f); /* Collision resistance, then the ordinary impact reduction. */
+    CHECK(game.players[0].health == 17.890625f); /* Ball sends 2.5 + 0.5, then both resistance factors. */
+    CHECK(!game.enemies[ball].active); /* Reciprocal 0.5 damage kills the ball. */
     reset();
     game.players[0].invulnerable = 0;
     shot = game_spawn_bullet(&game, -1, 416, 882, 0, 0, 2);
@@ -122,7 +123,7 @@ static void legacy_circle_sizes(void) {
     game.enemies[gun].parent = parent;
     game.enemies[gun].cooldown = 100;
     game_tick(&game);
-    CHECK(game.players[0].health == 17.1875f); /* Collision resistance, then the ordinary impact reduction. */
+    CHECK(game.players[0].health == 15.78125f); /* Boss part contact is capped at 6. */
 }
 
 static void shop_progression(void) {
@@ -204,21 +205,61 @@ static void stage2_runtime(void) {
 
 static void death_and_restart(void) {
     reset();
-    for (int i = 0; i < 3; ++i) {
-        game.players[0].invulnerable = 0;
-        game_damage_player(&game, 0, 20);
-    }
+    game_damage_player(&game, 0, 20);
     CHECK(game.players[0].lives == 0);
+    CHECK(game.players[0].health == 0 && game.deaths == 1);
     game_tick(&game);
     CHECK(game.over);
+    CHECK(!strcmp(game_music(&game), "Try_Harder"));
+    for (int i = 0; i < 119; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_NONE);
+    game_tick(&game);
+    CHECK(game.menu.page == MENU_OVER);
     CHECK(!game_join(&game, 1));
     game_reset(&game, 42);
-    CHECK(!game.over && game.players[0].lives == 3 && game.tick == 0);
+    CHECK(!game.over && game.players[0].lives == 1 && game.tick == 0);
     CHECK(game_enemy_count(&game) == 0 && game_bullet_count(&game) == 0);
     game_join(&game, 1);
     game.players[0].lives = 0;
     game_tick(&game);
     CHECK(!game.over);
+}
+
+static void contact_rules(void) {
+    reset();
+    Player *p = &game.players[0];
+    p->generator = 9; /* Kinetic: energy from actual incoming collision damage. */
+    p->energy = 0;
+    p->shield_health = 100;
+    int n = game_spawn_enemy(&game, ENEMY_TURRET, p->x - 10, p->y);
+    game.enemies[n].cooldown = 100;
+    game_tick(&game);
+    CHECK(fabsf(p->energy - 5.795f) < 0.0001f);
+    CHECK(fabsf(p->vx - 9.84375f) < 0.0001f);
+    CHECK(fabsf(p->shield_health - 97.36328125f) < 0.0001f);
+    CHECK(game.enemies[n].health == 0.75f);
+    reset();
+    game_join(&game, 1);
+    n = game_spawn_enemy(&game, ENEMY_BALL, 400, 880);
+    game_tick(&game);
+    CHECK(game.enemies[n].active && game.enemies[n].health == 0.125f);
+    reset();
+    game.players[0].invincible = true;
+    n = game_spawn_enemy(&game, ENEMY_BIG_BALL, 400, 880);
+    game_tick(&game);
+    CHECK(!game.enemies[n].active && game.players[0].health == 20);
+    reset();
+    n = game_spawn_enemy(&game, ENEMY_SPIKE, 400, 880);
+    game_tick(&game);
+    CHECK(!game.enemies[n].active && game.hits == 2);
+    CHECK(fabsf(game.players[0].health - 9.8046875f) < 0.0001f);
+    reset();
+    int parent = game_spawn_enemy(&game, ENEMY_BALL, 800, 100);
+    n = game_spawn_enemy(&game, ENEMY_FENCE_BEAM, 400, 880);
+    game.enemies[n].parent = parent;
+    game.enemies[n].box_width = 200;
+    game_tick(&game);
+    CHECK(game.players[0].health == 18.59375f);
 }
 
 static void pools_and_completion(void) {
@@ -297,7 +338,7 @@ static void debug_equipment(void) {
     game.players[0].invulnerable = 0;
     CHECK(console_execute(&console, &game, "player.invincible 1 1"));
     game_damage_player(&game, 0, 100);
-    CHECK(game.players[0].health == 50 && game.players[0].lives == 3 && game.hits == 0);
+    CHECK(game.players[0].health == 50 && game.players[0].lives == 1 && game.hits == 0);
     CHECK(console_execute(&console, &game, "player.invincible 1 0"));
     game_damage_player(&game, 0, 25);
     CHECK(game.players[0].health == 25);
@@ -550,6 +591,7 @@ static void authored_stage_runtime(void) {
     CHECK(game.players[0].money == 1234 && game.players[0].invincible);
     game_reset(&repeat, 42);
     repeat.players[0].invincible = true;
+    repeat.seeking = true; /* Seek suppresses ship interactions; invincibility now damages enemies on contact. */
     for (int i = 0; i < game.tick; ++i) game_tick(&repeat);
     CHECK(!memcmp(game.enemies, repeat.enemies, sizeof(game.enemies)));
     CHECK(game.stage.camera_y == repeat.stage.camera_y);
@@ -707,7 +749,7 @@ static void extended_enemies(void) {
         reset();
         game.players[0].invincible = true;
         int index = game_spawn_enemy(&game, (EnemyKind)kind, 480, 220);
-        CHECK(index >= 0 && game.enemies[index].health > 0);
+        CHECK(index >= 0 && (kind == ENEMY_CUTTER_BALL || game.enemies[index].health > 0));
         for (int tick = 0; tick < 180; ++tick) game_tick(&game);
         for (int i = 0; i < GAME_ENEMIES; ++i) CHECK(isfinite(game.enemies[i].x) && isfinite(game.enemies[i].y));
         CHECK(game.dropped_spawns == 0);
@@ -1150,7 +1192,13 @@ static void saved_continue(void) {
     remove(path);
 }
 
-int main(void) {
+int main(int argc, char **argv) {
+    if (argc == 2 && !strcmp(argv[1], "--core")) {
+        contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
+        return failures ? 1 : 0;
+    }
+    contact_rules();
     authored_secret_entries();
     saved_continue();
     collectible_rewards();

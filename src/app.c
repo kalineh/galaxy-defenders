@@ -1115,7 +1115,6 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             command_failed = true;
             break;
         }
-        if (game->over && game->menu.page == MENU_NONE) game_menu_open(game, MENU_OVER);
         if (!frames && game->saves_dirty) {
             for (int i = 0; i < 2; ++i) if (game->saves[i].valid &&
                 (!save_paths[i][0] || !game_save_write(&game->saves[i], save_paths[i])))

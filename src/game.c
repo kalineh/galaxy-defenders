@@ -165,14 +165,14 @@ bool game_join(Game *game, int slot) {
     player->x = slot == 0 ? 400 : 560;
     player->y = 880;
     player->health = 20;
-    player->lives = 3;
+    player->lives = 1; /* Alive flag; legacy has no extra lives or automatic respawn. */
     player->pilot = slot;
     player->weapon_level = 2;
     player->primary = WEAPON_FRONT_LASER;
     player->secondary = player->sidekick = player->shield = -1;
     player->energy = 3;
     player->friction = game_chassis[0].friction;
-    player->invulnerable = 90;
+    player->invulnerable = 0;
     return true;
 }
 
@@ -259,18 +259,8 @@ void game_damage_player(Game *game, int slot, float damage) {
     player->health = 0;
     ++game->deaths;
     game_effect(game, EFFECT_PLAYER_DEATH, player->x, player->y, slot, 0, 0);
-    --player->lives;
-    if (player->lives > 0) {
-        player->health = game_chassis[player->chassis].armor;
-        player->energy = game_generators[player->generator].capacity;
-        player->shield_health = player->shield >= 0 ? game_shields[player->shield].capacity : 0;
-        memset(player->weapons, 0, sizeof(player->weapons));
-        player->weapon_cooldown[0] = player->weapon_cooldown[1] = 0;
-        player->x = slot == 0 ? 400 : 560;
-        player->y = 880;
-        player->vx = player->vy = 0;
-        player->invulnerable = 120;
-    }
+    player->lives = 0;
+    memset(&player->input, 0, sizeof(player->input));
 }
 
 /* Ship.TakeDamage: ordinary impacts apply chassis resistance; direct damage does not. */
@@ -412,6 +402,7 @@ static void update_enemies(Game *game) {
         Enemy *enemy = &game->enemies[i];
         if (!enemy->active) continue;
         enemy_update(game, enemy);
+        if (!enemy->active) continue;
         for (int p = 0; p < GAME_PLAYERS; ++p) {
             Player *player = &game->players[p];
             float player_radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
@@ -425,11 +416,26 @@ static void update_enemies(Game *game) {
                 /* Collision.cs deliberately uses r1*r1 + r2*r2, not (r1+r2)^2. */
                 touching = dx * dx + dy * dy < enemy->radius * enemy->radius + player_radius * player_radius;
             }
-            if (player->joined && player->lives > 0 && touching && !enemy->intangible && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB && enemy->kind != ENEMY_BOSS10_BALL) {
-                if (player->invulnerable <= 0) player->energy = fminf(game_generators[player->generator].capacity,
-                    player->energy + 4 * game_generators[player->generator].on_collision);
-                player_impact(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance),
-                    enemy->x, enemy->y, player->vx, player->vy);
+            if (!game->seeking && player->joined && player->lives > 0 && touching && !enemy->intangible && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB && enemy->kind != ENEMY_BOSS10_BALL) {
+                if (player->invulnerable > 0) continue;
+                float damage = enemy->kind == ENEMY_FENCE_BEAM ? 2 : fminf(2.5f + enemy->health_max, 6);
+                player->energy += damage * game_generators[player->generator].on_collision;
+                float adjusted = damage * (1 - game_chassis[player->chassis].collision_resistance);
+                float source_x = enemy->kind == ENEMY_FENCE_BEAM ? player->x : enemy->x;
+                float dx = player->x - source_x, dy = player->y - enemy->y, length = hypotf(dx, dy);
+                if (length > 0.00001f && !player->invincible) {
+                    player->vx = player->vx * 0.8f + dx / length * 3.5f * adjusted;
+                    player->vy = player->vy * 0.8f + dy / length * 3.5f * adjusted;
+                }
+                player_impact(game, p, adjusted, source_x, enemy->y, player->vx, player->vy);
+                if (enemy->kind != ENEMY_FENCE_BEAM)
+                    enemy_take_damage(game, enemy, player->invincible ? 10 : 0.5f, p);
+                if (enemy->kind == ENEMY_SPIKE) {
+                    game_effect(game, EFFECT_ENEMY_DEATH, enemy->x, enemy->y, 0, enemy->vx * 0.25f, enemy->vy * 0.25f);
+                    player_impact(game, p, 7.5f, enemy->x, enemy->y, enemy->vx, enemy->vy);
+                    enemy_die(game, enemy, -1);
+                }
+                if (!enemy->active) break;
             }
         }
         if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) enemy->active = false;
@@ -490,21 +496,9 @@ static void update_bullets(Game *game) {
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
-                if (enemy->kind == ENEMY_SWIRL_BALL && enemy->parent >= 0 && game->enemies[enemy->parent].active)
-                    enemy = &game->enemies[enemy->parent];
-                float damage = bullet->damage * (game->players[0].joined && game->players[1].joined ? 0.75f : 1);
-                if (boss_damage(game, enemy, damage, bullet->owner)) {
-                    if (game->boss_spawned && game_enemy_count(game) == 0) return;
-                } else if (enemy->kind != ENEMY_CUTTER_BALL && enemy->kind != ENEMY_FENCE_BEAM) {
-                    enemy->health -= damage;
-                    if (enemy->kind == ENEMY_RAID_TURRET) enemy->cooldown = 16;
-                    if (enemy->kind == ENEMY_TELEPORTER && ++enemy->hit_count > 6 && enemy->attack < 0) { enemy->hit_count = 0; enemy->attack = 0; }
-                    if (enemy->health <= 0) {
-                        bool boss = enemy_is_boss(enemy->kind);
-                        enemy_die(game, enemy, bullet->owner);
-                        if (boss) return;
-                    }
-                }
+                bool boss = enemy_is_boss(enemy->kind);
+                enemy_take_damage(game, enemy, bullet->damage, bullet->owner);
+                if ((boss && !enemy->active) || (game->boss_spawned && game_enemy_count(game) == 0)) return;
                 game_projectile_hit(game, bullet, e);
                 if (!bullet->active || bullet->weapon == WEAPON_LIGHTNING || bullet->weapon == WEAPON_LIGHTNING_FOCUS) break;
             }
@@ -561,7 +555,11 @@ void game_tick(Game *game) {
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
     update_effects(game);
-    if (game->over || game->complete) return;
+    if (game->over) {
+        if (game->over_frames < 120 && ++game->over_frames == 120) game_menu_open(game, MENU_OVER);
+        return;
+    }
+    if (game->complete) return;
     ++game->tick;
     if (!game->seeking) update_players(game);
     else for (int p = 0; p < GAME_PLAYERS; ++p)
@@ -624,9 +622,9 @@ bool game_stage(Game *game, int index, float progress) {
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         game->players[i].input = (PlayerInput){0};
         if (game->players[i].joined) {
-            game->players[i].lives = game->players[i].lives > 0 ? game->players[i].lives : 3;
+            game->players[i].lives = 1;
             game->players[i].health = game_chassis[game->players[i].chassis].armor;
-            game->players[i].invulnerable = 120;
+            game->players[i].invulnerable = 0;
         }
     }
     game->over = false;
