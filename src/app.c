@@ -24,7 +24,7 @@ typedef struct {
     Texture2D shop[22], star;
     Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
     Texture2D hostile_textures[HOSTILE_COUNT];
-    Texture2D big_laser, big_flame, shield_overlay;
+    Texture2D big_laser, big_flame, shield_overlay, asteroid_cracks;
     Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
@@ -78,6 +78,7 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    if (IsTextureValid(assets->asteroid_cracks)) UnloadTexture(assets->asteroid_cracks);
     for (int i = 0; i < 5; ++i) if (IsTextureValid(assets->medals[i])) UnloadTexture(assets->medals[i]);
     if (IsTextureValid(assets->continue_button)) UnloadTexture(assets->continue_button);
     for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
@@ -236,7 +237,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
         if (i == ENEMY_BOSS8_COLLISION) continue;
         char path[128];
-        snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_names[i]);
+        snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_is_asteroid(i) ? "Asteroid" : enemy_names[i]);
         assets->enemies[i] = texture_load(path);
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
@@ -255,6 +256,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     }
     assets->continue_button = texture_load("textures/xboxControllerButtonX.png");
     if (!IsTextureValid(assets->continue_button)) return false;
+    assets->asteroid_cracks = texture_load("textures/Cracks.png");
+    if (!IsTextureValid(assets->asteroid_cracks)) return false;
     assets->pyramid_turret = texture_load("textures/PyramidTurret.png");
     assets->cutter_beam = texture_load("textures/CutterBeam.png");
     assets->rotate_turret_base = texture_load("textures/RotateTurretBase.png");
@@ -521,13 +524,16 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_SPIKE) { source.width /= 2; source.x = (enemy->age / 20 % 2) * source.width; }
         if (enemy->kind == ENEMY_FENCE_BEAM) { source.height /= 4; source.y = (enemy->age / 4 % 4) * source.height; }
         float scale = enemy->kind == ENEMY_GLOB ? 1 + sinf(game->tick * (enemy->attack ? 0.3f : 0.1f)) * (enemy->attack ? 0.08f : 0.04f) : 1;
-        if (enemy->kind == ENEMY_BOSS10_BLOCK) scale = enemy->orbit_radius;
+        if (enemy->kind == ENEMY_BOSS10_BLOCK || enemy_is_asteroid(enemy->kind)) scale = enemy->orbit_radius;
         Vector2 origin = {source.width * 0.5f * scale, source.height * 0.5f * scale};
         if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         DrawTexturePro(texture, source,
             (Rectangle){view_x + enemy->x,enemy->y,source.width * scale,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
+        if (enemy_is_asteroid(enemy->kind))
+            sprite(assets->asteroid_cracks, view_x + enemy->x, enemy->y, 80 * scale, rotation * RAD2DEG,
+                Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));
 
     }
 }

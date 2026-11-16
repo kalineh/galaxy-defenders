@@ -445,8 +445,8 @@ static void update_enemies(Game *game) {
                 touching = dx * dx + dy * dy < enemy->radius * enemy->radius + player_radius * player_radius;
             }
             if (!game->seeking && player->joined && player->lives > 0 && touching && !enemy->intangible && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB && enemy->kind != ENEMY_BOSS10_BALL) {
-                if (player->invulnerable > 0) continue;
-                float damage = enemy->kind == ENEMY_FENCE_BEAM ? 2 : fminf(2.5f + enemy->health_max, 6);
+                if (player->invulnerable > 0 && !enemy_is_asteroid(enemy->kind)) continue;
+                float damage = enemy_is_asteroid(enemy->kind) ? 1 : enemy->kind == ENEMY_FENCE_BEAM ? 2 : fminf(2.5f + enemy->health_max, 6);
                 player->energy += damage * game_generators[player->generator].on_collision;
                 float adjusted = damage * (1 - game_chassis[player->chassis].collision_resistance);
                 float source_x = enemy->kind == ENEMY_FENCE_BEAM ? player->x : enemy->x;
@@ -457,7 +457,7 @@ static void update_enemies(Game *game) {
                 }
                 player_impact(game, p, adjusted, source_x, enemy->y, player->vx, player->vy);
                 if (enemy->kind != ENEMY_FENCE_BEAM)
-                    enemy_take_damage(game, enemy, player->invincible ? 10 : 0.5f, p);
+                    enemy_take_damage(game, enemy, enemy_is_asteroid(enemy->kind) ? 1 : player->invincible ? 10 : 0.5f, p);
                 if (enemy->kind == ENEMY_SPIKE) {
                     for (int color = 2; color <= 3; ++color)
                         game_particle(game, PARTICLE_ENEMY_DEATH_EXPLOSION, enemy->x, enemy->y, color, 1.25f, enemy->vx * 0.25f, enemy->vy * 0.25f);
@@ -467,6 +467,7 @@ static void update_enemies(Game *game) {
                 if (!enemy->active) break;
             }
         }
+        if (enemy_is_asteroid(enemy->kind)) continue;
         if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) enemy->active = false;
     }
 }
@@ -539,6 +540,16 @@ static void update_bullets(Game *game) {
                         enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
                         bullet->x, bullet->y - 540, bullet->width * 0.5f, 540, enemy->radius);
                 if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || enemy->kind == ENEMY_FENCE_BEAM || !hit || bullet->ignore_enemy == e) continue;
+                if (enemy_is_asteroid(enemy->kind)) {
+                    int w = bullet->weapon;
+                    bool accepts = w == WEAPON_FRONT_LASER || w == WEAPON_FRONT_LASER_FOCUS ||
+                        w == WEAPON_SPREAD_LASER || w == WEAPON_SPREAD_LASER_FOCUS || w == WEAPON_LASER_SHOT ||
+                        w == WEAPON_MISSILE || w == WEAPON_MISSILE_LAUNCHER || w == WEAPON_PLASMA ||
+                        w == WEAPON_PLASMA_FOCUS || w == WEAPON_MINI_SHOT || w == WEAPON_CHARGE_SHOT;
+                    if (!accepts || bullet->splash) continue;
+                    enemy->vx += cosf(bullet->rotation) * bullet->damage;
+                    enemy->vy += sinf(bullet->rotation) * bullet->damage;
+                }
                 if (bullet->weapon == WEAPON_SEEK_BOMB && (enemy->kind == ENEMY_FENCE || enemy->kind == ENEMY_BOSS10_BALL)) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
@@ -692,7 +703,7 @@ void game_tick(Game *game) {
 
 int game_enemy_count(const Game *game) {
     int count = 0;
-    for (int i = 0; i < GAME_ENEMIES; ++i) count += game->enemies[i].active;
+    for (int i = 0; i < GAME_ENEMIES; ++i) count += game->enemies[i].active && !enemy_is_asteroid(game->enemies[i].kind);
     return count;
 }
 

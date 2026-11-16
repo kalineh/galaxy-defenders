@@ -1327,6 +1327,35 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void archived_asteroids(void) {
+    reset();
+    int n = game_spawn_enemy(&game, ENEMY_ASTEROID, 400, 400);
+    Enemy *rock = &game.enemies[n];
+    CHECK(rock->orbit_radius >= 0.85f && rock->orbit_radius <= 1.15f && rock->radius == 16);
+    rock->vx = rock->vy = 0;
+    rock->health = rock->health_max = 2;
+    int shot = game_spawn_bullet(&game, 0, 400, 400, 0, 0, 1);
+    game.bullets[shot].weapon = WEAPON_FLAME;
+    game_tick(&game);
+    CHECK(rock->health == 2 && game.bullets[shot].active && rock->radius == 12);
+    game.bullets[shot].weapon = WEAPON_FRONT_LASER;
+    game.bullets[shot].damage = 2;
+    game.bullets[shot].rotation = 0;
+    game_tick(&game);
+    CHECK(rock->active && rock->health == 0 && rock->vx == 2 && !game.bullets[shot].active);
+    enemy_take_damage(&game, rock, 0.01f, 0);
+    CHECK(!rock->active && game.players[0].score == 100 && game.kills == 0);
+    n = game_spawn_enemy(&game, ENEMY_BIG_ASTEROID, 400, 400);
+    CHECK(game.enemies[n].orbit_radius > 2.5f && game.enemies[n].health_max > 7.5f);
+    CHECK(game_enemy_count(&game) == 0);
+    game.players[0].x = game.enemies[n].x;
+    game.players[0].y = game.enemies[n].y;
+    game.enemies[n].vx = game.enemies[n].vy = 0;
+    game.enemies[n].health = 3;
+    game_tick(&game);
+    CHECK(game.enemies[n].health == 2 && game.players[0].health == 20 - 0.75f * 0.9375f);
+}
+
 static void enemy_death_sounds(void) {
     reset();
     for (int i = 0; i < 30; ++i) {
@@ -1502,13 +1531,13 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
+    archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

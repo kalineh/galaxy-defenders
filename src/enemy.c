@@ -7,10 +7,13 @@ const char *enemy_names[ENEMY_KIND_COUNT] = {
     "Airship", "Beamer", "BlackHole", "Cannon", "Cutter", "CutterBall", "DoubleTurret", "Fence", "FenceBeam", "Glob",
     "MissilePod", "MissileStorm", "MissileTriple", "Pyramid", "RaidTurret", "RotateTurret", "Spike", "Splitter",
     "SplitterFragment", "Swirl", "SwirlBall", "Teleporter", "TripleShot", "BonusShip",
+    "Asteroid", "BigAsteroid",
     "Boss3", "Boss4", "Boss5", "Boss6", "Boss7", "Boss8", "Boss9", "Boss10", "Boss11", "Boss12",
     "Boss3Chunk", "Boss4Chunk", "Boss5Chunk", "Boss6Sphere", "Boss7CannonBig", "Boss7CannonSmall", "Boss8Collision",
     "Boss9Ball", "Boss9Bar", "Boss10Ball", "Boss10Block", "Boss11Hand", "Boss11Arm", "Boss12Eye", "Boss12Arm"
 };
+
+bool enemy_is_asteroid(EnemyKind kind) { return kind == ENEMY_ASTEROID || kind == ENEMY_BIG_ASTEROID; }
 
 const char *enemy_corpse_name(EnemyKind kind) {
     switch (kind) {
@@ -196,6 +199,15 @@ static void boss2_update(Game *game, Enemy *enemy) {
 }
 
 void enemy_update(Game *game, Enemy *enemy) {
+    if (enemy_is_asteroid(enemy->kind)) {
+        ++enemy->age;
+        enemy->x += enemy->vx; enemy->y += enemy->vy + game->scroll_speed;
+        enemy->rotation += enemy->spin;
+        /* CEntity.UpdateCollision reads the previous radius then multiplies it. */
+        enemy->radius *= 0.75f;
+        if (enemy->y > GAME_HEIGHT + enemy->radius) enemy->active = false;
+        return;
+    }
     if (enemy->kind >= ENEMY_BOSS3) { boss_update_all(game, enemy); return; }
     if (enemy->kind >= ENEMY_AIRSHIP) { enemy_update_extended(game, enemy); return; }
     if (enemy->kind != ENEMY_BOSS_CHUNK) {

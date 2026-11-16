@@ -7,7 +7,7 @@ static float random_float(Game *game) { return game_random_float(game); }
 static float random_signed(Game *game) { return game_random_signed(game); }
 
 static bool seekable(const Game *game, const Enemy *e) {
-    return e->active && e->health > 0 && !e->intangible && !e->invisible && e->kind != ENEMY_BLACK_HOLE &&
+    return e->active && !enemy_is_asteroid(e->kind) && e->health > 0 && !e->intangible && !e->invisible && e->kind != ENEMY_BLACK_HOLE &&
         e->kind != ENEMY_FENCE && e->kind != ENEMY_FENCE_BEAM && e->kind != ENEMY_BOSS10_BALL &&
         e->x >= game->stage.camera_x && e->x <= game->stage.camera_x + GAME_WIDTH && e->y >= 0 && e->y <= GAME_HEIGHT;
 }
@@ -26,7 +26,7 @@ static int nearest_enemy(const Game *game, const Bullet *b, bool forward, bool u
     float nearest = 1e20f;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *e = &game->enemies[i];
-        if (!e->active || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT ||
+        if (!e->active || enemy_is_asteroid(e->kind) || i == b->ignore_enemy || e->y < 0 || e->y > GAME_HEIGHT ||
             e->x < game->stage.camera_x || e->x > game->stage.camera_x + GAME_WIDTH) continue;
         if (!forward && !seekable(game, e)) continue;
         if (unclaimed) {

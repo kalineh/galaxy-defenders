@@ -42,6 +42,20 @@ int enemy_shot(Game *g, const Enemy *e, int kind, float x, float y, float angle,
 }
 
 void enemy_init_extended(Game *g, Enemy *e) {
+    if (enemy_is_asteroid(e->kind)) {
+        e->vx = 0.1f + 0.3f * game_random_signed(g);
+        e->vy = 1 + 2 * random_float(g);
+        e->spin = 0.05f + 0.1f * game_random_signed(g);
+        e->orbit_radius = 1 + 0.15f * game_random_signed(g);
+        e->health = e->health_max = e->orbit_radius;
+        if (e->kind == ENEMY_BIG_ASTEROID) {
+            float bigger = 3 + 0.2f * random_float(g);
+            e->spin *= 0.2f; e->orbit_radius *= bigger;
+            e->health = e->health_max *= bigger * 3;
+        }
+        e->radius = 16; e->coins = 0;
+        return;
+    }
     if (e->kind >= ENEMY_BOSS3) { boss_init(g, e); return; }
     float health = 1, radius = 32, delay = 0;
     switch (e->kind) {
@@ -290,6 +304,14 @@ void enemy_update_extended(Game *g, Enemy *e) {
 }
 
 void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
+    if (e->active && enemy_is_asteroid(e->kind)) {
+        e->health -= damage;
+        if (e->health < 0) {
+            if (owner >= 0) g->players[owner].score += 100;
+            e->active = false;
+        }
+        return;
+    }
     if (!e->active || e->intangible || e->invisible || e->kind == ENEMY_CUTTER_BALL || e->kind == ENEMY_FENCE_BEAM) return;
     if (e->kind == ENEMY_SWIRL_BALL && e->parent >= 0 && g->enemies[e->parent].active)
         e = &g->enemies[e->parent];
@@ -314,6 +336,7 @@ static void death_burst(Game *g, const Enemy *e, float scale, bool drift) {
 
 void enemy_die(Game *g, Enemy *e, int owner) {
     if (!e->active) return;
+    if (enemy_is_asteroid(e->kind)) { e->active = false; return; }
     if (e->kind==ENEMY_FENCE_BEAM) { e->active=false; return; }
     if (e->kind != ENEMY_FENCE) ++g->kills;
     if (enemy_corpse_name(e->kind) && e->movement == MOVE_NONE) {
@@ -332,7 +355,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         Enemy body = *e;
         e->active = false;
         bool victims[GAME_ENEMIES];
-        for (int i=0;i<GAME_ENEMIES;++i) victims[i]=g->enemies[i].active && g->enemies[i].kind!=ENEMY_FENCE;
+        for (int i=0;i<GAME_ENEMIES;++i) victims[i]=g->enemies[i].active && g->enemies[i].kind!=ENEMY_FENCE && !enemy_is_asteroid(g->enemies[i].kind);
         for (int i=0;i<GAME_BULLETS;++i) {
             Bullet *b=&g->bullets[i];
             if (!b->active) continue;

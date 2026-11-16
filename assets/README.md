@@ -41,3 +41,6 @@ PNGs, `Music/Boss 9.wav`, and its referenced `Textures/Decoration` and
 Clear-screen MedalClear/Bronze/Silver/Gold/Platinum PNGs are unchanged copies of
 `legacy/Content/Textures/UI/`. The Continue button is a lossless PNG conversion
 of `legacy/Content/Textures/UI/Xbox/xboxControllerButtonX.tga`.
+
+Asteroid and Cracks are unchanged `legacy/Content/Textures/Entity/` PNGs;
+EnemyDie2/3 are unchanged original `legacy/Content/SE/` WAVs.

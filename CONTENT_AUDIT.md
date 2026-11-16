@@ -384,3 +384,11 @@ to confirm any of the explicit mismatches listed here.
 - Enemy deaths now select the original three sound variants; boss/part paths
   that omit the base death sound stay silent. Original EnemyDie2/3 assets added.
   Full suite, sound-event checks, native build and software-render checks pass.
+- Standalone Asteroid/BigAsteroid console spawns now use the archived custom
+  velocity/spin/scale, original crack overlay, strict health-below-zero death,
+  100-point reward, contact damage, projectile overloads and shot impulse. Kept
+  the original CEntity radius-decay quirk rather than inventing a correction.
+  They are excluded from enemy counts, seekers and boss enemy cleanup. Full
+  suite, collision/reward checks, native and render builds pass.
+- Archive correction: SpacePlatform.cs contains only an empty namespace; there
+  is no missing platform implementation to port.
