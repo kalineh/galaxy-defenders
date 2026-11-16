@@ -191,6 +191,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->ships[i] = texture_load(path);
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
+        if (i == ENEMY_BOSS8_COLLISION) continue;
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_names[i]);
         assets->enemies[i] = texture_load(path);
@@ -222,7 +223,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     bool valid = IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle) && IsTextureValid(assets->energy);
-    for (int i = 0; i < ENEMY_KIND_COUNT; ++i) valid = valid && IsTextureValid(assets->enemies[i]);
+    for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
+        if (i != ENEMY_BOSS8_COLLISION) valid = valid && IsTextureValid(assets->enemies[i]);
     Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
         assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
     for (int i = 0; i < 8; ++i) valid = valid && IsTextureValid(hud[i]);
@@ -379,7 +381,7 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
-        if (!enemy->active || enemy->invisible) continue;
+        if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
         float width = (float)assets->enemies[enemy->kind].width;
         sprite(assets->enemies[enemy->kind], ARENA_X + enemy->x, enemy->y, width, enemy->rotation * RAD2DEG, WHITE);
     }
@@ -416,7 +418,7 @@ static void draw_game(const Game *game, const Assets *assets) {
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
-        if (!enemy->active || (enemy->kind != ENEMY_BOSS && enemy->kind != ENEMY_BOSS2)) continue;
+        if (!enemy->active || !enemy_is_boss(enemy->kind)) continue;
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }

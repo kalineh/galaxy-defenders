@@ -12,6 +12,10 @@ content is playable; do not treat an imported catalog as completed gameplay.
 - [ ] Audit projectile collision/effects/audio parity during final campaign verification.
 - [x] Implement generators/shields, pilot loadouts, all shop categories and upgrades.
 - [ ] Implement remaining enemies and bosses with their authored attacks.
+  Regular enemies and Boss3–Boss12 update/damage paths are implemented. Headless
+  checks cover attacks at three health bands, child damage, and death cleanup.
+  Native/software builds pass. Later stages, boss visual layering and detailed
+  attack-timing parity still need campaign verification before completion.
 - [ ] Enable all 12 main and 7 bonus stages, secrets and campaign progression.
 - [ ] Import required original assets; validate native build, headless campaign,
       equipment behavior, audio and software captures; update parity inventory.

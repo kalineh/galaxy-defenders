@@ -44,7 +44,7 @@ static bool laser_hits_circle(float ax, float ay, float bx, float by, const Enem
     /* Laser.cs uses a 1 x 0.5 AABB whose top-left is the projectile position.
        Sweep its center through the circle's exact rounded-rectangle expansion. */
     ax += 0.5f; bx += 0.5f; ay += 0.25f; by += 0.25f;
-    float r = enemy->radius, x = enemy->x, y = enemy->y;
+    float r = enemy->radius, x = enemy->x + enemy->collision_x, y = enemy->y + enemy->collision_y;
     if (segment_box(ax, ay, bx, by, x, y, r + 0.5f, 0.25f) ||
         segment_box(ax, ay, bx, by, x, y, 0.5f, r + 0.25f)) return true;
     for (int sx = -1; sx <= 1; sx += 2) for (int sy = -1; sy <= 1; sy += 2)
@@ -309,7 +309,7 @@ static void update_enemies(Game *game) {
         for (int p = 0; p < GAME_PLAYERS; ++p) {
             Player *player = &game->players[p];
             float player_radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
-            float dx = player->x - enemy->x, dy = player->y - enemy->y;
+            float dx = player->x - enemy->x - enemy->collision_x, dy = player->y - enemy->y - enemy->collision_y;
             bool touching;
             if (enemy->box_width > 0) {
                 dx = fmaxf(fabsf(dx) - enemy->box_width * 0.5f, 0);
@@ -319,7 +319,7 @@ static void update_enemies(Game *game) {
                 /* Collision.cs deliberately uses r1*r1 + r2*r2, not (r1+r2)^2. */
                 touching = dx * dx + dy * dy < enemy->radius * enemy->radius + player_radius * player_radius;
             }
-            if (player->joined && player->lives > 0 && touching && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB) {
+            if (player->joined && player->lives > 0 && touching && !enemy->intangible && !enemy->invisible && enemy->kind != ENEMY_BLACK_HOLE && enemy->kind != ENEMY_GLOB && enemy->kind != ENEMY_BOSS10_BALL) {
                 if (player->invulnerable <= 0) player->energy = fminf(game_generators[player->generator].capacity,
                     player->energy + 4 * game_generators[player->generator].on_collision);
                 game_damage_player(game, p, 4 * (1 - game_chassis[player->chassis].collision_resistance));
@@ -355,29 +355,31 @@ static void update_bullets(Game *game) {
             for (int e = 0; e < GAME_ENEMIES; ++e) {
                 Enemy *enemy = &game->enemies[e];
                 bool hit = enemy->box_width > 0 ?
-                    segment_box(old_x + 0.5f, old_y + 0.25f, bullet->x + 0.5f, bullet->y + 0.25f, enemy->x, enemy->y,
+                    segment_box(old_x + 0.5f, old_y + 0.25f, bullet->x + 0.5f, bullet->y + 0.25f, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
                         enemy->box_width * 0.5f + 0.5f, enemy->box_height * 0.5f + 0.25f) :
                     laser_hits_circle(old_x, old_y, bullet->x, bullet->y, enemy);
                 if (bullet->radius > 0) hit = enemy->box_width > 0 ?
-                    segment_box(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y,
+                    segment_box(old_x, old_y, bullet->x, bullet->y, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y,
                         enemy->box_width * 0.5f + bullet->radius, enemy->box_height * 0.5f + bullet->radius) :
-                    segment_distance_squared(old_x, old_y, bullet->x, bullet->y, enemy->x, enemy->y) <
+                    segment_distance_squared(old_x, old_y, bullet->x, bullet->y, enemy->x + enemy->collision_x, enemy->y + enemy->collision_y) <
                         bullet->radius * bullet->radius + enemy->radius * enemy->radius;
                 if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y, bullet->x, bullet->y - 1080,
-                    enemy->x, enemy->y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
+                    enemy->x + enemy->collision_x, enemy->y + enemy->collision_y, (enemy->box_width > 0 ? enemy->box_width * 0.5f : enemy->radius) + bullet->width * 0.5f,
                     enemy->box_height > 0 ? enemy->box_height * 0.5f : enemy->radius);
-                if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || !hit || bullet->ignore_enemy == e) continue;
+                if (!enemy->active || enemy->intangible || enemy->invisible || enemy->kind == ENEMY_BLACK_HOLE || !hit || bullet->ignore_enemy == e) continue;
                 bullet->active = false;
                 ++game->projectile_hits;
                 game_effect(game, EFFECT_LASER_HIT, bullet->x, bullet->y, bullet->owner, 0, 1);
                 if (enemy->kind == ENEMY_SWIRL_BALL && enemy->parent >= 0 && game->enemies[enemy->parent].active)
                     enemy = &game->enemies[enemy->parent];
-                if (enemy->kind != ENEMY_CUTTER_BALL && enemy->kind != ENEMY_FENCE_BEAM) {
+                if (boss_damage(game, enemy, bullet->damage, bullet->owner)) {
+                    if (game->boss_spawned && game_enemy_count(game) == 0) return;
+                } else if (enemy->kind != ENEMY_CUTTER_BALL && enemy->kind != ENEMY_FENCE_BEAM) {
                     enemy->health -= bullet->damage;
                     if (enemy->kind == ENEMY_RAID_TURRET) enemy->cooldown = 16;
                     if (enemy->kind == ENEMY_TELEPORTER && ++enemy->hit_count > 6 && enemy->attack < 0) { enemy->hit_count = 0; enemy->attack = 0; }
                     if (enemy->health <= 0) {
-                        bool boss = enemy->kind == ENEMY_BOSS || enemy->kind == ENEMY_BOSS2;
+                        bool boss = enemy_is_boss(enemy->kind);
                         enemy_die(game, enemy, bullet->owner);
                         if (boss) return;
                     }

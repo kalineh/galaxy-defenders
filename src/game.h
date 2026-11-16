@@ -62,7 +62,14 @@ typedef enum { ENEMY_BALL, ENEMY_TRIANGLE, ENEMY_TURRET, ENEMY_BOSS,
     ENEMY_DOUBLE_TURRET, ENEMY_FENCE, ENEMY_FENCE_BEAM, ENEMY_GLOB, ENEMY_MISSILE_POD, ENEMY_MISSILE_STORM,
     ENEMY_MISSILE_TRIPLE, ENEMY_PYRAMID, ENEMY_RAID_TURRET, ENEMY_ROTATE_TURRET, ENEMY_SPIKE,
     ENEMY_SPLITTER, ENEMY_SPLITTER_FRAGMENT, ENEMY_SWIRL, ENEMY_SWIRL_BALL, ENEMY_TELEPORTER,
-    ENEMY_TRIPLE_SHOT, ENEMY_BONUS_SHIP, ENEMY_KIND_COUNT } EnemyKind;
+    ENEMY_TRIPLE_SHOT, ENEMY_BONUS_SHIP,
+    ENEMY_BOSS3, ENEMY_BOSS4, ENEMY_BOSS5, ENEMY_BOSS6, ENEMY_BOSS7, ENEMY_BOSS8,
+    ENEMY_BOSS9, ENEMY_BOSS10, ENEMY_BOSS11, ENEMY_BOSS12,
+    ENEMY_BOSS3_CHUNK, ENEMY_BOSS4_CHUNK, ENEMY_BOSS5_CHUNK, ENEMY_BOSS6_SPHERE,
+    ENEMY_BOSS7_CANNON_BIG, ENEMY_BOSS7_CANNON_SMALL, ENEMY_BOSS8_COLLISION,
+    ENEMY_BOSS9_BALL, ENEMY_BOSS9_BAR, ENEMY_BOSS10_BALL, ENEMY_BOSS10_BLOCK,
+    ENEMY_BOSS11_HAND, ENEMY_BOSS11_ARM, ENEMY_BOSS12_EYE, ENEMY_BOSS12_ARM,
+    ENEMY_KIND_COUNT } EnemyKind;
 
 extern const char *enemy_names[ENEMY_KIND_COUNT];
 typedef enum { HOSTILE_SHOT, HOSTILE_LASER, HOSTILE_MISSILE, HOSTILE_CANNON, HOSTILE_PELLET, HOSTILE_MINI, HOSTILE_COUNT } HostileKind;
@@ -76,6 +83,10 @@ typedef struct {
     int parent, children[8], attack, shot_index, move_wait, move_frame, move_phase;
     int target, timer, invisible, hit_count;
     float spin;
+    float anchor_x, anchor_y, offset_x, offset_y, damage_taken;
+    float orbit_angle, orbit_radius, collision_x, collision_y;
+    int phase, aux_cooldown, aux_index;
+    bool intangible;
     float box_width, box_height;
     int coins;
     bool powerup, authored;
@@ -140,6 +151,10 @@ void enemy_update(Game *game, Enemy *enemy);
 void enemy_init_extended(Game *game, Enemy *enemy);
 void enemy_update_extended(Game *game, Enemy *enemy);
 void enemy_die(Game *game, Enemy *enemy, int owner);
+bool enemy_is_boss(EnemyKind kind);
+void boss_init(Game *game, Enemy *enemy);
+void boss_update_all(Game *game, Enemy *enemy);
+bool boss_damage(Game *game, Enemy *enemy, float damage, int owner);
 int enemy_shot(Game *game, const Enemy *enemy, int kind, float x, float y, float angle, float speed, float damage);
 bool game_stage(Game *game, int index, float progress);
 void game_stage_update(Game *game);

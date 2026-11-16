@@ -39,6 +39,7 @@ int enemy_shot(Game *g, const Enemy *e, int kind, float x, float y, float angle,
 }
 
 void enemy_init_extended(Game *g, Enemy *e) {
+    if (e->kind >= ENEMY_BOSS3) { boss_init(g, e); return; }
     float health = 1, radius = 32, delay = 0;
     switch (e->kind) {
         case ENEMY_AIRSHIP: health=7; e->box_width=72; e->box_height=104; e->coins=6; delay=15; break;
@@ -256,7 +257,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         } else child->active=false;
     }
     e->active=false;
-    if(e->kind==ENEMY_BOSS || e->kind==ENEMY_BOSS2) {
+    if(enemy_is_boss(e->kind)) {
         if(!e->authored) g->complete=true;
         for(int i=0;i<GAME_BULLETS;++i) g->bullets[i].active=false;
         for(int i=0;i<GAME_ENEMIES;++i) g->enemies[i].active=false;

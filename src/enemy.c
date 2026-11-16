@@ -5,7 +5,10 @@ const char *enemy_names[ENEMY_KIND_COUNT] = {
     "Ball", "Isosceles", "Turret", "Boss1", "MiniSquare", "BigBall", "DownTurret", "Boss1Chunk", "ShootBall", "Boss2",
     "Airship", "Beamer", "BlackHole", "Cannon", "Cutter", "CutterBall", "DoubleTurret", "Fence", "FenceBeam", "Glob",
     "MissilePod", "MissileStorm", "MissileTriple", "Pyramid", "RaidTurret", "RotateTurret", "Spike", "Splitter",
-    "SplitterFragment", "Swirl", "SwirlBall", "Teleporter", "TripleShot", "BonusShip"
+    "SplitterFragment", "Swirl", "SwirlBall", "Teleporter", "TripleShot", "BonusShip",
+    "Boss3", "Boss4", "Boss5", "Boss6", "Boss7", "Boss8", "Boss9", "Boss10", "Boss11", "Boss12",
+    "Boss3Chunk", "Boss4Chunk", "Boss5Chunk", "Boss6Sphere", "Boss7CannonBig", "Boss7CannonSmall", "Boss8Collision",
+    "Boss9Ball", "Boss9Bar", "Boss10Ball", "Boss10Block", "Boss11Hand", "Boss11Arm", "Boss12Eye", "Boss12Arm"
 };
 
 static float aim_at_player(const Game *game, const Enemy *enemy) {
@@ -151,6 +154,7 @@ static void boss2_update(Game *game, Enemy *enemy) {
 }
 
 void enemy_update(Game *game, Enemy *enemy) {
+    if (enemy->kind >= ENEMY_BOSS3) { boss_update_all(game, enemy); return; }
     if (enemy->kind >= ENEMY_AIRSHIP) { enemy_update_extended(game, enemy); return; }
     if (enemy->kind != ENEMY_BOSS_CHUNK) {
         if (enemy->authored) {

@@ -676,7 +676,7 @@ static void complete_equipment(void) {
 }
 
 static void extended_enemies(void) {
-    for (int kind = ENEMY_AIRSHIP; kind < ENEMY_KIND_COUNT; ++kind) {
+    for (int kind = ENEMY_AIRSHIP; kind < ENEMY_BOSS3; ++kind) {
         reset();
         game.players[0].invincible = true;
         int index = game_spawn_enemy(&game, (EnemyKind)kind, 480, 220);
@@ -716,7 +716,50 @@ static void extended_enemies(void) {
     CHECK(game.bullets[0].speed > speed);
 }
 
+static void remaining_bosses(void) {
+    for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
+        reset();
+        game.players[0].invincible = true;
+        int index = game_spawn_enemy(&game, (EnemyKind)kind, 480, 220);
+        Enemy *boss = &game.enemies[index];
+        for (int phase = 0; phase < 3; ++phase) {
+            boss->health = boss->health_max * (phase == 0 ? 1 : phase == 1 ? 0.59f : 0.3f);
+            bool fired = false;
+            for (int tick = 0; tick < 720; ++tick) {
+                game_tick(&game);
+                fired |= game_bullet_count(&game) > 0;
+            }
+            CHECK(boss->active && fired);
+            for (int i = 0; i < GAME_ENEMIES; ++i)
+                CHECK(isfinite(game.enemies[i].x) && isfinite(game.enemies[i].y));
+        }
+        CHECK(game.dropped_spawns == 0);
+        CHECK(boss_damage(&game, boss, boss->health_max, 0));
+        CHECK(game_enemy_count(&game) == 0 && game_bullet_count(&game) == 0);
+    }
+    reset();
+    int index = game_spawn_enemy(&game, ENEMY_BOSS4, 480, 220);
+    game_tick(&game);
+    Enemy *boss = &game.enemies[index];
+    float health = boss->health;
+    CHECK(boss_damage(&game, boss, 1, 0) && boss->health == health);
+    CHECK(boss_damage(&game, &game.enemies[boss->children[0]], 1, 0));
+    CHECK(boss->health == health - 1);
+    reset();
+    index = game_spawn_enemy(&game, ENEMY_BOSS12, 480, 220);
+    game_tick(&game);
+    CHECK(game_enemy_count(&game) == 9);
+    boss = &game.enemies[index];
+    boss->shot_index = 1;
+    boss->attack = 0;
+    boss->cooldown = 1;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game) == 16);
+    CHECK(game.bullets[0].hostile_kind == HOSTILE_MINI && game.bullets[0].damage == 1.25f);
+}
+
 int main(void) {
+    remaining_bosses();
     extended_enemies();
     complete_equipment();
     legacy_circle_sizes();

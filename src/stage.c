@@ -29,7 +29,7 @@ void game_stage_update(Game *game) {
                 enemy->move_transition = event->transition;
                 enemy->powerup = event->powerup;
                 if (event->no_coins) enemy->coins = 0;
-                if (kind == ENEMY_BOSS || kind == ENEMY_BOSS2) game->boss_spawned = true;
+                if (enemy_is_boss((EnemyKind)kind)) game->boss_spawned = true;
             }
         } else if (event->kind == STAGE_MUSIC) {
             state->music_event = i;
