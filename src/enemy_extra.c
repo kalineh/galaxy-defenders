@@ -293,8 +293,8 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     if (!e->active || e->intangible || e->invisible || e->kind == ENEMY_CUTTER_BALL || e->kind == ENEMY_FENCE_BEAM) return;
     if (e->kind == ENEMY_SWIRL_BALL && e->parent >= 0 && g->enemies[e->parent].active)
         e = &g->enemies[e->parent];
-    damage *= g->players[0].joined && g->players[1].joined ? 0.75f : 1;
     if (boss_damage(g, e, damage, owner)) return;
+    damage *= g->players[0].joined && g->players[1].joined ? 0.75f : 1;
     e->health -= damage;
     if (e->kind == ENEMY_RAID_TURRET) e->cooldown = 16;
     if (e->kind == ENEMY_TELEPORTER && ++e->hit_count > 6 && e->attack < 0) { e->hit_count = 0; e->attack = 0; }

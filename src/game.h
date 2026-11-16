@@ -97,7 +97,7 @@ typedef struct {
     float x, y, vx, vy, health, radius;
     int age, cooldown;
     float health_max, rotation, base_y, move_from, move_to, aim;
-    int parent, children[8], attack, shot_index, move_wait, move_frame, move_phase;
+    int parent, children[8], attack, shot_index, move_wait, move_frame, move_phase, move_duration;
     int target, timer, invisible, hit_count;
     float spin, center_spin;
     float anchor_x, anchor_y, offset_x, offset_y, damage_taken;

@@ -311,3 +311,12 @@ to confirm any of the explicit mismatches listed here.
   particles and missile exclusion; Teleporter effects/spin/exit/friction; Pyramid
   fragment difficulty scaling. Headless suite, focused death/Glob checks and
   native build pass.
+- Boss behavior repairs: Boss3 burst-boundary routines/startup and chunk spin;
+  Boss4 retraction polling/effects and cover bursts; Boss5/Boss8 incoming-damage
+  threshold handling; Boss6 sweep delay, orbit boost/windup and sphere death;
+  Boss7 captured aim and 15-frame small-cannon aim; Boss7/11 patrol pauses;
+  Boss8 wind; Boss10 contact guard/recoil/post-bounce steps/trail; Boss11 random
+  spin rests/cannon order; Boss12 final spread order. Full headless suite,
+  focused boss timing/threshold checks and native build pass.
+- Audit correction: Boss4's UpdateMovement coroutine exists but its Fork call is
+  commented out. Its stationary body is correct; do not enable dormant movement.

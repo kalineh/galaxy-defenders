@@ -290,6 +290,30 @@ static void weapon_motion_rules(void) {
     CHECK(b->active && b->bounces == 1 && b->y < 561 && b->y > 559);
 }
 
+static void boss_timing_rules(void) {
+    reset();
+    int n=game_spawn_enemy(&game,ENEMY_BOSS5,480,200);
+    enemy_take_damage(&game,&game.enemies[n],70,0);
+    CHECK(game.enemies[n].phase==1 && game.enemies[n].health==50);
+    game_tick(&game);
+    CHECK(game.enemies[n].phase==1); /* Crossing both thresholds only activates the arms. */
+    reset(); game_join(&game,1);
+    n=game_spawn_enemy(&game,ENEMY_BOSS8,480,200);
+    game.enemies[n].health=100;
+    enemy_take_damage(&game,&game.enemies[n],12,0);
+    CHECK(game.enemies[n].phase==1 && game.enemies[n].health==91);
+    reset();
+    int parent=game_spawn_enemy(&game,ENEMY_BOSS7,480,200);
+    n=game_spawn_enemy(&game,ENEMY_BOSS7_CANNON_SMALL,480,200);
+    game.enemies[n].parent=parent;
+    for(int i=0;i<44;++i) boss_update_all(&game,&game.enemies[n]);
+    CHECK(game.shots==0 && game_bullet_count(&game)==0);
+    float aim=game.enemies[n].aim;
+    game.players[0].x=900;
+    boss_update_all(&game,&game.enemies[n]);
+    CHECK(game_bullet_count(&game)==1 && game.enemies[n].aim==aim);
+}
+
 static void hostile_collision_rules(void) {
     reset();
     Enemy source = {.x=400, .y=880};
@@ -1299,11 +1323,11 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
-    weapon_motion_rules(); hostile_collision_rules(); contact_rules();
+    boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
     saved_continue();
     collectible_rewards();
