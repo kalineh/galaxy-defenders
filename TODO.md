@@ -11,11 +11,11 @@ Active request: fix every Not OK item in CONTENT_AUDIT.md. Work through shared
 gameplay/collision defects, projectile visuals/effects, boss behavior/effects,
 then shop/progression/UI/scenery and standalone archived content. Verify focused
 pieces and commit/push each to native. Do not stop after the first batch.
-Current batch: clear stats/rewards/save records verified; next shop previews/departure.
+Current batch: shop previews/departure verified; next scenery sequencing and menu fades.
 Completed/pushed: death/contact, collisions, weapon motion/targeting/sprites,
 authored particles, enemy/boss behavior/effects, player/pickups, scenery,
 release shop stock (2d25a50), persistent seed (47643c7), missile effects (e3d1fca).
-Remaining: shop preview/departure, general menu fades, scenery RNG/update
+Remaining: general menu fades, scenery RNG/update
 sequencing, archived content and audit
 reconciliation. Beam looping audio was a false audit finding: Cue fields unused,
 firing Sound commented out in legacy; do not add it.
@@ -54,7 +54,7 @@ Do not run the legacy game to establish differences explicit in source.
 
 - Finish the remaining findings in CONTENT_AUDIT.md; historical Not OK rows need
   reconciliation with repair progress, not reimplementation of completed fixes.
-- Shop sample-ship firing previews and fly-to-stage animation.
+- Shop sample firing and departure restored; full suite/render checks pass.
 - Stage-clear stats/awards/medals and per-stage save records now restored.
 - Secret return timing/camera/direction repaired; full suite covers all seven routes.
 - General menu fade transitions; scenery RNG/update sequencing; archived content.

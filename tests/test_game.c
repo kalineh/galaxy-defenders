@@ -155,6 +155,7 @@ static void shop_progression(void) {
     game_menu_input(&game, MENU_LEFT, 0);
     CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 2 && game.players[0].money == 10000);
     game_menu_input(&game, MENU_READY, 0);
+    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
     CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 10000 && game.players[0].weapon_level == 2);
     CHECK(!strcmp(game_music(&game), "Alkali Earth"));
@@ -189,6 +190,7 @@ static void stage2_runtime(void) {
     for (int i = 0; i < 82; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
     game_menu_input(&game, MENU_READY, 0);
+    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && game.stage.index == 2);
     reset();
     boss = game_spawn_enemy(&game, ENEMY_BOSS2, 480, 200);
@@ -643,6 +645,9 @@ static void stage_clear_exit(void) {
     CHECK(console_execute(&console, &game, "menu.input ready 1"));
     CHECK(game.menu.page == MENU_SHOP && game.menu.ready[0] && !game.menu.ready[1]);
     CHECK(console_execute(&console, &game, "menu.input ready 2"));
+    for (int fly = 0; fly < 33; ++fly) game_tick(&game);
+    CHECK(game.menu.page == MENU_SHOP);
+    game_tick(&game);
     CHECK(game.stage.index == 1 && game.players[0].money == 8000);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
 }
@@ -1233,6 +1238,7 @@ static void campaign_stages(void) {
             game_menu_input(&game, MENU_CONFIRM, 0);
             for (int i = 0; i < 82; ++i) game_tick(&game);
             game_menu_input(&game, MENU_READY, 0);
+    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
             CHECK(game.stage.index == stage + 1 && game.menu.page == MENU_NONE);
         }
     }
@@ -1331,6 +1337,13 @@ static void shop_previews(void) {
     for (int i = 0; i < GAME_BULLETS; ++i)
         CHECK(!repeat.bullets[i].active || repeat.bullets[i].weapon != WEAPON_BEAM);
     CHECK(game.players[0].money == 0 && game.players[0].primary == WEAPON_FRONT_LASER);
+    game_menu_input(&game, MENU_READY, 0);
+    for (int i = 0; i < 10; ++i) game_tick(&game);
+    game_shop_preview_update(&repeat, &game);
+    CHECK(game.menu.page == MENU_SHOP && repeat.players[0].y == 707.5f);
+    game_menu_input(&game, MENU_BACK, 0);
+    game_shop_preview_update(&repeat, &game);
+    CHECK(!game.menu.ready[0] && repeat.players[0].y == 790);
 }
 
 static void stage_awards(void) {
@@ -1390,6 +1403,7 @@ static void saved_continue(void) {
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     game_menu_input(&game, MENU_READY, 0);
+    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
     CHECK(game.stage.index == 5 && game.menu.page == MENU_NONE);
     game_shop_open(&game); /* Quit mid-stage must not skip it. */
     CHECK(game.menu.next_stage == 5);
@@ -1397,6 +1411,7 @@ static void saved_continue(void) {
     game_checkpoint(&game, true);
     CHECK(game_continue(&game, 1));
     game_menu_input(&game, MENU_READY, 0);
+    for (int fly = 0; fly < 34; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
     for (int i = 0; i < 8; ++i) game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
@@ -1416,7 +1431,7 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }

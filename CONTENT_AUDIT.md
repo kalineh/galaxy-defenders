@@ -360,3 +360,6 @@ to confirm any of the explicit mismatches listed here.
   Selection rebuilds emitters after the original 15-frame delay without changing
   purchased equipment. Shared draw code serves gameplay and previews. Full suite,
   preview-isolation checks, builds and inspected software-render capture pass.
+- Shop departure now uses the original -1.5 vertical acceleration and waits for
+  every joined sample ship to pass the departure boundary. Back cancels flight.
+  Full progression suite, cancellation/co-op timing checks and builds pass.

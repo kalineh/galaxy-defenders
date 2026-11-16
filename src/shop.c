@@ -130,6 +130,7 @@ void game_shop_open(Game *game) {
         p->lives = 1;
         p->health = game_chassis[p->chassis].armor;
         game->menu.ready[i] = false;
+        game->menu.shop_fly_frames[i] = 0;
         game->menu.shop_category[i] = 0;
         game->menu.shop_item[i] = p->chassis;
         game->menu.shop_items[i] = false;
@@ -138,34 +139,42 @@ void game_shop_open(Game *game) {
     game_checkpoint(game, true);
 }
 
+void game_shop_update(Game *game) {
+    GameMenu *menu = &game->menu;
+    bool all_ready = true;
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        if (!menu->ready[i]) menu->shop_fly_frames[i] = 0;
+        else if (menu->shop_fly_frames[i] < 34) ++menu->shop_fly_frames[i];
+    }
+    for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined && menu->shop_fly_frames[i] < 34) all_ready = false;
+    if (all_ready) {
+        if (game->cleared_game) { game_menu_open(game, MENU_STAGE_SELECT); return; }
+        int next = menu->next_stage;
+        game_stage(game, next, 0);
+        for (int i = 0; i < GAME_PLAYERS; ++i) {
+            Player *p = &game->players[i];
+            if (!p->joined) continue;
+            p->x = i ? 560 : 400; p->y = 880;
+            p->vx = p->vy = 0;
+            p->energy = game_generators[p->generator].capacity;
+            p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
+            memset(p->weapons, 0, sizeof(p->weapons));
+            p->weapon_cooldown[0] = p->weapon_cooldown[1] = 0;
+        }
+        game_checkpoint(game, false);
+    }
+}
+
 void game_shop_input(Game *game, MenuAction action, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || !game->players[slot].joined) return;
     GameMenu *menu = &game->menu;
     if (action == MENU_BACK) {
-        if (menu->ready[slot]) menu->ready[slot] = false;
+        if (menu->ready[slot]) { menu->ready[slot] = false; menu->shop_fly_frames[slot] = 0; }
         else menu->shop_items[slot] = false;
         return;
     }
     if (action == MENU_READY) {
         menu->ready[slot] = true;
-        bool all_ready = true;
-        for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined && !menu->ready[i]) all_ready = false;
-        if (all_ready) {
-            if (game->cleared_game) { game_menu_open(game, MENU_STAGE_SELECT); return; }
-            int next = menu->next_stage;
-            game_stage(game, next, 0);
-            for (int i = 0; i < GAME_PLAYERS; ++i) {
-                Player *p = &game->players[i];
-                if (!p->joined) continue;
-                p->x = i ? 560 : 400; p->y = 880;
-                p->vx = p->vy = 0;
-                p->energy = game_generators[p->generator].capacity;
-                p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
-                memset(p->weapons, 0, sizeof(p->weapons));
-                p->weapon_cooldown[0] = p->weapon_cooldown[1] = 0;
-            }
-            game_checkpoint(game, false);
-        }
         return;
     }
     if (menu->ready[slot]) return;
@@ -241,8 +250,9 @@ void game_shop_preview_update(Game *preview, const Game *game) {
             }
         }
         p->x = game->players[1].joined ? 480 + (slot ? 90 : -90) : 635;
-        p->y = 790;
-        p->vx = p->vy = 0;
+        int fly = game->menu.shop_fly_frames[slot];
+        p->y = 790 - 0.75f * fly * (fly + 1);
+        p->vx = 0; p->vy = -1.5f * fly;
         p->input = (PlayerInput){0};
     }
     game_preview_tick(preview);

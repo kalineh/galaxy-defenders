@@ -38,7 +38,7 @@ typedef struct {
     int shop_category[2], shop_item[2], shop_level[2];
     bool shop_items[2];
     int frame;
-    int next_stage;
+    int next_stage, shop_fly_frames[GAME_PLAYERS];
 } GameMenu;
 
 typedef struct {
@@ -223,6 +223,7 @@ void game_scenery_init(Game *game);
 void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
+void game_shop_update(Game *game);
 void game_shop_preview_update(Game *preview, const Game *game);
 void game_preview_tick(Game *preview);
 void game_shop_input(Game *game, MenuAction action, int slot);

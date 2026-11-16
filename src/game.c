@@ -596,6 +596,7 @@ void game_preview_tick(Game *preview) {
 }
 
 void game_tick(Game *game) {
+    if (game->menu.page == MENU_SHOP) { game_shop_update(game); return; }
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
     if (game->secret_fade_frames > 0) --game->secret_fade_frames;
