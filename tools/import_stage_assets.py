@@ -39,6 +39,10 @@ copy(ROOT / 'legacy/Content/Music/fading-memories.wav', ROOT / 'assets/audio/fad
 for name in ('Bonus', 'BigBonus', 'Powerup'):
     copy(ROOT / 'legacy/Content/Textures/Entity' / (name + '.png'), ROOT / 'assets/textures' / (name + '.png'))
 copy(ROOT / 'legacy/Content/SE/BonusGet.wav', ROOT / 'assets/audio/BonusGet.wav')
+for source in (ROOT / 'legacy/Content/SE').glob('Weapon*.wav'):
+    copy(source, ROOT / 'assets/audio' / source.name)
+for name in ('EnemyShoot', 'EnemyCannonShoot'):
+    copy(ROOT / 'legacy/Content/SE' / (name + '.wav'), ROOT / 'assets/audio' / (name + '.wav'))
 for source_folder, destination_folder in [('Weapons', 'weapons'), ('UI/Shop', 'shop')]:
     for source in (ROOT / 'legacy/Content/Textures' / source_folder).glob('*.png'):
         copy(source, ROOT / 'assets/textures' / destination_folder / source.name)

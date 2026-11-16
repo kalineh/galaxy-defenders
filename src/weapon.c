@@ -73,6 +73,7 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
     }
     p->vy += e->kickback;
     ++game->shots;
+    ++game->weapon_shots[kind];
 }
 
 static bool can_fire(const WeaponEmitter *e, const WeaponState *s) {
@@ -102,7 +103,10 @@ static void fire_group(Game *game, int slot, int group, int kind, int level, boo
         WeaponState *s = &p->weapons[group][i];
         bool trigger = sidekick ? (!held || e->auto_discharge > 0) : held;
         if (!held || !enough) s->toggled = false;
-        if (!enough && e->toggle) s->overheat = 60;
+        if (!enough && e->toggle) {
+            if (!s->overheat) ++game->overheats;
+            s->overheat = 60;
+        }
         if (trigger && enough && can_fire(e, s)) {
             if (!s->toggled) spawn(game, slot, kind, group, i, e, s->charge);
             s->toggled = e->toggle;
@@ -215,6 +219,14 @@ void game_update_projectile(Game *game, Bullet *b) {
 
 void game_projectile_hit(Game *game, Bullet *b, int enemy) {
     if (b->splash) { b->active = true; return; }
+    switch (b->weapon) {
+        case WEAPON_LIGHTNING: case WEAPON_LIGHTNING_FOCUS: case WEAPON_CHARGE_SHOT:
+        case WEAPON_BEAM: case WEAPON_BEAM_FOCUS: case WEAPON_BLADE: ++game->impact_sounds[0]; break;
+        case WEAPON_VULCAN: case WEAPON_MINI_SHOT: case WEAPON_BOOMERANG: ++game->impact_sounds[1]; break;
+        case WEAPON_DRUNK_MISSILE: case WEAPON_MISSILE_VOLLEY: ++game->impact_sounds[2]; break;
+        case WEAPON_SEEK_BOMB: case WEAPON_BOMBLET: ++game->impact_sounds[3]; break;
+        default: break;
+    }
     if ((b->weapon == WEAPON_PLASMA || b->weapon == WEAPON_PLASMA_FOCUS) && b->base_damage >= 0.5f) {
         /* Keep the impact projectile allocated until the splash is initialized. */
         b->active = true;

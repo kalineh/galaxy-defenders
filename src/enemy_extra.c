@@ -34,6 +34,8 @@ int enemy_shot(Game *g, const Enemy *e, int kind, float x, float y, float angle,
         static const float radius[] = {2, 0.5f, 10, 21, 14, 1};
         b->hostile_kind = kind; b->radius = radius[kind]; b->speed = speed; b->rotation = angle;
         b->health = kind == HOSTILE_PELLET ? 3 : 4;
+        ++g->enemy_shots[kind == HOSTILE_CANNON || e->kind == ENEMY_BOSS12 || e->kind == ENEMY_PYRAMID ||
+            (e->kind == ENEMY_BOSS10 && kind == HOSTILE_LASER) ? 1 : 0];
     }
     return i;
 }

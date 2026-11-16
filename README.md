@@ -101,18 +101,15 @@ Debug equipment commands: `chassis.list`, `player.chassis 1 Demon`,
 `player.money 1 25000` (sets the balance), `player.invincible 1 1` (0 disables),
 and `player.heal 1`. Chassis changes preserve the current armor percentage and
 use the original sprite, armor, acceleration, and friction. They cost no money.
-`player.upgrade 1 7` sets Front Laser's level (zero-based 0–7, matching the legacy
+`player.upgrade 1 7` sets the current primary's level (zero-based 0–7, matching the legacy
 data). It changes both normal and focus patterns without charging money. Inspect
 `p1.weapon_level` and `p1.energy` through assertions or `state`.
-`game.stage 1 [PROGRESS]` seeks Stage 1, with normalized progress from 0 to 1.
+`game.stage STAGE [PROGRESS]` seeks stages 1–12 or bonuses 13–19, with normalized progress from 0 to 1.
 It replays nominal stage time (0 = start; 0.9 = boss section), rebuilding enemy
 positions, bullets, camera stop and music events. The camera waits at the boss,
 so progress 1 does not kill it. Equipment/money survive; armor is restored.
 Music seeks to the current track's elapsed time, including the boss-track switch.
-Other stage IDs fail explicitly until their behavior is ported. Importing their
-source data does not make those stages playable.
-
-The shop and currency rewards are still pending. `state` reports these values;
+All 19 stage streams are implemented. `state` reports equipment and currency;
 assertions also support `p1.money`, `p1.chassis`, `p1.armor`, `p1.invincible`
 and their `p2` equivalents. See [content parity](CONTENT_PARITY.md).
 `menu.open main` or `menu.open pause` opens a menu; `menu.input

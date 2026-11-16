@@ -8,6 +8,15 @@ int main(void) {
     InitAudioDevice();
     if (!IsAudioDeviceReady()) return 1;
     SetMasterVolume(0.01f);
+    bool sounds_valid = true;
+    for (int i = 0; i < WEAPON_COUNT; ++i) {
+        if (!game_weapons[i].sound || !game_weapons[i].sound[0]) continue;
+        char path[160];
+        snprintf(path, sizeof(path), "assets/audio/%s.wav", game_weapons[i].sound);
+        Sound sound = LoadSound(path);
+        sounds_valid = IsSoundValid(sound) && sounds_valid;
+        if (IsSoundValid(sound)) UnloadSound(sound);
+    }
     assets.audio = true;
     assets.music = LoadMusicStream("assets/audio/The_Voyage.wav");
     assets.title_music = LoadMusicStream("assets/audio/Konami's_Moon_Base.wav");
@@ -36,5 +45,6 @@ int main(void) {
     UnloadMusicStream(assets.pause_music);
     CloseAudioDevice();
     printf("Audio routing: started=%d advanced=%d paused=%d resumed=%d\n", started, position > 0, paused, resumed);
-    return !(started && position > 0 && paused && resumed);
+    printf("Weapon sound assets: %s\n", sounds_valid ? "PASS" : "FAIL");
+    return !(started && position > 0 && paused && resumed && sounds_valid);
 }
