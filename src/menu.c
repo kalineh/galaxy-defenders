@@ -58,6 +58,7 @@ void game_retry(Game *game) {
     int stage = game->stage.index;
     game_reset_session(game, game->seed);
     game->stage.index = stage;
+    game->random = game->seed;
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[stage].scroll_speed;
     game->difficulty = difficulty;

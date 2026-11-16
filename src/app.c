@@ -475,7 +475,7 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     for (int layer = 0; layer < 4; ++layer) {
         const SceneryLayer *definition = &scene->layers[layer];
         if (definition->foreground != foreground) continue;
-        for (int i = 0; i < definition->count; ++i) {
+        for (int i = 0; i < game->stage.scenery_count[layer]; ++i) {
             const SceneryParticle *p = &game->stage.scenery[layer][i];
             Texture2D texture = assets->scenery[layer];
             sprite(texture, ARENA_X - game->stage.camera_x + p->x, p->y, texture.width * definition->scale, 0, WHITE);

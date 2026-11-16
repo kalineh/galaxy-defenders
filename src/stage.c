@@ -102,6 +102,8 @@ void game_secret_return(Game *game) {
        applying the legacy return camera jump after snapping the ships. */
     game->stage.camera_y += 280;
     game->stage.secret_y -= 280;
+    for (int layer = 0; layer < 4; ++layer)
+        for (int i = 0; i < game->stage.scenery_count[layer]; ++i) game->stage.scenery[layer][i].y -= 280;
     for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].y -= 280;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         Enemy *e = &game->enemies[i];

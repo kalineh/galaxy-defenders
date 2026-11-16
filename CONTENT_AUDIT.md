@@ -363,3 +363,9 @@ to confirm any of the explicit mismatches listed here.
 - Shop departure now uses the original -1.5 vertical acceleration and waits for
   every joined sample ship to pass the departure boundary. Back cancels flight.
   Full progression suite, cancellation/co-op timing checks and builds pass.
+- Scenery now shares the world random stream, grows clouds/stars using the
+  legacy incremental count loop, avoids cloud-only random calls for stars,
+  respects panned respawn bounds, and updates before player input/physics.
+  Secret camera jumps retain scenery world positions. Full campaign suite,
+  count/respawn checks, native build and software-render checks pass.
+  Native deterministic RNG algorithm still differs from .NET Random.

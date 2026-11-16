@@ -19,42 +19,54 @@ const SceneryDefinition stage_scenery[14] = {
     {{0,0,0},{0,0,0},{{"Star",1,0,6,0,10,0,1},{"Star",1,0,9,0,10,0,1}}}
 };
 
-static float random_unit(StageState *state) {
-    state->scenery_random = state->scenery_random * 1664525u + 1013904223u;
-    return (state->scenery_random >> 8) / 16777216.0f;
+static float random_unit(Game *game) {
+    return (game_random(game) >> 8) / 16777216.0f;
 }
 
-static void particle_reset(StageState *state, SceneryParticle *p, const SceneryLayer *layer, bool initial) {
-    p->x = random_unit(state) * GAME_WIDTH;
-    p->y = initial ? random_unit(state) * GAME_HEIGHT : layer->stars ? -100 : -32;
+static void particle_reset(Game *game, SceneryParticle *p, const SceneryLayer *layer, bool initial) {
+    p->x = game->stage.camera_x + random_unit(game) * GAME_WIDTH;
+    p->y = initial ? random_unit(game) * GAME_HEIGHT : layer->stars ? -100 : -32;
     p->vx = layer->vx; p->vy = layer->vy;
-    float angle = (random_unit(state) * 6.283185307f - 1.570796327f) * layer->random_lerp;
+    float angle = layer->stars ? 0 : (random_unit(game) * 6.283185307f - 1.570796327f) * layer->random_lerp;
     p->target_x = layer->vx * cosf(angle) - layer->vy * sinf(angle);
     p->target_y = layer->vx * sinf(angle) + layer->vy * cosf(angle);
 }
 
+static void grow_layer(Game *game, int layer, const SceneryLayer *definition) {
+    int *count = &game->stage.scenery_count[layer];
+    /* Legacy loop reevaluates Count - Clouds.Count after each addition. */
+    for (int i = 0; i < definition->count - *count; ++i) {
+        particle_reset(game, &game->stage.scenery[layer][*count], definition, true);
+        ++*count;
+    }
+}
+
 void game_scenery_init(Game *game) {
-    StageState *state = &game->stage;
-    state->scenery_random = game->seed ^ (unsigned int)(state->index + 1) * 2654435761u;
-    const SceneryDefinition *scene = &stage_scenery[state->index < 13 ? state->index : 13];
-    for (int layer = 0; layer < 4; ++layer)
-        for (int i = 0; i < scene->layers[layer].count; ++i)
-            particle_reset(state, &state->scenery[layer][i], &scene->layers[layer], true);
+    const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
+    for (int layer = 0; layer < 4; ++layer) {
+        game->stage.scenery_count[layer] = 0;
+        grow_layer(game, layer, &scene->layers[layer]);
+    }
 }
 
 void game_scenery_update(Game *game) {
     StageState *state = &game->stage;
     const SceneryDefinition *scene = &stage_scenery[state->index < 13 ? state->index : 13];
-    for (int layer = 0; layer < 4; ++layer) for (int i = 0; i < scene->layers[layer].count; ++i) {
+    for (int layer = 0; layer < 4; ++layer) {
         const SceneryLayer *definition = &scene->layers[layer];
-        SceneryParticle *p = &state->scenery[layer][i];
-        if (definition->stars ? p->y > GAME_HEIGHT + 1 :
-            p->x < -64 || p->x > GAME_WIDTH + 64 || p->y < -64 || p->y > GAME_HEIGHT + 64)
-            particle_reset(state, p, definition, false);
-        float speed = 1 - fabsf(p->x - GAME_WIDTH * 0.5f) * 0.001f;
-        p->x += p->vx * speed;
-        p->y += p->vy * speed + game->scroll_speed;
-        p->vx += (p->target_x - p->vx) * 0.001f;
-        p->vy += (p->target_y - p->vy) * 0.001f;
+        grow_layer(game, layer, definition);
+        for (int i = 0; i < state->scenery_count[layer]; ++i) {
+            SceneryParticle *p = &state->scenery[layer][i];
+            if (definition->stars ? p->y > GAME_HEIGHT + 1 :
+                p->x < state->camera_x - 64 || p->x > state->camera_x + GAME_WIDTH + 64 || p->y < -64 || p->y > GAME_HEIGHT + 64)
+                particle_reset(game, p, definition, false);
+            float speed = 1 - fabsf(p->x - GAME_WIDTH * 0.5f) * 0.001f;
+            p->x += p->vx * speed;
+            p->y += p->vy * speed + game->scroll_speed;
+            if (!definition->stars) {
+                p->vx = p->vx * 0.999f + p->target_x * 0.001f;
+                p->vy = p->vy * 0.999f + p->target_y * 0.001f;
+            }
+        }
     }
 }

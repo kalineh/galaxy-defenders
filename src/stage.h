@@ -60,7 +60,7 @@ typedef struct {
     bool ignore_secrets;
     int secret_target, secret_countdown;
     float secret_x, secret_y;
-    unsigned int scenery_random;
+    int scenery_count[4];
     SceneryParticle scenery[4][15];
     EnemyCorpse corpses[STAGE_MAX_EVENTS];
     bool activated[STAGE_MAX_EVENTS];

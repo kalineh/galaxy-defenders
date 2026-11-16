@@ -1319,6 +1319,22 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void scenery_sequence(void) {
+    reset();
+    CHECK(game.stage.scenery_count[0] == 5 && game.stage.scenery_count[1] == 5);
+    uint32_t random_before = game.random;
+    game_scenery_update(&game);
+    CHECK(game.random != random_before && game.stage.scenery_count[0] == 8);
+    game_scenery_update(&game);
+    CHECK(game.stage.scenery_count[0] == 9);
+    game_scenery_update(&game);
+    CHECK(game.stage.scenery_count[0] == 10);
+    game.stage.camera_x = 50;
+    game.stage.scenery[0][0].x = -20;
+    game_scenery_update(&game);
+    CHECK(game.stage.scenery[0][0].x >= 50 && game.stage.scenery[0][0].x <= 1010);
+}
+
 static void shop_previews(void) {
     reset();
     game_shop_open(&game);
@@ -1431,13 +1447,13 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    shop_previews(); stage_awards(); saved_continue();
+    scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

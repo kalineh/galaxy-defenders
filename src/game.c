@@ -631,13 +631,13 @@ void game_tick(Game *game) {
         return;
     }
     ++game->tick;
+    if (game->waves) game_stage_update(game);
+    else game->scroll_speed = 0;
+    game_scenery_update(game);
     if (!game->seeking) update_players(game);
     else for (int p = 0; p < GAME_PLAYERS; ++p)
         if (game->players[p].joined && game->players[p].lives > 0)
             game->stage.camera_x = (game->players[p].x - GAME_WIDTH * 0.5f) / (GAME_WIDTH * 0.5f) * 50;
-    if (game->waves) game_stage_update(game);
-    else game->scroll_speed = 0;
-    game_scenery_update(game);
     update_enemies(game);
     update_bullets(game);
     update_pickups(game);
@@ -681,6 +681,7 @@ bool game_stage(Game *game, int index, float progress) {
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));
     game->stage.index = index;
+    game->random = game->seed;
     game_stats_init(game);
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[index].scroll_speed;
