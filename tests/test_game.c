@@ -1327,6 +1327,21 @@ static void collectible_rewards(void) {
     CHECK(game_health_score(&game, 2.5f, 15) == 40);
 }
 
+static void legacy_random_sequence(void) {
+    static const uint32_t expected[] = {1434747710,302596119,269548474,1122627734,361709742,563913476};
+    GameRandom random;
+    game_random_init(&random, 42);
+    for (int i = 0; i < 6; ++i) CHECK(game_random_sample(&random) == expected[i]);
+    static const uint32_t seeds[] = {0, UINT32_MAX, 0x80000000u, 843427160};
+    static const uint32_t samples[][3] = {{1559595546,1755192844,1649316166},
+        {534011718,237820880,1002897798},{1559595546,1755192844,1649316172},
+        {1685541333,305878020,967735774}};
+    for (int s = 0; s < 4; ++s) {
+        game_random_init(&random, seeds[s]);
+        for (int i = 0; i < 3; ++i) CHECK(game_random_sample(&random) == samples[s][i]);
+    }
+}
+
 static void state_fades(void) {
     reset();
     game_menu_open(&game, MENU_MAIN);
@@ -1347,9 +1362,9 @@ static void state_fades(void) {
 static void scenery_sequence(void) {
     reset();
     CHECK(game.stage.scenery_count[0] == 5 && game.stage.scenery_count[1] == 5);
-    uint32_t random_before = game.random;
+    GameRandom random_before = game.random;
     game_scenery_update(&game);
-    CHECK(game.random != random_before && game.stage.scenery_count[0] == 8);
+    CHECK(memcmp(&game.random, &random_before, sizeof(random_before)) != 0 && game.stage.scenery_count[0] == 8);
     game_scenery_update(&game);
     CHECK(game.stage.scenery_count[0] == 9);
     game_scenery_update(&game);
@@ -1473,13 +1488,13 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
+    legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

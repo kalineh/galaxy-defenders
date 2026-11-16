@@ -36,9 +36,9 @@ static int item_price(int category, int item, int level) {
     return equipment_weapon_price(item, level);
 }
 
-static float stock_random(uint32_t *state) {
-    *state=*state*1664525u+1013904223u;
-    return (*state>>8)/16777216.0f*2-1;
+static float stock_random(GameRandom *state) {
+    float magnitude = (float)(game_random_sample(state) / 2147483647.0);
+    return magnitude * (game_random_sample(state) / 2147483647.0 < 0.5 ? -1 : 1);
 }
 
 int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_COUNT+1]) {
@@ -51,7 +51,12 @@ int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_C
     int total=category==0?GAME_CHASSIS:category==1?GENERATOR_COUNT:category==2?SHIELD_COUNT:6;
     bool chosen[WEAPON_COUNT]={0};
     int stage=game->menu.next_stage;
-    uint32_t seed=game->seed+(stage+1)*2654435761u+(category<3?category+4:category-2);
+    /* Stage1..12 GetHashCode values from the legacy x86 .NET Framework runtime. */
+    static const int stage_hashes[12] = {843427117,843230509,843296045,843623725,843689261,843492653,
+        843558189,842837293,842902829,1165835275,-1563048080,3035861};
+    GameRandom seed;
+    game_random_init(&seed, game->seed + (uint32_t)stage_hashes[stage < 12 ? stage : 11] +
+        (category < 3 ? category + 4 : category - 2));
     float ratio=category<3?stage/12.0f+0.20f:0.5f;
     int desired=(int)nearbyintf(total*(0.4f+(category<3?0.4f:0.5f)*stock_random(&seed)));
     if(desired<2)desired=2; if(desired>total)desired=total;

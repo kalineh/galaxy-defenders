@@ -20,7 +20,7 @@ const SceneryDefinition stage_scenery[14] = {
 };
 
 static float random_unit(Game *game) {
-    return (game_random(game) >> 8) / 16777216.0f;
+    return game_random_float(game);
 }
 
 static void particle_reset(Game *game, SceneryParticle *p, const SceneryLayer *layer, bool initial) {

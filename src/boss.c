@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 #define PI 3.141592654f
-static float random_float(Game *g) { return (game_random(g)>>8)/16777216.0f; }
+static float random_float(Game *g) { return game_random_float(g); }
 static float angle_to_player(const Game *g, const Enemy *e, float lead) {
     float nearest=1e20f, angle=PI*0.5f;
     for(int i=0;i<GAME_PLAYERS;++i) {
@@ -51,8 +51,8 @@ void boss_init(Game *g,Enemy *e) {
         case ENEMY_BOSS11: health=180; e->box_width=280; e->box_height=144; break;
         case ENEMY_BOSS12: health=250; e->box_width=400; e->box_height=144; e->collision_y=-8; break;
         case ENEMY_BOSS3_CHUNK: health=100; e->box_width=e->box_height=120; e->cooldown=30; break;
-        case ENEMY_BOSS4_CHUNK: e->box_width=e->box_height=70; e->timer=30+(int)(game_random(g)%120); break;
-        case ENEMY_BOSS5_CHUNK: health=40; e->radius=36; e->cooldown=240+(int)(game_random(g)%30); break;
+        case ENEMY_BOSS4_CHUNK: e->box_width=e->box_height=70; e->timer=30+(int)(game_random_range(g, 120)); break;
+        case ENEMY_BOSS5_CHUNK: health=40; e->radius=36; e->cooldown=240+(int)(game_random_range(g, 30)); break;
         case ENEMY_BOSS6_SPHERE: health=130; e->radius=38; break;
         case ENEMY_BOSS7_CANNON_BIG: case ENEMY_BOSS7_CANNON_SMALL: e->intangible=true; e->cooldown=30; e->aim=-PI*0.5f; break;
         case ENEMY_BOSS8_COLLISION: e->radius=75; break;
@@ -85,7 +85,7 @@ static void horizontal_patrol(Game *g, Enemy *e) {
     float t=e->move_frame++/(float)e->move_duration;
     e->x=e->move_from+(e->move_to-e->move_from)*t*t*(3-2*t);
     if(e->move_frame>=e->move_duration) {
-        if(e->move_phase>0 && e->phase==0) e->move_wait=e->move_phase%2?30:30+game_random(g)%60;
+        if(e->move_phase>0 && e->phase==0) e->move_wait=e->move_phase%2?30:30+game_random_range(g, 60);
         ++e->move_phase; e->move_frame=-1;
     }
 }
@@ -111,7 +111,7 @@ static void boss3(Game *g,Enemy *e) {
         }
     }
     int phase=e->aux_index;
-    if(!e->shot_index) e->attack=game_random(g)%2;
+    if(!e->shot_index) e->attack=game_random_range(g, 2);
     int count,delay;
     if(!e->attack) {
         if(phase==2) for(int i=0;i<12;++i) shot(g,e,0,0,PI*0.5f-0.5f+i/12.0f);
@@ -134,7 +134,7 @@ static void boss4(Game *g,Enemy *e) {
     if(e->age==1) for(int i=0;i<3;++i) {
         Enemy *c=make_child(g,e,i,ENEMY_BOSS4_CHUNK,i==0?0:i==1?-140:140,i==0?-140:0);
         if(!c) continue;
-        c->attack=game_random(g)%2; c->move_phase=i; c->timer+=i?120:0;
+        c->attack=game_random_range(g, 2); c->move_phase=i; c->timer+=i?120:0;
         c->rotation=i==0?PI*0.5f:i==2?PI:0;
         c->collision_x=i==0?-1:i==1?175:-179; c->collision_y=i==0?175:3;
     }
@@ -144,10 +144,10 @@ static void boss4(Game *g,Enemy *e) {
         c->y=e->y+c->offset_y+(i==0?-c->orbit_radius:0);
     }
     if(e->health>e->health_max*0.6f || --e->cooldown>0) return;
-    if(!e->shot_index) e->attack=game_random(g)%3;
+    if(!e->shot_index) e->attack=game_random_range(g, 3);
     if(e->attack==0) {
         float angle=angle_to_player(g,e,0); shot(g,e,-75,-58,angle); shot(g,e,75,-58,angle);
-    } else enemy_shot(g,e,HOSTILE_PELLET,2,-58,e->attack==1?angle_to_player(g,e,0):PI*0.5f+(random_float(g)*2-1)*0.1f*random_float(g),5,2);
+    } else enemy_shot(g,e,HOSTILE_PELLET,2,-58,e->attack==1?angle_to_player(g,e,0):PI*0.5f+game_random_signed(g)*0.1f*random_float(g),5,2);
     e->cooldown=e->attack==0?4:6;
     if(++e->shot_index==(e->attack==0?3:8)) { e->shot_index=0; e->cooldown+=30; }
 }
@@ -157,7 +157,7 @@ static void boss5(Game *g,Enemy *e) {
     int phase=e->phase;
     if (phase == 2 && e->orbit_angle < PI * 0.5f) e->orbit_angle = fminf(PI * 0.5f, e->orbit_angle + PI / 240);
     if(--e->cooldown>0) return;
-    if(!e->shot_index) { e->attack=game_random(g)%2; e->timer=4+game_random(g)%4; e->aim=angle_to_player(g,e,0); }
+    if(!e->shot_index) { e->attack=game_random_range(g, 2); e->timer=4+game_random_range(g, 4); e->aim=angle_to_player(g,e,0); }
     int count=e->phase==2?6:4;
     static const float xs4[]={-54,49,-54,49},ys4[]={50,50,-53,-53};
     static const float xs6[]={-54,-3,49,-54,-3,49},ys6[]={50,50,50,-53,-53,-53};
@@ -172,7 +172,7 @@ static void boss5(Game *g,Enemy *e) {
 static void boss6(Game *g,Enemy *e) {
     if(e->age==1) for(int i=0;i<6;++i) make_child(g,e,i,ENEMY_BOSS6_SPHERE,0,0);
     int phase=e->health<e->health_max*0.45f?2:e->health<e->health_max*0.75f?1:0;
-    if(phase!=e->phase) { e->phase=phase; e->shot_index=0; e->cooldown=60+game_random(g)%30; e->move_wait=0; e->aux_index=0; }
+    if(phase!=e->phase) { e->phase=phase; e->shot_index=0; e->cooldown=60+game_random_range(g, 30); e->move_wait=0; e->aux_index=0; }
     /* The core and orbit accelerate independently; neither spins during the opening. */
     for (int pass = 0; pass < (e->age == 1 ? 2 : 1); ++pass) {
         for (int i = 0; i < 6; ++i) {
@@ -198,7 +198,7 @@ static void boss6(Game *g,Enemy *e) {
     }
     if(--e->cooldown>0) return;
     if(!e->shot_index && !e->aux_index) {
-        e->attack=game_random(g)%3; e->aim=angle_to_player(g,e,phase==2?32:0);
+        e->attack=game_random_range(g, 3); e->aim=angle_to_player(g,e,phase==2?32:0);
         if(e->attack==2 && phase<2) { e->aux_index=1; e->cooldown=60; return; }
     }
     int index=e->shot_index,count=1,delay=phase==0 && e->attack==0?2:3;
@@ -219,7 +219,7 @@ static void boss6(Game *g,Enemy *e) {
         shot(g,e,cosf(offset)*40,sinf(offset)*40,angle);
     }
     e->cooldown=delay;
-    if(++e->shot_index==count) { e->shot_index=0; e->aux_index=0; e->cooldown+=60+game_random(g)%30; }
+    if(++e->shot_index==count) { e->shot_index=0; e->aux_index=0; e->cooldown+=60+game_random_range(g, 30); }
 }
 
 static void boss7(Game *g,Enemy *e) {
@@ -236,18 +236,18 @@ static void boss7(Game *g,Enemy *e) {
 static void boss8(Game *g,Enemy *e) {
     idle(e,0.1f);
     if(e->timer>0) { --e->timer; e->rotation+=PI/50; }
-    if(e->phase && --e->aux_cooldown<=0) { e->aux_index^=1; e->aux_cooldown=(e->aux_index?120:200)+game_random(g)%90; }
+    if(e->phase && --e->aux_cooldown<=0) { e->aux_index^=1; e->aux_cooldown=(e->aux_index?120:200)+game_random_range(g, 90); }
     if(e->aux_index) for(int i=0;i<GAME_PLAYERS;++i) {
         Player *p=&g->players[i]; if(!p->joined || p->lives<=0) continue;
         float dx=p->x-e->x,dy=p->y-e->y,d=hypotf(dx,dy);
         if(d>0){p->vx+=dx/d;p->vy+=dy/d;}
         for(int side=-1;side<=1;side+=2) {
-            float angle=atan2f(dy,dx)+(random_float(g)*2-1)*0.2f;
+            float angle=atan2f(dy,dx)+game_random_signed(g)*0.2f;
             game_particle(g,PARTICLE_BOSS8_WIND,e->x+side*116,e->y+12,2,1,cosf(angle)*18,sinf(angle)*18);
         }
     }
     if(--e->cooldown>0) return;
-    if(!e->shot_index) { e->attack=game_random(g)%(e->phase?4:3); e->aim=angle_to_player(g,e,0); }
+    if(!e->shot_index) { e->attack=game_random_range(g, e->phase?4:3); e->aim=angle_to_player(g,e,0); }
     static const float x[]={-128,-108,-83,85,109,133},y[]={82,92,82,84,92,80};
     int index=e->shot_index,count,delay;
     if(e->attack==0) {
@@ -286,7 +286,7 @@ static void boss9(Game *g,Enemy *e) {
         if(--c->timer<=0 && fabsf(dot)<=0.05f && front>0) { float speed=4+6*(1-e->health/e->health_max);c->vx=-ny*speed;c->vy=nx*speed;c->parent=-1;e->children[i]=-1; }
     }
     if(--e->cooldown>0)return;
-    if(!e->shot_index)e->attack=game_random(g)%4;
+    if(!e->shot_index)e->attack=game_random_range(g, 4);
     int j=e->shot_index,count=1,delay=2;
     for(int i=0;i<(e->attack==0?4:e->attack==3?1:8);++i) {
         int n=e->attack==0?i*2+j%2:e->attack==3?j%8:i;
@@ -303,20 +303,20 @@ static void boss9(Game *g,Enemy *e) {
 static void boss10(Game *g,Enemy *e) {
     if(e->age==1)for(int row=0;row<3;++row)for(int col=0;col<7;++col)make_child(g,e,-1,ENEMY_BOSS10_BLOCK,120+col*112-e->x,110+row*92);
     if(e->age==60)for(int i=0;i<2;++i){Enemy *c=make_child(g,e,i,ENEMY_BOSS10_BALL,480-e->x,400);if(c){c->vx=i?0.7071f:-0.7071f;c->vy=0.7071f;}}
-    if(--e->move_wait<=0){float x=sinf(e->age*0.01f)*200;e->move_to=e->anchor_x-fmodf(e->anchor_x-480,112)+x-fmodf(x,112)-22;e->move_wait=90+game_random(g)%30;e->move_frame=60;}
+    if(--e->move_wait<=0){float x=sinf(e->age*0.01f)*200;e->move_to=e->anchor_x-fmodf(e->anchor_x-480,112)+x-fmodf(x,112)-22;e->move_wait=90+game_random_range(g, 30);e->move_frame=60;}
     if(e->move_frame>0){--e->move_frame;e->x+=(e->move_to-e->x)*0.15f;}
     if(--e->cooldown<=0){
-        if(!e->shot_index){e->attack=game_random(g)%3;e->aim=angle_to_player(g,e,0);}
+        if(!e->shot_index){e->attack=game_random_range(g, 3);e->aim=angle_to_player(g,e,0);}
         int j=e->shot_index;
         if(e->attack<2)for(int i=0;i<2;++i)enemy_shot(g,e,HOSTILE_SHOT,i?16:-16,0,e->attack==0?PI*0.5f+(i?0.4f-j*0.1f:-0.4f+j*0.1f):e->aim+(i?0.2f:-0.2f),8,3);
         e->cooldown=e->attack==0?3:4;
         if(++e->shot_index==(e->attack==0?14:e->attack==1?8:1)){e->shot_index=0;e->cooldown+=90;}
     }
     if(--e->aux_cooldown<=0){
-        if(!e->aux_index)e->hit_count=game_random(g)%3;
+        if(!e->aux_index)e->hit_count=game_random_range(g, 3);
         if(e->hit_count<2)enemy_shot(g,e,HOSTILE_LASER,0,64,PI*0.5f,8,2);
         e->aux_cooldown=e->hit_count==0?10:16;
-        if(++e->aux_index==(e->hit_count==0?3:e->hit_count==1?6:1)){e->aux_index=0;e->aux_cooldown+=120+game_random(g)%30;}
+        if(++e->aux_index==(e->hit_count==0?3:e->hit_count==1?6:1)){e->aux_index=0;e->aux_cooldown+=120+game_random_range(g, 30);}
     }
 }
 
@@ -335,13 +335,13 @@ static void boss11(Game *g,Enemy *e) {
         if(arm->orbit_radius>=192)hand->phase=1;
     }
     if(--e->cooldown<=0){
-        if(!e->shot_index)e->timer=1+game_random(g)%5;
+        if(!e->shot_index)e->timer=1+game_random_range(g, 5);
         enemy_shot(g,e,HOSTILE_LASER,-54,91,PI*0.5f,8,2);enemy_shot(g,e,HOSTILE_LASER,54,91,PI*0.5f,8,2);
         e->cooldown=12;if(++e->shot_index==e->timer){e->shot_index=0;e->cooldown+=e->phase==2?30:e->phase==1?45:60;}
     }
     if(e->phase==2 && --e->aux_cooldown<=0){
         static const float cannons[]={-106,-91,-76,-15,0,15,79,94,109};
-        if(!e->aux_index)e->attack=game_random(g)%3;
+        if(!e->aux_index)e->attack=game_random_range(g, 3);
         int j=e->aux_index,count,delay;
         if(e->attack==0){for(int i=0;i<3;++i)enemy_shot(g,e,HOSTILE_MISSILE,cannons[j*3+i],-32,PI*0.5f,3.5f,4);count=3;delay=10;}
         else if(e->attack==1){int n=(j/3%3)*3+j%3;enemy_shot(g,e,HOSTILE_MISSILE,cannons[n],-32,PI*0.5f,3.5f,4);count=27;delay=6;}
@@ -372,7 +372,7 @@ static void boss12(Game *g, Enemy *e) {
         if (e->move_frame > duration) {
             ++e->move_phase;
             e->move_frame = -1;
-            e->move_wait = e->phase ? 0 : 30 + (e->move_phase % 2 ? game_random(g) % 60 : 0);
+            e->move_wait = e->phase ? 0 : 30 + (e->move_phase % 2 ? game_random_range(g, 60) : 0);
         }
     }
     for (int i = 0; i < 8; ++i) {
@@ -391,7 +391,7 @@ static void boss12(Game *g, Enemy *e) {
     }
     if (--e->cooldown > 0) return;
     if (!e->shot_index) {
-        e->attack = game_random(g) % (e->phase == 0 ? 4 : e->phase == 1 ? 2 : 3);
+        e->attack = game_random_range(g, e->phase == 0 ? 4 : e->phase == 1 ? 2 : 3);
         e->aux_index = e->phase;
     }
     int phase = e->aux_index, count = 1, delay = 0;
@@ -432,7 +432,7 @@ static void part_update(Game *g,Enemy *e) {
     } else if(e->kind==ENEMY_BOSS4_CHUNK){
         if(e->timer>0){--e->timer;return;}
         if(e->phase==0){e->orbit_radius+=((e->move_phase==0?-100:-140)-e->orbit_radius)*0.05f;if(++e->move_frame>=60){e->phase=1;e->move_frame=0;}}
-        else if(e->phase==2){e->orbit_radius+=(0-e->orbit_radius)*0.1f;if(++e->move_frame>=30){e->phase=0;e->move_frame=0;e->timer=150+game_random(g)%120;}}
+        else if(e->phase==2){e->orbit_radius+=(0-e->orbit_radius)*0.1f;if(++e->move_frame>=30){e->phase=0;e->move_frame=0;e->timer=150+game_random_range(g, 120);}}
         else {
             if (--e->aux_cooldown<=0) {
                 e->aux_cooldown=30;
@@ -453,8 +453,8 @@ static void part_update(Game *g,Enemy *e) {
         if(!boss->phase){e->x=boss->x+e->offset_x;e->y=boss->y;return;}
         ++e->timer;
         if(e->timer<150 && e->timer>=30)e->x=e->anchor_x+(e->offset_x<0?-300:300)*(e->timer-30)/120.0f;
-        else if(e->timer>=210){if(--e->move_wait<=0){e->move_from=e->y;e->move_to=e->anchor_y+(e->move_phase++%2?0:(game_random(g)%2?200:-200));e->move_frame=0;e->move_wait=180+game_random(g)%30;}float t=fminf(1,e->move_frame++/120.0f);e->y=e->move_from+(e->move_to-e->move_from)*t;}
-        if(--e->cooldown<=0){if(!e->shot_index){e->attack=game_random(g)%2;e->aim=angle_to_player(g,e,0);}int count=e->attack==0?e->shot_index+1:1;for(int i=0;i<count;++i)shot(g,e,0,0,(e->attack==0?e->aim:angle_to_player(g,e,0))+(i-(count-1)*0.5f)*(count==2?0.08f:0.06f));e->cooldown=4;if(++e->shot_index==3){e->shot_index=0;e->cooldown+=60+game_random(g)%30;}}
+        else if(e->timer>=210){if(--e->move_wait<=0){e->move_from=e->y;e->move_to=e->anchor_y+(e->move_phase++%2?0:(game_random_range(g, 2)?200:-200));e->move_frame=0;e->move_wait=180+game_random_range(g, 30);}float t=fminf(1,e->move_frame++/120.0f);e->y=e->move_from+(e->move_to-e->move_from)*t;}
+        if(--e->cooldown<=0){if(!e->shot_index){e->attack=game_random_range(g, 2);e->aim=angle_to_player(g,e,0);}int count=e->attack==0?e->shot_index+1:1;for(int i=0;i<count;++i)shot(g,e,0,0,(e->attack==0?e->aim:angle_to_player(g,e,0))+(i-(count-1)*0.5f)*(count==2?0.08f:0.06f));e->cooldown=4;if(++e->shot_index==3){e->shot_index=0;e->cooldown+=60+game_random_range(g, 30);}}
     } else if(e->kind==ENEMY_BOSS7_CANNON_BIG || e->kind==ENEMY_BOSS7_CANNON_SMALL){
         bool big=e->kind==ENEMY_BOSS7_CANNON_BIG;
         if (!big && e->timer>0) { e->rotation=approach_angle(e->rotation,e->aim,0.025f); --e->timer; return; }
@@ -473,7 +473,7 @@ static void part_update(Game *g,Enemy *e) {
             if(e->move_wait>0) --e->move_wait;
             else if(++e->move_frame<=120)e->spin+=0.004f;
             else if(e->move_frame<=240)e->spin-=0.004f;
-            else {e->spin=0;e->move_frame=0;e->move_wait=30+game_random(g)%3*15;}
+            else {e->spin=0;e->move_frame=0;e->move_wait=30+game_random_range(g, 3)*15;}
             e->rotation+=e->spin;
             if((e->spin>=0.4f || e->shot_index>0) && --e->cooldown<=0) {
                 static const float angles[]={0,PI,PI*0.5f,-PI*0.5f};
@@ -536,11 +536,11 @@ bool boss_damage(Game *g,Enemy *e,float damage,int owner) {
         }
     }
     if (e->kind==ENEMY_BOSS8 && e->health>e->health_max*0.5f && e->health-damage<=e->health_max*0.5f) {
-        e->phase=1; e->cooldown=170; e->shot_index=0; e->timer=150; e->aux_cooldown=200+game_random(g)%90;
+        e->phase=1; e->cooldown=170; e->shot_index=0; e->timer=150; e->aux_cooldown=200+game_random_range(g, 90);
     }
     if (e->kind==ENEMY_BOSS4 && e->health>e->health_max*0.6f && e->health-damage<e->health_max*0.6f) {
         for(int i=0;i<4;++i) for(int color=2;color<=3;++color) {
-            float angle=random_float(g)*2*PI, radius=(random_float(g)*2-1)*100;
+            float angle=random_float(g)*2*PI, radius=game_random_signed(g)*100;
             game_particle(g,PARTICLE_ENEMY_DEATH_EXPLOSION,e->x+cosf(angle)*radius,e->y+sinf(angle)*radius,color,1.2f,0,0);
         }
         e->cooldown=30; e->shot_index=0;

@@ -2,8 +2,8 @@
 #include <math.h>
 
 #define PI 3.141592654f
-static float random_float(Game *g) { return (game_random(g) >> 8) / 16777216.0f; }
-static int sign(Game *g) { return game_random(g) & 1 ? 1 : -1; }
+static float random_float(Game *g) { return game_random_float(g); }
+static int sign(Game *g) { return game_random_float(g) < 0.5f ? -1 : 1; }
 static int reload(const Game *g, float ticks) {
     static const float scale[] = {1.1f, 0.9f, 0.8f};
     return (int)(ticks * scale[g->difficulty]);
@@ -351,7 +351,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         }
         bool final=body.kind==ENEMY_BOSS12;
         for (int i=0;i<(final?30:14);++i) for (int color=2;color<=3;++color) {
-            float angle=random_float(g)*2*PI, radius=(random_float(g)*2-1)*(final?440:240);
+            float angle=random_float(g)*2*PI, radius=game_random_signed(g)*(final?440:240);
             game_particle(g,PARTICLE_ENEMY_DEATH_EXPLOSION,body.x+cosf(angle)*radius,body.y+sinf(angle)*radius,
                 color,final?1.75f:1.5f,0,0);
         }

@@ -374,3 +374,10 @@ to confirm any of the explicit mismatches listed here.
   game, Continue, Retry, shop exits, stage selection, title return and ending.
   Menu navigation remains immediate. Full suite, fade/input timing checks,
   native and software-render builds pass.
+- Replaced the native LCG with the seeded .NET Framework subtractive generator;
+  float/range/signed helpers now follow legacy draw semantics. Shop seeds use
+  stage-name hashes measured with the original x86 runtime. Particle random
+  ordering/scale variation and radial coin launch velocity restored. Reference
+  sequences for normal/negative/extreme seeds, full suite and builds pass.
+  This repairs the RNG algorithm gap noted above; it is not a claim that every
+  entity consumes an identical random sequence on every frame.

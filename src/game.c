@@ -7,10 +7,44 @@ static float clamp(float value, float low, float high) {
     return value < low ? low : value > high ? high : value;
 }
 
-uint32_t game_random(Game *game) {
-    game->random = game->random * 1664525u + 1013904223u;
-    return game->random;
+/* Seeded System.Random used by XNA/.NET Framework (subtractive generator). */
+void game_random_init(GameRandom *random, uint32_t seed) {
+    memset(random, 0, sizeof(*random));
+    int signed_seed = (int32_t)seed;
+    int magnitude = signed_seed == INT32_MIN ? INT32_MAX : signed_seed < 0 ? -signed_seed : signed_seed;
+    int current = 161803398 - magnitude, previous = 1;
+    random->values[55] = current;
+    for (int i = 1; i < 55; ++i) {
+        int index = 21 * i % 55;
+        random->values[index] = previous;
+        previous = (int32_t)((uint32_t)current - (uint32_t)previous);
+        if (previous < 0) previous += INT32_MAX;
+        current = random->values[index];
+    }
+    for (int pass = 0; pass < 4; ++pass) for (int i = 1; i < 56; ++i) {
+        random->values[i] = (int32_t)((uint32_t)random->values[i] - (uint32_t)random->values[1 + (i + 30) % 55]);
+        if (random->values[i] < 0) random->values[i] += INT32_MAX;
+    }
+    random->next_pair = 21;
 }
+
+uint32_t game_random_sample(GameRandom *random) {
+    if (++random->next >= 56) random->next = 1;
+    if (++random->next_pair >= 56) random->next_pair = 1;
+    int value = (int32_t)((uint32_t)random->values[random->next] - (uint32_t)random->values[random->next_pair]);
+    if (value == INT32_MAX) --value;
+    if (value < 0) value += INT32_MAX;
+    random->values[random->next] = value;
+    return (uint32_t)value;
+}
+
+uint32_t game_random(Game *game) { return game_random_sample(&game->random); }
+float game_random_float(Game *game) { return (float)(game_random(game) / 2147483647.0); }
+float game_random_signed(Game *game) {
+    float magnitude = game_random_float(game);
+    return magnitude * (game_random_float(game) < 0.5f ? -1 : 1);
+}
+int game_random_range(Game *game, int maximum) { return (int)(game_random(game) / 2147483647.0 * maximum); }
 
 static float segment_distance_squared(float ax, float ay, float bx, float by, float x, float y) {
     float dx = bx - ax, dy = by - ay;
@@ -58,7 +92,7 @@ static bool laser_hits_circle(float ax, float ay, float bx, float by, const Enem
 }
 
 static float random_unit(Game *game) {
-    return (game_random(game) >> 8) / 16777216.0f;
+    return game_random_float(game);
 }
 
 void game_particle(Game *game, ParticleKind kind, float x, float y, int color, float scale, float vx, float vy) {
@@ -69,18 +103,20 @@ void game_particle(Game *game, ParticleKind kind, float x, float y, int color, f
         Effect *e = &game->effects[game->effect_cursor];
         game->effect_cursor = (game->effect_cursor + 1) % GAME_EFFECTS;
         memset(e, 0, sizeof(*e));
+        float box_x = (random_unit(game) - 0.5f) * d->PositionVariationBox[0];
+        float box_y = (random_unit(game) - 0.5f) * d->PositionVariationBox[1];
         float angle = random_unit(game) * 6.2831853f;
-        float dx = d->Position[0] + (random_unit(game) - 0.5f) * d->PositionVariationBox[0] + cosf(angle) * d->PositionVariationCircle[0];
-        float dy = d->Position[1] + (random_unit(game) - 0.5f) * d->PositionVariationBox[1] + sinf(angle) * d->PositionVariationCircle[1];
+        float dx = d->Position[0] + box_x + cosf(angle) * d->PositionVariationCircle[0];
+        float dy = d->Position[1] + box_y + sinf(angle) * d->PositionVariationCircle[1];
         float length = hypotf(dx, dy);
         e->x = x + dx; e->y = y + dy;
         e->vx = vx + (random_unit(game) - 0.5f) * d->PositionDeltaVariation[0];
         e->vy = vy + (random_unit(game) - 0.5f) * d->PositionDeltaVariation[1];
         if (length > 0.001f) { e->vx += dx / length * d->OutDelta; e->vy += dy / length * d->OutDelta; }
-        e->scale = scale * (d->Scale[0] + (random_unit(game) - 0.5f) * d->ScaleVariation[0]);
-        e->scale_delta = d->ScaleDelta[0];
         e->angle = (d->Angle + (random_unit(game) - 0.5f) * d->AngleVariation) * 57.29578f;
         e->spin = (d->AngleDelta + (random_unit(game) - 0.5f) * d->AngleDeltaVariation) * 57.29578f;
+        e->scale = scale * (d->Scale[0] + (random_unit(game) - 0.5f) * d->ScaleVariation[0]);
+        e->scale_delta = d->ScaleDelta[0] + (random_unit(game) - 0.5f) * d->ScaleDeltaVariation[0];
         e->alpha = d->Alpha + (random_unit(game) - 0.5f) * d->AlphaVariation;
         e->alpha_delta = d->AlphaDelta + (random_unit(game) - 0.5f) * d->AlphaDeltaVariation;
         e->life = d->lifetime + (int)(-d->lifetime * 0.5f + d->variation * random_unit(game));
@@ -162,7 +198,8 @@ bool game_join(Game *game, int slot) {
 
 void game_reset(Game *game, uint32_t seed) {
     memset(game, 0, sizeof(*game));
-    game->random = game->seed = seed;
+    game->seed = seed;
+    game_random_init(&game->random, seed);
     game_stats_init(game);
     game->stage.camera_y = 400;
     game->stage.previous_line = 100000;
@@ -298,8 +335,8 @@ void game_drop_pickups(Game *game, float x, float y, int coins, bool powerup, bo
         p->kind = n < big ? 1 : n < big + small ? 0 : 2;
         ++game->stage.stats.coins_total;
         p->x = x; p->y = y;
-        p->vx = (random_unit(game) * 2 - 1) * 3;
-        p->vy = (random_unit(game) * 2 - 1) * 3;
+        float angle = random_unit(game) * 6.2831853f;
+        p->vx = cosf(angle) * 3; p->vy = sinf(angle) * 3;
         p->friction = 0.95f + random_unit(game) * 0.03f;
     }
 }
@@ -676,7 +713,7 @@ bool game_stage(Game *game, int index, float progress) {
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));
     game->stage.index = index;
-    game->random = game->seed;
+    game_random_init(&game->random, game->seed);
     game_stats_init(game);
     game_scenery_init(game);
     game->scroll_speed = stage_definitions[index].scroll_speed;

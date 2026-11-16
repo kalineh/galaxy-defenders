@@ -106,22 +106,22 @@ static void boss_update(Game *game, Enemy *enemy) {
         enemy->x = enemy->move_from + (enemy->move_to - enemy->move_from) * t;
         if (++enemy->move_frame == 60) {
             enemy->move_frame = -1;
-            enemy->move_wait = 1 + (unarmed ? 10 : 30) + (int)(game_random(game) % (unarmed ? 30 : 90));
+            enemy->move_wait = 1 + (unarmed ? 10 : 30) + (int)(game_random_range(game, unarmed ? 30 : 90));
         }
     } else if (--enemy->move_wait <= 0) {
         if (enemy->age == 61) {
-            enemy->move_wait = (unarmed ? 10 : 30) + (int)(game_random(game) % (unarmed ? 30 : 90));
+            enemy->move_wait = (unarmed ? 10 : 30) + (int)(game_random_range(game, unarmed ? 30 : 90));
         } else {
             enemy->move_from = enemy->x;
-            enemy->move_to = GAME_WIDTH * 0.5f + (game_random(game) % 2 ? 180 : -180);
-            if (game_random(game) % 100 < 20) enemy->move_to = GAME_WIDTH * 0.5f;
+            enemy->move_to = GAME_WIDTH * 0.5f + (game_random_range(game, 2) ? 180 : -180);
+            if (game_random_range(game, 100) < 20) enemy->move_to = GAME_WIDTH * 0.5f;
             enemy->move_frame = 1; /* This tick is SmoothStep(..., 0), at move_from. */
         }
     }
 
     if (--enemy->cooldown <= 0) {
         if (enemy->shot_index == 0) {
-            enemy->attack = unarmed ? 2 : (int)(game_random(game) % 4);
+            enemy->attack = unarmed ? 2 : (int)(game_random_range(game, 4));
             enemy->aim = aim_at_player(game, enemy);
         }
         int attack = enemy->attack;
@@ -177,12 +177,12 @@ static void boss2_update(Game *game, Enemy *enemy) {
                 enemy->move_frame = 0;
                 if (enemy->move_phase == 0) enemy->move_phase = 1;
                 else if (enemy->move_phase == 1) { enemy->move_phase = 2; enemy->move_wait = 30; }
-                else { enemy->move_phase = 1; enemy->move_wait = 30 + (int)(game_random(game) % 60); }
+                else { enemy->move_phase = 1; enemy->move_wait = 30 + (int)(game_random_range(game, 60)); }
             }
         }
     }
     if (--enemy->cooldown > 0) return;
-    if (!enemy->shot_index) enemy->attack = (int)(game_random(game) % 4);
+    if (!enemy->shot_index) enemy->attack = (int)(game_random_range(game, 4));
     int attack = enemy->attack, index = enemy->shot_index;
     if (attack == 0 && index < 9) shot(game, enemy, 0, 132, 1.570796327f, 3);
     if ((attack == 0 && index == 9) || (attack == 2 && index == 0) || attack == 3) boss2_rings(game, enemy);
@@ -218,7 +218,7 @@ void enemy_update(Game *game, Enemy *enemy) {
             static const float reload[] = {1.1f, 0.9f, 0.8f};
             bool down = enemy->kind == ENEMY_DOWN_TURRET;
             float angle = down ? 1.570796327f : aim_at_player(game, enemy) +
-                (game_random(game) >> 8) / 16777216.0f * 6.2831853f * 0.015f;
+                game_random_float(game) * 6.2831853f * 0.015f;
             shot(game, enemy, 0, 0, angle, down ? 4 : 3);
             enemy->cooldown = (int)((down ? 60 : enemy->kind == ENEMY_SHOOT_BALL ? 90 : 45) * reload[game->difficulty]);
         }

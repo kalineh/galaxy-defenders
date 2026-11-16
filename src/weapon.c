@@ -3,8 +3,8 @@
 
 #define PI 3.141592654f
 
-static float random_float(Game *game) { return (game_random(game) >> 8) / 16777216.0f; }
-static float random_signed(Game *game) { return random_float(game) * 2 - 1; }
+static float random_float(Game *game) { return game_random_float(game); }
+static float random_signed(Game *game) { return game_random_signed(game); }
 
 static bool seekable(const Game *game, const Enemy *e) {
     return e->active && e->health > 0 && !e->intangible && !e->invisible && e->kind != ENEMY_BLACK_HOLE &&
@@ -107,8 +107,8 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
             break;
         case WEAPON_DRUNK_MISSILE: case WEAPON_MISSILE_VOLLEY:
             b->curve_speed = 0.03f + random_float(game) * 0.03f;
-            b->curve_magnitude = (game_random(game) & 1 ? 0.3f : -0.3f) + random_signed(game) * 0.2f;
-            b->curve_offset = game_random(game) & 1 ? 1 : -1;
+            b->curve_magnitude = (game_random_float(game) < 0.5f ? -0.3f : 0.3f) + random_signed(game) * 0.2f;
+            b->curve_offset = game_random_float(game) < 0.5f ? -1 : 1;
             b->rotation -= PI - random_signed(game) * 0.25f;
             b->base_rotation = b->rotation;
             break;

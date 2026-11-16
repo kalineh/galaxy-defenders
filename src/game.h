@@ -142,6 +142,10 @@ typedef struct {
 } Pickup;
 
 typedef struct {
+    int values[56], next, next_pair;
+} GameRandom;
+
+typedef struct {
     bool active, boss_spawned;
     Player players[GAME_PLAYERS];
     Enemy enemies[GAME_ENEMIES];
@@ -149,7 +153,7 @@ typedef struct {
     Effect effects[GAME_EFFECTS];
     Pickup pickups[GAME_PICKUPS];
     StageState stage;
-    uint32_t random;
+    GameRandom random;
     int tick;
     float scroll_speed;
 } SecretReturn;
@@ -160,7 +164,8 @@ typedef struct {
     Bullet bullets[GAME_BULLETS];
     Effect effects[GAME_EFFECTS];
     Pickup pickups[GAME_PICKUPS];
-    uint32_t random, seed;
+    GameRandom random;
+    uint32_t seed;
     int armor_hits, shield_hits;
     int tick, kills, building_kills, shots, hits, projectile_hits, deaths, dropped_spawns, effect_cursor;
     int pickups_collected;
@@ -206,7 +211,12 @@ int game_health_score(const Game *game, float health, float multiplier);
 int game_enemy_count(const Game *game);
 int game_bullet_count(const Game *game);
 void game_effect(Game *game, EffectKind kind, float x, float y, int player, float vx, float vy);
+void game_random_init(GameRandom *random, uint32_t seed);
+uint32_t game_random_sample(GameRandom *random);
 uint32_t game_random(Game *game);
+float game_random_float(Game *game);
+float game_random_signed(Game *game);
+int game_random_range(Game *game, int maximum);
 void enemy_update(Game *game, Enemy *enemy);
 void enemy_init_extended(Game *game, Enemy *enemy);
 void enemy_update_extended(Game *game, Enemy *enemy);

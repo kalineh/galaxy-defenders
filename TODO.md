@@ -15,7 +15,7 @@ Current batch: scenery sequencing and state fades verified; review archived scop
 Completed/pushed: death/contact, collisions, weapon motion/targeting/sprites,
 authored particles, enemy/boss behavior/effects, player/pickups, scenery,
 release shop stock (2d25a50), persistent seed (47643c7), missile effects (e3d1fca).
-Remaining: native-vs-.NET RNG difference, archived content and audit
+Remaining: archived content, final audio/effect review and audit
 reconciliation. Beam looping audio was a false audit finding: Cue fields unused,
 firing Sound commented out in legacy; do not add it.
 Do not run the legacy game to establish differences explicit in source.
@@ -56,7 +56,7 @@ Do not run the legacy game to establish differences explicit in source.
 - Shop sample firing and departure restored; full suite/render checks pass.
 - Stage-clear stats/awards/medals and per-stage save records now restored.
 - Secret return timing/camera/direction repaired; full suite covers all seven routes.
-- State fades and scenery growth/order restored. Native RNG still differs from .NET.
+- State fades, scenery growth/order and .NET-compatible seeded RNG restored.
 - Review archived standalone content and reconcile every original audit row.
 - Boss coverage checks phases/shared parts/death/authored spawns, not exhaustive
   frame-identical traces against the legacy runtime.
