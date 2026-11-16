@@ -1,5 +1,10 @@
 # Content parity
 
+The latest item-by-item source review is in [CONTENT_AUDIT.md](CONTENT_AUDIT.md).
+It records concrete remaining gameplay differences, including player respawns,
+contact damage, projectile interactions and boss timing. The earlier audits below
+approve only their stated sprite/geometry/attachment scope.
+
 The legacy C# source remains the specification. All 19 authored stage streams and
 all enemy/weapon types now run in the native build. This is not yet a claim of
 frame-identical gameplay or complete presentation parity.

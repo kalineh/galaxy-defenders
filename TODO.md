@@ -7,9 +7,11 @@ User requested all weapons, enemies, stages and upgrades, with original behavior
 Use headless CLI checks; never launch visible PowerShell windows or use desktop
 automation. No npm installs. Commit and push verified focused changes to `native`.
 
-Completed current request: regular enemies first, then Boss1-Boss12 audited for
-sprite layers/origins, animation frames, collision geometry and spawned parts.
-See CONTENT_PARITY.md for findings and verification limits.
+Completed latest request: source-to-source audit of all game content, with
+OK / Not OK verdicts and concrete mismatches in CONTENT_AUDIT.md. The earlier
+sprite/geometry/attachment pass is complete, but is not full behavior parity.
+See CONTENT_PARITY.md for those earlier fixes. No gameplay code changed in the
+audit. Do not run the legacy game to establish differences explicit in source.
 
 ## Implemented
 
@@ -42,6 +44,10 @@ See CONTENT_PARITY.md for findings and verification limits.
 
 ## Remaining parity work
 
+- Follow the confirmed findings and repair order in CONTENT_AUDIT.md. Highest
+  priority: invented three-life respawns, contact/reciprocal damage and impulse,
+  Spike/FenceBeam contact, cannon repeat hits, projectile interaction dispatch,
+  missing primary muzzle offset, sidekick visuals and boss attack differences.
 - Audit every projectile's collision, special effects and sound against legacy;
   finish salvage and player death behavior. Enemy contact still needs its original
   health-based damage, reciprocal damage and collision impulse (currently fixed damage).
