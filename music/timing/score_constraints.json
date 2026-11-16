@@ -786,22 +786,6 @@
         {
           "bass": true,
           "lead": true,
-          "arp": false,
-          "bells": false,
-          "pad": true,
-          "drums": 3
-        },
-        {
-          "bass": true,
-          "lead": true,
-          "arp": true,
-          "bells": true,
-          "pad": true,
-          "drums": 3
-        },
-        {
-          "bass": true,
-          "lead": false,
           "arp": true,
           "bells": false,
           "pad": true,
@@ -810,12 +794,29 @@
         {
           "bass": true,
           "lead": true,
-          "arp": false,
+          "arp": true,
+          "bells": true,
+          "pad": true,
+          "drums": 3
+        },
+        {
+          "bass": true,
+          "lead": true,
+          "arp": true,
+          "bells": false,
+          "pad": false,
+          "drums": 3
+        },
+        {
+          "bass": true,
+          "lead": true,
+          "arp": true,
           "bells": true,
           "pad": true,
           "drums": 3
         }
-      ]
+      ],
+      "arrangement_review": "Title-only reorchestration authorized to reflect original MIDI energy; all timing/tempo/source locks unchanged."
     },
     {
       "source": "Luminosity_and_Viscosity",

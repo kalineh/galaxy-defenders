@@ -83,7 +83,7 @@ def compile_events(score):
                             note(time, min(step * part['gate'], limit-time), role_index,
                                  pitch, part['velocity'], (j-1)*40)
                     continue
-                patterns = part['patterns']
+                patterns = part.get('variants', {}).get(section.get('part_set'), part['patterns'])
                 pattern_number = phrase_bar if song_clock and part['steps'] == 16 else i // part['steps']
                 pattern = patterns[(pattern_number + (0 if song_clock else section_index)) % len(patterns)]
                 for onset, pitch, length, velocity in pattern:

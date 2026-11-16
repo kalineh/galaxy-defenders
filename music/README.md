@@ -71,7 +71,7 @@ remain candidates; this rewrite does not claim to have confirmed them by listeni
 | 06 Dreadnought | Distorted saw siege riff, tritone stabs and double-kick pressure | saw / clav |
 | 07 Predator Orbit | Low inharmonic bell warning, semitone tension and empty space | reed / glass |
 | 08 Homeward | Round organ hook with delayed answer and rolling hand-drum pulse | organ / reed |
-| 09 Control Circuit | Eight-bar C-Am-F-G title theme, chord-matched answer and continuous beat grid | rounded square / warm piano |
+| 09 Control Circuit | Minor-key launch, fast upper pulse, descending bass and clipped later riff | pulse / pulse |
 | 10 Uprising | Glass cascade against a displaced snare and wide stereo strings | glass / hollow |
 | 11 Moon Base | Clocked pluck in a 3+3+4+3+3 accent cycle | clav / square |
 | 12 Luminous Wake | Airy string melody, suspended voicings and shimmering high replies | strings / glass |
@@ -90,24 +90,29 @@ Kinds 0/1 are FM, 2 pulse, 3 bell, 4 detuned pad, 5 kick, 6 snare, 7 hat, 8 tom,
 gate in sixteenths, velocity]. Lead/bell intervals use the song tonic; bass/counter
 intervals follow the current chord root. Pattern lengths and registers are explicit.
 
-## Title-screen harmony pass (track 9 only)
+## Title-screen composition (track 9 only)
 
 The previous title counter-line used a fixed major third over minor chords, and
 section-local part counters ran against song-global harmony. Track 9 now opts
 into `clock: song`: all parts keep the same sixteenth grid across the fixed cuts
 at 5, 18, 29 and 112 seconds. The other eighteen scores are unchanged.
 
-The eight-bar theme and answer follow C-Am-F-G with explicit bar-matched pitches,
-common-tone chord voicings and a C-G-C closing cadence. Accompaniment attacks and
-strong-beat melody notes are chord tones; weak eighths can be passing notes.
-Drums and bass share the pulse. Pad/counter levels and delay are reduced, with the
-piano response brought forward when the lead drops out. Exact length and layer
-switches are still protected. Human listening remains the musical-quality check.
+The title now uses original Dm-C-Bb-A material: a fast high pulse above a slower,
+lower melody, then a clipped lead/bass riff from 18 seconds. The minor center,
+descending bass and major dominant replace the previous relaxed C-Am-F-G cadence.
+Accompaniment attacks and strong-beat melody notes are chord tones; weak notes
+can connect them. The high pulse gets quieter once the main riff takes over.
+A Dm-A-Dm coda returns to the broader theme. The title's later layer flags were
+explicitly revised for this reorchestration; the boundaries, BPM, original timing
+evidence and exact length remain unchanged. Other tracks retain their prior locks.
+Human listening remains the musical-quality check.
 
 `voicings` supplies absolute pad notes; `bar_order` selects the harmonic/melodic
 bar together, including the coda. A part's `pitch_base: tonic` permits an explicit
 counter melody rather than blindly adding one interval set to every chord root.
 `velocity_scale` balances roles per section without moving their entry/exit times.
+Optional section `part_set` selects matching part `variants`; otherwise the part's
+normal `patterns` apply. Only the title uses this to switch theme/riff vocabulary.
 Sustained parts that remain enabled can finish their notes across a section cut;
 parts being removed are still gated at that cut. No notes extend past the loop.
 
@@ -130,6 +135,9 @@ Its 30-BPM tempo event represents the converter's timing grid, not musical tempo
 
 This evidence suggests a high running ostinato against a slower melody, descending
 chromatic bass tension and a later harder riff. It is a more useful direction
-than the replacement's relaxed C-major cadence. No playback music changed during
-this reference inspection. Further work should use these actual notes/rhythms as
-an analysis reference and verify their alignment with the original recording.
+than the earlier replacement's relaxed C-major cadence. The rebuilt title uses
+these broad arranging ideas with newly authored motifs, different harmony and a
+new instrument balance. It does not reuse the MIDI melody, ostinato or bass line.
+The original MIDI-to-WAV alignment remains unverified; the replacement preserves
+the existing documented timing anchors rather than treating raw MIDI seconds as
+new section boundaries.

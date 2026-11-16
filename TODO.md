@@ -1,22 +1,19 @@
-# Completed title-screen music pass
+# Completed title reference-energy pass
 
-Only track 9 (Control Circuit / Konami's_Moon_Base) rewritten. Fixed major-third
-counter notes over minor harmony and section-local parts against global chords.
-Title now uses one song-wide grid, bar-matched C-Am-F-G theme/response, smooth
-voicings, stable bass/backbeat and C-G-C coda. Accompaniment/delay reduced.
+Track 9 (Control Circuit) now uses original Dm-C-Bb-A material informed by the
+original title MIDI's arranging ideas: fast upper pulse, slower lower melody,
+descending bass tension and a clipped later lead/bass riff. New instrument balance.
+The original melody, ostinato and bass line are not reused.
 
-Verified: only track 9 score and generated event stream changed; other 18 identical.
-Existing section cuts, layer shifts and exact duration retained. Tests check the
-continuous sample grid, diatonic notes, accompaniment/strong-beat chord membership,
-loop endpoint and protected timing. Full suite, native and memory-render pass;
-all renders finite with headroom/no voice stealing. Human listening still required.
+Only title composition/events changed. All 19 BPM values and section boundaries,
+original timing evidence and exact recording lengths are unchanged. Title-only
+layer flags revised for this reorchestration; other eighteen locks unchanged.
 
-Audition debug.music 9, or artifacts/native-port/title-theme-preview.wav (30 sec).
-Other tracks retain their prior scheduling/composition; this is the listening
-reference before considering a wider musical pass.
+Verified: full ./test.sh suite and native build pass. Title harmony/grid and
+section-variant checks pass; repeated-hook checks include variant patterns.
+All renders finite, with headroom and no voice stealing. Title is 5,570,560 frames
+at 48 kHz (116.053333 s), peak 0.3819, RMS 0.0873. No interactive playtest performed.
 
-Original title MIDI found in legacy/PreprocessFFT/PreprocessFFT/Content. Initial
-claim that only MusicBin activity survived was incorrect. See music/README.md
-for measured note/rhythm evidence. No music changed during reference analysis;
-next musical pass should restore original tension/drive rather than major-key
-background-music energy. Scratch note CSV/JSON: artifacts/native-port/title-midi.*.
+Audition debug.music 9 or artifacts/native-port/title-theme-preview.wav (35 s).
+Human listening is the remaining musical-quality review before any broader pass.
+Original MIDI-to-WAV alignment is still unverified; see music/README.md.

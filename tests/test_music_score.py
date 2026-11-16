@@ -48,7 +48,9 @@ class MusicScoreTests(unittest.TestCase):
             hooks = []
             for score in self.scores:
                 phrases = set()
-                for notes in score['parts'][role]['patterns']:
+                part = score['parts'][role]
+                patterns = part['patterns'] + [p for group in part.get('variants', {}).values() for p in group]
+                for notes in patterns:
                     notes = sorted(notes)
                     intervals = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(notes, notes[1:])]
                     phrases.update(tuple(intervals[i:i+3]) for i in range(len(intervals)-2))
@@ -67,7 +69,8 @@ class MusicScoreTests(unittest.TestCase):
                                for k in range(len(roots))) for j in range(len(roots))]
             harmonies.add(min(rotations))
             for part in score['parts'].values():
-                for pattern in part.get('patterns', []):
+                patterns = part.get('patterns', []) + [p for group in part.get('variants', {}).values() for p in group]
+                for pattern in patterns:
                     for onset, _, gate, velocity in pattern:
                         self.assertTrue(0 <= onset < part['steps'] and gate > 0 and 0 < velocity < 128)
         self.assertEqual(len(grooves), 19)
@@ -85,14 +88,22 @@ class MusicScoreTests(unittest.TestCase):
             self.assertLessEqual(frame + gate, frames + 1)
             if role >= 5:
                 continue
-            self.assertIn(pitch % 12, (0, 2, 4, 5, 7, 9, 11))
+            # D minor, with C-sharp in the A-major dominant.
+            self.assertIn(pitch % 12, (0, 1, 2, 4, 5, 7, 9, 10))
             phrase = title['bar_order'][step // 16]
             chord = {(title['roots'][phrase] + x) % 12 for x in title['chords'][phrase]}
             # The lead may use passing notes on weak eighths; accompaniment and
             # quarter-beat melody attacks must support the sounding chord.
             if role != 1 or step % 4 == 0:
                 self.assertIn(pitch % 12, chord, (frame, role, pitch))
-        self.assertEqual(title['roots'][title['bar_order'][-1]] % 12, 0)
+        self.assertEqual(title['roots'][title['bar_order'][-1]] % 12, title['tonic'] % 12)
+        # A complete bar after the 18-second cut must use the clipped riff.
+        bar = 13
+        phrase = title['bar_order'][bar]
+        actual = [round(frame / step_frames) % 16 for frame, _, role, _, _, _ in events
+                  if role == 1 and round(frame / step_frames) // 16 == bar]
+        expected = [n[0] for n in title['parts']['lead']['variants']['drive'][phrase]]
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':
