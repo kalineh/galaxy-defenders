@@ -40,9 +40,15 @@ def generate_track(score, index):
             if section['bass'] and slot in (0, 3, 6, 8, 10, 14):
                 pitch = root + (12 if slot in (6, 14) else 7 if slot == 10 else 0)
                 note(time, gate(step * (1.7 if slot in (0, 8) else .8)), 0, pitch, 100 if slot in (0, 8) else 83)
-            if section['arp'] and slot % 2 == 0:
-                interval = chord[(i // 2) % 3]
-                note(time, gate(step * .8), 2, root + 36 + interval, 53 if section['lead'] else 76, -45)
+            if section['arp']:
+                if 'arp_pattern' in score:
+                    for onset, interval, length, velocity in score['arp_pattern']:
+                        if slot == onset:
+                            note(time, gate(step * length), score['arp_patch'],
+                                 root + score['arp_register'] + interval, velocity, -30)
+                elif slot % 2 == 0:
+                    interval = chord[(i // 2) % 3]
+                    note(time, gate(step * .8), 2, root + 36 + interval, 53 if section['lead'] else 76, -45)
             if section['lead'] and slot % 2 == 0:
                 melody = score['melodies'][(bar // 4) % len(score['melodies'])]
                 pitch = melody[(i // 2) % len(melody)]

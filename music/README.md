@@ -37,3 +37,18 @@ accepts `OUTPUT.wav TRACK_ID`. Audio renders are checked for finite samples,
 headroom and voice stealing. ./test.sh checks sample-identical seek/chunk output,
 loop endpoints, console parsing and game-state isolation. Musical quality and
 live device playback still require human listening; automated checks are silent.
+
+## Focused identity pass: tracks 3 and 7
+
+The first album compiler imposed a repeating eighth-note root/third/fifth pulse
+arpeggio on every track. Track 3 began F-A-C and track 7 F#-A-C#, at 160/154 BPM,
+with the same pulse/pad/bell opening. That template, plus related lead motifs,
+made different tracks sound like transpositions of one piece.
+
+Track 3 now uses an explicit syncopated FM phrase with fifth/octave leaps and a
+fuller rhythmic opening. Track 7 uses low bell calls, semitone tension, longer
+rests and a stripped opening. Both have newly written lead motifs. Their section
+boundaries and durations are unchanged. The optional arp_pattern/arp_patch/
+arp_register fields let composition specify notes, rhythm and sound directly.
+The other seventeen tracks are unchanged in this pass and still use the shared
+arpeggio fallback; further identity work is not claimed complete.
