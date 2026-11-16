@@ -672,7 +672,7 @@ void game_tick(Game *game) {
                 Player *p = &game->players[i];
                 if (!p->joined || p->lives <= 0) continue;
                 p->vy -= 0.1f * game->menu.frame;
-                game_particle(game, PARTICLE_PLAYER_STAGE_END_SHIP_TRAIL, p->x, p->y, i, 1, 0, 0);
+                game_particle(game, PARTICLE_PLAYER_STAGE_END_SHIP_TRAIL, p->x, p->y, i, 1, 0, 1);
                 p->x += p->vx; p->y += p->vy;
                 p->vx *= p->friction; p->vy *= p->friction;
             }
