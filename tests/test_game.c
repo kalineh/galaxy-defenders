@@ -37,7 +37,7 @@ static void movement(void) {
 static void collisions(void) {
     reset();
     int enemy = game_spawn_enemy(&game, ENEMY_BALL, 400, 300);
-    game_spawn_bullet(&game, 0, 400, 500, 0, -400, 1);
+    game_spawn_bullet(&game, 0, 400, 500, 0, -200, 1);
     game_tick(&game);
     CHECK(!game.enemies[enemy].active);
     CHECK(game.kills == 1 && game.players[0].score == 10);
@@ -45,10 +45,10 @@ static void collisions(void) {
     /* Friendly fire is disabled, including for the other player. */
     CHECK(game_join(&game, 1));
     game.players[1].invulnerable = 0;
-    game_spawn_bullet(&game, 0, 560, 950, 0, -100, 50);
+    game_spawn_bullet(&game, 0, 560, 950, 0, -70, 50);
     game_tick(&game);
     CHECK(game.players[1].health == 20);
-    game_spawn_bullet(&game, -1, 560, 950, 0, -100, 2);
+    game_spawn_bullet(&game, -1, 560, 950, 0, -70, 2);
     game_tick(&game);
     CHECK(game.players[1].health == 18.125f);
     game_damage_player(&game, 1, 5);
@@ -223,6 +223,46 @@ static void death_and_restart(void) {
     game.players[0].lives = 0;
     game_tick(&game);
     CHECK(!game.over);
+}
+
+static void hostile_collision_rules(void) {
+    reset();
+    Enemy source = {.x=400, .y=880};
+    int shot = enemy_shot(&game, &source, HOSTILE_CANNON, 0, 0, 0, 0, 2);
+    game.players[0].invincible = true;
+    for (int tick = 0; tick < 10; ++tick) {
+        game.players[0].x = 400; game.players[0].y = 880;
+        game.players[0].vx = game.players[0].vy = 0;
+        game_tick(&game);
+        CHECK(game.bullets[shot].health == 3 - tick / 3);
+        CHECK(game.bullets[shot].active == (tick < 9));
+    }
+    reset();
+    shot = enemy_shot(&game, &source, HOSTILE_CANNON, 28, 0, 0, 0, 2);
+    game_tick(&game);
+    CHECK(game.players[0].health == 20 && game.bullets[shot].health == 4);
+    reset();
+    shot = game_spawn_bullet(&game, -1, 400, 700, 0, 300, 2);
+    game_tick(&game);
+    CHECK(game.players[0].health == 20 && game.bullets[shot].active);
+    reset();
+    game.players[0].invulnerable = 20;
+    shot = game_spawn_bullet(&game, -1, 400, 880, 0, 0, 2);
+    game_tick(&game);
+    CHECK(game.bullets[shot].active && game.players[0].health == 20);
+    for (int kind = HOSTILE_MISSILE; kind <= HOSTILE_PELLET; ++kind) {
+        if (kind == HOSTILE_CANNON) continue;
+        reset();
+        shot = enemy_shot(&game, &source, kind, 0, -300, 0, 0, 2);
+        int bullet = game_spawn_bullet(&game, 0, 400, 580, 0, 0, 1);
+        game.bullets[bullet].weapon = WEAPON_CHARGE_SHOT;
+        game_tick(&game);
+        CHECK(game.bullets[shot].active && game.bullets[bullet].active);
+        game.bullets[bullet].weapon = WEAPON_BOMBLET;
+        game_tick(&game);
+        CHECK(!game.bullets[shot].active);
+        CHECK(game.bullets[bullet].active == (kind == HOSTILE_PELLET));
+    }
 }
 
 static void contact_rules(void) {
@@ -1194,11 +1234,11 @@ static void saved_continue(void) {
 
 int main(int argc, char **argv) {
     if (argc == 2 && !strcmp(argv[1], "--core")) {
-        contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
+        hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
         return failures ? 1 : 0;
     }
-    contact_rules();
+    hostile_collision_rules(); contact_rules();
     authored_secret_entries();
     saved_continue();
     collectible_rewards();

@@ -76,3 +76,4 @@ Legacy stage importer `--check` verifies 3,448 events without omitted source fie
 
 See CONTENT_PARITY.md for current scope and limitations. Scratch artifacts are
 transient; source and required assets stay in the repository.
+

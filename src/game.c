@@ -448,14 +448,26 @@ static void update_bullets(Game *game) {
         if (!bullet->active) continue;
         game_update_projectile(game, bullet);
         if (!bullet->active) continue;
-        float old_x = bullet->x, old_y = bullet->y;
         bullet->x += bullet->vx;
         bullet->y += bullet->vy + game->scroll_speed;
+    }
+    /* Legacy collects collisions only after all entities have updated. */
+    for (int i = 0; i < GAME_BULLETS; ++i) {
+        Bullet *bullet = &game->bullets[i];
+        if (!bullet->active) continue;
+        float old_x = bullet->x, old_y = bullet->y;
         if (bullet->owner >= 0) {
             for (int n = 0; n < GAME_BULLETS && bullet->active; ++n) {
                 Bullet *hostile = &game->bullets[n];
                 if (!hostile->active || hostile->owner >= 0 ||
                     (hostile->hostile_kind != HOSTILE_PELLET && hostile->hostile_kind != HOSTILE_MISSILE)) continue;
+                if (bullet->weapon == WEAPON_CHARGE_SHOT) continue;
+                if (hostile->hostile_kind == HOSTILE_MISSILE &&
+                    (bullet->splash || bullet->weapon == WEAPON_BLADE || bullet->weapon == WEAPON_BEAM ||
+                     bullet->weapon == WEAPON_BEAM_FOCUS || bullet->weapon == WEAPON_BOOMERANG ||
+                     bullet->weapon == WEAPON_VULCAN || bullet->weapon == WEAPON_DRUNK_MISSILE ||
+                     bullet->weapon == WEAPON_MISSILE_VOLLEY || bullet->weapon == WEAPON_LIGHTNING ||
+                     bullet->weapon == WEAPON_LIGHTNING_FOCUS)) continue;
                 const Enemy circle = {.x = hostile->x, .y = hostile->y, .radius = hostile->radius};
                 bool hit = bullet->radius > 0 ?
                     segment_distance_squared(old_x, old_y, bullet->x, bullet->y, hostile->x, hostile->y) <
@@ -467,6 +479,8 @@ static void update_bullets(Game *game) {
                 if (hostile->hostile_kind == HOSTILE_PELLET) {
                     if (--hostile->health <= 0 || bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
                 } else if (bullet->weapon == WEAPON_BOMBLET) hostile->active = false;
+                if (hostile->hostile_kind == HOSTILE_PELLET && (bullet->splash || bullet->weapon == WEAPON_BOMBLET ||
+                    bullet->weapon == WEAPON_BEAM || bullet->weapon == WEAPON_BEAM_FOCUS)) continue;
                 bullet->active = false;
                 game_projectile_hit(game, bullet, -1);
                 if (hostile->hostile_kind == HOSTILE_PELLET &&
@@ -508,11 +522,13 @@ static void update_bullets(Game *game) {
                     const StageEvent *event = &stage->events[i];
                     if (event->kind != STAGE_BUILDING || !game->stage.activated[i] || game->stage.building_health[i] < 0) continue;
                     float x = event->x + GAME_WIDTH * 0.5f, y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
-                    float radius = bullet->radius > 0 ? bullet->radius : 0.5f;
-                    float start_y = bullet->weapon == WEAPON_BEAM ? bullet->y - 1080 : old_y;
-                    float half_width = bullet->weapon == WEAPON_BEAM ? bullet->width * 0.5f : radius;
-                    if (!segment_box(old_x, start_y, bullet->x, bullet->y, x, y,
-                        event->width * 0.4f + half_width, event->height * 0.4f + radius)) continue;
+                    bool hit = bullet->radius > 0 ? swept_circle_box(bullet->x, bullet->y, bullet->x, bullet->y,
+                        x, y, event->width * 0.4f, event->height * 0.4f, bullet->radius) :
+                        segment_box(bullet->x + 0.5f, bullet->y + 0.25f, bullet->x + 0.5f, bullet->y + 0.25f,
+                            x, y, event->width * 0.4f + 0.5f, event->height * 0.4f + 0.25f);
+                    if (bullet->weapon == WEAPON_BEAM) hit = segment_box(bullet->x, bullet->y - 1080, bullet->x, bullet->y,
+                        x, y, event->width * 0.4f + bullet->width * 0.5f, event->height * 0.4f);
+                    if (!hit) continue;
                     game->stage.building_health[i] -= bullet->damage;
                     bullet->active = false;
                     ++game->projectile_hits;
@@ -539,9 +555,24 @@ static void update_bullets(Game *game) {
             for (int p = 0; p < GAME_PLAYERS; ++p) {
                 Player *player = &game->players[p];
                 float radius = player->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS;
-                if (!player->joined || player->lives <= 0 || segment_distance_squared(old_x, old_y, bullet->x, bullet->y,
-                    player->x, player->y) >= radius * radius + bullet->radius * bullet->radius) continue;
+                if (!player->joined || player->lives <= 0 || player->invulnerable > 0 || game->seeking || bullet->collide_wait > 0) continue;
+                bool hit = segment_distance_squared(bullet->x, bullet->y, bullet->x, bullet->y,
+                    player->x, player->y) < radius * radius + bullet->radius * bullet->radius;
+                if (bullet->hostile_kind == HOSTILE_LASER || bullet->hostile_kind == HOSTILE_CANNON) {
+                    bool cannon = bullet->hostile_kind == HOSTILE_CANNON;
+                    hit = swept_circle_box(player->x, player->y, player->x, player->y,
+                        bullet->x + (cannon ? -0.5f : 0.5f), bullet->y + (cannon ? 0 : 0.25f),
+                        cannon ? 5.5f : 0.5f, cannon ? 21 : 0.25f, radius);
+                }
+                if (!hit) continue;
                 player_impact(game, p, bullet->damage, bullet->x, bullet->y, bullet->vx, bullet->vy);
+                if (bullet->hostile_kind == HOSTILE_CANNON) {
+                    float dx = player->x - bullet->x, dy = player->y - bullet->y, length = hypotf(dx, dy);
+                    if (length > 0) { player->vx += dx / length * 5; player->vy += dy / length * 5; }
+                    bullet->collide_wait = 3;
+                    if (--bullet->health <= 0) bullet->active = false;
+                    break;
+                }
                 game_effect(game, EFFECT_ENEMY_SHOT_HIT, bullet->x, bullet->y, 0, 0, 0);
                 bullet->active = false;
                 break;

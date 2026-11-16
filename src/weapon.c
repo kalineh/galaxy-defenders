@@ -149,14 +149,17 @@ void game_update_weapons(Game *game, int slot) {
 void game_update_projectile(Game *game, Bullet *b) {
     ++b->age;
     if (b->owner < 0) {
+        if (b->collide_wait > 0) --b->collide_wait;
         if (b->hostile_kind == HOSTILE_MISSILE) {
-            int target = -1;
-            float nearest = 1e20f;
-            for (int i = 0; i < GAME_PLAYERS; ++i) {
+            if (b->target >= 0 && game->players[b->target].lives <= 0) { b->target = -1; return; }
+            int target = b->target;
+            float nearest = 2000;
+            for (int i = 0; target < 0 && i < GAME_PLAYERS; ++i) {
                 const Player *p = &game->players[i];
                 float d = hypotf(p->x-b->x,p->y-b->y);
-                if (p->joined && p->lives > 0 && d < nearest) { target=i; nearest=d; }
+                if (p->joined && p->lives > 0 && d < nearest) { b->target=i; nearest=d; }
             }
+            target = b->target;
             if (target >= 0) {
                 const Player *p=&game->players[target];
                 float cross=(p->x-b->x)*-sinf(b->rotation)+(p->y-b->y)*cosf(b->rotation);

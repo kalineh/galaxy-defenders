@@ -290,3 +290,7 @@ to confirm any of the explicit mismatches listed here.
   collision impulse and Kinetic regeneration; Spike/FenceBeam special contact;
   120-frame game-over menu delay and Try_Harder music. Full headless suite and
   Windows native build pass. Death/transition presentation remains tracked below.
+- C2/W3 hostile dispatch repaired: discrete post-update bullet collisions,
+  rounded building intersections, exact hostile laser/cannon boxes, cannon repeat
+  hits/recoil, immunity preserves shots, missiles retain targets, weapon-specific
+  pellet/missile blocking. Full headless suite and native build pass.
