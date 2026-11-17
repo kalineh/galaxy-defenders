@@ -358,6 +358,72 @@ static void boss5_and_turret_movement(void) {
     }
 }
 
+static void enemy_camera_movement(void) {
+    reset();
+    int n=game_spawn_enemy(&game,ENEMY_BOSS10,488,-100);
+    Enemy *boss=&game.enemies[n];
+    boss->authored=true;
+    game.scroll_speed=2.5f;
+    bool grid_attached=true;
+    for (int tick=1;tick<=120;++tick) {
+        for (int i=0;i<GAME_ENEMIES;++i)
+            if (game.enemies[i].active) boss_update_all(&game,&game.enemies[i]);
+        int blocks=0;
+        for (int i=0;i<GAME_ENEMIES;++i) {
+            Enemy *part=&game.enemies[i];
+            if (!part->active || part->kind!=ENEMY_BOSS10_BLOCK) continue;
+            float row=(part->y-boss->y-110)/92;
+            if (fabsf(row-roundf(row))>0.0001f || row<0 || row>2) grid_attached=false;
+            ++blocks;
+        }
+        CHECK(blocks==21);
+        if (tick==60) {
+            Enemy *ball=&game.enemies[boss->children[0]];
+            CHECK(fabsf(ball->y-(boss->y+400+ball->vy))<0.0001f);
+        }
+        if (tick==61) {
+            Enemy *ball=&game.enemies[boss->children[0]];
+            CHECK(fabsf(ball->y-(boss->y+400+2*ball->vy))<0.0001f);
+        }
+    }
+    CHECK(grid_attached);
+
+    reset();
+    n=game_spawn_enemy(&game,ENEMY_BOSS6,480,300);
+    boss=&game.enemies[n];
+    boss->authored=true; boss->age=100; boss->health=boss->health_max*0.6f;
+    game.stage.camera_x=40;
+    game.scroll_speed=2.5f;
+    boss_update_all(&game,boss);
+    CHECK(fabsf(hypotf(boss->move_from-520,boss->move_to-420)-300)<0.001f);
+    float target_x=boss->move_from, target_y=boss->move_to;
+    for (int tick=1;tick<=20;++tick) {
+        boss_update_all(&game,boss);
+        CHECK(boss->move_from==target_x);
+        CHECK(fabsf(boss->move_to-target_y-tick*2.5f)<0.001f);
+    }
+
+    reset();
+    n=game_spawn_enemy(&game,ENEMY_SPIKE,300,200);
+    Enemy *spike=&game.enemies[n];
+    spike->authored=true;
+    game.scroll_speed=2.5f;
+    enemy_update_extended(&game,spike);
+    CHECK(spike->y==202.5f); /* Stationary while winding up, relative to scenery. */
+    game.stage.camera_x=-40;
+    spike->x=-20; spike->y=300; spike->timer=0;
+    enemy_update_extended(&game,spike);
+    CHECK(spike->x==-20 && spike->hit_count==0); /* Still inside the panned view. */
+    spike->x=-50;
+    enemy_update_extended(&game,spike);
+    CHECK(spike->x==-40 && spike->hit_count==1 && spike->timer==6);
+    spike->x=930;
+    for (int tick=0;tick<6;++tick) enemy_update_extended(&game,spike);
+    CHECK(spike->hit_count==1);
+    enemy_update_extended(&game,spike);
+    CHECK(spike->x==920 && spike->hit_count==2);
+}
+
 static void boss_timing_rules(void) {
     reset();
     int n=game_spawn_enemy(&game,ENEMY_BOSS5,480,200);
@@ -1750,6 +1816,7 @@ static void music_override_commands(void) {
 int main(int argc, char **argv) {
     music_override_commands();
     boss5_and_turret_movement();
+    enemy_camera_movement();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);

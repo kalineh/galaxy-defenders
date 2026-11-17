@@ -167,6 +167,8 @@ void enemy_update_extended(Game *g, Enemy *e) {
             if (e->movement!=MOVE_IGNORE_CAMERA && !pause_mover) e->y+=g->scroll_speed;
         }
         e->x+=e->vx; e->y+=e->vy;
+        /* Spike clears its mover, but unlike Glob never cancels camera scroll. */
+        if (e->authored && e->kind==ENEMY_SPIKE) e->y+=g->scroll_speed;
         if (!e->authored && (e->kind == ENEMY_SPLITTER_FRAGMENT || (e->kind == ENEMY_SWIRL_BALL && e->parent < 0))) e->y += g->scroll_speed;
     }
     ++e->age; e->rotation+=e->spin;
@@ -217,10 +219,12 @@ void enemy_update_extended(Game *g, Enemy *e) {
             e->spin=fminf(0.275f,e->spin+0.0075f);
             if (e->spin>0.25f && d>0 && d<1200) { e->vx+=dx/d*0.2f; e->vy+=dy/d*0.2f; }
             e->vx*=0.98f; e->vy*=0.98f;
-            if (--e->timer<=0 && e->hit_count<=5 && (e->x<0 || e->x>GAME_WIDTH || e->y<0 || e->y>GAME_HEIGHT)) {
-                float angle=atan2f(GAME_HEIGHT*0.5f-e->y,GAME_WIDTH*0.5f-e->x),speed=hypotf(e->vx,e->vy);
+            float left=g->stage.camera_x, right=left+GAME_WIDTH;
+            if (e->timer>0) --e->timer;
+            else if (e->hit_count<=5 && (e->x<left || e->x>right || e->y<0 || e->y>GAME_HEIGHT)) {
+                float angle=atan2f(GAME_HEIGHT*0.5f-e->y,left+GAME_WIDTH*0.5f-e->x),speed=hypotf(e->vx,e->vy);
                 e->vx=cosf(angle)*speed; e->vy=sinf(angle)*speed; ++e->hit_count; e->timer=6;
-                e->x=fmaxf(0,fminf(GAME_WIDTH,e->x)); e->y=fmaxf(0,fminf(GAME_HEIGHT,e->y));
+                e->x=fmaxf(left,fminf(right,e->x)); e->y=fmaxf(0,fminf(GAME_HEIGHT,e->y+2.5f));
             }
         }
         return;

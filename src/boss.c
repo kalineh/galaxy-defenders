@@ -192,7 +192,9 @@ static void boss6(Game *g,Enemy *e) {
     if(e->age>=90) {
         if(!phase) idle(e,0.01f);
         else {
-            if(--e->move_wait<=0) { float angle=random_float(g)*2*PI; e->move_from=480+cosf(angle)*300; e->move_to=420+sinf(angle)*300; e->move_wait=phase==2?90:180; }
+            /* The selected target stays in world space until the next move. */
+            if(e->authored) e->move_to+=g->scroll_speed;
+            if(--e->move_wait<=0) { float angle=random_float(g)*2*PI; e->move_from=g->stage.camera_x+480+cosf(angle)*300; e->move_to=420+sinf(angle)*300; e->move_wait=phase==2?90:180; }
             float speed=phase==2?0.02f:0.01f; e->x+=(e->move_from-e->x)*speed; e->y+=(e->move_to-e->y)*speed;
         }
     }
@@ -427,6 +429,10 @@ static void part_update(Game *g,Enemy *e) {
     if(boss && !boss->active){e->active=false;return;}
     if(e->kind==ENEMY_BOSS9_BALL && !boss){e->x+=e->vx;e->y+=e->vy+g->scroll_speed;return;}
     if(!boss)return;
+    /* These parts move independently, unlike parts positioned by their boss.
+       On their first tick, creation already used the boss's scrolled position. */
+    if(e->authored && e->age>1 && (e->kind==ENEMY_BOSS10_BLOCK || e->kind==ENEMY_BOSS10_BALL))
+        e->y+=g->scroll_speed;
     if(e->kind==ENEMY_BOSS3_CHUNK){
         if(boss->phase && --e->cooldown<=0){for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)shot(g,e,x*34,y*44,PI*0.5f);e->cooldown=boss->phase==2?60:90;}
     } else if(e->kind==ENEMY_BOSS4_CHUNK){

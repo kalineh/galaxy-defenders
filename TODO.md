@@ -1,3 +1,16 @@
+# Completed camera movement audit
+
+Compared boss anchors/attached parts, movement presets, burst pauses, detached
+Swirl/Splitter/Pyramid parts, teleport placement and chaser camera handling with
+legacy. Fixed Boss Six's random target center and scrolling world target, Boss
+Ten's independently moving blocks/balls missing camera scroll, and Spikes missing
+scroll and using unpanned screen bounds. Spike edge cooldown/clamp now matches
+the original sequence. Existing intentional Glob scroll cancellation is retained.
+Verified: full ./test.sh and native Windows build. New regressions cover the
+21-block formation, ball spawn vs subsequent scrolling, target stability and
+both panned viewport edges. This was a movement/camera audit, not an exhaustive
+frame-by-frame gameplay parity review; interactive playtesting remains human-owned.
+
 # Completed enemy movement corrections
 
 Boss Five side parts deploy once, then patrol from their current world position
