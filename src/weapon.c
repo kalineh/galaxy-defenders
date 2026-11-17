@@ -169,7 +169,7 @@ static void fire_group(Game *game, int slot, int group, int kind, int level, boo
 void game_update_weapons(Game *game, int slot) {
     Player *p = &game->players[slot];
     fire_group(game, slot, 0, p->primary, p->weapon_level, p->input.fire && !p->input.focus);
-    fire_group(game, slot, 1, equipment_focus_weapon(p->primary), p->weapon_level - p->powerup_levels, p->input.focus);
+    fire_group(game, slot, 1, equipment_focus_weapon(p->primary), p->weapon_level, p->input.focus);
     fire_group(game, slot, 2, p->secondary, p->secondary_level, p->input.fire && !p->input.focus);
     fire_group(game, slot, 3, p->sidekick, 0, p->input.sidekick_left);
     fire_group(game, slot, 4, p->sidekick, 0, p->input.sidekick_right);

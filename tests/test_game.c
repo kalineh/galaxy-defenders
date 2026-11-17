@@ -696,7 +696,7 @@ static void weapon_upgrades(void) {
     game_tick(&game); /* Focus has a separate cooldown and fires without FIRE. */
     CHECK(game_bullet_count(&game) == 11 && game.bullets[8].vy == -19);
     CHECK(game.bullets[8].x == 396 && game.bullets[10].x == 404);
-    CHECK(fabsf(game.bullets[8].damage - 0.175f) < 0.0001f);
+    CHECK(fabsf(game.bullets[8].damage - 0.2625f) < 0.0001f);
     CHECK(game.players[0].friction < game_chassis[0].friction);
     game.players[0].energy = 0;
     int shots = game.shots;
@@ -706,6 +706,64 @@ static void weapon_upgrades(void) {
     CHECK(!console_execute(&console, &game, "player.upgrade 1 -1"));
     CHECK(!console_execute(&console, &game, "player.upgrade 2 7"));
     CHECK(game.players[0].weapon_level == 7);
+}
+
+static void focus_scaling(void) {
+    static const int kinds[]={WEAPON_FRONT_LASER,WEAPON_SPREAD_LASER,WEAPON_PLASMA,
+        WEAPON_FLAME,WEAPON_LIGHTNING,WEAPON_BEAM};
+    for (unsigned k=0;k<sizeof(kinds)/sizeof(kinds[0]);++k) {
+        int focus=equipment_focus_weapon(kinds[k]);
+        for (int level=0;level<game_weapons[kinds[k]].level_count;++level) {
+            reset();
+            Player *p=&game.players[0];
+            p->primary=kinds[k]; p->weapon_level=level; p->powerup_levels=level;
+            p->secondary=p->sidekick=p->shield=-1;
+            p->generator=11; p->energy=13; p->input.focus=true;
+            const WeaponLevel *data=&game_weapons[focus].levels[level];
+            float cost=0;
+            for (int i=0;i<data->count;++i) cost+=data->emitters[i].energy+2*data->emitters[i].drain;
+            game_update_weapons(&game,0);
+            CHECK(game_bullet_count(&game)==data->count);
+            CHECK(fabsf(p->energy-fminf(13,13-cost+game_generators[11].regen))<0.0001f);
+            for (int i=0;i<data->count;++i) {
+                CHECK(game.bullets[i].weapon==focus);
+                CHECK(fabsf(game.bullets[i].damage-data->emitters[i].damage)<0.0001f);
+            }
+            if (focus==WEAPON_BEAM_FOCUS) {
+                float energy=p->energy;
+                game_update_weapons(&game,0);
+                CHECK(game_bullet_count(&game)==1);
+                CHECK(fabsf(p->energy-fminf(13,energy-cost+game_generators[11].regen))<0.0001f);
+            }
+            memset(p->weapons,0,sizeof(p->weapons));
+            memset(game.bullets,0,sizeof(game.bullets));
+            p->energy=0;
+            game_update_weapons(&game,0);
+            CHECK(game_bullet_count(&game)==0 && p->energy>=0);
+        }
+    }
+    CHECK(fabsf(game_weapons[WEAPON_FRONT_LASER_FOCUS].levels[0].emitters[0].damage-0.2625f)<0.0001f);
+    CHECK(fabsf(game_weapons[WEAPON_FRONT_LASER_FOCUS].levels[0].emitters[0].energy-0.3375f)<0.0001f);
+    for (int level=1;level<8;++level)
+        CHECK(game_weapons[WEAPON_BEAM_FOCUS].levels[level].emitters[0].damage>
+            game_weapons[WEAPON_BEAM_FOCUS].levels[level-1].emitters[0].damage);
+
+    /* Collect an actual power-up while continuously firing Shift: replace the
+       old beam, then restart at the new level without stacking old damage. */
+    reset();
+    Player *p=&game.players[0];
+    p->primary=WEAPON_BEAM; p->weapon_level=0;
+    p->secondary=p->sidekick=p->shield=-1;
+    p->generator=11; p->energy=13; p->input.focus=true;
+    game_tick(&game);
+    CHECK(game_bullet_count(&game)==1);
+    game_drop_pickups(&game,p->x,p->y,0,true,false);
+    game_tick(&game);
+    CHECK(p->weapon_level==1 && p->powerup_levels==1);
+    game_tick(&game);
+    CHECK(game_bullet_count(&game)==1);
+    for (int i=0;i<GAME_BULLETS;++i) if (game.bullets[i].active)
+        CHECK(fabsf(game.bullets[i].damage-0.1125f)<0.0001f);
 }
 
 static void console_editor(void) {
@@ -1924,6 +1982,7 @@ int main(int argc, char **argv) {
     fence_links();
     cutter_release();
     glob_coin_drops();
+    focus_scaling();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);

@@ -418,6 +418,14 @@ static void update_pickups(Game *game) {
                 if (pickup->kind == 2) {
                     if (p->weapon_level + 1 < game_weapons[p->primary].level_count) { ++p->weapon_level; ++p->powerup_levels; }
                     memset(p->weapons[0], 0, sizeof(p->weapons[0]));
+                    memset(p->weapons[1], 0, sizeof(p->weapons[1]));
+                    /* Retire continuous shots before the upgraded emitters
+                       toggle on; old beams must not survive as duplicates. */
+                    for (int i = 0; i < GAME_BULLETS; ++i) {
+                        Bullet *b = &game->bullets[i];
+                        if (b->active && b->owner == nearest &&
+                            (b->weapon == WEAPON_BEAM || b->weapon == WEAPON_BEAM_FOCUS)) b->active = false;
+                    }
                 } else {
                     game->stage.stats.coins_collected += pickup->kind == 1 ? 10 : 1;
                     p->score += pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0);
