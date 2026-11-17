@@ -144,7 +144,7 @@ static void shop_progression(void) {
     CHECK(game.menu.page == MENU_SHOP && game.players[0].money == 5250 && game.players[0].score == 0);
     game_shop_open(&game);
     CHECK(game.players[0].money == 5250); /* No duplicate reward on reopen. */
-    while(!game_shop_chassis_available(&game,0,3)) ++game.seed;
+    CHECK(game_shop_chassis_available(&game,0,3));
     game_menu_input(&game, MENU_CONFIRM, 0);
     game.menu.shop_item[0] = 3;
     CHECK(game.menu.shop_item[0] == 3 && game_shop_cost(&game, 0) == 7000);
@@ -1101,7 +1101,6 @@ static void complete_equipment(void) {
         }
     }
     reset();
-    game.players[0].money = 1000000;
     game_shop_open(&game);
     for (int category = 0; category < 6; ++category) {
         game.menu.shop_category[0] = category;
@@ -1112,7 +1111,8 @@ static void complete_equipment(void) {
             for(int i=0;i<count;++i) if(stock[i]==item)available=true;
             game.menu.shop_item[0] = item;
             game.menu.shop_level[0] = category >= 3 && item >= 0 ? game_weapons[item].level_count - 1 : 0;
-            CHECK(game_shop_buy(&game, 0)==available);
+            game.players[0].money = 1000000;
+            CHECK(available && game_shop_buy(&game, 0));
             if(available) CHECK(game_shop_equipped(&game.players[0], category) == item);
         }
     }

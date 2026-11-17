@@ -58,44 +58,15 @@ static void remember_item(Inventory *inventory, int category, int item, int mark
     else if (marks > inventory->weapon_marks[item]) inventory->weapon_marks[item] = (unsigned char)marks;
 }
 
-static float stock_random(GameRandom *state) {
-    float magnitude = (float)(game_random_sample(state) / 2147483647.0);
-    return magnitude * (game_random_sample(state) / 2147483647.0 < 0.5 ? -1 : 1);
-}
-
 int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_COUNT+1]) {
-    if(slot<0 || slot>=GAME_PLAYERS || category<0 || category>5)return 0;
-    static const int weapons[3][6]={
-        {WEAPON_FRONT_LASER,WEAPON_SPREAD_LASER,WEAPON_PLASMA,WEAPON_FLAME,WEAPON_LIGHTNING,WEAPON_BEAM},
-        {WEAPON_MISSILE,WEAPON_DRUNK_MISSILE,WEAPON_SEEK_BOMB,WEAPON_BOOMERANG,WEAPON_VULCAN,WEAPON_BOMBLET},
-        {WEAPON_MINI_SHOT,WEAPON_CHARGE_SHOT,WEAPON_BLADE,WEAPON_MISSILE_VOLLEY,WEAPON_MISSILE_LAUNCHER,WEAPON_LASER_SHOT}
-    };
-    int total=category==0?GAME_CHASSIS:category==1?GENERATOR_COUNT:category==2?SHIELD_COUNT:6;
-    bool chosen[WEAPON_COUNT]={0};
-    int stage=game->menu.next_stage;
-    /* Stage1..12 GetHashCode values from the legacy x86 .NET Framework runtime. */
-    static const int stage_hashes[12] = {843427117,843230509,843296045,843623725,843689261,843492653,
-        843558189,842837293,842902829,1165835275,-1563048080,3035861};
-    GameRandom seed;
-    game_random_init(&seed, game->seed + (uint32_t)stage_hashes[stage < 12 ? stage : 11] +
-        (category < 3 ? category + 4 : category - 2));
-    float ratio=category<3?stage/12.0f+0.20f:0.5f;
-    int desired=(int)nearbyintf(total*(0.4f+(category<3?0.4f:0.5f)*stock_random(&seed)));
-    if(desired<2)desired=2; if(desired>total)desired=total;
-    int center=(int)nearbyintf(total*ratio), selected=0;
-    for(int attempt=0;attempt<30 && selected<desired;++attempt) {
-        int index=center+(int)(stock_random(&seed)*total*ratio);
-        if(index<0)index=0; if(index>=total)index=total-1;
-        if(!chosen[index]) {chosen[index]=true;++selected;}
-    }
+    (void)game;
+    if (slot < 0 || slot >= GAME_PLAYERS || category < 0 || category > 5) return 0;
     int count = 0;
-    if(category>=4)items[count++]=-1;
-    for(int i=0;i<total;++i) {
-        int id=category<3?i:weapons[category-3][i];
-        bool available=game->cleared_game?(category>=3 || i>=(category==1?6:3)):chosen[i];
-        if(category == 1 || category == 2 || category == 5 || available ||
-            game_shop_owned_marks(&game->players[slot], category, id))items[count++]=id;
-    }
+    if (category >= 4) items[count++] = -1;
+    int total = category == 0 ? GAME_CHASSIS : category == 1 ? GENERATOR_COUNT :
+        category == 2 ? SHIELD_COUNT : WEAPON_COUNT;
+    for (int id = 0; id < total; ++id)
+        if (category < 3 || equipment_weapon_category(id) == category) items[count++] = id;
     for(int i=1;i<count;++i) {
         int id=items[i], at=i;
         while(at>0 && item_price(category,items[at-1],0)>item_price(category,id,0)) {items[at]=items[at-1];--at;}
