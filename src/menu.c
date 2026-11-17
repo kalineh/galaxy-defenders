@@ -1,10 +1,13 @@
 #include "game.h"
 #include <string.h>
+#include <stdio.h>
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-static const char *labels[MENU_STAGE_SELECT + 1][4] = {
-    [MENU_MAIN] = {"Solo Game", "Coop Game", "Options", "Quit"},
+static const char *labels[MENU_OVERWRITE + 1][4] = {
+    [MENU_MAIN] = {"Play", "Options", "Quit"},
+    [MENU_SLOTS] = {"Slot 1", "Slot 2", "Slot 3", "Back"},
+    [MENU_OVERWRITE] = {"Cancel", "Replace Save"},
     [MENU_NEW_GAME] = {"Continue", "New Game", "Back"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
     [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Back"},
@@ -23,6 +26,13 @@ int game_menu_count(const Game *game) {
 }
 
 const char *game_menu_label(const Game *game, int row) {
+    static char slots[GAME_SAVE_SLOTS][100];
+    if (game->menu.page == MENU_SLOTS && row >= 0 && row < GAME_SAVE_SLOTS) {
+        const SavedGame *save = &game->saves[row];
+        if (save->valid) snprintf(slots[row], sizeof(slots[row]), "Slot %d - Stage %d%s", row + 1, save->stage + 1, save->shop ? " / Shop" : "");
+        else snprintf(slots[row], sizeof(slots[row]), "Slot %d - %s", row + 1, game->save_errors[row] ? "Unreadable" : "Empty");
+        return slots[row];
+    }
     static const char *stages[] = {"Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6",
         "Stage 7", "Stage 8", "Stage 9", "Stage 10", "Stage 11", "Stage 12", "Back"};
     if (game->menu.page == MENU_STAGE_SELECT) return row >= 0 && row < 13 ? stages[row] : "";
@@ -31,7 +41,7 @@ const char *game_menu_label(const Game *game, int row) {
 
 bool game_menu_enabled(const Game *game, int row) {
     return row >= 0 && row < game_menu_count(game) && !(game->menu.page == MENU_NEW_GAME && row == 0 &&
-        !game->saves[game->menu.players == 2 ? 1 : 0].valid);
+        !game->saves[game->active_slot].valid);
 }
 
 bool game_menu_small(const Game *game, int row) {
@@ -40,12 +50,12 @@ bool game_menu_small(const Game *game, int row) {
 }
 
 void game_menu_open(Game *game, MenuPage page) {
-    if (page < MENU_NONE || page > MENU_STAGE_SELECT) return;
+    if (page < MENU_NONE || page > MENU_OVERWRITE) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     game->menu.page = page;
     game->menu.frame = 0;
-    game->menu.cursor = page == MENU_NEW_GAME && !game->saves[game->menu.players == 2 ? 1 : 0].valid ? 1 : 0;
+    game->menu.cursor = page == MENU_NEW_GAME && !game->saves[game->active_slot].valid ? 1 : 0;
     game->paused = page != MENU_NONE;
     for (int i = 0; i < GAME_PLAYERS; ++i) memset(&game->players[i].input, 0, sizeof(game->players[i].input));
 }
@@ -113,7 +123,7 @@ static void start_game(Game *game) {
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
     game_stats_init(game);
-    memset(&game->saves[menu.players - 1], 0, sizeof(SavedGame));
+    memset(&game->saves[game->active_slot], 0, sizeof(SavedGame));
     game_menu_open(game, MENU_NONE);
     game_checkpoint(game, false);
 }
@@ -133,7 +143,7 @@ bool game_transition_update(Game *game) {
     int stage = game->transition_stage;
     switch (transition) {
         case TRANSITION_NEW_GAME: start_game(game); break;
-        case TRANSITION_CONTINUE: game_continue(game, game->menu.players); break;
+        case TRANSITION_CONTINUE: game_continue(game, game->active_slot); break;
         case TRANSITION_RETRY: game_retry(game); break;
         case TRANSITION_SHOP: game_shop_open(game); break;
         case TRANSITION_STAGE_SELECT: game_menu_open(game, MENU_STAGE_SELECT); break;
@@ -220,7 +230,9 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     if (action == MENU_BACK) {
         switch (menu->page) {
             case MENU_MAIN: break;
-            case MENU_NEW_GAME: game_menu_open(game, MENU_MAIN); break;
+            case MENU_SLOTS: game_menu_open(game, MENU_MAIN); break;
+            case MENU_OVERWRITE: game_menu_open(game, MENU_NEW_GAME); break;
+            case MENU_NEW_GAME: game_menu_open(game, MENU_SLOTS); break;
             case MENU_DIFFICULTY: game_menu_open(game, MENU_NEW_GAME); break;
             case MENU_OPTIONS: case MENU_QUIT: game_menu_open(game, menu->parent); break;
             case MENU_RETRY: game_menu_open(game, MENU_PAUSE); break;
@@ -233,12 +245,18 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     int row = menu->cursor;
     switch (menu->page) {
         case MENU_MAIN:
-            if (row < 2) { menu->players = row + 1; game_menu_open(game, MENU_NEW_GAME); }
-            else game_menu_open(game, row == 2 ? MENU_OPTIONS : MENU_QUIT);
+            game_menu_open(game, row == 0 ? MENU_SLOTS : row == 1 ? MENU_OPTIONS : MENU_QUIT);
+            break;
+        case MENU_SLOTS:
+            if (row == GAME_SAVE_SLOTS) game_menu_open(game, MENU_MAIN);
+            else { game->active_slot = row; game_menu_open(game, MENU_NEW_GAME); }
+            break;
+        case MENU_OVERWRITE:
+            game_menu_open(game, row == 0 ? MENU_NEW_GAME : MENU_DIFFICULTY);
             break;
         case MENU_NEW_GAME:
             if (row == 0) game_transition(game, TRANSITION_CONTINUE, 0);
-            else game_menu_open(game, row == 1 ? MENU_DIFFICULTY : MENU_MAIN);
+            else game_menu_open(game, row == 1 ? ((game->saves[game->active_slot].valid || game->save_errors[game->active_slot]) ? MENU_OVERWRITE : MENU_DIFFICULTY) : MENU_SLOTS);
             break;
         case MENU_DIFFICULTY:
             if (row == 3) game_menu_open(game, MENU_NEW_GAME);
@@ -253,7 +271,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         case MENU_QUIT:
             if (row == 0) game_menu_open(game, menu->parent);
             else if (menu->parent == MENU_MAIN) menu->quit = true;
-            else game_transition(game, TRANSITION_SHOP, 0);
+            else game_transition(game, TRANSITION_MAIN, 0);
             break;
         case MENU_PAUSE:
             game_menu_open(game, row == 0 ? MENU_NONE : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);

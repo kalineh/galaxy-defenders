@@ -112,7 +112,7 @@ def main():
               'Pitch bends/controllers are counted but not applied to pitches. MIDI times are not WAV-synchronized. '
               'Converter tempo is not musical BPM; pitch totals do not establish a key. '
               'Missing MIDI uses existing audio timing evidence, not invented note analysis.', 'tracks': tracks}
-    path = ROOT / 'music/reference_analysis.json'
+    path = ROOT / 'legacy/music_reference_analysis.json'
     path.write_bytes((json.dumps(output, indent=2) + '\n').encode())
     print(f'Analyzed {sum(t["midi"] is not None for t in tracks)}/19 MIDI references: {path}')
 

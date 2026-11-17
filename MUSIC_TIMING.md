@@ -94,4 +94,4 @@ They are useful listening locations, not automatically identified verses/choruse
 | Try_Harder | 107.376032 | 13, 25, 32, 51, 63, 76, 83, 95, 102 |
 | Turbo | 170.250583 | 4, 19, 150, 166 |
 
-The original music remains credited to RushJet1. Analysis assets are references, not new compositions.
+Original soundtrack attribution is archived in legacy/MUSIC_CREDITS.md. Analysis assets remain references.

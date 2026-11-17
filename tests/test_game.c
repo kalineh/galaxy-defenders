@@ -503,8 +503,10 @@ static void debug_equipment(void) {
 
 static void menu_flow(void) {
     reset();
-    CHECK(console_chain(&console, &game, "menu.open main;menu.input down;menu.input confirm"));
-    CHECK(game.menu.page == MENU_NEW_GAME && game.menu.players == 2);
+    CHECK(console_chain(&console, &game, "menu.open main;menu.input confirm;menu.input confirm"));
+    CHECK(game.menu.page == MENU_NEW_GAME && game.active_slot == 0);
+    CHECK(game_join(&game, 1));
+    game.menu.players = 2;
     CHECK(console_chain(&console, &game, "menu.input up;menu.input confirm"));
     CHECK(game.menu.page == MENU_NEW_GAME); /* no pretend save */
     CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm;menu.input down;menu.input confirm"));
@@ -665,7 +667,8 @@ static void starting_primary_patterns(void) {
     for (int pilot = 0; pilot <= 2; pilot += 2) for (int difficulty = 0; difficulty < 3; ++difficulty) {
         reset();
         game_menu_open(&game, MENU_MAIN);
-        game_menu_input(&game, MENU_CONFIRM, 0); /* Solo */
+        game_menu_input(&game, MENU_CONFIRM, 0); /* Play */
+        game_menu_input(&game, MENU_CONFIRM, 0); /* Slot 1 */
         game_menu_input(&game, MENU_CONFIRM, 0); /* New Game */
         for (int i = 0; i < difficulty; ++i) game_menu_input(&game, MENU_DOWN, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
@@ -1461,6 +1464,7 @@ static void stage_awards(void) {
     CHECK(game.players[0].score == 10000);
     for (int i = 0; i < 20; ++i) game_tick(&game);
     CHECK(game.players[0].score == 11500);
+    CHECK(game.saves[0].shop && game.saves[0].stage == 1 && game.saves[0].player[0].money == 11500);
     for (int i = 0; i < 200; ++i) game_tick(&game);
     CHECK(game.players[0].score == 11500);
     game_shop_open(&game);
@@ -1468,6 +1472,39 @@ static void stage_awards(void) {
     game.players[0].money -= 1000;
     game_checkpoint(&game, true);
     CHECK(game.saves[0].stage_scores[0] == 11500);
+}
+
+static void save_slots(void) {
+    reset();
+    for (int slot = 0; slot < GAME_SAVE_SLOTS; ++slot) {
+        game.active_slot = slot;
+        game.players[0].money = 1000 + slot;
+        game_checkpoint(&game, false);
+    }
+    CHECK(game.saves_dirty == 7);
+    CHECK(game_continue(&game, 2));
+    CHECK(game.active_slot == 2 && game.players[0].money == 1002);
+    CHECK(game.saves[0].player[0].money == 1000 && game.saves[1].player[0].money == 1001);
+    game.saves_dirty = 0;
+    SavedGame checkpoint = game.saves[2];
+    game.players[0].money = 9999;
+    game_menu_open(&game, MENU_PAUSE);
+    game.menu.cursor = 3; game_menu_input(&game, MENU_CONFIRM, 0);
+    game.menu.cursor = 1; game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_MAIN && !game.saves_dirty);
+    CHECK(!memcmp(&checkpoint, &game.saves[2], sizeof(checkpoint)));
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_SLOTS && game_menu_count(&game) == 4);
+    game_menu_input(&game, MENU_DOWN, 0); game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.active_slot == 1 && game.menu.page == MENU_NEW_GAME);
+    game_menu_input(&game, MENU_DOWN, 0); game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_OVERWRITE);
+    game_menu_input(&game, MENU_CONFIRM, 0); /* Cancel is the default. */
+    CHECK(game.menu.page == MENU_NEW_GAME && game.saves[1].player[0].money == 1001);
+    CHECK(!game_continue(&game, -1) && !game_continue(&game, GAME_SAVE_SLOTS));
+    CHECK(!game_save_write(&game.saves[1], "artifacts/native-port/missing-directory/slot.save"));
+    CHECK(game.saves[1].player[0].money == 1001);
 }
 
 static void saved_continue(void) {
@@ -1484,6 +1521,7 @@ static void saved_continue(void) {
     game_shop_open(&game);
     CHECK(game.saves[0].valid && game.saves[0].shop && game.saves[0].stage == 5);
     const char *path = "artifacts/native-port/test-save.txt";
+    remove(path); remove("artifacts/native-port/test-save.txt.bak");
     CHECK(game_save_write(&game.saves[0], path));
     SavedGame save = {0};
     CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
@@ -1495,7 +1533,7 @@ static void saved_continue(void) {
     CHECK(game_save_write(&save, path));
     reset();
     CHECK(game_save_read(&game.saves[0], path));
-    CHECK(game_continue(&game, 1));
+    CHECK(game_continue(&game, 0));
     CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
     CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
     CHECK(game.seed == 987654321u);
@@ -1509,7 +1547,7 @@ static void saved_continue(void) {
     CHECK(game.menu.next_stage == 5);
     game.cleared_game = true;
     game_checkpoint(&game, true);
-    CHECK(game_continue(&game, 1));
+    CHECK(game_continue(&game, 0));
     game_menu_input(&game, MENU_READY, 0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
@@ -1520,6 +1558,8 @@ static void saved_continue(void) {
     FILE *file = fopen(path, "wb");
     CHECK(file != NULL);
     if (file) { fputs("GALAXY_SAVE 1 99 0 1 0 0\n", file); fclose(file); }
+    CHECK(game_save_read(&save, path)); /* previous valid write survives corruption */
+    remove("artifacts/native-port/test-save.txt.bak");
     SavedGame before = game.saves[0];
     CHECK(!game_save_read(&game.saves[0], path));
     CHECK(!memcmp(&before, &game.saves[0], sizeof(before)));
@@ -1570,7 +1610,7 @@ int main(int argc, char **argv) {
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue();
+    archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue(); save_slots();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

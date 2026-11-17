@@ -663,7 +663,7 @@ static void draw_game(const Game *game, const Assets *assets) {
 
 static bool title_menu(const Game *game) {
     MenuPage page = game->menu.page;
-    return page == MENU_MAIN || page == MENU_NEW_GAME || page == MENU_DIFFICULTY || page == MENU_PILOT ||
+    return page == MENU_SLOTS || page == MENU_OVERWRITE || page == MENU_MAIN || page == MENU_NEW_GAME || page == MENU_DIFFICULTY || page == MENU_PILOT ||
         ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
 }
 
@@ -856,8 +856,9 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         DrawTexture(assets->panel_background, 1440, 0, WHITE);
         DrawTexture(assets->title, 704, 120, WHITE);
         DrawTextEx(assets->ui_font, "@kalin_t", (Vector2){1300, 980}, 19, 0, WHITE);
-        DrawTextEx(assets->ui_font, "@RushJet1", (Vector2){1300, 1000}, 19, 0, WHITE);
     }
+    if (game->menu.page == MENU_OVERWRITE)
+        text_center(assets->ui_font, TextFormat("Replace Slot %d?", game->active_slot + 1), 960, 330, 32, WHITE);
     if (game->menu.page == MENU_PILOT) {
         static const char *info[3][5] = {
             {"Kazuki", "Japan", "Ace Pilot", "B", "Speed+"},
@@ -1184,16 +1185,25 @@ static void draw_frame_graph(const FrameGraph *history, Font font) {
 
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
-    char save_paths[2][2048] = {{0}};
+    double save_retry_at = 0;
+    char save_paths[GAME_SAVE_SLOTS][2048] = {{0}};
     if (!frames) {
         const char *root = getenv("LOCALAPPDATA");
         char directory[1800];
         int length = snprintf(directory, sizeof(directory), "%s/GalaxyDefenders", root ? root : ".");
         if (length > 0 && length < (int)sizeof(directory) && (DirectoryExists(directory) || MakeDirectory(directory) == 0)) {
-            for (int i = 0; i < 2; ++i) {
-                snprintf(save_paths[i], sizeof(save_paths[i]), "%s/%s.save", directory, i ? "coop" : "solo");
-                if (FileExists(save_paths[i]) && !game_save_read(&game->saves[i], save_paths[i]))
-                    console_log(console, "ERROR: could not read %s save", i ? "co-op" : "solo");
+            for (int i = 0; i < GAME_SAVE_SLOTS; ++i) {
+                snprintf(save_paths[i], sizeof(save_paths[i]), "%s/slot%d.save", directory, i + 1);
+                char backup[2048]; snprintf(backup, sizeof(backup), "%s/slot%d.save.bak", directory, i + 1);
+                if (FileExists(save_paths[i]) || FileExists(backup)) {
+                    if (!game_save_read(&game->saves[i], save_paths[i])) {
+                        game->save_errors[i] = true;
+                        console_log(console, "ERROR: could not read save slot %d", i + 1);
+                    }
+                } else if (i < 2) {
+                    char legacy[2048]; snprintf(legacy, sizeof(legacy), "%s/%s.save", directory, i ? "coop" : "solo");
+                    if (game_save_read(&game->saves[i], legacy)) game->saves_dirty |= 1u << i;
+                }
             }
         } else console_log(console, "ERROR: could not create save directory");
     }
@@ -1331,11 +1341,17 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             command_failed = true;
             break;
         }
-        if (!frames && game->saves_dirty) {
-            for (int i = 0; i < 2; ++i) if (game->saves[i].valid &&
-                (!save_paths[i][0] || !game_save_write(&game->saves[i], save_paths[i])))
-                console_log(console, "ERROR: could not write %s save", i ? "co-op" : "solo");
-            game->saves_dirty = false;
+        if (!frames && game->saves_dirty && GetTime() >= save_retry_at) {
+            for (int i = 0; i < GAME_SAVE_SLOTS; ++i) if (game->saves_dirty & (1u << i)) {
+                if (save_paths[i][0] && game_save_write(&game->saves[i], save_paths[i])) {
+                    game->saves_dirty &= ~(1u << i);
+                    game->save_errors[i] = false;
+                } else {
+                    if (!game->save_errors[i]) console_log(console, "ERROR: could not write save slot %d; retrying", i + 1);
+                    game->save_errors[i] = true;
+                }
+            }
+            save_retry_at = game->saves_dirty ? GetTime() + 5 : 0;
         }
 #ifdef GALAXY_MEMORY
         BeginDrawing();
@@ -1344,6 +1360,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         draw_game(game, &assets);
         draw_menu(game, &assets, menu_frame++);
+        if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
+            text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
             DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));

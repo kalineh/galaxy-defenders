@@ -54,7 +54,7 @@ now schedules explicit parts; it has no fallback that silently inserts a riff.
 Harmony continues across section cuts instead of restarting every intro.
 Shared synthesis primitives/drum sounds are intentional; instrument banks,
 grooves and phrases differ. The album-wide musical pass follows PROCESS.md and
-uses the measured original MIDI evidence in reference_analysis.json. All tracks
+uses the measured original MIDI evidence in ../legacy/music_reference_analysis.json. All tracks
 now share the continuous song clock, not section-local note counters. The eighteen
 new scores each have an authored sixteen-bar statement/development, coherent
 chords and voicings, restrained accompaniment and their own instrument balance.
@@ -142,7 +142,7 @@ parts being removed are still gated at that cut. No notes extend past the loop.
 The actual NSF-converted MIDI is checked in at
 `legacy/PreprocessFFT/PreprocessFFT/Content/Konami's_Moon_Base.mid`.
 The earlier search missed this directory; the reduced MusicBin files are not
-our only reference. The MIDI metadata credits RushJet1, Capcom and nsf2midi.
+our only reference. The original metadata and attribution are preserved in the legacy archive.
 This is a conversion, not an original authoring project or authoritative timbre map.
 
 Direct event inspection: channel 0 opens with F#5, C#6, F#6, G#6, C#6, F#6,

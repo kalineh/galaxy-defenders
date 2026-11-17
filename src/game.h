@@ -12,6 +12,7 @@
 #define GAME_HEIGHT 1080
 #define GAME_HZ 60
 #define GAME_PLAYERS 2
+#define GAME_SAVE_SLOTS 3
 #define GAME_ENEMIES 256
 #define GAME_BULLETS 768
 #define GAME_EFFECTS 8192
@@ -29,7 +30,7 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT } MenuPage;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT, MENU_SLOTS, MENU_OVERWRITE } MenuPage;
 typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSITION_RETRY,
     TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
@@ -180,8 +181,10 @@ typedef struct {
     StageState stage;
     GameMenu menu;
     SecretReturn secret_return;
-    SavedGame saves[2];
-    bool saves_dirty, cleared_game, clear_exit;
+    SavedGame saves[GAME_SAVE_SLOTS];
+    unsigned saves_dirty;
+    int active_slot;
+    bool save_errors[GAME_SAVE_SLOTS], cleared_game, clear_exit;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);
@@ -191,7 +194,7 @@ void game_stats_init(Game *game);
 int game_stats_percent(int count, int total);
 int game_stage_medal(const Game *game);
 void game_record_stage(Game *game);
-bool game_continue(Game *game, int players);
+bool game_continue(Game *game, int slot);
 bool game_save_read(SavedGame *save, const char *path);
 bool game_save_write(const SavedGame *save, const char *path);
 bool game_join(Game *game, int slot);

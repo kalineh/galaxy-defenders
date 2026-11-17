@@ -12,10 +12,15 @@ volume. Choose Solo Game or Coop Game, New Game, difficulty and pilots. All
 music. Stage Clear continues into the shop; TAB (both players in co-op) proceeds
 to the next stage. All six shop categories support purchases and weapon levels.
 The last main stage opens the original ending and unlocks stage selection.
-Solo/co-op Continue saves equipment, money and stage/shop progress separately in
-`%LOCALAPPDATA%/GalaxyDefenders/solo.save` and `coop.save`. Purchases and stage
-transitions save automatically; pause-menu Quit returns to the shop for the
-current stage. Headless and bounded render checks never read or write these saves.
+Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
+through `slot3.save`. New Game confirms before replacing a populated/unreadable slot.
+Checkpoints save on new-run/stage start, stage-clear rewards and shop purchases.
+Pause-menu Quit returns to the title without saving partial-stage progress.
+Writes flush to a temporary file before atomic replacement and retain a validated
+previous `.bak`; loading can recover that backup. Failed writes remain pending,
+retry every five seconds and show an error. Existing `solo.save` / `coop.save`
+import into empty slots 1 / 2 without deleting the original files. Headless and
+bounded render checks never read or write human saves.
 
 Menus use arrows/Enter/Escape or gamepad D-pad/A/B. Player two uses J/L,
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,

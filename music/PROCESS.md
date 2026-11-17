@@ -7,7 +7,7 @@ remain open to composition and timbre changes. Do not copy original melodies.
 ## Repeat for each track
 
 1. Inspect the original reference. Run `python tools/analyze_music_midi.py` to
-   regenerate `reference_analysis.json`. Compare channel registers, sustained
+   regenerate `../legacy/music_reference_analysis.json`. Compare channel registers, sustained
    versus short notes, recurring attack gaps, delayed entries and density changes.
    Infer an arranging direction; do not mistake converter tempo for musical BPM,
    tiny effect notes for a composed melody, or pitch totals for a proven key.
@@ -38,7 +38,7 @@ remain open to composition and timbre changes. Do not copy original melodies.
 
 MIDI seconds below are raw converter times, not synchronized stage cues. These are
 arranging inferences from measured events, not claims of having auditioned the
-originals. Full counts, openings and source hashes are in reference_analysis.json.
+originals. Full counts, openings and source hashes are in ../legacy/music_reference_analysis.json.
 
 | Track | Original evidence | New composition direction |
 | --- | --- | --- |

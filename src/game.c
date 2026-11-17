@@ -667,6 +667,11 @@ void game_tick(Game *game) {
                 int bonus = game->menu.frame == 240 ? 10000 : skill_bonus[game_stage_medal(game)];
                 if (game->players[1].joined) bonus = bonus * 3 / 4;
                 for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined) game->players[i].score += bonus;
+                if (game->menu.frame == 260) {
+                    game_record_stage(game);
+                    game->menu.next_stage = game->stage.index < 11 ? game->stage.index + 1 : 0;
+                    game_checkpoint(game, true);
+                }
             }
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];
