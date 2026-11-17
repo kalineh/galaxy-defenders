@@ -69,7 +69,7 @@ void enemy_init_extended(Game *g, Enemy *e) {
         case ENEMY_DOUBLE_TURRET: health=2; radius=34; e->coins=4; delay=random_float(g)*45; break;
         case ENEMY_FENCE: health=4; radius=28; e->coins=0; break;
         case ENEMY_FENCE_BEAM: health=100000; e->box_width=1; e->box_height=8; e->coins=0; break;
-        case ENEMY_GLOB: health=3.5f; e->coins=0; e->aim=random_float(g)*2*PI; e->timer=90; break;
+        case ENEMY_GLOB: health=3.5f; e->coins=3; e->aim=random_float(g)*2*PI; e->timer=90; break;
         case ENEMY_MISSILE_POD: health=2; delay=random_float(g)*90; break;
         case ENEMY_MISSILE_STORM: health=5; radius=58; e->timer=60; e->attack=sign(g); e->aim=PI*0.5f*(1-e->attack); break;
         case ENEMY_MISSILE_TRIPLE: health=3; radius=34; delay=random_float(g)*111; break;

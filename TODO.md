@@ -1,4 +1,4 @@
-# Enemy follow-up in progress
+# Completed enemy follow-up
 
 - Done: fence pairs enforce reciprocal ownership; removed/reused endpoints cannot
   redirect beams or kill unrelated enemies. Drawn beam width matches its collider.
@@ -7,8 +7,11 @@
 - Done: Cutter's grey balls release at orbit-tangent speed, retain their spin and
   damage immunity, and exit normally. Regression checks cover both directions,
   camera scroll, center-slot reuse and eventual removal; core gameplay checks pass.
-- Give orange Globs a small coin drop; verify destruction and attachment expiry.
-- Run regressions and rebuild the native client; commit/push each verified piece.
+- Done: orange Globs drop three coins on destruction or attachment expiry;
+  regressions check both paths and prevent duplicate payout.
+- Verified together: full ./test.sh and native Windows build. Fence rendering was
+  checked with the windowless software renderer. Cutter release and Glob rewards
+  are intentional gameplay changes requested by the user, beyond legacy parity.
 
 # Completed camera movement audit
 

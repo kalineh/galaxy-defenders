@@ -1301,6 +1301,27 @@ static void cutter_release(void) {
     }
 }
 
+static void glob_coin_drops(void) {
+    for (int attached=0;attached<2;++attached) {
+        reset();
+        int n=game_spawn_enemy(&game,ENEMY_GLOB,400,880);
+        Enemy *glob=&game.enemies[n];
+        if (attached) {
+            glob->target=0; glob->attack=2; glob->timer=1;
+            enemy_update_extended(&game,glob);
+        } else enemy_take_damage(&game,glob,100,0);
+        CHECK(!glob->active);
+        int coins=0;
+        for (int i=0;i<GAME_PICKUPS;++i) {
+            Pickup *p=&game.pickups[i];
+            if (p->active && p->kind==0) ++coins;
+        }
+        CHECK(coins==3 && game.stage.stats.coins_total==3);
+        enemy_die(&game,glob,0);
+        CHECK(game.stage.stats.coins_total==3);
+    }
+}
+
 static void remaining_bosses(void) {
     for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
         reset();
@@ -1902,6 +1923,7 @@ int main(int argc, char **argv) {
     enemy_camera_movement();
     fence_links();
     cutter_release();
+    glob_coin_drops();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
