@@ -64,3 +64,40 @@ originals. Full counts, openings and source hashes are in reference_analysis.jso
 
 The missing MIDI references do not block new composition. Their mood choices are
 explicit creative decisions, not recovered facts about the original notes.
+
+## Album pass implementation
+
+All eighteen non-title scores now contain sixteen explicitly authored melody bars
+and chord-matched counter/bass patterns. The development changes register, contour,
+note spacing or held-versus-clipped articulation; it is not a random permutation.
+Bar selection keeps the phrase and harmony together. Closing bars use a tonic /
+dominant / tonic cadence, except the reflective seventh-chord track 18, which
+closes through C major / C minor / G. No original note sequences are imported.
+
+Each lead has a complementary counter timbre. Counter velocity drops while the
+lead plays and rises at the existing lead-out cuts. Pads stay quiet; short attacks
+use short releases; bass/kick anchors support the same beat. Layered pulses are
+used where body helps, while FM brass, reeds, keys and mallets retain distinct
+roles. Noninteger FM ratios that produced a metallic clash have been avoided in the
+new banks so accidental dissonance is not built into every note.
+
+The checks now examine eight-note melodic runs across bar boundaries rather than
+forbidding common four-note vocabulary. Every pitched accompaniment attack and
+strong-beat melody attack must belong to the current chord; melody/bass/counter
+patterns cannot overlap their own next attack. These are guardrails, not a
+substitute for listening or a ban on intentional future suspensions/syncopation.
+
+## Verification of this pass
+
+The native Windows build and full test suite pass. All nineteen rendered lengths
+match the original recordings at 48 kHz; all BPM values, section cuts, later layer
+switches and original stage/timing hashes are retained. The accepted title render
+is byte-identical. Album render peaks range from 0.3214 to 0.3781, RMS from 0.0625
+to 0.0953, with finite samples and no voice stealing. Seek determinism is checked
+after the main arrangement enters for every track. Other platforms and live-device
+playback were not exercised. These are engineering checks, not listening approval.
+
+Run `python tools/music_listening_report.py` after a native/render build for the
+local worksheet with full new tracks, protected-cut jumps and original reference
+players. Nothing autoplays. All source links and seek bounds are CLI-validated;
+humans own interactive playback and the musical review.

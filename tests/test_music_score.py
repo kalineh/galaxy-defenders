@@ -42,21 +42,47 @@ class MusicScoreTests(unittest.TestCase):
                 signatures.append((part['steps'], tuple((t, p-origin, gate) for t, p, gate, _ in notes)))
             self.assertEqual(len(set(signatures)), 19, role)
 
-    def test_no_shared_four_note_hook(self):
-        # Relative pitch/time catches copying a riff into a different key or tempo.
-        for role in ('lead', 'arp'):
-            hooks = []
-            for score in self.scores:
-                phrases = set()
+    def test_no_shared_eight_note_melody(self):
+        # Common short figures are vocabulary, not evidence of a recycled song.
+        # Compare substantial melodic runs, including across bar boundaries.
+        hooks = []
+        for score in self.scores:
+            part = score['parts']['lead']
+            groups = [part['patterns'], *part.get('variants', {}).values()]
+            phrases = set()
+            for patterns in groups:
+                notes = [(bar * part['steps'] + t, p) for bar, pattern in enumerate(patterns)
+                         for t, p, _, _ in pattern]
+                intervals = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(notes, notes[1:])]
+                phrases.update(tuple(intervals[i:i+7]) for i in range(len(intervals)-6))
+            hooks.append(phrases)
+        for i, j in itertools.combinations(range(19), 2):
+            self.assertFalse(hooks[i] & hooks[j], f'lead: tracks {i+1}/{j+1}')
+
+    def test_album_grid_and_harmony(self):
+        for score in self.scores:
+            self.assertEqual(score['clock'], 'song', score['name'])
+            events, frames = compiler.compile_events(score)
+            step_frames = compiler.RATE * 60 / score['bpm'] / 4
+            for frame, gate, role, pitch, _, _ in events:
+                step = round(frame / step_frames)
+                self.assertLessEqual(abs(frame - step * step_frames), .501, score['name'])
+                self.assertLessEqual(frame + gate, frames + 1)
+                if role >= 5:
+                    continue
+                phrase = score['bar_order'][step // 16]
+                chord = {(score['roots'][phrase] + x) % 12 for x in score['chords'][phrase]}
+                if role != 1 or step % 4 == 0:
+                    self.assertIn(pitch % 12, chord, (score['name'], frame, role, pitch))
+            self.assertEqual(score['roots'][score['bar_order'][-1]] % 12, score['tonic'] % 12)
+            lead = score['parts']['lead']
+            self.assertGreaterEqual(len(lead['patterns']), 8)
+            for role in ('bass', 'lead', 'arp'):
                 part = score['parts'][role]
-                patterns = part['patterns'] + [p for group in part.get('variants', {}).values() for p in group]
-                for notes in patterns:
-                    notes = sorted(notes)
-                    intervals = [(b[0]-a[0], b[1]-a[1]) for a, b in zip(notes, notes[1:])]
-                    phrases.update(tuple(intervals[i:i+3]) for i in range(len(intervals)-2))
-                hooks.append(phrases)
-            for i, j in itertools.combinations(range(19), 2):
-                self.assertFalse(hooks[i] & hooks[j], f'{role}: tracks {i+1}/{j+1}')
+                for pattern in part['patterns']:
+                    ordered = sorted(pattern)
+                    for a, b in zip(ordered, ordered[1:]):
+                        self.assertLessEqual(a[0] + a[2], b[0], (score['name'], role, a, b))
 
     def test_distinct_grooves_and_palettes(self):
         grooves, palettes, harmonies = set(), set(), set()

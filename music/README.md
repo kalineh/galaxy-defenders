@@ -6,6 +6,12 @@ loaded for playback. SFX remain the original assets.
 
 ## Developer album
 
+The repeatable analysis/composition/review workflow is in [PROCESS.md](PROCESS.md).
+After rendering, `python tools/music_listening_report.py` creates the disposable
+`artifacts/native-port/album-listening.html` worksheet. It plays the complete new
+renders with direct jumps to all protected section cuts, plus separate original
+reference controls. Nothing autoplays. The game still loads only new synth music.
+
 Open the console and enter `debug.music`. Up/Down selects and immediately plays
 one of 19 tracks. Left/Right seeks by 5% of its duration, Enter restarts, Escape
 closes the album and restores the current game's synth music. The album freezes
@@ -46,9 +52,15 @@ Removed the shared root/third/fifth pulse, fixed bass ostinato, stock lead pair,
 repeated bell accents, universal backbeat/fill and fixed 150-BPM delay. The compiler
 now schedules explicit parts; it has no fallback that silently inserts a riff.
 Harmony continues across section cuts instead of restarting every intro.
-Shared synthesis primitives/drum sounds are intentional; complete instrument banks,
-grooves and phrases differ. Automated comparison detects transposed copies and
-shared four-note pitch/rhythm hooks; it does not prove subjective distinctiveness.
+Shared synthesis primitives/drum sounds are intentional; instrument banks,
+grooves and phrases differ. The album-wide musical pass follows PROCESS.md and
+uses the measured original MIDI evidence in reference_analysis.json. All tracks
+now share the continuous song clock, not section-local note counters. The eighteen
+new scores each have an authored sixteen-bar statement/development, coherent
+chords and voicings, restrained accompaniment and their own instrument balance.
+Automated comparison detects full opening-pattern copies and shared eight-note
+melodic runs. Ordinary short figures are allowed; distinctiveness also depends on
+register, rhythm, arrangement and sound. Tests do not prove subjective quality.
 
 ### Protected timing
 
@@ -63,25 +75,25 @@ remain candidates; this rewrite does not claim to have confirmed them by listeni
 
 | Track | Identity | Lead / counter sound |
 | --- | --- | --- |
-| 01 Departure | Open fifths, clipped brass calls and offbeat engine bass | brass / square |
-| 02 Signal Grid | Dry circuit bleeps, chromatic cell and broken electro beat | clav / organ |
-| 03 Skyward Assault | Skyward brass fanfare and syncopated octave launches | brass / brass |
-| 04 Night Watch | Breathy reed nocturne, long rests and half-time sub bass | reed / hollow |
-| 05 Alkaline Skies | Bright mallet jazz extensions over a loping bass line | hollow / clav |
-| 06 Dreadnought | Distorted saw siege riff, tritone stabs and double-kick pressure | saw / clav |
-| 07 Predator Orbit | Low inharmonic bell warning, semitone tension and empty space | reed / glass |
-| 08 Homeward | Round organ hook with delayed answer and rolling hand-drum pulse | organ / reed |
-| 09 Control Circuit | Minor-key launch, fast upper pulse, descending bass and clipped later riff | pulse / pulse |
-| 10 Uprising | Glass cascade against a displaced snare and wide stereo strings | glass / hollow |
-| 11 Moon Base | Clocked pluck in a 3+3+4+3+3 accent cycle | clav / square |
-| 12 Luminous Wake | Airy string melody, suspended voicings and shimmering high replies | strings / glass |
-| 13 Clockwork Orbit | Staccato metal plucks, pickup notes and restless sixteenth hats | clav / hollow |
-| 14 Sirius Drive | Hollow marimba discovery motif over soft triangle bass | hollow / piano |
-| 15 Afterimage | Slow detuned string descent and distant bell echoes | strings / reed |
-| 16 Hidden Passage | Resilient reed call with a marching offbeat response | reed / organ |
-| 17 Dream Fracture | Fast pulse chase, ascending fifths and clipped clavinet response | square / clav |
-| 18 Another Flight | Quiet electric-piano farewell, long release and no driving ostinato | piano / hollow |
-| 19 Overdrive | Saw-and-square motor riff, broken kick grid and chromatic turnaround | saw / square |
+| 01 Departure | E-minor launch: broad brass calls, rolling upper answer, rising second phrase | brass / bright pulse |
+| 02 Signal Grid | C-sharp-minor circuitry: clipped FM question, rests, octave bass and bII pressure | clav / round organ |
+| 03 Skyward Assault | F-minor aerial assault: low brass punches, wide launches and an uncluttered high reply | brass pulse / fm chime |
+| 04 Night Watch | D-minor nocturne: long reed notes against uneven paired plucks and a restrained bass | reed / soft pluck |
+| 05 Alkaline Skies | G-minor interlock: chiming call and delayed answer over elastic octave bass | mallet / fm echo |
+| 06 Dreadnought | B-centered siege: clipped low saw pedal, semitone pressure and a held upper answer | saw / metal |
+| 07 Predator Orbit | F-sharp-minor stalk: hollow held calls, a broken pulse cell and sudden octave replies | hollow reed / dry pulse |
+| 08 Homeward | A-minor resolve: broad half-time pulse melody, long breathing phrases and quiet upper movement | warm pulse / soft keys |
+| 09 Control Circuit | Minor-key arcade launch: high pulse motor, broad lower melody, descending bass and clipped later riff | layered arcade pulse / layered high pulse |
+| 10 Uprising | E-flat-minor glow: sustained lower arc, high glass fragments and a stable low pedal | silk fm / glass |
+| 11 Moon Base | A-flat-minor clockwork: clipped three-three-two accents, low FM bite and a held answer | wood clav / soft pulse |
+| 12 Luminous Wake | B-minor expanse: wide octave answers around a sustained melody and deep pedal | wide pulse / octave glass |
+| 13 Clockwork Orbit | B-flat-minor pursuit: dry short calls, leading-tone tension and offset upper replies | needle pulse / echo pluck |
+| 14 Sirius Drive | C-minor discovery: bright mallet question, fifth-centered high reply and springy bass | clear mallet / small pulse |
+| 15 Afterimage | E-minor unease: slow descending reed phrase above restless soft pulses and displaced bass | dark reed / hushed keys |
+| 16 Hidden Passage | D-minor persistence: broad falling brass line, dotted calls and a firm dominant return | warm brass / compact organ |
+| 17 Dream Fracture | C-sharp-minor motor: repeated low pulse cells, Dorian flashes and an ascending second phrase | motor pulse / sharp fm |
+| 18 Another Flight | G-centered farewell: long FM-key phrases, seventh-chord color and a minor-plagal turn | felt fm / soft bell |
+| 19 Overdrive | C-minor control fight: repeated broad stabs above fast octave bass, with a rising answer | battle pulse / metal keys |
 
 Instrument parameter arrays are: kind, attack seconds, decay seconds, sustain,
 release seconds, gain, modulator ratio, FM index, low-pass coefficient, vibrato.
@@ -96,7 +108,8 @@ intervals follow the current chord root. Pattern lengths and registers are expli
 The previous title counter-line used a fixed major third over minor chords, and
 section-local part counters ran against song-global harmony. Track 9 now opts
 into `clock: song`: all parts keep the same sixteenth grid across the fixed cuts
-at 5, 18, 29 and 112 seconds. The other eighteen scores are unchanged.
+at 5, 18, 29 and 112 seconds. The later album pass extends this scheduling model
+to the other eighteen scores while retaining each track's own fixed cuts.
 
 The title now uses original Dm-C-Bb-A material: a fast high pulse above a slower,
 lower melody, then a clipped lead/bass riff from 18 seconds. The minor center,

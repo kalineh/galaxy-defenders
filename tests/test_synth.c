@@ -52,11 +52,14 @@ int main(void) {
     CHECK(block[0] == 0 && block[1] == 0 && block[2] == 0 && block[3] == 0);
     CHECK(sought.position == 1);
     CHECK(synth_seek(&sought, 0) && sought.position == 0);
+    /* Exercise each patch bank after its main arrangement has entered. */
+    static const int audition_seconds[SYNTH_TRACK_COUNT] = {
+        12, 40, 12, 12, 12, 35, 18, 32, 7, 20, 38, 16, 14, 28, 12, 28, 22, 24, 10
+    };
     /* Selecting/seeking must retain each song's own patch bank and delay. */
     for (int track = 1; track <= SYNTH_TRACK_COUNT; ++track) {
         CHECK(synth_select(&sequential, track));
-        /* Include the title lead/bass entry, not only its opening upper pulse. */
-        int preroll = track == 9 ? 320 : 8;
+        int preroll = audition_seconds[track - 1] * SYNTH_RATE / 1024;
         for (int i = 0; i < preroll; ++i) synth_render(&sequential, block, 1024);
         synth_render(&sequential, reference[0], 1024);
         CHECK(synth_select(&sought, track));
