@@ -1,7 +1,18 @@
+# Completed reward scan
+
+Spikes and Fence endpoints drop zero coins, as in legacy; these are candidates
+for a future reward change, not changed by this scan. Splitters pay through two
+fragments (three coins each). Boss parts, beams, black holes and asteroids also
+have no loose-coin reward. Released Cutter balls intentionally drop nothing.
+Two authored Turrets and two Cannons explicitly suppress their usual coin drops.
+Legacy buildings supported coin drops, but all 471 authored buildings have zero
+coins. Building destruction still awards score that becomes money on stage clear;
+the port preserves both behaviors. No reward data was changed in this scan.
+
 # Completed focus attack tuning
 
 Shift now follows the current primary level. Focus
-damage and energy use increased by 50% through reproducible native importer
+damage is 25% above the original baseline and energy use is 50% higher through native importer
 tuning; the legacy Beam focus level-two 0.75 outlier is corrected to 0.075 before
 the multiplier. Laser focus upgrades scale fire rate/emitter count, not per-shot
 damage. Normal fire, pilot multipliers and generator regeneration are unchanged.
@@ -12,7 +23,9 @@ pickup changes do not affect normal campaign play. Shop upgrades already scaled
 Shift before this tuning pass.
 Verified: every primary/focus level, pickup scaling, empty energy, continuous drain,
 Beam progression/replacement, full ./test.sh, importer --check and native build.
-The 50% balance increase is a first pass for human playtesting.
+Revised damage down from +50% following human feedback. Verified all 106 focus
+emitters changed only damage; energy/drain and other table fields are unchanged.
+Full ./test.sh, importer --check and native rebuild pass with the revised balance.
 
 # Completed enemy follow-up
 

@@ -696,7 +696,7 @@ static void weapon_upgrades(void) {
     game_tick(&game); /* Focus has a separate cooldown and fires without FIRE. */
     CHECK(game_bullet_count(&game) == 11 && game.bullets[8].vy == -19);
     CHECK(game.bullets[8].x == 396 && game.bullets[10].x == 404);
-    CHECK(fabsf(game.bullets[8].damage - 0.2625f) < 0.0001f);
+    CHECK(fabsf(game.bullets[8].damage - 0.21875f) < 0.0001f);
     CHECK(game.players[0].friction < game_chassis[0].friction);
     game.players[0].energy = 0;
     int shots = game.shots;
@@ -742,7 +742,7 @@ static void focus_scaling(void) {
             CHECK(game_bullet_count(&game)==0 && p->energy>=0);
         }
     }
-    CHECK(fabsf(game_weapons[WEAPON_FRONT_LASER_FOCUS].levels[0].emitters[0].damage-0.2625f)<0.0001f);
+    CHECK(fabsf(game_weapons[WEAPON_FRONT_LASER_FOCUS].levels[0].emitters[0].damage-0.21875f)<0.0001f);
     CHECK(fabsf(game_weapons[WEAPON_FRONT_LASER_FOCUS].levels[0].emitters[0].energy-0.3375f)<0.0001f);
     for (int level=1;level<8;++level)
         CHECK(game_weapons[WEAPON_BEAM_FOCUS].levels[level].emitters[0].damage>
@@ -763,7 +763,7 @@ static void focus_scaling(void) {
     game_tick(&game);
     CHECK(game_bullet_count(&game)==1);
     for (int i=0;i<GAME_BULLETS;++i) if (game.bullets[i].active)
-        CHECK(fabsf(game.bullets[i].damage-0.1125f)<0.0001f);
+        CHECK(fabsf(game.bullets[i].damage-0.09375f)<0.0001f);
 }
 
 static void console_editor(void) {

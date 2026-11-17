@@ -135,7 +135,8 @@ def generate(data):
                     # Correct the legacy 0.75 outlier between 0.05 and 0.10.
                     if name == 'BeamFocus' and level == 1:
                         e['Damage'] = 0.075
-                    for key in ('Damage', 'Energy', 'ToggleEnergyDrain'):
+                    e['Damage'] *= 1.25
+                    for key in ('Energy', 'ToggleEnergyDrain'):
                         e[key] *= 1.5
                 values = [f'.{field}={number(e[key])}' for key, field in fields.items() if e[key]]
                 values += [f'.offset_x={number(e["Offset"]["X"])}', f'.offset_y={number(e["Offset"]["Y"])}']
