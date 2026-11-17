@@ -67,7 +67,7 @@ void enemy_init_extended(Game *g, Enemy *e) {
         case ENEMY_CUTTER: health=5; e->box_width=e->box_height=72; e->coins=6; break;
         case ENEMY_CUTTER_BALL: health=0; radius=30; e->coins=3; break;
         case ENEMY_DOUBLE_TURRET: health=2; radius=34; e->coins=4; delay=random_float(g)*45; break;
-        case ENEMY_FENCE: health=4; radius=28; e->coins=0; break;
+        case ENEMY_FENCE: health=4; radius=28; e->coins=1; break;
         case ENEMY_FENCE_BEAM: health=100000; e->box_width=1; e->box_height=8; e->coins=0; break;
         case ENEMY_GLOB: health=3.5f; e->coins=3; e->aim=random_float(g)*2*PI; e->timer=90; break;
         case ENEMY_MISSILE_POD: health=2; delay=random_float(g)*90; break;
@@ -76,7 +76,7 @@ void enemy_init_extended(Game *g, Enemy *e) {
         case ENEMY_PYRAMID: health=6; radius=56; e->aim=PI*0.5f; e->spin=0.005f*sign(g); break;
         case ENEMY_RAID_TURRET: health=2; radius=28; delay=random_float(g)*24; break;
         case ENEMY_ROTATE_TURRET: health=2.25f; e->box_width=e->box_height=56; delay=random_float(g)*45; break;
-        case ENEMY_SPIKE: health=2; radius=34; e->coins=0; e->timer=60; break;
+        case ENEMY_SPIKE: health=2; radius=34; e->coins=1; e->timer=60; break;
         case ENEMY_SPLITTER: health=1.25f; radius=36; e->coins=0; e->spin=0.015f*sign(g); break;
         case ENEMY_SPLITTER_FRAGMENT: health=1; radius=30; e->spin=0.1f*sign(g); break;
         case ENEMY_SWIRL: health=3; e->coins=1; break;

@@ -1,7 +1,13 @@
+# Completed small enemy reward adjustment
+
+Spikes now drop one coin and Fence endpoints one coin each (two per destroyed
+pair), through the existing death/drop path. Splitter fragments remain at three
+coins each. Verified existing gameplay/console tests and native Windows build.
+
 # Completed reward scan
 
-Spikes and Fence endpoints drop zero coins, as in legacy; these are candidates
-for a future reward change, not changed by this scan. Splitters pay through two
+Spikes and Fence endpoints dropped zero coins in legacy; their native rewards
+were subsequently adjusted above. Splitters pay through two
 fragments (three coins each). Boss parts, beams, black holes and asteroids also
 have no loose-coin reward. Released Cutter balls intentionally drop nothing.
 Two authored Turrets and two Cannons explicitly suppress their usual coin drops.
