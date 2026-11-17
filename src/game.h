@@ -39,7 +39,7 @@ typedef struct {
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
-    bool shop_items[2];
+    bool shop_items[2], shop_purchase[2], shop_ready_focus[2];
     int frame;
     int next_stage, shop_fly_frames[GAME_PLAYERS];
 } GameMenu;

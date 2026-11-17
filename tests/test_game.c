@@ -148,21 +148,29 @@ static void shop_progression(void) {
     for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_UP, 0);
     game_menu_input(&game, MENU_BACK, 0);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 4000); /* Cancel preview. */
-    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
-    game_menu_input(&game, MENU_RIGHT, 0);
-    CHECK(game_shop_cost(&game, 0) == 5000 && !game_shop_buy(&game, 0));
+    CHECK(game_shop_cost(&game, 0) == 5000);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.shop_purchase[0]);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].money == 4000 && game.players[0].weapon_level == 2);
+    game_menu_input(&game, MENU_BACK, 0);
+    CHECK(!game.menu.shop_purchase[0] && game.menu.shop_items[0]);
     game.players[0].money = 10000;
-    CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 3 && game.players[0].money == 5000);
-    game_menu_input(&game, MENU_LEFT, 0);
-    CHECK(game_shop_buy(&game, 0) && game.players[0].weapon_level == 2 && game.players[0].money == 10000);
-    game_menu_input(&game, MENU_READY, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
+    game_menu_input(&game, MENU_BACK, 0);
+    game_menu_input(&game, MENU_DOWN, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.ready[0]);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
-    CHECK(game.players[0].chassis == 3 && game.players[0].money == 10000 && game.players[0].weapon_level == 2);
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 5000 && game.players[0].weapon_level == 3);
     CHECK(!strcmp(game_music(&game), "Alkali Earth"));
     game_retry(&game);
-    CHECK(game.stage.index == 1 && game.players[0].chassis == 3 && game.players[0].money == 10000);
+    CHECK(game.stage.index == 1 && game.players[0].chassis == 3 && game.players[0].money == 5000);
 }
 
 static void stage2_runtime(void) {

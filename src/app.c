@@ -23,7 +23,7 @@ typedef struct {
     Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
     Texture2D particle_dot, particle_triangle, energy;
     Texture2D menu[6], title, cloud, water, pilot_arrow;
-    Texture2D shop[22], star;
+    Texture2D shop[15], star;
     Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
     Texture2D hostile_textures[HOSTILE_COUNT];
     Texture2D big_laser, big_flame, shield_overlay, asteroid_cracks;
@@ -52,8 +52,6 @@ typedef struct {
 static const char *synth_path(const char *source);
 
 static const char *shop_texture_names[] = {
-    "ShopPanel", "ShopItemPanel", "ShopUpgradePanel", "ShopPurchaseButtonPanel",
-    "IconCategoryCursor", "IconItemCursor", "IconWeaponFrontLaser",
     "IconCategoryChassis", "IconCategoryGenerator", "IconCategoryShield",
     "IconCategoryWeaponPrimary", "IconCategoryWeaponSecondary", "IconCategoryWeaponSidekick",
     "IconChassisRookie", "IconChassisEagle", "IconChassisCrusher", "IconChassisInterceptor",
@@ -82,6 +80,26 @@ static Texture2D texture_load(const char *name) {
     Texture2D texture = LoadTexture(asset_path(name));
     if (IsTextureValid(texture)) SetTextureFilter(texture, TEXTURE_FILTER_BILINEAR);
     return texture;
+}
+
+/* Legacy shop glyphs are gray (76) on baked gray tiles (30).
+   Keep the symbol and let the current panel draw its own surface and focus. */
+static Texture2D shop_icon_load(const char *path) {
+    Image image = LoadImage(asset_path(path));
+    if (!IsImageValid(image)) return (Texture2D){0};
+    ImageFormat(&image, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    Color *pixels = image.data;
+    for (int y = 0; y < image.height; ++y) for (int x = 0; x < image.width; ++x) {
+        Color *pixel = &pixels[y * image.width + x];
+        float mask = fminf(1, fmaxf(0, (pixel->r - 30) / 46.0f));
+        if (x < image.width / 9 || x >= image.width - image.width / 9 ||
+            y < image.height / 9 || y >= image.height - image.height / 9) mask = 0;
+        *pixel = (Color){255,255,255,(unsigned char)(pixel->a * mask)};
+    }
+    Texture2D icon = LoadTextureFromImage(image);
+    UnloadImage(image);
+    if (IsTextureValid(icon)) SetTextureFilter(icon, TEXTURE_FILTER_BILINEAR);
+    return icon;
 }
 
 static void assets_unload(Assets *assets) {
@@ -114,7 +132,7 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->portraits[2])) UnloadTexture(assets->portraits[2]);
     for (int i = 0; i < 6; ++i) if (IsTextureValid(assets->menu[i])) UnloadTexture(assets->menu[i]);
     if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
-    for (int i = 0; i < 22; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
+    for (int i = 0; i < 15; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
     for (int i = 0; i < WEAPON_COUNT; ++i) {
         if (IsTextureValid(assets->weapon_icons[i])) UnloadTexture(assets->weapon_icons[i]);
         if (IsTextureValid(assets->weapon_textures[i])) UnloadTexture(assets->weapon_textures[i]);
@@ -313,10 +331,10 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     for (int i = 0; i < 6; ++i) valid = valid && IsTextureValid(assets->menu[i]);
     valid = valid && IsTextureValid(assets->water) && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
         IsTextureValid(assets->pilot_arrow) && IsTextureValid(assets->portraits[2]);
-    for (int i = 0; i < 22; ++i) {
+    for (int i = 0; i < 15; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
-        assets->shop[i] = texture_load(path);
+        assets->shop[i] = shop_icon_load(path);
         valid = IsTextureValid(assets->shop[i]) && valid;
     }
     assets->star = texture_load("textures/Star.png");
@@ -340,23 +358,23 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         valid = IsTextureValid(assets->weapon_textures[i]) && valid;
         if (equipment_weapon_category(i) >= 0) {
             snprintf(path, sizeof(path), "textures/shop/IconWeapon%s.png", game_weapons[i].name);
-            assets->weapon_icons[i] = texture_load(path);
+            assets->weapon_icons[i] = shop_icon_load(path);
             valid = IsTextureValid(assets->weapon_icons[i]) && valid;
         }
     }
     for (int i = 0; i < GENERATOR_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", game_generators[i].icon);
-        assets->generator_icons[i] = texture_load(path);
+        assets->generator_icons[i] = shop_icon_load(path);
         valid = IsTextureValid(assets->generator_icons[i]) && valid;
     }
     for (int i = 0; i < SHIELD_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", game_shields[i].icon);
-        assets->shield_icons[i] = texture_load(path);
+        assets->shield_icons[i] = shop_icon_load(path);
         valid = IsTextureValid(assets->shield_icons[i]) && valid;
     }
-    assets->item_none = texture_load("textures/shop/IconItemNone.png");
+    assets->item_none = shop_icon_load("textures/shop/IconItemNone.png");
     valid = IsTextureValid(assets->item_none) && valid;
     valid = IsTextureValid(assets->star) && stage_assets_load(assets, 0) && valid;
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
@@ -669,83 +687,130 @@ static bool title_menu(const Game *game) {
         ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
 }
 
-static void draw_shop(const Game *game, const Assets *assets, int frame) {
+static const char *shop_item_name(int category, int item) {
+    if (item < 0) return "Empty";
+    switch (category) {
+        case 0: return game_chassis[item].name;
+        case 1: return game_generators[item].name;
+        case 2: return game_shields[item].name;
+        default: return game_weapons[item].display_name;
+    }
+}
+
+static void shop_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
+    DrawTextEx(font, label, (Vector2){x, y}, 23, 0, WHITE);
+    const char *amount = TextFormat("%.0f / %.0f", value, capacity);
+    DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 21, 0).x, y}, 21, 0, dim);
+    DrawRectangle(x, y + 31, 240, 6, (Color){45,55,69,255});
+    if (capacity > 0) DrawRectangle(x, y + 31, (int)(240 * fminf(1, fmaxf(0, value / capacity))), 6, color);
+}
+
+static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
+    static const char *names[] = {"Kazuki", "Rabbit", "Gunthor"};
+    static const char *categories[] = {"Chassis", "Generator", "Shield", "Main weapon", "Support weapon", "Sidekick"};
+    Font font = assets->ui_font;
+    const Color ink = {12, 18, 29, 255}, rule = {51, 64, 80, 255}, surface = {25, 36, 51, 255};
+    Color highlight = player_colors[slot];
+    int x = slot ? ARENA_X + GAME_WIDTH : 0;
+    int left = x + 28, width = ARENA_X - 56;
+    const Player *p = &game->players[slot];
+    const GameMenu *menu = &game->menu;
+    DrawRectangle(x, 0, ARENA_X, GAME_HEIGHT, ink);
+    DrawRectangle(slot ? x : x + ARENA_X - 2, 0, 2, GAME_HEIGHT, rule);
+    DrawRectangle(left, 32, 58, 36, p->joined ? highlight : rule);
+    text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
+    if (!p->joined) {
+        text_center(font, "Join flight", x + 240, 488, 36, WHITE);
+        text_center(font, slot ? "Press Start or F2" : "Press Start or Enter", x + 240, 543, 23, dim);
+        return;
+    }
+    DrawTextEx(font, names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
+    const char *credits = TextFormat("%d cr", p->money);
+    DrawTextEx(font, credits, (Vector2){left + width - MeasureTextEx(font, credits, 27, 0).x, 38}, 27, 0, highlight);
+    DrawLine(left, 88, left + width, 88, rule);
+    sprite(assets->portraits[p->pilot], left + 82, 204, 164, 0, WHITE);
+    const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
+    shop_meter(font, left + 184, 115, "Armor", preview->health, game_chassis[preview->chassis].armor, highlight);
+    shop_meter(font, left + 184, 172, "Shield", preview->shield_health,
+        preview->shield < 0 ? 0 : game_shields[preview->shield].capacity, (Color){130,183,240,255});
+    shop_meter(font, left + 184, 229, "Energy", preview->energy, game_generators[preview->generator].capacity, (Color){117,214,188,255});
+    int cat = menu->shop_category[slot], owned = game_shop_equipped(p, cat);
+    bool items = menu->shop_items[slot], purchase = menu->shop_purchase[slot];
+    bool on_ready = menu->shop_ready_focus[slot] || menu->ready[slot];
+    for (int c = 0; c < 6; ++c) {
+        int xx = left + c * 72;
+        DrawRectangle(xx, 317, 64, 66, cat == c ? surface : ink);
+        sprite(assets->shop[c], xx + 32, 349, 54, 0, cat == c ? highlight : dim);
+        DrawRectangle(xx, 381, 64, cat == c ? 4 : 1, cat == c ? highlight : rule);
+        if (cat == c && !items && !on_ready) DrawRectangleLinesEx((Rectangle){xx,317,64,68}, 2, highlight);
+    }
+    DrawTextEx(font, categories[cat], (Vector2){left, 409}, 40, 0, WHITE);
+    int stock[WEAPON_COUNT + 1], count = game_shop_stock(game, slot, cat, stock);
+    int item = items ? menu->shop_item[slot] : owned, selected = 0;
+    for (int i = 0; i < count; ++i) if (stock[i] == item) selected = i;
+    int first = selected > 3 ? selected - 3 : 0;
+    if (count > 4) {
+        const char *position = TextFormat("%d / %d", selected + 1, count);
+        text_center(font, position, left + width - 34, 425, 21, dim);
+    }
+    for (int i = first; i < count && i < first + 4; ++i) {
+        int id = stock[i], y = 482 + (i - first) * 75;
+        bool focused = items && id == item && !on_ready;
+        DrawRectangle(left, y, width, 69, focused ? surface : ink);
+        DrawLine(left, y + 68, left + width, y + 68, rule);
+        if (focused) DrawRectangle(left, y, 4, 69, highlight);
+        Texture2D icon = id < 0 ? assets->item_none : cat == 0 ? assets->shop[6 + id] :
+            cat == 1 ? assets->generator_icons[id] : cat == 2 ? assets->shield_icons[id] : assets->weapon_icons[id];
+        sprite(icon, left + 40, y + 34, 54, 0, WHITE);
+        DrawTextEx(font, shop_item_name(cat, id), (Vector2){left + 79, y + (id == owned ? 4 : 17)}, 29, 0, WHITE);
+        if (id == owned) DrawTextEx(font, "Equipped", (Vector2){left + 80, y + 40}, 18, 0, highlight);
+    }
+    int level = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
+    bool upgrade = items && owned == item && menu->shop_level[slot] > level;
+    bool eligible = items && (upgrade || owned != item);
+    int cost = items ? game_shop_cost(game, slot) : 0;
+    if (items && item >= 0 && cat == 1) {
+        DrawTextEx(font, TextFormat("Regen %.2f", game_generators[item].regen), (Vector2){left, 810}, 25, 0, WHITE);
+    } else if (items && item >= 0 && cat == 2) {
+        DrawTextEx(font, TextFormat("Efficiency %.0f%%", game_shields[item].efficiency * 100), (Vector2){left, 810}, 25, 0, WHITE);
+    } else if (items && item >= 0 && cat >= 3) {
+        const char *mark = upgrade ? TextFormat("Mk %d  >  Mk %d", level + 1, menu->shop_level[slot] + 1) :
+            TextFormat("Mk %d", menu->shop_level[slot] + 1);
+        DrawTextEx(font, mark, (Vector2){left, 810}, 26, 0, WHITE);
+    }
+    if (eligible) {
+        const char *price = cost < 0 ? TextFormat("+%d cr credit", -cost) : TextFormat("%d cr", cost);
+        DrawTextEx(font, price, (Vector2){left + width - MeasureTextEx(font, price, 27, 0).x, 810}, 27, 0, cost > p->money ? danger : highlight);
+    }
+    bool active = eligible && purchase && !on_ready;
+    const char *action = !items ? "Browse" : !eligible ? "Equipped" : cost > p->money ? "Need credits" :
+        upgrade ? "Upgrade" : item < 0 ? "Unequip" : "Buy & equip";
+    DrawRectangle(left, 868, 250, 65, active ? highlight : surface);
+    text_center(font, action, left + 125, 882, 28, active ? ink : eligible || !items ? WHITE : dim);
+    DrawRectangleLinesEx((Rectangle){left + 262,868,162,65}, 2, on_ready ? highlight : rule);
+    text_center(font, menu->ready[slot] ? "Ready!" : "Ready", left + 343, 882, 28, on_ready ? highlight : WHITE);
+    const char *hint = device >= 4 && device < INPUT_PADS ? "Cross  Select     Circle  Back" :
+        device >= 0 && device < 4 ? "A  Select     B  Back" :
+        slot ? "R Ctrl  Select     Bksp  Back" : "Enter  Select     Esc  Back";
+    DrawTextEx(font, hint, (Vector2){left, 997}, 22, 0, dim);
+    if (items && !purchase && !on_ready) DrawTextEx(font, "Up / Down: item", (Vector2){left, 953}, 21, 0, dim);
+    if (!items && !on_ready) DrawTextEx(font, "Left / Right: category     Down: ready", (Vector2){left, 953}, 21, 0, dim);
+}
+
+static void draw_shop(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
     ClearBackground(BLACK);
     for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
         float x = ARENA_X + (i * 193 + layer * 311) % GAME_WIDTH;
         float y = fmodf(i * 137.0f + frame * (layer ? 2.1f : 3.5f), GAME_HEIGHT);
         sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
     }
-    draw_player_panel(game, 0, assets);
-    draw_player_panel(game, 1, assets);
-    text_center(assets->ui_font, "Welcome to Randy's Random Item Shop", 960, 50, 28, WHITE);
-    text_center(assets->ui_font, "Press TAB to proceed", 960, 104, 24, dim);
-    static const char *category_names[] = {"Chassis", "Generator", "Shield", "Main Weapon", "Support Weapon", "Sidekick"};
-    static const char *levels[] = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
-        const Player *p = &game->players[slot];
-        if (!p->joined) continue;
-        int category = game->menu.shop_category[slot], item = game->menu.shop_item[slot];
-        bool items = game->menu.shop_items[slot], ready = game->menu.ready[slot];
-        float menu_x = CANVAS_WIDTH * (slot ? 0.707f : 0.291f), menu_y = CANVAS_HEIGHT * 0.351f;
-        float panel_x = menu_x - CANVAS_WIDTH * (slot ? 0.047f : 0.065f), panel_y = menu_y - CANVAS_HEIGHT * 0.060f;
-        DrawTexturePro(assets->shop[0], (Rectangle){0, 0, slot ? -220 : 220, 620},
-            (Rectangle){panel_x, panel_y, 220, 620}, (Vector2){0}, 0, WHITE);
-        for (int c = 0; c < 6; ++c)
-            sprite(assets->shop[7 + c], menu_x, menu_y + c * 96, 96, 0, ready ? dim : WHITE);
-        if (!ready) sprite(assets->shop[4], menu_x, menu_y + category * 96, 96, 0, WHITE);
-        if (items && !ready) {
-            int available[WEAPON_COUNT + 1], selected = 0;
-            int count=game_shop_stock(game,slot,category,available);
-            for(int i=0;i<count;++i)if(available[i]==item)selected=i;
-            int first = selected > 5 ? selected - 5 : 0;
-            int shown = count - first < 7 ? count - first : 7;
-            float item_x = menu_x + (slot ? -134 : 134);
-            float item_y = menu_y;
-            DrawTexturePro(assets->shop[1], (Rectangle){(float)(shown - 1) * 128, 0, 128, 672},
-                (Rectangle){item_x - 70, item_y - 58, 128, 672}, (Vector2){0}, 0, WHITE);
-            for (int row = 0; row < shown; ++row) {
-                int c = available[first + row];
-                Texture2D icon = c < 0 ? assets->item_none : category == 0 ? assets->shop[13 + c] :
-                    category == 1 ? assets->generator_icons[c] : category == 2 ? assets->shield_icons[c] : assets->weapon_icons[c];
-                float y = item_y + row * 80;
-                sprite(icon, item_x, y, 80, 0, WHITE);
-                if (item == c) sprite(assets->shop[5], item_x, y, 80, 0, WHITE);
-            }
-        }
-        float info_x = CANVAS_WIDTH * (slot ? 0.765f : 0.020f), info_y = CANVAS_HEIGHT * 0.400f;
-        DrawTexture(assets->shop[2], (int)info_x, (int)info_y, WHITE);
-        const char *name = category_names[category];
-        if (items) name = item < 0 ? "None" : category == 0 ? game_chassis[item].name :
-            category == 1 ? game_generators[item].name : category == 2 ? game_shields[item].name : game_weapons[item].display_name;
-        text_center(assets->ui_font, name, (int)info_x + 207, (int)info_y + 22, 24, WHITE);
-        if (items) {
-            int cost = game_shop_cost(game, slot);
-            Color color = cost <= p->money ? WHITE : dim;
-            text_center(assets->ui_font, TextFormat("Cost: %d", cost), (int)info_x + 207, (int)info_y + 72, 24, color);
-            text_center(assets->ui_font, TextFormat("Money: %d", p->money - cost), (int)info_x + 207, (int)info_y + 112, 24, color);
-            if (category >= 3 && item >= 0) {
-                int level = game->menu.shop_level[slot];
-                text_center(assets->ui_font, TextFormat("<  Mk %s / %s  >", levels[level], levels[game_weapons[item].level_count - 1]),
-                    (int)info_x + 207, (int)info_y + 160, 24, WHITE);
-            }
-            if (category == 1) text_center(assets->ui_font, TextFormat("Energy %.1f   Regen %.2f", game_generators[item].capacity, game_generators[item].regen),
-                (int)info_x + 207, (int)info_y + 160, 22, WHITE);
-            if (category == 2) text_center(assets->ui_font, TextFormat("Shield %.1f   Efficiency %.0f%%", game_shields[item].capacity, game_shields[item].efficiency * 100),
-                (int)info_x + 207, (int)info_y + 160, 22, WHITE);
-            text_center(assets->ui_font, "Up/Down: item   Left/Right: level", (int)info_x + 207, (int)info_y + 220, 19, dim);
-            text_center(assets->ui_font, "Enter: purchase   Esc: back", (int)info_x + 207, (int)info_y + 252, 20, WHITE);
-            if (cost > p->money) text_center(assets->ui_font, "Not enough money", (int)info_x + 207, (int)info_y + 300, 23, dim);
-            DrawTexture(assets->shop[3], (int)menu_x - 54, (int)menu_y + 554, WHITE);
-            text_center(assets->ui_font, "Purchase", (int)menu_x + 58, (int)menu_y + 580, 24, color);
-        } else text_center(assets->ui_font, "Up/Down: category   Enter: browse", (int)info_x + 207, (int)info_y + 80, 20, WHITE);
-    }
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) draw_shop_panel(game, assets, slot, devices->device[slot]);
 }
 
-static void draw_menu(const Game *game, const Assets *assets, int frame) {
+static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
     if (game->menu.page == MENU_NONE) return;
     if (game->menu.page == MENU_FINISH) {
         static const char *lines[] = {
@@ -795,7 +860,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
             text_center(assets->ui_font, lines[i], 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
         return;
     }
-    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame); return; }
+    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices); return; }
     if (game->menu.page == MENU_STAGE_SELECT) {
         ClearBackground(BLACK);
         for (int i = 0; i < 20; ++i) {
@@ -875,8 +940,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
             int x = (slot ? 1440 : 0) + 238, y = 472;
             int pilot = game->menu.pilot[slot];
             DrawTextEx(assets->ui_font, game->menu.ready[slot] ? "Waiting..." : "Select Pilot", (Vector2){x - 120.0f, y - 240.0f}, 36, 0, WHITE);
-            DrawRectangle(x - 77, y - 101, 159, 201, DARKGRAY);
-            sprite(assets->portraits[pilot], (float)x, (float)y, 256, 0, WHITE);
+            DrawRectangle(x - 100, y - 100, 200, 200, (Color){18,27,40,255});
+            sprite(assets->portraits[pilot], (float)x, (float)y, 196, 0, WHITE);
             if (!game->menu.ready[slot]) {
                 if (pilot > 0) sprite(assets->pilot_arrow, (float)x - 116, (float)y, 67, 0, WHITE);
                 if (pilot < 2) DrawTexturePro(assets->pilot_arrow, (Rectangle){0, 0, -67, 99},
@@ -1001,7 +1066,6 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
         else if (!game->players[slot].joined) game_join(game, slot);
         else if (game->menu.page == MENU_NONE) game_menu_open(game, MENU_PAUSE);
         else if (game->menu.page == MENU_PAUSE) menu_input(game, assets, MENU_BACK, slot);
-        else menu_input(game, assets, game->menu.page == MENU_SHOP ? MENU_READY : MENU_CONFIRM, slot);
         handled_start = true;
         pad->pressed = 0; /* The join/pause press must not also select a menu row. */
     }
@@ -1014,11 +1078,11 @@ static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, 
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         bool pressed[7] = {false};
         if (slot == 0) {
-            pressed[MENU_UP] = IsKeyPressed(KEY_UP);
-            pressed[MENU_DOWN] = IsKeyPressed(KEY_DOWN);
-            pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT);
-            pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT);
-            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_ENTER);
+            pressed[MENU_UP] = IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W);
+            pressed[MENU_DOWN] = IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S);
+            pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A);
+            pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D);
+            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE);
             pressed[MENU_READY] = IsKeyPressed(KEY_TAB);
             pressed[MENU_BACK] = IsKeyPressed(KEY_ESCAPE);
         } else if (game->menu.page == MENU_PILOT || game->menu.page == MENU_SHOP) {
@@ -1446,8 +1510,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         BeginTextureMode(canvas);
 #endif
         draw_game(game, &assets);
-        draw_menu(game, &assets, menu_frame++);
-        if (game->menu.page != MENU_FINISH && game->menu.page != MENU_CLEAR)
+        draw_menu(game, &assets, menu_frame++, &devices);
+        if (game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH && game->menu.page != MENU_CLEAR)
             text_center(assets.ui_font, "Start / Options: join or pause   |   Share + Options: leave   |   F2: keyboard P2", 960, 1040, 19, LIGHTGRAY);
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);

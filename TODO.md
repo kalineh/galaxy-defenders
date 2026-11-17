@@ -1,56 +1,14 @@
-# UI replacement: visual exploration and interaction plan
+# Shop UI
 
-User explicitly requests replacing the legacy GUI/shop appearance, responsive
-player panels, mobile layout planning and standardized keyboard/controller input.
-This supersedes the earlier UI-fidelity restriction for this replacement.
-The first two imagegen boards were too text-heavy and displaced the live game
-preview. The revised third concept restores the full-height central playfield
-between compact P1/P2 shop panels. This is the current direction; these remain
-concepts, not implemented screens. Mockup numbers/proportions and device prompts
-are illustrative, not gameplay specifications.
+Implemented the widescreen shop from [the revised concept](design/shop-target.png).
+Runtime uses the firing simulation, independent pilot rails, preview resource
+meters, stock and trade-in prices. Confirm steps from category to stock to
+purchase. Down from categories focuses Ready. The three anime portraits also
+appear in pilot selection and the gameplay HUD.
 
-Design target:
-- Flat surfaces and geometric icons matching existing sprites; bundled Noto type,
-  yellow P1 / lavender P2 accents, explicit focus outlines, restrained borders.
-- Shop: keep the large live playfield centered, showing each ship firing its
-  selected preview equipment. Keep armor/shield/energy meters visible and live.
-  Compact side panels contain six category icon tabs, a short item list, explicit
-  current/next level plus pips, a price/action and Ready. Avoid paragraphs and
-  comparison tables. Browsing previews equipment without purchasing it.
-- Preserve useful nesting: category -> item -> explicit Buy/Upgrade action;
-  Back reverses one step and restores focus. Remove left/right level shopping.
-  Proposed purchase model: Upgrade buys exactly the next level; Buy & Equip
-  replaces a weapon. Existing trade-in credit can be included in the shown price
-  rather than exposed as reverse-level navigation. Economy changes are not yet
-  implemented; the user's preference is toward simpler purchases/upgrades.
-- Co-op: independent focus/balance/purchases/readiness and live preview per player.
-  Preserve the center arena in solo too; inactive P2 needs only a quiet join hint.
-- HUD: compact player rails on wide screens; status strips at narrow widths.
-  Preserve the simulation viewport/aspect ratio; do not stretch or crop gameplay.
-- Mobile: retain a visible live preview above a compact shop tray, with resource
-  meters visible. Use readable touch targets and safe areas; touch invokes the
-  same actions. Do not merely shrink the 1920x1080 canvas or hide the preview.
-
-Input contract for implementation:
-- Semantic Navigate / Confirm / Back / Pause / Join / Leave actions, with device
-  bindings feeding one path. Directional repeat is deliberate; activation is an
-  edge, never a held key leaking into the next screen.
-- Keyboard arrows/WASD navigate, Enter/Space confirm, Esc backs out (pauses during
-  gameplay). Controller d-pad/stick navigate, south confirms, east backs out,
-  Start/Options joins an unclaimed device or pauses its player. Preserve explicit
-  leave behavior. Start must not act as generic Confirm/purchase in menus.
-- Back closes the deepest selection/modal before leaving a screen; restore prior
-  focus on return. Shop Ready is a focusable action using normal Confirm, not a
-  mandatory special Tab key. Returning to title explains checkpoint behavior.
-- Per-player prompt glyphs reflect keyboard, Xbox-style or DS4 input. On touch,
-  display tappable controls. Shared menus need explicit navigation ownership;
-  shop panels retain independent owners.
-
-Next implementation slice: consolidate input actions and focus/navigation tests,
-then prototype the responsive shop with existing stock/economy/preview logic;
-carry the resulting components into pause, options, save slots and player HUDs.
-Solcraft has Dear ImGui/rlImGui as a local reference. Library choice and C/C++
-boundary remain to be settled; no dependency or runtime UI code changed yet.
+Remaining UI work includes the compact mobile shop tray and touch input,
+gameplay HUD rails, and visual updates to pause, options and save slots.
+The widescreen shop uses the existing raylib renderer and menu actions.
 
 # Completed small enemy reward adjustment
 

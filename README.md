@@ -9,8 +9,12 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
-music. Stage Clear continues into the shop; TAB / Start (each joined player ready) proceeds
-to the next stage. All six shop categories support purchases and weapon levels.
+music. Stage Clear opens the shop. Left/right selects a category. Confirm opens
+its stock, up/down previews equipment, and Confirm focuses the purchase button.
+Confirm again to buy. Equipped primary and support weapons preview the next
+level. Switching gear applies its trade-in value to the displayed price.
+Back returns one step. From the tabs, Down selects Ready. The next stage starts
+when each joined player confirms Ready.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
 through `slot3.save`. New Game confirms before replacing a populated/unreadable slot.
@@ -22,7 +26,7 @@ retry every five seconds and show an error. Existing `solo.save` / `coop.save`
 import into empty slots 1 / 2 without deleting the original files. Headless and
 bounded render checks never read or write human saves.
 
-Menus use arrows/Enter/Escape or gamepad D-pad/A/B. Player two uses J/L,
+Menus use arrows or WASD, Enter/Space and Escape or gamepad D-pad/A/B. Player two uses J/L,
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
 generators and shields are connected; Rabbit starts with Lightning. Options adjust
 SFX/music volume and screen size for the session.
@@ -45,8 +49,7 @@ See [music audition instructions](music/README.md) and the
 | Join / leave | Keyboard claims P1 when used | F2 toggles keyboard P2 |
 
 Controllers claim the first available P1/P2 slot with Start/Options; hardware index
-does not determine player number. Start pauses/resumes after joining and readies
-your ship in the shop. Select/Share + Start/Options drops out. Unplugging also
+does not determine player number. Start pauses/resumes after joining. Select/Share + Start/Options drops out. Unplugging also
 drops out, clears held input and pauses if nobody remains. Joining again retains
 the slot's equipment, money and health; it cannot revive a destroyed ship.
 Both loadouts stay in the same campaign save even when one player is absent.
