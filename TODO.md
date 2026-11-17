@@ -1,3 +1,48 @@
+# UI replacement: visual exploration and interaction plan
+
+User explicitly requests replacing the legacy GUI/shop appearance, responsive
+player panels, mobile layout planning and standardized keyboard/controller input.
+This supersedes the earlier UI-fidelity restriction for this replacement.
+Two imagegen concept boards explored a bordered charcoal layout and a flatter
+blue-black layout. Prefer the latter's simpler structure; these are concepts,
+not implemented screens. Mockup numbers, cropped gameplay proportions, incomplete
+category lists and device prompts are illustrative, not gameplay specifications.
+
+Design target:
+- Flat surfaces and geometric icons matching existing sprites; bundled Noto type,
+  yellow P1 / lavender P2 accents, explicit focus outlines, restrained borders.
+- Shop: labeled categories and items, equipped vs selected comparison, actual
+  damage/fire-rate/energy values, contained firing preview, explicit purchase and
+  Ready controls. Include all six existing categories. Distinguish selection from
+  activation; show price, insufficient funds and purchase feedback in one place.
+- Co-op: independent focus/balance/purchases/readiness per player. Solo shop uses
+  available space; inactive P2 does not reserve half the screen.
+- HUD: compact player rails on wide screens; status strips at narrow widths.
+  Preserve the simulation viewport/aspect ratio; do not stretch or crop gameplay.
+- Mobile: reflow shop into one readable column with large touch targets and safe
+  areas. Touch invokes the same actions. Do not merely shrink the 1920x1080 canvas.
+
+Input contract for implementation:
+- Semantic Navigate / Confirm / Back / Pause / Join / Leave actions, with device
+  bindings feeding one path. Directional repeat is deliberate; activation is an
+  edge, never a held key leaking into the next screen.
+- Keyboard arrows/WASD navigate, Enter/Space confirm, Esc backs out (pauses during
+  gameplay). Controller d-pad/stick navigate, south confirms, east backs out,
+  Start/Options joins an unclaimed device or pauses its player. Preserve explicit
+  leave behavior. Start must not act as generic Confirm/purchase in menus.
+- Back closes the deepest selection/modal before leaving a screen; restore prior
+  focus on return. Shop Ready is a focusable action using normal Confirm, not a
+  mandatory special Tab key. Returning to title explains checkpoint behavior.
+- Per-player prompt glyphs reflect keyboard, Xbox-style or DS4 input. On touch,
+  display tappable controls. Shared menus need explicit navigation ownership;
+  shop panels retain independent owners.
+
+Next implementation slice: consolidate input actions and focus/navigation tests,
+then prototype the responsive shop with existing stock/economy/preview logic;
+carry the resulting components into pause, options, save slots and player HUDs.
+Solcraft has Dear ImGui/rlImGui as a local reference. Library choice and C/C++
+boundary remain to be settled; no dependency or runtime UI code changed yet.
+
 # Completed small enemy reward adjustment
 
 Spikes now drop one coin and Fence endpoints one coin each (two per destroyed
