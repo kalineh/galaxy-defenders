@@ -53,6 +53,8 @@ void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_OVERWRITE) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
+    if (page == MENU_PAUSE && (previous == MENU_NONE || previous == MENU_SHOP))
+        game->menu.pause_origin = previous;
     game->menu.page = page;
     game->menu.frame = 0;
     game->menu.cursor = page == MENU_NEW_GAME && !game->saves[game->active_slot].valid ? 1 : 0;
@@ -240,7 +242,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             case MENU_DIFFICULTY: game_menu_open(game, MENU_NEW_GAME); break;
             case MENU_OPTIONS: case MENU_QUIT: game_menu_open(game, menu->parent); break;
             case MENU_RETRY: game_menu_open(game, MENU_PAUSE); break;
-            case MENU_PAUSE: game_menu_open(game, MENU_NONE); break;
+            case MENU_PAUSE: game_menu_open(game, menu->pause_origin); break;
             default: break;
         }
         return;
@@ -278,7 +280,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             else game_transition(game, TRANSITION_MAIN, 0);
             break;
         case MENU_PAUSE:
-            game_menu_open(game, row == 0 ? MENU_NONE : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);
+            game_menu_open(game, row == 0 ? menu->pause_origin : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);
             break;
         case MENU_RETRY: if (row == 0) game_menu_open(game, MENU_PAUSE); else game_transition(game, TRANSITION_RETRY, 0); break;
         case MENU_OVER: game_transition(game, row == 0 ? TRANSITION_RETRY : TRANSITION_MAIN, 0); break;

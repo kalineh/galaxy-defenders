@@ -100,7 +100,7 @@ int game_shop_cost(const Game *game, int slot) {
 
 bool game_shop_buy(Game *game, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || game->menu.page != MENU_SHOP || !game->players[slot].joined ||
-        !game->menu.shop_items[slot] || game->menu.ready[slot]) return false;
+        game->menu.ready[slot]) return false;
     Player *p = &game->players[slot];
     int category = game->menu.shop_category[slot], item = game->menu.shop_item[slot], level = game->menu.shop_level[slot];
     if (!game_shop_item_available(category, item) || !in_stock(game,slot,category,item)) return false;
@@ -122,6 +122,29 @@ bool game_shop_buy(Game *game, int slot) {
     return true;
 }
 
+static void shop_select(Game *game, int slot, int item) {
+    GameMenu *menu = &game->menu;
+    const Player *p = &game->players[slot];
+    int category = menu->shop_category[slot];
+    int level = 0;
+    if ((category == 3 || category == 4) && item >= 0 && item == game_shop_equipped(p, category)) {
+        level = category == 3 ? p->weapon_level : p->secondary_level;
+        if (level + 1 < game_weapons[item].level_count) ++level;
+    }
+    menu->shop_item[slot] = item;
+    menu->shop_level[slot] = level;
+}
+
+static void shop_select_category(Game *game, int slot, int category) {
+    int stock[WEAPON_COUNT + 1];
+    game->menu.shop_category[slot] = category;
+    int count = game_shop_stock(game, slot, category, stock);
+    int owned = game_shop_equipped(&game->players[slot], category);
+    int initial = count ? stock[0] : owned;
+    for (int i = 0; i < count; ++i) if (stock[i] == owned) initial = owned;
+    shop_select(game, slot, initial);
+}
+
 void game_shop_open(Game *game) {
     game->menu.next_stage = (game->complete || game->menu.page == MENU_CLEAR) && game->stage.index < 11 ?
         game->stage.index + 1 : game->stage.index;
@@ -136,11 +159,8 @@ void game_shop_open(Game *game) {
         p->health = game_chassis[p->chassis].armor;
         game->menu.ready[i] = false;
         game->menu.shop_fly_frames[i] = 0;
-        game->menu.shop_category[i] = 0;
-        game->menu.shop_item[i] = p->chassis;
-        game->menu.shop_items[i] = false;
+        shop_select_category(game, i, 0);
         game->menu.shop_purchase[i] = false;
-        game->menu.shop_ready_focus[i] = false;
     }
     game_menu_open(game, MENU_SHOP);
     game_checkpoint(game, true);
@@ -158,54 +178,28 @@ void game_shop_update(Game *game) {
         game_transition(game, game->cleared_game ? TRANSITION_STAGE_SELECT : TRANSITION_STAGE, menu->next_stage);
 }
 
-static void shop_select(Game *game, int slot, int item) {
-    GameMenu *menu = &game->menu;
-    const Player *p = &game->players[slot];
-    int category = menu->shop_category[slot];
-    int level = 0;
-    if ((category == 3 || category == 4) && item >= 0 && item == game_shop_equipped(p, category)) {
-        level = category == 3 ? p->weapon_level : p->secondary_level;
-        if (level + 1 < game_weapons[item].level_count) ++level;
-    }
-    menu->shop_item[slot] = item;
-    menu->shop_level[slot] = level;
-}
-
 void game_shop_input(Game *game, MenuAction action, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || !game->players[slot].joined) return;
     GameMenu *menu = &game->menu;
+    if (action == MENU_READY) {
+        menu->ready[slot] = !menu->ready[slot];
+        menu->shop_purchase[slot] = false;
+        menu->shop_fly_frames[slot] = 0;
+        return;
+    }
     if (action == MENU_BACK) {
-        if (menu->ready[slot]) { menu->ready[slot] = false; menu->shop_fly_frames[slot] = 0; }
-        else if (menu->shop_purchase[slot]) menu->shop_purchase[slot] = false;
-        else if (menu->shop_items[slot]) menu->shop_items[slot] = false;
-        else menu->shop_ready_focus[slot] = false;
+        menu->shop_purchase[slot] = false;
+        menu->ready[slot] = false;
+        menu->shop_fly_frames[slot] = 0;
         return;
     }
-    if (action == MENU_READY) { menu->ready[slot] = true; return; }
     if (menu->ready[slot]) return;
-    int *category = &menu->shop_category[slot];
-    if (menu->shop_ready_focus[slot]) {
-        if (action == MENU_CONFIRM) menu->ready[slot] = true;
-        if (action == MENU_UP) menu->shop_ready_focus[slot] = false;
+    int category = menu->shop_category[slot];
+    if (!menu->shop_purchase[slot] && (action == MENU_LEFT || action == MENU_RIGHT)) {
+        shop_select_category(game, slot, (category + (action == MENU_RIGHT ? 1 : 5)) % 6);
         return;
     }
-    if (!menu->shop_items[slot]) {
-        if (action == MENU_DOWN) menu->shop_ready_focus[slot] = true;
-        if (action == MENU_LEFT && *category > 0) --*category;
-        if (action == MENU_RIGHT && *category < 5) ++*category;
-        if (action != MENU_CONFIRM) return;
-    }
-    int stock[WEAPON_COUNT + 1];
-    int count = game_shop_stock(game, slot, *category, stock);
-    if (!count) return;
-    int owned = game_shop_equipped(&game->players[slot], *category);
-    if (!menu->shop_items[slot]) {
-        int initial = stock[0];
-        for (int i = 0; i < count; ++i) if (stock[i] == owned) initial = owned;
-        shop_select(game, slot, initial);
-        menu->shop_items[slot] = true;
-        return;
-    }
+    int owned = game_shop_equipped(&game->players[slot], category);
     int item = menu->shop_item[slot];
     if (menu->shop_purchase[slot]) {
         if (action == MENU_CONFIRM && game_shop_buy(game, slot)) {
@@ -216,9 +210,11 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
     }
     if (action == MENU_CONFIRM) {
         const Player *p = &game->players[slot];
-        int level = *category == 3 ? p->weapon_level : *category == 4 ? p->secondary_level : 0;
+        int level = category == 3 ? p->weapon_level : category == 4 ? p->secondary_level : 0;
         menu->shop_purchase[slot] = item != owned || menu->shop_level[slot] > level;
     } else if (action == MENU_UP || action == MENU_DOWN) {
+        int stock[WEAPON_COUNT + 1];
+        int count = game_shop_stock(game, slot, category, stock);
         for (int i = 0; i < count; ++i) if (stock[i] == item) {
             int next = i + (action == MENU_UP ? -1 : 1);
             if (next >= 0 && next < count) shop_select(game, slot, stock[next]);
@@ -237,7 +233,7 @@ void game_shop_preview_update(Game *preview, const Game *game) {
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         Player desired = game->players[slot];
         Player *p = &preview->players[slot];
-        if (game->menu.shop_items[slot] && !game->menu.ready[slot]) {
+        if (desired.joined && !game->menu.ready[slot]) {
             int item = game->menu.shop_item[slot], level = game->menu.shop_level[slot];
             switch (game->menu.shop_category[slot]) {
                 case 0: desired.chassis = item; break;

@@ -228,6 +228,7 @@ bool game_leave(Game *game, int slot) {
     memset(player->weapons, 0, sizeof(player->weapons));
     game->menu.ready[slot] = false;
     game->menu.shop_fly_frames[slot] = 0;
+    game->menu.shop_purchase[slot] = false;
     game->menu.players = game->players[1].joined ? 2 : 1;
     for (int i = 0; i < GAME_BULLETS; ++i) if (game->bullets[i].owner == slot) game->bullets[i].active = false;
     if (!game->players[0].joined && !game->players[1].joined) {

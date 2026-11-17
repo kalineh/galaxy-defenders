@@ -9,12 +9,10 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
-music. Stage Clear opens the shop. Left/right selects a category. Confirm opens
-its stock, up/down previews equipment, and Confirm focuses the purchase button.
-Confirm again to buy. Equipped primary and support weapons preview the next
-level. Switching gear applies its trade-in value to the displayed price.
-Back returns one step. From the tabs, Down selects Ready. The next stage starts
-when each joined player confirms Ready.
+music. Stage Clear opens the shop. Left/right changes category and up/down previews
+equipment. Confirm opens a purchase dialog with the net trade-in price. Confirm
+again to buy, or cancel to keep browsing. Square (Z on keyboard) toggles Ready.
+The next stage starts when every joined player is ready.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
 through `slot3.save`. New Game confirms before replacing a populated/unreadable slot.
@@ -26,7 +24,7 @@ retry every five seconds and show an error. Existing `solo.save` / `coop.save`
 import into empty slots 1 / 2 without deleting the original files. Headless and
 bounded render checks never read or write human saves.
 
-Menus use arrows or WASD, Enter/Space and Escape or gamepad D-pad/A/B. Player two uses J/L,
+Menus use arrows, X to confirm and C to cancel or gamepad D-pad/A/B. Player two uses J/L,
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
 generators and shields are connected; Rabbit starts with Lightning. Options adjust
 SFX/music volume and screen size for the session.
@@ -43,10 +41,14 @@ See [music audition instructions](music/README.md) and the
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
-| Move | WASD or arrows | IJKL |
-| Fire | Space or Z | Enter or right Ctrl |
-| Focus fire / slow movement | Left Shift | Right Shift |
-| Join / leave | Keyboard claims P1 when used | F2 toggles keyboard P2 |
+| Move | Arrows | IJKL |
+| Fire / confirm | X | Right Ctrl |
+| Focus fire | C | U |
+| Cancel | C | Backspace |
+| Ready | Z | Right Shift |
+| Sidekick | Z | O |
+| Join / pause / resume | Enter | F2 joins or leaves |
+| Triangle / end-of-stage retry | D | - |
 
 Controllers claim the first available P1/P2 slot with Start/Options; hardware index
 does not determine player number. Start pauses/resumes after joining. Select/Share + Start/Options drops out. Unplugging also
@@ -60,7 +62,7 @@ block pilot selection or shop readiness.
 Standard gamepads use raylib/GLFW. Windows additionally reads up to two native
 DS4 controllers (USB/Bluetooth), with report layouts based on Solcraft; no sibling
 repository or emulation driver is required. Move with stick/D-pad, fire with
-A/Cross or RT/R2, focus with LB/L1, sidekick with RB/R1. Menus accept stick/D-pad,
+A/Cross or RT/R2, focus with B/Circle or LB/L1, sidekick with RB/R1. Menus accept stick/D-pad,
 A/Cross and B/Circle. Analog movement uses a radial deadzone and normalized diagonal
 speed. DS4 report parsing, disconnect/claim behavior and retained loadouts are
 headless-tested; physical USB/Bluetooth hardware still needs human playtesting.

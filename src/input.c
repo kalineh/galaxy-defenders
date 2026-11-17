@@ -46,7 +46,7 @@ PlayerInput input_player(const PadInput *pad) {
     length = sqrtf(result.x * result.x + result.y * result.y);
     if (length > 1) { result.x /= length; result.y /= length; }
     result.fire = (pad->buttons & PAD_CONFIRM) || pad->trigger > .2f;
-    result.focus = (pad->buttons & PAD_FOCUS) != 0;
+    result.focus = (pad->buttons & (PAD_FOCUS | PAD_BACK)) != 0;
     result.sidekick_left = result.sidekick_right = (pad->buttons & PAD_SIDEKICK) != 0;
     return result;
 }
@@ -65,6 +65,7 @@ bool input_ds4_report(PadInput *pad, const unsigned char *report, size_t size) {
     if (hat == 1 || hat == 2 || hat == 3) buttons |= PAD_RIGHT;
     if (hat == 3 || hat == 4 || hat == 5) buttons |= PAD_DOWN;
     if (hat == 5 || hat == 6 || hat == 7) buttons |= PAD_LEFT;
+    if (face & 0x10) buttons |= PAD_READY;
     if (face & 0x20) buttons |= PAD_CONFIRM;
     if (face & 0x40) buttons |= PAD_BACK;
     if (face & 0x80) buttons |= PAD_RETRY;

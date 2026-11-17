@@ -156,15 +156,17 @@ static void shop_progression(void) {
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.players[0].money == 4000 && game.players[0].weapon_level == 2);
     game_menu_input(&game, MENU_BACK, 0);
-    CHECK(!game.menu.shop_purchase[0] && game.menu.shop_items[0]);
+    CHECK(!game.menu.shop_purchase[0] && game.menu.shop_item[0] == game.players[0].primary);
     game.players[0].money = 10000;
     game_menu_input(&game, MENU_CONFIRM, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
-    game_menu_input(&game, MENU_BACK, 0);
-    game_menu_input(&game, MENU_DOWN, 0);
-    game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.menu.ready[0]);
+    game_menu_input(&game, MENU_READY, 0);
+    game_menu_input(&game, MENU_LEFT, 0);
+    CHECK(game.menu.ready[0] && game.menu.shop_category[0] == 3);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(!game.menu.ready[0]);
+    game_menu_input(&game, MENU_READY, 0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 5000 && game.players[0].weapon_level == 3);
@@ -1075,7 +1077,6 @@ static void complete_equipment(void) {
     game_shop_open(&game);
     for (int category = 0; category < 6; ++category) {
         game.menu.shop_category[0] = category;
-        game.menu.shop_items[0] = true;
         for (int item = -1; item < WEAPON_COUNT; ++item) {
             if (!game_shop_item_available(category, item)) continue;
             int stock[WEAPON_COUNT+1], count=game_shop_stock(&game,0,category,stock);
@@ -1723,7 +1724,6 @@ static void scenery_sequence(void) {
 static void shop_previews(void) {
     reset();
     game_shop_open(&game);
-    game.menu.shop_items[0] = true;
     game.menu.shop_category[0] = 3;
     game.menu.shop_item[0] = WEAPON_BEAM;
     game.menu.shop_level[0] = 2;
@@ -1828,6 +1828,24 @@ static void controller_joining(void) {
     game_secret_return(&game);
     CHECK(!game.players[1].joined && game.players[1].initialized);
 
+    reset();
+    CHECK(game_join(&game, 1));
+    game_shop_open(&game);
+    for (int slot = 0; slot < 2; ++slot) {
+        for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, slot);
+        game_menu_input(&game, MENU_CONFIRM, slot);
+    }
+    CHECK(game.menu.shop_purchase[0] && game.menu.shop_purchase[1]);
+    game_menu_open(&game, MENU_PAUSE);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_SHOP && game.menu.shop_purchase[1]);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.menu.ready[0] && !game.menu.shop_purchase[0] && game.menu.shop_purchase[1]);
+    for (int i = 0; i < 40; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_SHOP && game.transition_frames == 0);
+    game_menu_input(&game, MENU_BACK, 1);
+    CHECK(!game.menu.shop_purchase[1] && game.menu.ready[0]);
+
     PadInput pad = {0};
     unsigned char usb[64] = {1,128,128,128,128,0x21,0x23,0,0,255};
     CHECK(input_ds4_report(&pad, usb, sizeof(usb)));
@@ -1843,7 +1861,9 @@ static void controller_joining(void) {
     PadInput before = pad;
     CHECK(!input_ds4_report(&pad, usb, 9) && !input_ds4_report(&pad, usb, 0));
     CHECK(!memcmp(&before, &pad, sizeof(pad)));
-    usb[5] = 8; usb[6] = 0; usb[9] = 0;
+    usb[5] = 0x58; usb[6] = 0; usb[9] = 0;
+    CHECK(input_ds4_report(&pad, usb, sizeof(usb)) && (pad.pressed & PAD_READY) && input_player(&pad).focus);
+    usb[5] = 8;
     pad.pressed = 0;
     CHECK(input_ds4_report(&pad, usb, sizeof(usb)) && !pad.buttons && !pad.pressed);
     PlayerInput movement = input_player(&pad);
