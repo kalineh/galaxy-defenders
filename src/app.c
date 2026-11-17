@@ -1093,7 +1093,7 @@ static Vector2 title_ship_position(Vector2 center, float heading) {
 }
 
 static void draw_title_ship(const Assets *assets, int slot, int tick) {
-    Vector2 center = slot ? (Vector2){1340,456} : (Vector2){580,430};
+    Vector2 center = slot ? (Vector2){1430,530} : (Vector2){490,510};
     Color color = player_colors[slot];
     int phase = (tick + 91*slot) % 256;
     float turn = 2*PI/256;
@@ -1182,15 +1182,15 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices); return; }
     int width = page == MENU_MAIN ? 488 : title ? 644 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : 69;
-    int y = page == MENU_MAIN ? 661 : title ? 465 : stages ? 180 : 437;
+    int y = page == MENU_MAIN ? 649 : title ? 465 : stages ? 180 : 437;
     int count = game_menu_count(game);
     if (title) {
         if (page == MENU_MAIN) {
             if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
             if (game->players[1].joined) draw_title_ship(assets,1,frame);
             float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
-            sprite(assets->title_squad,x+width/2,y-2-squad_height/2,width,0,WHITE);
-            DrawRectangle(x,y-2,width,2,rule);
+            sprite(assets->title_squad,x+width/2,y-16-squad_height/2,width,0,WHITE);
+            DrawRectangle(x,y-9,width,2,rule);
         }
         sprite(assets->title_logo,960,151,776,0,WHITE);
         DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
