@@ -274,8 +274,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->particle_triangle = texture_load("textures/TriangleParticle.png");
     assets->title_logo = texture_load("textures/GalaxyDefendersLogo.png");
     static const char *portrait_files[] = {"textures/KazukiPortrait.png","textures/RabbitPortrait.png","textures/GunthorPortrait.png"};
-    static const Rectangle squad_positions[] = {{61,129,394,394},{-80,55,378,378},{209,45,386,386}};
-    Image squad = GenImageColor(512,512,(Color){28,43,66,255});
+    static const Rectangle squad_positions[] = {{101,0,286,286},{-8,29,245,245},{251,18,252,252}};
+    Image squad = GenImageColor(488,246,BLANK);
     for (int i=2; i>=0; --i) {
         Image pilot = LoadImage(asset_path(portrait_files[i]));
         if (IsImageValid(pilot)) {
@@ -285,12 +285,17 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
             UnloadImage(pilot);
         }
     }
-    Image mask = GenImageColor(512,512,BLACK);
-    ImageDrawCircle(&mask,256,256,255,WHITE);
-    ImageAlphaMask(&squad,mask);
+    /* Feather just the outer shoulders, retaining the portraits' silhouette alpha. */
+    Color *pixels = squad.data;
+    for (int y=0; y<squad.height; ++y) {
+        for (int x=0; x<24; ++x) {
+            Color *row = pixels + y*squad.width;
+            row[x].a = row[x].a*x/24;
+            row[squad.width-1-x].a = row[squad.width-1-x].a*x/24;
+        }
+    }
     assets->title_squad = LoadTextureFromImage(squad);
     SetTextureFilter(assets->title_squad,TEXTURE_FILTER_BILINEAR);
-    UnloadImage(mask);
     UnloadImage(squad);
     assets->water = texture_load("textures/Water.png");
     bool valid = IsTextureValid(assets->pyramid_turret) && IsTextureValid(assets->cutter_beam) && IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
@@ -1183,8 +1188,9 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         if (page == MENU_MAIN) {
             if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
             if (game->players[1].joined) draw_title_ship(assets,1,frame);
-            sprite(assets->title_squad,960,458,346,0,WHITE);
-            DrawRing((Vector2){960,458},172,175,0,360,128,rule);
+            float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
+            sprite(assets->title_squad,x+width/2,y-2-squad_height/2,width,0,WHITE);
+            DrawRectangle(x,y-2,width,2,rule);
         }
         sprite(assets->title_logo,960,151,776,0,WHITE);
         DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
