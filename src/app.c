@@ -20,7 +20,7 @@ typedef struct {
 
 typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
-    Texture2D portraits[3];
+    Texture2D portraits[3], title_logo, title_squad;
     Texture2D particle_dot, particle_triangle;
     Texture2D water;
     Texture2D shop[15], star;
@@ -84,6 +84,8 @@ static Texture2D texture_load(const char *name) {
 }
 
 static void assets_unload(Assets *assets) {
+    if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
+    if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
     if (IsTextureValid(assets->asteroid_cracks)) UnloadTexture(assets->asteroid_cracks);
     for (int i = 0; i < 5; ++i) if (IsTextureValid(assets->medals[i])) UnloadTexture(assets->medals[i]);
     for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
@@ -270,9 +272,26 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
     assets->particle_dot = texture_load("textures/DotParticle.png");
     assets->particle_triangle = texture_load("textures/TriangleParticle.png");
-    assets->portraits[0] = texture_load("textures/KazukiPortrait.png");
-    assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
-    assets->portraits[2] = texture_load("textures/GunthorPortrait.png");
+    assets->title_logo = texture_load("textures/GalaxyDefendersLogo.png");
+    static const char *portrait_files[] = {"textures/KazukiPortrait.png","textures/RabbitPortrait.png","textures/GunthorPortrait.png"};
+    static const Rectangle squad_positions[] = {{61,129,394,394},{-80,55,378,378},{209,45,386,386}};
+    Image squad = GenImageColor(512,512,(Color){28,43,66,255});
+    for (int i=2; i>=0; --i) {
+        Image pilot = LoadImage(asset_path(portrait_files[i]));
+        if (IsImageValid(pilot)) {
+            assets->portraits[i] = LoadTextureFromImage(pilot);
+            SetTextureFilter(assets->portraits[i],TEXTURE_FILTER_BILINEAR);
+            ImageDraw(&squad,pilot,(Rectangle){0,0,pilot.width,pilot.height},squad_positions[i],WHITE);
+            UnloadImage(pilot);
+        }
+    }
+    Image mask = GenImageColor(512,512,BLACK);
+    ImageDrawCircle(&mask,256,256,255,WHITE);
+    ImageAlphaMask(&squad,mask);
+    assets->title_squad = LoadTextureFromImage(squad);
+    SetTextureFilter(assets->title_squad,TEXTURE_FILTER_BILINEAR);
+    UnloadImage(mask);
+    UnloadImage(squad);
     assets->water = texture_load("textures/Water.png");
     bool valid = IsTextureValid(assets->pyramid_turret) && IsTextureValid(assets->cutter_beam) && IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
@@ -282,7 +301,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
         if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i]);
     for (int i = 0; i < 3; ++i) valid = valid && IsTextureValid(assets->portraits[i]);
-    valid = valid && IsTextureValid(assets->water);
+    valid = valid && IsTextureValid(assets->water) && IsTextureValid(assets->title_logo) && IsTextureValid(assets->title_squad);
     for (int i = 0; i < 15; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
@@ -1069,7 +1088,7 @@ static Vector2 title_ship_position(Vector2 center, float heading) {
 }
 
 static void draw_title_ship(const Assets *assets, int slot, int tick) {
-    Vector2 center = slot ? (Vector2){852,333} : (Vector2){714,229};
+    Vector2 center = slot ? (Vector2){1340,456} : (Vector2){580,430};
     Color color = player_colors[slot];
     int phase = (tick + 91*slot) % 256;
     float turn = 2*PI/256;
@@ -1088,16 +1107,6 @@ static void draw_title_ship(const Assets *assets, int slot, int tick) {
             23,angle*RAD2DEG,Fade(color,fminf(1,(28-age)/8.0f)));
     }
     sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
-}
-
-static void draw_title_art(const Assets *assets) {
-    /* Layer the wing pilots behind the lead portrait on one common baseline. */
-    DrawCircle(1370,514,347,(Color){28,43,66,255});
-    DrawRing((Vector2){1370,514},358,360,0,360,128,rule);
-    sprite(assets->portraits[2],1594,597,449,0,(Color){193,204,218,255});
-    sprite(assets->portraits[1],1151,611,421,0,(Color){218,229,238,255});
-    sprite(assets->portraits[0],1373,559,525,0,WHITE);
-    DrawRectangle(934,822,887,3,rule);
 }
 
 static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
@@ -1166,19 +1175,19 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     if (title || stages) menu_sky(frame);
     else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices); return; }
-    int width = title ? 644 : 620, x = title ? 130 : (CANVAS_WIDTH-width)/2;
+    int width = page == MENU_MAIN ? 488 : title ? 644 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : 69;
-    int y = title ? 472 : stages ? 180 : 437;
+    int y = page == MENU_MAIN ? 661 : title ? 465 : stages ? 180 : 437;
     int count = game_menu_count(game);
     if (title) {
         if (page == MENU_MAIN) {
             if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
             if (game->players[1].joined) draw_title_ship(assets,1,frame);
+            sprite(assets->title_squad,960,458,346,0,WHITE);
+            DrawRing((Vector2){960,458},172,175,0,360,128,rule);
         }
-        draw_title_art(assets);
-        DrawTextEx(font,"SPACE",(Vector2){x,109},109,6,WHITE);
-        DrawTextEx(font,"CRAFT",(Vector2){x,212},109,6,accent);
-        DrawTextEx(font,"@kalin_t",(Vector2){x,984},22,0,dim);
+        sprite(assets->title_logo,960,151,776,0,WHITE);
+        DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
     } else {
         DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
         DrawRectangle(x-32,y-114,width+64,3,accent);
