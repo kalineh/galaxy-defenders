@@ -20,9 +20,9 @@ typedef struct {
 
 typedef struct {
     Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
-    Texture2D panel_background, panel_frames, armor, armor_icon, energy_icon, shield_icon, portraits[3];
-    Texture2D particle_dot, particle_triangle, energy;
-    Texture2D menu[6], title, cloud, water, pilot_arrow;
+    Texture2D portraits[3];
+    Texture2D particle_dot, particle_triangle;
+    Texture2D water;
     Texture2D shop[15], star;
     Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
     Texture2D hostile_textures[HOSTILE_COUNT];
@@ -67,6 +67,7 @@ static const char *weapon_texture_names[WEAPON_COUNT] = {
 static const Color background = {48, 48, 48, 255};
 static const Color dim = {160, 160, 160, 255};
 static const Color accent = {245, 205, 82, 255};
+static const Color ink = {12, 18, 29, 255}, rule = {51, 64, 80, 255}, surface = {25, 36, 51, 255};
 static const Color danger = {255, 130, 104, 255};
 static const Color player_colors[2] = {{247, 208, 74, 255}, {195, 150, 255, 255}};
 
@@ -104,13 +105,8 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
     if (IsTextureValid(assets->particle_dot)) UnloadTexture(assets->particle_dot);
     if (IsTextureValid(assets->particle_triangle)) UnloadTexture(assets->particle_triangle);
-    if (IsTextureValid(assets->energy)) UnloadTexture(assets->energy);
-    Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
-        assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
-    for (int i = 0; i < 8; ++i) if (IsTextureValid(hud[i])) UnloadTexture(hud[i]);
-    if (IsTextureValid(assets->portraits[2])) UnloadTexture(assets->portraits[2]);
-    for (int i = 0; i < 6; ++i) if (IsTextureValid(assets->menu[i])) UnloadTexture(assets->menu[i]);
-    if (IsTextureValid(assets->title)) UnloadTexture(assets->title);
+    for (int i = 0; i < 3; ++i)
+        if (IsTextureValid(assets->portraits[i])) UnloadTexture(assets->portraits[i]);
     for (int i = 0; i < 15; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
     for (int i = 0; i < WEAPON_COUNT; ++i) {
         if (IsTextureValid(assets->weapon_icons[i])) UnloadTexture(assets->weapon_icons[i]);
@@ -126,8 +122,6 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->shield_overlay)) UnloadTexture(assets->shield_overlay);
     if (IsTextureValid(assets->star)) UnloadTexture(assets->star);
     if (IsTextureValid(assets->water)) UnloadTexture(assets->water);
-    if (IsTextureValid(assets->cloud)) UnloadTexture(assets->cloud);
-    if (IsTextureValid(assets->pilot_arrow)) UnloadTexture(assets->pilot_arrow);
     for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
         if (assets->stage_texture_owner[i] != i) continue;
         if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
@@ -272,42 +266,22 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->boss4_cover = texture_load("textures/Boss4Cover.png");
     assets->boss5_cover = texture_load("textures/Boss5Cover.png");
     assets->boss6_center = texture_load("textures/Boss6Center.png");
-    assets->energy = texture_load("textures/Energy.png");
     assets->hostile_shot = texture_load("textures/EnemyShot.png");
     assets->particle_dot = texture_load("textures/DotParticle.png");
     assets->particle_triangle = texture_load("textures/TriangleParticle.png");
-    assets->panel_background = texture_load("textures/PanelBackground.png");
-    assets->panel_frames = texture_load("textures/PanelFrames.png");
-    assets->armor = texture_load("textures/Armor.png");
-    assets->armor_icon = texture_load("textures/ArmorIcon.png");
-    assets->energy_icon = texture_load("textures/EnergyIcon.png");
-    assets->shield_icon = texture_load("textures/ShieldIcon.png");
     assets->portraits[0] = texture_load("textures/KazukiPortrait.png");
     assets->portraits[1] = texture_load("textures/RabbitPortrait.png");
     assets->portraits[2] = texture_load("textures/GunthorPortrait.png");
-    assets->title = texture_load("textures/Title.png");
     assets->water = texture_load("textures/Water.png");
-    assets->cloud = texture_load("textures/Cloud.png");
-    assets->pilot_arrow = texture_load("textures/PilotSelectArrow.png");
-    const char *menu_textures[] = {"MenuItem", "MenuItemSmall", "MenuItemSelected", "MenuItemSelectedSmall", "MenuItemInvalid", "MenuItemInvalidSelected"};
-    for (int i = 0; i < 6; ++i) {
-        char path[128];
-        snprintf(path, sizeof(path), "textures/%s.png", menu_textures[i]);
-        assets->menu[i] = texture_load(path);
-    }
     bool valid = IsTextureValid(assets->pyramid_turret) && IsTextureValid(assets->cutter_beam) && IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
     for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
-    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle) && IsTextureValid(assets->energy);
+    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
         if (i != ENEMY_BOSS8_COLLISION) valid = valid && IsTextureValid(assets->enemies[i]);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
         if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i]);
-    Texture2D hud[] = {assets->panel_background, assets->panel_frames, assets->armor, assets->armor_icon,
-        assets->energy_icon, assets->shield_icon, assets->portraits[0], assets->portraits[1]};
-    for (int i = 0; i < 8; ++i) valid = valid && IsTextureValid(hud[i]);
-    for (int i = 0; i < 6; ++i) valid = valid && IsTextureValid(assets->menu[i]);
-    valid = valid && IsTextureValid(assets->water) && IsTextureValid(assets->title) && IsTextureValid(assets->cloud) &&
-        IsTextureValid(assets->pilot_arrow) && IsTextureValid(assets->portraits[2]);
+    for (int i = 0; i < 3; ++i) valid = valid && IsTextureValid(assets->portraits[i]);
+    valid = valid && IsTextureValid(assets->water);
     for (int i = 0; i < 15; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
@@ -487,31 +461,6 @@ static void shop_navigation(Font font, int x, int y, int device, int slot, bool 
     }
 }
 
-static void draw_player_panel(const Game *game, int slot, const Assets *assets) {
-    const Player *player = &game->players[slot];
-    int x = slot == 0 ? 0 : 1440;
-    DrawTexture(assets->panel_background, x, 0, WHITE);
-    if (!player->joined) {
-        button_prompt(assets->ui_font, x + 155, 490, 0, slot, GLYPH_START, "Join");
-        return;
-    }
-    /* Positions and original frames from legacy/Hud/Hud.cs + HudManager.cs. */
-    DrawTexture(assets->panel_frames, x, 0, WHITE);
-    static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
-    text_center(assets->ui_font, pilot_names[player->pilot], x + 242, 78, 30, dim);
-    text_center(assets->ui_font, TextFormat("%d", game->menu.page == MENU_SHOP ? player->money : player->score), x + 242, 154, 32, dim);
-    sprite(assets->portraits[player->pilot], (float)x + 238, 356, 256, 0, WHITE);
-    DrawTexture(assets->energy_icon, x + 70, 722, WHITE);
-    DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
-        (Rectangle){(float)x + 140, 716, 281.6f * player->energy / game_generators[player->generator].capacity, 73.6f}, (Vector2){0}, 0, WHITE);
-    DrawTexture(assets->shield_icon, x + 70, 805, WHITE);
-    if (player->shield >= 0) DrawTexturePro(assets->energy, (Rectangle){0, 0, 256, 64},
-        (Rectangle){(float)x + 140, 800, 281.6f * player->shield_health / game_shields[player->shield].capacity, 73.6f}, (Vector2){0}, 0, SKYBLUE);
-    DrawTexture(assets->armor_icon, x + 70, 881, WHITE);
-    DrawTexturePro(assets->armor, (Rectangle){0, 0, 256, 64},
-        (Rectangle){(float)x + 140, 876, 281.6f * player->health / game_chassis[player->chassis].armor, 73.6f}, (Vector2){0}, 0, WHITE);
-}
-
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
     const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
     if (!foreground) {
@@ -651,7 +600,68 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
     }
 }
 
-static void draw_game(const Game *game, const Assets *assets) {
+static void resource_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
+    DrawTextEx(font, label, (Vector2){x, y}, 21, 0, WHITE);
+    const char *amount = TextFormat("%.0f / %.0f", value, capacity);
+    DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 18, 0).x, y + 3}, 18, 0, dim);
+    DrawRectangle(x, y + 26, 240, 16, (Color){45,55,69,255});
+    if (capacity > 0) DrawRectangle(x, y + 26, (int)(240 * fminf(1, fmaxf(0, value / capacity))), 16, color);
+}
+
+static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
+
+static void draw_pilot_rail(const Assets *assets, const Player *p, const Player *preview, int slot, bool shopping) {
+    Font font = assets->ui_font;
+    int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
+    Color highlight = player_colors[slot];
+    DrawRectangle(x, 0, ARENA_X, GAME_HEIGHT, ink);
+    DrawRectangle(slot ? x : x + ARENA_X - 2, 0, 2, GAME_HEIGHT, rule);
+    DrawRectangle(left, 32, 58, 36, p->joined ? highlight : rule);
+    text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
+    if (!p->joined) {
+        text_center(font, "Join flight", x + 240, 488, 36, WHITE);
+        button_prompt(font,x+105,543,0,slot,GLYPH_START,"Join");
+        key_prompt(font,x+245,543,slot ? "F2" : "Enter","Join");
+        return;
+    }
+    DrawTextEx(font, pilot_names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
+    const char *credits = shopping ? TextFormat("%d cr",p->money) : TextFormat("%d pts",p->score);
+    DrawTextEx(font, credits, (Vector2){left + width - MeasureTextEx(font, credits, 27, 0).x, 38}, 27, 0, highlight);
+    DrawLine(left, 88, left + width, 88, rule);
+    sprite(assets->portraits[p->pilot], left + 82, 204, 164, 0, WHITE);
+    resource_meter(font, left + 184, 115, "Armor", preview->health, game_chassis[preview->chassis].armor, highlight);
+    resource_meter(font, left + 184, 172, "Shield", preview->shield_health,
+        preview->shield < 0 ? 0 : game_shields[preview->shield].capacity, (Color){130,183,240,255});
+    resource_meter(font, left + 184, 229, "Energy", preview->energy, game_generators[preview->generator].capacity, (Color){117,214,188,255});
+}
+
+static void draw_flight_rail(const Game *game, const Assets *assets, int slot, int device) {
+    const Player *p = &game->players[slot];
+    draw_pilot_rail(assets,p,p,slot,false);
+    if (!p->joined) return;
+    int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
+    Font font = assets->ui_font;
+    DrawLine(x,298,x+424,298,rule);
+    DrawTextEx(font,"LOADOUT",(Vector2){x,317},30,1,WHITE);
+    int ids[] = {p->primary,p->secondary,p->sidekick};
+    const char *labels[] = {"Main weapon","Support weapon","Sidekick"};
+    for (int i=0; i<3; ++i) {
+        int y = 384 + i*85, id = ids[i];
+        Texture2D icon = id < 0 ? assets->item_none : assets->weapon_icons[id];
+        sprite(icon,x+23,y+24,37,0,id < 0 ? dim : WHITE);
+        DrawTextEx(font,labels[i],(Vector2){x+57,y-5},19,0,dim);
+        DrawTextEx(font,id < 0 ? "Empty" : game_weapons[id].display_name,(Vector2){x+57,y+19},26,0,WHITE);
+        if (id >= 0 && i < 2) DrawTextEx(font,TextFormat("Mk %d",1+(i?p->secondary_level:p->weapon_level)),
+            (Vector2){x+345,y+20},24,0,player_colors[slot]);
+        DrawLine(x,y+65,x+424,y+65,rule);
+    }
+    DrawTextEx(font,stage_definitions[game->stage.index].display_name,(Vector2){x,941},24,0,dim);
+    DrawLine(x,974,x+424,974,rule);
+    if (device != INPUT_KEYBOARD_P2 && !(slot && device < 0))
+        button_prompt(font,x,993,device,slot,GLYPH_START,"Pause");
+}
+
+static void draw_game(const Game *game, const Assets *assets, const PlayerDevices *devices) {
     float view_x = ARENA_X - game->stage.camera_x;
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
@@ -709,8 +719,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
-    draw_player_panel(game, 0, assets);
-    draw_player_panel(game, 1, assets);
+    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,devices->device[i]);
 }
 
 static bool title_menu(const Game *game) {
@@ -727,14 +736,6 @@ static const char *shop_item_name(int category, int item) {
         case 2: return game_shields[item].name;
         default: return game_weapons[item].display_name;
     }
-}
-
-static void shop_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
-    DrawTextEx(font, label, (Vector2){x, y}, 21, 0, WHITE);
-    const char *amount = TextFormat("%.0f / %.0f", value, capacity);
-    DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 18, 0).x, y + 3}, 18, 0, dim);
-    DrawRectangle(x, y + 26, 240, 16, (Color){45,55,69,255});
-    if (capacity > 0) DrawRectangle(x, y + 26, (int)(240 * fminf(1, fmaxf(0, value / capacity))), 16, color);
 }
 
 static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
@@ -771,35 +772,15 @@ static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
 }
 
 static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
-    static const char *names[] = {"Kazuki", "Rabbit", "Gunthor"};
     static const char *categories[] = {"Chassis", "Generator", "Shield", "Main weapon", "Support weapon", "Sidekick"};
     Font font = assets->ui_font;
-    const Color ink = {12, 18, 29, 255}, rule = {51, 64, 80, 255}, surface = {25, 36, 51, 255};
+    int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
-    int x = slot ? ARENA_X + GAME_WIDTH : 0;
-    int left = x + 28, width = ARENA_X - 56;
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
-    DrawRectangle(x, 0, ARENA_X, GAME_HEIGHT, ink);
-    DrawRectangle(slot ? x : x + ARENA_X - 2, 0, 2, GAME_HEIGHT, rule);
-    DrawRectangle(left, 32, 58, 36, p->joined ? highlight : rule);
-    text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
-    if (!p->joined) {
-        text_center(font, "Join flight", x + 240, 488, 36, WHITE);
-        button_prompt(font,x+105,543,0,slot,GLYPH_START,"Join");
-        key_prompt(font,x+245,543,slot ? "F2" : "Enter","Join");
-        return;
-    }
-    DrawTextEx(font, names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
-    const char *credits = TextFormat("%d cr", p->money);
-    DrawTextEx(font, credits, (Vector2){left + width - MeasureTextEx(font, credits, 27, 0).x, 38}, 27, 0, highlight);
-    DrawLine(left, 88, left + width, 88, rule);
-    sprite(assets->portraits[p->pilot], left + 82, 204, 164, 0, WHITE);
     const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
-    shop_meter(font, left + 184, 115, "Armor", preview->health, game_chassis[preview->chassis].armor, highlight);
-    shop_meter(font, left + 184, 172, "Shield", preview->shield_health,
-        preview->shield < 0 ? 0 : game_shields[preview->shield].capacity, (Color){130,183,240,255});
-    shop_meter(font, left + 184, 229, "Energy", preview->energy, game_generators[preview->generator].capacity, (Color){117,214,188,255});
+    draw_pilot_rail(assets,p,preview,slot,true);
+    if (!p->joined) return;
     int cat = menu->shop_category[slot], owned = game_shop_equipped(p, cat);
     DrawLine(left, 298, left + width, 298, rule);
     DrawTextEx(font, "SHOP", (Vector2){left, 315}, 36, 1, WHITE);
@@ -917,6 +898,117 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
             draw_shop_purchase(game, assets->ui_font, slot, devices->device[slot], both ? 300 + slot * 250 : 426);
 }
 
+static void menu_sky(int frame) {
+    ClearBackground(ink);
+    DrawRectangleGradientV(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,(Color){15,24,42,255},(Color){8,13,23,255});
+    for (int i=0; i<95; ++i) {
+        int x = (i*743+71)%CANVAS_WIDTH;
+        int y = (i*347+frame/(3+i%4))%CANVAS_HEIGHT;
+        DrawCircle(x,y,i%5==0 ? 2 : 1,(Color){106,129,158,255});
+    }
+}
+
+static void draw_title_art(const Assets *assets) {
+    /* Layer the wing pilots behind the lead portrait on one common baseline. */
+    DrawCircle(1370,514,347,(Color){28,43,66,255});
+    DrawRing((Vector2){1370,514},358,360,0,360,128,rule);
+    sprite(assets->portraits[2],1594,597,449,0,(Color){193,204,218,255});
+    sprite(assets->portraits[1],1151,611,421,0,(Color){218,229,238,255});
+    sprite(assets->portraits[0],1373,559,525,0,WHITE);
+    DrawRectangle(934,822,887,3,rule);
+}
+
+static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
+    bool selected = row == game->menu.cursor;
+    Color text = game_menu_enabled(game,row) ? WHITE : (Color){126,139,156,255};
+    DrawRectangle(x,y,width,height-3,selected ? surface : ink);
+    DrawLine(x,y+height-3,x+width,y+height-3,rule);
+    if (selected) DrawRectangle(x,y,5,height-3,accent);
+    DrawTextEx(font,game_menu_label(game,row),(Vector2){x+22,y+(height-30)/2-2},28,0,text);
+    if (game->menu.page == MENU_OPTIONS && row < 3) {
+        int value = game->menu.options[row];
+        for (int i=0; i<10; ++i) DrawRectangle(x+width-199+17*i,y+height/2-5,13,10,i<value ? accent : rule);
+    }
+}
+
+static void draw_pilot_select(const Game *game,const Assets *assets, const PlayerDevices *devices) {
+    static const char *specialties[] = {"Japan  /  Ace Pilot","Russia  /  Wpn Research","Norway  /  Demolitions"};
+    static const char *blood[] = {"B","A","O"};
+    static const char *bonus[] = {"Speed+","Money+","Damage+"};
+    Font font = assets->ui_font;
+    DrawTextEx(font,"Select pilots",(Vector2){272,92},65,0,WHITE);
+    for (int slot=0; slot<GAME_PLAYERS; ++slot) {
+        int x = 272 + slot*704, pilot = game->menu.pilot[slot];
+        Color color = player_colors[slot];
+        DrawRectangle(x,216,664,666,ink);
+        DrawRectangle(x,216,664,3,game->players[slot].joined ? color : rule);
+        DrawTextEx(font,slot ? "P2" : "P1",(Vector2){x+32,242},28,0,color);
+        if (!game->players[slot].joined) {
+            button_prompt(font,x+172,526,0,slot,GLYPH_START,"Join");
+            key_prompt(font,x+336,526,slot ? "F2":"Enter","Join");
+            continue;
+        }
+        sprite(assets->portraits[pilot],x+332,465,348,0,WHITE);
+        if (!game->menu.ready[slot]) {
+            int other = game->players[1-slot].joined ? game->menu.pilot[1-slot] : -1;
+            for (int dir=-1;dir<=1;dir+=2) {
+                int next = pilot+dir;
+                if (next==other) next+=dir;
+                if (next<0 || next>2) continue;
+                int xx=x+332+dir*244;
+                DrawLineEx((Vector2){xx-dir*10,449},(Vector2){xx,460},3,color);
+                DrawLineEx((Vector2){xx,460},(Vector2){xx-dir*10,471},3,color);
+            }
+        }
+        DrawLine(x+32,640,x+632,640,rule);
+        DrawTextEx(font,pilot_names[pilot],(Vector2){x+32,657},48,0,WHITE);
+        DrawTextEx(font,bonus[pilot],(Vector2){x+480,678},26,0,color);
+        DrawTextEx(font,specialties[pilot],(Vector2){x+32,728},25,0,dim);
+        DrawTextEx(font,TextFormat("Blood type %s",blood[pilot]),(Vector2){x+32,765},22,0,dim);
+        if (game->menu.ready[slot]) DrawTextEx(font,"Ready",(Vector2){x+32,821},26,0,color);
+        else button_prompt(font,x+32,819,devices->device[slot],slot,GLYPH_CONFIRM,"Ready");
+        button_prompt(font,x+455,819,devices->device[slot],slot,GLYPH_BACK,"Back");
+    }
+}
+
+static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices) {
+    static const char *headings[MENU_OVERWRITE+1] = {
+        [MENU_SLOTS]="Save slots", [MENU_DIFFICULTY]="Difficulty", [MENU_OPTIONS]="Options",
+        [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
+        [MENU_STAGE_SELECT]="Stage select"
+    };
+    MenuPage page = game->menu.page;
+    Font font = assets->ui_font;
+    bool title = title_menu(game);
+    bool stages = page == MENU_STAGE_SELECT;
+    if (title || stages) menu_sky(frame);
+    else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
+    if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices); return; }
+    int width = title ? 644 : 620, x = title ? 130 : (CANVAS_WIDTH-width)/2;
+    int row_height = stages ? 53 : 69;
+    int y = title ? 472 : stages ? 180 : 437;
+    int count = game_menu_count(game);
+    if (title) {
+        draw_title_art(assets);
+        DrawTextEx(font,"SPACE",(Vector2){x,109},109,6,WHITE);
+        DrawTextEx(font,"CRAFT",(Vector2){x,212},109,6,accent);
+        DrawTextEx(font,"@kalin_t",(Vector2){x,984},22,0,dim);
+    } else {
+        DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
+        DrawRectangle(x-32,y-114,width+64,3,accent);
+    }
+    const char *heading = headings[page];
+    if (page==MENU_NEW_GAME) heading = TextFormat("Slot %d",game->active_slot+1);
+    if (page==MENU_OVERWRITE) heading = TextFormat("Replace slot %d?",game->active_slot+1);
+    if (page==MENU_QUIT && game->menu.parent==MENU_PAUSE) heading = "Return to title?";
+    if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
+    for (int row=0; row<count; ++row) menu_row(font,game,row,x,y+row*row_height,width,row_height);
+    int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
+    int footer = y+row_height*count+30;
+    int advance = button_prompt(font,x,footer,device,owner,GLYPH_CONFIRM,"Confirm")+28;
+    if (page != MENU_MAIN) button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Back");
+}
+
 static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
     if (game->menu.page == MENU_NONE) return;
     if (game->menu.page == MENU_FINISH) {
@@ -957,7 +1049,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             "",
             "UNTIL A TRUE HERO CAN PERFORM....."
         };
-        ClearBackground(BLACK);
+        ClearBackground(ink);
         for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
             float x = (float)((i * 193 + layer * 311) % CANVAS_WIDTH);
             float y = fmodf(i * 137.0f + game->menu.frame * (layer ? 2.1f : 3.5f), GAME_HEIGHT);
@@ -968,22 +1060,15 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         return;
     }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices); return; }
-    if (game->menu.page == MENU_STAGE_SELECT) {
-        ClearBackground(BLACK);
-        for (int i = 0; i < 20; ++i) {
-            float x = (float)((i * 193) % CANVAS_WIDTH);
-            float y = fmodf(i * 137.0f + frame * (i % 2 ? 14 : 18), GAME_HEIGHT);
-            sprite(assets->star, x, y, (float)assets->star.width, 0, WHITE);
-        }
-    }
     if (game->menu.page == MENU_CLEAR) {
         float alpha = game->clear_exit ? fminf(1, 0.5f + (game->menu.frame - 360) / 60.0f) :
             fminf(0.5f, game->menu.frame / 60.0f);
         DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
         int counter = game->clear_exit ? 440 : game->menu.frame;
         if (counter >= 60) {
-            DrawRectangle(745, 115, 450, 570, (Color){76,76,76,255});
-            DrawRectangle(755, 125, 430, 550, (Color){30,30,30,255});
+            DrawRectangle(672,115,576,590,ink);
+            DrawRectangle(672,115,576,3,accent);
+            DrawLine(704,248,1216,248,rule);
             text_center(assets->ui_font, "Stage Clear", 968, 180, 40, WHITE);
         }
         const StageStats *stats = &game->stage.stats;
@@ -998,11 +1083,10 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         for (int i = 0; i < 6; ++i) {
             if (counter < times[i] || (i == 5 && medal == 1)) continue;
             int y = i < 4 ? 280 + i * 30 : 460 + (i - 4) * 30;
-            float width = MeasureTextEx(assets->ui_font, labels[i], 26, 0).x;
-            DrawTextEx(assets->ui_font, labels[i], (Vector2){960 - width, (float)y}, 26, 0, WHITE);
+            DrawTextEx(assets->ui_font, labels[i], (Vector2){704, (float)y}, 26, 0, WHITE);
             const char *value = i < 4 ? TextFormat("%d%%", percent[i]) :
-                TextFormat("+%d\xc2\xa5", i == 4 ? 10000 : bonus[medal]);
-            DrawTextEx(assets->ui_font, value, (Vector2){976, (float)y}, 26, 0, i < 4 ? WHITE : GREEN);
+                TextFormat("+%d cr", i == 4 ? 10000 : bonus[medal]);
+            DrawTextEx(assets->ui_font, value, (Vector2){1216-MeasureTextEx(assets->ui_font,value,26,0).x, (float)y}, 26, 0, i < 4 ? WHITE : accent);
         }
         if (counter >= 300) {
             Texture2D texture = assets->medals[medal - 1];
@@ -1015,69 +1099,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         }
         return;
     }
-    if (title_menu(game)) {
-        ClearBackground((Color){92, 120, 196, 255});
-        BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-        /* BlueSky's two cloud layers, source texture, scales and velocities. */
-        for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
-            float x = (float)((i * 193 + layer * 311) % GAME_WIDTH);
-            float speed = (layer ? 9.0f : 6.0f) * (1 - fabsf(x - 480) * 0.001f);
-            float y = fmodf(i * 137.0f + layer * 317 + frame * speed, GAME_HEIGHT + 64) - 32;
-            sprite(assets->cloud, ARENA_X + x, y, assets->cloud.width * (layer ? 0.8f : 1.2f), 0, WHITE);
-        }
-        EndScissorMode();
-        DrawTexture(assets->panel_background, 0, 0, WHITE);
-        DrawTexture(assets->panel_background, 1440, 0, WHITE);
-        DrawTexture(assets->title, 704, 120, WHITE);
-        DrawTextEx(assets->ui_font, "@kalin_t", (Vector2){1300, 980}, 19, 0, WHITE);
-    }
-    if (game->menu.page == MENU_NEW_GAME)
-        text_center(assets->ui_font, TextFormat("Slot %d", game->active_slot + 1), 960, 345, 28, WHITE);
-    if (game->menu.page == MENU_OVERWRITE)
-        text_center(assets->ui_font, TextFormat("Replace Slot %d?", game->active_slot + 1), 960, 330, 32, WHITE);
-    if (game->menu.page == MENU_PILOT) {
-        static const char *info[3][5] = {
-            {"Kazuki", "Japan", "Ace Pilot", "B", "Speed+"},
-            {"Rabbit", "Russia", "Wpn Research", "A", "Money+"},
-            {"Gunthor", "Norway", "Demolitions", "O", "Damage+"}
-        };
-        static const char *keys[] = {"Name", "Country", "Profession", "Blood Type", "Bonus"};
-        for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
-            if (!game->players[slot].joined) continue;
-            int x = (slot ? 1440 : 0) + 238, y = 472;
-            int pilot = game->menu.pilot[slot];
-            DrawTextEx(assets->ui_font, game->menu.ready[slot] ? "Waiting..." : "Select Pilot", (Vector2){x - 120.0f, y - 240.0f}, 36, 0, WHITE);
-            DrawRectangle(x - 100, y - 100, 200, 200, (Color){18,27,40,255});
-            sprite(assets->portraits[pilot], (float)x, (float)y, 196, 0, WHITE);
-            if (!game->menu.ready[slot]) {
-                if (pilot > 0) sprite(assets->pilot_arrow, (float)x - 116, (float)y, 67, 0, WHITE);
-                if (pilot < 2) DrawTexturePro(assets->pilot_arrow, (Rectangle){0, 0, -67, 99},
-                    (Rectangle){(float)x + 116, (float)y, 67, 99}, (Vector2){33.5f, 49.5f}, 0, WHITE);
-            }
-            for (int row = 0; row < 5; ++row) {
-                int text_y = y + 160 + row * 32 + (row == 4 ? 32 : 0);
-                DrawTextEx(assets->ui_font, keys[row], (Vector2){x - 40 - MeasureTextEx(assets->ui_font, keys[row], 20, 0).x, (float)text_y}, 20, 0, WHITE);
-                DrawTextEx(assets->ui_font, ":", (Vector2){x - 32.0f, (float)text_y}, 20, 0, WHITE);
-                DrawTextEx(assets->ui_font, info[pilot][row], (Vector2){x - 16.0f, (float)text_y}, 20, 0, WHITE);
-            }
-        }
-        return;
-    }
-    for (int row = 0; row < game_menu_count(game); ++row) {
-        bool selected = row == game->menu.cursor, enabled = game_menu_enabled(game, row);
-        int texture = enabled ? (selected ? 2 : 0) + (game_menu_small(game, row) ? 1 : 0) : selected ? 5 : 4;
-        int y = game->menu.page == MENU_STAGE_SELECT ? 150 + row * 66 : 400 + row * 66;
-        if (game->menu.page == MENU_SLOTS && row < GAME_SAVE_SLOTS) {
-            Texture2D button = assets->menu[texture];
-            DrawTexturePro(button, (Rectangle){0,0,(float)button.width,(float)button.height},
-                (Rectangle){720,(float)y,480,(float)button.height}, (Vector2){0}, 0, WHITE);
-        } else DrawTexture(assets->menu[texture], 832, y, WHITE);
-        text_center(assets->ui_font, game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
-        if (game->menu.page == MENU_OPTIONS && row < 3) {
-            for (int i = 0; i < 10; ++i) DrawRectangle(864 + i * 20, y + 46, 16, 8,
-                game->menu.options[row] > i ? LIGHTGRAY : GRAY);
-        }
-    }
+    draw_menu_list(game,assets,frame,devices);
 }
 
 static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
@@ -1626,21 +1648,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #else
         BeginTextureMode(canvas);
 #endif
-        draw_game(game, &assets);
+        if (!title_menu(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
+            game->menu.page != MENU_STAGE_SELECT)
+            draw_game(game, &assets, &devices);
         draw_menu(game, &assets, menu_frame++, &devices);
-        if (game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH && game->menu.page != MENU_CLEAR) {
-            int owner = game->players[0].joined ? 0 : 1;
-            int device = devices.device[owner];
-            if (game->menu.page == MENU_NONE) {
-                button_prompt(assets.ui_font,790,1033,device,owner,GLYPH_START,"Pause");
-                key_prompt(assets.ui_font,975,1033,"F2","Keyboard P2");
-            } else {
-                int x = 710;
-                x += button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_CONFIRM,"Confirm") + 30;
-                x += button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_BACK,"Back") + 30;
-                button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_START,"Join");
-            }
-        }
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {

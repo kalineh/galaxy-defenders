@@ -6,9 +6,9 @@ meters, stock and purchase prices. Browse directly with the D-pad. Each pilot
 confirms purchases in a centered dialog and toggles Ready with Square. The three anime portraits also
 appear in pilot selection and the gameplay HUD.
 
-Remaining UI work includes the compact mobile shop tray and touch input,
-gameplay HUD rails, and visual updates to pause, options and save slots.
-The widescreen shop uses the existing raylib renderer and menu actions.
+The title, campaign setup, pilot selection, pause/options, results, and flight
+HUD now use the shop palette and controls. Shop and flight share the pilot
+header and resource meters. Compact mobile layout and touch input remain open.
 
 # Completed small enemy reward adjustment
 

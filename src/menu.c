@@ -44,11 +44,6 @@ bool game_menu_enabled(const Game *game, int row) {
         !game->saves[game->active_slot].valid);
 }
 
-bool game_menu_small(const Game *game, int row) {
-    MenuPage page = game->menu.page;
-    return row == game_menu_count(game) - 1 && page != MENU_RETRY;
-}
-
 void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_OVERWRITE) return;
     MenuPage previous = game->menu.page;
