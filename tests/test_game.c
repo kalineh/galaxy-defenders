@@ -1751,6 +1751,30 @@ static void scenery_sequence(void) {
     CHECK(game.stage.scenery[0][0].x >= 50 && game.stage.scenery[0][0].x <= 1010);
 }
 
+static void shop_scroll_windows(void) {
+    reset();
+    game_shop_open(&game);
+    game_menu_input(&game,MENU_DOWN,0);
+    game_menu_input(&game,MENU_CONFIRM,0);
+    int stock[WEAPON_COUNT+1];
+    CHECK(game_shop_stock(&game,0,1,stock) == GENERATOR_COUNT);
+    for (int i=1; i<GENERATOR_COUNT; ++i) game_menu_input(&game,MENU_DOWN,0);
+    CHECK(game.menu.shop_first_item[0] == GENERATOR_COUNT-SHOP_VISIBLE_ROWS);
+    for (int i=1; i<SHOP_VISIBLE_ROWS; ++i) game_menu_input(&game,MENU_UP,0);
+    CHECK(game.menu.shop_first_item[0] == GENERATOR_COUNT-SHOP_VISIBLE_ROWS);
+    game_menu_input(&game,MENU_UP,0);
+    CHECK(game.menu.shop_first_item[0] == GENERATOR_COUNT-SHOP_VISIBLE_ROWS-1);
+    game_menu_input(&game,MENU_BACK,0);
+    game_menu_input(&game,MENU_DOWN,0);
+    game_menu_input(&game,MENU_DOWN,0);
+    game_menu_input(&game,MENU_CONFIRM,0);
+    game_menu_input(&game,MENU_CONFIRM,0);
+    for (int i=0; i<8; ++i) game_menu_input(&game,MENU_DOWN,0);
+    CHECK(game.menu.shop_level[0] == 7 && game.menu.shop_first_tier[0] == 2);
+    game_menu_input(&game,MENU_UP,0);
+    CHECK(game.menu.shop_level[0] == 6 && game.menu.shop_first_tier[0] == 2);
+}
+
 static void shop_previews(void) {
     reset();
     game_shop_open(&game);
@@ -2066,6 +2090,7 @@ int main(int argc, char **argv) {
     complete_equipment();
     legacy_circle_sizes();
     shop_progression();
+    shop_scroll_windows();
     stage2_runtime();
     movement(); collisions(); player_impact_damage(); death_and_restart(); pools_and_completion(); determinism(); command_failures(); legacy_effects();
     debug_equipment();

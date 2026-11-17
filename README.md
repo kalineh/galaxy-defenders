@@ -11,9 +11,10 @@ volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
 music. Stage Clear opens the shop. Up/down selects one of six loadout slots. Confirm opens its stock, up/down
 previews equipment, and Back returns to the selected slot. Each pilot keeps purchased gear across stages and can equip it freely.
-Open a weapon to browse its marks. A purchase includes every mark up to the
+All twelve generators are available in each shop. Open a weapon to browse its marks.
+Primary DPS estimates direct normal-fire damage with all emitters on target and enough energy to fire. A purchase includes every mark up to the
 selection and charges only for marks that pilot still needs. Confirm a paid
-purchase in the center dialog. Older saves start with their equipped loadouts. Square (Z on keyboard) toggles Ready.
+purchase in the center dialog. Older saves start with their equipped loadouts. Square (C on keyboard) toggles Ready.
 The next stage starts when every joined player is ready.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
@@ -26,7 +27,7 @@ retry every five seconds and show an error. Existing `solo.save` / `coop.save`
 import into empty slots 1 / 2 without deleting the original files. Headless and
 bounded render checks never read or write human saves.
 
-Menus use arrows, X to confirm and C to cancel or gamepad D-pad/A/B. Player two uses J/L,
+Menus use arrows, X to confirm and Z to cancel or gamepad D-pad/A/B. Player two uses J/L,
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
 generators and shields are connected; Rabbit starts with Lightning. Options adjust
 SFX/music volume and screen size for the session.
@@ -49,8 +50,8 @@ See [music audition instructions](music/README.md) and the
 | Move | Arrows | IJKL |
 | Fire / confirm | X | Right Ctrl |
 | Focus fire | C | U |
-| Cancel | C | Backspace |
-| Ready | Z | Right Shift |
+| Cancel | Z | Backspace |
+| Ready | C | Right Shift |
 | Sidekick | Z | O |
 | Join / pause / resume | Enter | F2 joins or leaves |
 | Triangle / end-of-stage retry | D | - |

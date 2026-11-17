@@ -33,12 +33,15 @@ typedef enum { MENU_NONE, MENU_MAIN, MENU_NEW_GAME, MENU_DIFFICULTY, MENU_PILOT,
     MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT, MENU_SLOTS, MENU_OVERWRITE } MenuPage;
 typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSITION_RETRY,
     TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
+#define SHOP_VISIBLE_ROWS 6
+
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent, pause_origin;
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
+    int shop_first_item[2], shop_first_tier[2];
     bool shop_catalog[2], shop_purchase[2], shop_tiers[2];
     int frame;
     int next_stage, shop_fly_frames[GAME_PLAYERS];

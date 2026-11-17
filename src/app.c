@@ -418,7 +418,7 @@ static int key_prompt(Font font, int x, int y, const char *key, const char *acti
 }
 
 static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGlyph button, const char *action) {
-    static const char *keys[2][4] = {{"X","C","Z","Enter"},{"R Ctrl","Backspace","R Shift","F2"}};
+    static const char *keys[2][4] = {{"X","Z","C","Enter"},{"R Ctrl","Backspace","R Shift","F2"}};
     if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[slot][button],action);
     static const char *letters[] = {"A","B","X"};
     const char *pad = device < 4 ? GetGamepadName(device) : NULL;
@@ -440,19 +440,6 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
     int offset = button == GLYPH_START ? 48 : 39;
     DrawTextEx(font,action,(Vector2){x+offset,y+1},23,0,WHITE);
     return offset + (int)MeasureTextEx(font,action,23,0).x;
-}
-
-static void shop_navigation(Font font, int x, int y, int device, int slot, const char *label) {
-    if (device >= 0 && device < INPUT_PADS) {
-        DrawRectangle(x+11,y,12,34,rule);
-        DrawRectangle(x,y+11,34,12,rule);
-        DrawRectangle(x+14,y+3,6,9,WHITE);
-        DrawRectangle(x+14,y+22,6,9,WHITE);
-        DrawTextEx(font,label,(Vector2){x+42,y+3},22,0,dim);
-    } else {
-        key_prompt(font,x,y,slot ? "I" : "^","");
-        key_prompt(font,x+34,y,slot ? "K" : "v",label);
-    }
 }
 
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
@@ -639,7 +626,7 @@ static const char *shop_item_name(int category, int item) {
     }
 }
 
-static const char *loadout_slots[] = {"Chassis", "Generator", "Shield", "Main weapon", "Support weapon", "Sidekick"};
+static const char *loadout_slots[] = {"Chassis", "Generator", "Shield", "Primary", "Support", "Sidekick"};
 
 static Texture2D equipment_icon(const Assets *assets, int category, int id) {
     if (id < 0) return assets->item_none;
@@ -651,21 +638,27 @@ static Texture2D equipment_icon(const Assets *assets, int category, int id) {
     }
 }
 
-static void draw_loadout(const Assets *assets, const Player *p, int x, int y, int focus, Color color) {
+enum { LOADOUT_TOP = 312, LOADOUT_ROW = 49 };
+
+static void draw_loadout(const Assets *assets, const Player *p, int x, int focus, Color color) {
     Font font = assets->ui_font;
-    for (int c = 0; c < 6; ++c, y += 80) {
+    for (int c = 0; c < 6; ++c) {
+        int y = LOADOUT_TOP + c*LOADOUT_ROW;
         int id = game_shop_equipped(p,c);
         if (c == focus) {
-            DrawRectangle(x,y,424,78,surface);
-            DrawRectangle(x,y,4,78,color);
+            DrawRectangle(x,y,424,47,surface);
+            DrawRectangle(x,y,3,47,color);
         }
-        sprite(equipment_icon(assets,c,id),x+35,y+39,44,0,id < 0 ? dim : WHITE);
-        DrawTextEx(font,loadout_slots[c],(Vector2){x+72,y+9},20,0,dim);
-        DrawTextEx(font,shop_item_name(c,id),(Vector2){x+72,y+34},26,0,id < 0 ? dim : WHITE);
+        sprite(equipment_icon(assets,c,id),x+24,y+23,32,0,id < 0 ? dim : WHITE);
+        DrawTextEx(font,loadout_slots[c],(Vector2){x+49,y+13},20,0,dim);
+        const char *name = shop_item_name(c,id);
+        int max_width = (id >= 0 && (c==3 || c==4)) ? 220 : 268;
+        float size = fminf(24,24*max_width/fmaxf(1,MeasureTextEx(font,name,24,0).x));
+        DrawTextEx(font,name,(Vector2){x+148,y+(47-size)/2},size,0,id < 0 ? dim : WHITE);
         if (id >= 0 && (c == 3 || c == 4))
             DrawTextEx(font,TextFormat("Mk %d",1+(c == 3 ? p->weapon_level : p->secondary_level)),
-                (Vector2){x+350,y+34},22,0,color);
-        DrawLine(x,y+78,x+424,y+78,rule);
+                (Vector2){x+375,y+14},18,0,color);
+        DrawLine(x,y+47,x+424,y+47,rule);
     }
 }
 
@@ -676,7 +669,7 @@ static void draw_flight_rail(const Game *game, const Assets *assets, int slot, i
     int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
     Font font = assets->ui_font;
     DrawLine(x,298,x+424,298,rule);
-    draw_loadout(assets,p,x,312,-1,player_colors[slot]);
+    draw_loadout(assets,p,x,-1,player_colors[slot]);
     DrawTextEx(font,stage_definitions[game->stage.index].display_name,(Vector2){x,941},24,0,dim);
     DrawLine(x,974,x+424,974,rule);
     if (device != INPUT_KEYBOARD_P2 && !(slot && device < 0))
@@ -744,37 +737,105 @@ static void draw_game(const Game *game, const Assets *assets, const PlayerDevice
     for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,devices->device[i]);
 }
 
-static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
-    if (item < 0) return;
-    const char *first, *second;
-    if (cat == 0) {
+static const char *item_description(int category, int id) {
+    static const char *const chassis[] = {
+        "The flight school's old faithful.", "A light frame with a quick first step.",
+        "Heavy plating for crowded lanes.", "Built to slip through closing gaps.",
+        "A sturdy hull with a sprinter's legs.", "Quick off the line. Quick on the turn.",
+        "A fast bruiser with armor to spare.", "A flying bunker. Give it room to turn.",
+        "Race-bred handling in a lean hull."
+    };
+    static const char *const generators[] = {
+        "The fleet's trusty starter cell.", "Copper rails feed a steady current.",
+        "A deep reserve for long bursts.", "A quick refill between volleys.",
+        "A pulse core for stop-start firing.", "A compact bank of resonant coils.",
+        "A spinning core keeps the guns fed.", "Stores a long burst in one big bank.",
+        "A deep cell with a lively recharge.", "Turns hull impacts into energy.",
+        "Coins give this core an extra spark.", "A tiny star behind armored glass."
+    };
+    static const char *const shields[] = {
+        "A light screen for a small hull.", "Woven field lines catch stray fire.",
+        "An electric veil around the cockpit.", "A tuned field wastes little charge.",
+        "A compact screen that rebuilds fast.", "Field coils brace for the next hit.",
+        "A dense bubble for the front line.", "A deep buffer for heavy incoming fire.",
+        "Precision coils stretch every charge."
+    };
+    static const char *const weapons[WEAPON_COUNT] = {
+        [WEAPON_FRONT_LASER]="Straight bolts for a clean firing lane.",
+        [WEAPON_SPREAD_LASER]="Fans laser fire across the approach.",
+        [WEAPON_PLASMA]="Higher marks burst on impact.",
+        [WEAPON_FLAME]="A hot spray that cools as it travels.",
+        [WEAPON_LIGHTNING]="Arcs jump from one target to the next.",
+        [WEAPON_BEAM]="Hold a column of light on target.",
+        [WEAPON_MISSILE]="Rockets punch straight up the lane.",
+        [WEAPON_DRUNK_MISSILE]="A rocket with a wandering flight path.",
+        [WEAPON_SEEK_BOMB]="Hunts for a target after launch.",
+        [WEAPON_BOOMERANG]="A spinning disc cuts through a crowd.",
+        [WEAPON_VULCAN]="A rapid burst with a loose spread.",
+        [WEAPON_BOMBLET]="Scatters small bombs around the ship.",
+        [WEAPON_MINI_SHOT]="A small gun for each wing.",
+        [WEAPON_CHARGE_SHOT]="Hold to build a heavier shot.",
+        [WEAPON_BLADE]="Spinning blades sweep the flanks.",
+        [WEAPON_MISSILE_VOLLEY]="Wing pods loose a flight of rockets.",
+        [WEAPON_MISSILE_LAUNCHER]="A rocket tube under each wing.",
+        [WEAPON_LASER_SHOT]="Wing-mounted guns add laser fire."
+    };
+    if (id < 0) return category == 2 ? "No shield fitted." :
+        category == 4 ? "No support weapon fitted." : "No wing pods fitted.";
+    return category == 0 ? chassis[id] : category == 1 ? generators[id] :
+        category == 2 ? shields[id] : weapons[id];
+}
+
+static void draw_item_tip(const Game *game, const Assets *assets, int slot, int anchor, int cat, int item, int mark) {
+    const GameMenu *menu = &game->menu;
+    if (menu->ready[slot] || menu->shop_purchase[0] || menu->shop_purchase[1]) return;
+    Font font = assets->ui_font;
+    Color color = player_colors[slot];
+    const int width = 374, x = slot ? 1440-40-width : ARENA_X+40;
+    int y = anchor-42;
+    int row_edge = slot ? ARENA_X+GAME_WIDTH+28+(menu->shop_tiers[slot] ? 18 : 0) : ARENA_X-28;
+    DrawLine(row_edge,anchor,slot ? x+width : x,anchor,color);
+    DrawCircle(row_edge,anchor,3,color);
+    const char *stat = NULL, *detail = NULL;
+    if (item >= 0 && cat == 0) {
         const Chassis *c = &game_chassis[item];
-        first = TextFormat("Armor %g     Acceleration %g",c->armor,c->speed);
-        second = TextFormat("Impact resist %.0f%%     Friction %.3g",100*c->collision_resistance,c->friction);
-    } else if (cat == 1) {
+        stat = TextFormat("Armor %g    Acceleration %g",c->armor,c->speed);
+        detail = TextFormat("Impact resistance %.0f%%",100*c->collision_resistance);
+    } else if (item >= 0 && cat == 1) {
         const Generator *g = &game_generators[item];
-        first = TextFormat("Capacity %g     Regen %g/s",g->capacity,g->regen*GAME_HZ);
-        second = g->on_coin ? TextFormat("+%g energy per coin",g->on_coin) :
-            g->on_collision ? TextFormat("+%g energy per impact damage",g->on_collision) : "";
-    } else if (cat == 2) {
-        const Shield *h = &game_shields[item];
-        first = TextFormat("Capacity %g     Efficiency %.0f%%",h->capacity,h->efficiency*100);
-        second = TextFormat("Recharge draw %g energy/s",h->drain*GAME_HZ);
-    } else {
-        const WeaponLevel *w = &game_weapons[item].levels[level];
-        const WeaponEmitter *e = w->emitters;
-        float damage = 0, energy = 0, drain = 0;
+        stat = TextFormat("Capacity %g    Regen %g/s",g->capacity,g->regen*GAME_HZ);
+        if (g->on_coin) detail = TextFormat("+%g energy per coin",g->on_coin);
+        if (g->on_collision) detail = TextFormat("+%g energy per impact damage",g->on_collision);
+    } else if (item >= 0 && cat == 2) {
+        stat = TextFormat("Capacity %g    Efficiency %.0f%%",game_shields[item].capacity,100*game_shields[item].efficiency);
+    } else if (item >= 0) {
+        const WeaponLevel *w = &game_weapons[item].levels[mark];
+        float min_hit = INFINITY, max_hit = 0, dps = 0;
         for (int i=0; i<w->count; ++i) {
-            damage += e[i].damage;
-            energy += e[i].energy;
-            drain += e[i].drain;
+            const WeaponEmitter *e = &w->emitters[i];
+            float hit = e->damage * (game->players[slot].pilot == 2 ? 1.15f : 1);
+            min_hit = fminf(min_hit,hit);
+            max_hit = fmaxf(max_hit,hit);
+            float ticks = fmaxf(1,ceilf((e->reload+.5f*e->random_reload)*GAME_HZ));
+            dps += hit*GAME_HZ/(e->toggle ? 1 : ticks);
         }
-        first = TextFormat("%d emitter%s     Base damage %.3g total",w->count,w->count==1?"":"s",damage);
-        second = drain ? TextFormat("Energy %.3g     Sustain %.3g/s",energy,drain*GAME_HZ) :
-            TextFormat("Energy %.3g     Reload %.3g s",energy,e[0].reload);
+        stat = min_hit == max_hit ? TextFormat("Damage / hit   %.3g",max_hit) :
+            TextFormat("Damage / hit   %.3g - %.3g",min_hit,max_hit);
+        if (cat == 3) detail = TextFormat("Nominal DPS   %.3g",dps);
+        if (item == WEAPON_CHARGE_SHOT) stat = TextFormat("Full-charge hit   %.3g",max_hit);
     }
-    DrawTextEx(font,first,(Vector2){x,y},22,0,WHITE);
-    DrawTextEx(font,second,(Vector2){x,y+30},21,0,dim);
+    int height = detail ? 150 : stat ? 123 : 88;
+    DrawRectangle(x,y,width,height,ink);
+    DrawRectangleLinesEx((Rectangle){x,y,width,height},1,rule);
+    DrawRectangle(slot ? x+width-3 : x,y,3,height,color);
+    const char *name = shop_item_name(cat,item);
+    if (cat >= 3 && item >= 0 && game_weapons[item].level_count > 1) name = TextFormat("%s  Mk %d",name,mark+1);
+    DrawTextEx(font,name,(Vector2){x+16,y+10},25,0,WHITE);
+    const char *desc = item_description(cat,item);
+    float size = fminf(20,20*(width-32)/fmaxf(1,MeasureTextEx(font,desc,20,0).x));
+    DrawTextEx(font,desc,(Vector2){x+16,y+49},size,0,dim);
+    if (stat) DrawTextEx(font,stat,(Vector2){x+16,y+88},21,0,WHITE);
+    if (detail) DrawTextEx(font,detail,(Vector2){x+16,y+115},21,0,WHITE);
 }
 
 static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, int device, int left) {
@@ -791,13 +852,16 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     int equipped_level = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
     int rows = tiers ? game_weapons[item].level_count : count;
     int focus = tiers ? mark : selected;
-    int first = focus > 5 ? focus - 5 : 0;
-    int y = 378;
-    if (tiers) {
-        DrawTextEx(font,shop_item_name(cat,item),(Vector2){left+8,y},26,0,WHITE);
-        y += 38;
-    }
-    for (int i=first; i<rows && i<first+6; ++i, y+=49) {
+    int first = tiers ? menu->shop_first_tier[slot] : menu->shop_first_item[slot];
+    int y = LOADOUT_TOP;
+    const char *path = tiers ? TextFormat("%s  /  %s",loadout_slots[cat],shop_item_name(cat,item)) :
+        TextFormat("Equipment  /  %s",loadout_slots[cat]);
+    DrawTextEx(font,path,(Vector2){left+8,y+4},23,0,dim);
+    if (rows > SHOP_VISIBLE_ROWS)
+        DrawTextEx(font,TextFormat("%d/%d",focus+1,rows),(Vector2){left+width-55,y+6},20,0,dim);
+    y += 43;
+    int anchor = y+(focus-first)*49+23;
+    for (int i=first; i<rows && i<first+SHOP_VISIBLE_ROWS; ++i, y+=49) {
         int id = tiers ? item : stock[i];
         int indent = tiers ? 18 : 0;
         bool focused = i == focus && !menu->ready[slot];
@@ -805,7 +869,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         bool equipped = id == owned && (!tiers || i == equipped_level);
         bool purchased = tiers ? i < marks : marks > 0;
         int price = game_shop_price(p,cat,id,tiers ? i : 0);
-        const char *status = equipped ? "Equipped" : purchased ? "Owned / Free" : TextFormat("%d cr",price);
+        const char *status = equipped ? "Equipped" : purchased ? "Owned" : TextFormat("%d cr",price);
         int right = left + width - (int)MeasureTextEx(font,status,21,0).x - 8;
         if (focused) DrawRectangle(left+indent,y,width-indent,47,surface);
         DrawLine(left+indent,y+47,left+width,y+47,rule);
@@ -825,9 +889,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         DrawTextEx(font,name,(Vector2){name_x,y+(47-size)/2},size,0,WHITE);
         DrawTextEx(font,status,(Vector2){right,y+12},21,0,equipped ? highlight : purchased ? dim : WHITE);
     }
-    int stats_y = y + 21;
-    DrawLine(left,y+8,left+width,y+8,rule);
-    shop_stats(font,left,stats_y,cat,item,mark);
+    draw_item_tip(game,assets,slot,anchor,cat,item,mark);
     bool tree = cat >= 3 && item >= 0 && game_weapons[item].level_count > 1;
     bool purchased = game_shop_owned_marks(p,cat,item) > mark;
     if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
@@ -835,8 +897,8 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
             tiers && game_shop_owned_marks(p,cat,item) ? "Upgrade" : "Buy & equip";
         int offset = 0;
         if ((tree && !tiers) || item != owned || mark != equipped_level)
-            offset = button_prompt(font,left,stats_y+79,device,slot,GLYPH_CONFIRM,action) + 22;
-        button_prompt(font,left+offset,stats_y+79,device,slot,GLYPH_BACK,tiers ? "Items" : "Loadout");
+            offset = button_prompt(font,left,y+18,device,slot,GLYPH_CONFIRM,action) + 22;
+        button_prompt(font,left+offset,y+18,device,slot,GLYPH_BACK,tiers ? "Items" : "Loadout");
     }
 }
 
@@ -851,18 +913,14 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     if (!p->joined) return;
     int cat = menu->shop_category[slot];
     DrawLine(left, 298, left + width, 298, rule);
-    DrawTextEx(font, "SHOP", (Vector2){left, 315}, 36, 1, WHITE);
-    bool catalog = menu->shop_catalog[slot];
-    if (catalog) {
-        const char *label = loadout_slots[cat];
-        DrawTextEx(font,label,(Vector2){left+width-MeasureTextEx(font,label,26,0).x,324},26,0,highlight);
+    if (menu->shop_catalog[slot]) {
         draw_shop_catalog(game,assets,slot,device,left);
     } else {
-        draw_loadout(assets,p,left,370,menu->ready[slot] ? -1 : cat,highlight);
-        if (!menu->ready[slot]) button_prompt(font,left,870,device,slot,GLYPH_CONFIRM,"Browse slot");
+        draw_loadout(assets,p,left,menu->ready[slot] ? -1 : cat,highlight);
+        int mark = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
+        draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark);
+        if (!menu->ready[slot]) button_prompt(font,left,LOADOUT_TOP+6*LOADOUT_ROW+18,device,slot,GLYPH_CONFIRM,"Browse");
     }
-    if (!menu->ready[slot] && !menu->shop_purchase[slot])
-        shop_navigation(font,left,932,device,slot,catalog ? (menu->shop_tiers[slot] ? "Tier" : "Item") : "Slot");
     DrawLine(left,974,left+width,974,rule);
     button_prompt(font,left,993,device,slot,GLYPH_READY,"Ready");
     int check = left + width - 34;
@@ -1263,8 +1321,8 @@ static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, 
             pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT);
             pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT);
             pressed[MENU_CONFIRM] = IsKeyPressed(KEY_X);
-            pressed[MENU_READY] = IsKeyPressed(KEY_Z);
-            pressed[MENU_BACK] = IsKeyPressed(KEY_C) || IsKeyPressed(KEY_ESCAPE);
+            pressed[MENU_READY] = IsKeyPressed(KEY_C);
+            pressed[MENU_BACK] = IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_ESCAPE);
         } else if (device == INPUT_KEYBOARD_P2) {
             pressed[MENU_UP] = IsKeyPressed(KEY_I);
             pressed[MENU_DOWN] = IsKeyPressed(KEY_K);
