@@ -39,7 +39,7 @@ typedef struct {
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
-    bool shop_purchase[2], shop_tiers[2];
+    bool shop_catalog[2], shop_purchase[2], shop_tiers[2];
     int frame;
     int next_stage, shop_fly_frames[GAME_PLAYERS];
 } GameMenu;
@@ -207,6 +207,7 @@ bool game_save_write(const SavedGame *save, const char *path);
 bool game_join(Game *game, int slot);
 bool game_leave(Game *game, int slot);
 bool game_equip_chassis(Game *game, int slot, int chassis);
+bool game_menu_is_title(const Game *game);
 void game_menu_open(Game *game, MenuPage page);
 void game_menu_input(Game *game, MenuAction action, int slot);
 int game_menu_count(const Game *game);

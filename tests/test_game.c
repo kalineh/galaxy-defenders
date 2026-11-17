@@ -130,6 +130,13 @@ static void legacy_circle_sizes(void) {
 
 static void shop_progression(void) {
     reset();
+    game_menu_open(&game, MENU_MAIN);
+    game_transition(&game, TRANSITION_MAIN, 0);
+    CHECK(console_execute(&console,&game,"debug.shop"));
+    CHECK(game.menu.page == MENU_SHOP && !game.transition_frames && game.active_slot == -1 && !game.saves_dirty);
+    game_menu_input(&game,MENU_READY,0);
+    CHECK(console_execute(&console,&game,"debug.shop") && !game.menu.ready[0]);
+    reset();
     game.complete = true;
     game.players[0].score = 5000;
     game.players[0].money = 250;
@@ -156,9 +163,16 @@ static void shop_progression(void) {
     for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_UP, 0);
     game_menu_input(&game, MENU_BACK, 0);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 3000); /* Cancel preview. */
-    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, 0);
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.shop_tiers[0] && game_shop_cost(&game, 0) == 0);
+    game_menu_input(&game, MENU_BACK, 0);
+    CHECK(game.menu.shop_catalog[0] && !game.menu.shop_tiers[0]);
+    game_menu_input(&game, MENU_BACK, 0);
+    CHECK(!game.menu.shop_catalog[0] && game.menu.shop_category[0] == 3);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
     game_menu_input(&game, MENU_DOWN, 0);
     CHECK(game_shop_cost(&game, 0) == 5000);
     game_menu_input(&game, MENU_CONFIRM, 0);
@@ -1741,6 +1755,7 @@ static void shop_previews(void) {
     reset();
     game_shop_open(&game);
     game.menu.shop_category[0] = 3;
+    game.menu.shop_catalog[0] = true;
     game.menu.shop_item[0] = WEAPON_BEAM;
     game.menu.shop_level[0] = 2;
     repeat.tick = 0;
@@ -1848,7 +1863,8 @@ static void controller_joining(void) {
     CHECK(game_join(&game, 1));
     game_shop_open(&game);
     for (int slot = 0; slot < 2; ++slot) {
-        for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, slot);
+        for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, slot);
+        game_menu_input(&game, MENU_CONFIRM, slot);
         game_menu_input(&game, MENU_CONFIRM, slot);
         game_menu_input(&game, MENU_DOWN, slot);
         game_menu_input(&game, MENU_CONFIRM, slot);

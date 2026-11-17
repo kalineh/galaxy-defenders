@@ -442,22 +442,16 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
 
-static void shop_navigation(Font font, int x, int y, int device, int slot, bool tiers) {
-    bool pad = device >= 0 && device < INPUT_PADS;
-    for (int axis = 0; axis < 2; ++axis) {
-        int xx = x + axis * 196;
-        if (pad) {
-            Color base = {65,80,99,255};
-            DrawRectangle(xx+11,y,12,34,base);
-            DrawRectangle(xx,y+11,34,12,base);
-            DrawRectangle(xx+(axis ? 14 : 3),y+(axis ? 3 : 14),axis ? 6 : 9,axis ? 9 : 6,WHITE);
-            DrawRectangle(xx+(axis ? 14 : 22),y+(axis ? 22 : 14),axis ? 6 : 9,axis ? 9 : 6,WHITE);
-            DrawTextEx(font,axis ? (tiers ? "Tier" : "Item") : "Category",(Vector2){xx+42,y+3},22,0,dim);
-        } else {
-            static const char *keys[][4] = {{"<",">","^","v"},{"J","L","I","K"}};
-            key_prompt(font,xx,y,keys[slot][2*axis],"");
-            key_prompt(font,xx+34,y,keys[slot][2*axis+1],axis ? (tiers ? "Tier" : "Item") : "Category");
-        }
+static void shop_navigation(Font font, int x, int y, int device, int slot, const char *label) {
+    if (device >= 0 && device < INPUT_PADS) {
+        DrawRectangle(x+11,y,12,34,rule);
+        DrawRectangle(x,y+11,34,12,rule);
+        DrawRectangle(x+14,y+3,6,9,WHITE);
+        DrawRectangle(x+14,y+22,6,9,WHITE);
+        DrawTextEx(font,label,(Vector2){x+42,y+3},22,0,dim);
+    } else {
+        key_prompt(font,x,y,slot ? "I" : "^","");
+        key_prompt(font,x+34,y,slot ? "K" : "v",label);
     }
 }
 
@@ -635,6 +629,46 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
     resource_meter(font, left + 184, 229, "Energy", preview->energy, game_generators[preview->generator].capacity, (Color){117,214,188,255});
 }
 
+static const char *shop_item_name(int category, int item) {
+    if (item < 0) return "Empty";
+    switch (category) {
+        case 0: return game_chassis[item].name;
+        case 1: return game_generators[item].name;
+        case 2: return game_shields[item].name;
+        default: return game_weapons[item].display_name;
+    }
+}
+
+static const char *loadout_slots[] = {"Chassis", "Generator", "Shield", "Main weapon", "Support weapon", "Sidekick"};
+
+static Texture2D equipment_icon(const Assets *assets, int category, int id) {
+    if (id < 0) return assets->item_none;
+    switch (category) {
+        case 0: return assets->shop[6+id];
+        case 1: return assets->generator_icons[id];
+        case 2: return assets->shield_icons[id];
+        default: return assets->weapon_icons[id];
+    }
+}
+
+static void draw_loadout(const Assets *assets, const Player *p, int x, int y, int focus, Color color) {
+    Font font = assets->ui_font;
+    for (int c = 0; c < 6; ++c, y += 80) {
+        int id = game_shop_equipped(p,c);
+        if (c == focus) {
+            DrawRectangle(x,y,424,78,surface);
+            DrawRectangle(x,y,4,78,color);
+        }
+        sprite(equipment_icon(assets,c,id),x+35,y+39,44,0,id < 0 ? dim : WHITE);
+        DrawTextEx(font,loadout_slots[c],(Vector2){x+72,y+9},20,0,dim);
+        DrawTextEx(font,shop_item_name(c,id),(Vector2){x+72,y+34},26,0,id < 0 ? dim : WHITE);
+        if (id >= 0 && (c == 3 || c == 4))
+            DrawTextEx(font,TextFormat("Mk %d",1+(c == 3 ? p->weapon_level : p->secondary_level)),
+                (Vector2){x+350,y+34},22,0,color);
+        DrawLine(x,y+78,x+424,y+78,rule);
+    }
+}
+
 static void draw_flight_rail(const Game *game, const Assets *assets, int slot, int device) {
     const Player *p = &game->players[slot];
     draw_pilot_rail(assets,p,p,slot,false);
@@ -642,19 +676,7 @@ static void draw_flight_rail(const Game *game, const Assets *assets, int slot, i
     int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
     Font font = assets->ui_font;
     DrawLine(x,298,x+424,298,rule);
-    DrawTextEx(font,"LOADOUT",(Vector2){x,317},30,1,WHITE);
-    int ids[] = {p->primary,p->secondary,p->sidekick};
-    const char *labels[] = {"Main weapon","Support weapon","Sidekick"};
-    for (int i=0; i<3; ++i) {
-        int y = 384 + i*85, id = ids[i];
-        Texture2D icon = id < 0 ? assets->item_none : assets->weapon_icons[id];
-        sprite(icon,x+23,y+24,37,0,id < 0 ? dim : WHITE);
-        DrawTextEx(font,labels[i],(Vector2){x+57,y-5},19,0,dim);
-        DrawTextEx(font,id < 0 ? "Empty" : game_weapons[id].display_name,(Vector2){x+57,y+19},26,0,WHITE);
-        if (id >= 0 && i < 2) DrawTextEx(font,TextFormat("Mk %d",1+(i?p->secondary_level:p->weapon_level)),
-            (Vector2){x+345,y+20},24,0,player_colors[slot]);
-        DrawLine(x,y+65,x+424,y+65,rule);
-    }
+    draw_loadout(assets,p,x,312,-1,player_colors[slot]);
     DrawTextEx(font,stage_definitions[game->stage.index].display_name,(Vector2){x,941},24,0,dim);
     DrawLine(x,974,x+424,974,rule);
     if (device != INPUT_KEYBOARD_P2 && !(slot && device < 0))
@@ -722,22 +744,6 @@ static void draw_game(const Game *game, const Assets *assets, const PlayerDevice
     for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,devices->device[i]);
 }
 
-static bool title_menu(const Game *game) {
-    MenuPage page = game->menu.page;
-    return page == MENU_SLOTS || page == MENU_OVERWRITE || page == MENU_MAIN || page == MENU_NEW_GAME || page == MENU_DIFFICULTY || page == MENU_PILOT ||
-        ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
-}
-
-static const char *shop_item_name(int category, int item) {
-    if (item < 0) return "Empty";
-    switch (category) {
-        case 0: return game_chassis[item].name;
-        case 1: return game_generators[item].name;
-        case 2: return game_shields[item].name;
-        default: return game_weapons[item].display_name;
-    }
-}
-
 static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
     if (item < 0) return;
     const char *first, *second;
@@ -771,27 +777,12 @@ static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
     DrawTextEx(font,second,(Vector2){x,y+30},21,0,dim);
 }
 
-static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
-    static const char *categories[] = {"Chassis", "Generator", "Shield", "Main weapon", "Support weapon", "Sidekick"};
-    Font font = assets->ui_font;
-    int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
-    Color highlight = player_colors[slot];
+static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, int device, int left) {
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
-    const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
-    draw_pilot_rail(assets,p,preview,slot,true);
-    if (!p->joined) return;
-    int cat = menu->shop_category[slot], owned = game_shop_equipped(p, cat);
-    DrawLine(left, 298, left + width, 298, rule);
-    DrawTextEx(font, "SHOP", (Vector2){left, 315}, 36, 1, WHITE);
-    const char *category = categories[cat];
-    DrawTextEx(font, category, (Vector2){left + width - MeasureTextEx(font, category, 26, 0).x, 324}, 26, 0, highlight);
-    for (int c = 0; c < 6; ++c) {
-        int xx = left + c * 72;
-        DrawRectangle(xx, 368, 64, 52, cat == c ? surface : ink);
-        sprite(assets->shop[c], xx + 32, 393, 42, 0, cat == c ? highlight : dim);
-        DrawRectangle(xx, 418, 64, cat == c ? 4 : 1, cat == c ? highlight : rule);
-    }
+    int cat = menu->shop_category[slot], owned = game_shop_equipped(p,cat), width = ARENA_X-56;
+    Font font = assets->ui_font;
+    Color highlight = player_colors[slot];
     int stock[WEAPON_COUNT + 1], count = game_shop_stock(game, slot, cat, stock);
     int item = menu->shop_item[slot], selected = 0;
     for (int i = 0; i < count; ++i) if (stock[i] == item) selected = i;
@@ -801,7 +792,7 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     int rows = tiers ? game_weapons[item].level_count : count;
     int focus = tiers ? mark : selected;
     int first = focus > 5 ? focus - 5 : 0;
-    int y = 437;
+    int y = 378;
     if (tiers) {
         DrawTextEx(font,shop_item_name(cat,item),(Vector2){left+8,y},26,0,WHITE);
         y += 38;
@@ -826,8 +817,7 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
             DrawLine(left+11,y+24,left+26,y+24,rule);
             name = TextFormat("Mk %d",i+1);
         } else {
-            Texture2D icon = id < 0 ? assets->item_none : cat == 0 ? assets->shop[6+id] :
-                cat == 1 ? assets->generator_icons[id] : cat == 2 ? assets->shield_icons[id] : assets->weapon_icons[id];
+            Texture2D icon = equipment_icon(assets,cat,id);
             sprite(icon,left+26,y+23,32,0,WHITE);
             name = shop_item_name(cat,id);
         }
@@ -846,9 +836,33 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
         int offset = 0;
         if ((tree && !tiers) || item != owned || mark != equipped_level)
             offset = button_prompt(font,left,stats_y+79,device,slot,GLYPH_CONFIRM,action) + 22;
-        if (tiers) button_prompt(font,left+offset,stats_y+79,device,slot,GLYPH_BACK,"Items");
+        button_prompt(font,left+offset,stats_y+79,device,slot,GLYPH_BACK,tiers ? "Items" : "Loadout");
     }
-    if (!menu->ready[slot] && !menu->shop_purchase[slot]) shop_navigation(font,left,932,device,slot,tiers);
+}
+
+static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
+    Font font = assets->ui_font;
+    int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
+    Color highlight = player_colors[slot];
+    const Player *p = &game->players[slot];
+    const GameMenu *menu = &game->menu;
+    const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
+    draw_pilot_rail(assets,p,preview,slot,true);
+    if (!p->joined) return;
+    int cat = menu->shop_category[slot];
+    DrawLine(left, 298, left + width, 298, rule);
+    DrawTextEx(font, "SHOP", (Vector2){left, 315}, 36, 1, WHITE);
+    bool catalog = menu->shop_catalog[slot];
+    if (catalog) {
+        const char *label = loadout_slots[cat];
+        DrawTextEx(font,label,(Vector2){left+width-MeasureTextEx(font,label,26,0).x,324},26,0,highlight);
+        draw_shop_catalog(game,assets,slot,device,left);
+    } else {
+        draw_loadout(assets,p,left,370,menu->ready[slot] ? -1 : cat,highlight);
+        if (!menu->ready[slot]) button_prompt(font,left,870,device,slot,GLYPH_CONFIRM,"Browse slot");
+    }
+    if (!menu->ready[slot] && !menu->shop_purchase[slot])
+        shop_navigation(font,left,932,device,slot,catalog ? (menu->shop_tiers[slot] ? "Tier" : "Item") : "Slot");
     DrawLine(left,974,left+width,974,rule);
     button_prompt(font,left,993,device,slot,GLYPH_READY,"Ready");
     int check = left + width - 34;
@@ -1007,7 +1021,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     };
     MenuPage page = game->menu.page;
     Font font = assets->ui_font;
-    bool title = title_menu(game);
+    bool title = game_menu_is_title(game);
     bool stages = page == MENU_STAGE_SELECT;
     if (title || stages) menu_sky(frame);
     else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
@@ -1137,7 +1151,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
 static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
     GameMenu before = game->menu;
     bool valid = before.page == MENU_PILOT || game_menu_enabled(game, before.cursor);
-    if (before.page == MENU_SHOP) valid = game_shop_cost(game, slot) <= game->players[slot].money;
+    if (before.page == MENU_SHOP) valid = !before.shop_purchase[slot] ||
+        game_shop_cost(game, slot) <= game->players[slot].money;
     game_menu_input(game, action, slot);
     if (!assets->audio) return;
     int sound = -1;
@@ -1318,7 +1333,7 @@ static void update_audio(const Game *game, Console *console, Assets *assets) {
         if (assets->music_mode == 0) assets->music_mode = -1;
     }
     assets->music_tick = game->tick;
-    int mode = title_menu(game) || game->menu.page == MENU_SHOP ? 1 :
+    int mode = game_menu_is_title(game) || game->menu.page == MENU_SHOP ? 1 :
         game->paused && !game->over && !game->complete && game->menu.page != MENU_FINISH && game->menu.page != MENU_STAGE_SELECT ? 2 : 0;
     Music tracks[] = {assets->music, assets->title_music, assets->pause_music};
     if (assets->music_mode != mode) {
@@ -1680,7 +1695,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #else
         BeginTextureMode(canvas);
 #endif
-        if (!title_menu(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
+        if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, &devices);
         int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);

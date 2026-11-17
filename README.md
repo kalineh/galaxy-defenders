@@ -9,8 +9,8 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
-music. Stage Clear opens the shop. Left/right changes category and up/down previews
-equipment. Each pilot keeps purchased gear across stages and can equip it freely.
+music. Stage Clear opens the shop. Up/down selects one of six loadout slots. Confirm opens its stock, up/down
+previews equipment, and Back returns to the selected slot. Each pilot keeps purchased gear across stages and can equip it freely.
 Open a weapon to browse its marks. A purchase includes every mark up to the
 selection and charges only for marks that pilot still needs. Confirm a paid
 purchase in the center dialog. Older saves start with their equipped loadouts. Square (Z on keyboard) toggles Ready.
@@ -34,6 +34,9 @@ SFX/music volume and screen size for the session.
 `game.reset` is a debug reset (Rookie, level 2 Front Laser), not pilot new-game
 setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.
 Seeking preserves equipment/money, restores armor and synchronizes music.
+
+`debug.shop` jumps to the shop immediately. From a campaign it uses the normal shop checkpoint.
+From the title or campaign setup it opens a temporary run.
 
 `debug.music` opens the developer album (Up/Down selects; Left/Right seeks).
 `debug.music 1..19 [0..1]` auditions a track from normalized progress;

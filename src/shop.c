@@ -169,24 +169,28 @@ static void shop_select_category(Game *game, int slot, int category) {
 }
 
 void game_shop_open(Game *game) {
-    game->menu.next_stage = (game->complete || game->menu.page == MENU_CLEAR) && game->stage.index < 11 ?
-        game->stage.index + 1 : game->stage.index;
-    game_record_stage(game);
-    /* World.SetScoreSaveData transfers score exactly once before the shop. */
+    bool entering = game->menu.page != MENU_SHOP;
+    if (entering) {
+        game->menu.next_stage = (game->complete || game->menu.page == MENU_CLEAR) && game->stage.index < 11 ?
+            game->stage.index + 1 : game->stage.index;
+        game_record_stage(game);
+    }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &game->players[i];
-        if (!p->initialized) continue;
+        game->menu.shop_catalog[i] = false;
+        game->menu.shop_tiers[i] = false;
+        game->menu.shop_category[i] = 0;
+        game->menu.shop_purchase[i] = false;
+        game->menu.ready[i] = false;
+        game->menu.shop_fly_frames[i] = 0;
+        if (!entering || !p->initialized) continue;
         p->money += p->score;
         p->score = 0;
         p->lives = 1;
         p->health = game_chassis[p->chassis].armor;
-        game->menu.ready[i] = false;
-        game->menu.shop_fly_frames[i] = 0;
-        shop_select_category(game, i, 0);
-        game->menu.shop_purchase[i] = false;
     }
     game_menu_open(game, MENU_SHOP);
-    game_checkpoint(game, true);
+    if (entering) game_checkpoint(game, true);
 }
 
 void game_shop_update(Game *game) {
@@ -206,6 +210,7 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
     if (action == MENU_READY) {
         menu->ready[slot] = !menu->ready[slot];
+        menu->shop_catalog[slot] = false;
         menu->shop_tiers[slot] = false;
         menu->shop_purchase[slot] = false;
         menu->shop_fly_frames[slot] = 0;
@@ -213,16 +218,24 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
     }
     if (action == MENU_BACK) {
         if (menu->shop_purchase[slot]) { menu->shop_purchase[slot] = false; return; }
-        if (menu->shop_tiers[slot]) shop_select(game, slot, menu->shop_item[slot]);
-        menu->shop_tiers[slot] = false;
-        menu->ready[slot] = false;
-        menu->shop_fly_frames[slot] = 0;
+        if (menu->ready[slot]) {
+            menu->ready[slot] = false;
+            menu->shop_fly_frames[slot] = 0;
+        } else if (menu->shop_tiers[slot]) {
+            shop_select(game, slot, menu->shop_item[slot]);
+            menu->shop_tiers[slot] = false;
+        } else menu->shop_catalog[slot] = false;
         return;
     }
     if (menu->ready[slot]) return;
     int category = menu->shop_category[slot];
-    if (!menu->shop_purchase[slot] && (action == MENU_LEFT || action == MENU_RIGHT)) {
-        shop_select_category(game, slot, (category + (action == MENU_RIGHT ? 1 : 5)) % 6);
+    if (!menu->shop_catalog[slot]) {
+        if (action == MENU_UP && category > 0) --menu->shop_category[slot];
+        if (action == MENU_DOWN && category < 5) ++menu->shop_category[slot];
+        if (action == MENU_CONFIRM) {
+            shop_select_category(game, slot, category);
+            menu->shop_catalog[slot] = true;
+        }
         return;
     }
     int owned = game_shop_equipped(&game->players[slot], category);
@@ -269,7 +282,7 @@ void game_shop_preview_update(Game *preview, const Game *game) {
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         Player desired = game->players[slot];
         Player *p = &preview->players[slot];
-        if (desired.joined && !game->menu.ready[slot]) {
+        if (desired.joined && game->menu.shop_catalog[slot] && !game->menu.ready[slot]) {
             int item = game->menu.shop_item[slot], level = game->menu.shop_level[slot];
             switch (game->menu.shop_category[slot]) {
                 case 0: desired.chassis = item; break;

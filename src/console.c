@@ -15,6 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
+    {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
@@ -284,6 +285,16 @@ bool console_execute(Console *console, Game *game, const char *line) {
     }
     if (!count) return true;
     const char *command = words[0];
+    if (!strcmp(command, "debug.shop") && count == 1) {
+        console->music_album = false;
+        game->transition = TRANSITION_NONE;
+        game->transition_frames = 0;
+        if (game_menu_is_title(game)) game->active_slot = -1;
+        game_shop_open(game);
+        if (!game->players[0].joined && !game->players[1].joined) game_join(game, 0);
+        console_log(console, "Shop open.");
+        return true;
+    }
     if (!strcmp(command, "debug.music")) {
         if (count == 1) {
             console->music_album = true;

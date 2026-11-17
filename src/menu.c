@@ -44,6 +44,12 @@ bool game_menu_enabled(const Game *game, int row) {
         !game->saves[game->active_slot].valid);
 }
 
+bool game_menu_is_title(const Game *game) {
+    MenuPage page = game->menu.page;
+    return page == MENU_SLOTS || page == MENU_OVERWRITE || page == MENU_MAIN || page == MENU_NEW_GAME || page == MENU_DIFFICULTY || page == MENU_PILOT ||
+        ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
+}
+
 void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_OVERWRITE) return;
     MenuPage previous = game->menu.page;
