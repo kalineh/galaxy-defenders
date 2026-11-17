@@ -263,7 +263,7 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
             reveal_row(&menu->shop_first_tier[slot],menu->shop_level[slot]);
         } else if (item != owned || menu->shop_level[slot] != level) {
             if (game_shop_owned_marks(p, category, item) > menu->shop_level[slot]) game_shop_buy(game, slot);
-            else menu->shop_purchase[slot] = true;
+            else if (game_shop_cost(game, slot) <= p->money) menu->shop_purchase[slot] = true;
         }
     } else if (action == MENU_UP || action == MENU_DOWN) {
         if (menu->shop_tiers[slot]) {

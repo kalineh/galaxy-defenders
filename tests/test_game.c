@@ -176,13 +176,11 @@ static void shop_progression(void) {
     game_menu_input(&game, MENU_DOWN, 0);
     CHECK(game_shop_cost(&game, 0) == 5000);
     game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.menu.shop_purchase[0]);
-    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(!game.menu.shop_purchase[0] && game.menu.shop_tiers[0]);
     CHECK(game.players[0].money == 3000 && game.players[0].weapon_level == 2);
-    game_menu_input(&game, MENU_BACK, 0);
-    CHECK(!game.menu.shop_purchase[0] && game.menu.shop_item[0] == game.players[0].primary);
     game.players[0].money = 10000;
     game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.shop_purchase[0]);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
     game_menu_input(&game, MENU_UP, 0);
@@ -1887,6 +1885,7 @@ static void controller_joining(void) {
     CHECK(game_join(&game, 1));
     game_shop_open(&game);
     for (int slot = 0; slot < 2; ++slot) {
+        game.players[slot].money = 5000;
         for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, slot);
         game_menu_input(&game, MENU_CONFIRM, slot);
         game_menu_input(&game, MENU_CONFIRM, slot);

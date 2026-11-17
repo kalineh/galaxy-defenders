@@ -895,6 +895,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         y += 42;
     }
     int list_top = y;
+    bool show_select = true;
     int anchor = y+(focus-first)*LOADOUT_ROW+23;
     for (int i=first; i<rows && i<first+SHOP_VISIBLE_ROWS; ++i, y+=LOADOUT_ROW) {
         int id = tiers ? item : stock[i];
@@ -904,7 +905,15 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         bool purchased = tiers ? i < marks : marks > 0;
         bool expandable = !tiers && cat >= 3 && id >= 0 && game_weapons[id].level_count > 1;
         const char *status = equipped ? "Equipped" : purchased ? "Owned" : "";
-        if (!expandable && !purchased) status = TextFormat("%d cr",game_shop_price(p,cat,id,tiers ? i : 0));
+        Color status_color = equipped ? highlight : purchased ? dim : WHITE;
+        if (!expandable && !purchased) {
+            int price = game_shop_price(p,cat,id,tiers ? i : 0);
+            status = TextFormat("%d cr",price);
+            if (price > p->money) {
+                status_color = (Color){212,151,148,255};
+                if (focused) show_select = false;
+            }
+        }
         int right = left + width - 8 - (expandable ? 26 : 0) - (int)MeasureTextEx(font,status,21,0).x;
         if (focused) DrawRectangle(left+indent,y,width-indent,47,surface);
         DrawLine(left+indent,y+47,left+width,y+47,rule);
@@ -919,14 +928,17 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         if (expandable) {
             int cx = left+width-17;
             int levels = game_weapons[id].level_count;
-            for (int tier=0; tier<levels; ++tier)
-                DrawRectangle(cx-16-(levels-tier)*7,y+36,5,3,tier < marks ? highlight : rule);
+            for (int tier=0; tier<levels; ++tier) {
+                Color notch = tier < marks ? dim : rule;
+                if (equipped && tier <= equipped_level) notch = highlight;
+                DrawRectangle(cx-16-(levels-tier)*7,y+36,5,3,notch);
+            }
             DrawLineEx((Vector2){cx-4,y+17},(Vector2){cx+2,y+23},2,highlight);
             DrawLineEx((Vector2){cx+2,y+23},(Vector2){cx-4,y+29},2,highlight);
         }
         float size = fminf(25,25*(right-name_x-10)/fmaxf(1,MeasureTextEx(font,name,25,0).x));
         DrawTextEx(font,name,(Vector2){name_x,y+(47-size)/2},size,0,WHITE);
-        DrawTextEx(font,status,(Vector2){right,y+(expandable ? 6 : 12)},21,0,equipped ? highlight : purchased ? dim : WHITE);
+        DrawTextEx(font,status,(Vector2){right,y+(expandable ? 6 : 12)},21,0,status_color);
     }
     DrawRectangle(left+indent-8,list_top,2,y-list_top-2,rule);
     if (rows > SHOP_VISIBLE_ROWS) {
@@ -938,7 +950,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     }
     draw_item_tip(game,assets,slot,anchor,cat,item,mark);
     if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
-        int step = button_prompt(font,left,y+18,device,slot,GLYPH_CONFIRM,"Select")+22;
+        int step = show_select ? button_prompt(font,left,y+18,device,slot,GLYPH_CONFIRM,"Select")+22 : 0;
         button_prompt(font,left+step,y+18,device,slot,GLYPH_BACK,"Cancel");
     }
 }
