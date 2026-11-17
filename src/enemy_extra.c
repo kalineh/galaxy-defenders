@@ -166,7 +166,8 @@ static void fence(Game *g, Enemy *e) {
 }
 
 void enemy_update_extended(Game *g, Enemy *e) {
-    bool attached=e->kind==ENEMY_CUTTER_BALL || e->kind==ENEMY_FENCE_BEAM || (e->kind==ENEMY_SWIRL_BALL && e->parent>=0);
+    bool attached=e->kind==ENEMY_FENCE_BEAM ||
+        ((e->kind==ENEMY_CUTTER_BALL || e->kind==ENEMY_SWIRL_BALL) && e->parent>=0);
     bool chaser=e->kind==ENEMY_SPIKE || e->kind==ENEMY_GLOB;
     /* A burst replaces an existing mover with IgnoreCamera. None is a null
        mover in the original: ground turrets keep scrolling with the scenery. */
@@ -188,7 +189,8 @@ void enemy_update_extended(Game *g, Enemy *e) {
         e->x+=e->vx; e->y+=e->vy;
         /* Spike clears its mover, but unlike Glob never cancels camera scroll. */
         if (e->authored && e->kind==ENEMY_SPIKE) e->y+=g->scroll_speed;
-        if (!e->authored && (e->kind == ENEMY_SPLITTER_FRAGMENT || (e->kind == ENEMY_SWIRL_BALL && e->parent < 0))) e->y += g->scroll_speed;
+        if (!e->authored && (e->kind == ENEMY_SPLITTER_FRAGMENT ||
+            ((e->kind == ENEMY_CUTTER_BALL || e->kind == ENEMY_SWIRL_BALL) && e->parent < 0))) e->y += g->scroll_speed;
     }
     ++e->age; e->rotation+=e->spin;
     if (e->invisible>0) --e->invisible;
@@ -452,7 +454,15 @@ void enemy_die(Game *g, Enemy *e, int owner) {
         if(n<0 || !g->enemies[n].active) continue;
         Enemy *child=&g->enemies[n];
         if(child->parent!=(int)(e-g->enemies)) continue;
-        if(e->kind==ENEMY_SWIRL) {
+        if(e->kind==ENEMY_CUTTER) {
+            /* Release at the current orbit tangent (126 * 0.03 units/tick).
+               The balls remain shot-blocking hazards until they leave view. */
+            float spin=e->x<GAME_WIDTH*0.5f?-0.03f:0.03f;
+            child->vx=-(child->y-e->y)*spin;
+            child->vy=(child->x-e->x)*spin;
+            child->spin=spin*(i?-3:3);
+            child->parent=-1; child->authored=false; child->coins=0;
+        } else if(e->kind==ENEMY_SWIRL) {
             float angle=g->tick*0.1f+i*2*PI/3+PI*0.5f+0.1f;
             child->vx=cosf(angle)*2.5f; child->vy=sinf(angle)*2.5f; child->parent=-1; child->authored=false;
         } else enemy_die(g, child, -1);

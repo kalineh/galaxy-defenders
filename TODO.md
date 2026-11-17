@@ -4,7 +4,9 @@
   redirect beams or kill unrelated enemies. Drawn beam width matches its collider.
   Verified projectile kills from either side, slot reuse, neighboring pairs,
   full gameplay tests, native build and software-render capture.
-- Release Cutter's two grey balls tangentially as indestructible hazards on death.
+- Done: Cutter's grey balls release at orbit-tangent speed, retain their spin and
+  damage immunity, and exit normally. Regression checks cover both directions,
+  camera scroll, center-slot reuse and eventual removal; core gameplay checks pass.
 - Give orange Globs a small coin drop; verify destruction and attachment expiry.
 - Run regressions and rebuild the native client; commit/push each verified piece.
 

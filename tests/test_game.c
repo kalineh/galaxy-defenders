@@ -1267,6 +1267,40 @@ static void fence_links(void) {
     CHECK(game.enemies[ends[2]].active && game.enemies[ends[3]].active);
 }
 
+static void cutter_release(void) {
+    for (int side=0;side<2;++side) {
+        reset();
+        int n=game_spawn_enemy(&game,ENEMY_CUTTER,side?600:360,300);
+        for (int tick=0;tick<37;++tick) game_tick(&game);
+        Enemy *core=&game.enemies[n];
+        int balls[2]={core->children[0],core->children[1]};
+        float dx[2],dy[2];
+        for (int i=0;i<2;++i) {
+            dx[i]=game.enemies[balls[i]].x-core->x;
+            dy[i]=game.enemies[balls[i]].y-core->y;
+        }
+        enemy_take_damage(&game,core,100,0);
+        CHECK(!core->active);
+        for (int i=0;i<2;++i) {
+            Enemy *ball=&game.enemies[balls[i]];
+            CHECK(ball->active && ball->parent==-1);
+            CHECK(fabsf(hypotf(ball->vx,ball->vy)-3.78f)<0.0001f);
+            CHECK(fabsf(dx[i]*ball->vx+dy[i]*ball->vy)<0.001f);
+            CHECK((dx[i]*ball->vy-dy[i]*ball->vx)*(side?1:-1)>0);
+            float health=ball->health, x=ball->x, y=ball->y;
+            enemy_take_damage(&game,ball,100000,0);
+            CHECK(ball->active && ball->health==health);
+            game.scroll_speed=2.5f;
+            enemy_update_extended(&game,ball);
+            CHECK(fabsf(ball->x-x-ball->vx)<0.0001f && fabsf(ball->y-y-ball->vy-2.5f)<0.0001f);
+        }
+        /* Reusing the center's slot must not recapture the detached balls. */
+        CHECK(game_spawn_enemy(&game,ENEMY_BALL,100,100)==n);
+        for (int tick=0;tick<600;++tick) game_tick(&game);
+        CHECK(!game.enemies[balls[0]].active && !game.enemies[balls[1]].active);
+    }
+}
+
 static void remaining_bosses(void) {
     for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
         reset();
@@ -1867,6 +1901,7 @@ int main(int argc, char **argv) {
     boss5_and_turret_movement();
     enemy_camera_movement();
     fence_links();
+    cutter_release();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
