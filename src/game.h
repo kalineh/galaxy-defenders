@@ -39,7 +39,7 @@ typedef struct {
     int cursor, players, difficulty, pilot[2], options[3];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
-    bool shop_purchase[2];
+    bool shop_purchase[2], shop_tiers[2];
     int frame;
     int next_stage, shop_fly_frames[GAME_PLAYERS];
 } GameMenu;
@@ -51,6 +51,12 @@ typedef struct {
 } PlayerInput;
 
 typedef struct {
+    int gear_mask[3];
+    unsigned char weapon_marks[WEAPON_COUNT];
+} Inventory;
+
+typedef struct {
+    Inventory inventory;
     bool joined, initialized, invincible;
     float x, y, vx, vy, health;
     int lives, invulnerable, score, age, shield_hit_frames;
@@ -64,6 +70,7 @@ typedef struct {
 
 typedef struct {
     int pilot, chassis, primary, level, secondary, secondary_level, sidekick, generator, shield, money;
+    Inventory inventory;
 } SavedPlayer;
 
 typedef struct {
@@ -249,6 +256,8 @@ bool game_transition_update(Game *game);
 void game_shop_preview_update(Game *preview, const Game *game);
 void game_preview_tick(Game *preview);
 void game_shop_input(Game *game, MenuAction action, int slot);
+int game_shop_owned_marks(const Player *player, int category, int item);
+int game_shop_price(const Player *player, int category, int item, int level);
 int game_shop_cost(const Game *game, int slot);
 bool game_shop_buy(Game *game, int slot);
 bool game_shop_chassis_available(const Game *game, int slot, int chassis);

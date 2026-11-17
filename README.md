@@ -10,8 +10,10 @@ Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
 music. Stage Clear opens the shop. Left/right changes category and up/down previews
-equipment. Confirm opens a purchase dialog with the net trade-in price. Confirm
-again to buy, or cancel to keep browsing. Square (Z on keyboard) toggles Ready.
+equipment. Each pilot keeps purchased gear across stages and can equip it freely.
+Open a weapon to browse its marks. A purchase includes every mark up to the
+selection and charges only for marks that pilot still needs. Confirm a paid
+purchase in the center dialog. Older saves start with their equipped loadouts. Square (Z on keyboard) toggles Ready.
 The next stage starts when every joined player is ready.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`

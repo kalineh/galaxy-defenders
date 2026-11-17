@@ -140,25 +140,41 @@ static void shop_progression(void) {
     while(!game_shop_chassis_available(&game,0,3)) ++game.seed;
     game_menu_input(&game, MENU_CONFIRM, 0);
     game.menu.shop_item[0] = 3;
-    CHECK(game.menu.shop_item[0] == 3 && game_shop_cost(&game, 0) == 6000);
+    CHECK(game.menu.shop_item[0] == 3 && game_shop_cost(&game, 0) == 7000);
     CHECK(!game_shop_buy(&game, 0) && game.players[0].money == 5250 && game.players[0].chassis == 0);
     game.players[0].money = 10000;
     CHECK(game_shop_buy(&game, 0));
-    CHECK(game.players[0].chassis == 3 && game.players[0].money == 4000);
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 3000);
+    game.menu.shop_item[0] = 0;
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].chassis == 0 && game.players[0].money == 3000);
+    ++game.seed;
+    CHECK(game_shop_chassis_available(&game, 0, 3));
+    game.menu.shop_item[0] = 3;
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].chassis == 3 && !game.menu.shop_purchase[0] && game.players[0].money == 3000);
     for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_UP, 0);
     game_menu_input(&game, MENU_BACK, 0);
-    CHECK(game.players[0].chassis == 3 && game.players[0].money == 4000); /* Cancel preview. */
+    CHECK(game.players[0].chassis == 3 && game.players[0].money == 3000); /* Cancel preview. */
     for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.shop_tiers[0] && game_shop_cost(&game, 0) == 0);
+    game_menu_input(&game, MENU_DOWN, 0);
     CHECK(game_shop_cost(&game, 0) == 5000);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.shop_purchase[0]);
     game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.players[0].money == 4000 && game.players[0].weapon_level == 2);
+    CHECK(game.players[0].money == 3000 && game.players[0].weapon_level == 2);
     game_menu_input(&game, MENU_BACK, 0);
     CHECK(!game.menu.shop_purchase[0] && game.menu.shop_item[0] == game.players[0].primary);
     game.players[0].money = 10000;
     game_menu_input(&game, MENU_CONFIRM, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
+    game_menu_input(&game, MENU_UP, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.players[0].weapon_level == 2 && game.players[0].money == 5000);
+    game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
     game_menu_input(&game, MENU_READY, 0);
@@ -1834,6 +1850,8 @@ static void controller_joining(void) {
     for (int slot = 0; slot < 2; ++slot) {
         for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_RIGHT, slot);
         game_menu_input(&game, MENU_CONFIRM, slot);
+        game_menu_input(&game, MENU_DOWN, slot);
+        game_menu_input(&game, MENU_CONFIRM, slot);
     }
     CHECK(game.menu.shop_purchase[0] && game.menu.shop_purchase[1]);
     game_menu_open(&game, MENU_PAUSE);
@@ -1931,6 +1949,7 @@ static void saved_continue(void) {
     CHECK(save.stage_scores[4] == 12345 && save.stage_medals[4] == 5);
     int stock[WEAPON_COUNT+1], restored[WEAPON_COUNT+1];
     int stock_count = game_shop_stock(&game, 0, 3, stock);
+    save.player[0].inventory.gear_mask[1] |= 1 << 2;
     save.player[0].money = 10000;
     CHECK(game_save_write(&save, path));
     reset();
@@ -1939,6 +1958,7 @@ static void saved_continue(void) {
     CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
     CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
     CHECK(game.seed == 987654321u);
+    CHECK(game_shop_price(&game.players[0],1,2,0) == 0);
     CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 5);
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));

@@ -93,6 +93,7 @@ void game_retry(Game *game) {
         p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
         p->friction = game_chassis[p->chassis].friction;
         p->money = players[i].money;
+        p->inventory = players[i].inventory;
         p->invincible = players[i].invincible;
         p->health = game_chassis[p->chassis].armor;
     }

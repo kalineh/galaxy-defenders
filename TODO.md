@@ -2,7 +2,7 @@
 
 Implemented the widescreen shop from [the revised concept](design/shop-target.png).
 Runtime uses the firing simulation, independent pilot rails, preview resource
-meters, stock and trade-in prices. Browse directly with the D-pad. Each pilot
+meters, stock and purchase prices. Browse directly with the D-pad. Each pilot
 confirms purchases in a centered dialog and toggles Ready with Square. The three anime portraits also
 appear in pilot selection and the gameplay HUD.
 

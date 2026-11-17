@@ -33,7 +33,7 @@ typedef struct {
     Texture2D boss4_cover, boss5_cover, boss6_center;
     Texture2D rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Texture2D enemy_corpses[ENEMY_KIND_COUNT];
-    Texture2D pickups[3], medals[5], continue_button;
+    Texture2D pickups[3], medals[5];
     int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
     Music music, title_music, pause_music;
     Music audition_stream;
@@ -85,7 +85,6 @@ static Texture2D texture_load(const char *name) {
 static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->asteroid_cracks)) UnloadTexture(assets->asteroid_cracks);
     for (int i = 0; i < 5; ++i) if (IsTextureValid(assets->medals[i])) UnloadTexture(assets->medals[i]);
-    if (IsTextureValid(assets->continue_button)) UnloadTexture(assets->continue_button);
     for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
     if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
     if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
@@ -260,8 +259,6 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->medals[i] = texture_load(path);
         if (!IsTextureValid(assets->medals[i])) return false;
     }
-    assets->continue_button = texture_load("textures/xboxControllerButtonX.png");
-    if (!IsTextureValid(assets->continue_button)) return false;
     assets->asteroid_cracks = texture_load("textures/Cracks.png");
     if (!IsTextureValid(assets->asteroid_cracks)) return false;
     assets->pyramid_turret = texture_load("textures/PyramidTurret.png");
@@ -435,12 +432,67 @@ static void text_center(Font font, const char *text, int x, int y, int size, Col
     DrawTextEx(font, text, (Vector2){x - MeasureTextEx(font, text, (float)size, 0).x / 2, (float)y}, (float)size, 0, color);
 }
 
+typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START } ButtonGlyph;
+
+static int key_prompt(Font font, int x, int y, const char *key, const char *action) {
+    int width = (int)fmaxf(30, MeasureTextEx(font,key,20,0).x + 14);
+    DrawRectangleRounded((Rectangle){x,y+3,width,29}, .28f, 6, (Color){95,113,135,255});
+    DrawRectangleRounded((Rectangle){x,y,width,28}, .28f, 6, (Color){213,224,235,255});
+    text_center(font,key,x+width/2,y+2,20,(Color){23,32,46,255});
+    DrawTextEx(font,action,(Vector2){x+width+9,y+1},23,0,WHITE);
+    return width + 9 + (int)MeasureTextEx(font,action,23,0).x;
+}
+
+static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGlyph button, const char *action) {
+    static const char *keys[2][4] = {{"X","C","Z","Enter"},{"R Ctrl","Backspace","R Shift","F2"}};
+    if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[slot][button],action);
+    static const char *letters[] = {"A","B","X"};
+    const char *pad = device < 4 ? GetGamepadName(device) : NULL;
+    bool ps = device >= 4 || (pad && (strstr(pad,"Wireless Controller") || strstr(pad,"PS4") ||
+        strstr(pad,"DualSense") || strstr(pad,"DualShock") || strstr(pad,"PS5")));
+    if (button == GLYPH_START) {
+        DrawRectangleRounded((Rectangle){x,y+4,39,23},1,8,(Color){76,91,110,255});
+        for (int i = 0; i < 3; ++i) DrawRectangle(x+12,y+9+i*5,15,2,WHITE);
+    } else {
+        int cx=x+15, cy=y+15;
+        DrawCircle(cx,cy,15,(Color){61,75,94,255});
+        if (!ps) text_center(font,letters[button],cx,y+1,23,WHITE);
+        else if (button == GLYPH_CONFIRM) {
+            DrawLineEx((Vector2){cx-6,cy-6},(Vector2){cx+6,cy+6},3,SKYBLUE);
+            DrawLineEx((Vector2){cx-6,cy+6},(Vector2){cx+6,cy-6},3,SKYBLUE);
+        } else if (button == GLYPH_BACK) DrawRing((Vector2){cx,cy},6,9,0,360,32,(Color){255,155,141,255});
+        else DrawRectangleLinesEx((Rectangle){cx-7,cy-7,14,14},3,(Color){251,174,213,255});
+    }
+    int offset = button == GLYPH_START ? 48 : 39;
+    DrawTextEx(font,action,(Vector2){x+offset,y+1},23,0,WHITE);
+    return offset + (int)MeasureTextEx(font,action,23,0).x;
+}
+
+static void shop_navigation(Font font, int x, int y, int device, int slot, bool tiers) {
+    bool pad = device >= 0 && device < INPUT_PADS;
+    for (int axis = 0; axis < 2; ++axis) {
+        int xx = x + axis * 196;
+        if (pad) {
+            Color base = {65,80,99,255};
+            DrawRectangle(xx+11,y,12,34,base);
+            DrawRectangle(xx,y+11,34,12,base);
+            DrawRectangle(xx+(axis ? 14 : 3),y+(axis ? 3 : 14),axis ? 6 : 9,axis ? 9 : 6,WHITE);
+            DrawRectangle(xx+(axis ? 14 : 22),y+(axis ? 22 : 14),axis ? 6 : 9,axis ? 9 : 6,WHITE);
+            DrawTextEx(font,axis ? (tiers ? "Tier" : "Item") : "Category",(Vector2){xx+42,y+3},22,0,dim);
+        } else {
+            static const char *keys[][4] = {{"<",">","^","v"},{"J","L","I","K"}};
+            key_prompt(font,xx,y,keys[slot][2*axis],"");
+            key_prompt(font,xx+34,y,keys[slot][2*axis+1],axis ? (tiers ? "Tier" : "Item") : "Category");
+        }
+    }
+}
+
 static void draw_player_panel(const Game *game, int slot, const Assets *assets) {
     const Player *player = &game->players[slot];
     int x = slot == 0 ? 0 : 1440;
     DrawTexture(assets->panel_background, x, 0, WHITE);
     if (!player->joined) {
-        text_center(assets->ui_font, "Press Start", x + 240, 490, 30, dim);
+        button_prompt(assets->ui_font, x + 155, 490, 0, slot, GLYPH_START, "Join");
         return;
     }
     /* Positions and original frames from legacy/Hud/Hud.cs + HudManager.cs. */
@@ -677,21 +729,45 @@ static const char *shop_item_name(int category, int item) {
     }
 }
 
-static const char *shop_button(int device, int slot, MenuAction action) {
-    static const char *labels[][3] = {
-        {"X", "C", "Z"}, {"R Ctrl", "Backspace", "R Shift"},
-        {"A", "B", "X"}, {"Cross", "Circle", "Square"}
-    };
-    int layout = device >= 0 && device < INPUT_PADS ? (device >= 4 ? 3 : 2) : slot;
-    return labels[layout][action == MENU_CONFIRM ? 0 : action == MENU_BACK ? 1 : 2];
-}
-
 static void shop_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
     DrawTextEx(font, label, (Vector2){x, y}, 21, 0, WHITE);
     const char *amount = TextFormat("%.0f / %.0f", value, capacity);
     DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 18, 0).x, y + 3}, 18, 0, dim);
     DrawRectangle(x, y + 26, 240, 16, (Color){45,55,69,255});
     if (capacity > 0) DrawRectangle(x, y + 26, (int)(240 * fminf(1, fmaxf(0, value / capacity))), 16, color);
+}
+
+static void shop_stats(Font font, int x, int y, int cat, int item, int level) {
+    if (item < 0) return;
+    const char *first, *second;
+    if (cat == 0) {
+        const Chassis *c = &game_chassis[item];
+        first = TextFormat("Armor %g     Acceleration %g",c->armor,c->speed);
+        second = TextFormat("Impact resist %.0f%%     Friction %.3g",100*c->collision_resistance,c->friction);
+    } else if (cat == 1) {
+        const Generator *g = &game_generators[item];
+        first = TextFormat("Capacity %g     Regen %g/s",g->capacity,g->regen*GAME_HZ);
+        second = g->on_coin ? TextFormat("+%g energy per coin",g->on_coin) :
+            g->on_collision ? TextFormat("+%g energy per impact damage",g->on_collision) : "";
+    } else if (cat == 2) {
+        const Shield *h = &game_shields[item];
+        first = TextFormat("Capacity %g     Efficiency %.0f%%",h->capacity,h->efficiency*100);
+        second = TextFormat("Recharge draw %g energy/s",h->drain*GAME_HZ);
+    } else {
+        const WeaponLevel *w = &game_weapons[item].levels[level];
+        const WeaponEmitter *e = w->emitters;
+        float damage = 0, energy = 0, drain = 0;
+        for (int i=0; i<w->count; ++i) {
+            damage += e[i].damage;
+            energy += e[i].energy;
+            drain += e[i].drain;
+        }
+        first = TextFormat("%d emitter%s     Base damage %.3g total",w->count,w->count==1?"":"s",damage);
+        second = drain ? TextFormat("Energy %.3g     Sustain %.3g/s",energy,drain*GAME_HZ) :
+            TextFormat("Energy %.3g     Reload %.3g s",energy,e[0].reload);
+    }
+    DrawTextEx(font,first,(Vector2){x,y},22,0,WHITE);
+    DrawTextEx(font,second,(Vector2){x,y+30},21,0,dim);
 }
 
 static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
@@ -710,7 +786,8 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
     if (!p->joined) {
         text_center(font, "Join flight", x + 240, 488, 36, WHITE);
-        text_center(font, slot ? "Press Start or F2" : "Press Start or Enter", x + 240, 543, 23, dim);
+        button_prompt(font,x+105,543,0,slot,GLYPH_START,"Join");
+        key_prompt(font,x+245,543,slot ? "F2" : "Enter","Join");
         return;
     }
     DrawTextEx(font, names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
@@ -737,32 +814,62 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     int stock[WEAPON_COUNT + 1], count = game_shop_stock(game, slot, cat, stock);
     int item = menu->shop_item[slot], selected = 0;
     for (int i = 0; i < count; ++i) if (stock[i] == item) selected = i;
-    int first = selected > 6 ? selected - 6 : 0;
-    int y = 441;
-    for (int i = first; i < count && i < first + 7; ++i, y += 58) {
-        int id = stock[i];
-        bool focused = id == item && !menu->ready[slot];
-        DrawRectangle(left, y, width, 55, focused ? surface : ink);
-        DrawLine(left, y + 55, left + width, y + 55, rule);
-        if (focused) DrawRectangle(left, y, 4, 55, highlight);
-        Texture2D icon = id < 0 ? assets->item_none : cat == 0 ? assets->shop[6 + id] :
-            cat == 1 ? assets->generator_icons[id] : cat == 2 ? assets->shield_icons[id] : assets->weapon_icons[id];
-        sprite(icon, left + 32, y + 27, 39, 0, WHITE);
-        DrawTextEx(font, shop_item_name(cat, id), (Vector2){left + 63, y + 11}, 26, 0, WHITE);
-        if (id == owned) DrawTextEx(font, "EQ", (Vector2){left + width - 36, y + 15}, 19, 0, highlight);
+    bool tiers = menu->shop_tiers[slot];
+    int mark = menu->shop_level[slot];
+    int equipped_level = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
+    int rows = tiers ? game_weapons[item].level_count : count;
+    int focus = tiers ? mark : selected;
+    int first = focus > 5 ? focus - 5 : 0;
+    int y = 437;
+    if (tiers) {
+        DrawTextEx(font,shop_item_name(cat,item),(Vector2){left+8,y},26,0,WHITE);
+        y += 38;
     }
-    int cost = game_shop_cost(game, slot);
-    int level = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
-    bool upgrade = owned == item && menu->shop_level[slot] > level;
-    if (!menu->ready[slot] && !menu->shop_purchase[slot] && (item != owned || upgrade)) {
-        const char *action = upgrade ? "Upgrade" : item < 0 ? "Unequip" : "Buy & equip";
-        DrawTextEx(font, TextFormat("[%s]  %s", shop_button(device, slot, MENU_CONFIRM), action),
-            (Vector2){left, y + 16}, 25, 0, WHITE);
-        const char *price = cost < 0 ? TextFormat("+%d cr", -cost) : TextFormat("%d cr", cost);
-        DrawTextEx(font, price, (Vector2){left + width - MeasureTextEx(font, price, 25, 0).x, y + 16}, 25, 0, cost > p->money ? danger : highlight);
+    for (int i=first; i<rows && i<first+6; ++i, y+=49) {
+        int id = tiers ? item : stock[i];
+        int indent = tiers ? 18 : 0;
+        bool focused = i == focus && !menu->ready[slot];
+        int marks = game_shop_owned_marks(p,cat,id);
+        bool equipped = id == owned && (!tiers || i == equipped_level);
+        bool purchased = tiers ? i < marks : marks > 0;
+        int price = game_shop_price(p,cat,id,tiers ? i : 0);
+        const char *status = equipped ? "Equipped" : purchased ? "Owned / Free" : TextFormat("%d cr",price);
+        int right = left + width - (int)MeasureTextEx(font,status,21,0).x - 8;
+        if (focused) DrawRectangle(left+indent,y,width-indent,47,surface);
+        DrawLine(left+indent,y+47,left+width,y+47,rule);
+        if (focused) DrawRectangle(left+indent,y,3,47,highlight);
+        int name_x = left+49;
+        const char *name;
+        if (tiers) {
+            DrawLine(left+11,y,left+11,y+24,rule);
+            DrawLine(left+11,y+24,left+26,y+24,rule);
+            name = TextFormat("Mk %d",i+1);
+        } else {
+            Texture2D icon = id < 0 ? assets->item_none : cat == 0 ? assets->shop[6+id] :
+                cat == 1 ? assets->generator_icons[id] : cat == 2 ? assets->shield_icons[id] : assets->weapon_icons[id];
+            sprite(icon,left+26,y+23,32,0,WHITE);
+            name = shop_item_name(cat,id);
+        }
+        float size = fminf(25,25*(right-name_x-10)/fmaxf(1,MeasureTextEx(font,name,25,0).x));
+        DrawTextEx(font,name,(Vector2){name_x,y+(47-size)/2},size,0,WHITE);
+        DrawTextEx(font,status,(Vector2){right,y+12},21,0,equipped ? highlight : purchased ? dim : WHITE);
     }
-    DrawLine(left, 974, left + width, 974, rule);
-    DrawTextEx(font, TextFormat("[%s]  Ready", shop_button(device, slot, MENU_READY)), (Vector2){left, 993}, 30, 0, WHITE);
+    int stats_y = y + 21;
+    DrawLine(left,y+8,left+width,y+8,rule);
+    shop_stats(font,left,stats_y,cat,item,mark);
+    bool tree = cat >= 3 && item >= 0 && game_weapons[item].level_count > 1;
+    bool purchased = game_shop_owned_marks(p,cat,item) > mark;
+    if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
+        const char *action = tree && !tiers ? "View tiers" : purchased ? "Equip" :
+            tiers && game_shop_owned_marks(p,cat,item) ? "Upgrade" : "Buy & equip";
+        int offset = 0;
+        if ((tree && !tiers) || item != owned || mark != equipped_level)
+            offset = button_prompt(font,left,stats_y+79,device,slot,GLYPH_CONFIRM,action) + 22;
+        if (tiers) button_prompt(font,left+offset,stats_y+79,device,slot,GLYPH_BACK,"Items");
+    }
+    if (!menu->ready[slot] && !menu->shop_purchase[slot]) shop_navigation(font,left,932,device,slot,tiers);
+    DrawLine(left,974,left+width,974,rule);
+    button_prompt(font,left,993,device,slot,GLYPH_READY,"Ready");
     int check = left + width - 34;
     DrawRectangleLinesEx((Rectangle){check,997,31,31}, 2, menu->ready[slot] ? highlight : dim);
     if (menu->ready[slot]) {
@@ -775,7 +882,7 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     const Player *p = &game->players[slot];
     int cat = game->menu.shop_category[slot], item = game->menu.shop_item[slot];
     int level = game->menu.shop_level[slot], cost = game_shop_cost(game, slot);
-    bool upgrade = item == game_shop_equipped(p, cat);
+    bool upgrade = game_shop_owned_marks(p,cat,item) > 0;
     Color accent = player_colors[slot];
     DrawRectangle(644, y, 632, 228, (Color){18,27,40,255});
     DrawRectangleLinesEx((Rectangle){644,y,632,228}, 2, accent);
@@ -783,14 +890,13 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
         item < 0 ? "CONFIRM UNEQUIP" : "CONFIRM PURCHASE"), (Vector2){672,y+18}, 22, 1, accent);
     const char *name = item < 0 ? shop_item_name(cat, game_shop_equipped(p, cat)) : shop_item_name(cat, item);
     DrawTextEx(font, name, (Vector2){672,y+55}, 36, 0, WHITE);
-    if (upgrade) DrawTextEx(font, TextFormat("Mk %d  >  Mk %d", level, level+1), (Vector2){672,y+111}, 25, 0, dim);
+    if (cat >= 3 && item >= 0) DrawTextEx(font, TextFormat("Unlock through Mk %d", level+1), (Vector2){672,y+111}, 25, 0, dim);
     const char *price = cost < 0 ? TextFormat("Credit  +%d cr", -cost) : TextFormat("Cost  %d cr", cost);
     DrawTextEx(font, price, (Vector2){1248 - MeasureTextEx(font, price, 26, 0).x,y+110}, 26, 0, cost > p->money ? danger : WHITE);
     DrawLine(672, y+156, 1248, y+156, (Color){62,75,90,255});
-    const char *buy = cost > p->money ? "Insufficient credits" : TextFormat("[%s]  Confirm", shop_button(device,slot,MENU_CONFIRM));
-    DrawTextEx(font, buy, (Vector2){672,y+174}, 26, 0, cost > p->money ? danger : accent);
-    const char *cancel = TextFormat("[%s]  Cancel", shop_button(device,slot,MENU_BACK));
-    DrawTextEx(font, cancel, (Vector2){1248 - MeasureTextEx(font,cancel,25,0).x,y+174}, 25, 0, WHITE);
+    if (cost > p->money) DrawTextEx(font,"Insufficient credits",(Vector2){672,y+174},26,0,danger);
+    else button_prompt(font,672,y+174,device,slot,GLYPH_CONFIRM,"Confirm");
+    button_prompt(font,1030,y+174,device,slot,GLYPH_BACK,"Cancel");
 }
 
 static void draw_shop(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
@@ -904,8 +1010,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             sprite(texture, 968, 540, texture.width * scale, 0, WHITE);
         }
         if (counter >= 360) {
-            DrawTextEx(assets->ui_font, "Continue", (Vector2){908,630}, 26, 0, LIGHTGRAY);
-            sprite(assets->continue_button, 888, 630, assets->continue_button.width, 0, WHITE);
+            int owner = game->players[0].joined ? 0 : 1;
+            button_prompt(assets->ui_font,880,630,devices->device[owner],owner,GLYPH_CONFIRM,"Continue");
         }
         return;
     }
@@ -1225,7 +1331,11 @@ static void music_album_input(Console *console, Game *game, Assets *assets) {
 static void draw_music_album(const Console *console, const Assets *assets) {
     DrawRectangle(340, 100, 1240, 880, (Color){8,14,24,250});
     DrawTextEx(assets->console_font, "DEVELOPER MUSIC ALBUM", (Vector2){380,130}, 32, 0, accent);
-    DrawTextEx(assets->console_font, "Up/Down: track   Left/Right: seek 5%   Enter: restart   Esc: close", (Vector2){380,180}, 22, 0, WHITE);
+    int hint_x = 380;
+    hint_x += key_prompt(assets->console_font,hint_x,178,"Up / Down","Track") + 30;
+    hint_x += key_prompt(assets->console_font,hint_x,178,"Left / Right","Seek") + 30;
+    hint_x += key_prompt(assets->console_font,hint_x,178,"Enter","Restart") + 30;
+    key_prompt(assets->console_font,hint_x,178,"Esc","Close");
     for (int i = 1; i <= SYNTH_TRACK_COUNT; ++i) {
         bool selected = console->music_track == i;
         if (selected) DrawRectangle(370, 224 + (i-1)*34, 1180, 33, (Color){38,62,85,255});
@@ -1289,8 +1399,11 @@ static void draw_console(Console *console, Font font, bool failed, bool full_scr
             DrawTextEx(font, text, (Vector2){18, 15 + drawn++ * 31.0f}, 26, 0, color);
         }
     }
-    DrawTextEx(font, TextFormat("Tab complete | Up/Down history | PgUp/PgDn / wheel scroll | %d/%d lines", total - console->scroll, total),
-        (Vector2){18, (float)panel_height - 80}, 22, 0, dim);
+    int hint_y = panel_height - 85, hint_x = 18;
+    hint_x += key_prompt(font,hint_x,hint_y,"Tab","Complete") + 24;
+    hint_x += key_prompt(font,hint_x,hint_y,"Up / Down","History") + 24;
+    hint_x += key_prompt(font,hint_x,hint_y,"PgUp / PgDn","Scroll") + 24;
+    DrawTextEx(font,TextFormat("%d/%d lines",total-console->scroll,total),(Vector2){hint_x,hint_y+2},22,0,dim);
     DrawRectangle(0, panel_height - 48, CANVAS_WIDTH, 48, (Color){12, 16, 22, 255});
     DrawTextEx(font, ">", (Vector2){18, (float)panel_height - 42}, 26, 0, accent);
     int input_columns = columns - 3;
@@ -1517,10 +1630,16 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         draw_menu(game, &assets, menu_frame++, &devices);
         if (game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH && game->menu.page != MENU_CLEAR) {
             int owner = game->players[0].joined ? 0 : 1;
-            const char *hint = game->menu.page == MENU_NONE ? "Enter / Options   Pause     F2   Keyboard P2" :
-                TextFormat("[%s]  Confirm     [%s]  Back     Enter / Options   Join",
-                    shop_button(devices.device[owner], owner, MENU_CONFIRM), shop_button(devices.device[owner], owner, MENU_BACK));
-            text_center(assets.ui_font, hint, 960, 1040, 19, LIGHTGRAY);
+            int device = devices.device[owner];
+            if (game->menu.page == MENU_NONE) {
+                button_prompt(assets.ui_font,790,1033,device,owner,GLYPH_START,"Pause");
+                key_prompt(assets.ui_font,975,1033,"F2","Keyboard P2");
+            } else {
+                int x = 710;
+                x += button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_CONFIRM,"Confirm") + 30;
+                x += button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_BACK,"Back") + 30;
+                button_prompt(assets.ui_font,x,1033,device,owner,GLYPH_START,"Join");
+            }
         }
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
