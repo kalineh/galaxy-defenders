@@ -908,6 +908,34 @@ static void menu_sky(int frame) {
     }
 }
 
+/* The original sample ship advances along its heading while turning ~0.025
+   radians per tick. Reconstruct each laser from the pose at its launch tick. */
+static Vector2 title_ship_position(Vector2 center, float heading) {
+    return (Vector2){center.x + 61*sinf(heading), center.y - 61*cosf(heading)};
+}
+
+static void draw_title_ship(const Assets *assets, int slot, int tick) {
+    Vector2 center = slot ? (Vector2){852,333} : (Vector2){714,229};
+    Color color = player_colors[slot];
+    int phase = (tick + 91*slot) % 256;
+    float turn = 2*PI/256;
+    float heading = phase*turn;
+    Vector2 ship = title_ship_position(center,heading);
+    for (int age=27; age>=0; --age) {
+        int launched = (phase - age + 256) % 256;
+        /* Short bursts leave a beat of clear space between volleys. */
+        int beat = launched % 64;
+        if (beat != 0 && beat != 7 && beat != 28 && beat != 39) continue;
+        float angle = launched*turn;
+        Vector2 origin = title_ship_position(center,angle);
+        float distance = 24 + age*6;
+        sprite(assets->weapon_textures[WEAPON_FRONT_LASER],
+            origin.x + distance*cosf(angle), origin.y + distance*sinf(angle),
+            23,angle*RAD2DEG,Fade(color,fminf(1,(28-age)/8.0f)));
+    }
+    sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
+}
+
 static void draw_title_art(const Assets *assets) {
     /* Layer the wing pilots behind the lead portrait on one common baseline. */
     DrawCircle(1370,514,347,(Color){28,43,66,255});
@@ -989,6 +1017,10 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     int y = title ? 472 : stages ? 180 : 437;
     int count = game_menu_count(game);
     if (title) {
+        if (page == MENU_MAIN) {
+            if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
+            if (game->players[1].joined) draw_title_ship(assets,1,frame);
+        }
         draw_title_art(assets);
         DrawTextEx(font,"SPACE",(Vector2){x,109},109,6,WHITE);
         DrawTextEx(font,"CRAFT",(Vector2){x,212},109,6,accent);
@@ -1651,7 +1683,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         if (!title_menu(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, &devices);
-        draw_menu(game, &assets, menu_frame++, &devices);
+        int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);
+        draw_menu(game, &assets, animation_tick, &devices);
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {
