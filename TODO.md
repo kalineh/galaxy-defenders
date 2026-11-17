@@ -1,3 +1,13 @@
+# Enemy follow-up in progress
+
+- Done: fence pairs enforce reciprocal ownership; removed/reused endpoints cannot
+  redirect beams or kill unrelated enemies. Drawn beam width matches its collider.
+  Verified projectile kills from either side, slot reuse, neighboring pairs,
+  full gameplay tests, native build and software-render capture.
+- Release Cutter's two grey balls tangentially as indestructible hazards on death.
+- Give orange Globs a small coin drop; verify destruction and attachment expiry.
+- Run regressions and rebuild the native client; commit/push each verified piece.
+
 # Completed camera movement audit
 
 Compared boss anchors/attached parts, movement presets, burst pauses, detached

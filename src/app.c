@@ -533,12 +533,13 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_FENCE_BEAM) { source.height /= 4; source.y = (enemy->age / 4 % 4) * source.height; }
         float scale = enemy->kind == ENEMY_GLOB ? 1 + sinf(game->tick * (enemy->attack ? 0.3f : 0.1f)) * (enemy->attack ? 0.08f : 0.04f) : 1;
         if (enemy->kind == ENEMY_BOSS10_BLOCK || enemy_is_asteroid(enemy->kind)) scale = enemy->orbit_radius;
-        Vector2 origin = {source.width * 0.5f * scale, source.height * 0.5f * scale};
+        float width = enemy->kind == ENEMY_FENCE_BEAM ? enemy->box_width : source.width * scale;
+        Vector2 origin = {width * 0.5f, source.height * 0.5f * scale};
         if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         DrawTexturePro(texture, source,
-            (Rectangle){view_x + enemy->x,enemy->y,source.width * scale,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
+            (Rectangle){view_x + enemy->x,enemy->y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
         if (enemy_is_asteroid(enemy->kind))
             sprite(assets->asteroid_cracks, view_x + enemy->x, enemy->y, 80 * scale, rotation * RAD2DEG,
                 Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));

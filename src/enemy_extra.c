@@ -1,5 +1,6 @@
 #include "game.h"
 #include <math.h>
+#include <stddef.h>
 
 #define PI 3.141592654f
 static float random_float(Game *g) { return game_random_float(g); }
@@ -134,21 +135,33 @@ static void black_hole(Game *g, Enemy *e) {
     }
 }
 
+static Enemy *fence_partner(Game *g, const Enemy *e) {
+    int index=e->children[0];
+    if (index<0) return NULL;
+    Enemy *other=&g->enemies[index];
+    return other->active && other->kind==ENEMY_FENCE && other->parent==(int)(e-g->enemies) ? other : NULL;
+}
+
 static void fence(Game *g, Enemy *e) {
-    if (e->age==1) for (int i=0;i<GAME_ENEMIES;++i) {
+    if (e->age==1 && e->parent<0 && e->children[0]<0) for (int i=0;i<GAME_ENEMIES;++i) {
         Enemy *other=&g->enemies[i];
-        if (other==e || !other->active || other->kind!=ENEMY_FENCE || other->children[0]>=0 ||
+        if (other==e || !other->active || other->kind!=ENEMY_FENCE || other->children[0]>=0 || other->parent>=0 ||
             fabsf(other->y-e->y)>16 || fabsf(other->x-e->x)>340) continue;
-        e->children[0]=i; other->parent=(int)(e-g->enemies);
         int beam=game_spawn_enemy(g,ENEMY_FENCE_BEAM,(e->x+other->x)*0.5f,e->y);
+        if (beam<0) break;
+        e->children[0]=i; other->parent=(int)(e-g->enemies);
         e->children[1]=beam;
-        if (beam>=0) { g->enemies[beam].parent=(int)(e-g->enemies); g->enemies[beam].box_width=fabsf(e->x-other->x); g->enemies[beam].collision_y=4; }
+        g->enemies[beam].parent=(int)(e-g->enemies); g->enemies[beam].collision_y=4;
         break;
     }
-    int beam=e->children[1], child=e->children[0];
-    if (beam>=0 && child>=0 && g->enemies[beam].active) {
-        g->enemies[beam].x=(e->x+g->enemies[child].x)*0.5f;
-        g->enemies[beam].y=e->y;
+    int index=e->children[1];
+    if (index>=0) {
+        Enemy *beam=&g->enemies[index], *other=fence_partner(g,e);
+        if (!beam->active || beam->kind!=ENEMY_FENCE_BEAM || beam->parent!=(int)(e-g->enemies)) return;
+        if (!other) { beam->active=false; e->children[0]=e->children[1]=-1; return; }
+        beam->x=(e->x+other->x)*0.5f;
+        beam->y=(e->y+other->y)*0.5f;
+        beam->box_width=fabsf(e->x-other->x);
     }
 }
 
@@ -161,6 +174,12 @@ void enemy_update_extended(Game *g, Enemy *e) {
         (e->kind==ENEMY_TRIPLE_SHOT || e->kind==ENEMY_ROTATE_TURRET) && e->shot_index>0;
     if (attached) {
         if (e->parent<0 || !g->enemies[e->parent].active) { e->active=false; return; }
+        if (e->kind==ENEMY_FENCE_BEAM) {
+            Enemy *owner=&g->enemies[e->parent];
+            if (owner->kind!=ENEMY_FENCE || owner->children[1]!=(int)(e-g->enemies) || !fence_partner(g,owner)) {
+                e->active=false; return;
+            }
+        }
     } else {
         if (e->authored && !chaser) {
             if (!pause_mover) movement_velocity(e->movement,e->age,e->move_speed,e->move_transition,&e->vx,&e->vy);
@@ -422,11 +441,11 @@ void enemy_die(Game *g, Enemy *e, int owner) {
     }
     if (e->kind == ENEMY_FENCE) {
         e->active = false;
-        if (e->parent >= 0 && g->enemies[e->parent].active && g->enemies[e->parent].kind == ENEMY_FENCE)
+        if (e->parent >= 0 && g->enemies[e->parent].active && g->enemies[e->parent].kind == ENEMY_FENCE &&
+            g->enemies[e->parent].children[0] == (int)(e-g->enemies))
             enemy_die(g, &g->enemies[e->parent], -1);
-        int other = e->children[0];
-        if (other >= 0 && g->enemies[other].active && g->enemies[other].kind == ENEMY_FENCE)
-            enemy_die(g, &g->enemies[other], -1);
+        Enemy *other=fence_partner(g,e);
+        if (other) enemy_die(g, other, -1);
     }
     for(int i=0;i<8;++i) {
         int n=e->children[i];

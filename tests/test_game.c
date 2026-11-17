@@ -524,10 +524,8 @@ static void contact_rules(void) {
     CHECK(!game.enemies[n].active && game.hits == 2);
     CHECK(fabsf(game.players[0].health - 9.8046875f) < 0.0001f);
     reset();
-    int parent = game_spawn_enemy(&game, ENEMY_BALL, 800, 100);
-    n = game_spawn_enemy(&game, ENEMY_FENCE_BEAM, 400, 880);
-    game.enemies[n].parent = parent;
-    game.enemies[n].box_width = 200;
+    game_spawn_enemy(&game, ENEMY_FENCE, 300, 880);
+    game_spawn_enemy(&game, ENEMY_FENCE, 500, 880);
     game_tick(&game);
     CHECK(game.players[0].health == 18.59375f);
 }
@@ -1218,6 +1216,57 @@ static void regular_enemy_parity(void) {
     CHECK(enemy_draw_layer(ENEMY_TURRET) < enemy_draw_layer(ENEMY_BALL));
 }
 
+static void fence_links(void) {
+    for (int side=0;side<2;++side) {
+        reset();
+        int left=game_spawn_enemy(&game,ENEMY_FENCE,300,300);
+        int right=game_spawn_enemy(&game,ENEMY_FENCE,620,300);
+        game_tick(&game);
+        int beam=game.enemies[left].children[1];
+        CHECK(beam>=0 && game.enemies[beam].x==460 && game.enemies[beam].box_width==320);
+        game_spawn_bullet(&game,0,side?620:300,300,0,0,10);
+        game_tick(&game);
+        CHECK(!game.enemies[left].active && !game.enemies[right].active && !game.enemies[beam].active);
+    }
+    reset();
+    int left=game_spawn_enemy(&game,ENEMY_FENCE,300,300);
+    int right=game_spawn_enemy(&game,ENEMY_FENCE,600,300);
+    game_tick(&game);
+    int beam=game.enemies[left].children[1];
+    /* Reuse an endpoint culled without its death callback. The beam must not
+       follow the unrelated new fence, even though its pool index matches. */
+    game.enemies[right].active=false;
+    int replacement=game_spawn_enemy(&game,ENEMY_FENCE,900,200);
+    CHECK(replacement==right);
+    game_tick(&game);
+    CHECK(!game.enemies[beam].active && game.enemies[replacement].active);
+    enemy_die(&game,&game.enemies[left],0);
+    CHECK(game.enemies[replacement].active);
+
+    reset();
+    left=game_spawn_enemy(&game,ENEMY_FENCE,300,300);
+    right=game_spawn_enemy(&game,ENEMY_FENCE,600,300);
+    game_tick(&game);
+    beam=game.enemies[left].children[1];
+    game.enemies[left].active=false;
+    replacement=game_spawn_enemy(&game,ENEMY_FENCE,100,200);
+    CHECK(replacement==left);
+    enemy_update_extended(&game,&game.enemies[beam]);
+    CHECK(!game.enemies[beam].active);
+    enemy_die(&game,&game.enemies[right],0);
+    CHECK(game.enemies[replacement].active);
+
+    reset();
+    int ends[4];
+    for (int i=0;i<4;++i) ends[i]=game_spawn_enemy(&game,ENEMY_FENCE,100+i*150,300);
+    game_tick(&game);
+    CHECK(game.enemies[ends[0]].children[0]==ends[1]);
+    CHECK(game.enemies[ends[2]].children[0]==ends[3]);
+    CHECK(game.enemies[ends[1]].children[0]==-1 && game.enemies[ends[3]].children[0]==-1);
+    enemy_die(&game,&game.enemies[ends[1]],0);
+    CHECK(game.enemies[ends[2]].active && game.enemies[ends[3]].active);
+}
+
 static void remaining_bosses(void) {
     for (int kind = ENEMY_BOSS3; kind <= ENEMY_BOSS12; ++kind) {
         reset();
@@ -1817,6 +1866,7 @@ int main(int argc, char **argv) {
     music_override_commands();
     boss5_and_turret_movement();
     enemy_camera_movement();
+    fence_links();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);
