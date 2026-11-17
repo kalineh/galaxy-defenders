@@ -129,7 +129,7 @@ void game_shop_open(Game *game) {
     /* World.SetScoreSaveData transfers score exactly once before the shop. */
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &game->players[i];
-        if (!p->joined) continue;
+        if (!p->initialized) continue;
         p->money += p->score;
         p->score = 0;
         p->lives = 1;
@@ -146,7 +146,7 @@ void game_shop_open(Game *game) {
 
 void game_shop_update(Game *game) {
     GameMenu *menu = &game->menu;
-    bool all_ready = true;
+    bool all_ready = game->players[0].joined || game->players[1].joined;
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         if (!menu->ready[i]) menu->shop_fly_frames[i] = 0;
         else if (menu->shop_fly_frames[i] < 34) ++menu->shop_fly_frames[i];

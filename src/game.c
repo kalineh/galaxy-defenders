@@ -178,21 +178,66 @@ bool game_equip_chassis(Game *game, int slot, int chassis) {
 }
 
 bool game_join(Game *game, int slot) {
-    if (slot < 0 || slot >= GAME_PLAYERS || game->players[slot].joined || game->over || game->complete) return false;
+    if (slot < 0 || slot >= GAME_PLAYERS || game->players[slot].joined) return false;
+    bool lobby = game->menu.page == MENU_MAIN || game->menu.page == MENU_SLOTS ||
+        game->menu.page == MENU_NEW_GAME || game->menu.page == MENU_DIFFICULTY ||
+        game->menu.page == MENU_PILOT || game->menu.page == MENU_SHOP;
+    if ((game->over || game->complete) && !lobby) return false;
     Player *player = &game->players[slot];
+    if (player->initialized) {
+        player->joined = true;
+        player->input = (PlayerInput){0};
+        game->menu.ready[slot] = false;
+        if (game->menu.page == MENU_PILOT) {
+            game->menu.pilot[slot] = player->pilot;
+            if (game->players[1 - slot].joined && game->menu.pilot[slot] == game->menu.pilot[1 - slot])
+                game->menu.pilot[slot] = (game->menu.pilot[1 - slot] + 1) % 3;
+        }
+        game->menu.players = game->players[1].joined ? 2 : 1;
+        return true;
+    }
     *player = (Player){0};
-    player->joined = true;
+    player->joined = player->initialized = true;
     player->x = slot == 0 ? 400 : 560;
     player->y = 880;
     player->health = 20;
     player->lives = 1; /* Alive flag; legacy has no extra lives or automatic respawn. */
     player->pilot = slot;
+    if (game->players[1 - slot].initialized && player->pilot == game->players[1 - slot].pilot)
+        player->pilot = (player->pilot + 1) % 3;
+    if (game->menu.page == MENU_PILOT && game->players[1 - slot].joined && player->pilot == game->menu.pilot[1 - slot])
+        player->pilot = (game->menu.pilot[1 - slot] + 1) % 3;
+    game->menu.pilot[slot] = player->pilot;
+    game->menu.ready[slot] = false;
+    game->menu.players = game->players[1].joined ? 2 : 1;
     player->weapon_level = 2;
     player->primary = WEAPON_FRONT_LASER;
     player->secondary = player->sidekick = player->shield = -1;
     player->energy = 3;
     player->friction = game_chassis[0].friction;
     player->invulnerable = 0;
+    return true;
+}
+
+bool game_leave(Game *game, int slot) {
+    if (slot < 0 || slot >= GAME_PLAYERS || !game->players[slot].joined) return false;
+    Player *player = &game->players[slot];
+    player->joined = false;
+    player->input = (PlayerInput){0};
+    player->vx = player->vy = 0;
+    memset(player->weapons, 0, sizeof(player->weapons));
+    game->menu.ready[slot] = false;
+    game->menu.shop_fly_frames[slot] = 0;
+    game->menu.players = game->players[1].joined ? 2 : 1;
+    for (int i = 0; i < GAME_BULLETS; ++i) if (game->bullets[i].owner == slot) game->bullets[i].active = false;
+    if (!game->players[0].joined && !game->players[1].joined) {
+        if (game->transition == TRANSITION_NEW_GAME || game->transition == TRANSITION_CONTINUE ||
+            game->transition == TRANSITION_RETRY || game->transition == TRANSITION_STAGE) {
+            game->transition = TRANSITION_NONE;
+            game->transition_frames = 0;
+        }
+        if (game->menu.page == MENU_NONE) game_menu_open(game, MENU_PAUSE);
+    }
     return true;
 }
 
@@ -665,7 +710,7 @@ void game_tick(Game *game) {
             if (!game->clear_exit && (game->menu.frame == 240 || game->menu.frame == 260)) {
                 static const int skill_bonus[] = {0, 0, 250, 500, 1000, 1500};
                 int bonus = game->menu.frame == 240 ? 10000 : skill_bonus[game_stage_medal(game)];
-                if (game->players[1].joined) bonus = bonus * 3 / 4;
+                if (game->players[0].joined && game->players[1].joined) bonus = bonus * 3 / 4;
                 for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined) game->players[i].score += bonus;
                 if (game->menu.frame == 260) {
                     game_record_stage(game);

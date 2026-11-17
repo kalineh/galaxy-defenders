@@ -146,7 +146,7 @@ void game_record_stage(Game *game) {
     SavedGame *save = &game->saves[game->active_slot];
     int earned = -game->stage.stats.starting_money;
     for (int i = 0; i < GAME_PLAYERS; ++i)
-        if (game->players[i].joined) earned += game->players[i].money + game->players[i].score;
+        if (game->players[i].initialized) earned += game->players[i].money + game->players[i].score;
     save->stage_scores[game->stage.index] = earned;
     save->stage_medals[game->stage.index] = game_stage_medal(game);
     game->stage.stats.recorded = true;
@@ -154,7 +154,7 @@ void game_record_stage(Game *game) {
 
 void game_checkpoint(Game *game, bool shop) {
     if (game->active_slot < 0 || game->active_slot >= GAME_SAVE_SLOTS || game->stage.index >= 12) return;
-    int players = game->players[1].joined ? 2 : 1;
+    int players = game->players[1].initialized ? 2 : 1;
     SavedGame *save = &game->saves[game->active_slot];
     save->valid = true; save->shop = shop; save->cleared = game->cleared_game;
     save->stage = shop ? game->menu.next_stage : game->stage.index;
@@ -172,6 +172,8 @@ bool game_continue(Game *game, int slot) {
     if (slot < 0 || slot >= GAME_SAVE_SLOTS || !valid_save(&game->saves[slot])) return false;
     SavedGame save = game->saves[slot];
     int players = save.players;
+    bool joined[GAME_PLAYERS] = {game->players[0].joined, game->players[1].joined};
+    if (!joined[0] && !joined[1]) joined[0] = true;
     game->active_slot = slot;
     int options[3];
     memcpy(options, game->menu.options, sizeof(options));
@@ -181,7 +183,7 @@ bool game_continue(Game *game, int slot) {
     game->menu.players = players;
     game->menu.difficulty = save.difficulty;
     game->cleared_game = save.cleared;
-    if (players == 2) game_join(game, 1);
+    if (players == 2 || joined[1]) game_join(game, 1);
     for (int i = 0; i < players; ++i) {
         Player *p = &game->players[i];
         const SavedPlayer *s = &save.player[i];
@@ -191,7 +193,13 @@ bool game_continue(Game *game, int slot) {
         p->energy = game_generators[p->generator].capacity;
         p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;
         p->friction = game_chassis[p->chassis].friction;
+        p->health = game_chassis[p->chassis].armor;
+        p->lives = 1;
     }
+    for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].joined = joined[i];
+    if (game->players[1].initialized && game->players[0].pilot == game->players[1].pilot)
+        game->players[1].pilot = (game->players[0].pilot + 1) % 3;
+    game->menu.players = joined[1] ? 2 : 1;
     game_stage(game, save.stage, 0);
     if (save.shop) {
         game->stage.stats.recorded = true;

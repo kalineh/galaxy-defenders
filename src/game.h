@@ -51,7 +51,7 @@ typedef struct {
 } PlayerInput;
 
 typedef struct {
-    bool joined, invincible;
+    bool joined, initialized, invincible;
     float x, y, vx, vy, health;
     int lives, invulnerable, score, age, shield_hit_frames;
     int money, chassis, pilot, weapon_level, powerup_levels;
@@ -198,6 +198,7 @@ bool game_continue(Game *game, int slot);
 bool game_save_read(SavedGame *save, const char *path);
 bool game_save_write(const SavedGame *save, const char *path);
 bool game_join(Game *game, int slot);
+bool game_leave(Game *game, int slot);
 bool game_equip_chassis(Game *game, int slot, int chassis);
 void game_menu_open(Game *game, MenuPage page);
 void game_menu_input(Game *game, MenuAction action, int slot);

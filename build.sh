@@ -16,7 +16,7 @@ export ZIG_LOCAL_CACHE_DIR="$PWD/build/zig-cache"
 export ZIG_GLOBAL_CACHE_DIR="$PWD/external/zig-cache"
 mkdir -p build/native build/headless
 flags=(-std=c11 -target x86_64-windows-gnu -mcpu=x86_64 -O0 -g -Wall -Wextra -Werror -Isrc)
-core=(src/game.c src/menu.c src/save.c src/console.c src/stage.c src/scenery.c src/movement.c src/enemy.c src/enemy_extra.c src/boss.c src/shop.c src/equipment.c src/weapon.c)
+core=(src/game.c src/input.c src/menu.c src/save.c src/console.c src/stage.c src/scenery.c src/movement.c src/enemy.c src/enemy_extra.c src/boss.c src/shop.c src/equipment.c src/weapon.c)
 # DSP stays optimized even in debug gameplay builds; no callback allocation.
 synth_object=build/headless/synth.o
 if [[ "$target" == native ]]; then synth_object=build/native/synth.o; fi
@@ -61,7 +61,7 @@ else
         fi
         objects+=("$object")
     done
-    "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c "${core[@]}" "${objects[@]}" \
+    "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c src/ds4_win32.c "${core[@]}" "${objects[@]}" \
         "${link_flags[@]}" -o "$output_dir/$executable"
     python tools/compile_music.py --check
     # Render the C score bank once; runtime never loads legacy music recordings.

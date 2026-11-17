@@ -8,7 +8,7 @@ void game_stats_init(Game *game) {
     StageStats *stats = &game->stage.stats;
     memset(stats, 0, sizeof(*stats));
     for (int i = 0; i < GAME_PLAYERS; ++i)
-        if (game->players[i].joined) stats->starting_money += game->players[i].money;
+        if (game->players[i].initialized) stats->starting_money += game->players[i].money;
     const StageDefinition *stage = &stage_definitions[game->stage.index];
     for (int i = 0; i < stage->event_count; ++i) {
         const StageEvent *event = &stage->events[i];
@@ -89,7 +89,10 @@ void game_secret_return(Game *game) {
         Player *p = &game->players[i];
         int score = p->score;
         float energy = p->energy, shield = p->shield_health, health = p->health;
-        *p = saved->players[i];
+        bool joined = p->joined;
+        if (saved->players[i].initialized) *p = saved->players[i];
+        p->joined = joined;
+        p->input = (PlayerInput){0};
         p->score = score; p->energy = energy; p->shield_health = shield; p->health = health;
         float dx = game->stage.camera_x + GAME_WIDTH * 0.5f - p->x;
         float dy = GAME_HEIGHT * 0.5f - p->y, length = hypotf(dx, dy);
@@ -98,6 +101,9 @@ void game_secret_return(Game *game) {
         p->vx = length > 0 ? dx / length * 40 : 0;
         p->vy = length > 0 ? dy / length * 40 : 0;
     }
+    for (int i = 0; i < GAME_BULLETS; ++i)
+        if (game->bullets[i].owner >= 0 && game->bullets[i].owner < GAME_PLAYERS &&
+            !game->players[game->bullets[i].owner].joined) game->bullets[i].active = false;
     /* Native entities use screen coordinates; preserve their world positions when
        applying the legacy return camera jump after snapping the ships. */
     game->stage.camera_y += 280;

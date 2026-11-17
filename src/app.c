@@ -1,6 +1,7 @@
 #include "game.h"
 #include "console.h"
 #include "synth.h"
+#include "input.h"
 #include "raylib.h"
 #include <math.h>
 #include <stdio.h>
@@ -857,6 +858,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         DrawTexture(assets->title, 704, 120, WHITE);
         DrawTextEx(assets->ui_font, "@kalin_t", (Vector2){1300, 980}, 19, 0, WHITE);
     }
+    if (game->menu.page == MENU_NEW_GAME)
+        text_center(assets->ui_font, TextFormat("Slot %d", game->active_slot + 1), 960, 345, 28, WHITE);
     if (game->menu.page == MENU_OVERWRITE)
         text_center(assets->ui_font, TextFormat("Replace Slot %d?", game->active_slot + 1), 960, 330, 32, WHITE);
     if (game->menu.page == MENU_PILOT) {
@@ -866,7 +869,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
             {"Gunthor", "Norway", "Demolitions", "O", "Damage+"}
         };
         static const char *keys[] = {"Name", "Country", "Profession", "Blood Type", "Bonus"};
-        for (int slot = 0; slot < game->menu.players; ++slot) {
+        for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+            if (!game->players[slot].joined) continue;
             int x = (slot ? 1440 : 0) + 238, y = 472;
             int pilot = game->menu.pilot[slot];
             DrawTextEx(assets->ui_font, game->menu.ready[slot] ? "Waiting..." : "Select Pilot", (Vector2){x - 120.0f, y - 240.0f}, 36, 0, WHITE);
@@ -890,7 +894,11 @@ static void draw_menu(const Game *game, const Assets *assets, int frame) {
         bool selected = row == game->menu.cursor, enabled = game_menu_enabled(game, row);
         int texture = enabled ? (selected ? 2 : 0) + (game_menu_small(game, row) ? 1 : 0) : selected ? 5 : 4;
         int y = game->menu.page == MENU_STAGE_SELECT ? 150 + row * 66 : 400 + row * 66;
-        DrawTexture(assets->menu[texture], 832, y, WHITE);
+        if (game->menu.page == MENU_SLOTS && row < GAME_SAVE_SLOTS) {
+            Texture2D button = assets->menu[texture];
+            DrawTexturePro(button, (Rectangle){0,0,(float)button.width,(float)button.height},
+                (Rectangle){720,(float)y,480,(float)button.height}, (Vector2){0}, 0, WHITE);
+        } else DrawTexture(assets->menu[texture], 832, y, WHITE);
         text_center(assets->ui_font, game_menu_label(game, row), 960, y + 20, 24, enabled ? WHITE : GRAY);
         if (game->menu.page == MENU_OPTIONS && row < 3) {
             for (int i = 0; i < 10; ++i) DrawRectangle(864 + i * 20, y + 46, 16, 8,
@@ -918,12 +926,89 @@ static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) 
     if (sound >= 0) PlaySound(assets->menu_sounds[sound]);
 }
 
-static void poll_menu(Game *game, Assets *assets) {
-    if (game->menu.page == MENU_PAUSE) {
-        bool resume = IsKeyPressed(KEY_P);
-        for (int slot = 0; slot < GAME_PLAYERS; ++slot) resume |= IsGamepadAvailable(slot) &&
-            IsGamepadButtonPressed(slot, GAMEPAD_BUTTON_MIDDLE_RIGHT);
-        if (resume) { menu_input(game, assets, MENU_BACK, 0); return; }
+static void poll_controllers(PadInput pads[INPUT_PADS]) {
+    static uint32_t navigation_before[INPUT_PADS];
+    ds4_update(&pads[4]);
+    bool native_ds4 = pads[4].connected || pads[5].connected;
+    const int ray_buttons[] = {GAMEPAD_BUTTON_LEFT_FACE_UP, GAMEPAD_BUTTON_LEFT_FACE_RIGHT,
+        GAMEPAD_BUTTON_LEFT_FACE_DOWN, GAMEPAD_BUTTON_LEFT_FACE_LEFT, GAMEPAD_BUTTON_RIGHT_FACE_DOWN,
+        GAMEPAD_BUTTON_RIGHT_FACE_RIGHT, GAMEPAD_BUTTON_RIGHT_FACE_UP, GAMEPAD_BUTTON_LEFT_TRIGGER_1,
+        GAMEPAD_BUTTON_RIGHT_TRIGGER_1, GAMEPAD_BUTTON_MIDDLE_RIGHT, GAMEPAD_BUTTON_MIDDLE_LEFT};
+    const uint32_t bits[] = {PAD_UP, PAD_RIGHT, PAD_DOWN, PAD_LEFT, PAD_CONFIRM, PAD_BACK,
+        PAD_RETRY, PAD_FOCUS, PAD_SIDEKICK, PAD_START, PAD_SELECT};
+    for (int device = 0; device < 4; ++device) {
+        uint32_t before = pads[device].buttons;
+        pads[device] = (PadInput){0};
+        if (!IsGamepadAvailable(device)) continue;
+        const char *name = GetGamepadName(device);
+        /* Native DS4 reports replace the same device's GLFW view. */
+        if (native_ds4 && name && !strstr(name, "DualSense") && !strstr(name, "PS5") &&
+            (strstr(name, "Wireless Controller") || strstr(name, "PS4") ||
+            strstr(name, "DualShock") || strstr(name, "DUALSHOCK"))) continue;
+        PadInput *pad = &pads[device];
+        pad->connected = true;
+        for (int b = 0; b < 11; ++b) if (IsGamepadButtonDown(device, ray_buttons[b])) pad->buttons |= bits[b];
+        pad->pressed = pad->buttons & ~before;
+        pad->x = GetGamepadAxisMovement(device, GAMEPAD_AXIS_LEFT_X);
+        pad->y = GetGamepadAxisMovement(device, GAMEPAD_AXIS_LEFT_Y);
+        pad->trigger = GetGamepadAxisCount(device) > GAMEPAD_AXIS_RIGHT_TRIGGER ?
+            (GetGamepadAxisMovement(device, GAMEPAD_AXIS_RIGHT_TRIGGER) + 1) * .5f : 0;
+    }
+    for (int device = 0; device < INPUT_PADS; ++device) {
+        uint32_t navigation = 0;
+        if (pads[device].connected) {
+            if (pads[device].x < -.55f) navigation |= PAD_LEFT;
+            if (pads[device].x > .55f) navigation |= PAD_RIGHT;
+            if (pads[device].y < -.55f) navigation |= PAD_UP;
+            if (pads[device].y > .55f) navigation |= PAD_DOWN;
+        }
+        pads[device].pressed |= navigation & ~navigation_before[device];
+        navigation_before[device] = navigation;
+    }
+}
+
+static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, PadInput pads[INPUT_PADS], bool accept_input) {
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        int device = devices->device[slot];
+        if (device >= 0 && device < INPUT_PADS && !pads[device].connected) input_drop(game, devices, device);
+    }
+    if (!accept_input) return;
+    bool keyboard = IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_W) ||
+        IsKeyPressed(KEY_A) || IsKeyPressed(KEY_S) || IsKeyPressed(KEY_D) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN);
+    if (keyboard && devices->device[0] == -1) input_claim(game, devices, INPUT_KEYBOARD);
+    if (IsKeyPressed(KEY_F2)) {
+        if (devices->device[1] == INPUT_KEYBOARD_P2) input_drop(game, devices, INPUT_KEYBOARD_P2);
+        else input_claim(game, devices, INPUT_KEYBOARD_P2);
+    }
+    /* Prefer native reports if the same DS4 is also exposed through an adapter. */
+    const int order[] = {4,5,0,1,2,3};
+    bool handled_start = false, owned_start = false;
+    for (int i = 0; i < INPUT_PADS; ++i)
+        if (input_owner(devices, i) >= 0 && (pads[i].pressed & PAD_START)) owned_start = true;
+    for (int i = 0; i < INPUT_PADS; ++i) {
+        int device = order[i];
+        PadInput *pad = &pads[device];
+        if (!(pad->pressed & PAD_START)) continue;
+        int slot = input_owner(devices, device);
+        if (handled_start || (slot < 0 && owned_start)) { pad->pressed = 0; continue; }
+        if (slot < 0) {
+            bool empty = !game->players[0].joined && !game->players[1].joined;
+            if (input_claim(game, devices, device) >= 0) {
+                if (empty && game->menu.page == MENU_PAUSE) game_menu_open(game, MENU_NONE);
+            }
+        } else if (pad->buttons & PAD_SELECT) input_drop(game, devices, device);
+        else if (!game->players[slot].joined) game_join(game, slot);
+        else if (game->menu.page == MENU_NONE) game_menu_open(game, MENU_PAUSE);
+        else if (game->menu.page == MENU_PAUSE) menu_input(game, assets, MENU_BACK, slot);
+        else menu_input(game, assets, game->menu.page == MENU_SHOP ? MENU_READY : MENU_CONFIRM, slot);
+        handled_start = true;
+        pad->pressed = 0; /* The join/pause press must not also select a menu row. */
+    }
+}
+
+static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
+    if (game->menu.page == MENU_PAUSE && IsKeyPressed(KEY_P)) {
+        menu_input(game, assets, MENU_BACK, 0); return;
     }
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         bool pressed[7] = {false};
@@ -944,13 +1029,17 @@ static void poll_menu(Game *game, Assets *assets) {
             pressed[MENU_CONFIRM] = IsKeyPressed(KEY_RIGHT_CONTROL);
             pressed[MENU_BACK] = IsKeyPressed(KEY_BACKSPACE);
         }
-        if (IsGamepadAvailable(slot)) {
-            const int buttons[] = {GAMEPAD_BUTTON_LEFT_FACE_UP, GAMEPAD_BUTTON_LEFT_FACE_DOWN,
-                GAMEPAD_BUTTON_LEFT_FACE_LEFT, GAMEPAD_BUTTON_LEFT_FACE_RIGHT,
-                GAMEPAD_BUTTON_RIGHT_FACE_DOWN, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT, GAMEPAD_BUTTON_MIDDLE_RIGHT};
-            for (int i = 0; i < 7; ++i) pressed[i] |= IsGamepadButtonPressed(slot, buttons[i]);
+        int device = devices->device[slot];
+        if (device >= 0 && device < INPUT_PADS && pads[device].connected) {
+            const uint32_t buttons[] = {PAD_UP, PAD_DOWN, PAD_LEFT, PAD_RIGHT, PAD_CONFIRM, PAD_BACK, 0};
+            for (int i = 0; i < 7; ++i) pressed[i] |= (pads[device].pressed & buttons[i]) != 0;
         }
-        for (int i = 0; i < 7; ++i) if (pressed[i]) { menu_input(game, assets, (MenuAction)i, slot); break; }
+        for (int i = 0; i < 7; ++i) if (pressed[i]) {
+            MenuPage previous = game->menu.page;
+            menu_input(game, assets, (MenuAction)i, slot);
+            if (game->menu.page != previous) return;
+            break;
+        }
     }
 }
 
@@ -1081,7 +1170,7 @@ static void draw_music_album(const Console *console, const Assets *assets) {
     DrawTextEx(assets->console_font, TextFormat("%.1f%%  |  C synth soundtrack - first drafts", progress*100), (Vector2){390,930}, 22, 0, WHITE);
 }
 
-static PlayerInput poll_input(int slot) {
+static PlayerInput poll_keyboard(int slot) {
     PlayerInput input = {0};
     if (slot == 0) {
         input.x = (float)((IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) - (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)));
@@ -1095,19 +1184,6 @@ static PlayerInput poll_input(int slot) {
         input.fire = IsKeyDown(KEY_ENTER) || IsKeyDown(KEY_RIGHT_CONTROL);
         input.focus = IsKeyDown(KEY_RIGHT_SHIFT);
         input.sidekick_left = input.sidekick_right = IsKeyDown(KEY_O);
-    }
-    if (IsGamepadAvailable(slot)) {
-        float x = GetGamepadAxisMovement(slot, GAMEPAD_AXIS_LEFT_X);
-        float y = GetGamepadAxisMovement(slot, GAMEPAD_AXIS_LEFT_Y);
-        if (fabsf(x) > 0.18f) input.x += x;
-        if (fabsf(y) > 0.18f) input.y += y;
-        input.x += IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_FACE_RIGHT) - IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
-        input.y += IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_FACE_DOWN) - IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_FACE_UP);
-        input.fire = input.fire || IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_FACE_DOWN) ||
-            GetGamepadAxisMovement(slot, GAMEPAD_AXIS_RIGHT_TRIGGER) > 0.2f;
-        input.focus = input.focus || IsGamepadButtonDown(slot, GAMEPAD_BUTTON_LEFT_TRIGGER_1);
-        input.sidekick_left |= IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
-        input.sidekick_right |= IsGamepadButtonDown(slot, GAMEPAD_BUTTON_RIGHT_TRIGGER_1);
     }
     return input;
 }
@@ -1239,11 +1315,20 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     int rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
     FrameGraph frame_graph = {0};
+    PlayerDevices devices;
+    PadInput pads[INPUT_PADS] = {0};
+    input_devices_init(&devices);
+    if (!frames && !ds4_init()) console_log(console, "Native DS4 input unavailable; standard gamepads remain enabled.");
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
         double frame_start = GetTime();
         if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
         update_audio(game, console, &assets);
+        if (!frames) {
+            poll_controllers(pads);
+            poll_joining(game, &assets, &devices, pads, !console_open && !console->music_album && IsWindowFocused());
+            if (!IsWindowFocused()) for (int i = 0; i < INPUT_PADS; ++i) pads[i].pressed = 0;
+        }
         bool was_menu = game->menu.page != MENU_NONE;
         bool toggled = IsKeyPressed(KEY_GRAVE);
         if (toggled) {
@@ -1282,16 +1367,13 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             console->scroll += (int)(GetMouseWheelMove() * 3);
             if (IsKeyPressed(KEY_ENTER)) command_failed = !console_submit(console, game);
         } else if (!toggled && was_menu) {
-            poll_menu(game, &assets);
+            poll_menu(game, &assets, &devices, pads);
         } else if (!toggled) {
-            bool start[2] = {false, false};
-            for (int i = 0; i < GAME_PLAYERS; ++i) start[i] = IsGamepadAvailable(i) && IsGamepadButtonPressed(i, GAMEPAD_BUTTON_MIDDLE_RIGHT);
-            bool joining = !game->players[1].joined && (IsKeyPressed(KEY_F2) || start[1]);
-            if (joining) game_join(game, 1);
-            if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE) || start[0] || (start[1] && !joining)) game_menu_open(game, MENU_PAUSE);
+            if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) game_menu_open(game, MENU_PAUSE);
             bool restart = IsKeyPressed(KEY_R);
             for (int i = 0; i < GAME_PLAYERS; ++i) {
-                if ((game->over || game->complete) && IsGamepadAvailable(i) && IsGamepadButtonPressed(i, GAMEPAD_BUTTON_RIGHT_FACE_UP)) restart = true;
+                int device = devices.device[i];
+                if ((game->over || game->complete) && device >= 0 && device < INPUT_PADS && (pads[device].pressed & PAD_RETRY)) restart = true;
             }
             if (restart) {
                 game_retry(game);
@@ -1309,7 +1391,11 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
         if (!console->music_album && !console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
-            if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].input = poll_input(i);
+            if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) {
+                int device = devices.device[i];
+                game->players[i].input = device >= 0 && device < INPUT_PADS ? input_player(&pads[device]) :
+                    (device == INPUT_KEYBOARD || device == INPUT_KEYBOARD_P2) ? poll_keyboard(i) : (PlayerInput){0};
+            }
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
                 game_tick(game);
@@ -1360,6 +1446,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         draw_game(game, &assets);
         draw_menu(game, &assets, menu_frame++);
+        if (game->menu.page != MENU_FINISH && game->menu.page != MENU_CLEAR)
+            text_center(assets.ui_font, "Start / Options: join or pause   |   Share + Options: leave   |   F2: keyboard P2", 960, 1040, 19, LIGHTGRAY);
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {
@@ -1405,6 +1493,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     console_execute(console, game, "state");
     assets_unload(&assets);
     if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
+    if (!frames) ds4_shutdown();
     CloseWindow();
     return result;
 }

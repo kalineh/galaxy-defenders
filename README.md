@@ -7,9 +7,9 @@ Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.m
 ## Play
 
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
-volume. Choose Solo Game or Coop Game, New Game, difficulty and pilots. All
+volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
-music. Stage Clear continues into the shop; TAB (both players in co-op) proceeds
+music. Stage Clear continues into the shop; TAB / Start (each joined player ready) proceeds
 to the next stage. All six shop categories support purchases and weapon levels.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
@@ -42,12 +42,30 @@ See [music audition instructions](music/README.md) and the
 | Move | WASD or arrows | IJKL |
 | Fire | Space or Z | Enter or right Ctrl |
 | Focus fire / slow movement | Left Shift | Right Shift |
-| Join | Joined at launch | F2 |
+| Join / leave | Keyboard claims P1 when used | F2 toggles keyboard P2 |
 
-Gamepad 1 controls player 1; gamepad 2 controls player 2 (Start joins). Use the
-left stick/D-pad to move, A/right trigger to fire, LB to focus, and Start to pause.
-Keyboard remains available when a controller disconnects. Physical controller
-mapping/disconnect behavior still needs human playtesting.
+Controllers claim the first available P1/P2 slot with Start/Options; hardware index
+does not determine player number. Start pauses/resumes after joining and readies
+your ship in the shop. Select/Share + Start/Options drops out. Unplugging also
+drops out, clears held input and pauses if nobody remains. Joining again retains
+the slot's equipment, money and health; it cannot revive a destroyed ship.
+Both loadouts stay in the same campaign save even when one player is absent.
+Continuing restores the currently joined party, with the other loadout held for
+later joining. Either player can navigate shared menus; absent players do not
+block pilot selection or shop readiness.
+
+Standard gamepads use raylib/GLFW. Windows additionally reads up to two native
+DS4 controllers (USB/Bluetooth), with report layouts based on Solcraft; no sibling
+repository or emulation driver is required. Move with stick/D-pad, fire with
+A/Cross or RT/R2, focus with LB/L1, sidekick with RB/R1. Menus accept stick/D-pad,
+A/Cross and B/Circle. Analog movement uses a radial deadzone and normalized diagonal
+speed. DS4 report parsing, disconnect/claim behavior and retained loadouts are
+headless-tested; physical USB/Bluetooth hardware still needs human playtesting.
+
+The Windows transport uses [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/using-raw-input)
+with a hidden message window, bounded report buffers and removal notifications.
+Bounded/headless render checks never initialize that transport. Mouse-follow mode,
+MGUI integration and the options redesign are deferred; no rebinding UI was added.
 
 `P`/Escape pauses, `R` restarts, `M` toggles mute, and backtick opens the console.
 Shift+backtick expands it; Escape closes it. The console uses Consolas from

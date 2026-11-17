@@ -1,4 +1,5 @@
 #include "game.h"
+#include "input.h"
 #include "console.h"
 #include "synth.h"
 #include "stage.h"
@@ -1474,6 +1475,90 @@ static void stage_awards(void) {
     CHECK(game.saves[0].stage_scores[0] == 11500);
 }
 
+static void controller_joining(void) {
+    reset();
+    PlayerDevices devices;
+    input_devices_init(&devices);
+    CHECK(input_claim(&game, &devices, 4) == 0); /* First native pad owns P1. */
+    CHECK(input_claim(&game, &devices, 4) == 0);
+    CHECK(input_claim(&game, &devices, 1) == 1); /* Hardware index is not player number. */
+    CHECK(input_claim(&game, &devices, 5) == -1);
+    CHECK(game.players[0].joined && game.players[1].joined);
+    game.players[1].health = 7; game.players[1].money = 9876;
+    game.players[1].input.fire = true;
+    int bullet = game_spawn_bullet(&game, 1, 400, 400, 0, -10, 1);
+    CHECK(input_drop(&game, &devices, 1));
+    CHECK(!game.players[1].joined && !game.players[1].input.fire && !game.bullets[bullet].active);
+    CHECK(game.players[0].joined && game.menu.page == MENU_NONE);
+    CHECK(input_claim(&game, &devices, 5) == 1);
+    CHECK(game.players[1].health == 7 && game.players[1].money == 9876);
+    game.players[1].lives = 0;
+    CHECK(input_drop(&game, &devices, 5) && input_claim(&game, &devices, 5) == 1);
+    CHECK(game.players[1].lives == 0); /* Cannot revive by unplugging. */
+    CHECK(input_drop(&game, &devices, 5) && input_drop(&game, &devices, 4));
+    CHECK(game.menu.page == MENU_PAUSE && game.paused);
+    CHECK(input_claim(&game, &devices, INPUT_KEYBOARD) == 0);
+    game_checkpoint(&game, false);
+    CHECK(game.saves[0].players == 2 && game.saves[0].player[1].money == 9876);
+    CHECK(game_continue(&game, 0));
+    CHECK(!game.players[1].joined && game.players[1].initialized && game.players[1].money == 9876);
+    CHECK(input_claim(&game, &devices, INPUT_KEYBOARD_P2) == 1);
+    CHECK(game.players[1].money == 9876);
+    CHECK(input_drop(&game, &devices, INPUT_KEYBOARD));
+    game_menu_open(&game, MENU_MAIN);
+    game_menu_input(&game, MENU_CONFIRM, 1);
+    CHECK(game.menu.page == MENU_SLOTS); /* P2 can operate shared menus alone. */
+    game_shop_open(&game);
+    game_menu_input(&game, MENU_READY, 1);
+    for (int i = 0; i < 34; ++i) game_tick(&game);
+    CHECK(game.transition_frames == 30); /* Absent P1 cannot hold up the shop. */
+
+    reset();
+    game_menu_open(&game, MENU_PILOT);
+    game.menu.pilot[0] = 1;
+    CHECK(game_join(&game, 1));
+    CHECK(game.menu.pilot[0] != game.menu.pilot[1]);
+    CHECK(game_leave(&game, 1));
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.transition_frames == 30);
+    CHECK(game_leave(&game, 0));
+    CHECK(game.transition_frames == 0 && game.menu.page == MENU_PILOT);
+    CHECK(game_join(&game, 0));
+    game_menu_open(&game, MENU_NONE);
+    CHECK(game_join(&game, 1));
+    game_secret_enter(&game, 12);
+    CHECK(game_leave(&game, 1));
+    game_secret_return(&game);
+    CHECK(!game.players[1].joined && game.players[1].initialized);
+
+    PadInput pad = {0};
+    unsigned char usb[64] = {1,128,128,128,128,0x21,0x23,0,0,255};
+    CHECK(input_ds4_report(&pad, usb, sizeof(usb)));
+    CHECK(pad.connected && (pad.buttons & PAD_CONFIRM) && (pad.buttons & PAD_START));
+    CHECK((pad.buttons & (PAD_UP|PAD_RIGHT)) == (PAD_UP|PAD_RIGHT));
+    CHECK((pad.buttons & (PAD_FOCUS|PAD_SIDEKICK)) == (PAD_FOCUS|PAD_SIDEKICK));
+    CHECK(pad.trigger == 1 && fabsf(pad.x) < .01f);
+    unsigned char bluetooth[547] = {0x11};
+    memcpy(bluetooth + 3, usb + 1, 9);
+    PadInput wireless = {0};
+    CHECK(input_ds4_report(&wireless, bluetooth, sizeof(bluetooth)));
+    CHECK(wireless.buttons == pad.buttons && wireless.trigger == pad.trigger);
+    PadInput before = pad;
+    CHECK(!input_ds4_report(&pad, usb, 9) && !input_ds4_report(&pad, usb, 0));
+    CHECK(!memcmp(&before, &pad, sizeof(pad)));
+    usb[5] = 8; usb[6] = 0; usb[9] = 0;
+    pad.pressed = 0;
+    CHECK(input_ds4_report(&pad, usb, sizeof(usb)) && !pad.buttons && !pad.pressed);
+    PlayerInput movement = input_player(&pad);
+    CHECK(movement.x == 0 && movement.y == 0 && !movement.fire);
+    pad.x = pad.y = 1; pad.buttons = PAD_CONFIRM | PAD_FOCUS;
+    movement = input_player(&pad);
+    CHECK(fabsf(hypotf(movement.x, movement.y) - 1) < .001f && movement.fire && movement.focus);
+    pad.connected = false;
+    movement = input_player(&pad);
+    CHECK(movement.x == 0 && movement.y == 0 && !movement.fire);
+}
+
 static void save_slots(void) {
     reset();
     for (int slot = 0; slot < GAME_SAVE_SLOTS; ++slot) {
@@ -1610,7 +1695,7 @@ int main(int argc, char **argv) {
     }
     boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules();
     authored_secret_entries();
-    archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue(); save_slots();
+    archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); saved_continue(); save_slots(); controller_joining();
     collectible_rewards();
     secret_stage_roundtrip();
     boss_visual_collision_parity();

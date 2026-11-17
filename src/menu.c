@@ -74,9 +74,10 @@ void game_retry(Game *game) {
     game->difficulty = difficulty;
     game->menu = menu;
     for (int i = 0; i < GAME_PLAYERS; ++i) {
-        if (!players[i].joined) continue;
+        if (!players[i].initialized) continue;
         if (i) game_join(game, i);
         Player *p = &game->players[i];
+        p->joined = players[i].joined;
         p->chassis = players[i].chassis;
         p->pilot = players[i].pilot;
         p->weapon_level = players[i].weapon_level;
@@ -101,11 +102,13 @@ static void start_game(Game *game) {
     static const int starting_money[] = {0, 1500, 2500};
     static const int starting_chassis[] = {1, 0, 2};
     GameMenu menu = game->menu;
+    bool joined[GAME_PLAYERS] = {game->players[0].joined, game->players[1].joined};
+    if (!joined[0] && menu.pilot[0] == menu.pilot[1]) menu.pilot[0] = (menu.pilot[1] + 1) % 3;
     game_reset_session(game, 1);
     game->cleared_game = false;
     game->menu = menu;
     game->difficulty = menu.difficulty;
-    if (menu.players == 2) game_join(game, 1);
+    if (joined[1]) game_join(game, 1);
     for (int i = 0; i < menu.players; ++i) {
         Player *p = &game->players[i];
         p->pilot = menu.pilot[i];
@@ -122,6 +125,7 @@ static void start_game(Game *game) {
         p->shield_health = game_shields[p->shield].capacity;
         game_equip_chassis(game, i, starting_chassis[p->pilot]);
     }
+    for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].joined = joined[i];
     game_stats_init(game);
     memset(&game->saves[game->active_slot], 0, sizeof(SavedGame));
     game_menu_open(game, MENU_NONE);
@@ -186,7 +190,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     }
     if (menu->page == MENU_SHOP) { game_shop_input(game, action, slot); return; }
     if (menu->page == MENU_STAGE_SELECT) {
-        if (slot != 0) return;
+        if (!game->players[slot].joined) return;
         if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
         if (action == MENU_DOWN && menu->cursor < 12) ++menu->cursor;
         if (action == MENU_BACK || (action == MENU_CONFIRM && menu->cursor == 12)) game_transition(game, TRANSITION_SHOP, 0);
@@ -203,22 +207,22 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         return;
     }
     if (menu->page == MENU_PILOT) {
-        if (slot >= menu->players) return;
+        if (!game->players[slot].joined) return;
         if (action == MENU_BACK) {
             if (menu->ready[slot]) menu->ready[slot] = false;
             else game_menu_open(game, MENU_DIFFICULTY);
         } else if (!menu->ready[slot] && (action == MENU_LEFT || action == MENU_RIGHT)) {
             int step = action == MENU_LEFT ? -1 : 1;
             int pilot = menu->pilot[slot] + step;
-            if (menu->players == 2 && pilot == menu->pilot[1 - slot]) pilot += step;
+            if (game->players[1 - slot].joined && pilot == menu->pilot[1 - slot]) pilot += step;
             if (pilot >= 0 && pilot < 3) menu->pilot[slot] = pilot;
         } else if (action == MENU_CONFIRM) {
             menu->ready[slot] = true;
-            if (menu->ready[0] && (menu->players == 1 || menu->ready[1])) game_transition(game, TRANSITION_NEW_GAME, 0);
+            if ((!game->players[0].joined || menu->ready[0]) && (!game->players[1].joined || menu->ready[1])) game_transition(game, TRANSITION_NEW_GAME, 0);
         }
         return;
     }
-    if (slot != 0) return;
+    if (!game->players[slot].joined) return;
     int count = game_menu_count(game);
     if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
     if (action == MENU_DOWN && menu->cursor + 1 < count) ++menu->cursor;
