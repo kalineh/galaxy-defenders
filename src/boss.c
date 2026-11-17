@@ -451,9 +451,35 @@ static void part_update(Game *g,Enemy *e) {
         }
     } else if(e->kind==ENEMY_BOSS5_CHUNK){
         if(!boss->phase){e->x=boss->x+e->offset_x;e->y=boss->y;return;}
+        /* Patrol endpoints are world positions in the original. Keep their
+           screen-space equivalents moving with the camera after detachment. */
+        if (e->authored) {
+            e->y += g->scroll_speed;
+            e->move_from += g->scroll_speed;
+            e->move_to += g->scroll_speed;
+        }
         ++e->timer;
+        if (e->timer==30) e->anchor_x=e->x;
         if(e->timer<150 && e->timer>=30)e->x=e->anchor_x+(e->offset_x<0?-300:300)*(e->timer-30)/120.0f;
-        else if(e->timer>=210){if(--e->move_wait<=0){e->move_from=e->y;e->move_to=e->anchor_y+(e->move_phase++%2?0:(game_random_range(g, 2)?200:-200));e->move_frame=0;e->move_wait=180+game_random_range(g, 30);}float t=fminf(1,e->move_frame++/120.0f);e->y=e->move_from+(e->move_to-e->move_from)*t;}
+        else if (e->timer>=210) {
+            if (e->move_wait>0) --e->move_wait;
+            else {
+                if (e->move_frame<0) {
+                    if (e->move_phase%2==0) e->orbit_angle=game_random_range(g,2)?1:-1;
+                    e->move_from=e->y;
+                    e->move_to=e->y+200*e->orbit_angle*(e->move_phase%2?-1:1);
+                    e->move_frame=0;
+                }
+                /* Legacy samples 0..119, then reverses the same displacement. */
+                float t=e->move_frame++/120.0f;
+                e->y=e->move_from+(e->move_to-e->move_from)*t;
+                if (e->move_frame==120) {
+                    e->move_wait=60+(e->move_phase%2?0:game_random_range(g,30));
+                    ++e->move_phase;
+                    e->move_frame=-1;
+                }
+            }
+        }
         if(--e->cooldown<=0){if(!e->shot_index){e->attack=game_random_range(g, 2);e->aim=angle_to_player(g,e,0);}int count=e->attack==0?e->shot_index+1:1;for(int i=0;i<count;++i)shot(g,e,0,0,(e->attack==0?e->aim:angle_to_player(g,e,0))+(i-(count-1)*0.5f)*(count==2?0.08f:0.06f));e->cooldown=4;if(++e->shot_index==3){e->shot_index=0;e->cooldown+=60+game_random_range(g, 30);}}
     } else if(e->kind==ENEMY_BOSS7_CANNON_BIG || e->kind==ENEMY_BOSS7_CANNON_SMALL){
         bool big=e->kind==ENEMY_BOSS7_CANNON_BIG;

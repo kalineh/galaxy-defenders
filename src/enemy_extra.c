@@ -155,15 +155,18 @@ static void fence(Game *g, Enemy *e) {
 void enemy_update_extended(Game *g, Enemy *e) {
     bool attached=e->kind==ENEMY_CUTTER_BALL || e->kind==ENEMY_FENCE_BEAM || (e->kind==ENEMY_SWIRL_BALL && e->parent>=0);
     bool chaser=e->kind==ENEMY_SPIKE || e->kind==ENEMY_GLOB;
-    bool pause=(e->kind==ENEMY_TRIPLE_SHOT || e->kind==ENEMY_ROTATE_TURRET) && e->shot_index>0;
+    /* A burst replaces an existing mover with IgnoreCamera. None is a null
+       mover in the original: ground turrets keep scrolling with the scenery. */
+    bool pause_mover=e->authored && e->movement!=MOVE_NONE &&
+        (e->kind==ENEMY_TRIPLE_SHOT || e->kind==ENEMY_ROTATE_TURRET) && e->shot_index>0;
     if (attached) {
         if (e->parent<0 || !g->enemies[e->parent].active) { e->active=false; return; }
     } else {
         if (e->authored && !chaser) {
-            if (!pause) movement_velocity(e->movement,e->age,e->move_speed,e->move_transition,&e->vx,&e->vy);
-            if (e->movement!=MOVE_IGNORE_CAMERA && !pause) e->y+=g->scroll_speed;
+            if (!pause_mover) movement_velocity(e->movement,e->age,e->move_speed,e->move_transition,&e->vx,&e->vy);
+            if (e->movement!=MOVE_IGNORE_CAMERA && !pause_mover) e->y+=g->scroll_speed;
         }
-        if (!pause) { e->x+=e->vx; e->y+=e->vy; }
+        e->x+=e->vx; e->y+=e->vy;
         if (!e->authored && (e->kind == ENEMY_SPLITTER_FRAGMENT || (e->kind == ENEMY_SWIRL_BALL && e->parent < 0))) e->y += g->scroll_speed;
     }
     ++e->age; e->rotation+=e->spin;

@@ -297,6 +297,67 @@ static void weapon_motion_rules(void) {
     CHECK(b->active && b->bounces == 1 && b->y < 561 && b->y > 559);
 }
 
+static void boss5_and_turret_movement(void) {
+    reset();
+    int index=game_spawn_enemy(&game,ENEMY_BOSS5,488,-100);
+    Enemy *boss=&game.enemies[index];
+    boss->authored=true;
+    game.scroll_speed=2.5f;
+    for (int tick=0;tick<120;++tick) {
+        boss_update_all(&game,boss);
+        for (int side=0;side<2;++side) boss_update_all(&game,&game.enemies[boss->children[side]]);
+    }
+    CHECK(boss->y==200);
+    enemy_take_damage(&game,boss,30,0);
+    CHECK(boss->phase==1);
+    float baseline=boss->y;
+    bool bounded=true, returned[2]={false,false};
+    for (int tick=1;tick<=1200;++tick) {
+        /* Include residual camera motion while the parts deploy and patrol. */
+        game.scroll_speed=tick<=240?0.5f:0;
+        baseline+=game.scroll_speed;
+        boss_update_all(&game,boss);
+        for (int side=0;side<2;++side) {
+            Enemy *part=&game.enemies[boss->children[side]];
+            boss_update_all(&game,part);
+            if (fabsf(part->y-baseline)>199 || part->x<100 || part->x>876) bounded=false;
+            if (tick==149) CHECK(fabsf(part->x-(side?865.5f:110.5f))<0.001f);
+            if (part->move_phase==2 && part->move_frame==-1) {
+                CHECK(fabsf(part->y-baseline)<0.001f);
+                returned[side]=true;
+            }
+        }
+    }
+    CHECK(bounded && returned[0] && returned[1]);
+
+    for (int kind=0;kind<2;++kind) {
+        reset();
+        index=game_spawn_enemy(&game,kind?ENEMY_TRIPLE_SHOT:ENEMY_ROTATE_TURRET,480,300);
+        Enemy *turret=&game.enemies[index];
+        turret->authored=true;
+        turret->movement=MOVE_NONE;
+        turret->cooldown=1;
+        game.scroll_speed=2.5f;
+        bool fixed_to_scenery=true;
+        for (int tick=1;tick<=180;++tick) {
+            enemy_update_extended(&game,turret);
+            if (turret->x!=480 || turret->y!=300+tick*2.5f) fixed_to_scenery=false;
+        }
+        CHECK(fixed_to_scenery);
+        /* An explicit mover is replaced during a burst, but Physics.Solve
+           still integrates its previous velocity, as in the legacy code. */
+        turret->movement=MOVE_DOWN;
+        turret->move_speed=3;
+        turret->shot_index=0;
+        turret->cooldown=1;
+        float y=turret->y;
+        enemy_update_extended(&game,turret);
+        CHECK(turret->y==y+3 && turret->vy==0.5f);
+        enemy_update_extended(&game,turret);
+        CHECK(turret->y==y+3.5f && turret->vy==0.5f);
+    }
+}
+
 static void boss_timing_rules(void) {
     reset();
     int n=game_spawn_enemy(&game,ENEMY_BOSS5,480,200);
@@ -1688,6 +1749,7 @@ static void music_override_commands(void) {
 
 int main(int argc, char **argv) {
     music_override_commands();
+    boss5_and_turret_movement();
     if (argc == 2 && !strcmp(argv[1], "--core")) {
         archived_asteroids(); enemy_death_sounds(); legacy_random_sequence(); state_fades(); scenery_sequence(); shop_previews(); stage_awards(); boss_timing_rules(); weapon_motion_rules(); hostile_collision_rules(); contact_rules(); death_and_restart(); player_impact_damage(); legacy_circle_sizes(); determinism();
         printf("Core gameplay checks: %s (%d failures)\n", failures ? "FAIL" : "PASS", failures);

@@ -1,3 +1,13 @@
+# Completed enemy movement corrections
+
+Boss Five side parts deploy once, then patrol from their current world position
+instead of the stale off-screen spawn anchor. Camera movement carries patrol
+endpoints correctly; outbound/return waits follow the legacy movement sequence.
+RotateTurret and TripleShot with no mover remain fixed to scenery during bursts.
+Explicit movers retain the legacy IgnoreCamera/physical-velocity behavior.
+Verified: movement regressions (deployment, return, residual scrolling, stationary
+and moving turrets), full ./test.sh, and native Windows build. Human playtest pending.
+
 # Completed save slots / drop-in controllers
 
 Three campaign slots replace solo/co-op saves. Explicit overwrite confirmation,
