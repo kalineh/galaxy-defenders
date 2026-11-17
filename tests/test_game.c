@@ -1756,6 +1756,8 @@ static void shop_scroll_windows(void) {
     game_menu_input(&game,MENU_CONFIRM,0);
     int stock[WEAPON_COUNT+1];
     CHECK(game_shop_stock(&game,0,1,stock) == GENERATOR_COUNT);
+    CHECK(game_shop_stock(&game,0,2,stock) == SHIELD_COUNT);
+    CHECK(game_shop_stock(&game,0,5,stock) == 7); /* Six sidekicks and the empty slot. */
     for (int i=1; i<GENERATOR_COUNT; ++i) game_menu_input(&game,MENU_DOWN,0);
     CHECK(game.menu.shop_first_item[0] == GENERATOR_COUNT-SHOP_VISIBLE_ROWS);
     for (int i=1; i<SHOP_VISIBLE_ROWS; ++i) game_menu_input(&game,MENU_UP,0);
@@ -1798,6 +1800,22 @@ static void shop_previews(void) {
     game_menu_input(&game, MENU_BACK, 0);
     game_shop_preview_update(&repeat, &game);
     CHECK(!game.menu.ready[0] && repeat.players[0].y == 790);
+    game.menu.shop_catalog[0] = true;
+    game.menu.shop_category[0] = 4;
+    game.menu.shop_item[0] = WEAPON_VULCAN;
+    game.menu.shop_level[0] = 4;
+    repeat.tick = 0;
+    for (int i = 0; i < 15; ++i) game_shop_preview_update(&repeat, &game);
+    CHECK(repeat.weapon_shots[WEAPON_VULCAN] == 3);
+    bool barrel[3] = {false};
+    for (int i = 0; i < GAME_BULLETS; ++i) {
+        const Bullet *b = &repeat.bullets[i];
+        if (b->active && b->weapon == WEAPON_VULCAN && b->emitter >= 0 && b->emitter < 3)
+            barrel[b->emitter] = fabsf(b->x - (480 + (b->emitter-1)*12)) < 0.1f;
+    }
+    CHECK(barrel[0] && barrel[1] && barrel[2]);
+    while (repeat.tick < GAME_HZ) game_shop_preview_update(&repeat, &game);
+    CHECK(game_enemy_count(&repeat) == 1 && game_enemy_count(&game) == 0);
 }
 
 static void stage_awards(void) {

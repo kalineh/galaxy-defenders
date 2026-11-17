@@ -775,7 +775,7 @@ static const char *item_description(int category, int id) {
         [WEAPON_DRUNK_MISSILE]="A rocket with a wandering flight path.",
         [WEAPON_SEEK_BOMB]="Hunts for a target after launch.",
         [WEAPON_BOOMERANG]="A spinning disc cuts through a crowd.",
-        [WEAPON_VULCAN]="A rapid burst with a loose spread.",
+        [WEAPON_VULCAN]="Rapid-fire barrels lead moving targets.",
         [WEAPON_BOMBLET]="Scatters small bombs around the ship.",
         [WEAPON_MINI_SHOT]="A small gun for each wing.",
         [WEAPON_CHARGE_SHOT]="Hold to build a heavier shot.",
@@ -1013,6 +1013,7 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
         sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
     }
     BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) draw_shop_panel(game, assets, slot, devices->device[slot]);

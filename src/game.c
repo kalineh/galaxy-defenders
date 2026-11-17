@@ -685,6 +685,20 @@ static void update_bullets(Game *game) {
 void game_preview_tick(Game *preview) {
     ++preview->tick;
     update_effects(preview);
+    /* A single practice target crosses the firing lanes between quiet intervals. */
+    if (preview->tick % (3 * GAME_HZ) == GAME_HZ && !game_enemy_count(preview) &&
+        (preview->tick == GAME_HZ || game_random_float(preview) < 0.7f)) {
+        bool from_left = game_random_float(preview) < 0.5f;
+        float x = GAME_WIDTH * (from_left ? 0.30f : 0.70f);
+        float y = 180 + game_random_float(preview) * 180;
+        int index = game_spawn_enemy(preview, ENEMY_BALL, x, y);
+        if (index >= 0) {
+            Enemy *target = &preview->enemies[index];
+            target->vx = from_left ? 2 : -2;
+            target->vy = 0.6f;
+            target->coins = 0;
+        }
+    }
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         Player *p = &preview->players[i];
         if (!p->joined) continue;
@@ -694,6 +708,7 @@ void game_preview_tick(Game *preview) {
         p->input.sidekick_left = p->input.sidekick_right = charge;
         if (p->age >= 15) game_update_weapons(preview, i);
     }
+    update_enemies(preview);
     update_bullets(preview);
 }
 

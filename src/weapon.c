@@ -55,9 +55,10 @@ static int nearest_enemy(const Game *game, const Bullet *b, bool forward, bool u
     return result;
 }
 
-static void spawn(Game *game, int slot, int kind, int group, int emitter, const WeaponEmitter *e, int charge) {
+static void spawn(Game *game, int slot, int kind, int group, int emitter, const WeaponEmitter *e, int charge, int barrels) {
     Player *p = &game->players[slot];
     float side = group == 3 ? -40 : group == 4 ? 40 : 0;
+    if (kind == WEAPON_VULCAN) side += (emitter - (barrels - 1) * 0.5f) * 12;
     float angle = -PI * 0.5f + e->rotation + random_signed(game) * e->random_rotation;
     float damage = e->damage * (p->pilot == 2 ? 1.15f : 1);
     if (kind == WEAPON_CHARGE_SHOT) damage *= fminf(charge / 60.0f, 1);
@@ -91,7 +92,20 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
             b->vy -= game->scroll_speed * e->anti_camera_speed;
             p->vx *= 1.15f; p->vy *= 1.15f;
             break;
-        case WEAPON_VULCAN: case WEAPON_MINI_SHOT: case WEAPON_SEEK_BOMB: b->radius = 1; break;
+        case WEAPON_VULCAN: {
+            b->radius = 1;
+            int target = nearest_enemy(game, b, false, false);
+            if (target >= 0) {
+                const Enemy *enemy = &game->enemies[target];
+                b->rotation = atan2f(enemy->y + 25*enemy->vy - b->y, enemy->x + 25*enemy->vx - b->x);
+                b->direction_x = cosf(b->rotation);
+                b->direction_y = sinf(b->rotation);
+                b->vx = e->speed * b->direction_x;
+                b->vy = e->speed * b->direction_y;
+            }
+            break;
+        }
+        case WEAPON_MINI_SHOT: case WEAPON_SEEK_BOMB: b->radius = 1; break;
         case WEAPON_BOMBLET:
             b->radius = 12; b->friction = 0.98f; b->lifetime = 481;
             b->vy -= game->scroll_speed * 3.5f;
@@ -154,14 +168,16 @@ static void fire_group(Game *game, int slot, int group, int kind, int level, boo
             s->overheat = 60;
         }
         if (trigger && enough && can_fire(e, s)) {
-            if (!s->toggled) spawn(game, slot, kind, group, i, e, s->charge);
+            if (!s->toggled) spawn(game, slot, kind, group, i, e, s->charge, data->count);
             s->toggled = e->toggle;
             s->charge = 0;
-            s->cooldown = e->reload + random_float(game) * e->random_reload;
+            float remainder = kind == WEAPON_VULCAN ? s->cooldown : 0;
+            s->cooldown = remainder + e->reload + random_float(game) * e->random_reload;
         }
         /* Ship.UpdateWeapons also drains toggled weapons each tick. */
         if (s->toggled) p->energy = fmaxf(0, p->energy - e->drain);
-        s->cooldown = fmaxf(0, s->cooldown - 1.0f / GAME_HZ);
+        if (kind == WEAPON_VULCAN && s->cooldown > 0) s->cooldown -= 1.0f / GAME_HZ;
+        else s->cooldown = fmaxf(0, s->cooldown - 1.0f / GAME_HZ);
         if (s->overheat > 0) --s->overheat;
     }
 }

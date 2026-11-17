@@ -93,7 +93,8 @@ int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_C
     for(int i=0;i<total;++i) {
         int id=category<3?i:weapons[category-3][i];
         bool available=game->cleared_game?(category>=3 || i>=(category==1?6:3)):chosen[i];
-        if(category == 1 || available || game_shop_owned_marks(&game->players[slot], category, id))items[count++]=id;
+        if(category == 1 || category == 2 || category == 5 || available ||
+            game_shop_owned_marks(&game->players[slot], category, id))items[count++]=id;
     }
     for(int i=1;i<count;++i) {
         int id=items[i], at=i;
