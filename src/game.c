@@ -180,7 +180,7 @@ bool game_equip_chassis(Game *game, int slot, int chassis) {
 bool game_join(Game *game, int slot) {
     if (slot < 0 || slot >= GAME_PLAYERS || game->players[slot].joined) return false;
     bool lobby = game->menu.page == MENU_MAIN || game->menu.page == MENU_SLOTS ||
-        game->menu.page == MENU_NEW_GAME || game->menu.page == MENU_DIFFICULTY ||
+        game->menu.page == MENU_DIFFICULTY ||
         game->menu.page == MENU_PILOT || game->menu.page == MENU_SHOP;
     if ((game->over || game->complete) && !lobby) return false;
     Player *player = &game->players[slot];

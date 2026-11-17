@@ -117,6 +117,14 @@ bool game_save_read(SavedGame *save, const char *path) {
     return length > 0 && length < (int)sizeof(backup) && read_save(save, backup);
 }
 
+bool game_save_delete(const char *path) {
+    char backup[2048];
+    int length = snprintf(backup, sizeof(backup), "%s.bak", path);
+    if (length < 0 || length >= (int)sizeof(backup)) return false;
+    if (remove(backup) != 0 && errno != ENOENT) return false;
+    return remove(path) == 0 || errno == ENOENT;
+}
+
 bool game_save_write(const SavedGame *save, const char *path) {
     if (!valid_save(save)) return false;
     char temporary[2048];
@@ -237,9 +245,7 @@ bool game_continue(Game *game, int slot) {
         game->players[1].pilot = (game->players[0].pilot + 1) % 3;
     game->menu.players = joined[1] ? 2 : 1;
     game_stage(game, save.stage, 0);
-    if (save.shop) {
-        game->stage.stats.recorded = true;
-        game_shop_open(game);
-    }
+    game->stage.stats.recorded = true;
+    game_shop_open(game);
     return true;
 }

@@ -667,13 +667,11 @@ static void debug_equipment(void) {
 
 static void menu_flow(void) {
     reset();
-    CHECK(console_chain(&console, &game, "menu.open main;menu.input confirm;menu.input confirm"));
-    CHECK(game.menu.page == MENU_NEW_GAME && game.active_slot == 0);
+    CHECK(console_chain(&console, &game, "menu.open main;menu.input confirm"));
+    CHECK(game.menu.page == MENU_DIFFICULTY && game.active_slot == 0);
     CHECK(game_join(&game, 1));
     game.menu.players = 2;
-    CHECK(console_chain(&console, &game, "menu.input up;menu.input confirm"));
-    CHECK(game.menu.page == MENU_NEW_GAME); /* no pretend save */
-    CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm;menu.input down;menu.input confirm"));
+    CHECK(console_chain(&console, &game, "menu.input down;menu.input confirm"));
     CHECK(game.menu.page == MENU_PILOT && game.menu.difficulty == 1);
     CHECK(console_execute(&console, &game, "menu.input right"));
     CHECK(game.menu.pilot[0] == 2); /* skip pilot reserved by P2 */
@@ -684,7 +682,11 @@ static void menu_flow(void) {
     for (int i = 0; i < 14; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_PILOT);
     game_tick(&game);
-    CHECK(game.menu.page == MENU_NONE && !game.paused && game.players[1].joined);
+    CHECK(game.menu.page == MENU_SHOP && game.players[1].joined && game.saves[0].shop);
+    game_menu_input(&game, MENU_READY, 0);
+    game_menu_input(&game, MENU_READY, 1);
+    for (int i=0; i<60 && game.menu.page==MENU_SHOP; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_NONE && !game.paused);
     CHECK(game.difficulty == 1 && game.players[0].pilot == 2 && game.players[0].chassis == 2);
     CHECK(game.players[0].money == 1500 && game.players[1].money == 1500);
     CHECK(game.players[0].health == 30);
@@ -890,13 +892,14 @@ static void starting_primary_patterns(void) {
         reset();
         game_menu_open(&game, MENU_MAIN);
         game_menu_input(&game, MENU_CONFIRM, 0); /* Play */
-        game_menu_input(&game, MENU_CONFIRM, 0); /* Slot 1 */
-        game_menu_input(&game, MENU_CONFIRM, 0); /* New Game */
         for (int i = 0; i < difficulty; ++i) game_menu_input(&game, MENU_DOWN, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
         for (int i = 0; i < pilot; ++i) game_menu_input(&game, MENU_RIGHT, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
         for (int i = 0; i < 15; ++i) game_tick(&game);
+        CHECK(game.menu.page == MENU_SHOP);
+        game_menu_input(&game, MENU_READY, 0);
+        for (int i=0; i<60 && game.menu.page==MENU_SHOP; ++i) game_tick(&game);
         game.waves = false;
         game.players[0].input.fire = true;
         game_tick(&game);
@@ -1885,6 +1888,7 @@ static void controller_joining(void) {
     CHECK(game.players[1].money == 9876);
     CHECK(input_drop(&game, &devices, INPUT_KEYBOARD));
     game_menu_open(&game, MENU_MAIN);
+    game_menu_input(&game, MENU_DOWN, 1);
     game_menu_input(&game, MENU_CONFIRM, 1);
     CHECK(game.menu.page == MENU_SLOTS); /* P2 can operate shared menus alone. */
     game_shop_open(&game);
@@ -1982,14 +1986,26 @@ static void save_slots(void) {
     for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_MAIN && !game.saves_dirty);
     CHECK(!memcmp(&checkpoint, &game.saves[2], sizeof(checkpoint)));
+    game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.menu.page == MENU_SLOTS && game_menu_count(&game) == 4);
-    game_menu_input(&game, MENU_DOWN, 0); game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.active_slot == 1 && game.menu.page == MENU_NEW_GAME);
-    game_menu_input(&game, MENU_DOWN, 0); game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.menu.page == MENU_OVERWRITE);
-    game_menu_input(&game, MENU_CONFIRM, 0); /* Cancel is the default. */
-    CHECK(game.menu.page == MENU_NEW_GAME && game.saves[1].player[0].money == 1001);
+    CHECK(game.menu.page == MENU_SLOTS && game.menu.cursor == 2);
+    game_menu_input(&game, MENU_UP, 0);
+    game_menu_input(&game, MENU_READY, 0);
+    CHECK(game.menu.page == MENU_DELETE);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.menu.page == MENU_SLOTS && game.menu.cursor == 1 && game.active_slot == 2);
+    CHECK(game.saves[1].player[0].money == 1001);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.active_slot == 1 && game.menu.page == MENU_MAIN && game.menu.cursor == 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int i=0; i<15; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_SHOP && game.players[0].money == 1001);
+    game_menu_open(&game, MENU_SLOTS);
+    game_menu_input(&game, MENU_UP, 0);
+    game_menu_input(&game, MENU_READY, 0);
+    game_menu_input(&game, MENU_DOWN, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(!game.saves[0].valid && game.saves[1].valid && game.active_slot == 1);
     CHECK(!game_continue(&game, -1) && !game_continue(&game, GAME_SAVE_SLOTS));
     CHECK(!game_save_write(&game.saves[1], "artifacts/native-port/missing-directory/slot.save"));
     CHECK(game.saves[1].player[0].money == 1001);
@@ -2073,7 +2089,9 @@ static void saved_continue(void) {
     CHECK(game_save_read(&save,path) && save.player[0].sidekick_level == 1);
     CHECK(save.player[0].inventory.weapon_marks[WEAPON_BLADE] == 2 &&
         save.player[0].inventory.weapon_marks[WEAPON_MISSILE_VOLLEY] == 4);
-    remove(path);
+    CHECK(game_save_write(&save,path));
+    CHECK(game_save_delete(path) && !game_save_read(&save,path));
+    CHECK(game_save_delete(path)); /* Retrying a completed deletion is safe. */
 }
 
 static void music_override_commands(void) {

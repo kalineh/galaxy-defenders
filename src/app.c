@@ -1168,7 +1168,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
 }
 
 static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices) {
-    static const char *headings[MENU_OVERWRITE+1] = {
+    static const char *headings[MENU_DELETE+1] = {
         [MENU_SLOTS]="Save slots", [MENU_DIFFICULTY]="Difficulty", [MENU_OPTIONS]="Options",
         [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
         [MENU_STAGE_SELECT]="Stage select"
@@ -1180,18 +1180,18 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     if (title || stages) menu_sky(frame);
     else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices); return; }
-    int width = page == MENU_MAIN ? 488 : title ? 644 : 620, x = (CANVAS_WIDTH-width)/2;
+    int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : 69;
-    int y = page == MENU_MAIN ? 649 : title ? 465 : stages ? 180 : 437;
+    int y = title ? 606 : stages ? 180 : 437;
     int count = game_menu_count(game);
     if (title) {
         if (page == MENU_MAIN) {
             if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
             if (game->players[1].joined) draw_title_ship(assets,1,frame);
-            float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
-            sprite(assets->title_squad,x+width/2,y-16-squad_height/2,width,0,WHITE);
-            DrawRectangle(x,y-9,width,2,rule);
         }
+        float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
+        sprite(assets->title_squad,x+width/2,y-16-squad_height/2,width,0,WHITE);
+        DrawRectangle(x,y-9,width,2,rule);
         sprite(assets->title_logo,960,151,776,0,WHITE);
         DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
     } else {
@@ -1199,15 +1199,19 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawRectangle(x-32,y-114,width+64,3,accent);
     }
     const char *heading = headings[page];
-    if (page==MENU_NEW_GAME) heading = TextFormat("Slot %d",game->active_slot+1);
-    if (page==MENU_OVERWRITE) heading = TextFormat("Replace slot %d?",game->active_slot+1);
+    if (page==MENU_DELETE) heading = TextFormat("Delete slot %d?",game->menu.delete_slot+1);
     if (page==MENU_QUIT && game->menu.parent==MENU_PAUSE) heading = "Return to title?";
-    if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
+    if (heading && title)
+        DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2,295},34,0,WHITE);
+    else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
     for (int row=0; row<count; ++row) menu_row(font,game,row,x,y+row*row_height,width,row_height);
     int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
-    int footer = y+row_height*count+30;
+    int footer = y+row_height*(title ? 4 : count)+30;
     int advance = button_prompt(font,x,footer,device,owner,GLYPH_CONFIRM,"Select")+28;
-    if (page != MENU_MAIN) button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Cancel");
+    if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Cancel")+28;
+    int row = game->menu.cursor;
+    if (page == MENU_SLOTS && row < GAME_SAVE_SLOTS && (game->saves[row].valid || game->save_errors[row]))
+        button_prompt(font,x+advance,footer,device,owner,GLYPH_READY,"Delete");
 }
 
 static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
@@ -1668,7 +1672,10 @@ static void draw_frame_graph(const FrameGraph *history, Font font) {
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
     double save_retry_at = 0;
+    double selection_retry_at = 0;
     char save_paths[GAME_SAVE_SLOTS][2048] = {{0}};
+    char selection_path[2048] = {0};
+    int remembered_slot = -1;
     if (!frames) {
         const char *root = getenv("LOCALAPPDATA");
         char directory[1800];
@@ -1682,10 +1689,18 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                         game->save_errors[i] = true;
                         console_log(console, "ERROR: could not read save slot %d", i + 1);
                     }
-                } else if (i < 2) {
-                    char legacy[2048]; snprintf(legacy, sizeof(legacy), "%s/%s.save", directory, i ? "coop" : "solo");
-                    if (game_save_read(&game->saves[i], legacy)) game->saves_dirty |= 1u << i;
                 }
+            }
+            snprintf(selection_path, sizeof(selection_path), "%s/selected-slot", directory);
+            FILE *selection = fopen(selection_path, "rb");
+            if (selection) {
+                int index = fgetc(selection) - '1';
+                if (index >= 0 && index < GAME_SAVE_SLOTS) remembered_slot = index;
+                fclose(selection);
+            }
+            if (remembered_slot >= 0) game->active_slot = remembered_slot;
+            else for (int i=0; i<GAME_SAVE_SLOTS; ++i) {
+                if (game->saves[i].valid) { game->active_slot = i; break; }
             }
         } else console_log(console, "ERROR: could not create save directory");
     }
@@ -1833,9 +1848,17 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             command_failed = true;
             break;
         }
+        if (game->menu.page == MENU_MAIN && game->active_slot < 0)
+            game->active_slot = remembered_slot >= 0 ? remembered_slot : 0;
+        if (selection_path[0] && game->active_slot >= 0 && remembered_slot != game->active_slot && GetTime() >= selection_retry_at) {
+            char value[] = {(char)('1'+game->active_slot), '\0'};
+            if (SaveFileText(selection_path,value)) remembered_slot = game->active_slot;
+            else { console_log(console,"ERROR: could not remember save slot"); selection_retry_at = GetTime()+5; }
+        }
         if (!frames && game->saves_dirty && GetTime() >= save_retry_at) {
             for (int i = 0; i < GAME_SAVE_SLOTS; ++i) if (game->saves_dirty & (1u << i)) {
-                if (save_paths[i][0] && game_save_write(&game->saves[i], save_paths[i])) {
+                if (save_paths[i][0] && (game->saves[i].valid ? game_save_write(&game->saves[i], save_paths[i]) :
+                    game_save_delete(save_paths[i]))) {
                     game->saves_dirty &= ~(1u << i);
                     game->save_errors[i] = false;
                 } else {
