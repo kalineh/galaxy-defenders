@@ -61,7 +61,7 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
     if (kind == WEAPON_VULCAN) side += (emitter - (barrels - 1) * 0.5f) * 12;
     float angle = -PI * 0.5f + e->rotation + random_signed(game) * e->random_rotation;
     float damage = e->damage * (p->pilot == 2 ? 1.15f : 1);
-    if (kind == WEAPON_CHARGE_SHOT) damage *= fminf(charge / 60.0f, 1);
+    if (kind == WEAPON_CHARGE_SHOT) damage *= fminf((float)charge / e->charge_frames, 1);
     if (kind == WEAPON_VULCAN || kind == WEAPON_BOOMERANG) angle += random_signed(game) * e->spray_angle;
     if (kind == WEAPON_FLAME || kind == WEAPON_FLAME_FOCUS) {
         WeaponState *state = &p->weapons[group][emitter];
@@ -112,10 +112,11 @@ static void spawn(Game *game, int slot, int kind, int group, int emitter, const 
             break;
         case WEAPON_BOOMERANG: b->radius = 16; b->rotation = random_signed(game) * PI; break;
         case WEAPON_CHARGE_SHOT: b->radius = 12 * damage; b->scale = 0.25f + damage * 0.5f; break;
-        case WEAPON_BLADE: b->radius = 22; b->lifetime = 9; break;
+        case WEAPON_BLADE: b->radius = 22 * b->scale; break;
         case WEAPON_BEAM: b->width = 8 * e->width; break;
         case WEAPON_BEAM_FOCUS: b->width = e->radius; break;
         case WEAPON_MISSILE: case WEAPON_MISSILE_LAUNCHER:
+            b->width = e->radius;
             b->vx = b->direction_x * 6; b->vy = b->direction_y * 6;
             b->rotation -= PI;
             break;
@@ -148,11 +149,14 @@ static void fire_group(Game *game, int slot, int group, int kind, int level, boo
         const WeaponEmitter *e = &data->emitters[i];
         WeaponState *s = &p->weapons[group][i];
         if (sidekick && held && s->cooldown <= 0) {
-            if (s->charge < 60) p->energy = fmaxf(0, p->energy - e->energy);
-            ++s->charge;
+            int full = e->charge_frames ? e->charge_frames : 60;
+            if (s->charge < full) {
+                p->energy = fmaxf(0, p->energy - e->energy);
+                ++s->charge;
+            }
             if (!e->auto_discharge || s->charge != e->auto_discharge)
                 game_particle(game, PARTICLE_WEAPON_CHARGE, p->x + e->offset_y + (group == 3 ? -40 : 40),
-                    p->y - e->offset_x, slot, fminf(s->charge / 60.0f, 1), 0, 0);
+                    p->y - e->offset_x, slot, (float)s->charge / full, 0, 0);
         }
         if (held && !sidekick && can_fire(e, s)) cost += e->energy + e->drain;
     }
@@ -187,8 +191,8 @@ void game_update_weapons(Game *game, int slot) {
     fire_group(game, slot, 0, p->primary, p->weapon_level, p->input.fire && !p->input.focus);
     fire_group(game, slot, 1, equipment_focus_weapon(p->primary), p->weapon_level, p->input.focus);
     fire_group(game, slot, 2, p->secondary, p->secondary_level, p->input.fire && !p->input.focus);
-    fire_group(game, slot, 3, p->sidekick, 0, p->input.sidekick_left);
-    fire_group(game, slot, 4, p->sidekick, 0, p->input.sidekick_right);
+    fire_group(game, slot, 3, p->sidekick, p->sidekick_level, p->input.sidekick_left);
+    fire_group(game, slot, 4, p->sidekick, p->sidekick_level, p->input.sidekick_right);
     for (int mode = 0; mode < 2; ++mode) p->weapon_cooldown[mode] = p->weapons[mode][0].cooldown;
     const Generator *generator = &game_generators[p->generator];
     p->energy = fminf(generator->capacity, p->energy + generator->regen);
@@ -292,9 +296,14 @@ void game_update_projectile(Game *game, Bullet *b) {
             break;
         case WEAPON_BLADE: {
             b->rotation += b->offset_x < 0 ? -0.15f : 0.15f;
-            float angle = b->age * 0.22f * (b->offset_x < 0 ? -1 : 1);
-            b->x = p->x + b->offset_x + 38 * sinf(angle);
-            b->y = p->y + b->offset_y - 38 * cosf(angle) - game->scroll_speed;
+            int phase = b->age;
+            if (phase > 9) {
+                phase = 18 - phase;
+                b->damage = b->base_damage * 1.25f;
+            }
+            float angle = phase * 0.22f * (b->offset_x < 0 ? -1 : 1);
+            b->x = p->x + b->offset_x + 38 * b->scale * sinf(angle);
+            b->y = p->y + b->offset_y - 38 * b->scale * cosf(angle) - game->scroll_speed;
             b->vx = b->vy = 0;
             if (p->lives <= 0) b->active = false;
             break;
@@ -329,7 +338,7 @@ void game_projectile_hit(Game *game, Bullet *b, int enemy) {
         case WEAPON_BLADE:
             effect = PARTICLE_WEAPON_BEAM_HIT; vx = vy = 0;
             x += random_signed(game) * 16; y += random_signed(game) * 16; break;
-        case WEAPON_CHARGE_SHOT: effect = PARTICLE_WEAPON_CHARGE_HIT; break;
+        case WEAPON_CHARGE_SHOT: effect = PARTICLE_WEAPON_CHARGE_HIT; scale = 0.5f + b->damage * 0.25f; break;
         case WEAPON_FLAME: case WEAPON_FLAME_FOCUS: effect = PARTICLE_WEAPON_FLAME_HIT; break;
         case WEAPON_VULCAN: effect = PARTICLE_WEAPON_VULCAN_HIT; break;
         case WEAPON_BOOMERANG: {
@@ -364,15 +373,20 @@ void game_projectile_hit(Game *game, Bullet *b, int enemy) {
         case WEAPON_SEEK_BOMB: case WEAPON_BOMBLET: ++game->impact_sounds[3]; break;
         default: break;
     }
-    if ((b->weapon == WEAPON_PLASMA || b->weapon == WEAPON_PLASMA_FOCUS) && b->base_damage >= 0.5f) {
-        game_particle(game, PARTICLE_WEAPON_PLASMA_SPLASH, b->x, b->y, b->owner, 1, -vx, -vy);
+    bool plasma = (b->weapon == WEAPON_PLASMA || b->weapon == WEAPON_PLASMA_FOCUS) && b->base_damage >= 0.5f;
+    if (plasma || (b->weapon == WEAPON_MISSILE_LAUNCHER && b->width > 0)) {
+        if (plasma) game_particle(game, PARTICLE_WEAPON_PLASMA_SPLASH, b->x, b->y, b->owner, 1, -vx, -vy);
         /* Keep the impact projectile allocated until the splash is initialized. */
         b->active = true;
         int index = game_spawn_bullet(game, b->owner, b->x, b->y, 0, 0, b->damage * 0.5f);
         if (index >= 0) {
             Bullet *splash = &game->bullets[index];
-            splash->splash = true; splash->weapon = WEAPON_PLASMA_FOCUS;
-            splash->radius = 210; splash->lifetime = 2; splash->scale = 2;
+            splash->splash = true;
+            splash->weapon = plasma ? WEAPON_PLASMA_FOCUS : WEAPON_MISSILE_LAUNCHER;
+            splash->radius = plasma ? 210 : b->width;
+            splash->ignore_enemy = plasma ? -1 : enemy;
+            splash->lifetime = plasma ? 2 : 1;
+            splash->scale = 2;
         }
         b->active = false;
     } else if (b->weapon == WEAPON_LIGHTNING || b->weapon == WEAPON_LIGHTNING_FOCUS) {
@@ -387,6 +401,10 @@ void game_projectile_hit(Game *game, Bullet *b, int enemy) {
             b->rotation = angle;
             b->active = true;
         }
+    } else if ((b->weapon == WEAPON_CHARGE_SHOT || b->weapon == WEAPON_LASER_SHOT) && enemy >= 0 && b->bounces > 0) {
+        --b->bounces;
+        b->ignore_enemy = enemy;
+        b->active = true;
     } else if (b->weapon == WEAPON_BOOMERANG) {
         b->scale -= 0.05f;
         b->active = true;

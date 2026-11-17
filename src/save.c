@@ -30,7 +30,8 @@ static bool valid_save(const SavedGame *save) {
             p->level < 0 || p->level >= game_weapons[p->primary].level_count ||
             (p->secondary != -1 && equipment_weapon_category(p->secondary) != 4) ||
             p->secondary_level < 0 || (p->secondary >= 0 && p->secondary_level >= game_weapons[p->secondary].level_count) ||
-            (p->sidekick != -1 && equipment_weapon_category(p->sidekick) != 5)) return false;
+            (p->sidekick != -1 && equipment_weapon_category(p->sidekick) != 5) ||
+            p->sidekick_level < 0 || p->sidekick_level >= (p->sidekick < 0 ? 1 : game_weapons[p->sidekick].level_count)) return false;
     }
     return save->players != 2 || save->player[0].pilot != save->player[1].pilot;
 }
@@ -61,7 +62,7 @@ static bool read_save(SavedGame *save, const char *path) {
     bool ok = fscanf(file, "%31s", magic) == 1 && !strcmp(magic, "GALAXY_SAVE") &&
         read_int(file, &version) && read_int(file, &candidate.stage) && read_int(file, &candidate.difficulty) &&
         read_int(file, &candidate.players) && read_int(file, &shop) && read_int(file, &cleared) &&
-        version >= 1 && version <= 4 && (shop == 0 || shop == 1) && (cleared == 0 || cleared == 1) &&
+        version >= 1 && version <= 5 && (shop == 0 || shop == 1) && (cleared == 0 || cleared == 1) &&
         candidate.players >= 1 && candidate.players <= 2;
     candidate.valid = true;
     candidate.shop = shop != 0; candidate.cleared = cleared != 0;
@@ -70,6 +71,7 @@ static bool read_save(SavedGame *save, const char *path) {
         int *fields[] = {&p->pilot, &p->chassis, &p->primary, &p->level, &p->secondary,
             &p->secondary_level, &p->sidekick, &p->generator, &p->shield, &p->money};
         for (int j = 0; ok && j < 10; ++j) ok = read_int(file, fields[j]);
+        if (ok && version >= 5) ok = read_int(file, &p->sidekick_level);
     }
     candidate.seed = 1;
     if (ok && version >= 2) {
@@ -86,6 +88,19 @@ static bool read_save(SavedGame *save, const char *path) {
             long long marks;
             ok = read_number(file, 0, game_weapons[w].level_count, &marks);
             if (ok) inv->weapon_marks[w] = (unsigned char)marks;
+        }
+    }
+    if (ok && version < 5) {
+        const int kinds[] = {WEAPON_BLADE, WEAPON_MISSILE_VOLLEY};
+        const int marks[] = {2, 4};
+        for (int i = 0; i < candidate.players; ++i) {
+            SavedPlayer *p = &candidate.player[i];
+            for (int j = 0; j < 2; ++j) {
+                int kind = kinds[j];
+                if (p->sidekick == kind) p->sidekick_level = marks[j] - 1;
+                if (p->sidekick == kind || p->inventory.weapon_marks[kind])
+                    p->inventory.weapon_marks[kind] = marks[j];
+            }
         }
     }
     char extra;
@@ -109,12 +124,12 @@ bool game_save_write(const SavedGame *save, const char *path) {
     if (length < 0 || length >= (int)sizeof(temporary)) return false;
     FILE *file = fopen(temporary, "wb");
     if (!file) return false;
-    bool ok = fprintf(file, "GALAXY_SAVE 4 %d %d %d %d %d\n", save->stage, save->difficulty,
+    bool ok = fprintf(file, "GALAXY_SAVE 5 %d %d %d %d %d\n", save->stage, save->difficulty,
         save->players, save->shop, save->cleared) > 0;
     for (int i = 0; i < save->players; ++i) {
         const SavedPlayer *p = &save->player[i];
-        ok = fprintf(file, "%d %d %d %d %d %d %d %d %d %d\n", p->pilot, p->chassis, p->primary,
-            p->level, p->secondary, p->secondary_level, p->sidekick, p->generator, p->shield, p->money) > 0 && ok;
+        ok = fprintf(file, "%d %d %d %d %d %d %d %d %d %d %d\n", p->pilot, p->chassis, p->primary,
+            p->level, p->secondary, p->secondary_level, p->sidekick, p->generator, p->shield, p->money, p->sidekick_level) > 0 && ok;
     }
     ok = fprintf(file, "%u\n", save->seed) > 0 && ok;
     for (int i = 0; i < 12; ++i)
@@ -183,7 +198,7 @@ void game_checkpoint(Game *game, bool shop) {
     for (int i = 0; i < players; ++i) {
         const Player *p = &game->players[i];
         save->player[i] = (SavedPlayer){p->pilot, p->chassis, p->primary, p->weapon_level, p->secondary,
-            p->secondary_level, p->sidekick, p->generator, p->shield,
+            p->secondary_level, p->sidekick, p->sidekick_level, p->generator, p->shield,
             p->money + (shop && game->menu.page == MENU_CLEAR ? p->score : 0), p->inventory};
     }
     game->saves_dirty |= 1u << game->active_slot;
@@ -209,7 +224,7 @@ bool game_continue(Game *game, int slot) {
         Player *p = &game->players[i];
         const SavedPlayer *s = &save.player[i];
         p->pilot = s->pilot; p->chassis = s->chassis; p->primary = s->primary; p->weapon_level = s->level;
-        p->secondary = s->secondary; p->secondary_level = s->secondary_level; p->sidekick = s->sidekick;
+        p->secondary = s->secondary; p->secondary_level = s->secondary_level; p->sidekick = s->sidekick; p->sidekick_level = s->sidekick_level;
         p->generator = s->generator; p->shield = s->shield; p->money = s->money; p->inventory = s->inventory;
         p->energy = game_generators[p->generator].capacity;
         p->shield_health = p->shield >= 0 ? game_shields[p->shield].capacity : 0;

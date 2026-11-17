@@ -64,7 +64,7 @@ typedef struct {
     float x, y, vx, vy, health;
     int lives, invulnerable, score, age, shield_hit_frames;
     int money, chassis, pilot, weapon_level, powerup_levels;
-    int primary, secondary, secondary_level, sidekick, generator, shield;
+    int primary, secondary, secondary_level, sidekick, sidekick_level, generator, shield;
     float shield_health;
     WeaponState weapons[WEAPON_GROUPS][WEAPON_EMITTERS];
     float energy, weapon_cooldown[2], friction;
@@ -72,7 +72,7 @@ typedef struct {
 } Player;
 
 typedef struct {
-    int pilot, chassis, primary, level, secondary, secondary_level, sidekick, generator, shield, money;
+    int pilot, chassis, primary, level, secondary, secondary_level, sidekick, sidekick_level, generator, shield, money;
     Inventory inventory;
 } SavedPlayer;
 
@@ -265,6 +265,7 @@ int game_shop_cost(const Game *game, int slot);
 bool game_shop_buy(Game *game, int slot);
 bool game_shop_chassis_available(const Game *game, int slot, int chassis);
 int game_shop_stock(const Game *game, int slot, int category, int items[WEAPON_COUNT + 1]);
+int game_shop_equipped_level(const Player *p, int category);
 int game_shop_equipped(const Player *player, int category);
 bool game_shop_item_available(int category, int item);
 void game_update_weapons(Game *game, int slot);

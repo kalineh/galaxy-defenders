@@ -11,7 +11,7 @@ typedef struct {
     float offset_x, offset_y, charge_speed, drain, random_rotation, random_reload;
     int auto_discharge;
     bool toggle, show_sidekick;
-    int lifetime, bounces;
+    int lifetime, bounces, charge_frames;
     float friction, spray_angle, start_rotation, fire_rotation_speed;
     float anti_camera_speed, scale_override, width, radius;
 } WeaponEmitter;

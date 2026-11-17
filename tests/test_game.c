@@ -1078,12 +1078,13 @@ static void authored_buildings(void) {
 
 static void complete_equipment(void) {
     for (int kind = 0; kind < WEAPON_COUNT; ++kind) {
+        if (equipment_weapon_category(kind) == 5) CHECK(game_weapons[kind].level_count == 5);
         for (int level = 0; level < game_weapons[kind].level_count; ++level) {
             reset();
             Player *p = &game.players[0];
             p->generator = 11; p->energy = 13;
             int category = equipment_weapon_category(kind);
-            if (category == 5) p->sidekick = kind;
+            if (category == 5) { p->sidekick = kind; p->sidekick_level = level; }
             else if (category == 4) { p->secondary = kind; p->secondary_level = level; }
             else { p->primary = kind; p->weapon_level = level; }
             p->input.fire = category != 5;
@@ -1816,6 +1817,16 @@ static void shop_previews(void) {
     CHECK(barrel[0] && barrel[1] && barrel[2]);
     while (repeat.tick < GAME_HZ) game_shop_preview_update(&repeat, &game);
     CHECK(game_enemy_count(&repeat) == 1 && game_enemy_count(&game) == 0);
+    game.menu.shop_category[0] = 5;
+    game.menu.shop_item[0] = WEAPON_MISSILE_VOLLEY;
+    int expected[] = {4, 8, 12, 16, 16}; /* Combined output of both wings. */
+    for (int mark = 0; mark < 5; ++mark) {
+        int shots = repeat.weapon_shots[WEAPON_MISSILE_VOLLEY];
+        game.menu.shop_level[0] = mark;
+        for (int i = 0; i < 15; ++i) game_shop_preview_update(&repeat, &game);
+        CHECK(repeat.weapon_shots[WEAPON_MISSILE_VOLLEY] == shots + expected[mark]);
+        CHECK(game.players[0].sidekick == -1);
+    }
 }
 
 static void stage_awards(void) {
@@ -1994,6 +2005,9 @@ static void saved_continue(void) {
     game.stage.stats.building_total = game.stage.stats.building_kills = 5;
     game.players[0].secondary = WEAPON_MISSILE;
     game.players[0].secondary_level = 2;
+    game.players[0].sidekick = WEAPON_MISSILE_VOLLEY;
+    game.players[0].sidekick_level = 1;
+    game.players[0].inventory.weapon_marks[WEAPON_MISSILE_VOLLEY] = 4;
     game.complete = true;
     game_shop_open(&game);
     CHECK(game.saves[0].valid && game.saves[0].shop && game.saves[0].stage == 5);
@@ -2014,6 +2028,7 @@ static void saved_continue(void) {
     CHECK(game_continue(&game, 0));
     CHECK(game.stage.index == 5 && game.menu.page == MENU_SHOP && game.menu.next_stage == 5);
     CHECK(game.players[0].money == 10000 && game.players[0].secondary_level == 2);
+    CHECK(game.players[0].sidekick_level == 1 && game_shop_owned_marks(&game.players[0],5,WEAPON_MISSILE_VOLLEY) == 4);
     CHECK(game.seed == 987654321u);
     CHECK(game_shop_price(&game.players[0],1,2,0) == 0);
     CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 5);
@@ -2046,6 +2061,18 @@ static void saved_continue(void) {
     CHECK(file != NULL);
     if (file) { fputs("GALAXY_SAVE 1 0 0 1 1 0\n0 0 0 0 -1 0 -1 0 -1 2000\n", file); fclose(file); }
     CHECK(game_save_read(&save, path) && save.seed == 1);
+    file = fopen(path, "wb");
+    CHECK(file != NULL);
+    if (file) {
+        fprintf(file, "GALAXY_SAVE 4 0 0 1 1 0\n0 0 0 0 -1 0 %d 0 -1 500\n42\n", WEAPON_BLADE);
+        for (int i = 0; i < 12; ++i) fputs("0 0\n", file);
+        fputs("0 0 0 ", file);
+        for (int w = 0; w < WEAPON_COUNT; ++w) fprintf(file, "%d ", w == WEAPON_MISSILE_VOLLEY);
+        fclose(file);
+    }
+    CHECK(game_save_read(&save,path) && save.player[0].sidekick_level == 1);
+    CHECK(save.player[0].inventory.weapon_marks[WEAPON_BLADE] == 2 &&
+        save.player[0].inventory.weapon_marks[WEAPON_MISSILE_VOLLEY] == 4);
     remove(path);
 }
 

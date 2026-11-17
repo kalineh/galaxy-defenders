@@ -652,11 +652,11 @@ static void draw_slot_row(const Assets *assets, const Player *p, int x, int y, i
     sprite(icon,x+24,y+23,32,0,id < 0 ? dim : WHITE);
     DrawTextEx(font,loadout_slots[cat],(Vector2){x+49,y+13},20,0,dim);
     const char *name = shop_item_name(cat,id);
-    bool show_mark = id >= 0 && (cat == 3 || cat == 4);
+    bool show_mark = id >= 0 && cat >= 3;
     float size = fminf(24,24*(show_mark ? 220 : 268)/fmaxf(1,MeasureTextEx(font,name,24,0).x));
     DrawTextEx(font,name,(Vector2){x+148,y+(47-size)/2},size,0,id < 0 ? dim : WHITE);
     if (show_mark)
-        DrawTextEx(font,TextFormat("Mk %d",1+(cat == 3 ? p->weapon_level : p->secondary_level)),
+        DrawTextEx(font,TextFormat("Mk %d",1+game_shop_equipped_level(p,cat)),
             (Vector2){x+375,y+14},18,0,color);
     DrawLine(x,y+47,x+424,y+47,rule);
 }
@@ -850,6 +850,34 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
             stats[1].label = "Estimated DPS";
             snprintf(stats[1].value,40,"%.3g HP/s",dps);
             ++count;
+        } else if (cat == 5) {
+            const WeaponEmitter *e = w->emitters;
+            if (item == WEAPON_BLADE) {
+                stats[1].label = "Sweep reach";
+                snprintf(stats[1].value,40,"%.0f px",38*e->scale_override);
+                stats[2].label = e->lifetime > 9 ? "Return hit" : "Recovery";
+                if (e->lifetime > 9) snprintf(stats[2].value,40,"%.3g HP",max_hit*1.25f);
+                else snprintf(stats[2].value,40,"%.2g s",e->reload);
+                count = 3;
+            } else if (item == WEAPON_CHARGE_SHOT) {
+                stats[1].label = "Full charge";
+                snprintf(stats[1].value,40,"%.2g s",(float)e->charge_frames/GAME_HZ);
+                count = 2;
+            } else {
+                stats[1].label = "Shots per wing";
+                snprintf(stats[1].value,40,"%d",w->count);
+                count = 2;
+                if (item == WEAPON_MISSILE_LAUNCHER && e->radius > 0) {
+                    stats[2].label = "Blast radius";
+                    snprintf(stats[2].value,40,"%.0f px",e->radius);
+                    ++count;
+                }
+            }
+            if (e->bounces) {
+                stats[2].label = "Targets per shot";
+                snprintf(stats[2].value,40,"%d",1+e->bounces);
+                count = 3;
+            }
         }
     }
     int height = count ? 101 + count*26 : 84;
@@ -882,7 +910,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     for (int i = 0; i < count; ++i) if (stock[i] == item) selected = i;
     bool tiers = menu->shop_tiers[slot];
     int mark = menu->shop_level[slot];
-    int equipped_level = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
+    int equipped_level = game_shop_equipped_level(p,cat);
     int rows = tiers ? game_weapons[item].level_count : count;
     int focus = tiers ? mark : selected;
     int first = tiers ? menu->shop_first_tier[slot] : menu->shop_first_item[slot];
@@ -970,7 +998,7 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
         draw_shop_catalog(game,assets,slot,device,left);
     } else {
         draw_loadout(assets,p,left,menu->ready[slot] ? -1 : cat,highlight);
-        int mark = cat == 3 ? p->weapon_level : cat == 4 ? p->secondary_level : 0;
+        int mark = game_shop_equipped_level(p,cat);
         draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark);
         if (!menu->ready[slot]) button_prompt(font,left,LOADOUT_TOP+6*LOADOUT_ROW+18,device,slot,GLYPH_CONFIRM,"Select");
     }

@@ -400,7 +400,7 @@ bool console_execute(Console *console, Game *game, const char *line) {
         if (!p->joined || (!none && (kind < 0 || equipment_weapon_category(kind) != category || value >= game_weapons[kind].level_count))) return false;
         if (category == 3) { p->primary = kind; p->weapon_level = value; p->powerup_levels = 0; }
         else if (category == 4) { p->secondary = kind; p->secondary_level = value; }
-        else if (category == 5) p->sidekick = kind;
+        else if (category == 5) { p->sidekick = kind; p->sidekick_level = none ? 0 : value; }
         else return false;
         memset(p->weapons, 0, sizeof(p->weapons));
         return true;

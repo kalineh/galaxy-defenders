@@ -623,15 +623,73 @@ static const WeaponEmitter emit_DrunkMissile_5[] = {
     {.reload=0.15, .speed=10, .damage=0.15, .rotation=3.1415927, .energy=0.2, .offset_x=0, .offset_y=4},
 };
 static const WeaponEmitter emit_MiniShot_0[] = {
-    {.reload=0.075, .speed=18, .damage=0.025, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.0791666667, .speed=18, .damage=0.025, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+};
+static const WeaponEmitter emit_MiniShot_1[] = {
+    {.reload=0.0791666667, .speed=18, .damage=0.035, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+};
+static const WeaponEmitter emit_MiniShot_2[] = {
+    {.reload=0.129166667, .speed=18, .damage=0.035, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.0958333333, .speed=18, .damage=0.035, .energy=0.015, .charge_speed=1, .auto_discharge=3, .offset_x=0, .offset_y=0},
+};
+static const WeaponEmitter emit_MiniShot_3[] = {
+    {.reload=0.1125, .speed=18, .damage=0.04, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.0791666667, .speed=18, .damage=0.04, .energy=0.015, .charge_speed=1, .auto_discharge=3, .offset_x=0, .offset_y=0},
+};
+static const WeaponEmitter emit_MiniShot_4[] = {
+    {.reload=0.1625, .speed=18, .damage=0.045, .energy=0.015, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.129166667, .speed=18, .damage=0.045, .energy=0.015, .charge_speed=1, .auto_discharge=3, .offset_x=0, .offset_y=0},
+    {.reload=0.0958333333, .speed=18, .damage=0.045, .energy=0.015, .charge_speed=1, .auto_discharge=5, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_ChargeShot_0[] = {
-    {.reload=0.15, .speed=15, .damage=2, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0},
+    {.reload=0.15, .speed=15, .damage=2, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=60, .bounces=0},
+};
+static const WeaponEmitter emit_ChargeShot_1[] = {
+    {.reload=0.15, .speed=15, .damage=2.5, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=60, .bounces=0},
+};
+static const WeaponEmitter emit_ChargeShot_2[] = {
+    {.reload=0.15, .speed=15, .damage=3, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=54, .bounces=0},
+};
+static const WeaponEmitter emit_ChargeShot_3[] = {
+    {.reload=0.15, .speed=15, .damage=3.25, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=42, .bounces=0},
+};
+static const WeaponEmitter emit_ChargeShot_4[] = {
+    {.reload=0.15, .speed=15, .damage=3.5, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=42, .bounces=1},
 };
 static const WeaponEmitter emit_Blade_0[] = {
-    {.reload=0.4, .damage=0.4, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.4, .damage=0.25, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=0.72, .lifetime=9},
+};
+static const WeaponEmitter emit_Blade_1[] = {
+    {.reload=0.4, .damage=0.4, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=1, .lifetime=9},
+};
+static const WeaponEmitter emit_Blade_2[] = {
+    {.reload=0.4, .damage=0.45, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=1.35, .lifetime=9},
+};
+static const WeaponEmitter emit_Blade_3[] = {
+    {.reload=0.32, .damage=0.48, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=1.35, .lifetime=9},
+};
+static const WeaponEmitter emit_Blade_4[] = {
+    {.reload=0.32, .damage=0.55, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=1.45, .lifetime=18},
 };
 static const WeaponEmitter emit_MissileVolley_0[] = {
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+};
+static const WeaponEmitter emit_MissileVolley_1[] = {
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
+};
+static const WeaponEmitter emit_MissileVolley_2[] = {
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
+    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
+};
+static const WeaponEmitter emit_MissileVolley_3[] = {
     {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12},
     {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
     {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
@@ -641,11 +699,49 @@ static const WeaponEmitter emit_MissileVolley_0[] = {
     {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
     {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12},
 };
+static const WeaponEmitter emit_MissileVolley_4[] = {
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12, .scale_override=1.25},
+};
 static const WeaponEmitter emit_MissileLauncher_0[] = {
-    {.reload=0.5, .speed=17, .damage=0.2, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0},
+    {.reload=0.5, .speed=17, .damage=0.2, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=0},
+};
+static const WeaponEmitter emit_MissileLauncher_1[] = {
+    {.reload=0.5, .speed=17, .damage=0.26, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=32},
+};
+static const WeaponEmitter emit_MissileLauncher_2[] = {
+    {.reload=0.5, .speed=17, .damage=0.32, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=46},
+};
+static const WeaponEmitter emit_MissileLauncher_3[] = {
+    {.reload=0.5, .speed=17, .damage=0.38, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=62},
+};
+static const WeaponEmitter emit_MissileLauncher_4[] = {
+    {.reload=0.5, .speed=17, .damage=0.38, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=62},
+    {.reload=0.4, .speed=17, .damage=0.38, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=7, .offset_x=-8, .offset_y=0, .radius=62},
 };
 static const WeaponEmitter emit_LaserShot_0[] = {
-    {.reload=0.16, .speed=17, .damage=0.1, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0},
+    {.reload=0.16, .speed=17, .damage=0.1, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .bounces=0},
+};
+static const WeaponEmitter emit_LaserShot_1[] = {
+    {.reload=0.16, .speed=17, .damage=0.16, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .bounces=0},
+};
+static const WeaponEmitter emit_LaserShot_2[] = {
+    {.reload=0.16, .speed=17, .damage=0.14, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=-5, .bounces=0},
+    {.reload=0.16, .speed=17, .damage=0.14, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=5, .bounces=0},
+};
+static const WeaponEmitter emit_LaserShot_3[] = {
+    {.reload=0.16, .speed=17, .damage=0.2, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=-5, .bounces=0},
+    {.reload=0.16, .speed=17, .damage=0.2, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=5, .bounces=0},
+};
+static const WeaponEmitter emit_LaserShot_4[] = {
+    {.reload=0.16, .speed=17, .damage=0.22, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=-5, .bounces=1},
+    {.reload=0.16, .speed=17, .damage=0.22, .energy=0.1, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=5, .bounces=1},
 };
 const WeaponDefinition game_weapons[WEAPON_COUNT] = {
     [WEAPON_FRONT_LASER] = {"FrontLaser", "Front Laser", "WeaponShootLaser", 650, 8, {{1, emit_FrontLaser_0}, {2, emit_FrontLaser_1}, {4, emit_FrontLaser_2}, {5, emit_FrontLaser_3}, {6, emit_FrontLaser_4}, {6, emit_FrontLaser_5}, {6, emit_FrontLaser_6}, {8, emit_FrontLaser_7}}},
@@ -666,12 +762,12 @@ const WeaponDefinition game_weapons[WEAPON_COUNT] = {
     [WEAPON_SEEK_BOMB] = {"SeekBomb", "Seek Bomb", "WeaponShootSeekBomb", 750, 6, {{1, emit_SeekBomb_0}, {2, emit_SeekBomb_1}, {3, emit_SeekBomb_2}, {4, emit_SeekBomb_3}, {5, emit_SeekBomb_4}, {6, emit_SeekBomb_5}}},
     [WEAPON_BOOMERANG] = {"Boomerang", "Boomerang", "WeaponShootSeekBomb", 800, 6, {{1, emit_Boomerang_0}, {1, emit_Boomerang_1}, {2, emit_Boomerang_2}, {2, emit_Boomerang_3}, {3, emit_Boomerang_4}, {4, emit_Boomerang_5}}},
     [WEAPON_DRUNK_MISSILE] = {"DrunkMissile", "Drunk Missile", "WeaponShootMissile", 900, 6, {{1, emit_DrunkMissile_0}, {1, emit_DrunkMissile_1}, {1, emit_DrunkMissile_2}, {2, emit_DrunkMissile_3}, {2, emit_DrunkMissile_4}, {3, emit_DrunkMissile_5}}},
-    [WEAPON_MINI_SHOT] = {"MiniShot", "Mini Shot", "WeaponShootMiniShot", 3500, 1, {{1, emit_MiniShot_0}}},
-    [WEAPON_CHARGE_SHOT] = {"ChargeShot", "Charge Shot", "WeaponShootLaser", 12500, 1, {{1, emit_ChargeShot_0}}},
-    [WEAPON_BLADE] = {"Blade", "Blade", "WeaponShootMiniShot", 10000, 1, {{1, emit_Blade_0}}},
-    [WEAPON_MISSILE_VOLLEY] = {"MissileVolley", "MissileVolley", "WeaponShootMissile", 12000, 1, {{8, emit_MissileVolley_0}}},
-    [WEAPON_MISSILE_LAUNCHER] = {"MissileLauncher", "MissileLauncher", "WeaponShootMissile", 7500, 1, {{1, emit_MissileLauncher_0}}},
-    [WEAPON_LASER_SHOT] = {"LaserShot", "LaserShot", "WeaponShootLaser", 9000, 1, {{1, emit_LaserShot_0}}},
+    [WEAPON_MINI_SHOT] = {"MiniShot", "Mini Shot", "WeaponShootMiniShot", 3500, 5, {{1, emit_MiniShot_0}, {1, emit_MiniShot_1}, {2, emit_MiniShot_2}, {2, emit_MiniShot_3}, {3, emit_MiniShot_4}}},
+    [WEAPON_CHARGE_SHOT] = {"ChargeShot", "Charge Shot", "WeaponShootLaser", 12500, 5, {{1, emit_ChargeShot_0}, {1, emit_ChargeShot_1}, {1, emit_ChargeShot_2}, {1, emit_ChargeShot_3}, {1, emit_ChargeShot_4}}},
+    [WEAPON_BLADE] = {"Blade", "Blade", "WeaponShootMiniShot", 3600, 5, {{1, emit_Blade_0}, {1, emit_Blade_1}, {1, emit_Blade_2}, {1, emit_Blade_3}, {1, emit_Blade_4}}},
+    [WEAPON_MISSILE_VOLLEY] = {"MissileVolley", "Missile Volley", "WeaponShootMissile", 850, 5, {{2, emit_MissileVolley_0}, {4, emit_MissileVolley_1}, {6, emit_MissileVolley_2}, {8, emit_MissileVolley_3}, {8, emit_MissileVolley_4}}},
+    [WEAPON_MISSILE_LAUNCHER] = {"MissileLauncher", "Missile Launcher", "WeaponShootMissile", 7500, 5, {{1, emit_MissileLauncher_0}, {1, emit_MissileLauncher_1}, {1, emit_MissileLauncher_2}, {1, emit_MissileLauncher_3}, {2, emit_MissileLauncher_4}}},
+    [WEAPON_LASER_SHOT] = {"LaserShot", "Laser Shot", "WeaponShootLaser", 9000, 5, {{1, emit_LaserShot_0}, {1, emit_LaserShot_1}, {2, emit_LaserShot_2}, {2, emit_LaserShot_3}, {2, emit_LaserShot_4}}},
 };
 const Generator game_generators[] = {
     {"Standard Generator", "IconGeneratorStandard", 1000, 3, 0.05, 0, 0},

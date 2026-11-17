@@ -88,6 +88,7 @@ void game_retry(Game *game) {
         p->secondary = players[i].secondary;
         p->secondary_level = players[i].secondary_level;
         p->sidekick = players[i].sidekick;
+        p->sidekick_level = players[i].sidekick_level;
         p->generator = players[i].generator;
         p->shield = players[i].shield;
         p->energy = game_generators[p->generator].capacity;

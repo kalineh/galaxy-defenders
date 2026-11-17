@@ -8,6 +8,15 @@ bool game_shop_chassis_available(const Game *game, int slot, int chassis) {
     return false;
 }
 
+int game_shop_equipped_level(const Player *p, int category) {
+    switch (category) {
+        case 3: return p->weapon_level;
+        case 4: return p->secondary_level;
+        case 5: return p->sidekick_level;
+        default: return 0;
+    }
+}
+
 int game_shop_equipped(const Player *p, int category) {
     switch (category) {
         case 0: return p->chassis;
@@ -40,7 +49,7 @@ int game_shop_owned_marks(const Player *p, int category, int item) {
     if (item < 0) return 1;
     int marks = category < 3 ? !!(p->inventory.gear_mask[category] & (1 << item)) : p->inventory.weapon_marks[item];
     if (item == game_shop_equipped(p, category)) {
-        int equipped = category == 3 ? p->weapon_level + 1 : category == 4 ? p->secondary_level + 1 : 1;
+        int equipped = game_shop_equipped_level(p, category) + 1;
         if (equipped > marks) marks = equipped;
     }
     return marks;
@@ -106,7 +115,7 @@ bool game_shop_buy(Game *game, int slot) {
         case 2: p->shield = item; p->shield_health = game_shields[item].capacity; break;
         case 3: p->primary = item; p->weapon_level = level; p->powerup_levels = 0; break;
         case 4: p->secondary = item; p->secondary_level = level; break;
-        case 5: p->sidekick = item; break;
+        case 5: p->sidekick = item; p->sidekick_level = level; break;
         default: return false;
     }
     memset(p->weapons, 0, sizeof(p->weapons));
@@ -124,7 +133,7 @@ static void shop_select(Game *game, int slot, int item) {
     int marks = game_shop_owned_marks(p, category, item);
     int level = marks ? marks - 1 : 0;
     if (item == game_shop_equipped(p, category))
-        level = category == 3 ? p->weapon_level : category == 4 ? p->secondary_level : 0;
+        level = game_shop_equipped_level(p, category);
     menu->shop_item[slot] = item;
     menu->shop_level[slot] = level;
 }
@@ -228,7 +237,7 @@ void game_shop_input(Game *game, MenuAction action, int slot) {
     }
     if (action == MENU_CONFIRM) {
         const Player *p = &game->players[slot];
-        int level = category == 3 ? p->weapon_level : category == 4 ? p->secondary_level : 0;
+        int level = game_shop_equipped_level(p, category);
         if (category >= 3 && item >= 0 && game_weapons[item].level_count > 1 && !menu->shop_tiers[slot]) {
             menu->shop_tiers[slot] = true;
             menu->shop_first_tier[slot] = 0;
@@ -277,11 +286,11 @@ void game_shop_preview_update(Game *preview, const Game *game) {
                 case 2: desired.shield = item; break;
                 case 3: desired.primary = item; desired.weapon_level = level; break;
                 case 4: desired.secondary = item; desired.secondary_level = level; break;
-                case 5: desired.sidekick = item; break;
+                case 5: desired.sidekick = item; desired.sidekick_level = level; break;
             }
         }
         bool changed = p->joined != desired.joined || p->weapon_level != desired.weapon_level ||
-            p->secondary_level != desired.secondary_level;
+            p->secondary_level != desired.secondary_level || p->sidekick_level != desired.sidekick_level;
         for (int category = 0; category < 6; ++category)
             changed |= game_shop_equipped(p, category) != game_shop_equipped(&desired, category);
         if (changed) {

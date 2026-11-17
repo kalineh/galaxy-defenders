@@ -704,7 +704,8 @@ void game_preview_tick(Game *preview) {
         if (!p->joined) continue;
         ++p->age;
         p->input.fire = p->age >= 15;
-        bool charge = p->weapons[3][0].charge < 60;
+        bool charge = p->sidekick != WEAPON_CHARGE_SHOT ||
+            p->weapons[3][0].charge < game_weapons[WEAPON_CHARGE_SHOT].levels[p->sidekick_level].emitters[0].charge_frames;
         p->input.sidekick_left = p->input.sidekick_right = charge;
         if (p->age >= 15) game_update_weapons(preview, i);
     }
