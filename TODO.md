@@ -1,11 +1,15 @@
 # Completed focus attack tuning
 
-Shift now follows the current primary level, including stage pickups. Focus
+Shift now follows the current primary level. Focus
 damage and energy use increased by 50% through reproducible native importer
 tuning; the legacy Beam focus level-two 0.75 outlier is corrected to 0.075 before
 the multiplier. Laser focus upgrades scale fire rate/emitter count, not per-shot
 damage. Normal fire, pilot multipliers and generator regeneration are unchanged.
-Pickups reset both modes and retire old continuous beams to prevent stacking.
+The dormant upgrade-pickup path also resets both modes and retires old continuous
+beams to prevent stacking. No authored stage enables these pickups: all 1,630
+enemy/building powerup flags are false. Its tests spawn pickups explicitly; the
+pickup changes do not affect normal campaign play. Shop upgrades already scaled
+Shift before this tuning pass.
 Verified: every primary/focus level, pickup scaling, empty energy, continuous drain,
 Beam progression/replacement, full ./test.sh, importer --check and native build.
 The 50% balance increase is a first pass for human playtesting.
