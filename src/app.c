@@ -821,7 +821,7 @@ static const char *item_description(int category, int id) {
         category == 2 ? shields[id] : weapons[id];
 }
 
-static void draw_item_tip(const Game *game, const Assets *assets, int slot, int anchor, int cat, int item, int mark) {
+static void draw_item_tip(const Game *game, const Assets *assets, int slot, int anchor, int cat, int item, int mark, int offset) {
     const GameMenu *menu = &game->menu;
     if (menu->ready[slot] || menu->shop_purchase[0] || menu->shop_purchase[1]) return;
     Font font = assets->ui_font;
@@ -829,6 +829,7 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     const int width = 374, x = slot ? 1440-40-width : ARENA_X+40;
     int y = anchor-42;
     int row_edge = slot ? ARENA_X+GAME_WIDTH+28+(menu->shop_catalog[slot] ? (menu->shop_tiers[slot] ? 30 : 14) : 0) : ARENA_X-28;
+    row_edge += offset;
     DrawLine(row_edge,anchor,slot ? x+width : x,anchor,color);
     DrawCircle(row_edge,anchor,3,color);
     struct { const char *label; char value[40]; } stats[3] = {0};
@@ -930,7 +931,7 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     }
 }
 
-static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, int device, int left) {
+static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, int device, int left, int offset) {
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
     int cat = menu->shop_category[slot], owned = game_shop_equipped(p,cat), width = ARENA_X-56;
@@ -946,6 +947,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     int focus = tiers ? mark : selected;
     int first = tiers ? menu->shop_first_tier[slot] : menu->shop_first_item[slot];
     draw_slot_row(assets,p,left,LOADOUT_TOP,cat,false,highlight);
+    left += offset;
     int y = LOADOUT_TOP + LOADOUT_ROW + 14;
     int indent = tiers ? 30 : 14;
     if (tiers) {
@@ -1007,14 +1009,14 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         DrawRectangle(left+width+6,list_top,4,track,rule);
         DrawRectangle(left+width+6,list_top+position,4,thumb,dim);
     }
-    draw_item_tip(game,assets,slot,anchor,cat,item,mark);
+    draw_item_tip(game,assets,slot,anchor,cat,item,mark,offset);
     if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
         int step = show_select ? button_prompt(font,left,y+18,device,slot,GLYPH_CONFIRM,"Select")+22 : 0;
         button_prompt(font,left+step,y+18,device,slot,GLYPH_BACK,"Cancel");
     }
 }
 
-static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device) {
+static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset) {
     Font font = assets->ui_font;
     int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
@@ -1026,12 +1028,12 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     int cat = menu->shop_category[slot];
     DrawLine(left, 298, left + width, 298, rule);
     if (menu->shop_catalog[slot]) {
-        draw_shop_catalog(game,assets,slot,device,left);
+        draw_shop_catalog(game,assets,slot,device,left,offset);
     } else {
-        draw_loadout(assets,p,left,menu->ready[slot] ? -1 : cat,highlight);
+        draw_loadout(assets,p,left+offset,menu->ready[slot] ? -1 : cat,highlight);
         int mark = game_shop_equipped_level(p,cat);
-        draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark);
-        if (!menu->ready[slot]) button_prompt(font,left,LOADOUT_TOP+6*LOADOUT_ROW+18,device,slot,GLYPH_CONFIRM,"Select");
+        draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark,offset);
+        if (!menu->ready[slot]) button_prompt(font,left+offset,LOADOUT_TOP+6*LOADOUT_ROW+18,device,slot,GLYPH_CONFIRM,"Select");
     }
     DrawLine(left,974,left+width,974,rule);
     button_prompt(font,left,993,device,slot,GLYPH_READY,"Ready");
@@ -1068,7 +1070,12 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     button_prompt(font,1030,y+174,device,slot,GLYPH_BACK,"Cancel");
 }
 
-static void draw_shop(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
+static int menu_slide_offset(int elapsed, int direction) {
+    float remaining = fmaxf(0,1-elapsed/8.0f);
+    return (int)roundf(direction*22*remaining*remaining);
+}
+
+static void draw_shop(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices, bool entering) {
     ClearBackground(BLACK);
     for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
         float x = ARENA_X + (i * 193 + layer * 311) % GAME_WIDTH;
@@ -1079,7 +1086,18 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
     draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
-    for (int slot = 0; slot < GAME_PLAYERS; ++slot) draw_shop_panel(game, assets, slot, devices->device[slot]);
+    static int previous_depth[GAME_PLAYERS], changed_at[GAME_PLAYERS], direction[GAME_PLAYERS];
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        int depth = !game->menu.shop_catalog[slot] ? 0 : game->menu.shop_tiers[slot] ? 2 : 1;
+        if (entering || !game->players[slot].joined) direction[slot] = 0;
+        else if (depth != previous_depth[slot]) {
+            direction[slot] = depth > previous_depth[slot] ? 1 : -1;
+            changed_at[slot] = frame;
+        }
+        previous_depth[slot] = depth;
+        int offset = menu_slide_offset(frame-changed_at[slot],direction[slot]);
+        draw_shop_panel(game, assets, slot, devices->device[slot], offset);
+    }
     bool both = game->players[0].joined && game->players[1].joined &&
         game->menu.shop_purchase[0] && game->menu.shop_purchase[1];
     for (int slot = 0; slot < GAME_PLAYERS; ++slot)
@@ -1256,11 +1274,15 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
     static int changed_at, direction;
     static float clearance_from, clearance_to;
     MenuPage page = game->menu.page;
+    bool entering_shop = page == MENU_SHOP && page != previous_page;
     int elapsed = frame >= changed_at ? frame-changed_at : 18;
     float t = fminf(1,elapsed/18.0f);
     float clearance = clearance_from + (clearance_to-clearance_from)*t*t*(3-2*t);
     if (page != previous_page) {
-        bool slide = game_menu_is_title(game) && page != MENU_DELETE && previous_page != MENU_DELETE &&
+        bool from_title = previous_page == MENU_MAIN || previous_page == MENU_SLOTS ||
+            previous_page == MENU_DIFFICULTY || previous_page == MENU_PILOT ||
+            previous_page == MENU_OPTIONS || previous_page == MENU_QUIT;
+        bool slide = from_title && game_menu_is_title(game) && page != MENU_DELETE &&
             page != MENU_INTRO && !game->transition_frames;
         bool back = page == MENU_MAIN || previous_page == MENU_PILOT ||
             (previous_page == MENU_DIFFICULTY && page == MENU_SLOTS);
@@ -1271,8 +1293,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         elapsed = 0;
         previous_page = page;
     }
-    float remaining = fmaxf(0,1-elapsed/8.0f);
-    int offset = (int)roundf(direction*22*remaining*remaining);
+    int offset = menu_slide_offset(elapsed,direction);
     if (game->menu.page == MENU_NONE) return;
     if (game->menu.page == MENU_INTRO) {
         int tick = game->menu.frame;
@@ -1342,7 +1363,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             text_center(assets->ui_font, lines[i], 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
         return;
     }
-    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices); return; }
+    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices, entering_shop); return; }
     if (game->menu.page == MENU_CLEAR) {
         float alpha = fminf(0.5f, game->menu.frame / 60.0f);
         DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
