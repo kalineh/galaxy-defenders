@@ -16,7 +16,7 @@ typedef struct {
 typedef struct {
     int device[GAME_PLAYERS], pilot[GAME_PLAYERS];
     bool choosing[GAME_PLAYERS];
-    int selected_device;
+    int selected_device, prompt_device;
 } PlayerDevices;
 
 void input_devices_init(PlayerDevices *devices);

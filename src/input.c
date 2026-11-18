@@ -2,7 +2,7 @@
 #include <math.h>
 
 void input_devices_init(PlayerDevices *devices) {
-    *devices = (PlayerDevices){.device = {-1,-1}, .selected_device = INPUT_KEYBOARD};
+    *devices = (PlayerDevices){.device = {-1,-1}, .selected_device = INPUT_KEYBOARD, .prompt_device = INPUT_KEYBOARD};
 }
 
 int input_owner(const PlayerDevices *devices, int device) {

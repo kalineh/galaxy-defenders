@@ -523,18 +523,36 @@ static void text_center(Font font, const char *text, int x, int y, int size, Col
     DrawTextEx(font, text, (Vector2){x - MeasureTextEx(font, text, (float)size, 0).x / 2, (float)y}, (float)size, 0, color);
 }
 
-typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START } ButtonGlyph;
+typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START, GLYPH_HORIZONTAL, GLYPH_VERTICAL } ButtonGlyph;
 
 static int key_prompt(Font font, int x, int y, const char *key, const char *action) {
     int width = (int)fmaxf(30, MeasureTextEx(font,key,20,0).x + 14);
-    DrawRectangleRounded((Rectangle){x,y+3,width,29}, .28f, 6, (Color){95,113,135,255});
-    DrawRectangleRounded((Rectangle){x,y,width,28}, .28f, 6, (Color){213,224,235,255});
-    text_center(font,key,x+width/2,y+2,20,(Color){23,32,46,255});
-    DrawTextEx(font,action,(Vector2){x+width+9,y+1},23,0,WHITE);
+    Rectangle cap = {x,y,width,28};
+    DrawRectangleRounded(cap,.28f,6,surface);
+    DrawRectangleRoundedLinesEx(cap,.28f,6,1.5f,(Color){124,147,170,255});
+    text_center(font,key,x+width/2,y+2,20,WHITE);
+    DrawTextEx(font,action,(Vector2){x+width+9,y+1},23,0,(Color){201,213,226,255});
     return width + 9 + (int)MeasureTextEx(font,action,23,0).x;
 }
 
 static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button, const char *action) {
+    if (button == GLYPH_HORIZONTAL || button == GLYPH_VERTICAL) {
+        bool horizontal = button == GLYPH_HORIZONTAL;
+        bool pad = device >= 0 && device < INPUT_PADS;
+        Rectangle cap = {x,y,36,28};
+        if (pad) DrawCircle(x+18,y+14,15,surface);
+        else DrawRectangleRounded(cap,.28f,6,surface);
+        for (int dir=-1;dir<=1;dir+=2) {
+            int dx = horizontal ? dir : 0, dy = horizontal ? 0 : dir;
+            Vector2 tip = {x+18+dx*10,y+14+dy*10};
+            Vector2 a = {tip.x-dx*6-dy*5,tip.y-dy*6+dx*5};
+            Vector2 b = {tip.x-dx*6+dy*5,tip.y-dy*6-dx*5};
+            DrawLineEx(a,tip,2,WHITE);
+            DrawLineEx(b,tip,2,WHITE);
+        }
+        DrawTextEx(font,action,(Vector2){x+45,y+1},23,0,(Color){201,213,226,255});
+        return 45+(int)MeasureTextEx(font,action,23,0).x;
+    }
     static const char *keys[] = {"X","Z","C","Enter"};
     if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[button],action);
     static const char *letters[] = {"A","B","X"};
@@ -546,7 +564,8 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
         for (int i = 0; i < 3; ++i) DrawRectangle(x+12,y+9+i*5,15,2,WHITE);
     } else {
         int cx=x+15, cy=y+15;
-        DrawCircle(cx,cy,15,(Color){61,75,94,255});
+        DrawCircle(cx,cy,15,surface);
+        DrawRing((Vector2){cx,cy},14,15,0,360,32,(Color){124,147,170,255});
         if (!ps) text_center(font,letters[button],cx,y+1,23,WHITE);
         else if (button == GLYPH_CONFIRM) {
             DrawLineEx((Vector2){cx-6,cy-6},(Vector2){cx+6,cy+6},3,SKYBLUE);
@@ -555,8 +574,25 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
         else DrawRectangleLinesEx((Rectangle){cx-7,cy-7,14,14},3,(Color){251,174,213,255});
     }
     int offset = button == GLYPH_START ? 48 : 39;
-    DrawTextEx(font,action,(Vector2){x+offset,y+1},23,0,WHITE);
+    DrawTextEx(font,action,(Vector2){x+offset,y+1},23,0,(Color){201,213,226,255});
     return offset + (int)MeasureTextEx(font,action,23,0).x;
+}
+
+/* Matches the publisher capsule used on kalin.games. Both links share the menu edges. */
+static int title_links(Font font, Vector2 pointer) {
+    const int left = (CANVAS_WIDTH-488)/2, right = left+488, y = 849;
+    Rectangle brand = {left,y,170,46};
+    const char *handle = "@kalin_t";
+    int handle_width = (int)ceilf(MeasureTextEx(font,handle,31,0).x);
+    Rectangle social = {right-handle_width-12,y,handle_width+12,46};
+    bool over_brand = CheckCollisionPointRec(pointer,brand);
+    bool over_social = CheckCollisionPointRec(pointer,social);
+    DrawRectangleRounded(brand,1,16,over_brand ? (Color){32,53,80,255} : (Color){23,38,56,255});
+    DrawRectangleRoundedLinesEx(brand,1,16,1.5f,over_brand ? dim : (Color){64,85,113,255});
+    text_center(font,"kalin.games",left+85,y+7,26,over_brand ? WHITE : (Color){195,215,244,255});
+    DrawTextEx(font,handle,(Vector2){right-handle_width,y+4},31,0,over_social ? accent : WHITE);
+    if (over_social) DrawLine(right-handle_width,y+39,right,y+39,accent);
+    return over_brand ? 1 : over_social ? 2 : 0;
 }
 
 static void draw_flight_dust(const StageState *stage, Sprite dust, bool foreground) {
@@ -1072,7 +1108,7 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     }
 }
 
-static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, int device, int left, int offset) {
+static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, int left, int offset) {
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
     int cat = menu->shop_category[slot], owned = game_shop_equipped(p,cat), width = ARENA_X-56;
@@ -1151,10 +1187,7 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         DrawRectangle(left+width+6,list_top+position,4,thumb,dim);
     }
     draw_item_tip(game,assets,slot,anchor,cat,item,mark,offset);
-    if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
-        int step = show_select ? button_prompt(font,left,y+18,device,GLYPH_CONFIRM,"Select")+22 : 0;
-        button_prompt(font,left+step,y+18,device,GLYPH_BACK,"Cancel");
-    }
+    return show_select;
 }
 
 static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset, bool keyboard_free) {
@@ -1168,16 +1201,21 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     if (!p->joined) return;
     int cat = menu->shop_category[slot];
     DrawLine(left, 298, left + width, 298, rule);
+    bool can_select = true;
     if (menu->shop_catalog[slot]) {
-        draw_shop_catalog(game,assets,slot,device,left,offset);
+        can_select = draw_shop_catalog(game,assets,slot,left,offset);
     } else {
         draw_loadout(assets,p,left+offset,menu->ready[slot] ? -1 : cat,highlight);
         int mark = game_shop_equipped_level(p,cat);
         draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark,offset);
-        if (!menu->ready[slot]) button_prompt(font,left+offset,LOADOUT_TOP+6*LOADOUT_ROW+18,device,GLYPH_CONFIRM,"Select");
     }
     DrawLine(left,974,left+width,974,rule);
-    button_prompt(font,left,993,device,GLYPH_READY,"Ready");
+    if (menu->shop_purchase[slot]) return;
+    if (!menu->ready[slot]) {
+        if (can_select) button_prompt(font,left,993,device,GLYPH_CONFIRM,"Select");
+        if (menu->shop_catalog[slot]) button_prompt(font,left+130,993,device,GLYPH_BACK,"Back");
+    }
+    button_prompt(font,left+width-145,993,device,GLYPH_READY,"Ready");
     int check = left + width - 34;
     DrawRectangleLinesEx((Rectangle){check,997,31,31}, 2, menu->ready[slot] ? highlight : dim);
     if (menu->ready[slot]) {
@@ -1207,7 +1245,7 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     const char *price = cost < 0 ? TextFormat("Credit  +%d cr", -cost) : TextFormat("Cost  %d cr", cost);
     DrawTextEx(font, price, (Vector2){1248 - MeasureTextEx(font, price, 26, 0).x,y+110}, 26, 0, cost > p->money ? danger : WHITE);
     if (cost > p->money) DrawTextEx(font,"Insufficient credits",(Vector2){672,y+174},26,0,danger);
-    else button_prompt(font,672,y+174,device,GLYPH_CONFIRM,"Select");
+    else button_prompt(font,672,y+174,device,GLYPH_CONFIRM,cost > 0 ? "Buy" : "Confirm");
     button_prompt(font,1030,y+174,device,GLYPH_BACK,"Cancel");
 }
 
@@ -1347,8 +1385,13 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
             DrawTextEx(font,stories[pilot][line],(Vector2){x+32,710+line*29},24,0,WHITE);
         if (game->menu.ready[slot]) DrawTextEx(font,"Ready",(Vector2){x+32,821},26,0,color);
         else button_prompt(font,x+32,819,devices->device[slot],GLYPH_CONFIRM,"Select");
-        button_prompt(font,x+455,819,devices->device[slot],GLYPH_BACK,"Cancel");
+        button_prompt(font,x+455,819,devices->device[slot],GLYPH_BACK,game->menu.ready[slot] ? "Cancel" : "Back");
     }
+}
+
+static int shared_prompt_device(const PlayerDevices *devices) {
+    if (input_owner(devices,devices->prompt_device) >= 0) return devices->prompt_device;
+    return devices->device[0] >= 0 ? devices->device[0] : devices->device[1];
 }
 
 static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices,int offset,float clearance) {
@@ -1369,7 +1412,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : page == MENU_OPTIONS ? 51 : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? 45 : 69;
     int y = title ? 606 : stages ? 180 : 437;
     bool dialog = page == MENU_DELETE || page == MENU_QUIT;
     MenuPage background = page == MENU_DELETE ? MENU_SLOTS : page == MENU_QUIT ? game->menu.parent : page;
@@ -1380,7 +1423,6 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         sprite(whole_texture(assets->title_squad),x+width/2,y-16-squad_height/2,width,0,WHITE);
         DrawRectangle(x,y-9,width,2,rule);
         sprite(whole_texture(assets->title_logo),960,151,776,0,WHITE);
-        DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
     } else {
         DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
         DrawRectangle(x-32,y-114,width+64,3,accent);
@@ -1391,7 +1433,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2+offset,295},34,0,WHITE);
     else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
     for (int row=0; row<count; ++row) menu_row(font,game,background,row,row==cursor,x,y+row*row_height,width,row_height);
-    int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
+    int device = shared_prompt_device(devices);
     if (dialog) {
         bool deleting = page == MENU_DELETE;
         bool exiting = !deleting && background == MENU_MAIN;
@@ -1416,9 +1458,11 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         }
         return;
     }
-    int footer = y+row_height*(title && count < 4 ? 4 : count)+30;
-    int advance = button_prompt(font,x,footer,device,GLYPH_CONFIRM,"Select")+28;
-    if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,GLYPH_BACK,"Cancel")+28;
+    int footer = title ? 993 : y+row_height*count+30;
+    DrawLine(x,footer-13,x+width,footer-13,rule);
+    bool adjust = page == MENU_OPTIONS && game->menu.cursor < OPTION_COUNT;
+    int advance = button_prompt(font,x,footer,device,adjust ? GLYPH_HORIZONTAL : GLYPH_CONFIRM,adjust ? "Adjust" : "Select")+28;
+    if (page != MENU_MAIN && page != MENU_OVER) advance += button_prompt(font,x+advance,footer,device,GLYPH_BACK,"Back")+28;
     int row = game->menu.cursor;
     if (page == MENU_SLOTS && row < GAME_SAVE_SLOTS && (game->saves[row].valid || game->save_errors[row]))
         button_prompt(font,x+advance,footer,device,GLYPH_READY,"Delete");
@@ -1468,7 +1512,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         sprite(whole_texture(assets->portraits[pilot]),648,821,124,0,WHITE);
         DrawTextEx(assets->ui_font,pilot_names[pilot],(Vector2){735,774},24,0,accent);
         DrawTextEx(assets->ui_font,"Copy, Control. Launching.",(Vector2){735,812},34,0,WHITE);
-        button_prompt(assets->ui_font,1180,923,devices->device[lead],GLYPH_CONFIRM,"Skip");
+        button_prompt(assets->ui_font,1180,923,shared_prompt_device(devices),GLYPH_CONFIRM,"Skip");
         return;
     }
     if (game->menu.page == MENU_FINISH) {
@@ -1553,8 +1597,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             sprite(texture, 968, 540, texture.width * scale, 0, WHITE);
         }
         if (counter >= 360) {
-            int owner = game->players[0].joined ? 0 : 1;
-            button_prompt(assets->ui_font,880,630,devices->device[owner],GLYPH_CONFIRM,"Select");
+            button_prompt(assets->ui_font,880,630,shared_prompt_device(devices),GLYPH_CONFIRM,"Select");
         }
         return;
     }
@@ -1636,6 +1679,7 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
     int keyboard_slot = input_owner(devices,INPUT_KEYBOARD);
     bool keyboard_input = game->players[0].joined && devices->device[0] < 0 &&
         (IsKeyPressed(KEY_X) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN));
+    if (start || join || keyboard_input) devices->prompt_device = INPUT_KEYBOARD;
     if (keyboard_slot < 0 && (start || join || keyboard_input)) {
         input_claim(game,devices,INPUT_KEYBOARD);
     } else if (keyboard_slot >= 0 && !devices->choosing[keyboard_slot]) {
@@ -1653,6 +1697,7 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
         if (!(pad->pressed & PAD_START)) continue;
         int slot = input_owner(devices, device);
         if (handled_start || (slot < 0 && owned_start)) { pad->pressed = 0; continue; }
+        devices->prompt_device = device;
         if (slot < 0) {
             bool empty = !game->players[0].joined && !game->players[1].joined;
             if (input_claim(game, devices, device) >= 0) {
@@ -1693,7 +1738,9 @@ static void poll_assignments(Game *game, PlayerDevices *devices, const PadInput 
     int rows[INPUT_PADS+1], count = device_rows(pads,rows), row = 0;
     uint32_t buttons = 0;
     for (int i=0; i<count; ++i) {
-        buttons |= menu_buttons(rows[i],pads);
+        uint32_t pressed = menu_buttons(rows[i],pads);
+        if (pressed) devices->prompt_device = rows[i];
+        buttons |= pressed;
         if (rows[i] == devices->selected_device) row = i;
     }
     for (int i=0; i<GAME_PLAYERS; ++i) if (devices->choosing[i]) {
@@ -1749,9 +1796,10 @@ static void draw_assignments(const Game *game, const Assets *assets, const Playe
         if (selected && column > 0) DrawTextEx(font,"<",(Vector2){left+8,top+10},23,0,accent);
         if (selected && column < 2) DrawTextEx(font,">",(Vector2){left+344,top+10},23,0,accent);
     }
-    DrawTextEx(font,"Up / down   Select device       Left / right   Assign",(Vector2){x+30,bottom},24,0,dim);
+    int next = x+30+button_prompt(font,x+30,bottom,devices->prompt_device,GLYPH_VERTICAL,"Select device")+28;
+    button_prompt(font,next,bottom,devices->prompt_device,GLYPH_HORIZONTAL,"Assign");
     if (game->players[0].joined || game->players[1].joined)
-        button_prompt(font,x+width-220,bottom,devices->selected_device,GLYPH_BACK,"Done");
+        button_prompt(font,x+width-220,bottom,devices->prompt_device,GLYPH_BACK,"Done");
     else DrawTextEx(font,"Assign a controller to continue",(Vector2){x+width-390,bottom},24,0,accent);
     for (int i=0; i<GAME_PLAYERS; ++i) if (devices->choosing[i]) {
         int top = (CANVAS_HEIGHT-228)/2, pilot = devices->pilot[i];
@@ -1781,7 +1829,7 @@ static void draw_join_picker(const Assets *assets, const PlayerDevices *devices,
     button_prompt(font,left+196,326,device,GLYPH_BACK,"Cancel");
 }
 
-static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS], const bool picking[GAME_PLAYERS]) {
+static void poll_menu(Game *game, Assets *assets, PlayerDevices *devices, const PadInput pads[INPUT_PADS], const bool picking[GAME_PLAYERS]) {
     if (game->menu.page == MENU_PAUSE && IsKeyPressed(KEY_P)) {
         menu_input(game, assets, MENU_BACK, 0); return;
     }
@@ -1791,6 +1839,7 @@ static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, 
         const unsigned bits[] = {PAD_BACK,PAD_UP,PAD_DOWN,PAD_LEFT,PAD_RIGHT,PAD_CONFIRM,PAD_READY};
         const MenuAction actions[] = {MENU_BACK,MENU_UP,MENU_DOWN,MENU_LEFT,MENU_RIGHT,MENU_CONFIRM,MENU_READY};
         for (int i=0; i<7; ++i) if (buttons & bits[i]) {
+            devices->prompt_device = devices->device[slot];
             MenuPage previous = game->menu.page;
             menu_input(game,assets,actions[i],slot);
             if (game->menu.page != previous) return;
@@ -2132,6 +2181,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     input_devices_init(&devices);
     if (!frames && !ds4_init()) console_log(console, "Native DS4 input unavailable; standard gamepads remain enabled.");
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
+    bool link_cursor = false;
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
         double frame_start = GetTime();
         if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
@@ -2286,6 +2336,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         if (IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) != (game->menu.options[OPTION_WINDOW_MODE] != 0))
             ToggleBorderlessWindowed();
         float screen_fraction = 0.875f + game->menu.options[OPTION_SCREEN_SIZE]*0.0125f;
+        float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
+        scale *= screen_fraction;
+        Rectangle destination = {(GetScreenWidth() - CANVAS_WIDTH * scale) / 2,
+            (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
         float units = fminf(GetRenderWidth()/16.0f,GetRenderHeight()/9.0f)*screen_fraction;
         int blocks = (int)fmaxf(1,roundf(units*render_scale_percent[game->menu.options[OPTION_RENDER_SCALE]]/100.0f));
         if (requested_width != blocks*16) {
@@ -2328,6 +2382,23 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             draw_menu(game, &assets, animation_tick, &devices);
             for (int i=0; i<GAME_PLAYERS; ++i) if (devices.choosing[i]) draw_join_picker(&assets,&devices,i);
         }
+        int link = 0;
+        if (game->menu.page == MENU_MAIN) {
+            Vector2 pointer = {-1,-1};
+#ifndef GALAXY_MEMORY
+            if (!frames && !console_open && !console->music_album && IsWindowFocused() && !game->transition_frames && scale > 0) {
+                Vector2 mouse = GetMousePosition();
+                pointer = (Vector2){(mouse.x-destination.x)/scale,(mouse.y-destination.y)/scale};
+            }
+#endif
+            link = title_links(assets.ui_font,pointer);
+        }
+        if ((link != 0) != link_cursor) {
+            link_cursor = link != 0;
+            SetMouseCursor(link_cursor ? MOUSE_CURSOR_POINTING_HAND : MOUSE_CURSOR_DEFAULT);
+        }
+        if (link && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+            OpenURL(link == 1 ? "https://kalin.games/" : "https://x.com/kalin_t");
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0 && game->menu.page != MENU_CONTROLLERS) {
@@ -2350,10 +2421,6 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         BeginDrawing();
         ClearBackground(BLACK);
-        float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
-        scale *= screen_fraction;
-        Rectangle destination = {(GetScreenWidth() - CANVAS_WIDTH * scale) / 2,
-            (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
         if (game->menu.options[OPTION_AA]) BeginShaderMode(edge_aa);
         DrawTexturePro(canvas.texture,(Rectangle){0,0,canvas.texture.width,-canvas.texture.height},destination,(Vector2){0},0,WHITE);
         if (game->menu.options[OPTION_AA]) EndShaderMode();
