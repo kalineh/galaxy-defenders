@@ -255,7 +255,6 @@ bool game_continue(Game *game, int slot) {
     SavedGame save = game->saves[slot];
     int players = save.players;
     bool joined[GAME_PLAYERS] = {game->players[0].joined, game->players[1].joined};
-    if (!joined[0] && !joined[1]) joined[0] = true;
     game->active_slot = slot;
     int options[OPTION_COUNT];
     memcpy(options, game->menu.options, sizeof(options));
@@ -285,5 +284,6 @@ bool game_continue(Game *game, int slot) {
     game_stage(game, save.stage, 0);
     game->stage.stats.recorded = true;
     game_shop_open(game);
+    if (!joined[0] && !joined[1]) game_menu_open(game,MENU_CONTROLLERS);
     return true;
 }

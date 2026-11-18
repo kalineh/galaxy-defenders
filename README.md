@@ -64,14 +64,14 @@ See [music audition instructions](music/README.md) and the
 
 The keyboard can control either player. Press Start/Options on an unassigned
 gamepad to join. During play or in the shop, use left/right to pick a pilot in
-your player panel and confirm to join. A returning slot keeps its equipment,
+your player panel the first time you join. Reassigning an existing pilot resumes that pilot immediately. A returning slot keeps its equipment,
 money and health, including a destroyed ship.
 
 Open **Pause > Controllers** to see the keyboard and connected gamepads. Any
 device can select a row with up/down. Move it left or right between P1,
 Unassigned and P2. Assigning to an occupied player releases their previous device.
 Start pauses or resumes after joining. Select/Share + Start/Options drops out.
-Unplugging clears held input and pauses play if nobody remains.
+Disconnected pilots stay in their save slot. Disconnecting the last player opens Controllers and freezes play until a device is assigned.
 Both loadouts stay in the same campaign save even when one player is absent.
 Continuing restores the currently joined party, with the other loadout held for
 later joining. Either player can navigate shared menus; absent players do not

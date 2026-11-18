@@ -182,7 +182,7 @@ bool game_join(Game *game, int slot) {
     bool lobby = game->menu.page == MENU_MAIN || game->menu.page == MENU_SLOTS ||
         game->menu.page == MENU_DIFFICULTY ||
         game->menu.page == MENU_PILOT || game->menu.page == MENU_SHOP;
-    if ((game->over || game->complete) && !lobby) return false;
+    if ((game->over || game->complete) && !lobby && !game->players[slot].initialized) return false;
     Player *player = &game->players[slot];
     if (player->initialized) {
         player->joined = true;
@@ -232,12 +232,11 @@ bool game_leave(Game *game, int slot) {
     game->menu.players = game->players[1].joined ? 2 : 1;
     for (int i = 0; i < GAME_BULLETS; ++i) if (game->bullets[i].owner == slot) game->bullets[i].active = false;
     if (!game->players[0].joined && !game->players[1].joined) {
-        if (game->transition == TRANSITION_NEW_GAME || game->transition == TRANSITION_CONTINUE ||
-            game->transition == TRANSITION_RETRY || game->transition == TRANSITION_STAGE) {
+        if (game->menu.page == MENU_PILOT && game->transition == TRANSITION_NEW_GAME) {
             game->transition = TRANSITION_NONE;
             game->transition_frames = 0;
         }
-        if (game->menu.page == MENU_NONE) game_menu_open(game, MENU_PAUSE);
+        if (game->menu.page != MENU_CONTROLLERS) game_menu_open(game,MENU_CONTROLLERS);
     }
     return true;
 }
@@ -716,6 +715,7 @@ void game_preview_tick(Game *preview) {
 }
 
 void game_tick(Game *game) {
+    if (game->menu.page == MENU_CONTROLLERS) return;
     if (game_transition_update(game)) return;
     if (game->menu.page == MENU_INTRO) {
         if ((game->players[0].joined || game->players[1].joined) && ++game->menu.frame >= 210)

@@ -744,6 +744,13 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
     DrawRectangle(slot ? x : x + ARENA_X - 2, 0, 2, GAME_HEIGHT, rule);
     DrawRectangle(left, 32, 58, 36, p->joined ? highlight : rule);
     text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
+    if (!p->joined && p->initialized) {
+        DrawTextEx(font,pilot_names[p->pilot],(Vector2){left+70,26},38,0,dim);
+        DrawLine(left,88,left+width,88,rule);
+        sprite(whole_texture(assets->portraits[p->pilot]),left+82,204,164,0,dim);
+        DrawTextEx(font,"Disconnected",(Vector2){left+184,181},26,0,dim);
+        return;
+    }
     if (!p->joined) {
         text_center(font, "Join flight", x + 240, 488, 36, WHITE);
         button_prompt(font,x+105,543,0,GLYPH_START,"Join");
@@ -1689,6 +1696,13 @@ static void poll_assignments(Game *game, PlayerDevices *devices, const PadInput 
         buttons |= menu_buttons(rows[i],pads);
         if (rows[i] == devices->selected_device) row = i;
     }
+    for (int i=0; i<GAME_PLAYERS; ++i) if (devices->choosing[i]) {
+        if (buttons & PAD_BACK) input_pick_pilot(game,devices,i,MENU_BACK);
+        else if (buttons & PAD_CONFIRM) input_pick_pilot(game,devices,i,MENU_CONFIRM);
+        else if (buttons & PAD_LEFT) input_pick_pilot(game,devices,i,MENU_LEFT);
+        else if (buttons & PAD_RIGHT) input_pick_pilot(game,devices,i,MENU_RIGHT);
+        return;
+    }
     if (buttons & PAD_BACK) {
         game_menu_input(game,MENU_BACK,0);
         return;
@@ -1701,7 +1715,7 @@ static void poll_assignments(Game *game, PlayerDevices *devices, const PadInput 
     devices->selected_device = rows[row];
 }
 
-static void draw_assignments(const Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
+static void draw_assignments(const Game *game, const Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
     int rows[INPUT_PADS+1], count = device_rows(pads,rows);
     Font font = assets->ui_font;
     int x = 368, y = 220, width = 1184;
@@ -1710,8 +1724,16 @@ static void draw_assignments(const Assets *assets, const PlayerDevices *devices,
     DrawRectangle(x,y,width,bottom-y+70,ink);
     DrawRectangle(x,y,width,3,accent);
     DrawTextEx(assets->heading_font,"Controllers",(Vector2){x+30,y+20},48,0,WHITE);
-    const char *columns[] = {"P1","Unassigned","P2"};
-    for (int i=0; i<3; ++i) text_center(font,columns[i],x+208+i*384,y+111,28,i==1 ? dim : player_colors[i/2]);
+    text_center(font,"Unassigned",x+592,y+111,28,dim);
+    for (int slot=0; slot<GAME_PLAYERS; ++slot) {
+        int left = x+40+slot*768;
+        const Player *p = &game->players[slot];
+        if (p->initialized) {
+            sprite(whole_texture(assets->portraits[p->pilot]),left+38,y+114,78,0,p->joined ? WHITE : dim);
+            DrawTextEx(font,TextFormat("P%d   %s",slot+1,pilot_names[p->pilot]),(Vector2){left+90,y+84},26,0,p->joined ? player_colors[slot] : dim);
+            if (!p->joined) DrawTextEx(font,"Disconnected",(Vector2){left+90,y+119},21,0,dim);
+        } else text_center(font,TextFormat("P%d",slot+1),left+168,y+111,28,dim);
+    }
     for (int i=0; i<count; ++i) {
         int device = rows[i], owner = input_owner(devices,device);
         int column = owner == 0 ? 0 : owner == 1 ? 2 : 1;
@@ -1728,7 +1750,20 @@ static void draw_assignments(const Assets *assets, const PlayerDevices *devices,
         if (selected && column < 2) DrawTextEx(font,">",(Vector2){left+344,top+10},23,0,accent);
     }
     DrawTextEx(font,"Up / down   Select device       Left / right   Assign",(Vector2){x+30,bottom},24,0,dim);
-    button_prompt(font,x+width-220,bottom,devices->selected_device,GLYPH_BACK,"Done");
+    if (game->players[0].joined || game->players[1].joined)
+        button_prompt(font,x+width-220,bottom,devices->selected_device,GLYPH_BACK,"Done");
+    else DrawTextEx(font,"Assign a controller to continue",(Vector2){x+width-390,bottom},24,0,accent);
+    for (int i=0; i<GAME_PLAYERS; ++i) if (devices->choosing[i]) {
+        int top = (CANVAS_HEIGHT-228)/2, pilot = devices->pilot[i];
+        DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,.55f));
+        dialog_frame(top,player_colors[i]);
+        sprite(whole_texture(assets->portraits[pilot]),742,top+80,132,0,WHITE);
+        DrawTextEx(font,TextFormat("P%d   Choose pilot",i+1),(Vector2){840,top+25},26,0,dim);
+        DrawTextEx(font,TextFormat("<   %s   >",pilot_names[pilot]),(Vector2){840,top+75},36,0,WHITE);
+        button_prompt(font,672,top+174,devices->device[i],GLYPH_CONFIRM,"Join");
+        button_prompt(font,1030,top+174,devices->device[i],GLYPH_BACK,"Cancel");
+        break;
+    }
 }
 
 static void draw_join_picker(const Assets *assets, const PlayerDevices *devices, int slot) {
@@ -2288,14 +2323,14 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, keyboard_owner < 0);
         int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);
-        if (game->menu.page == MENU_CONTROLLERS) draw_assignments(&assets,&devices,pads);
+        if (game->menu.page == MENU_CONTROLLERS) draw_assignments(game,&assets,&devices,pads);
         else {
             draw_menu(game, &assets, animation_tick, &devices);
             for (int i=0; i<GAME_PLAYERS; ++i) if (devices.choosing[i]) draw_join_picker(&assets,&devices,i);
         }
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
-        if (game->transition_frames > 0) {
+        if (game->transition_frames > 0 && game->menu.page != MENU_CONTROLLERS) {
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
             alpha = alpha*alpha*(3-2*alpha);
             DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));

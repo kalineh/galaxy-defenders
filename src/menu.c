@@ -67,6 +67,11 @@ bool game_menu_is_title(const Game *game) {
 void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_CONTROLLERS) return;
     MenuPage previous = game->menu.page;
+    if (page == MENU_CONTROLLERS && previous != MENU_CONTROLLERS) {
+        game->menu.controllers_origin = previous;
+        game->menu.controllers_cursor = game->menu.cursor;
+        game->menu.controllers_frame = game->menu.frame;
+    }
     if (page == MENU_QUIT || page == MENU_DELETE) game->menu.dialog_cursor = game->menu.cursor;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     if (page == MENU_PAUSE && (previous == MENU_NONE || previous == MENU_SHOP))
@@ -204,14 +209,17 @@ bool game_transition_update(Game *game) {
 
 void game_menu_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
-    if (game->transition_frames > 15 || slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
+    if (slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
     if (menu->page == MENU_CONTROLLERS) {
-        if (action == MENU_BACK) {
-            game_menu_open(game,MENU_PAUSE);
-            menu->cursor = 3;
+        if (action == MENU_BACK && (game->players[0].joined || game->players[1].joined)) {
+            menu->page = menu->controllers_origin;
+            menu->cursor = menu->controllers_cursor;
+            menu->frame = menu->controllers_frame;
+            game->paused = menu->page != MENU_NONE;
         }
         return;
     }
+    if (game->transition_frames > 15) return;
     if (menu->page == MENU_FINISH) {
         if (action == MENU_BACK && menu->frame > 3200) game_transition(game, TRANSITION_MAIN, 0);
         return;

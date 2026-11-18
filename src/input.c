@@ -14,7 +14,7 @@ int input_owner(const PlayerDevices *devices, int device) {
 static int other_pilot(const Game *game, const PlayerDevices *devices, int slot) {
     int other = 1-slot;
     if (devices->choosing[other]) return devices->pilot[other];
-    return game->players[other].joined ? game->players[other].pilot : -1;
+    return game->players[other].initialized ? game->players[other].pilot : -1;
 }
 
 bool input_assign(Game *game, PlayerDevices *devices, int device, int slot) {
@@ -24,7 +24,8 @@ bool input_assign(Game *game, PlayerDevices *devices, int device, int slot) {
     bool choosing = false;
     if (slot >= 0 && !game->players[slot].joined) {
         MenuPage page = game->menu.page;
-        choosing = page == MENU_NONE || page == MENU_SHOP || page == MENU_PAUSE || page == MENU_CONTROLLERS;
+        if (page == MENU_CONTROLLERS) page = game->menu.controllers_origin;
+        choosing = !game->players[slot].initialized && (page == MENU_NONE || page == MENU_SHOP || page == MENU_PAUSE);
         if (choosing && game->over) return false;
         if (!choosing && !game_join(game,slot)) return false;
     }
@@ -36,6 +37,7 @@ bool input_assign(Game *game, PlayerDevices *devices, int device, int slot) {
     if (slot >= 0) {
         devices->device[slot] = device;
         devices->choosing[slot] = choosing;
+        if (choosing && game->menu.page == MENU_PAUSE) game_menu_open(game,MENU_CONTROLLERS);
         devices->pilot[slot] = game->players[slot].initialized ? game->players[slot].pilot : slot;
         if (devices->pilot[slot] == other_pilot(game,devices,slot))
             devices->pilot[slot] = (devices->pilot[slot]+1)%3;
@@ -56,7 +58,13 @@ void input_pick_pilot(Game *game, PlayerDevices *devices, int slot, MenuAction a
     bool fresh = !game->players[slot].initialized;
     if (action == MENU_CONFIRM && game_join(game,slot)) {
         game->players[slot].pilot = game->menu.pilot[slot] = pilot;
-        if (fresh) game_starting_loadout(game,slot);
+        if (fresh) {
+            game_starting_loadout(game,slot);
+            MenuPage page = game->menu.page;
+            if (page == MENU_CONTROLLERS) page = game->menu.controllers_origin;
+            if (page == MENU_SHOP || (page == MENU_PAUSE && game->menu.pause_origin == MENU_SHOP))
+                game_checkpoint(game,true);
+        }
         devices->choosing[slot] = false;
     }
 }

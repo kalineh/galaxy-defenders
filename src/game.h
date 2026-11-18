@@ -43,7 +43,8 @@ bool game_options_write(const int options[OPTION_COUNT], const char *path);
 
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
-    MenuPage page, parent, pause_origin;
+    MenuPage page, parent, pause_origin, controllers_origin;
+    int controllers_cursor, controllers_frame;
     int cursor, dialog_cursor, delete_slot, players, difficulty, pilot[2], options[OPTION_COUNT];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
