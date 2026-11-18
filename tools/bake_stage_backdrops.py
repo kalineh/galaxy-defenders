@@ -3,7 +3,7 @@ from math import cos, pi, sin
 from pathlib import Path
 from random import Random
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 WIDTH, HEIGHT = 640, 1280
 OUT = Path(__file__).resolve().parents[1] / "assets/textures/scenery"
@@ -26,9 +26,9 @@ def bake(style, near):
     fine = noise(13, 26, seed + 10)
     details = noise(37, 85, seed + 20)
     palettes = {
-        "Tide": [(15, 42, 104), (18, 51, 119)],
-        "Shoals": [(10, 58, 85), (15, 76, 94), (23, 90, 99), (48, 112, 111)],
-        "Vapor": [(36, 40, 82), (42, 47, 92), (52, 54, 100)],
+        "Tide": [(23, 37, 62), (27, 42, 69)],
+        "Shoals": [(20, 43, 56), (24, 49, 60), (29, 56, 65), (35, 63, 69)],
+        "Vapor": [(34, 35, 57), (38, 39, 63), (44, 44, 70)],
     }
     colors = palettes[style]
     pixels = bytearray(WIDTH * HEIGHT * 4)
@@ -53,10 +53,27 @@ def bake(style, near):
                 ridge = cos(phase*5 + 6.3*u + 1.7*n + 0.58*f)
                 field = 0.22*ridge + 0.31*n + 0.10*f + 0.034*h - (0.215 if near else 0.16)
                 band = 2 if near else int(field > 0.09)
-            if field > 0:
-                pixels[i*4:i*4+4] = bytes((*colors[band], min(255, int(field*WIDTH*255))))
+            if style == "Tide":
+                # Feather across the contour, with a wider falloff on the distant layer.
+                fade = max(0, min(1, 0.5 + field / (0.055 if near else 0.095)))
+                opacity = fade * fade * (3 - 2 * fade)
+            else:
+                opacity = min(1, field * WIDTH)
+            if opacity > 0:
+                pixels[i*4:i*4+4] = bytes((*colors[band], int(255 * opacity)))
     layer = "Near" if near else "Far"
-    Image.frombytes("RGBA", (WIDTH, HEIGHT), bytes(pixels)).save(OUT / f"{style}{layer}.png")
+    image = Image.frombytes("RGBA", (WIDTH, HEIGHT), bytes(pixels))
+    if style != "Tide":
+        radius = (2 if near else 4) if style == "Shoals" else (6 if near else 10)
+        # Wrap the blur vertically so scrolling across the tile boundary stays seamless.
+        pad = radius * 4
+        wrapped = Image.new("RGBA", (WIDTH, HEIGHT + 2 * pad))
+        wrapped.paste(image.crop((0, HEIGHT-pad, WIDTH, HEIGHT)), (0, 0))
+        wrapped.paste(image, (0, pad))
+        wrapped.paste(image.crop((0, 0, WIDTH, pad)), (0, HEIGHT+pad))
+        blurred = wrapped.convert("RGBa").filter(ImageFilter.GaussianBlur(radius))
+        image = blurred.crop((0, pad, WIDTH, HEIGHT+pad)).convert("RGBA")
+    image.save(OUT / f"{style}{layer}.png")
 
 
 if __name__ == "__main__":

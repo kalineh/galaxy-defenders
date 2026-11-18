@@ -154,9 +154,9 @@ static void assets_unload(Assets *assets) {
 
 /* These two-layer paintings replace the particle scenery on three stages. */
 static const struct { const char *name; Color base; } backdrops[STAGE_COUNT] = {
-    [0] = {"Tide",   {9, 29, 78, 255}},
-    [1] = {"Shoals", {7, 43, 67, 255}},
-    [7] = {"Vapor",  {28, 31, 67, 255}},
+    [0] = {"Tide",   {15, 28, 50, 255}},
+    [1] = {"Shoals", {14, 35, 49, 255}},
+    [7] = {"Vapor",  {26, 28, 48, 255}},
 };
 
 static bool stage_assets_load(Assets *assets, int index) {
