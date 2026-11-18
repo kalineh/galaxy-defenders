@@ -36,9 +36,14 @@ typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSI
 #define SHOP_VISIBLE_ROWS 6
 
 #define GAME_LANGUAGE_COUNT 12
-enum { OPTION_SFX, OPTION_MUSIC, OPTION_SCREEN_SIZE, OPTION_RENDER_SCALE, OPTION_AA, OPTION_MSAA, OPTION_WINDOW_MODE, OPTION_LANGUAGE, OPTION_COUNT };
+/* Append options to retain the positional settings file format. */
+enum { OPTION_SFX, OPTION_MUSIC, OPTION_SCREEN_SIZE, OPTION_RENDER_SCALE, OPTION_AA, OPTION_MSAA,
+    OPTION_WINDOW_MODE, OPTION_LANGUAGE, OPTION_FRAME_CAP, OPTION_VSYNC, OPTION_COUNT };
 extern const int game_option_max[OPTION_COUNT];
+extern const int game_option_defaults[OPTION_COUNT];
 extern const int render_scale_percent[4];
+extern const int frame_cap_fps[];
+int game_frame_limit(int cap_index, bool vsync, int refresh_hz);
 bool game_options_read(int options[OPTION_COUNT], const char *path);
 bool game_options_write(const int options[OPTION_COUNT], const char *path);
 

@@ -14,6 +14,7 @@
 
 #include "ui_strings.inc"
 static int ui_language;
+static int display_refresh_hz;
 
 static const char *ui_text(const char *english) {
     if (ui_language && english) {
@@ -1389,6 +1390,22 @@ static void draw_title_ship(const Assets *assets, int slot, int tick, float clea
     sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
 }
 
+static const char *option_value(const GameMenu *menu, int row) {
+    int value = menu->options[row];
+    switch (row) {
+        case OPTION_FRAME_CAP: {
+            int cap = frame_cap_fps[value];
+            if (cap < 0) return display_refresh_hz > 0 ? TextFormat(ui_text("Display (%d Hz)"),display_refresh_hz) : ui_text("Display rate");
+            return cap ? TextFormat("%d FPS",cap) : ui_text("Unlimited");
+        }
+        case OPTION_RENDER_SCALE: return TextFormat("%d%%",render_scale_percent[value]);
+        case OPTION_LANGUAGE: return ui_text("English");
+        case OPTION_WINDOW_MODE: return ui_text(value ? "Fullscreen" : "Windowed");
+        case OPTION_MSAA: return ui_text((const char *[]){"Off","2x","4x"}[value]);
+        default: return ui_text(value ? "On" : "Off");
+    }
+}
+
 static void menu_row(Font font, const Game *game, MenuPage page, int row, bool selected, int x, int y, int width, int height) {
     DrawRectangle(x,y,width,height-3,selected ? surface : ink);
     DrawLine(x,y+height-3,x+width,y+height-3,rule);
@@ -1402,13 +1419,7 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
     int label_width = page == MENU_OPTIONS && row < OPTION_COUNT ? width-232 : width-44;
     text_on_axis(font,label,x+22,y+(height-3)/2,fitted_size(font,label,28,label_width),WHITE);
     if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
-        const char *setting = row == OPTION_RENDER_SCALE ?
-            TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
-            row == OPTION_LANGUAGE ? "English" :
-            row == OPTION_WINDOW_MODE ? (game->menu.options[row] ? "Fullscreen" : "Windowed") :
-            row == OPTION_MSAA ? (const char *[]){"Off","2x","4x"}[game->menu.options[row]] :
-            (game->menu.options[row] ? "On" : "Off");
-        setting = ui_text(setting);
+        const char *setting = option_value(&game->menu,row);
         float value_width = MeasureTextEx(font,setting,26,0).x;
         text_on_axis(font,setting,x+width-value_width-22,y+(height-3)/2,26,accent);
     }
@@ -1489,7 +1500,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : page == MENU_OPTIONS ? 40 : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? (title ? 33 : 40) : 69;
     int y = title ? 606 : stages ? 180 : 437;
     bool dialog = page == MENU_DELETE || page == MENU_QUIT;
     MenuPage background = page == MENU_DELETE ? MENU_SLOTS : page == MENU_QUIT ? game->menu.parent : page;
@@ -2119,8 +2130,8 @@ static void draw_console(Console *console, Font font, bool failed, bool full_scr
     EndScissorMode();
 }
 
-static void draw_frame_graph(const FrameGraph *history, Font font) {
-    /* Solcraft/MMOA: fixed 33.33 ms range, frame + CPU work traces, 60 Hz guide. */
+static void draw_frame_graph(const FrameGraph *history, Font font, int guide_fps) {
+    float guide_ms = 1000.0f / guide_fps;
     Rectangle panel = {CANVAS_WIDTH - 495, 15, 480, 189};
     Rectangle graph = {panel.x + 12, panel.y + 48, panel.width - 24, 126};
     DrawRectangleRec(panel, (Color){4, 7, 10, 235});
@@ -2132,17 +2143,17 @@ static void draw_frame_graph(const FrameGraph *history, Font font) {
         (Vector2){panel.x + 12, panel.y + 9}, 20, 0, WHITE);
     DrawRectangleRec(graph, (Color){2, 5, 8, 220});
     DrawLineV((Vector2){graph.x, graph.y + graph.height / 2}, (Vector2){graph.x + graph.width, graph.y + graph.height / 2}, (Color){104, 132, 140, 150});
-    DrawTextEx(font, "16.67 ms", (Vector2){graph.x + graph.width - 103, graph.y + graph.height / 2 - 21}, 18, 0, dim);
+    DrawTextEx(font,TextFormat("%.2f ms",guide_ms),(Vector2){graph.x + graph.width - 103, graph.y + graph.height / 2 - 21},18,0,dim);
     int oldest = (history->cursor + FRAME_SAMPLES - history->count) % FRAME_SAMPLES;
     for (int trace = 0; trace < 2; ++trace) {
         const float *samples = trace ? history->work_ms : history->frame_ms;
         Color color = trace ? (Color){83, 206, 232, 255} : (Color){246, 190, 82, 255};
         for (int i = 1; i < history->count; ++i) {
-            float a = fminf(33.333f, fmaxf(0, samples[(oldest + i - 1) % FRAME_SAMPLES]));
-            float b = fminf(33.333f, fmaxf(0, samples[(oldest + i) % FRAME_SAMPLES]));
+            float a = fminf(1, fmaxf(0, samples[(oldest + i - 1) % FRAME_SAMPLES]/(2*guide_ms)));
+            float b = fminf(1, fmaxf(0, samples[(oldest + i) % FRAME_SAMPLES]/(2*guide_ms)));
             float x = graph.x + graph.width * (FRAME_SAMPLES - history->count + i) / FRAME_SAMPLES;
-            DrawLineV((Vector2){x - graph.width / FRAME_SAMPLES, graph.y + graph.height * (1 - a / 33.333f)},
-                (Vector2){x, graph.y + graph.height * (1 - b / 33.333f)}, color);
+            DrawLineV((Vector2){x - graph.width / FRAME_SAMPLES, graph.y + graph.height * (1 - a)},
+                (Vector2){x, graph.y + graph.height * (1 - b)}, color);
         }
     }
 }
@@ -2221,7 +2232,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         } else console_log(console, "ERROR: could not create save directory");
     }
 #ifndef GALAXY_MEMORY
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | (frames ? FLAG_WINDOW_HIDDEN : 0));
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | (game->menu.options[OPTION_VSYNC] ? FLAG_VSYNC_HINT : 0) |
+        (frames ? FLAG_WINDOW_HIDDEN : 0));
 #endif
 #ifdef GALAXY_MEMORY
     InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Galaxy Defenders - software check");
@@ -2234,7 +2246,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     SetTargetFPS(0);
 #else
     SetWindowMinSize(960, 540);
-    SetTargetFPS(60);
+    int applied_limit = -1;
+    double refresh_check_at = 0;
 #endif
     RenderTexture2D canvas = {0};
     memcpy(stored_options, game->menu.options, sizeof(stored_options));
@@ -2425,8 +2438,24 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
-        if (IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) != (game->menu.options[OPTION_WINDOW_MODE] != 0))
+        if (IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) != (game->menu.options[OPTION_WINDOW_MODE] != 0)) {
             ToggleBorderlessWindowed();
+            refresh_check_at = 0;
+        }
+        if (frame_start >= refresh_check_at) {
+            display_refresh_hz = GetMonitorRefreshRate(GetCurrentMonitor());
+            refresh_check_at = frame_start + 1.0;
+        }
+        bool vsync = game->menu.options[OPTION_VSYNC] != 0;
+        if (vsync != IsWindowState(FLAG_VSYNC_HINT)) {
+            if (vsync) SetWindowState(FLAG_VSYNC_HINT);
+            else ClearWindowState(FLAG_VSYNC_HINT);
+        }
+        int limit = game_frame_limit(game->menu.options[OPTION_FRAME_CAP],vsync,display_refresh_hz);
+        if (limit != applied_limit) {
+            SetTargetFPS(limit);
+            applied_limit = limit;
+        }
         float screen_fraction = 0.875f + game->menu.options[OPTION_SCREEN_SIZE]*0.0125f;
         float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
         scale *= screen_fraction;
@@ -2505,7 +2534,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         if (console->music_album) draw_music_album(console, &assets);
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
-        if (console->perf) draw_frame_graph(&frame_graph, assets.console_font);
+        if (console->perf) {
+            int guide = game_frame_limit(game->menu.options[OPTION_FRAME_CAP],game->menu.options[OPTION_VSYNC],display_refresh_hz);
+            draw_frame_graph(&frame_graph,assets.console_font,guide ? guide : (display_refresh_hz > 0 ? display_refresh_hz : GAME_HZ));
+        }
 #ifndef GALAXY_MEMORY
         EndMode2D();
         EndTextureMode();
@@ -2540,6 +2572,15 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         if (frame_graph.count < FRAME_SAMPLES) ++frame_graph.count;
         if (frames && ++rendered >= frames) break;
     }
+#ifndef GALAXY_MEMORY
+    if (frames && console->perf && frame_graph.count) {
+        double total_ms = 0;
+        for (int i=0; i<frame_graph.count; ++i) total_ms += frame_graph.frame_ms[i];
+        TraceLog(LOG_INFO,"PACING: display %d Hz, V-sync %s, software cap %d, %.2f ms/frame over %d frames",
+            display_refresh_hz,game->menu.options[OPTION_VSYNC] ? "on" : "off",applied_limit,
+            total_ms/frame_graph.count,frame_graph.count);
+    }
+#endif
     console_execute(console, game, "state");
     assets_unload(&assets);
     if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);

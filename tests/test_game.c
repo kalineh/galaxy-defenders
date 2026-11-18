@@ -711,6 +711,17 @@ static void menu_flow(void) {
     CHECK(game.menu.options[OPTION_WINDOW_MODE] == 1);
     CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
     CHECK(game.menu.options[OPTION_LANGUAGE] == 1);
+    CHECK(game.menu.options[OPTION_FRAME_CAP] == 0 && game.menu.options[OPTION_VSYNC] == 1);
+    CHECK(game_frame_limit(0,true,144) == 0 && game_frame_limit(0,false,144) == 144);
+    CHECK(game_frame_limit(0,false,0) == 60);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right;menu.input right"));
+    int cap = game.menu.options[OPTION_FRAME_CAP];
+    CHECK(game_frame_limit(cap,true,144) == 60 && game_frame_limit(cap,true,60) == 0);
+    for (int i=0; i<12; ++i) game_menu_input(&game,MENU_RIGHT,0);
+    cap = game.menu.options[OPTION_FRAME_CAP];
+    CHECK(frame_cap_fps[cap] == 0 && game_frame_limit(cap,false,144) == 0);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input left"));
+    CHECK(game.menu.options[OPTION_VSYNC] == 0);
     const char *settings_path = "artifacts/native-port/test-graphics.cfg";
     int restored[OPTION_COUNT] = {0};
     CHECK(game_options_write(game.menu.options,settings_path));
@@ -723,6 +734,7 @@ static void menu_flow(void) {
         fclose(legacy_options);
         CHECK(game_options_read(restored,settings_path));
         CHECK(restored[OPTION_WINDOW_MODE] == 0);
+        CHECK(restored[OPTION_FRAME_CAP] == 0 && restored[OPTION_VSYNC] == 1);
         CHECK(restored[OPTION_SFX] == 7 && restored[OPTION_AA] == 1 && restored[OPTION_MSAA] == 1);
     }
     CHECK(console_chain(&console, &game, "menu.input back;menu.input down;menu.input confirm"));

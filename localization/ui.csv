@@ -261,3 +261,8 @@ Gunthor,Gunthor,Gunthor,Gunthor,Gunthor,ガンソー,군토르,Gunthor,Gunthor,�
 %d - %d HP,%d–%d TP,%d–%d PS,%d–%d PV,%d–%d PS,%d～%d HP,%d~%d HP,%d–%d PŻ,%d–%d PV,%d–%d ОЗ,%d–%d 生命,%d–%d 生命
 Retry!,Erneut versuchen!,¡Reintentar!,Réessayer !,Riprova!,再挑戦！,재도전!,Spróbuj ponownie!,Tentar de novo!,Ещё раз!,再试一次！,再試一次！
 EN,EN,EN,EN,EN,EN,EN,EN,EN,ЭН,能量,能量
+Frame rate cap,FPS-Limit,Límite de FPS,Limite d’IPS,Limite FPS,フレームレート上限,프레임 제한,Limit klatek,Limite de FPS,Лимит кадров,帧率上限,幀率上限
+V-sync,V-Sync,Sincronización vertical,Synchro verticale,Sincronia verticale,垂直同期,수직 동기화,Synchronizacja pionowa,Sincronização vertical,Верт. синхронизация,垂直同步,垂直同步
+Display rate,Bildschirmfrequenz,Frecuencia de pantalla,Fréquence de l’écran,Frequenza schermo,画面の更新頻度,화면 주사율,Odświeżanie ekranu,Taxa da tela,Частота экрана,显示器刷新率,螢幕更新率
+Display (%d Hz),Monitor (%d Hz),Pantalla (%d Hz),Écran (%d Hz),Schermo (%d Hz),画面 (%d Hz),화면 (%d Hz),Ekran (%d Hz),Tela (%d Hz),Экран (%d Гц),显示器（%d Hz）,螢幕（%d Hz）
+Unlimited,Unbegrenzt,Sin límite,Illimitée,Illimitato,無制限,무제한,Bez limitu,Sem limite,Без лимита,不限,無上限

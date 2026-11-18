@@ -252,9 +252,7 @@ void game_reset(Game *game, uint32_t seed) {
     game->scroll_speed = stage_definitions[0].scroll_speed;
     game->waves = true;
     game->menu.players = 1;
-    for (int i = 0; i < OPTION_RENDER_SCALE; ++i) game->menu.options[i] = 10;
-    game->menu.options[OPTION_RENDER_SCALE] = 1;
-    game->menu.options[OPTION_MSAA] = 1;
+    memcpy(game->menu.options,game_option_defaults,sizeof(game->menu.options));
     game_join(game, 0);
     game_scenery_init(game);
 }

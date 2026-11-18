@@ -2,10 +2,8 @@
 
 1. Expand the first-run launch into a short, skippable story intro that leads
    directly into stage one.
-2. Measure frame pacing on a high-refresh display. The native client currently
-   requests V-sync and caps rendering at 60 FPS. Compare against Solcraft and
-   MMOA before choosing target frame rate and V-sync options. Keep stage timing
-   at its authored simulation rate.
+2. Smooth visible motion between the fixed simulation ticks and check the
+   resulting frame pacing on a high-refresh display.
 
 The current Noto faces stay in use across the localized UI. Playtest the
 equipment terminology and story text with speakers of each language.

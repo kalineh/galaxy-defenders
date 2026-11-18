@@ -102,9 +102,15 @@ browse 32 commands and restore your draft. Left/Right/Home/End, Backspace/Delete
 and Ctrl+V edit input. PgUp/PgDn or the mouse wheel scroll 256 output lines;
 `clear` clears output. Close the window to exit. Gamepad Y restarts after win/loss.
 F3 (or `perf on` / `perf off`) toggles the reference-style top-right frame graph.
-Gold is total frame time including pacing/present; cyan is CPU update/draw work
-before present, not a GPU timer. The scale is fixed at 0..33.33 ms with a 16.67 ms
-guide and 240 samples. F2 joins with the keyboard.
+Gold measures total frame time including presentation and waiting. Cyan measures
+CPU update and draw work before presentation. The guide marks the target frame
+time, or the display interval when uncapped. The graph keeps 240 samples.
+F2 joins with the keyboard.
+
+In Options, **Frame rate cap** defaults to **Display** and **V-sync** defaults
+to **On**. Display follows the monitor containing the window. Choose a fixed
+cap from 30 to 360 FPS or Unlimited. V-sync can also limit presentation to
+the monitor refresh rate. Both settings apply immediately and are remembered.
 
 The content is playable, with remaining fidelity work tracked in CONTENT_PARITY.md:
 projectile effects/audio, salvage, menu transitions and

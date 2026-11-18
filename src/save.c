@@ -56,7 +56,8 @@ static bool read_int(FILE *file, int *value) {
 bool game_options_read(int options[OPTION_COUNT], const char *path) {
     FILE *file = fopen(path,"rb");
     if (!file) return false;
-    int values[OPTION_COUNT] = {[OPTION_MSAA] = 1};
+    int values[OPTION_COUNT];
+    memcpy(values,game_option_defaults,sizeof(values));
     bool ok = true;
     for (int i = 0; i < OPTION_MSAA && ok; ++i)
         ok = read_int(file,&values[i]) && values[i] >= 0 && values[i] <= game_option_max[i];
