@@ -686,6 +686,7 @@ static void menu_flow(void) {
     game_tick(&game);
     CHECK(game.menu.page == MENU_INTRO && game.players[1].joined && !game.saves[0].valid);
     game_menu_input(&game, MENU_CONFIRM, 1); /* Either pilot can skip the intro. */
+    CHECK(game.fade_start == 1.0f);
     for (int i=0; i<15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && !game.paused);
     CHECK(game.difficulty == 1 && game.players[0].pilot == 2 && game.players[0].chassis == 2);

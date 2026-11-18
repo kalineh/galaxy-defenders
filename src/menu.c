@@ -163,6 +163,8 @@ void game_transition(Game *game, Transition transition, int stage) {
     if (game->transition_frames > 15) return;
     game->transition = transition;
     game->transition_stage = stage;
+    /* Skipping a newly entered scene reverses its fade at the current opacity. */
+    game->fade_start = game->transition_frames / 15.0f;
     game->transition_frames = 30;
 }
 

@@ -2283,6 +2283,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                             PlaySound(assets.weapon_fire[i]);
                 } else if (game->menu.page != MENU_SHOP) shop_preview.tick = 0;
                 accumulator -= 1.0 / GAME_HZ;
+                /* Present the fully black switch frame even after a stalled window frame. */
+                if (game->transition_frames == 15) { accumulator = 0; break; }
             }
         } else accumulator = 0;
         if (assets.audio) {
@@ -2403,6 +2405,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0 && game->menu.page != MENU_CONTROLLERS) {
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
+            if (game->transition_frames > 15) alpha += (1-alpha)*game->fade_start;
             alpha = alpha*alpha*(3-2*alpha);
             DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
         }

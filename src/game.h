@@ -194,6 +194,7 @@ typedef struct {
     int difficulty, over_frames, secret_finish_frames, secret_fade_frames;
     Transition transition;
     int transition_frames, transition_stage;
+    float fade_start;
     float scroll_speed;
     StageState stage;
     GameMenu menu;
