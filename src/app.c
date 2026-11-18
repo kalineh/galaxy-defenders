@@ -46,7 +46,7 @@ typedef struct {
     Sound weapon_fire[WEAPON_COUNT], impacts[4], enemy_fire[2], overheat;
     Sound menu_sounds[5];
     bool audio, stage_music_started;
-    Font console_font, ui_font;
+    Font console_font, ui_font, heading_font;
 } Assets;
 
 static const char *synth_path(const char *source);
@@ -94,6 +94,7 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->boss6_center)) UnloadTexture(assets->boss6_center);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
+    if (assets->heading_font.texture.id && assets->heading_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->heading_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
     for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
@@ -206,6 +207,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     ui_glyphs[95] = 0x00a5;
     ui_glyphs[96] = 0x00b2;
     assets->ui_font = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"), 64, ui_glyphs, 97);
+    assets->heading_font = LoadFontEx(asset_path("fonts/NotoSans-Bold.ttf"),64,ui_glyphs,97);
     const char *windows = getenv("WINDIR");
     const char *font_names[] = {"consola.ttf", "cour.ttf"};
     for (int i = 0; windows && i < 2; ++i) {
@@ -224,11 +226,13 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->console_font = LoadFontEx(asset_path("fonts/NotoSansMono-Regular.ttf"), 32, NULL, 95);
         console_log(console, "Console font: Noto Sans Mono");
     }
-    if (!IsFontValid(assets->ui_font) || assets->ui_font.texture.id == GetFontDefault().texture.id ||
+    if (!IsFontValid(assets->heading_font) || assets->heading_font.texture.id == GetFontDefault().texture.id ||
+        !IsFontValid(assets->ui_font) || assets->ui_font.texture.id == GetFontDefault().texture.id ||
         !IsFontValid(assets->console_font) || assets->console_font.texture.id == GetFontDefault().texture.id) {
         console_log(console, "ERROR: required UI/console font could not load; default raylib text is disabled.");
         return false;
     }
+    SetTextureFilter(assets->heading_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
     for (int i = 0; i < GAME_CHASSIS; ++i) {
@@ -750,14 +754,6 @@ static void draw_game(const Game *game, const Assets *assets) {
     }
     draw_combat_sprites(game, assets);
     draw_scenery(game, assets, true);
-    if (game->stage.secret_countdown)
-        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
-    if (game->secret_finish_frames || game->secret_fade_frames) {
-        float alpha = game->secret_fade_frames ? game->secret_fade_frames / 15.0f :
-            game->secret_finish_frames <= 30 ? fminf(0.5f, (game->secret_finish_frames - 1) / 15.0f) :
-            fminf(1, 0.5f + (game->secret_finish_frames - 30) / 15.0f);
-        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
-    }
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
@@ -766,6 +762,14 @@ static void draw_game(const Game *game, const Assets *assets) {
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
     for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i);
+    if (game->stage.secret_countdown)
+        DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
+    if (game->secret_finish_frames || game->secret_fade_frames) {
+        float alpha = game->secret_fade_frames ? game->secret_fade_frames / 15.0f :
+            game->secret_finish_frames <= 30 ? fminf(0.5f, (game->secret_finish_frames - 1) / 15.0f) :
+            fminf(1, 0.5f + (game->secret_finish_frames - 30) / 15.0f);
+        DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
+    }
 }
 
 static const char *item_description(int category, int id) {
@@ -1099,8 +1103,9 @@ static Vector2 title_ship_position(Vector2 center, float heading) {
     return (Vector2){center.x + 61*sinf(heading), center.y - 61*cosf(heading)};
 }
 
-static void draw_title_ship(const Assets *assets, int slot, int tick) {
+static void draw_title_ship(const Assets *assets, int slot, int tick, float clearance) {
     Vector2 center = slot ? (Vector2){1430,530} : (Vector2){490,510};
+    center.x += (slot ? 350 : -350)*clearance;
     Color color = player_colors[slot];
     int phase = (tick + 91*slot) % 256;
     float turn = 2*PI/256;
@@ -1136,7 +1141,7 @@ static void menu_row(Font font, const Game *game, int row, int x, int y, int wid
     }
 }
 
-static void draw_pilot_select(const Game *game,const Assets *assets, const PlayerDevices *devices) {
+static void draw_pilot_select(const Game *game,const Assets *assets, const PlayerDevices *devices,int offset) {
     static const char *specialties[] = {"Ace pilot, Japan","Weapons researcher, Russia","Demolitions specialist, Norway"};
     static const char *stories[][3] = {
         {"Kazuki flew mail between Japan's island airstrips.", "His first carrier landing was in a typhoon, with", "the deck lights out and a sack of letters aboard."},
@@ -1145,9 +1150,9 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
     };
     static const char *bonus[] = {"Speed +","Credits +","Damage +"};
     Font font = assets->ui_font;
-    DrawTextEx(font,"Select pilots",(Vector2){272,92},65,0,WHITE);
+    DrawTextEx(assets->heading_font,"Pilot selection",(Vector2){272+offset,92},62,1,WHITE);
     for (int slot=0; slot<GAME_PLAYERS; ++slot) {
-        int x = 272 + slot*704, pilot = game->menu.pilot[slot];
+        int x = 272 + offset + slot*704, pilot = game->menu.pilot[slot];
         Color color = player_colors[slot];
         DrawRectangle(x,216,664,666,ink);
         DrawRectangle(x,216,664,3,game->players[slot].joined ? color : rule);
@@ -1181,7 +1186,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
     }
 }
 
-static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices) {
+static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices,int offset,float clearance) {
     static const char *headings[MENU_DELETE+1] = {
         [MENU_OPTIONS]="Options",
         [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
@@ -1193,16 +1198,16 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     bool stages = page == MENU_STAGE_SELECT;
     if (title || stages) menu_sky(frame);
     else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
-    if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices); return; }
+    if (title) {
+        if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame,clearance);
+        if (game->players[1].joined) draw_title_ship(assets,1,frame,clearance);
+    }
+    if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : 69;
     int y = title ? 606 : stages ? 180 : 437;
     int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
     if (title) {
-        if (page == MENU_MAIN) {
-            if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
-            if (game->players[1].joined) draw_title_ship(assets,1,frame);
-        }
         float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
         sprite(assets->title_squad,x+width/2,y-16-squad_height/2,width,0,WHITE);
         DrawRectangle(x,y-9,width,2,rule);
@@ -1212,10 +1217,11 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
         DrawRectangle(x-32,y-114,width+64,3,accent);
     }
+    x += offset;
     const char *heading = headings[page];
     if (page==MENU_QUIT && game->menu.parent==MENU_PAUSE) heading = "Return to title?";
     if (heading && title)
-        DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2,295},34,0,WHITE);
+        DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2+offset,295},34,0,WHITE);
     else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
     for (int row=0; row<count; ++row) menu_row(font,game,row,x,y+row*row_height,width,row_height);
     int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
@@ -1245,6 +1251,28 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
 }
 
 static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
+    /* The title backdrop runs on one clock. Only newly entered controls move. */
+    static MenuPage previous_page;
+    static int changed_at, direction;
+    static float clearance_from, clearance_to;
+    MenuPage page = game->menu.page;
+    int elapsed = frame >= changed_at ? frame-changed_at : 18;
+    float t = fminf(1,elapsed/18.0f);
+    float clearance = clearance_from + (clearance_to-clearance_from)*t*t*(3-2*t);
+    if (page != previous_page) {
+        bool slide = game_menu_is_title(game) && page != MENU_DELETE && previous_page != MENU_DELETE &&
+            page != MENU_INTRO && !game->transition_frames;
+        bool back = page == MENU_MAIN || previous_page == MENU_PILOT ||
+            (previous_page == MENU_DIFFICULTY && page == MENU_SLOTS);
+        direction = slide ? (back ? -1 : 1) : 0;
+        clearance_from = clearance;
+        clearance_to = page == MENU_PILOT ? 1 : 0;
+        changed_at = frame;
+        elapsed = 0;
+        previous_page = page;
+    }
+    float remaining = fmaxf(0,1-elapsed/8.0f);
+    int offset = (int)roundf(direction*22*remaining*remaining);
     if (game->menu.page == MENU_NONE) return;
     if (game->menu.page == MENU_INTRO) {
         int tick = game->menu.frame;
@@ -1316,9 +1344,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
     }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices); return; }
     if (game->menu.page == MENU_CLEAR) {
-        float alpha = game->clear_exit ? fminf(1, 0.5f + (game->menu.frame - 360) / 60.0f) :
-            fminf(0.5f, game->menu.frame / 60.0f);
-        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
+        float alpha = fminf(0.5f, game->menu.frame / 60.0f);
+        DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
         int counter = game->clear_exit ? 440 : game->menu.frame;
         if (counter >= 60) {
             DrawRectangle(672,115,576,590,ink);
@@ -1354,7 +1381,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         }
         return;
     }
-    draw_menu_list(game,assets,frame,devices);
+    draw_menu_list(game,assets,frame,devices,offset,clearance);
 }
 
 static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
@@ -1932,7 +1959,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
-            DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, Fade(BLACK, alpha));
+            alpha = alpha*alpha*(3-2*alpha);
+            DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
         }
         if (console->music_album) draw_music_album(console, &assets);
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);

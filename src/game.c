@@ -735,7 +735,7 @@ void game_tick(Game *game) {
             return;
         }
         if (game->menu.page == MENU_CLEAR) {
-            if (game->clear_exit && game->menu.frame > 440) { game_shop_open(game); return; }
+            if (game->clear_exit && game->menu.frame >= 426) { game_transition(game, TRANSITION_SHOP, 0); return; }
             if (game->clear_exit || game->menu.frame <= 440) ++game->menu.frame;
             if (!game->clear_exit && (game->menu.frame == 240 || game->menu.frame == 260)) {
                 static const int skill_bonus[] = {0, 0, 250, 500, 1000, 1500};
