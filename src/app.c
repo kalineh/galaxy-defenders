@@ -183,6 +183,34 @@ static const StageBackdrop backdrops[STAGE_COUNT] = {
     {"Orrery", {18,14,37,255}, {40,25,50,255}, {167,102,148,255}, {209,177,198,88}, {4,5}, {5,14}, 1,WEATHER_NONE},
 };
 
+/* Decoration textures supply silhouettes. Color them once when loading the stage. */
+static Texture2D load_deck(const char *path, int stage, const char *name) {
+    static const Color deck[STAGE_COUNT] = {
+        {49,65,87,255}, {44,68,75,255}, {49,67,77,255}, {48,54,66,255},
+        {65,57,83,255}, {47,48,55,255}, {58,77,71,255}, {60,59,84,255},
+        {71,59,62,255}, {42,63,80,255}, {65,74,88,255}, {66,54,79,255},
+        [12] = {255,255,255,255}, [15] = {82,57,58,255}, [16] = {60,76,66,255},
+    };
+    Color tint = deck[stage];
+    if (!strcmp(name,"SecretHint")) {
+        tint.r += 22;
+        tint.g += 22;
+        tint.b += 22;
+    }
+    Image mask = LoadImage(asset_path(path));
+    if (!mask.data) return (Texture2D){0};
+    ImageFormat(&mask,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    Color *pixels = mask.data;
+    for (int i = 0; i < mask.width*mask.height; ++i) {
+        tint.a = pixels[i].a;
+        pixels[i] = tint;
+    }
+    Texture2D texture = LoadTextureFromImage(mask);
+    UnloadImage(mask);
+    if (IsTextureValid(texture)) SetTextureFilter(texture,TEXTURE_FILTER_BILINEAR);
+    return texture;
+}
+
 static bool stage_assets_load(Assets *assets, int index) {
     bool valid = true;
     for (int i = 0; i < 4; ++i) {
@@ -249,7 +277,8 @@ static bool stage_assets_load(Assets *assets, int index) {
         char path[160];
         snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
             event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
-        assets->stage_textures[i] = texture_load(path);
+        assets->stage_textures[i] = event->kind == STAGE_DECORATION ?
+            load_deck(path,index,event->name) : texture_load(path);
         valid = valid && IsTextureValid(assets->stage_textures[i]);
         if (event->kind == STAGE_BUILDING) {
             snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
