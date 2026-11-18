@@ -840,7 +840,8 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
         snprintf(stats[0].value,40,"%g HP",c->armor);
         stats[1].label = "Acceleration";
         float thrust = c->speed * (game->players[slot].pilot == 0 ? 1.2f : 1);
-        snprintf(stats[1].value,40,"%.0f px/s\xc2\xb2",thrust*GAME_HZ*GAME_HZ);
+        /* The hangar scale rates the stock Rookie at 6 g. */
+        snprintf(stats[1].value,40,"%.1f g",6.0f*thrust/game_chassis[0].speed);
         stats[2].label = "Impact resistance";
         snprintf(stats[2].value,40,"%.0f%%",100*c->collision_resistance);
         count = 3;
