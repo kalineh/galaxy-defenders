@@ -643,12 +643,13 @@ static int button_icon(Font font, int x, int y, int device, ButtonGlyph button) 
         [GLYPH_PRIMARY]="X", [GLYPH_OVERCHARGE]="C", [GLYPH_SIDEKICK]="Z"};
     if (device < 0 || device >= INPUT_PADS) return key_cap(font,x,y,keys[button]);
     if (button == GLYPH_PRIMARY) button = GLYPH_CONFIRM;
+    if (button == GLYPH_OVERCHARGE) button = GLYPH_BACK;
     static const char *letters[] = {"A","B","X"};
     const char *pad = device < 4 ? GetGamepadName(device) : NULL;
     bool ps = device >= 4 || (pad && (strstr(pad,"Wireless Controller") || strstr(pad,"PS4") ||
         strstr(pad,"DualSense") || strstr(pad,"DualShock") || strstr(pad,"DUALSHOCK") || strstr(pad,"PS5")));
-    if (button == GLYPH_OVERCHARGE || button == GLYPH_SIDEKICK) {
-        const char *label = button == GLYPH_OVERCHARGE ? (ps ? "L1" : "LB") : (ps ? "R1" : "RB");
+    if (button == GLYPH_SIDEKICK) {
+        const char *label = ps ? "R1" : "RB";
         Rectangle cap = {x,y+2,37,24};
         DrawRectangleRounded(cap,.50f,6,surface);
         DrawRectangleRoundedLinesEx(cap,.50f,6,1.5f,(Color){124,147,170,255});
