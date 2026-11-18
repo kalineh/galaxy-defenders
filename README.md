@@ -109,7 +109,8 @@ between game frames, including waits. Cyan shows GPU time for the scene and
 MSAA resolve. Update measures CPU time for game logic, input and audio updates.
 The graph keeps 240 frames. The readout shows averages and the longest interval
 over the last half second. The guide marks the cap or the display interval.
-F2 joins with the keyboard.
+F2 joins with the keyboard. On Windows, Alt+Enter toggles between windowed
+and borderless fullscreen and saves the selection in Options.
 
 In Options, **Frame rate cap** defaults to **Display** and **V-sync** defaults
 to **On**. Display follows the monitor containing the window. Choose a fixed

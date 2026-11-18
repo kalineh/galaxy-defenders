@@ -1852,7 +1852,7 @@ static void poll_controllers(PadInput pads[INPUT_PADS]) {
     }
 }
 
-static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, PadInput pads[INPUT_PADS], bool accept_input) {
+static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, PadInput pads[INPUT_PADS], bool accept_input, bool start) {
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         int device = devices->device[slot];
         if (device >= 0 && device < INPUT_PADS && !pads[device].connected) input_drop(game, devices, device);
@@ -1863,7 +1863,6 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
             input_drop(game,devices,devices->device[slot]);
     }
     if (!accept_input || game->menu.page == MENU_CONTROLLERS) return;
-    bool start = IsKeyPressed(KEY_ENTER);
     bool join = IsKeyPressed(KEY_F2);
     int keyboard_slot = input_owner(devices,INPUT_KEYBOARD);
     bool keyboard_input = game->players[0].joined && devices->device[0] < 0 &&
@@ -2136,7 +2135,7 @@ static void update_audio(const Game *game, Console *console, Assets *assets) {
     }
 }
 
-static void music_album_input(Console *console, Game *game, Assets *assets) {
+static void music_album_input(Console *console, Game *game, Assets *assets, bool enter_pressed) {
     int track = console->music_track ? console->music_track : 1;
     float progress = console->music_progress;
     if (assets->audition_active) progress = GetMusicTimePlayed(assets->audition_stream) / GetMusicTimeLength(assets->audition_stream);
@@ -2145,7 +2144,7 @@ static void music_album_input(Console *console, Game *game, Assets *assets) {
     if (IsKeyPressed(KEY_DOWN)) { track = track % SYNTH_TRACK_COUNT + 1; progress = 0; change = true; }
     if (IsKeyPressed(KEY_LEFT) || IsKeyPressedRepeat(KEY_LEFT)) { progress = fmaxf(0, progress - .05f); change = true; }
     if (IsKeyPressed(KEY_RIGHT) || IsKeyPressedRepeat(KEY_RIGHT)) { progress = fminf(.999f, progress + .05f); change = true; }
-    if (IsKeyPressed(KEY_ENTER)) { progress = 0; change = true; }
+    if (enter_pressed) { progress = 0; change = true; }
     if (change) {
         char command[80]; snprintf(command, sizeof(command), "debug.music %d %.6f", track, progress);
         console_execute(console, game, command);
@@ -2432,6 +2431,14 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     bool link_cursor = false;
     double frame_start = GetTime(), elapsed = 0;
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
+        bool enter_pressed = IsKeyPressed(KEY_ENTER);
+#ifndef GALAXY_MEMORY
+        bool alt_down = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
+        if (alt_down && (enter_pressed || IsKeyPressed(KEY_KP_ENTER))) {
+            enter_pressed = false;
+            if (IsWindowFocused()) game->menu.options[OPTION_WINDOW_MODE] = !game->menu.options[OPTION_WINDOW_MODE];
+        }
+#endif
         if (!console_open && !console->music_album && IsKeyPressed(KEY_F8)) {
             int direction = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT) ? -1 : 1;
             int *language = &game->menu.options[OPTION_LANGUAGE];
@@ -2441,7 +2448,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         update_audio(game, console, &assets);
         if (!frames) {
             poll_controllers(pads);
-            poll_joining(game, &assets, &devices, pads, !console_open && !console->music_album && IsWindowFocused());
+            poll_joining(game, &assets, &devices, pads, !console_open && !console->music_album && IsWindowFocused(), enter_pressed);
             if (!IsWindowFocused()) for (int i = 0; i < INPUT_PADS; ++i) pads[i].pressed = 0;
         }
         bool was_menu = game->menu.page != MENU_NONE;
@@ -2467,7 +2474,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         if (console->music_album) {
             console_open = false;
-            music_album_input(console, game, &assets);
+            music_album_input(console, game, &assets, enter_pressed);
         } else if (console_open) {
             if (IsKeyPressed(KEY_ESCAPE)) console_open = false;
             int character;
@@ -2492,7 +2499,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsKeyPressed(KEY_PAGE_UP) || IsKeyPressedRepeat(KEY_PAGE_UP)) console->scroll += console_full ? 28 : 9;
             if (IsKeyPressed(KEY_PAGE_DOWN) || IsKeyPressedRepeat(KEY_PAGE_DOWN)) console->scroll -= console_full ? 28 : 9;
             console->scroll += (int)(GetMouseWheelMove() * 3);
-            if (IsKeyPressed(KEY_ENTER)) command_failed = !console_submit(console, game);
+            if (enter_pressed) command_failed = !console_submit(console, game);
         } else if (!toggled && was_menu) {
             if (game->menu.page == MENU_CONTROLLERS) poll_assignments(game,&devices,pads);
             else poll_menu(game, &assets, &devices, pads, picking);
