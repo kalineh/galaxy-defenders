@@ -1,4 +1,4 @@
-# Galaxy Defenders â€” Native Port
+# Super Galaxy Defenders â€” Native Port
 
 A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).

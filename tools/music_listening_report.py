@@ -45,14 +45,14 @@ def main():
 </article>''')
     document = '''<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Galaxy Defenders — Album listening</title>
+<title>Super Galaxy Defenders — Album listening</title>
 <style>
 body{margin:32px auto;max-width:1000px;padding:0 20px;background:#101724;color:#e4eaf5;font:16px/1.5 system-ui}
 h1{font-size:30px}h2{font-size:21px;margin-top:0}article{background:#1b2638;border:1px solid #35465f;padding:22px;margin:20px 0;border-radius:10px}
 audio{width:100%;margin:8px 0}.meta,summary{color:#b6c8df}.cuts{margin-top:10px}
 button{background:#304968;color:#fff;border:1px solid #7894b5;padding:6px 10px;margin:3px;border-radius:4px;cursor:pointer}
 a{color:#9acbff}details{margin-top:14px}
-</style><h1>Galaxy Defenders · Album listening</h1>
+</style><h1>Super Galaxy Defenders · Album listening</h1>
 <p>Audition the revised hooks, counter-melodies and drum parts. The boss cue buttons jump to the approach in the stage track.</p>
 <p>Nothing autoplays. Check melody, bass support, groove, balance and fatigue.
 Section buttons start the selected new track at its exact cut; only one player runs at a time.

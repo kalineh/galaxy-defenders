@@ -246,7 +246,7 @@ def write_report(report, lookup):
         lines.append(f"| {t['name']} | {t['duration_seconds']:.6f} | " + ', '.join(str(c['seconds']) for c in t['section_candidates']) + ' |')
     lines += ['', 'Original soundtrack attribution is archived in legacy/MUSIC_CREDITS.md. Analysis assets remain references.', '']
     (ROOT / 'MUSIC_TIMING.md').write_text('\n'.join(lines), encoding='utf-8', newline='\n')
-    page = ['<!doctype html><meta charset="utf-8"><title>Galaxy Defenders music timing review</title>',
+    page = ['<!doctype html><meta charset="utf-8"><title>Super Galaxy Defenders music timing review</title>',
             '<style>body{font:16px system-ui;background:#111826;color:#dfeafa;max-width:1200px;margin:40px auto;padding:0 24px}table{border-collapse:collapse;width:100%;margin:20px 0}td,th{padding:8px;text-align:left;border-bottom:1px solid #344056}button,a{color:#a9ddff}button{background:#233650;border:1px solid #58728b;padding:7px;cursor:pointer;margin:3px}section{margin:60px 0}small{color:#a9b6c9}.bar{display:inline-block;background:#67b6ce;height:12px}audio{width:100%}</style>',
             '<h1>Original music / stage timing</h1><p>Exact engine anchors; candidate musical boundaries. Click a cue to hear the original around it. No candidate is listening-approved. Spawn lulls can still contain enemies.</p>']
     for index, t in enumerate(report['tracks']):

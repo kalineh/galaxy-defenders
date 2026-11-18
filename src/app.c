@@ -54,7 +54,7 @@ typedef struct {
 typedef struct {
     Texture2D pages[sizeof(atlas_files)/sizeof(atlas_files[0])];
     Sprite ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
-    Texture2D portraits[3], title_logo, title_squad;
+    Texture2D portraits[3], title_logo, title_super, title_squad;
     Sprite particle_dot, particle_triangle;
     Sprite shop[15], star;
     Sprite weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
@@ -139,6 +139,7 @@ static void assets_unload(Assets *assets) {
     for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
         if (IsTextureValid(assets->pages[i])) UnloadTexture(assets->pages[i]);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
+    if (IsTextureValid(assets->title_super)) UnloadTexture(assets->title_super);
     if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
@@ -365,6 +366,13 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->particle_dot = atlas_sprite(assets,"textures/DotParticle.png");
     assets->particle_triangle = atlas_sprite(assets,"textures/TriangleParticle.png");
     assets->title_logo = texture_load("textures/GalaxyDefendersLogo.png");
+    assets->title_super = texture_load("textures/SuperWordmark.png");
+#ifndef GALAXY_MEMORY
+    if (IsTextureValid(assets->title_super)) {
+        GenTextureMipmaps(&assets->title_super);
+        SetTextureFilter(assets->title_super,TEXTURE_FILTER_TRILINEAR);
+    }
+#endif
     static const char *portrait_files[] = {"textures/KazukiPortrait.png","textures/RabbitPortrait.png","textures/GunthorPortrait.png"};
     static const Rectangle squad_positions[] = {{101,0,286,286},{-8,29,245,245},{251,18,252,252}};
     Image squad = GenImageColor(488,246,BLANK);
@@ -397,7 +405,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
         if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i].texture);
     for (int i = 0; i < 3; ++i) valid = valid && IsTextureValid(assets->portraits[i]);
-    valid = valid && IsTextureValid(assets->title_logo) && IsTextureValid(assets->title_squad);
+    valid = valid && IsTextureValid(assets->title_logo) && IsTextureValid(assets->title_super) && IsTextureValid(assets->title_squad);
     for (int i = 0; i < 15; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
@@ -1598,6 +1606,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
         sprite(whole_texture(assets->title_squad),x+width/2,y-16-squad_height/2,width,0,WHITE);
         DrawRectangle(x,y-9,width,2,rule);
         sprite(whole_texture(assets->title_logo),960,151,776,0,WHITE);
+        sprite(whole_texture(assets->title_super),681,64,202,-6,WHITE);
     } else {
         DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
         DrawRectangle(x-32,y-114,width+64,3,accent);
@@ -1617,7 +1626,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
         DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,0.58f));
         dialog_frame(top,danger);
         const char *question = deleting ? TextFormat(ui_text("Delete slot %d?"),game->menu.delete_slot+1) :
-            ui_text(exiting ? "Quit Galaxy Defenders?" : "Return to title?");
+            ui_text(exiting ? "Quit Super Galaxy Defenders?" : "Return to title?");
         const char *explanation = ui_text(deleting ? "This permanently deletes its saved progress." :
             exiting ? "Close the game and return to the desktop." : "Leave this session and return to the title screen.");
         DrawTextEx(font,question,(Vector2){672,top+24},fitted_size(font,question,38,576),0,WHITE);
@@ -2373,9 +2382,9 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         (frames ? FLAG_WINDOW_HIDDEN : 0));
 #endif
 #ifdef GALAXY_MEMORY
-    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Galaxy Defenders - software check");
+    InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Super Galaxy Defenders - software check");
 #else
-    InitWindow(1280, 720, "Galaxy Defenders - native first pass");
+    InitWindow(1280, 720, "Super Galaxy Defenders");
 #endif
     if (!IsWindowReady()) { console_log(console, "ERROR: could not create window"); return 1; }
     SetExitKey(KEY_NULL);
