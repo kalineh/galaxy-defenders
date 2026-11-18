@@ -15,6 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
+    {"debug.shadows", "debug.shadows [on|off]", "Toggle enemy and building shadows for this session.", {"on off"}},
     {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
@@ -325,6 +326,11 @@ bool console_execute(Console *console, Game *game, const char *line) {
     float x, y, expected;
     if (!strcmp(command, "help") && count <= 2) return print_help(console, count == 2 ? words[1] : NULL);
     if (!strcmp(command, "clear") && count == 1) { console->count = console->scroll = 0; return true; }
+    if (!strcmp(command, "debug.shadows") && (count == 1 || (count == 2 && (!strcmp(words[1], "on") || !strcmp(words[1], "off"))))) {
+        console->shadows_off = count == 1 ? !console->shadows_off : !strcmp(words[1], "off");
+        console_log(console, "Enemy and building shadows %s", console->shadows_off ? "off" : "on");
+        return true;
+    }
     if (!strcmp(command, "perf") && (count == 1 || (count == 2 && (!strcmp(words[1], "on") || !strcmp(words[1], "off"))))) {
         console->perf = count == 1 ? !console->perf : !strcmp(words[1], "on");
         console_log(console, "Frame/work graph: %s (F3)", console->perf ? "on" : "off");

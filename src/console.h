@@ -12,7 +12,7 @@ typedef struct {
     char input[CONSOLE_LINE], draft[CONSOLE_LINE], completion[CONSOLE_LINE];
     char commands[CONSOLE_COMMAND_HISTORY][CONSOLE_LINE];
     int count, steps, cursor, command_count, history_offset, scroll;
-    bool quit, perf;
+    bool quit, perf, shadows_off;
     int music_track;
     bool music_album;
     unsigned music_revision;
