@@ -25,12 +25,11 @@ try {
     }
     Add-Type -AssemblyName System.Drawing
     $image = [Drawing.Bitmap]::new((Join-Path $scratch 'software.png'))
-    $source = [Drawing.Bitmap]::new((Join-Path $repoRoot 'assets\textures\Ball.png'))
     try {
         if ($image.Width -ne 1920 -or $image.Height -ne 1080) { throw 'Wrong render dimensions.' }
         # These three scene probes catch blank output, vertical inversion, and RGBA/BGRA mistakes.
         $probes = @(
-            @{ X = 952; Y = 303; Expected = $source.GetPixel(40, 40) },
+            @{ X = 952; Y = 303; Expected = [Drawing.Color]::FromArgb(252,124,85) },
             @{ X = 872; Y = 880; Expected = [Drawing.Color]::FromArgb(247, 208, 74) },
             @{ X = 1032; Y = 880; Expected = [Drawing.Color]::FromArgb(195, 150, 255) }
         )
@@ -45,9 +44,8 @@ try {
         }
     } finally {
         $image.Dispose()
-        $source.Dispose()
     }
-    Write-Output 'PASS: software render, original sprite, player colors, orientation; no window or audio.'
+    Write-Output 'PASS: software render, atlas sprite, player colors, orientation; no window or audio.'
 } finally {
     Pop-Location
 }

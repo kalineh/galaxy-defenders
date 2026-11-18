@@ -19,23 +19,39 @@ typedef struct {
 } FrameGraph;
 
 typedef struct {
-    Texture2D flight_atlas;
-    Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
+    const char *name;
+    int page;
+    Rectangle region;
+    int width, height;
+    Rectangle bounds; /* Visible portion of the original canvas, normalized. */
+} AtlasEntry;
+
+#include "sprite_regions.inc"
+
+typedef struct {
+    Texture2D texture;
+    Rectangle region, bounds;
+    int width, height;
+} Sprite;
+
+typedef struct {
+    Texture2D pages[sizeof(atlas_files)/sizeof(atlas_files[0])];
+    Sprite ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
     Texture2D portraits[3], title_logo, title_squad;
-    Texture2D particle_dot, particle_triangle;
-    Texture2D water;
-    Texture2D shop[15], star;
-    Texture2D weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
-    Texture2D hostile_textures[HOSTILE_COUNT];
-    Texture2D big_laser, big_flame, shield_overlay, asteroid_cracks;
-    Texture2D generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
-    Texture2D stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
+    Sprite particle_dot, particle_triangle;
+    Sprite shop[15], star;
+    Sprite weapon_icons[WEAPON_COUNT], weapon_textures[WEAPON_COUNT];
+    Sprite hostile_textures[HOSTILE_COUNT];
+    Sprite big_laser, big_flame, shield_overlay, asteroid_cracks;
+    Sprite generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
+    Sprite stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
-    Texture2D boss4_cover, boss5_cover, boss6_center;
-    Texture2D rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
-    Texture2D enemy_corpses[ENEMY_KIND_COUNT];
-    Texture2D pickups[3], medals[5];
-    int stage_texture_owner[STAGE_MAX_EVENTS], stage_index;
+    Sprite boss4_cover, boss5_cover, boss6_center;
+    Sprite rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
+    Sprite enemy_corpses[ENEMY_KIND_COUNT];
+    Sprite pickups[3], medals[5];
+    int stage_index;
+    Color stage_tints[STAGE_MAX_EVENTS];
     Music music, title_music, pause_music;
     Music audition_stream;
     unsigned audition_revision;
@@ -84,65 +100,35 @@ static Texture2D texture_load(const char *name) {
     return texture;
 }
 
-#include "sprite_regions.inc"
-
-static const Rectangle *enemy_atlas_region(EnemyKind kind) {
-    switch (kind) {
-        case ENEMY_BALL: return &atlas_ball;
-        case ENEMY_TURRET: return &atlas_turret;
-        case ENEMY_AIRSHIP: return &atlas_airship;
-        default: return NULL;
+static Sprite atlas_sprite(const Assets *assets, const char *name) {
+    int lo = 0, hi = (int)(sizeof(atlas_entries)/sizeof(atlas_entries[0]));
+    while (lo < hi) {
+        int mid = lo + (hi-lo)/2;
+        const AtlasEntry *entry = &atlas_entries[mid];
+        int cmp = strcmp(name,entry->name);
+        if (!cmp) return (Sprite){assets->pages[entry->page],entry->region,entry->bounds,entry->width,entry->height};
+        if (cmp < 0) hi = mid;
+        else lo = mid+1;
     }
+    TraceLog(LOG_ERROR,"Missing atlas sprite: %s",name);
+    return (Sprite){0};
+}
+
+static Sprite whole_texture(Texture2D texture) {
+    return (Sprite){texture,{0,0,texture.width,texture.height},{0,0,1,1},texture.width,texture.height};
 }
 
 static void assets_unload(Assets *assets) {
-    if (IsTextureValid(assets->flight_atlas)) UnloadTexture(assets->flight_atlas);
+    for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
+        if (IsTextureValid(assets->pages[i])) UnloadTexture(assets->pages[i]);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
     if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
-    if (IsTextureValid(assets->asteroid_cracks)) UnloadTexture(assets->asteroid_cracks);
-    for (int i = 0; i < 5; ++i) if (IsTextureValid(assets->medals[i])) UnloadTexture(assets->medals[i]);
-    for (int i = 0; i < 3; ++i) if (IsTextureValid(assets->pickups[i])) UnloadTexture(assets->pickups[i]);
-    if (IsTextureValid(assets->boss4_cover)) UnloadTexture(assets->boss4_cover);
-    if (IsTextureValid(assets->boss5_cover)) UnloadTexture(assets->boss5_cover);
-    if (IsTextureValid(assets->boss6_center)) UnloadTexture(assets->boss6_center);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
     if (assets->heading_font.texture.id && assets->heading_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->heading_font);
     if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
-    for (int i = 0; i < GAME_CHASSIS; ++i) if (IsTextureValid(assets->ships[i])) UnloadTexture(assets->ships[i]);
-    for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
-        if (IsTextureValid(assets->enemy_corpses[i])) UnloadTexture(assets->enemy_corpses[i]);
-    if (IsTextureValid(assets->pyramid_turret)) UnloadTexture(assets->pyramid_turret);
-    if (IsTextureValid(assets->cutter_beam)) UnloadTexture(assets->cutter_beam);
-    if (IsTextureValid(assets->rotate_turret_base)) UnloadTexture(assets->rotate_turret_base);
-    if (IsTextureValid(assets->splitter_right)) UnloadTexture(assets->splitter_right);
-    for (int i = 0; i < ENEMY_KIND_COUNT; ++i) if (IsTextureValid(assets->enemies[i])) UnloadTexture(assets->enemies[i]);
-    if (IsTextureValid(assets->shot)) UnloadTexture(assets->shot);
-    if (IsTextureValid(assets->hostile_shot)) UnloadTexture(assets->hostile_shot);
-    if (IsTextureValid(assets->particle_dot)) UnloadTexture(assets->particle_dot);
-    if (IsTextureValid(assets->particle_triangle)) UnloadTexture(assets->particle_triangle);
     for (int i = 0; i < 3; ++i)
         if (IsTextureValid(assets->portraits[i])) UnloadTexture(assets->portraits[i]);
-    for (int i = 0; i < 15; ++i) if (IsTextureValid(assets->shop[i])) UnloadTexture(assets->shop[i]);
-    for (int i = 0; i < WEAPON_COUNT; ++i) {
-        if (IsTextureValid(assets->weapon_icons[i])) UnloadTexture(assets->weapon_icons[i]);
-        if (IsTextureValid(assets->weapon_textures[i])) UnloadTexture(assets->weapon_textures[i]);
-    }
-    for (int i = 0; i < HOSTILE_COUNT; ++i) if (IsTextureValid(assets->hostile_textures[i])) UnloadTexture(assets->hostile_textures[i]);
-    for (int i = 0; i < GENERATOR_COUNT; ++i) if (IsTextureValid(assets->generator_icons[i])) UnloadTexture(assets->generator_icons[i]);
-    for (int i = 0; i < SHIELD_COUNT; ++i) if (IsTextureValid(assets->shield_icons[i])) UnloadTexture(assets->shield_icons[i]);
-    if (IsTextureValid(assets->item_none)) UnloadTexture(assets->item_none);
-    if (IsTextureValid(assets->sidekick)) UnloadTexture(assets->sidekick);
-    if (IsTextureValid(assets->big_laser)) UnloadTexture(assets->big_laser);
-    if (IsTextureValid(assets->big_flame)) UnloadTexture(assets->big_flame);
-    if (IsTextureValid(assets->shield_overlay)) UnloadTexture(assets->shield_overlay);
-    if (IsTextureValid(assets->star)) UnloadTexture(assets->star);
-    if (IsTextureValid(assets->water)) UnloadTexture(assets->water);
-    for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
-        if (assets->stage_texture_owner[i] != i) continue;
-        if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
-        if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
-    }
     if (assets->audio) {
         if (IsMusicValid(assets->audition_stream)) UnloadMusicStream(assets->audition_stream);
         for (int i = 0; i < WEAPON_COUNT; ++i) if (IsSoundValid(assets->weapon_fire[i])) UnloadSound(assets->weapon_fire[i]);
@@ -197,7 +183,7 @@ static const StageBackdrop backdrops[STAGE_COUNT] = {
 };
 
 /* Decoration textures supply silhouettes. Color them once when loading the stage. */
-static Texture2D load_deck(const char *path, int stage, const char *name) {
+static Color deck_tint(int stage, const char *name) {
     static const Color deck[STAGE_COUNT] = {
         {49,65,87,255}, {44,68,75,255}, {49,67,77,255}, {48,54,66,255},
         {65,57,83,255}, {47,48,55,255}, {58,77,71,255}, {60,59,84,255},
@@ -210,18 +196,7 @@ static Texture2D load_deck(const char *path, int stage, const char *name) {
         tint.g += 22;
         tint.b += 22;
     }
-    Image mask = LoadImage(asset_path(path));
-    if (!mask.data) return (Texture2D){0};
-    ImageFormat(&mask,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
-    Color *pixels = mask.data;
-    for (int i = 0; i < mask.width*mask.height; ++i) {
-        tint.a = pixels[i].a;
-        pixels[i] = tint;
-    }
-    Texture2D texture = LoadTextureFromImage(mask);
-    UnloadImage(mask);
-    if (IsTextureValid(texture)) SetTextureFilter(texture,TEXTURE_FILTER_BILINEAR);
-    return texture;
+    return tint;
 }
 
 static bool stage_assets_load(Assets *assets, int index) {
@@ -265,40 +240,21 @@ static bool stage_assets_load(Assets *assets, int index) {
         assets->scenery[i] = texture_load(path);
         valid = valid && IsTextureValid(assets->scenery[i]);
     }
-    for (int i = 0; i < stage_definitions[assets->stage_index].event_count; ++i) {
-        if (assets->stage_texture_owner[i] != i) continue;
-        if (IsTextureValid(assets->stage_textures[i])) UnloadTexture(assets->stage_textures[i]);
-        if (IsTextureValid(assets->stage_destroyed[i])) UnloadTexture(assets->stage_destroyed[i]);
-    }
-    memset(assets->stage_textures, 0, sizeof(assets->stage_textures));
-    memset(assets->stage_destroyed, 0, sizeof(assets->stage_destroyed));
     assets->stage_index = index;
     const StageDefinition *stage = &stage_definitions[index];
     for (int i = 0; i < stage->event_count; ++i) {
         const StageEvent *event = &stage->events[i];
-        assets->stage_texture_owner[i] = i;
         if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
-        int owner = i;
-        for (int j = 0; j < i; ++j) if (stage->events[j].kind == event->kind &&
-            !strcmp(stage->events[j].name, event->name)) { owner = j; break; }
-        assets->stage_texture_owner[i] = owner;
-        if (owner != i) {
-            assets->stage_textures[i] = assets->stage_textures[owner];
-            assets->stage_destroyed[i] = assets->stage_destroyed[owner];
-            continue;
-        }
         char path[160];
         snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
             event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
-        if (event->kind != STAGE_BUILDING || strcmp(event->name,"SmallBuilding3") != 0) {
-            assets->stage_textures[i] = event->kind == STAGE_DECORATION ?
-                load_deck(path,index,event->name) : texture_load(path);
-            valid = valid && IsTextureValid(assets->stage_textures[i]);
-        }
+        assets->stage_textures[i] = atlas_sprite(assets,path);
+        assets->stage_tints[i] = event->kind == STAGE_DECORATION ? deck_tint(index,event->name) : WHITE;
+        valid = valid && IsTextureValid(assets->stage_textures[i].texture);
         if (event->kind == STAGE_BUILDING) {
             snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
-            assets->stage_destroyed[i] = texture_load(path);
-            valid = valid && IsTextureValid(assets->stage_destroyed[i]);
+            assets->stage_destroyed[i] = atlas_sprite(assets,path);
+            valid = valid && IsTextureValid(assets->stage_destroyed[i].texture);
         }
     }
     return valid;
@@ -339,53 +295,55 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     SetTextureFilter(assets->heading_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
-    assets->flight_atlas = texture_load("textures/FlightSprites.png");
-    if (!IsTextureValid(assets->flight_atlas)) return false;
+    for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i) {
+        assets->pages[i] = texture_load(atlas_files[i]);
+        if (!IsTextureValid(assets->pages[i])) return false;
 #ifndef GALAXY_MEMORY
-    GenTextureMipmaps(&assets->flight_atlas);
-    SetTextureFilter(assets->flight_atlas,TEXTURE_FILTER_TRILINEAR);
+        GenTextureMipmaps(&assets->pages[i]);
+        SetTextureFilter(assets->pages[i],TEXTURE_FILTER_TRILINEAR);
 #endif
-    for (int i = 1; i < GAME_CHASSIS; ++i) {
+    }
+    for (int i = 0; i < GAME_CHASSIS; ++i) {
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
-        assets->ships[i] = texture_load(path);
+        assets->ships[i] = atlas_sprite(assets,path);
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
-        if (i == ENEMY_BOSS8_COLLISION || enemy_atlas_region(i)) continue;
+        if (i == ENEMY_BOSS8_COLLISION) continue;
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_is_asteroid(i) ? "Asteroid" : enemy_names[i]);
-        assets->enemies[i] = texture_load(path);
+        assets->enemies[i] = atlas_sprite(assets,path);
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
         const char *name = enemy_corpse_name((EnemyKind)i);
         if (!name) continue;
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", name);
-        assets->enemy_corpses[i] = texture_load(path);
+        assets->enemy_corpses[i] = atlas_sprite(assets,path);
     }
     static const char *medals[] = {"Clear", "Bronze", "Silver", "Gold", "Platinum"};
     for (int i = 0; i < 5; ++i) {
         char path[128];
         snprintf(path, sizeof(path), "textures/Medal%s.png", medals[i]);
-        assets->medals[i] = texture_load(path);
-        if (!IsTextureValid(assets->medals[i])) return false;
+        assets->medals[i] = atlas_sprite(assets,path);
+        if (!IsTextureValid(assets->medals[i].texture)) return false;
     }
-    assets->asteroid_cracks = texture_load("textures/Cracks.png");
-    if (!IsTextureValid(assets->asteroid_cracks)) return false;
-    assets->pyramid_turret = texture_load("textures/PyramidTurret.png");
-    assets->cutter_beam = texture_load("textures/CutterBeam.png");
-    assets->rotate_turret_base = texture_load("textures/RotateTurretBase.png");
-    assets->splitter_right = texture_load("textures/SplitterFragmentRight.png");
-    assets->shot = texture_load("textures/Laser.png");
-    assets->pickups[0] = texture_load("textures/Bonus.png");
-    assets->pickups[1] = texture_load("textures/BigBonus.png");
-    assets->pickups[2] = texture_load("textures/Powerup.png");
-    assets->boss4_cover = texture_load("textures/Boss4Cover.png");
-    assets->boss5_cover = texture_load("textures/Boss5Cover.png");
-    assets->boss6_center = texture_load("textures/Boss6Center.png");
-    assets->hostile_shot = texture_load("textures/EnemyShot.png");
-    assets->particle_dot = texture_load("textures/DotParticle.png");
-    assets->particle_triangle = texture_load("textures/TriangleParticle.png");
+    assets->asteroid_cracks = atlas_sprite(assets,"textures/Cracks.png");
+    if (!IsTextureValid(assets->asteroid_cracks.texture)) return false;
+    assets->pyramid_turret = atlas_sprite(assets,"textures/PyramidTurret.png");
+    assets->cutter_beam = atlas_sprite(assets,"textures/CutterBeam.png");
+    assets->rotate_turret_base = atlas_sprite(assets,"textures/RotateTurretBase.png");
+    assets->splitter_right = atlas_sprite(assets,"textures/SplitterFragmentRight.png");
+    assets->shot = atlas_sprite(assets,"textures/Laser.png");
+    assets->pickups[0] = atlas_sprite(assets,"textures/Bonus.png");
+    assets->pickups[1] = atlas_sprite(assets,"textures/BigBonus.png");
+    assets->pickups[2] = atlas_sprite(assets,"textures/Powerup.png");
+    assets->boss4_cover = atlas_sprite(assets,"textures/Boss4Cover.png");
+    assets->boss5_cover = atlas_sprite(assets,"textures/Boss5Cover.png");
+    assets->boss6_center = atlas_sprite(assets,"textures/Boss6Center.png");
+    assets->hostile_shot = atlas_sprite(assets,"textures/EnemyShot.png");
+    assets->particle_dot = atlas_sprite(assets,"textures/DotParticle.png");
+    assets->particle_triangle = atlas_sprite(assets,"textures/TriangleParticle.png");
     assets->title_logo = texture_load("textures/GalaxyDefendersLogo.png");
     static const char *portrait_files[] = {"textures/KazukiPortrait.png","textures/RabbitPortrait.png","textures/GunthorPortrait.png"};
     static const Rectangle squad_positions[] = {{101,0,286,286},{-8,29,245,245},{251,18,252,252}};
@@ -411,62 +369,61 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     assets->title_squad = LoadTextureFromImage(squad);
     SetTextureFilter(assets->title_squad,TEXTURE_FILTER_BILINEAR);
     UnloadImage(squad);
-    assets->water = texture_load("textures/Water.png");
-    bool valid = IsTextureValid(assets->pyramid_turret) && IsTextureValid(assets->cutter_beam) && IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
-    for (int i = 1; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
-    valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
+    bool valid = IsTextureValid(assets->pyramid_turret.texture) && IsTextureValid(assets->cutter_beam.texture) && IsTextureValid(assets->rotate_turret_base.texture) && IsTextureValid(assets->splitter_right.texture) && IsTextureValid(assets->shot.texture) && IsTextureValid(assets->hostile_shot.texture);
+    for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i].texture);
+    valid = valid && IsTextureValid(assets->particle_dot.texture) && IsTextureValid(assets->particle_triangle.texture);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
-        if (i != ENEMY_BOSS8_COLLISION && !enemy_atlas_region(i)) valid = valid && IsTextureValid(assets->enemies[i]);
+        if (i != ENEMY_BOSS8_COLLISION) valid = valid && IsTextureValid(assets->enemies[i].texture);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
-        if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i]);
+        if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i].texture);
     for (int i = 0; i < 3; ++i) valid = valid && IsTextureValid(assets->portraits[i]);
-    valid = valid && IsTextureValid(assets->water) && IsTextureValid(assets->title_logo) && IsTextureValid(assets->title_squad);
+    valid = valid && IsTextureValid(assets->title_logo) && IsTextureValid(assets->title_squad);
     for (int i = 0; i < 15; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", shop_texture_names[i]);
-        assets->shop[i] = texture_load(path);
-        valid = IsTextureValid(assets->shop[i]) && valid;
+        assets->shop[i] = atlas_sprite(assets,path);
+        valid = IsTextureValid(assets->shop[i].texture) && valid;
     }
-    assets->star = texture_load("textures/Star.png");
+    assets->star = atlas_sprite(assets,"textures/Star.png");
     static const char *hostile_names[] = {"EnemyShot", "EnemyLaser", "EnemyMissile", "EnemyCannonShot", "EnemyPellet", "EnemyMiniShot"};
-    assets->sidekick = texture_load("textures/player/Sidekick.png");
-    assets->shield_overlay = texture_load("textures/effects/PlayerShieldHit.png");
-    assets->big_laser = texture_load("textures/weapons/BigLaser.png");
-    assets->big_flame = texture_load("textures/weapons/BigFlame.png");
-    valid = valid && IsTextureValid(assets->sidekick) && IsTextureValid(assets->shield_overlay) &&
-        IsTextureValid(assets->big_laser) && IsTextureValid(assets->big_flame);
+    assets->sidekick = atlas_sprite(assets,"textures/player/Sidekick.png");
+    assets->shield_overlay = atlas_sprite(assets,"textures/effects/PlayerShieldHit.png");
+    assets->big_laser = atlas_sprite(assets,"textures/weapons/BigLaser.png");
+    assets->big_flame = atlas_sprite(assets,"textures/weapons/BigFlame.png");
+    valid = valid && IsTextureValid(assets->sidekick.texture) && IsTextureValid(assets->shield_overlay.texture) &&
+        IsTextureValid(assets->big_laser.texture) && IsTextureValid(assets->big_flame.texture);
     for (int i = 0; i < HOSTILE_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/weapons/%s.png", hostile_names[i]);
-        assets->hostile_textures[i] = texture_load(path);
-        valid = IsTextureValid(assets->hostile_textures[i]) && valid;
+        assets->hostile_textures[i] = atlas_sprite(assets,path);
+        valid = IsTextureValid(assets->hostile_textures[i].texture) && valid;
     }
     for (int i = 0; i < WEAPON_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/weapons/%s.png", weapon_texture_names[i]);
-        assets->weapon_textures[i] = texture_load(path);
-        valid = IsTextureValid(assets->weapon_textures[i]) && valid;
+        assets->weapon_textures[i] = atlas_sprite(assets,path);
+        valid = IsTextureValid(assets->weapon_textures[i].texture) && valid;
         if (equipment_weapon_category(i) >= 0) {
             snprintf(path, sizeof(path), "textures/shop/IconWeapon%s.png", game_weapons[i].name);
-            assets->weapon_icons[i] = texture_load(path);
-            valid = IsTextureValid(assets->weapon_icons[i]) && valid;
+            assets->weapon_icons[i] = atlas_sprite(assets,path);
+            valid = IsTextureValid(assets->weapon_icons[i].texture) && valid;
         }
     }
     for (int i = 0; i < GENERATOR_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", game_generators[i].icon);
-        assets->generator_icons[i] = texture_load(path);
-        valid = IsTextureValid(assets->generator_icons[i]) && valid;
+        assets->generator_icons[i] = atlas_sprite(assets,path);
+        valid = IsTextureValid(assets->generator_icons[i].texture) && valid;
     }
     for (int i = 0; i < SHIELD_COUNT; ++i) {
         char path[160];
         snprintf(path, sizeof(path), "textures/shop/%s.png", game_shields[i].icon);
-        assets->shield_icons[i] = texture_load(path);
-        valid = IsTextureValid(assets->shield_icons[i]) && valid;
+        assets->shield_icons[i] = atlas_sprite(assets,path);
+        valid = IsTextureValid(assets->shield_icons[i].texture) && valid;
     }
-    assets->item_none = texture_load("textures/shop/IconItemNone.png");
-    valid = IsTextureValid(assets->item_none) && valid;
-    valid = IsTextureValid(assets->star) && stage_assets_load(assets, 0) && valid;
+    assets->item_none = atlas_sprite(assets,"textures/shop/IconItemNone.png");
+    valid = IsTextureValid(assets->item_none.texture) && valid;
+    valid = IsTextureValid(assets->star.texture) && stage_assets_load(assets, 0) && valid;
     if (!valid) { console_log(console, "ERROR: missing textures beside executable in assets/"); return false; }
     if (mute) return true;
     InitAudioDevice();
@@ -535,20 +492,27 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     return true;
 }
 
-static void sprite(Texture2D texture, float x, float y, float width, float rotation, Color color) {
-    float height = width * texture.height / texture.width;
-    DrawTexturePro(texture, (Rectangle){0, 0, (float)texture.width, (float)texture.height},
-        (Rectangle){x, y, width, height}, (Vector2){width / 2, height / 2}, rotation, color);
+/* Cropping the transparent margins changes only the drawn rectangle, never the pivot. */
+static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 origin, float angle, Color tint) {
+    Rectangle region = image.region;
+    Rectangle bounds = image.bounds;
+    float left = src.width < 0 ? 1-bounds.x-bounds.width : bounds.x;
+    float top = src.height < 0 ? 1-bounds.y-bounds.height : bounds.y;
+    origin.x -= dest.width*left;
+    origin.y -= dest.height*top;
+    dest.width *= bounds.width;
+    dest.height *= bounds.height;
+    region.x += src.x*region.width/image.width;
+    region.y += src.y*region.height/image.height;
+    region.width *= src.width/image.width;
+    region.height *= src.height/image.height;
+    DrawTexturePro(image.texture,region,dest,origin,angle,tint);
 }
 
-static void draw_atlas_sprite(Texture2D atlas, Rectangle region, float x, float y, float width, float rotation, Color tint) {
-    float height = width * region.height / region.width;
-    DrawTexturePro(atlas,region,(Rectangle){x,y,width,height},(Vector2){width/2,height/2},rotation,tint);
-}
-
-static void draw_ship(const Assets *assets, int chassis, float x, float y, float width, float rotation, Color tint) {
-    if (chassis == 0) draw_atlas_sprite(assets->flight_atlas,atlas_rookie,x,y,width,rotation,tint);
-    else sprite(assets->ships[chassis],x,y,width,rotation,tint);
+static void sprite(Sprite image, float x, float y, float width, float angle, Color tint) {
+    float height = width*image.height/image.width;
+    sprite_part(image,(Rectangle){0,0,image.width,image.height},(Rectangle){x,y,width,height},
+        (Vector2){width/2,height/2},angle,tint);
 }
 
 static void text_center(Font font, const char *text, int x, int y, int size, Color color) {
@@ -591,7 +555,7 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
 
-static void draw_flight_dust(const StageState *stage, Texture2D dust, bool foreground) {
+static void draw_flight_dust(const StageState *stage, Sprite dust, bool foreground) {
     const StageBackdrop *backdrop = &backdrops[stage->index];
     Rectangle source = {0, 0, (float)dust.width, (float)dust.height};
     for (int pass = 0; pass < 2; ++pass) {
@@ -613,7 +577,7 @@ static void draw_flight_dust(const StageState *stage, Texture2D dust, bool foreg
                 }
             }
             Rectangle dest = {ARENA_X + p->x - stage->camera_x, p->y, width, height};
-            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},angle,tint);
+            sprite_part(dust,source,dest,(Vector2){width/2,height/2},angle,tint);
         }
     }
 }
@@ -622,7 +586,7 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     int index = game->stage.index;
     const StageBackdrop *backdrop = &backdrops[index];
     if (foreground) {
-        if (backdrop->weather) draw_flight_dust(&game->stage,assets->scenery[3],true);
+        if (backdrop->weather) draw_flight_dust(&game->stage,whole_texture(assets->scenery[3]),true);
         return;
     }
     Texture2D sky = assets->scenery[2];
@@ -657,7 +621,7 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     if (layer == 0) for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
         const EnemyCorpse *corpse = &game->stage.corpses[i];
         if (!corpse->active) continue;
-        Texture2D texture = assets->enemy_corpses[corpse->kind];
+        Sprite texture = assets->enemy_corpses[corpse->kind];
         float y = corpse->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
         sprite(texture, view_x + corpse->x, y, (float)texture.width, 0, WHITE);
     }
@@ -670,21 +634,15 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
             sprite(assets->pyramid_turret, view_x + enemy->x, enemy->y, (float)assets->pyramid_turret.width, (enemy->aim - PI/2) * RAD2DEG, WHITE);
         if (enemy->kind == ENEMY_ROTATE_TURRET && layer == 0)
             sprite(assets->rotate_turret_base, view_x + enemy->x, enemy->y, (float)assets->rotate_turret_base.width, 0, WHITE);
-        Texture2D cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
-            enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Texture2D){0};
+        Sprite cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
+            enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Sprite){0};
         float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
             enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
         int cover_layer = enemy->kind == ENEMY_BOSS6 ? -1 : 2;
-        if (layer == cover_layer && IsTextureValid(cover)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
+        if (layer == cover_layer && IsTextureValid(cover.texture)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
         if (depth != layer) continue;
-        const Rectangle *region = enemy_atlas_region(enemy->kind);
-        if (region) {
-            float width = enemy->kind == ENEMY_AIRSHIP ? 160 : 80;
-            draw_atlas_sprite(assets->flight_atlas,*region,view_x+enemy->x,enemy->y,width,enemy->rotation*RAD2DEG,WHITE);
-            continue;
-        }
-        Texture2D texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
+        Sprite texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
             assets->splitter_right : assets->enemies[enemy->kind];
         float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : enemy->rotation;
         Rectangle source = {0, 0, (float)texture.width, (float)texture.height};
@@ -697,7 +655,7 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_BOSS4_CHUNK) origin.x = 0;
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
-        DrawTexturePro(texture, source,
+        sprite_part(texture, source,
             (Rectangle){view_x + enemy->x,enemy->y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
         if (enemy_is_asteroid(enemy->kind))
             sprite(assets->asteroid_cracks, view_x + enemy->x, enemy->y, 80 * scale, rotation * RAD2DEG,
@@ -715,7 +673,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        draw_ship(assets,player->chassis, view_x + player->x, player->y, 80, -90, color);
+        sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
         if (player->sidekick >= 0) for (int side = -1; side <= 1; side += 2)
             sprite(assets->sidekick, view_x + player->x + side * 40, player->y, assets->sidekick.width, 0, color);
         if (player->shield_hit_frames > 0)
@@ -727,7 +685,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         const Bullet *bullet = &game->bullets[i];
         if (!bullet->active || bullet->splash) continue;
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
-        Texture2D texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
+        Sprite texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
         if (bullet->owner >= 0) {
             if ((bullet->weapon == WEAPON_FRONT_LASER || bullet->weapon == WEAPON_FRONT_LASER_FOCUS ||
                  bullet->weapon == WEAPON_SPREAD_LASER || bullet->weapon == WEAPON_SPREAD_LASER_FOCUS ||
@@ -736,7 +694,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
                 texture = assets->big_flame;
         }
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
-            DrawTexturePro(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
+            sprite_part(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
                 (Rectangle){view_x + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
                 (Vector2){540, bullet->width}, -90, color);
         } else {
@@ -745,7 +703,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
             float rotation = bullet->owner < 0 && bullet->hostile_kind != HOSTILE_PELLET ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BLADE && bullet->offset_x < 0) {
                 float height = width * texture.height / texture.width;
-                DrawTexturePro(texture, (Rectangle){0, 0, texture.width, -texture.height},
+                sprite_part(texture, (Rectangle){0, 0, texture.width, -texture.height},
                     (Rectangle){view_x + bullet->x, bullet->y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color);
             } else sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
         }
@@ -754,7 +712,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
         if (effect->life <= 0) continue;
-        Texture2D texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
+        Sprite texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
         sprite(texture, view_x + effect->x, effect->y, texture.width * effect->scale,
             effect->angle, (Color){effect->r, effect->g, effect->b, (unsigned char)(fminf(1, fmaxf(0, effect->alpha)) * 255)});
     }
@@ -788,7 +746,7 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
     const char *credits = shopping ? TextFormat("%d cr",p->money) : TextFormat("%d pts",p->score);
     DrawTextEx(font, credits, (Vector2){left + width - MeasureTextEx(font, credits, 27, 0).x, 38}, 27, 0, highlight);
     DrawLine(left, 88, left + width, 88, rule);
-    sprite(assets->portraits[p->pilot], left + 82, 204, 164, 0, WHITE);
+    sprite(whole_texture(assets->portraits[p->pilot]), left + 82, 204, 164, 0, WHITE);
     resource_meter(font, left + 184, 115, "Armor", preview->health, game_chassis[preview->chassis].armor, highlight);
     resource_meter(font, left + 184, 172, "Shield", preview->shield_health,
         preview->shield < 0 ? 0 : game_shields[preview->shield].capacity, (Color){130,183,240,255});
@@ -807,7 +765,7 @@ static const char *shop_item_name(int category, int item) {
 
 static const char *loadout_slots[] = {"Chassis", "Generator", "Shield", "Primary", "Support", "Sidekick"};
 
-static Texture2D equipment_icon(const Assets *assets, int category, int id) {
+static Sprite equipment_icon(const Assets *assets, int category, int id) {
     if (id < 0) return assets->item_none;
     switch (category) {
         case 0: return assets->shop[6+id];
@@ -826,7 +784,7 @@ static void draw_slot_row(const Assets *assets, const Player *p, int x, int y, i
         DrawRectangle(x,y,424,47,surface);
         DrawRectangle(x,y,3,47,color);
     }
-    Texture2D icon = id < 0 ? assets->shop[cat] : equipment_icon(assets,cat,id);
+    Sprite icon = id < 0 ? assets->shop[cat] : equipment_icon(assets,cat,id);
     sprite(icon,x+24,y+23,32,0,id < 0 ? dim : WHITE);
     DrawTextEx(font,loadout_slots[cat],(Vector2){x+49,y+13},20,0,dim);
     const char *name = shop_item_name(cat,id);
@@ -890,19 +848,17 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
         float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
         if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
-        Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
+        Sprite texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
             assets->stage_destroyed[i] : assets->stage_textures[i];
         float x = view_x + GAME_WIDTH*0.5f + event->x;
-        if (event->kind == STAGE_BUILDING && game->stage.building_health[i] >= 0 && !strcmp(event->name,"SmallBuilding3"))
-            draw_atlas_sprite(assets->flight_atlas,atlas_smallbuilding3,x,y,event->width,event->rotation,WHITE);
-        else sprite(texture,x,y,event->width,event->rotation,WHITE);
+        sprite(texture,x,y,event->width,event->rotation,assets->stage_tints[i]);
     }
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
     for (int i = 0; i < GAME_PICKUPS; ++i) {
         const Pickup *p = &game->pickups[i];
         if (!p->active) continue;
-        Texture2D texture = assets->pickups[p->kind];
+        Sprite texture = assets->pickups[p->kind];
         sprite(texture, view_x + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
     }
     draw_combat_sprites(game, assets);
@@ -1295,7 +1251,7 @@ static void draw_title_ship(const Assets *assets, int slot, int tick, float clea
             origin.x + distance*cosf(angle), origin.y + distance*sinf(angle),
             23,angle*RAD2DEG,Fade(color,fminf(1,(28-age)/8.0f)));
     }
-    draw_ship(assets,0,ship.x,ship.y,54,heading*RAD2DEG,color);
+    sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
 }
 
 static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
@@ -1334,7 +1290,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
             key_prompt(font,x+336,526,slot ? "F2":"Enter","Join");
             continue;
         }
-        sprite(assets->portraits[pilot],x+332,437,312,0,WHITE);
+        sprite(whole_texture(assets->portraits[pilot]),x+332,437,312,0,WHITE);
         if (!game->menu.ready[slot]) {
             int other = game->players[1-slot].joined ? game->menu.pilot[1-slot] : -1;
             for (int dir=-1;dir<=1;dir+=2) {
@@ -1381,9 +1337,9 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
     if (title) {
         float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
-        sprite(assets->title_squad,x+width/2,y-16-squad_height/2,width,0,WHITE);
+        sprite(whole_texture(assets->title_squad),x+width/2,y-16-squad_height/2,width,0,WHITE);
         DrawRectangle(x,y-9,width,2,rule);
-        sprite(assets->title_logo,960,151,776,0,WHITE);
+        sprite(whole_texture(assets->title_logo),960,151,776,0,WHITE);
         DrawTextEx(font,"@kalin_t",(Vector2){80,989},22,0,dim);
     } else {
         DrawRectangle(x-32,y-114,width+64,192+count*row_height,ink);
@@ -1457,13 +1413,13 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         float y = 650 - 190*fminf(1,tick/70.0f) - lift*lift*0.065f;
         for (int i=0; i<GAME_PLAYERS; ++i) {
             const Player *p = &game->players[i];
-            if (p->joined) draw_ship(assets,p->chassis,i == lead ? 960 : 1060,
+            if (p->joined) sprite(assets->ships[p->chassis],i == lead ? 960 : 1060,
                 y+(i == lead ? 0 : 68),86,-90,player_colors[i]);
         }
         int pilot = game->players[lead].pilot;
         DrawRectangle(570,755,780,135,ink);
         DrawRectangle(570,755,780,2,rule);
-        sprite(assets->portraits[pilot],648,821,124,0,WHITE);
+        sprite(whole_texture(assets->portraits[pilot]),648,821,124,0,WHITE);
         DrawTextEx(assets->ui_font,pilot_names[pilot],(Vector2){735,774},24,0,accent);
         DrawTextEx(assets->ui_font,"Copy, Control. Launching.",(Vector2){735,812},34,0,WHITE);
         button_prompt(assets->ui_font,1180,923,devices->device[lead],lead,GLYPH_CONFIRM,"Skip");
@@ -1546,7 +1502,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             DrawTextEx(assets->ui_font, value, (Vector2){1216-MeasureTextEx(assets->ui_font,value,26,0).x, (float)y}, 26, 0, i < 4 ? WHITE : accent);
         }
         if (counter >= 300) {
-            Texture2D texture = assets->medals[medal - 1];
+            Sprite texture = assets->medals[medal - 1];
             float scale = fmaxf(1, 2 - (counter - 299) * 0.125f);
             sprite(texture, 968, 540, texture.width * scale, 0, WHITE);
         }
