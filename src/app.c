@@ -513,7 +513,7 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
 }
 
 /* Cropping the transparent margins changes only the drawn rectangle, never the pivot. */
-static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 origin, float angle, Color tint) {
+static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 origin, float angle, Color tint, bool shadow) {
     Rectangle region = image.region;
     Rectangle bounds = image.bounds;
     float left = src.width < 0 ? 1-bounds.x-bounds.width : bounds.x;
@@ -526,13 +526,32 @@ static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 ori
     region.y += src.y*region.height/image.height;
     region.width *= src.width/image.width;
     region.height *= src.height/image.height;
-    DrawTexturePro(image.texture,region,dest,origin,angle,tint);
+    if (!shadow) {
+        DrawTexturePro(image.texture,region,dest,origin,angle,tint);
+        return;
+    }
+    /* Two rings sampled symmetrically in screen space. The outer ring fades
+       away within four canvas pixels, including on large or rotating bodies. */
+    static const struct { float x, y; unsigned char alpha; } taps[] = {
+        {0.55f,1.33f,12}, {1.33f,0.55f,12}, {1.39f,3.35f,6}, {3.35f,1.39f,6}
+    };
+    for (size_t i = 0; i < sizeof(taps)/sizeof(taps[0]); ++i) {
+        Color shade = {0,0,0,taps[i].alpha};
+        for (int y = -1; y <= 1; y += 2) for (int x = -1; x <= 1; x += 2) {
+            Rectangle sample = {dest.x + x*taps[i].x, dest.y + y*taps[i].y, dest.width, dest.height};
+            DrawTexturePro(image.texture,region,sample,origin,angle,shade);
+        }
+    }
+}
+
+static void draw_centered_sprite(Sprite image, float x, float y, float width, float angle, Color tint, bool shadow) {
+    float height = width*image.height/image.width;
+    sprite_part(image,(Rectangle){0,0,image.width,image.height},(Rectangle){x,y,width,height},
+        (Vector2){width/2,height/2},angle,tint,shadow);
 }
 
 static void sprite(Sprite image, float x, float y, float width, float angle, Color tint) {
-    float height = width*image.height/image.width;
-    sprite_part(image,(Rectangle){0,0,image.width,image.height},(Rectangle){x,y,width,height},
-        (Vector2){width/2,height/2},angle,tint);
+    draw_centered_sprite(image,x,y,width,angle,tint,false);
 }
 
 static void text_center(Font font, const char *text, int x, int y, int size, Color color) {
@@ -691,7 +710,7 @@ static void draw_flight_dust(const Game *game, Sprite dust, bool foreground) {
                 y += (old->y-y)*motion_weight;
             }
             Rectangle dest = {ARENA_X + x - camera_x(game), y, width, height};
-            sprite_part(dust,source,dest,(Vector2){width/2,height/2},angle,tint);
+            sprite_part(dust,source,dest,(Vector2){width/2,height/2},angle,tint,false);
         }
     }
 }
@@ -731,8 +750,11 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     draw_flight_dust(game,assets->particle_dot,false);
 }
 
+enum { ENEMY_LAYER_SHADOW = -3 };
+
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     float view_x = ARENA_X - camera_x(game);
+    bool shadow = layer == ENEMY_LAYER_SHADOW;
     if (layer == 0) for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
         const EnemyCorpse *corpse = &game->stage.corpses[i];
         if (!corpse->active) continue;
@@ -743,6 +765,7 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
+        if (shadow && (enemy->kind == ENEMY_FENCE_BEAM || enemy->kind == ENEMY_BLACK_HOLE)) continue;
         RenderPose prev = previous_motion.enemies[i];
         RenderPose pose = render_pose(prev,enemy->age,enemy->x,enemy->y,enemy->rotation,motion_weight);
         float weight = enemy->age > 1 && prev.age == enemy->age-1 ? motion_weight : 0;
@@ -750,18 +773,19 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         float aim = render_angle(previous_motion.enemy_aim[i],enemy->aim,weight);
         if (enemy->kind == ENEMY_CUTTER && layer == -1)
             sprite(assets->cutter_beam, view_x + pose.x, pose.y, (float)assets->cutter_beam.width, orbit * RAD2DEG, WHITE);
-        if (enemy->kind == ENEMY_PYRAMID && layer == 1)
-            sprite(assets->pyramid_turret, view_x + pose.x, pose.y, (float)assets->pyramid_turret.width, (aim - PI/2) * RAD2DEG, WHITE);
-        if (enemy->kind == ENEMY_ROTATE_TURRET && layer == 0)
-            sprite(assets->rotate_turret_base, view_x + pose.x, pose.y, (float)assets->rotate_turret_base.width, 0, WHITE);
+        if (enemy->kind == ENEMY_PYRAMID && (shadow || layer == 1))
+            draw_centered_sprite(assets->pyramid_turret, view_x + pose.x, pose.y, (float)assets->pyramid_turret.width, (aim - PI/2) * RAD2DEG, WHITE,shadow);
+        if (enemy->kind == ENEMY_ROTATE_TURRET && (shadow || layer == 0))
+            draw_centered_sprite(assets->rotate_turret_base, view_x + pose.x, pose.y, (float)assets->rotate_turret_base.width, 0, WHITE,shadow);
         Sprite cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
             enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Sprite){0};
         float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + orbit * RAD2DEG :
             enemy->kind == ENEMY_BOSS6 ? pose.angle * RAD2DEG : 0;
         int cover_layer = enemy->kind == ENEMY_BOSS6 ? -1 : 2;
-        if (layer == cover_layer && IsTextureValid(cover.texture)) sprite(cover, view_x + pose.x, pose.y, (float)cover.width, cover_rotation, WHITE);
+        if ((shadow || layer == cover_layer) && IsTextureValid(cover.texture))
+            draw_centered_sprite(cover, view_x + pose.x, pose.y, (float)cover.width, cover_rotation, WHITE,shadow);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
-        if (depth != layer) continue;
+        if (!shadow && depth != layer) continue;
         Sprite texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
             assets->splitter_right : assets->enemies[enemy->kind];
         float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : pose.angle;
@@ -776,8 +800,8 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         sprite_part(texture, source,
-            (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
-        if (enemy_is_asteroid(enemy->kind))
+            (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE,shadow);
+        if (!shadow && enemy_is_asteroid(enemy->kind))
             sprite(assets->asteroid_cracks, view_x + pose.x, pose.y, 80 * scale, rotation * RAD2DEG,
                 Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));
 
@@ -818,7 +842,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
             sprite_part(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
                 (Rectangle){view_x + shot.x, shot.y - 540, 1080, bullet->width * 2},
-                (Vector2){540, bullet->width}, -90, color);
+                (Vector2){540, bullet->width}, -90, color,false);
         } else {
             float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
@@ -826,7 +850,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BLADE && bullet->offset_x < 0) {
                 float height = width * texture.height / texture.width;
                 sprite_part(texture, (Rectangle){0, 0, texture.width, -texture.height},
-                    (Rectangle){view_x + shot.x, shot.y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color);
+                    (Rectangle){view_x + shot.x, shot.y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color,false);
             } else sprite(texture, view_x + shot.x, shot.y, width, rotation * RAD2DEG, color);
         }
     }
@@ -966,66 +990,17 @@ static void canvas_scissor(int x, int y, int w, int h) {
     BeginScissorMode(left,top,(int)roundf((x+w)*canvas_zoom)-left,(int)roundf((y+h)*canvas_zoom)-top);
 }
 
-static bool is_deck_weapon(EnemyKind kind) {
-    switch (kind) {
-        case ENEMY_TURRET: case ENEMY_DOWN_TURRET: case ENEMY_DOUBLE_TURRET:
-        case ENEMY_RAID_TURRET: case ENEMY_ROTATE_TURRET: case ENEMY_CANNON:
-        case ENEMY_MISSILE_POD: case ENEMY_MISSILE_STORM: case ENEMY_MISSILE_TRIPLE:
-        case ENEMY_FENCE: return true;
-        default: return false;
-    }
-}
-
-/* Test the mount's foot against the rotated, trimmed deck art. Some fence
-   endpoints are fixed in space and others are bolted onto a carrier tile. */
-static bool deck_under_mount(const StageDefinition *stage, const Assets *assets, const int *order,
-        int count, float x, float y) {
-    for (int row = 0; row < count; ++row) {
-        int i = order[row];
-        const StageEvent *tile = &stage->events[i];
-        if (tile->kind != STAGE_DECORATION) continue;
-        float dx = x - tile->x, dy = y - tile->y;
-        float reach = (tile->width + tile->height)*0.5f;
-        if (fabsf(dx) > reach || fabsf(dy) > reach || !strcmp(tile->name,"SecretHint")) continue;
-        float angle = tile->rotation*DEG2RAD, c = cosf(angle), s = sinf(angle);
-        Vector2 uv = {0.5f + (c*dx + s*dy)/tile->width, 0.5f + (c*dy - s*dx)/tile->height};
-        if (CheckCollisionPointRec(uv,assets->stage_textures[i].bounds)) return true;
-    }
-    return false;
-}
-
-static void draw_mount_shadows(const Game *game, const Assets *assets, const int *order, int count) {
-    const StageDefinition *stage = &stage_definitions[game->stage.index];
-    float view_x = ARENA_X - camera_x(game);
-    for (int i = 0; i < GAME_ENEMIES; ++i) {
-        const Enemy *e = &game->enemies[i];
-        if (!e->active || e->invisible || e->movement != MOVE_NONE || !is_deck_weapon(e->kind)) continue;
-        if (!deck_under_mount(stage,assets,order,count,e->x - GAME_WIDTH*0.5f,
-                e->y + game->stage.camera_y - GAME_HEIGHT*0.5f)) continue;
-        RenderPose pose = render_pose(previous_motion.enemies[i],e->age,e->x,e->y,e->rotation,motion_weight);
-        bool fixed_base = e->kind == ENEMY_ROTATE_TURRET;
-        Sprite foot = fixed_base ? assets->rotate_turret_base : assets->enemies[e->kind];
-        sprite(foot,view_x + pose.x + 2,pose.y - 3,foot.width,fixed_base ? 0 : pose.angle*RAD2DEG,
-            (Color){4,8,16,80});
-    }
-}
-
 static void draw_stage_prop(const Game *game, const Assets *assets, const StageEvent *event,
         int i, Vector2 center, bool shadow) {
     bool wreck = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0;
     float y = center.y + event->y;
-    if (shadow) {
-        if (wreck) return;
-        center.x += 3;
-        y -= 4;
-    }
+    if (shadow && wreck) return;
     if (y < -event->height || y > GAME_HEIGHT + event->height) return;
     Sprite texture = wreck ? assets->stage_destroyed[i] : assets->stage_textures[i];
     /* A one-pixel apron on each side closes subpixel joins between authored deck pieces. */
     float width = event->width;
     if (event->kind == STAGE_DECORATION && strcmp(event->name,"SecretHint") != 0) width += 2;
-    sprite(texture,center.x + event->x,y,width,event->rotation,
-        shadow ? (Color){4, 8, 16, 100} : assets->stage_tints[i]);
+    draw_centered_sprite(texture,center.x + event->x,y,width,event->rotation,assets->stage_tints[i],shadow);
 }
 
 static void draw_game(const Game *game, const Assets *assets, bool keyboard_free, bool shadows) {
@@ -1065,7 +1040,7 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         }
         draw_stage_prop(game,assets,event,i,center,false);
     }
-    if (shadows) draw_mount_shadows(game,assets,order,count);
+    if (shadows) draw_enemies(game,assets,ENEMY_LAYER_SHADOW);
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
     for (int i = 0; i < GAME_PICKUPS; ++i) {
@@ -1418,7 +1393,7 @@ static int menu_slide_offset(float elapsed, int direction) {
     return (int)roundf(direction*22*remaining*remaining);
 }
 
-static void draw_shop(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices, bool entering) {
+static void draw_shop(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices, bool entering, bool shadows) {
     ClearBackground(BLACK);
     for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
         float x = ARENA_X + (i * 193 + layer * 311) % GAME_WIDTH;
@@ -1426,6 +1401,7 @@ static void draw_shop(const Game *game, const Assets *assets, float frame, const
         sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
     }
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    if (shadows) draw_enemies(&shop_preview, assets, ENEMY_LAYER_SHADOW);
     draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
@@ -1657,7 +1633,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
         button_prompt(font,x+advance,footer,device,GLYPH_READY,"Delete");
 }
 
-static void draw_menu(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices) {
+static void draw_menu(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices, bool shadows) {
     /* The title backdrop runs on one clock. Only newly entered controls move. */
     static MenuPage previous_page;
     static int direction;
@@ -1753,7 +1729,7 @@ static void draw_menu(const Game *game, const Assets *assets, float frame, const
             text_center(assets->ui_font, ui_text(lines[i]), 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
         return;
     }
-    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices, entering_shop); return; }
+    if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices, entering_shop, shadows); return; }
     if (game->menu.page == MENU_CLEAR) {
         float alpha = fminf(0.5f, game->menu.frame / 60.0f);
         DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
@@ -2667,7 +2643,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         float animation_tick = frames ? menu_frame++ : (float)fmod((frame_start + offset)*GAME_HZ,16777216.0);
         if (game->menu.page == MENU_CONTROLLERS) draw_assignments(game,&assets,&devices,pads);
         else {
-            draw_menu(game, &assets, animation_tick, &devices);
+            draw_menu(game, &assets, animation_tick, &devices, !console->shadows_off);
             for (int i=0; i<GAME_PLAYERS; ++i) if (devices.choosing[i]) draw_join_picker(&assets,&devices,i);
         }
         int link = 0;
