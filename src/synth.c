@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct { const char *name, *source; uint32_t frames, count; const SynthEvent *events; unsigned delay; float wet, feedback; } SynthTrack;
 
-enum { FM_BASS, FM_LEAD, PULSE, BELL, PAD, KICK, SNARE, HAT, TOM, SAW, TRIANGLE, LAYERED_PULSE, PATCH_COUNT };
+enum { FM_BASS, FM_LEAD, PULSE, BELL, PAD, KICK, SNARE, HAT, TOM, SAW, TRIANGLE, LAYERED_PULSE, FM_BRASS, PATCH_COUNT };
 typedef struct {
     int kind;
     float attack, decay, sustain, release, gain;
@@ -85,7 +85,8 @@ static float voice_sample(SynthVoice *v, const Patch *p) {
     if (v->age >= v->gate + v->release) { v->active = false; return 0; }
     float time = v->age / (float)SYNTH_RATE;
     float env = v->age < v->gate ? envelope(p, time) : v->release_level * (1 - (v->age - v->gate) / (float)v->release);
-    float freq = v->frequency * (1 + (time > .12f ? p->vibrato * sine(time * 5.4f) : 0));
+    float vibrato = fminf(1, fmaxf(0, (time - .085f) * 7));
+    float freq = v->frequency * (1 + vibrato * p->vibrato * sine(time * 5.4f));
     if (p->kind == KICK) freq = 48 + 140 / (1 + time * time * 18000);
     if (p->kind == TOM) freq *= 1 + .6f / (1 + time * 80);
     float out = 0;
@@ -99,11 +100,17 @@ static float voice_sample(SynthVoice *v, const Patch *p) {
             sample = 2 * phase - 1 - blep(phase, delta);
         } else if (p->kind == TRIANGLE) {
             sample = 4 * fabsf(phase - .5f) - 1;
-        } else if (p->kind == PULSE || p->kind == LAYERED_PULSE) {
+        } else if (p->kind == PULSE || p->kind == LAYERED_PULSE || p->kind == FM_BRASS) {
             float width = .25f + .06f * sine(time * 1.7f);
             float shifted = phase - width; if (shifted < 0) shifted += 1;
             sample = (phase < width ? 2.0f : 0.0f) - 2 * width + blep(phase, delta) - blep(shifted, delta);
-            if (p->kind == LAYERED_PULSE) {
+            if (p->kind == FM_BRASS) {
+                /* A narrow pulse speaks first. The FM body blooms into the sustain. */
+                float bite = 1 / (1 + 22 * time);
+                float pulse_mix = .27f + .21f * bite;
+                float mod = sine(v->phase[1]) * bright * (.35f + .65f * bite);
+                sample = pulse_mix * sample + (1 - pulse_mix) * sine(v->phase[3] + mod / 6.2831853f);
+            } else if (p->kind == LAYERED_PULSE) {
                 /* Quiet detuned square adds motion; sine adds body without extra voices. */
                 float second = v->phase[3], second_delta = delta * 1.002f;
                 float edge = second - .5f; if (edge < 0) edge += 1;
@@ -116,8 +123,13 @@ static float voice_sample(SynthVoice *v, const Patch *p) {
         } else if (p->kind == SNARE || p->kind == HAT) {
             v->noise ^= v->noise << 13; v->noise ^= v->noise >> 17; v->noise ^= v->noise << 5;
             float noise = (v->noise & 65535) / 32768.0f - 1;
-            if (p->kind == SNARE) sample = .72f * noise + .28f * sine(phase);
-            else sample = noise * .65f + .35f * sine(v->phase[2]) * sine(v->phase[3]);
+            /* Separate the wires/metal from the pitched shell or cymbal partials. */
+            v->noise_low += (p->kind == HAT ? .20f : .065f) * (noise - v->noise_low);
+            float high = noise - v->noise_low;
+            if (p->kind == SNARE) {
+                float shell = sine(phase) + .32f * sine(v->phase[1]);
+                sample = .66f * high + .52f * shell / (1 + 35 * time);
+            } else sample = .76f * high + .24f * sine(v->phase[2]) * sine(v->phase[3]);
         } else if (p->kind == PAD) {
             sample = .5f * sine(phase + .15f * sine(v->phase[1])) + .5f * sine(v->phase[2] + .12f * sine(v->phase[3]));
         } else {
@@ -144,24 +156,34 @@ void synth_render(Synth *synth, float *stereo, int frames) {
             note_on(synth, &track->events[synth->next_event], synth->next_event);
             ++synth->next_event;
         }
-        float left = 0, right = 0;
+        float left = 0, right = 0, send_left = 0, send_right = 0;
         for (int v = 0; v < SYNTH_VOICES; ++v) {
             SynthVoice *voice = &synth->voices[v];
             if (!voice->active) continue;
             float value = voice_sample(voice, &patches[synth->track - 1][voice->patch]);
-            left += value * voice->left; right += value * voice->right;
+            float l = value * voice->left, r = value * voice->right;
+            left += l; right += r;
+            /* Keep the bass and kick in time while the upper voices echo. */
+            if (voice->patch != 0 && voice->patch != 5) {
+                send_left += l; send_right += r;
+            }
         }
         int at = synth->delay_cursor;
         int tap = (at + SYNTH_DELAY - track->delay) % SYNTH_DELAY;
         float dl = synth->delay_left[tap], dr = synth->delay_right[tap];
-        synth->delay_left[at] = left * track->wet + dr * track->feedback;
-        synth->delay_right[at] = right * track->wet + dl * track->feedback;
+        synth->delay_left[at] = send_left * track->wet + dr * track->feedback;
+        synth->delay_right[at] = send_right * track->wet + dl * track->feedback;
         synth->delay_cursor = (at + 1) % SYNTH_DELAY;
         left = (left + dl) * 1.8f; right = (right + dr) * 1.8f;
         float fade = fminf(1, fminf(synth->position / 960.0f, (track->frames - 1 - synth->position) / 960.0f));
         /* Bounded soft saturation plus headroom; do not hard-clip the mix. */
-        stereo[i * 2] = .85f * fade * left / (1 + fabsf(left));
-        stereo[i * 2 + 1] = .85f * fade * right / (1 + fabsf(right));
+        left = .85f * left / (1 + fabsf(left));
+        right = .85f * right / (1 + fabsf(right));
+        /* Remove subsonic bias introduced by saturating asymmetric pulse waves (8 Hz). */
+        synth->dc_left += .001047f * (left - synth->dc_left);
+        synth->dc_right += .001047f * (right - synth->dc_right);
+        stereo[i * 2] = fade * (left - synth->dc_left);
+        stereo[i * 2 + 1] = fade * (right - synth->dc_right);
         ++synth->position;
     }
 }

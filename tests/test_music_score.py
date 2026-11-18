@@ -103,6 +103,17 @@ class MusicScoreTests(unittest.TestCase):
         self.assertEqual(len(palettes), 19)
         self.assertEqual(len(harmonies), 19)
 
+    def test_absolute_bar_patterns(self):
+        for score in self.scores:
+            for part in score['parts'].values():
+                for bar, pattern in part.get('bar_patterns', {}).items():
+                    self.assertTrue(0 <= int(bar) < len(score['bar_order']))
+                    last_end = 0
+                    for onset, _, gate, velocity in pattern:
+                        self.assertTrue(last_end <= onset < 16 and 0 < gate <= 16-onset)
+                        self.assertTrue(0 < velocity < 128)
+                        last_end = onset + gate
+
     def test_title_grid_and_harmony(self):
         title = self.scores[8]
         self.assertEqual(title['reference_duration'], "Konami's_Moon_Base")

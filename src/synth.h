@@ -13,12 +13,13 @@ typedef struct {
     uint32_t age, gate, release, noise;
     int patch;
     bool active;
-    float phase[4], frequency, amplitude, left, right, filter, release_level;
+    float phase[4], frequency, amplitude, left, right, filter, noise_low, release_level;
 } SynthVoice;
 
 typedef struct {
     uint32_t position, next_event, stolen_voices;
     int delay_cursor, track;
+    float dc_left, dc_right;
     SynthVoice voices[SYNTH_VOICES];
     float delay_left[SYNTH_DELAY], delay_right[SYNTH_DELAY];
 } Synth;

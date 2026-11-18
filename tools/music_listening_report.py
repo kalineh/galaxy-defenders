@@ -11,6 +11,9 @@ OUT = ROOT / 'artifacts/native-port/album-listening.html'
 
 def main():
     scores = json.loads((ROOT / 'music/album.json').read_text())
+    timing = json.loads((ROOT / 'music/timing/timing.json').read_text())
+    handoffs = {stage['initial_music']: stage['music_segments'][0]['observed_end_seconds']
+                for stage in timing['stages'] if len(stage['music_segments']) > 1}
     cards = []
     for number, score in enumerate(scores, 1):
         with wave.open(str(ROOT / f'build/music/{number}.wav')) as wav:
@@ -18,16 +21,21 @@ def main():
         assert abs(duration - score['sections'][-1]['end']) < 1 / 48000
         cuts = ' '.join(f'<button data-track="{number}" data-time="{s["start"]}">'
                         f'{s["start"]:g}s</button>' for s in score['sections'])
-        first_lead = next((s['start'] for s in score['sections'] if s['lead']), 0)
-        # This musical phrase jump supplements the exact orchestration cuts.
-        development = min(duration - 1, max(first_lead, 8 * 240 / score['bpm']))
+        bar_seconds = 240 / score['bpm']
+        hook = next((bar * bar_seconds for bar, phrase in enumerate(score['bar_order'])
+                     if phrase == 0 and any(s['lead'] and s['start'] <= bar * bar_seconds and
+                                           (bar + 2) * bar_seconds <= s['end'] for s in score['sections'])), 0)
+        jumps = f'<button data-track="{number}" data-time="{hook:.4f}">Lead theme</button>'
+        if score['reference_duration'] in handoffs:
+            cue = handoffs[score['reference_duration']] % duration
+            jumps += f' <button data-track="{number}" data-time="{max(0,cue-2*bar_seconds):.4f}">Before boss cue</button>'
         source = quote(score['reference_duration'] + '.wav', safe='')
         cards.append(f'''<article>
 <h2>{number:02} &middot; {html.escape(score['name'])}</h2>
 <p>{html.escape(score['identity'])}</p>
 <audio id="track-{number}" controls preload="none" src="../../build/music/{number}.wav"></audio>
 <div class="cuts">Section cuts: {cuts}
-<button data-track="{number}" data-time="{development}">Development</button></div>
+{jumps}</div>
 <p class="meta">{duration:.3f}s &middot; {score['bpm']} BPM &middot;
 {html.escape(score['instruments']['lead']['name'].replace('_', ' '))} /
 {html.escape(score['instruments']['arp']['name'].replace('_', ' '))}</p>
@@ -45,8 +53,7 @@ audio{width:100%;margin:8px 0}.meta,summary{color:#b6c8df}.cuts{margin-top:10px}
 button{background:#304968;color:#fff;border:1px solid #7894b5;padding:6px 10px;margin:3px;border-radius:4px;cursor:pointer}
 a{color:#9acbff}details{margin-top:14px}
 </style><h1>Galaxy Defenders · Album listening</h1>
-<p>Track 9 is the accepted working reference. The other 18 have new compositions
-and instrument balances. All protected timing and layer switches are retained.</p>
+<p>Audition the revised hooks, counter-melodies and drum parts. The boss cue buttons jump to the approach in the stage track.</p>
 <p>Nothing autoplays. Check melody, bass support, groove, balance and fatigue.
 Section buttons start the selected new track at its exact cut; only one player runs at a time.
 Use <code>debug.music</code> in the game for the developer album.</p>

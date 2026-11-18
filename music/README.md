@@ -4,6 +4,16 @@ All campaign, boss, bonus, title/shop, pause, game-over and ending music now use
 the C synth album. Legacy recordings remain analysis references and are never
 loaded for playback. SFX remain the original assets.
 
+## Current arrangement
+
+All 19 tracks have revised percussion and instrument balances. Eighteen have new
+lead phrases. The title keeps its established melody. The listening worksheet
+includes lead-theme jumps and approaches to the twelve campaign boss switches.
+
+A part can supply `bar_patterns` keyed by zero-based **song bar** for a one-time
+fill or cadence. Section switches still gate the part. Patch kind 12 blends a
+band-limited pulse with an FM brass body. Kick and bass use the dry stereo bus.
+
 ## Developer album
 
 The repeatable analysis/composition/review workflow is in [PROCESS.md](PROCESS.md).
@@ -133,7 +143,7 @@ bar together, including the coda. A part's `pitch_base: tonic` permits an explic
 counter melody rather than blindly adding one interval set to every chord root.
 `velocity_scale` balances roles per section without moving their entry/exit times.
 Optional section `part_set` selects matching part `variants`; otherwise the part's
-normal `patterns` apply. Only the title uses this to switch theme/riff vocabulary.
+normal `patterns` apply. The title uses this to switch between its theme and riff. Other tracks use it to give an exposed counter part its own solo line.
 Sustained parts that remain enabled can finish their notes across a section cut;
 parts being removed are still gated at that cut. No notes extend past the loop.
 

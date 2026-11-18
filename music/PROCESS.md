@@ -87,7 +87,7 @@ strong-beat melody attack must belong to the current chord; melody/bass/counter
 patterns cannot overlap their own next attack. These are guardrails, not a
 substitute for listening or a ban on intentional future suspensions/syncopation.
 
-## Verification of this pass
+## Verification of the previous pass
 
 The native Windows build and full test suite pass. All nineteen rendered lengths
 match the original recordings at 48 kHz; all BPM values, section cuts, later layer
@@ -101,3 +101,18 @@ Run `python tools/music_listening_report.py` after a native/render build for the
 local worksheet with full new tracks, protected-cut jumps and original reference
 players. Nothing autoplays. All source links and seek bounds are CLI-validated;
 humans own interactive playback and the musical review.
+
+## Current album revision
+
+The eighteen non-title tracks have a new four-bar lead statement. In longer
+tracks the earlier statement returns on alternate 16-bar cycles, so the first
+and second laps answer differently over the same chords. Where a counter part
+carries a section on its own, it gets a separate line. Predator Orbit leaves a
+long space after the first high call. Skyward Assault punches twice in the low
+register before the octave jump. The title keeps its high motor and lower riff.
+
+Each kit has an individually tuned snare, hat and answering-bar accents. The
+twelve campaign tracks have short written drum pickups at the documented boss
+handoffs. Afterimage's handoff falls about 1.25 seconds into its second lap,
+so its opening uses a sparse kick pickup. Another Flight traces E to E-flat over C major and C minor, then lands on D
+over G in the short final bar.
