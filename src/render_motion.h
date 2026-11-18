@@ -4,6 +4,7 @@
 #include "game.h"
 
 typedef struct { float x, y, angle; int age; } RenderPose;
+typedef struct { int hz; double offset; } RenderClock;
 typedef struct {
     const Game *source;
     int tick, stage_revision, stage_index;
@@ -16,6 +17,7 @@ typedef struct {
 } RenderMotion;
 
 void render_motion_capture(RenderMotion *previous, const Game *game);
+double render_clock_offset(RenderClock *clock, double elapsed, int hz);
 float render_motion_weight(const RenderMotion *previous, const Game *game, float fraction);
 RenderPose render_pose(RenderPose previous, int age, float x, float y, float angle, float weight);
 float render_angle(float previous, float current, float weight);

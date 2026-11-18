@@ -2,6 +2,22 @@
 #include <math.h>
 #include <string.h>
 
+/* V-sync wakeups can arrive early and late on successive refreshes. Sample
+   motion on the refresh cadence and gently correct its phase against wall time.
+   A real hitch or a mode change starts a fresh sample immediately. */
+double render_clock_offset(RenderClock *clock, double elapsed, int hz) {
+    double period = hz > 0 ? 1.0 / hz : 0;
+    if (hz != clock->hz || !hz || fabs(elapsed - period) > 0.4 * period) {
+        *clock = (RenderClock){.hz = hz};
+        return 0;
+    }
+    double offset = 0.9 * (clock->offset + period - elapsed);
+    /* Even an inaccurate reported refresh rate can only shift the pose by 2 ms. */
+    double bound = fmin(0.002, 0.25 * period);
+    clock->offset = fmax(-bound, fmin(bound, offset));
+    return clock->offset;
+}
+
 /* Capture just the visible transforms before a simulation tick. Reused slots
    and scene changes must appear at their new position immediately. */
 void render_motion_capture(RenderMotion *previous, const Game *game) {

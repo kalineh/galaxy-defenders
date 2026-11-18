@@ -31,8 +31,8 @@ static const char *ui_text(const char *english) {
 #define FRAME_SAMPLES 240
 
 typedef struct {
-    float frame_ms[FRAME_SAMPLES], work_ms[FRAME_SAMPLES];
-    int cursor, count;
+    float frame_ms[FRAME_SAMPLES], update_ms[FRAME_SAMPLES], gpu_ms[FRAME_SAMPLES];
+    uint64_t total;
 } FrameGraph;
 
 typedef struct {
@@ -2169,26 +2169,41 @@ static void draw_console(Console *console, Font font, bool failed, bool full_scr
 
 static void draw_frame_graph(const FrameGraph *history, Font font, int guide_fps) {
     float guide_ms = 1000.0f / guide_fps;
-    Rectangle panel = {CANVAS_WIDTH - 495, 15, 480, 189};
-    Rectangle graph = {panel.x + 12, panel.y + 48, panel.width - 24, 126};
+    Rectangle panel = {CANVAS_WIDTH - 495, 15, 480, 204};
+    Rectangle graph = {panel.x + 12, panel.y + 69, panel.width - 24, 124};
+    Color gold = {246, 190, 82, 255}, cyan = {83, 206, 232, 255};
     DrawRectangleRec(panel, (Color){4, 7, 10, 235});
     DrawRectangleLinesEx(panel, 1, (Color){82, 116, 128, 230});
-    int last = (history->cursor + FRAME_SAMPLES - 1) % FRAME_SAMPLES;
-    float frame_ms = history->count ? history->frame_ms[last] : 0;
-    float work_ms = history->count ? history->work_ms[last] : 0;
-    DrawTextEx(font, TextFormat("%.1f FPS  frame %.2f  work %.2f ms", frame_ms > 0 ? 1000 / frame_ms : 0, frame_ms, work_ms),
-        (Vector2){panel.x + 12, panel.y + 9}, 20, 0, WHITE);
+    int count = history->total < FRAME_SAMPLES ? (int)history->total : FRAME_SAMPLES;
+    float elapsed = 0, peak = 0, update = 0, gpu = 0;
+    int n = 0, gpu_count = 0;
+    while (n < count && elapsed < 500) {
+        int i = (int)((history->total - 1 - n) % FRAME_SAMPLES);
+        elapsed += history->frame_ms[i];
+        peak = fmaxf(peak, history->frame_ms[i]);
+        update += history->update_ms[i];
+        if (history->gpu_ms[i] >= 0) { gpu += history->gpu_ms[i]; ++gpu_count; }
+        ++n;
+    }
+    DrawTextEx(font, TextFormat("%.0f FPS   Interval %.2f   Max %.2f ms",
+        elapsed > 0 ? 1000*n/elapsed : 0, n ? elapsed/n : 0, peak),
+        (Vector2){panel.x + 12, panel.y + 8}, 20, 0, gold);
+    DrawTextEx(font, TextFormat("Update %.2f ms", n ? update/n : 0),
+        (Vector2){panel.x + 12, panel.y + 36}, 20, 0, WHITE);
+    if (gpu_count) DrawTextEx(font, TextFormat("Scene GPU %.2f ms", gpu/gpu_count),
+        (Vector2){panel.x + 220, panel.y + 36}, 20, 0, cyan);
     DrawRectangleRec(graph, (Color){2, 5, 8, 220});
     DrawLineV((Vector2){graph.x, graph.y + graph.height / 2}, (Vector2){graph.x + graph.width, graph.y + graph.height / 2}, (Color){104, 132, 140, 150});
     DrawTextEx(font,TextFormat("%.2f ms",guide_ms),(Vector2){graph.x + graph.width - 103, graph.y + graph.height / 2 - 21},18,0,dim);
-    int oldest = (history->cursor + FRAME_SAMPLES - history->count) % FRAME_SAMPLES;
+    int oldest = (int)((history->total - count) % FRAME_SAMPLES);
     for (int trace = 0; trace < 2; ++trace) {
-        const float *samples = trace ? history->work_ms : history->frame_ms;
-        Color color = trace ? (Color){83, 206, 232, 255} : (Color){246, 190, 82, 255};
-        for (int i = 1; i < history->count; ++i) {
-            float a = fminf(1, fmaxf(0, samples[(oldest + i - 1) % FRAME_SAMPLES]/(2*guide_ms)));
-            float b = fminf(1, fmaxf(0, samples[(oldest + i) % FRAME_SAMPLES]/(2*guide_ms)));
-            float x = graph.x + graph.width * (FRAME_SAMPLES - history->count + i) / FRAME_SAMPLES;
+        const float *samples = trace ? history->gpu_ms : history->frame_ms;
+        Color color = trace ? cyan : gold;
+        for (int i = 1; i < count; ++i) {
+            float before = samples[(oldest + i - 1) % FRAME_SAMPLES], after = samples[(oldest + i) % FRAME_SAMPLES];
+            if (before < 0 || after < 0) continue;
+            float a = fminf(1, before/(2*guide_ms)), b = fminf(1, after/(2*guide_ms));
+            float x = graph.x + graph.width * (FRAME_SAMPLES - count + i) / FRAME_SAMPLES;
             DrawLineV((Vector2){x - graph.width / FRAME_SAMPLES, graph.y + graph.height * (1 - a)},
                 (Vector2){x, graph.y + graph.height * (1 - b)}, color);
         }
@@ -2196,6 +2211,40 @@ static void draw_frame_graph(const FrameGraph *history, Font font, int guide_fps
 }
 
 #ifndef GALAXY_MEMORY
+/* Collect completed queries in submission order. Skip the new sample when
+   all timers are in flight so profiling keeps the render thread running. */
+enum { GPU_TIMERS = 8 };
+typedef struct {
+    GLuint queries[GPU_TIMERS];
+    uint64_t frames[GPU_TIMERS];
+    int next, pending;
+} GpuTimers;
+
+static bool begin_gpu_timer(GpuTimers *timers, FrameGraph *history) {
+    if (!glGetQueryObjectui64v) return false;
+    if (!timers->queries[0]) glGenQueries(GPU_TIMERS, timers->queries);
+    while (timers->pending) {
+        int oldest = (timers->next + GPU_TIMERS - timers->pending) % GPU_TIMERS;
+        GLuint query = timers->queries[oldest];
+        GLint ready = 0;
+        glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &ready);
+        if (!ready) break;
+        uint64_t frame = timers->frames[oldest];
+        if (history->total - frame <= FRAME_SAMPLES) {
+            GLuint64 ns;
+            glGetQueryObjectui64v(query, GL_QUERY_RESULT, &ns);
+            history->gpu_ms[frame % FRAME_SAMPLES] = (float)(ns * 1e-6);
+        }
+        --timers->pending;
+    }
+    if (timers->pending == GPU_TIMERS) return false;
+    timers->frames[timers->next] = history->total;
+    glBeginQuery(GL_TIME_ELAPSED, timers->queries[timers->next]);
+    timers->next = (timers->next + 1) % GPU_TIMERS;
+    ++timers->pending;
+    return true;
+}
+
 typedef struct {
     unsigned int framebuffer, color;
 } MultisampleTarget;
@@ -2306,10 +2355,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     }
     int requested_width = 0, applied_msaa = -1;
     MultisampleTarget multisample = {0};
+    GpuTimers gpu_timers = {0};
 #endif
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     int rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
+    RenderClock render_clock = {0};
     FrameGraph frame_graph = {0};
     PlayerDevices devices;
     PadInput pads[INPUT_PADS] = {0};
@@ -2317,8 +2368,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     if (!frames && !ds4_init()) console_log(console, "Native DS4 input unavailable; standard gamepads remain enabled.");
     console_log(console, "Ready. Type help; console commands and launch scripts share the same game.");
     bool link_cursor = false;
+    double frame_start = GetTime(), elapsed = 0;
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
-        double frame_start = GetTime();
         if (!console_open && !console->music_album && IsKeyPressed(KEY_F8)) {
             int direction = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT) ? -1 : 1;
             int *language = &game->menu.options[OPTION_LANGUAGE];
@@ -2411,7 +2462,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 game->players[i].input = device >= 0 && device < INPUT_PADS ? input_player(&pads[device]) :
                     device == INPUT_KEYBOARD ? poll_keyboard() : (PlayerInput){0};
             }
-            accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
+            accumulator += frames ? 1.0 / GAME_HZ : fmin(elapsed, 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
                 if (!frames)
                     render_motion_capture(&previous_motion,game->menu.page == MENU_SHOP ? &shop_preview : game);
@@ -2444,6 +2495,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (game->shield_hits > old_shield_hits) PlaySound(assets.shield_hit);
             if (game->deaths > old_deaths) PlaySound(assets.die);
         }
+        float update_ms = (float)((GetTime() - frame_start) * 1000);
         if (assets.stage_index != game->stage.index && !stage_assets_load(&assets, game->stage.index)) {
             console_log(console, "ERROR: stage assets failed to load");
             command_failed = true;
@@ -2477,6 +2529,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             }
             save_retry_at = game->saves_dirty ? GetTime() + 5 : 0;
         }
+        int cadence_hz = 0;
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
@@ -2498,6 +2551,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             SetTargetFPS(limit);
             applied_limit = limit;
         }
+        if (!frames && vsync) cadence_hz = limit ? limit : display_refresh_hz;
         float screen_fraction = 0.875f + game->menu.options[OPTION_SCREEN_SIZE]*0.0125f;
         float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
         scale *= screen_fraction;
@@ -2533,6 +2587,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         }
         RenderTexture2D draw_target = canvas;
         if (multisample.framebuffer) draw_target.id = multisample.framebuffer;
+        bool timing_gpu = console->perf && begin_gpu_timer(&gpu_timers, &frame_graph);
         BeginTextureMode(draw_target);
         BeginMode2D((Camera2D){.zoom=canvas_zoom});
 #endif
@@ -2541,11 +2596,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         assets.ui_font = cjk ? assets.cjk_font : assets.western_body;
         assets.heading_font = cjk ? assets.cjk_font : assets.western_heading;
         const Game *scene = game->menu.page == MENU_SHOP ? &shop_preview : game;
-        motion_weight = render_motion_weight(&previous_motion,scene,(float)(accumulator*GAME_HZ));
+        double offset = render_clock_offset(&render_clock, elapsed, cadence_hz);
+        motion_weight = render_motion_weight(&previous_motion,scene,(float)((accumulator + offset)*GAME_HZ));
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, keyboard_owner < 0);
-        float animation_tick = frames ? menu_frame++ : (float)fmod(GetTime()*GAME_HZ,16777216.0);
+        float animation_tick = frames ? menu_frame++ : (float)fmod((frame_start + offset)*GAME_HZ,16777216.0);
         if (game->menu.page == MENU_CONTROLLERS) draw_assignments(game,&assets,&devices,pads);
         else {
             draw_menu(game, &assets, animation_tick, &devices);
@@ -2592,6 +2648,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             glBlitFramebuffer(0,0,w,h,0,0,w,h,GL_COLOR_BUFFER_BIT,GL_NEAREST);
             glBindFramebuffer(GL_FRAMEBUFFER,0);
         }
+        if (timing_gpu) glEndQuery(GL_TIME_ELAPSED);
         BeginDrawing();
         ClearBackground(BLACK);
         if (game->menu.options[OPTION_AA]) BeginShaderMode(edge_aa);
@@ -2608,22 +2665,26 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (!IsImageValid(image) || !ExportImage(image,capture)) result = 1;
             UnloadImage(image);
         }
-        double work_end = GetTime();
         EndDrawing();
-        frame_graph.work_ms[frame_graph.cursor] = (float)((work_end - frame_start) * 1000);
-        frame_graph.frame_ms[frame_graph.cursor] = (float)((GetTime() - frame_start) * 1000);
-        frame_graph.cursor = (frame_graph.cursor + 1) % FRAME_SAMPLES;
-        if (frame_graph.count < FRAME_SAMPLES) ++frame_graph.count;
+        double next_start = GetTime();
+        elapsed = next_start - frame_start;
+        frame_start = next_start;
+        int slot = (int)(frame_graph.total++ % FRAME_SAMPLES);
+        frame_graph.frame_ms[slot] = (float)(elapsed * 1000);
+        frame_graph.update_ms[slot] = update_ms;
+        frame_graph.gpu_ms[slot] = -1;
         if (frames && ++rendered >= frames) break;
     }
 #ifndef GALAXY_MEMORY
-    if (frames && console->perf && frame_graph.count) {
+    if (frames && console->perf && frame_graph.total) {
         double total_ms = 0;
-        for (int i=0; i<frame_graph.count; ++i) total_ms += frame_graph.frame_ms[i];
+        int count = frame_graph.total < FRAME_SAMPLES ? (int)frame_graph.total : FRAME_SAMPLES;
+        for (int i=0; i<count; ++i) total_ms += frame_graph.frame_ms[i];
         TraceLog(LOG_INFO,"PACING: display %d Hz, V-sync %s, software cap %d, %.2f ms/frame over %d frames",
             display_refresh_hz,game->menu.options[OPTION_VSYNC] ? "on" : "off",applied_limit,
-            total_ms/frame_graph.count,frame_graph.count);
+            total_ms/count,count);
     }
+    if (gpu_timers.queries[0]) glDeleteQueries(GPU_TIMERS, gpu_timers.queries);
 #endif
     console_execute(console, game, "state");
     assets_unload(&assets);

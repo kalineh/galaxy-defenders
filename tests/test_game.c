@@ -72,6 +72,32 @@ static void render_between_ticks(void) {
     CHECK(fabsf(render_angle(6.20f,0.10f,0.5f)) < 0.02f);
 }
 
+static void render_clock_pacing(void) {
+    RenderClock clock = {0};
+    const double period = 1.0/144;
+    double wall = 0, last_pose = 0;
+    for (int i = 1; i <= 288; ++i) {
+        /* Deliver alternate frames 0.8 ms late. Advance the simulation from the
+           raw clock and sample only between the two poses available to draw. */
+        double now = i*period + (i%2 ? 0.0008 : 0);
+        double offset = render_clock_offset(&clock, now-wall, 144);
+        double tick = floor(now*GAME_HZ);
+        double fraction = fmin(1, fmax(0, (now + offset)*GAME_HZ - tick));
+        double pose = (tick + fraction)/GAME_HZ;
+        if (i > 30) CHECK(fabs(pose-last_pose-period) < 0.00055);
+        CHECK(fabs(pose-now) <= 0.002);
+        last_pose = pose;
+        wall = now;
+    }
+    CHECK(render_clock_offset(&clock, 2*period, 144) == 0);
+    CHECK(render_clock_offset(&clock, 0.5, 144) == 0);
+    CHECK(render_clock_offset(&clock, 1.0/120, 120) == 0);
+    CHECK(render_clock_offset(&clock, 0.003, 0) == 0);
+    /* A display reporting the wrong rate must never accumulate timing debt. */
+    for (int i = 0; i < 1000; ++i)
+        CHECK(fabs(render_clock_offset(&clock, 1.0/130, 144)) <= 0.002);
+}
+
 static void collisions(void) {
     reset();
     int enemy = game_spawn_enemy(&game, ENEMY_BALL, 400, 300);
@@ -2230,6 +2256,7 @@ static void music_override_commands(void) {
 
 int main(int argc, char **argv) {
     render_between_ticks();
+    render_clock_pacing();
     music_override_commands();
     boss5_and_turret_movement();
     enemy_camera_movement();

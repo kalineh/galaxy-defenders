@@ -101,10 +101,11 @@ names and positional arguments; Tab again lists ambiguous choices. Up/Down
 browse 32 commands and restore your draft. Left/Right/Home/End, Backspace/Delete,
 and Ctrl+V edit input. PgUp/PgDn or the mouse wheel scroll 256 output lines;
 `clear` clears output. Close the window to exit. Gamepad Y restarts after win/loss.
-F3 (or `perf on` / `perf off`) toggles the reference-style top-right frame graph.
-Gold measures total frame time including presentation and waiting. Cyan measures
-CPU update and draw work before presentation. The guide marks the target frame
-time, or the display interval when uncapped. The graph keeps 240 samples.
+F3 (or `perf on` / `perf off`) toggles the frame graph. Gold shows the raw time
+between game frames, including waits. Cyan shows GPU time for the scene and
+MSAA resolve. Update measures CPU time for game logic, input and audio updates.
+The graph keeps 240 frames. The readout shows averages and the longest interval
+over the last half second. The guide marks the cap or the display interval.
 F2 joins with the keyboard.
 
 In Options, **Frame rate cap** defaults to **Display** and **V-sync** defaults
@@ -112,7 +113,10 @@ to **On**. Display follows the monitor containing the window. Choose a fixed
 cap from 30 to 360 FPS or Unlimited. V-sync can also limit presentation to
 the monitor refresh rate. Both settings apply immediately and are remembered.
 Ships, shots, pickups and the scrolling world interpolate between the 60 Hz
-simulation ticks. Stage events and music cues retain their authored timing.
+simulation ticks. With V-sync enabled, interpolation follows the expected frame
+cadence through small variations in driver wake-up time. Gameplay and stage
+events use elapsed time. On a fixed-refresh display, caps that do not divide
+the refresh rate evenly can hold some frames on screen for an extra refresh.
 
 The content is playable, with remaining fidelity work tracked in CONTENT_PARITY.md:
 projectile effects/audio, salvage, menu transitions and
