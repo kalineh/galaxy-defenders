@@ -255,6 +255,7 @@ void game_reset(Game *game, uint32_t seed) {
     game->menu.players = 1;
     for (int i = 0; i < OPTION_RENDER_SCALE; ++i) game->menu.options[i] = 10;
     game->menu.options[OPTION_RENDER_SCALE] = 1;
+    game->menu.options[OPTION_MSAA] = 1;
     game_join(game, 0);
     game_scenery_init(game);
 }

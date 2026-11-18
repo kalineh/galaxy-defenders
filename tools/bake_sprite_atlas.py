@@ -75,6 +75,15 @@ def pack(paths, software):
         height = max(y+h+4 for x,y,w,h,p in packed)
         page = Image.new("RGBA", (width,height))
         for x,y,w,h,image in packed:
+            if group == "Structures":
+                # Clamp the atlas sampler to each tile at its edges, including mip levels.
+                # Grow the border into the existing gutter without moving its UVs.
+                for left,right,dx,dw in ((0,1,-4,4),(0,w,0,w),(w-1,w,w,4)):
+                    for top,bottom,dy,dh in ((0,1,-4,4),(0,h,0,h),(h-1,h,h,4)):
+                        if dx == 0 and dy == 0:
+                            continue
+                        edge = image.crop((left,top,right,bottom))
+                        page.paste(edge.resize((dw,dh),Image.Resampling.NEAREST),(x+dx,y+dy))
             page.paste(image,(x,y))
         name = f"{group}{i}{'Preview' if software else ''}.png"
         page.save(OUTPUT / name)

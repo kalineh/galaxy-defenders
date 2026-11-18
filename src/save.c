@@ -58,9 +58,16 @@ bool game_options_read(int options[OPTION_COUNT], const char *path) {
     if (!file) return false;
     int values[OPTION_COUNT];
     bool ok = true;
-    for (int i = 0; i < OPTION_COUNT && ok; ++i)
+    for (int i = 0; i < OPTION_MSAA && ok; ++i)
         ok = read_int(file,&values[i]) && values[i] >= 0 && values[i] <= game_option_max[i];
+    /* Earlier settings files end after FXAA. */
+    values[OPTION_MSAA] = 1;
     char extra;
+    if (ok && fscanf(file," %c",&extra) == 1) {
+        ungetc(extra,file);
+        ok = read_int(file,&values[OPTION_MSAA]) && values[OPTION_MSAA] >= 0 &&
+            values[OPTION_MSAA] <= game_option_max[OPTION_MSAA];
+    }
     ok = ok && fscanf(file," %c",&extra) == EOF && !ferror(file);
     fclose(file);
     if (ok) memcpy(options,values,sizeof(values));

@@ -703,11 +703,22 @@ static void menu_flow(void) {
     CHECK(game.menu.options[OPTION_RENDER_SCALE] == 3);
     CHECK(console_chain(&console,&game,"menu.input down;menu.input right;menu.input right"));
     CHECK(game.menu.options[OPTION_AA] == 1);
+    CHECK(game.menu.options[OPTION_MSAA] == 1);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
+    CHECK(game.menu.options[OPTION_MSAA] == 2);
     const char *settings_path = "artifacts/native-port/test-graphics.cfg";
     int restored[OPTION_COUNT] = {0};
     CHECK(game_options_write(game.menu.options,settings_path));
     CHECK(game_options_read(restored,settings_path));
     CHECK(!memcmp(restored,game.menu.options,sizeof(restored)));
+    FILE *legacy_options = fopen(settings_path,"wb");
+    CHECK(legacy_options != NULL);
+    if (legacy_options) {
+        fputs("7 8 9 3 1",legacy_options);
+        fclose(legacy_options);
+        CHECK(game_options_read(restored,settings_path));
+        CHECK(restored[OPTION_SFX] == 7 && restored[OPTION_AA] == 1 && restored[OPTION_MSAA] == 1);
+    }
     CHECK(console_chain(&console, &game, "menu.input back;menu.input down;menu.input confirm"));
     CHECK(game.menu.page == MENU_RETRY);
     game_tick(&game);

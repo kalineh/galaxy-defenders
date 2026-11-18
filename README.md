@@ -31,8 +31,8 @@ Menus use arrows, X to confirm and Z to cancel or gamepad D-pad/A/B. Player two 
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
 generators and shields are connected; Rabbit starts with Lightning. The Options menu saves volume, screen size,
 render scale, and anti-aliasing alongside the save slots. Render Scale uses 75%,
-100%, 150%, or 200% of the displayed game dimensions. FXAA can be toggled
-independently. Graphics settings apply live in the Windows client. The windowless
+100%, 150%, or 200% of the displayed game dimensions. MSAA defaults to 2x and supports Off, 2x, and 4x. FXAA can be toggled
+independently of MSAA. Graphics settings apply live in the Windows client. The windowless
 verification renderer uses its fixed reference resolution.
 
 Gameplay and equipment sprites are baked from `art/sprites/` into one flight atlas

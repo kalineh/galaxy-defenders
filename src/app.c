@@ -4,6 +4,9 @@
 #include "input.h"
 #include "raylib.h"
 #include "rlgl.h"
+#ifndef GALAXY_MEMORY
+#include "external/glad.h"
+#endif
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -859,7 +862,10 @@ static void draw_game(const Game *game, const Assets *assets) {
         Sprite texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
             assets->stage_destroyed[i] : assets->stage_textures[i];
         float x = view_x + GAME_WIDTH*0.5f + event->x;
-        sprite(texture,x,y,event->width,event->rotation,assets->stage_tints[i]);
+        /* A one-pixel apron on each side closes subpixel joins between authored deck pieces. */
+        float width = event->width;
+        if (event->kind == STAGE_DECORATION && strcmp(event->name,"SecretHint") != 0) width += 2;
+        sprite(texture,x,y,width,event->rotation,assets->stage_tints[i]);
     }
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
@@ -1271,10 +1277,11 @@ static void menu_row(Font font, const Game *game, int row, int x, int y, int wid
     if (selected) DrawRectangle(x,y,5,height-3,accent);
     const char *label = behind_dialog ? game_slot_label(game,row) : game_menu_label(game,row);
     DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,text);
-    if (game->menu.page == MENU_OPTIONS && (row == OPTION_RENDER_SCALE || row == OPTION_AA)) {
+    if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
         const char *setting = row == OPTION_RENDER_SCALE ?
             TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
-            (game->menu.options[row] ? "FXAA" : "Off");
+            row == OPTION_MSAA ? (const char *[]){"Off","2x","4x"}[game->menu.options[row]] :
+            (game->menu.options[row] ? "On" : "Off");
         float value_width = MeasureTextEx(font,setting,26,0).x;
         DrawTextEx(font,setting,(Vector2){x+width-value_width-22,y+(height-26)/2},26,0,accent);
     }
@@ -1347,7 +1354,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : page == MENU_OPTIONS ? 59 : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? 51 : 69;
     int y = title ? 606 : stages ? 180 : 437;
     int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
     if (title) {
@@ -1892,6 +1899,39 @@ static void draw_frame_graph(const FrameGraph *history, Font font) {
     }
 }
 
+#ifndef GALAXY_MEMORY
+typedef struct {
+    unsigned int framebuffer, color;
+} MultisampleTarget;
+
+static void unload_msaa(MultisampleTarget *target) {
+    glDeleteFramebuffers(1,&target->framebuffer);
+    glDeleteRenderbuffers(1,&target->color);
+    *target = (MultisampleTarget){0};
+}
+
+static bool create_msaa(MultisampleTarget *target, int width, int height, int samples) {
+    glGenFramebuffers(1,&target->framebuffer);
+    glGenRenderbuffers(1,&target->color);
+    glBindFramebuffer(GL_FRAMEBUFFER,target->framebuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER,target->color);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER,samples,GL_RGBA8,width,height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_RENDERBUFFER,target->color);
+    bool ready = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    int actual = 0;
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER,GL_RENDERBUFFER_SAMPLES,&actual);
+    glBindRenderbuffer(GL_RENDERBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    if (!ready || actual < samples) {
+        unload_msaa(target);
+        return false;
+    }
+    glEnable(GL_MULTISAMPLE);
+    TraceLog(LOG_INFO,"MSAA: %dx requested, %d samples allocated (%dx%d)",samples,actual,width,height);
+    return true;
+}
+#endif
+
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
     double save_retry_at = 0;
@@ -1966,7 +2006,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         CloseWindow();
         return 1;
     }
-    int requested_width = 0;
+    int requested_width = 0, applied_msaa = -1;
+    MultisampleTarget multisample = {0};
 #endif
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     int rendered = 0, result = 0, menu_frame = 0;
@@ -2124,6 +2165,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsRenderTextureValid(replacement)) {
                 if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
                 canvas = replacement;
+                applied_msaa = -1;
                 SetTextureFilter(canvas.texture,TEXTURE_FILTER_BILINEAR);
                 Vector2 texel = {1.0f/canvas.texture.width,1.0f/canvas.texture.height};
                 SetShaderValue(edge_aa,texel_location,&texel,SHADER_UNIFORM_VEC2);
@@ -2133,7 +2175,19 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 if (!IsRenderTextureValid(canvas)) { result = 1; break; }
             }
         }
-        BeginTextureMode(canvas);
+        if (applied_msaa != game->menu.options[OPTION_MSAA]) {
+            unload_msaa(&multisample);
+            int level = game->menu.options[OPTION_MSAA];
+            while (level && !create_msaa(&multisample,canvas.texture.width,canvas.texture.height,1 << level)) --level;
+            if (level != game->menu.options[OPTION_MSAA]) {
+                console_log(console,"MSAA allocation failed; using %d samples",1 << level);
+                game->menu.options[OPTION_MSAA] = level;
+            }
+            applied_msaa = level;
+        }
+        RenderTexture2D draw_target = canvas;
+        if (multisample.framebuffer) draw_target.id = multisample.framebuffer;
+        BeginTextureMode(draw_target);
         BeginMode2D((Camera2D){.zoom=canvas_zoom});
 #endif
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
@@ -2154,6 +2208,13 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #ifndef GALAXY_MEMORY
         EndMode2D();
         EndTextureMode();
+        if (multisample.framebuffer) {
+            int w = canvas.texture.width, h = canvas.texture.height;
+            glBindFramebuffer(GL_READ_FRAMEBUFFER,multisample.framebuffer);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER,canvas.id);
+            glBlitFramebuffer(0,0,w,h,0,0,w,h,GL_COLOR_BUFFER_BIT,GL_NEAREST);
+            glBindFramebuffer(GL_FRAMEBUFFER,0);
+        }
         BeginDrawing();
         ClearBackground(BLACK);
         float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
@@ -2186,6 +2247,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     assets_unload(&assets);
     if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
 #ifndef GALAXY_MEMORY
+    unload_msaa(&multisample);
     UnloadShader(edge_aa);
 #endif
     if (!frames) ds4_shutdown();
