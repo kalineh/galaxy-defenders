@@ -837,14 +837,16 @@ static void draw_slot_row(const Assets *assets, const Player *p, int x, int y, i
     }
     Sprite icon = id < 0 ? assets->shop[cat] : equipment_icon(assets,cat,id);
     sprite(icon,x+24,y+23,32,0,id < 0 ? dim : WHITE);
-    DrawTextEx(font,loadout_slots[cat],(Vector2){x+49,y+13},20,0,dim);
+    const char *slot = loadout_slots[cat];
+    float label_size = fminf(24,24*104/fmaxf(1,MeasureTextEx(font,slot,24,0).x));
+    DrawTextEx(font,slot,(Vector2){x+49,y+(47-label_size)/2},label_size,0,dim);
     const char *name = shop_item_name(cat,id);
     bool show_mark = id >= 0 && cat >= 3;
-    float size = fminf(24,24*(show_mark ? 220 : 268)/fmaxf(1,MeasureTextEx(font,name,24,0).x));
-    DrawTextEx(font,name,(Vector2){x+148,y+(47-size)/2},size,0,id < 0 ? dim : WHITE);
+    float size = fminf(31,31*(show_mark ? 205 : 258)/fmaxf(1,MeasureTextEx(font,name,31,0).x));
+    DrawTextEx(font,name,(Vector2){x+160,y+(47-size)/2},size,0,id < 0 ? dim : WHITE);
     if (show_mark)
         DrawTextEx(font,TextFormat("Mk %d",1+game_shop_equipped_level(p,cat)),
-            (Vector2){x+375,y+14},18,0,color);
+            (Vector2){x+371,y+12},21,0,color);
     DrawLine(x,y+47,x+424,y+47,rule);
 }
 
