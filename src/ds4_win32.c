@@ -3,6 +3,7 @@
 #if defined(_WIN32) && !defined(GALAXY_MEMORY)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <stdlib.h>
 
 static HWND message_window;
 static struct { HANDLE handle; PadInput input; ULONGLONG last_report; } devices[2];
@@ -13,14 +14,21 @@ static int find_device(HANDLE handle) {
     RID_DEVICE_INFO info = {.cbSize = sizeof(info)};
     UINT size = sizeof(info);
     if (GetRawInputDeviceInfoW(handle, RIDI_DEVICEINFO, &info, &size) == (UINT)-1 ||
-        info.dwType != RIM_TYPEHID || info.hid.dwVendorId != 0x054c ||
+        info.dwType != RIM_TYPEHID || info.hid.usUsagePage != 1 ||
+        (info.hid.usUsage != 4 && info.hid.usUsage != 5) || info.hid.dwVendorId != 0x054c ||
         (info.hid.dwProductId != 0x05c4 && info.hid.dwProductId != 0x09cc && info.hid.dwProductId != 0x0ba0)) return -1;
-    for (int i = 0; i < 2; ++i) if (!devices[i].handle) { devices[i].handle = handle; return i; }
+    for (int i = 0; i < 2; ++i) if (!devices[i].handle) {
+        devices[i].handle = handle;
+        devices[i].input.connected = true;
+        return i;
+    }
     return -1;
 }
 
 static LRESULT CALLBACK input_window(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
-    if (message == WM_INPUT_DEVICE_CHANGE && wparam == GIDC_REMOVAL) {
+    if (message == WM_INPUT_DEVICE_CHANGE && wparam == GIDC_ARRIVAL) {
+        find_device((HANDLE)lparam);
+    } else if (message == WM_INPUT_DEVICE_CHANGE && wparam == GIDC_REMOVAL) {
         for (int i = 0; i < 2; ++i) if (devices[i].handle == (HANDLE)lparam) memset(&devices[i], 0, sizeof(devices[i]));
     } else if (message == WM_INPUT) {
         /* Bluetooth collections can report 547-byte packets. Keep reads bounded and aligned. */
@@ -54,6 +62,17 @@ bool ds4_init(void) {
         {1, 5, RIDEV_INPUTSINK | RIDEV_DEVNOTIFY, message_window}
     };
     if (!RegisterRawInputDevices(registrations, 2, sizeof(RAWINPUTDEVICE))) { ds4_shutdown(); return false; }
+    /* Publish attached devices before GLFW polling, including idle pads with no report yet. */
+    UINT count = 0;
+    if (GetRawInputDeviceList(NULL, &count, sizeof(RAWINPUTDEVICELIST)) == 0 && count) {
+        RAWINPUTDEVICELIST *list = calloc(count, sizeof(*list));
+        if (list) {
+            UINT read = GetRawInputDeviceList(list, &count, sizeof(*list));
+            if (read != (UINT)-1) for (UINT i = 0; i < read; ++i)
+                if (list[i].dwType == RIM_TYPEHID) find_device(list[i].hDevice);
+            free(list);
+        }
+    }
     return true;
 }
 
@@ -63,8 +82,8 @@ void ds4_update(PadInput pads[2]) {
         while (PeekMessageW(&message, message_window, 0, 0, PM_REMOVE)) DispatchMessageW(&message);
     }
     for (int i = 0; i < 2; ++i) {
-        if (devices[i].input.connected && GetTickCount64() - devices[i].last_report > 500)
-            devices[i].input = (PadInput){0};
+        if (devices[i].handle && GetTickCount64() - devices[i].last_report > 500)
+            devices[i].input = (PadInput){.connected = true};
         pads[i] = devices[i].input;
         devices[i].input.pressed = 0;
     }

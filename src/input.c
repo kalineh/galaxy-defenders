@@ -2,13 +2,15 @@
 #include <math.h>
 
 void input_devices_init(PlayerDevices *devices) {
-    *devices = (PlayerDevices){.device = {-1,-1}, .selected_device = INPUT_KEYBOARD, .prompt_device = INPUT_KEYBOARD};
+    *devices = (PlayerDevices){.selected_device = INPUT_KEYBOARD, .prompt_device = INPUT_KEYBOARD,
+        .player_prompt = {INPUT_KEYBOARD, INPUT_KEYBOARD}, .has_device = {true, false}};
+    for (int i = 0; i < INPUT_PADS; ++i) devices->owner[i] = -1;
+    devices->owner[INPUT_KEYBOARD] = 0;
 }
 
 int input_owner(const PlayerDevices *devices, int device) {
-    if (device < 0) return -1;
-    for (int i = 0; i < GAME_PLAYERS; ++i) if (devices->device[i] == device) return i;
-    return -1;
+    if (device < 0 || device >= INPUT_DEVICES || (device < INPUT_PADS && !devices->pad_number[device])) return -1;
+    return devices->owner[device];
 }
 
 static int other_pilot(const Game *game, const PlayerDevices *devices, int slot) {
@@ -17,32 +19,67 @@ static int other_pilot(const Game *game, const PlayerDevices *devices, int slot)
     return game->players[other].initialized ? game->players[other].pilot : -1;
 }
 
+static int first_device(const PlayerDevices *devices, int slot) {
+    if (input_owner(devices, INPUT_KEYBOARD) == slot) return INPUT_KEYBOARD;
+    for (int i = 0; i < INPUT_PADS; ++i) if (input_owner(devices, i) == slot) return i;
+    return -1;
+}
+
+static void sync_players(Game *game, PlayerDevices *devices) {
+    MenuPage page = game->menu.page == MENU_CONTROLLERS ? game->menu.controllers_origin : game->menu.page;
+    bool setup = page == MENU_MAIN || page == MENU_SLOTS || page == MENU_DELETE || page == MENU_DIFFICULTY ||
+        page == MENU_PILOT || ((page == MENU_OPTIONS || page == MENU_QUIT) && game->menu.parent == MENU_MAIN);
+    bool lost_last[GAME_PLAYERS] = {false};
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
+        int device = first_device(devices, slot);
+        bool previously_assigned = devices->has_device[slot];
+        devices->has_device[slot] = device >= 0;
+        lost_last[slot] = previously_assigned && device < 0;
+        if (device < 0) { devices->choosing[slot] = false; continue; }
+        int prompt = devices->player_prompt[slot];
+        int owner = input_owner(devices,prompt);
+        if ((prompt < INPUT_PADS && !devices->pad_number[prompt]) || (owner >= 0 && owner != slot))
+            devices->player_prompt[slot] = device;
+        bool fresh = !game->players[slot].initialized;
+        bool choose = fresh && !game->over && (page == MENU_NONE || page == MENU_PAUSE || page == MENU_SHOP);
+        if (choose && !devices->choosing[slot]) {
+            devices->pilot[slot] = slot == other_pilot(game, devices, slot) ? (slot+1)%3 : slot;
+            if (game->menu.page == MENU_PAUSE) game_menu_open(game, MENU_CONTROLLERS);
+        }
+        devices->choosing[slot] = choose;
+        if (!game->players[slot].joined && (fresh ? setup : !previously_assigned))
+            game_join(game, slot);
+    }
+    /* Join destinations first so moving the last device doesn't briefly empty the party. */
+    for (int slot = 0; slot < GAME_PLAYERS; ++slot)
+        if (lost_last[slot]) game_leave(game, slot);
+}
+
+void input_update_devices(Game *game, PlayerDevices *devices, const PadInput inputs[INPUT_DEVICES]) {
+    bool used[INPUT_PADS+1] = {false};
+    for (int i = 0; i < INPUT_PADS; ++i) {
+        if (!inputs[i].connected) devices->pad_number[i] = 0;
+        used[devices->pad_number[i]] = true;
+    }
+    for (int i = 0; i < INPUT_PADS; ++i) {
+        if (!inputs[i].connected || devices->pad_number[i]) continue;
+        int number = 1;
+        while (used[number]) ++number;
+        used[number] = true;
+        devices->pad_number[i] = number;
+        if (!devices->manual[i]) devices->owner[i] = number <= GAME_PLAYERS ? number-1 : -1;
+    }
+    if (devices->prompt_device < INPUT_PADS && !inputs[devices->prompt_device].connected)
+        devices->prompt_device = INPUT_KEYBOARD;
+    sync_players(game, devices);
+}
+
 bool input_assign(Game *game, PlayerDevices *devices, int device, int slot) {
-    if (device < 0 || device > INPUT_KEYBOARD || slot < -1 || slot >= GAME_PLAYERS) return false;
-    int old = input_owner(devices,device);
-    if (old == slot) return true;
-    bool choosing = false;
-    if (slot >= 0 && !game->players[slot].joined) {
-        MenuPage page = game->menu.page;
-        if (page == MENU_CONTROLLERS) page = game->menu.controllers_origin;
-        choosing = !game->players[slot].initialized && (page == MENU_NONE || page == MENU_SHOP || page == MENU_PAUSE);
-        if (choosing && game->over) return false;
-        if (!choosing && !game_join(game,slot)) return false;
-    }
-    if (old >= 0) {
-        devices->device[old] = -1;
-        devices->choosing[old] = false;
-        if (game->players[old].joined) game_leave(game,old);
-    }
-    if (slot >= 0) {
-        devices->device[slot] = device;
-        devices->choosing[slot] = choosing;
-        if (choosing && game->menu.page == MENU_PAUSE) game_menu_open(game,MENU_CONTROLLERS);
-        devices->pilot[slot] = game->players[slot].initialized ? game->players[slot].pilot : slot;
-        if (devices->pilot[slot] == other_pilot(game,devices,slot))
-            devices->pilot[slot] = (devices->pilot[slot]+1)%3;
-        game->players[slot].input = (PlayerInput){0};
-    }
+    if (device < 0 || device >= INPUT_DEVICES || slot < -1 || slot >= GAME_PLAYERS) return false;
+    if (device < INPUT_PADS && !devices->pad_number[device]) return false;
+    devices->owner[device] = slot;
+    devices->manual[device] = true;
+    sync_players(game, devices);
     return true;
 }
 
@@ -50,7 +87,11 @@ void input_pick_pilot(Game *game, PlayerDevices *devices, int slot, MenuAction a
     if (!devices->choosing[slot]) return;
     int other = other_pilot(game,devices,slot);
     int pilot = devices->pilot[slot];
-    if (action == MENU_BACK) { input_drop(game,devices,devices->device[slot]); return; }
+    if (action == MENU_BACK) {
+        for (int i = 0; i < INPUT_DEVICES; ++i)
+            if (input_owner(devices, i) == slot) input_drop(game, devices, i);
+        return;
+    }
     int step = action == MENU_LEFT ? -1 : action == MENU_RIGHT ? 1 : 0;
     pilot = (pilot + step + 3)%3;
     if (pilot == other) pilot = (pilot + (step < 0 ? 2 : 1))%3;
@@ -73,7 +114,7 @@ int input_claim(Game *game, PlayerDevices *devices, int device) {
     int owner = input_owner(devices,device);
     if (owner >= 0) return owner;
     for (int slot = 0; slot < GAME_PLAYERS; ++slot)
-        if (devices->device[slot] < 0 && input_assign(game,devices,device,slot)) return slot;
+        if (first_device(devices,slot) < 0 && input_assign(game,devices,device,slot)) return slot;
     return -1;
 }
 
@@ -97,6 +138,38 @@ PlayerInput input_player(const PadInput *pad) {
     result.focus = (pad->buttons & (PAD_FOCUS | PAD_BACK)) != 0;
     result.sidekick_left = result.sidekick_right = (pad->buttons & PAD_SIDEKICK) != 0;
     return result;
+}
+
+PlayerInput input_slot_player(const PlayerDevices *devices, const PadInput inputs[INPUT_DEVICES], int slot) {
+    PlayerInput result = {0};
+    float left = 0, right = 0, up = 0, down = 0;
+    for (int i = 0; i < INPUT_DEVICES; ++i) {
+        if (input_owner(devices,i) != slot) continue;
+        PlayerInput p = input_player(&inputs[i]);
+        left = fminf(left,p.x); right = fmaxf(right,p.x);
+        up = fminf(up,p.y); down = fmaxf(down,p.y);
+        result.fire |= p.fire;
+        result.focus |= p.focus;
+        result.sidekick_left |= p.sidekick_left;
+        result.sidekick_right |= p.sidekick_right;
+    }
+    result.x = left+right; result.y = up+down;
+    float length = hypotf(result.x,result.y);
+    if (length > 1) { result.x /= length; result.y /= length; }
+    return result;
+}
+
+MenuButtons input_menu_buttons(PlayerDevices *devices, const PadInput inputs[INPUT_DEVICES], int lead) {
+    MenuButtons buttons = {0};
+    for (int i = 0; i < INPUT_DEVICES; ++i) {
+        if (!inputs[i].connected || !inputs[i].pressed) continue;
+        int slot = input_owner(devices,i);
+        if (slot < 0) slot = lead;
+        buttons.shared |= inputs[i].pressed;
+        buttons.player[slot] |= inputs[i].pressed;
+        devices->prompt_device = devices->player_prompt[slot] = i;
+    }
+    return buttons;
 }
 
 /* Report offsets and supported transports follow Solcraft's native DS4 reader.

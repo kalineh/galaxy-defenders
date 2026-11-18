@@ -58,27 +58,34 @@ See [music audition instructions](music/README.md) and the
 | Action | Keyboard |
 | --- | --- |
 | Move | Arrows |
-| Fire / confirm | X |
+| Fire | X |
+| Menu confirm | Enter or X |
 | Focus fire / ready | C |
-| Cancel / sidekick | Z |
-| Join | F2 or Enter |
-| Pause / resume | Enter |
+| Sidekick / back one shop level | Z |
+| Menu cancel / close dialog | Escape or Z |
+| Join with an unassigned keyboard | F2 |
+| Pause / resume flight or shop | Escape or P |
 | End-of-stage retry | D |
 
-The keyboard can control either player. Press Start/Options on an unassigned
-gamepad to join. During play or in the shop, use left/right to pick a pilot in
-your player panel the first time you join. Reassigning an existing pilot resumes that pilot immediately. A returning slot keeps its equipment,
-money and health, including a destroyed ship.
+At launch the keyboard and first connected gamepad both control P1. The second
+gamepad controls P2. Additional gamepads start unassigned. Either device can
+move or fire for the same pilot, including at the same time. When a new pilot
+joins during flight or in the shop, choose their portrait with left/right and
+confirm. Returning pilots keep their equipment, money and health.
 
 Open **Pause > Controllers** to see the keyboard and connected gamepads. Any
 device can select a row with up/down. Move it left or right between P1,
-Unassigned and P2. Assigning to an occupied player releases their previous device.
-Start pauses or resumes after joining. Select/Share + Start/Options drops out.
-Disconnected pilots stay in their save slot. Disconnecting the last player opens Controllers and freezes play until a device is assigned.
-Both loadouts stay in the same campaign save even when one player is absent.
-Continuing restores the currently joined party, with the other loadout held for
-later joining. Either player can navigate shared menus; absent players do not
-block pilot selection or shop readiness.
+Unassigned and P2. Multiple devices can share a player. Assignments apply across
+save slots for the current session and reset on relaunch. Start/Options pauses
+or resumes. An unassigned pad can also press Start to join an empty player slot.
+Select/Share + Start releases that pad. A pilot disconnects when their last
+device leaves. If both disconnect, Controllers opens and play waits for an
+assignment. Their loadouts stay in the campaign save.
+
+Any device can navigate shared menus, including an unassigned gamepad. In pilot
+selection and the shop, assigned devices operate their own player's panel.
+Unassigned devices operate the lead player's panel. Escape closes an open
+purchase dialog first, then pauses the shop.
 
 Standard gamepads use raylib/GLFW. Windows additionally reads up to two native
 DS4 controllers (USB/Bluetooth), with report layouts based on Solcraft; no sibling

@@ -99,12 +99,13 @@ visible write errors/retries and non-destructive old-save migration are implemen
 Checkpoints: new-run/stage start, finalized stage-clear rewards, shop purchases.
 Mid-stage quit returns to title without saving partial progress.
 
-Device ownership is independent of P1/P2. Start/Options claims a free slot, then
-pauses/resumes or readies in the shop. Select/Share + Start leaves; removal drops
-out and last-player removal pauses/cancels a pending launch. Equipment, money and
-health are retained; reconnect cannot revive a ship. Both loadouts share one save.
-Absent players do not block menus/shop; either player can navigate shared menus.
-F2 joins with the keyboard. Pause > Controllers assigns devices to either slot. Native Windows DS4 USB/BT report parsing follows Solcraft,
+The keyboard and first gamepad share P1 at launch. The second gamepad controls P2.
+Pause > Controllers changes assignments for the session. Shared menus accept
+every connected device. A pilot stays active until their last device leaves,
+and keeps equipment, money and health on rejoin. Both loadouts share one save.
+Start/Options pauses or resumes. An unassigned pad can join an open slot with
+Start, and an unassigned keyboard can join with F2. Select/Share + Start
+releases a pad. Native Windows DS4 USB/BT report parsing follows Solcraft,
 using a bounded Raw Input transport; standard raylib gamepads remain available.
 No sibling dependency or new third-party package was introduced.
 

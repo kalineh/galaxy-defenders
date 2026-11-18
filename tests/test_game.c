@@ -1971,20 +1971,52 @@ static void controller_joining(void) {
     reset();
     PlayerDevices devices;
     input_devices_init(&devices);
-    CHECK(input_claim(&game, &devices, 4) == 0); /* First native pad owns P1. */
-    CHECK(input_claim(&game, &devices, 4) == 0);
-    CHECK(input_claim(&game, &devices, 1) == 1); /* Hardware index is not player number. */
-    CHECK(input_claim(&game, &devices, 5) == -1);
+    PadInput inputs[INPUT_DEVICES] = {0};
+    inputs[INPUT_KEYBOARD] = (PadInput){.connected=true,.buttons=PAD_RIGHT|PAD_CONFIRM};
+    inputs[4] = (PadInput){.connected=true,.buttons=PAD_DOWN|PAD_FOCUS};
+    input_update_devices(&game,&devices,inputs);
+    CHECK(input_owner(&devices,INPUT_KEYBOARD) == 0 && input_owner(&devices,4) == 0);
+    inputs[1] = (PadInput){.connected=true,.buttons=PAD_LEFT|PAD_SIDEKICK};
+    inputs[5] = (PadInput){.connected=true,.buttons=PAD_CONFIRM,.pressed=PAD_DOWN};
+    input_update_devices(&game,&devices,inputs);
+    CHECK(input_owner(&devices,1) == 1 && input_owner(&devices,5) == -1);
+    PlayerInput flight = input_slot_player(&devices,inputs,0);
+    CHECK(fabsf(flight.x-.7071f) < .001f && fabsf(flight.y-.7071f) < .001f);
+    CHECK(flight.fire && flight.focus && !flight.sidekick_left);
+    flight = input_slot_player(&devices,inputs,1);
+    CHECK(flight.x == -1 && flight.y == 0 && flight.sidekick_left && !flight.fire);
+    inputs[4].buttons = PAD_LEFT;
+    CHECK(input_slot_player(&devices,inputs,0).x == 0);
+    inputs[4].buttons = 0;
+    CHECK(input_slot_player(&devices,inputs,0).x == 1);
+    MenuButtons menu = input_menu_buttons(&devices,inputs,0);
+    CHECK(menu.shared == PAD_DOWN && menu.player[0] == PAD_DOWN && !menu.player[1]);
+    CHECK(devices.prompt_device == 5);
+    inputs[1].pressed = PAD_RIGHT;
+    inputs[4].pressed = PAD_DOWN;
+    menu = input_menu_buttons(&devices,inputs,0);
+    CHECK(menu.shared == (PAD_DOWN|PAD_RIGHT) && menu.player[0] == PAD_DOWN && menu.player[1] == PAD_RIGHT);
     CHECK(devices.choosing[1] && !game.players[1].joined);
     input_pick_pilot(&game,&devices,1,MENU_RIGHT);
     input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
     CHECK(game.players[1].pilot == 2 && !devices.choosing[1]);
     CHECK(game.players[1].chassis == 2 && game.players[1].secondary == WEAPON_MISSILE);
     CHECK(game.players[0].joined && game.players[1].joined);
+    inputs[4].connected = false;
+    input_update_devices(&game,&devices,inputs);
+    CHECK(game.players[0].joined && input_owner(&devices,4) == -1 && input_owner(&devices,5) == -1);
+    inputs[4].connected = true;
+    input_update_devices(&game,&devices,inputs);
+    CHECK(input_owner(&devices,4) == 0 && game.players[0].joined);
     game.players[1].health = 7; game.players[1].money = 9876;
     game.players[1].input.fire = true;
     int bullet = game_spawn_bullet(&game, 1, 400, 400, 0, -10, 1);
     CHECK(input_drop(&game, &devices, 1));
+    inputs[1].connected = false;
+    input_update_devices(&game,&devices,inputs);
+    inputs[1].connected = true;
+    input_update_devices(&game,&devices,inputs);
+    CHECK(input_owner(&devices,1) == -1); /* Manual unassignment survives reconnection. */
     CHECK(!game.players[1].joined && !game.players[1].input.fire && !game.bullets[bullet].active);
     CHECK(game.players[0].joined && game.menu.page == MENU_NONE);
     CHECK(input_claim(&game, &devices, 5) == 1);
@@ -1995,6 +2027,8 @@ static void controller_joining(void) {
     input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
     CHECK(game.players[1].lives == 0); /* Cannot revive by unplugging. */
     CHECK(input_drop(&game, &devices, 5) && input_drop(&game, &devices, 4));
+    CHECK(game.players[0].joined && game.menu.page == MENU_NONE);
+    CHECK(input_drop(&game,&devices,INPUT_KEYBOARD));
     CHECK(game.menu.page == MENU_CONTROLLERS && game.paused);
     game_menu_input(&game,MENU_BACK,0);
     int paused_tick = game.tick;
@@ -2014,8 +2048,9 @@ static void controller_joining(void) {
     CHECK(game_continue(&game, 0));
     CHECK(!game.players[1].joined && game.players[1].initialized && game.players[1].money == 9876);
     CHECK(input_claim(&game,&devices,INPUT_KEYBOARD) == 0);
-    CHECK(input_assign(&game,&devices,4,0)); /* Change P1 hardware without dropping the ship. */
-    CHECK(input_claim(&game,&devices,INPUT_KEYBOARD) == 1);
+    CHECK(input_assign(&game,&devices,4,0));
+    CHECK(input_owner(&devices,INPUT_KEYBOARD) == 0);
+    CHECK(input_assign(&game,&devices,INPUT_KEYBOARD,1));
     CHECK(!devices.choosing[1] && game.players[1].joined && game.players[1].pilot == 2);
     CHECK(game.players[1].money == 9876 && game.players[1].chassis == 2);
     CHECK(input_drop(&game, &devices, 4));
@@ -2026,6 +2061,11 @@ static void controller_joining(void) {
     game_menu_input(&game, MENU_READY, 1);
     for (int i = 0; i < 34; ++i) game_tick(&game);
     CHECK(game.transition_frames == 30); /* Absent P1 cannot hold up the shop. */
+
+    input_devices_init(&devices);
+    input_update_devices(&game,&devices,inputs);
+    CHECK(input_owner(&devices,INPUT_KEYBOARD) == 0 && input_owner(&devices,1) == 0);
+    CHECK(input_owner(&devices,4) == 1 && input_owner(&devices,5) == -1);
 
     reset();
     game_menu_open(&game, MENU_PILOT);
