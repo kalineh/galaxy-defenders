@@ -19,6 +19,7 @@ typedef struct {
 } FrameGraph;
 
 typedef struct {
+    Texture2D flight_atlas;
     Texture2D ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
     Texture2D portraits[3], title_logo, title_squad;
     Texture2D particle_dot, particle_triangle;
@@ -83,7 +84,19 @@ static Texture2D texture_load(const char *name) {
     return texture;
 }
 
+#include "sprite_regions.inc"
+
+static const Rectangle *enemy_atlas_region(EnemyKind kind) {
+    switch (kind) {
+        case ENEMY_BALL: return &atlas_ball;
+        case ENEMY_TURRET: return &atlas_turret;
+        case ENEMY_AIRSHIP: return &atlas_airship;
+        default: return NULL;
+    }
+}
+
 static void assets_unload(Assets *assets) {
+    if (IsTextureValid(assets->flight_atlas)) UnloadTexture(assets->flight_atlas);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
     if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
     if (IsTextureValid(assets->asteroid_cracks)) UnloadTexture(assets->asteroid_cracks);
@@ -277,9 +290,11 @@ static bool stage_assets_load(Assets *assets, int index) {
         char path[160];
         snprintf(path, sizeof(path), "textures/stage/%s/%s.png",
             event->kind == STAGE_DECORATION ? "Decoration" : "Static", event->name);
-        assets->stage_textures[i] = event->kind == STAGE_DECORATION ?
-            load_deck(path,index,event->name) : texture_load(path);
-        valid = valid && IsTextureValid(assets->stage_textures[i]);
+        if (event->kind != STAGE_BUILDING || strcmp(event->name,"SmallBuilding3") != 0) {
+            assets->stage_textures[i] = event->kind == STAGE_DECORATION ?
+                load_deck(path,index,event->name) : texture_load(path);
+            valid = valid && IsTextureValid(assets->stage_textures[i]);
+        }
         if (event->kind == STAGE_BUILDING) {
             snprintf(path, sizeof(path), "textures/stage/Static/Destroyed/%s.png", event->name);
             assets->stage_destroyed[i] = texture_load(path);
@@ -324,13 +339,19 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     SetTextureFilter(assets->heading_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
-    for (int i = 0; i < GAME_CHASSIS; ++i) {
+    assets->flight_atlas = texture_load("textures/FlightSprites.png");
+    if (!IsTextureValid(assets->flight_atlas)) return false;
+#ifndef GALAXY_MEMORY
+    GenTextureMipmaps(&assets->flight_atlas);
+    SetTextureFilter(assets->flight_atlas,TEXTURE_FILTER_TRILINEAR);
+#endif
+    for (int i = 1; i < GAME_CHASSIS; ++i) {
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", game_chassis[i].name);
         assets->ships[i] = texture_load(path);
     }
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i) {
-        if (i == ENEMY_BOSS8_COLLISION) continue;
+        if (i == ENEMY_BOSS8_COLLISION || enemy_atlas_region(i)) continue;
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", i == ENEMY_SPLITTER_FRAGMENT ? "SplitterFragmentLeft" : enemy_is_asteroid(i) ? "Asteroid" : enemy_names[i]);
         assets->enemies[i] = texture_load(path);
@@ -392,10 +413,10 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     UnloadImage(squad);
     assets->water = texture_load("textures/Water.png");
     bool valid = IsTextureValid(assets->pyramid_turret) && IsTextureValid(assets->cutter_beam) && IsTextureValid(assets->rotate_turret_base) && IsTextureValid(assets->splitter_right) && IsTextureValid(assets->shot) && IsTextureValid(assets->hostile_shot);
-    for (int i = 0; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
+    for (int i = 1; i < GAME_CHASSIS; ++i) valid = valid && IsTextureValid(assets->ships[i]);
     valid = valid && IsTextureValid(assets->particle_dot) && IsTextureValid(assets->particle_triangle);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
-        if (i != ENEMY_BOSS8_COLLISION) valid = valid && IsTextureValid(assets->enemies[i]);
+        if (i != ENEMY_BOSS8_COLLISION && !enemy_atlas_region(i)) valid = valid && IsTextureValid(assets->enemies[i]);
     for (int i = 0; i < ENEMY_KIND_COUNT; ++i)
         if (enemy_corpse_name((EnemyKind)i)) valid = valid && IsTextureValid(assets->enemy_corpses[i]);
     for (int i = 0; i < 3; ++i) valid = valid && IsTextureValid(assets->portraits[i]);
@@ -518,6 +539,16 @@ static void sprite(Texture2D texture, float x, float y, float width, float rotat
     float height = width * texture.height / texture.width;
     DrawTexturePro(texture, (Rectangle){0, 0, (float)texture.width, (float)texture.height},
         (Rectangle){x, y, width, height}, (Vector2){width / 2, height / 2}, rotation, color);
+}
+
+static void draw_atlas_sprite(Texture2D atlas, Rectangle region, float x, float y, float width, float rotation, Color tint) {
+    float height = width * region.height / region.width;
+    DrawTexturePro(atlas,region,(Rectangle){x,y,width,height},(Vector2){width/2,height/2},rotation,tint);
+}
+
+static void draw_ship(const Assets *assets, int chassis, float x, float y, float width, float rotation, Color tint) {
+    if (chassis == 0) draw_atlas_sprite(assets->flight_atlas,atlas_rookie,x,y,width,rotation,tint);
+    else sprite(assets->ships[chassis],x,y,width,rotation,tint);
 }
 
 static void text_center(Font font, const char *text, int x, int y, int size, Color color) {
@@ -647,6 +678,12 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (layer == cover_layer && IsTextureValid(cover)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
         if (depth != layer) continue;
+        const Rectangle *region = enemy_atlas_region(enemy->kind);
+        if (region) {
+            float width = enemy->kind == ENEMY_AIRSHIP ? 160 : 80;
+            draw_atlas_sprite(assets->flight_atlas,*region,view_x+enemy->x,enemy->y,width,enemy->rotation*RAD2DEG,WHITE);
+            continue;
+        }
         Texture2D texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
             assets->splitter_right : assets->enemies[enemy->kind];
         float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : enemy->rotation;
@@ -678,7 +715,7 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         if (!player->joined || player->lives <= 0) continue;
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
+        draw_ship(assets,player->chassis, view_x + player->x, player->y, 80, -90, color);
         if (player->sidekick >= 0) for (int side = -1; side <= 1; side += 2)
             sprite(assets->sidekick, view_x + player->x + side * 40, player->y, assets->sidekick.width, 0, color);
         if (player->shield_hit_frames > 0)
@@ -855,7 +892,10 @@ static void draw_game(const Game *game, const Assets *assets) {
         if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
         Texture2D texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
             assets->stage_destroyed[i] : assets->stage_textures[i];
-        sprite(texture, view_x + GAME_WIDTH * 0.5f + event->x, y, (float)event->width, event->rotation, WHITE);
+        float x = view_x + GAME_WIDTH*0.5f + event->x;
+        if (event->kind == STAGE_BUILDING && game->stage.building_health[i] >= 0 && !strcmp(event->name,"SmallBuilding3"))
+            draw_atlas_sprite(assets->flight_atlas,atlas_smallbuilding3,x,y,event->width,event->rotation,WHITE);
+        else sprite(texture,x,y,event->width,event->rotation,WHITE);
     }
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
@@ -1255,7 +1295,7 @@ static void draw_title_ship(const Assets *assets, int slot, int tick, float clea
             origin.x + distance*cosf(angle), origin.y + distance*sinf(angle),
             23,angle*RAD2DEG,Fade(color,fminf(1,(28-age)/8.0f)));
     }
-    sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
+    draw_ship(assets,0,ship.x,ship.y,54,heading*RAD2DEG,color);
 }
 
 static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
@@ -1417,7 +1457,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         float y = 650 - 190*fminf(1,tick/70.0f) - lift*lift*0.065f;
         for (int i=0; i<GAME_PLAYERS; ++i) {
             const Player *p = &game->players[i];
-            if (p->joined) sprite(assets->ships[p->chassis],i == lead ? 960 : 1060,
+            if (p->joined) draw_ship(assets,p->chassis,i == lead ? 960 : 1060,
                 y+(i == lead ? 0 : 68),86,-90,player_colors[i]);
         }
         int pilot = game->players[lead].pilot;
