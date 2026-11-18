@@ -152,11 +152,28 @@ static void assets_unload(Assets *assets) {
     }
 }
 
-/* These two-layer paintings replace the particle scenery on three stages. */
-static const struct { const char *name; Color base; } backdrops[STAGE_COUNT] = {
-    [0] = {"Tide",   {15, 28, 50, 255}},
-    [1] = {"Shoals", {14, 35, 49, 255}},
-    [7] = {"Vapor",  {26, 28, 48, 255}},
+typedef struct {
+    const char *name;
+    Color base, horizon, wash, dust;
+    Vector2 mote, streak;
+    int fast_layer;
+    bool foreground_weather;
+} StageBackdrop;
+
+static const StageBackdrop backdrops[STAGE_COUNT] = {
+    /* Mask, upper and lower sky, drifting wash, particles, slow/fast sizes, fast particle layer. */
+    {"Tide",   {15,28,50,255}, {15,28,50,255}, {25,39,65,255}, {150,177,218,39}, {4,15}, {5,27}, 1,false},
+    {"Shoals", {14,35,49,255}, {14,35,49,255}, {27,53,62,255}, {136,185,183,36}, {5,7}, {5,14}, 3,false},
+    {"Halo",   {16,24,46,255}, {23,44,55,255}, {41,55,70,255}, {143,197,207,52}, {4,10}, {5,23}, 1,false},
+    {"Halo",   {9,12,25,255},  {18,24,41,255}, {29,34,51,255}, {181,197,226,68}, {4,4}, {5,9}, 1,false},
+    {"Strata", {19,17,39,255}, {30,25,53,255}, {49,39,66,255}, {173,157,204,42}, {7,9}, {9,16}, 1,false},
+    {"Strata", {16,21,27,255}, {35,37,42,255}, {49,48,54,255}, {171,179,188,44}, {3,18}, {4,37}, 2,false},
+    {"Vapor",  {18,33,38,255}, {30,49,49,255}, {48,66,64,255}, {186,215,208,76}, {8,11}, {15,21}, 1,true},
+    {"Vapor",  {26,28,48,255}, {28,30,52,255}, {40,41,65,255}, {176,174,209,43}, {6,9}, {7,18}, 2,false},
+    {"Strata", {24,23,32,255}, {42,34,39,255}, {57,45,50,255}, {197,173,164,51}, {4,22}, {5,43}, 2,false},
+    {"Shoals", {10,26,48,255}, {18,40,61,255}, {30,55,73,255}, {133,183,209,55}, {6,7}, {5,28}, 3,false},
+    {"Tide",   {26,32,52,255}, {39,49,70,255}, {58,66,84,255}, {207,217,235,81}, {10,12}, {17,20}, 1,true},
+    {"Halo",   {12,12,28,255}, {32,24,47,255}, {51,40,65,255}, {201,179,220,65}, {4,5}, {5,19}, 1,false},
 };
 
 static bool stage_assets_load(Assets *assets, int index) {
@@ -483,19 +500,19 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
 
-static void draw_flight_dust(const StageState *stage, Texture2D dust) {
-    bool water = stage->index == 1;
+static void draw_flight_dust(const StageState *stage, Texture2D dust, bool foreground) {
+    const StageBackdrop *backdrop = &backdrops[stage->index];
     Rectangle source = {0, 0, (float)dust.width, (float)dust.height};
     for (int pass = 0; pass < 2; ++pass) {
-        /* Use the existing slow and fast particle layers for their camera-relative motion. */
-        int layer = pass && water ? 3 : pass;
+        if (foreground != (pass == 1 && backdrop->foreground_weather)) continue;
+        int layer = pass ? backdrop->fast_layer : 0;
+        Vector2 size = pass ? backdrop->streak : backdrop->mote;
         for (int i = 0; i < stage->scenery_count[layer]; ++i) {
             const SceneryParticle *p = &stage->scenery[layer][i];
-            float width = water ? 5 + i%3 : 4 + pass;
-            float height = water ? 7 + pass*7 + i%3 : 15 + pass*12 + i%5;
-            Color tint = water ? (Color){136,185,183,36} : (Color){150,177,218,39};
+            float width = size.x + i%3, height = size.y + i%5;
+            float angle = -atan2f(p->vx,p->vy)*RAD2DEG;
             Rectangle dest = {ARENA_X + p->x - stage->camera_x, p->y, width, height};
-            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},0,tint);
+            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},angle,backdrop->dust);
         }
     }
 }
@@ -503,8 +520,12 @@ static void draw_flight_dust(const StageState *stage, Texture2D dust) {
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
     int index = game->stage.index;
     if (backdrops[index].name) {
-        if (foreground) return;
-        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, backdrops[index].base);
+        const StageBackdrop *backdrop = &backdrops[index];
+        if (foreground) {
+            if (backdrop->foreground_weather) draw_flight_dust(&game->stage,assets->particle_dot,true);
+            return;
+        }
+        DrawRectangleGradientV(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,backdrop->base,backdrop->horizon);
         for (int i = 0; i < 2; ++i) {
             Texture2D texture = assets->scenery[i];
             if (!IsTextureValid(texture)) continue;
@@ -519,9 +540,9 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
             float x = ARENA_X - 56 + sway - pan;
             Rectangle source = {0,0,(float)texture.width,(float)texture.height};
             for (; y < GAME_HEIGHT; y += height)
-                DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,WHITE);
+                DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,backdrop->wash);
         }
-        if (index == 0 || index == 1) draw_flight_dust(&game->stage, assets->particle_dot);
+        draw_flight_dust(&game->stage,assets->particle_dot,false);
         return;
     }
     const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
@@ -529,21 +550,14 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
         Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
         Color bottom = {scene->bottom[0], scene->bottom[1], scene->bottom[2], 255};
         DrawRectangleGradientV(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, top, bottom);
-        if (game->stage.index == 6 || game->stage.index == 12) {
-            /* SceneryPresets: TempestNebulaBG and BonusStage1, TL/TR/BR/BL. */
-            static const Color nebula[4][4] = {
-                {{0,32,0,16},{0,32,0,16},{0,0,0,16},{0,0,0,16}},
-                {{0,32,0,16},{0,32,0,16},{0,32,0,16},{0,32,0,16}},
-                {{0,32,0,16},{0,32,0,16},{0,32,0,16},{0,32,0,16}},
-                {{0,0,0,0},{0,0,0,0},{0,32,0,16},{0,32,0,16}}
-            };
+        if (index == 12) {
             static const Color bonus[] = {{0,196,0,128},{0,64,0,64},{0,0,0,0},{0,64,0,64}};
             int frame=game->tick>0?game->tick-1:0, cycle=frame/60%4;
             float t=frame%60/60.0f; t=t*t*(3-2*t);
             Color corners[4];
             for(int i=0;i<4;++i) {
-                Color a=game->stage.index==6?nebula[cycle][i]:bonus[(i-cycle+4)%4];
-                Color b=game->stage.index==6?nebula[(cycle+1)%4][i]:bonus[(i-cycle+3)%4];
+                Color a=bonus[(i-cycle+4)%4];
+                Color b=bonus[(i-cycle+3)%4];
                 corners[i]=(Color){a.r+(b.r-a.r)*t,a.g+(b.g-a.g)*t,a.b+(b.b-a.b)*t,a.a+(b.a-a.a)*t};
             }
             DrawRectangleGradientEx((Rectangle){ARENA_X,0,GAME_WIDTH,GAME_HEIGHT},corners[0],corners[3],corners[2],corners[1]);

@@ -21,9 +21,8 @@ def noise(cols, rows, seed):
 
 
 def bake(style, near):
-    seed = {"Tide": 30, "Shoals": 57, "Vapor": 92}[style] + near
+    seed = {"Tide": 30, "Shoals": 57, "Vapor": 92, "Strata": 121, "Halo": 144}[style] + near
     coarse = noise(3, 5, seed)
-    tint = {"Tide": (25, 39, 65), "Shoals": (27, 53, 62), "Vapor": (40, 41, 65)}[style]
     alpha = bytearray(WIDTH * HEIGHT)
     for y in range(HEIGHT):
         phase = 2 * pi * y / HEIGHT
@@ -37,6 +36,12 @@ def bake(style, near):
                 density = (0.30 + swell - edge + 0.06*n) / 0.30
             elif style == "Shoals":
                 density = (0.36 + swell - edge + 0.40*n) / 0.23
+            elif style == "Halo":
+                arc = cos(phase + 2.4*(u - 0.3)**2 + near*1.8 + 0.22*n)
+                density = (arc - 0.35) / 0.7
+            elif style == "Strata":
+                fold = cos(phase*2 - 3.2*u + near + 0.4*n)
+                density = (fold - 0.12 + 0.5*n) / 0.9
             else:
                 ridge = cos(2*phase + 3.7*u + near*2 + 0.70*n)
                 density = (ridge + 0.65*n - 0.14) / 1.05
@@ -44,13 +49,13 @@ def bake(style, near):
             alpha[i] = round((130 if near else 100) * fade*fade*(3 - 2*fade))
 
     layer = "Near" if near else "Far"
-    image = Image.new("RGB", (WIDTH, HEIGHT), tint)
+    image = Image.new("RGB", (WIDTH, HEIGHT), "white")
     image.putalpha(Image.frombytes("L", (WIDTH, HEIGHT), bytes(alpha)))
     image.save(OUT / f"{style}{layer}.png")
 
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    for style in ("Tide", "Shoals", "Vapor"):
+    for style in ("Tide", "Shoals", "Vapor", "Strata", "Halo"):
         for near in (0, 1):
             bake(style, near)
