@@ -20,7 +20,7 @@ static const CommandHelp commands[] = {
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
     {"help", "help [COMMAND|FILTER|fields]", "List all commands, filter by name, or show command usage / assertion fields.", {NULL}},
     {"clear", "clear", "Clear console output; retain command history.", {NULL}},
-    {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph. F2 toggles the second keyboard player.", {"on off"}},
+    {"perf", "perf [on|off]", "Toggle the F3 top-right frame/work time graph.", {"on off"}},
     {"state", "state", "Show menu, difficulty, combat counters and each player's equipment/state.", {NULL}},
     {"quit", "quit", "Exit the game or stop the current script.", {NULL}},
     {"game.reset", "game.reset SEED", "Reset Stage 1 and debug loadout. SEED is an integer from 0 to 2147483647.", {NULL}},
@@ -63,7 +63,7 @@ static bool print_help(Console *console, const char *filter) {
         console_log(console, "Player fields (both slots):");
         for (size_t i = 0; i < sizeof(player_fields) / sizeof(player_fields[0]); ++i) console_log(console, "  p1.%s  p2.%s", player_fields[i], player_fields[i]);
         console_log(console, "IDs: chassis.list; pilots 0=Kazuki 1=Rabbit 2=Gunthor; difficulty 0=Normal 1=Hard 2=Really Hard.");
-        console_log(console, "Menu IDs: 0=play 1=main 2=intro 3=difficulty 4=pilot 5=options 6=quit 7=pause 8=retry 9=game-over 10=clear 11=shop 12=ending 13=stage-select 14=slots 15=delete.");
+        console_log(console, "Menu IDs: 0=play 1=main 2=intro 3=difficulty 4=pilot 5=options 6=quit 7=pause 8=retry 9=game-over 10=clear 11=shop 12=ending 13=stage-select 14=slots 15=delete 16=controllers.");
         return true;
     }
     const CommandHelp *exact = filter ? command_help(filter) : NULL;

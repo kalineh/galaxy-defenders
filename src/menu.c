@@ -7,14 +7,14 @@
 const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2, 1};
 const int render_scale_percent[4] = {75, 100, 150, 200};
 
-static const char *labels[MENU_DELETE + 1][OPTION_COUNT+1] = {
+static const char *labels[MENU_CONTROLLERS + 1][OPTION_COUNT+1] = {
     [MENU_MAIN] = {"Play", "Options", "Quit"},
     [MENU_SLOTS] = {"Slot 1", "Slot 2", "Slot 3", "Back"},
     [MENU_DELETE] = {"Cancel", "Delete slot"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
     [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Display mode", "Back"},
     [MENU_QUIT] = {"Cancel", "Quit"},
-    [MENU_PAUSE] = {"Resume", "Retry", "Options", "Quit"},
+    [MENU_PAUSE] = {"Resume", "Retry", "Options", "Controllers", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},
     [MENU_OVER] = {"Retry!", "Quit"},
     [MENU_CLEAR] = {"Continue"}
@@ -65,7 +65,7 @@ bool game_menu_is_title(const Game *game) {
 }
 
 void game_menu_open(Game *game, MenuPage page) {
-    if (page < MENU_NONE || page > MENU_DELETE) return;
+    if (page < MENU_NONE || page > MENU_CONTROLLERS) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_QUIT || page == MENU_DELETE) game->menu.dialog_cursor = game->menu.cursor;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
@@ -118,9 +118,25 @@ void game_retry(Game *game) {
     game_menu_open(game, MENU_NONE);
 }
 
-static void start_game(Game *game) {
+void game_starting_loadout(Game *game, int slot) {
     static const int starting_money[] = {0, 1500, 2500};
     static const int starting_chassis[] = {1, 0, 2};
+    Player *p = &game->players[slot];
+    p->money = starting_money[game->difficulty];
+    p->weapon_level = p->pilot == 0 && game->difficulty < 2 ? 1 : 2;
+    p->primary = p->pilot == 1 ? WEAPON_LIGHTNING : WEAPON_FRONT_LASER;
+    if (p->pilot == 1 && game->difficulty == 2) p->weapon_level = 3;
+    p->secondary = p->pilot == 0 ? WEAPON_VULCAN : p->pilot == 1 ? WEAPON_SEEK_BOMB : WEAPON_MISSILE;
+    p->secondary_level = p->pilot == 0 ? (game->difficulty == 0 ? 1 : 2) :
+        p->pilot == 1 ? (game->difficulty > 0 ? 1 : 0) : game->difficulty;
+    p->generator = game->difficulty == 2 ? 1 : 0;
+    p->shield = game->difficulty > 0 ? 1 : 0;
+    p->energy = game_generators[p->generator].capacity;
+    p->shield_health = game_shields[p->shield].capacity;
+    game_equip_chassis(game, slot, starting_chassis[p->pilot]);
+}
+
+static void start_game(Game *game) {
     GameMenu menu = game->menu;
     bool joined[GAME_PLAYERS] = {game->players[0].joined, game->players[1].joined};
     if (!joined[0] && menu.pilot[0] == menu.pilot[1]) menu.pilot[0] = (menu.pilot[1] + 1) % 3;
@@ -130,20 +146,8 @@ static void start_game(Game *game) {
     game->difficulty = menu.difficulty;
     if (joined[1]) game_join(game, 1);
     for (int i = 0; i < menu.players; ++i) {
-        Player *p = &game->players[i];
-        p->pilot = menu.pilot[i];
-        p->money = starting_money[menu.difficulty];
-        p->weapon_level = p->pilot == 0 && menu.difficulty < 2 ? 1 : 2;
-        p->primary = p->pilot == 1 ? WEAPON_LIGHTNING : WEAPON_FRONT_LASER;
-        if (p->pilot == 1 && menu.difficulty == 2) p->weapon_level = 3;
-        p->secondary = p->pilot == 0 ? WEAPON_VULCAN : p->pilot == 1 ? WEAPON_SEEK_BOMB : WEAPON_MISSILE;
-        p->secondary_level = p->pilot == 0 ? (menu.difficulty == 0 ? 1 : 2) :
-            p->pilot == 1 ? (menu.difficulty > 0 ? 1 : 0) : menu.difficulty;
-        p->generator = menu.difficulty == 2 ? 1 : 0;
-        p->shield = menu.difficulty > 0 ? 1 : 0;
-        p->energy = game_generators[p->generator].capacity;
-        p->shield_health = game_shields[p->shield].capacity;
-        game_equip_chassis(game, i, starting_chassis[p->pilot]);
+        game->players[i].pilot = menu.pilot[i];
+        game_starting_loadout(game,i);
     }
     for (int i = 0; i < GAME_PLAYERS; ++i) game->players[i].joined = joined[i];
     game_stats_init(game);
@@ -201,6 +205,13 @@ bool game_transition_update(Game *game) {
 void game_menu_input(Game *game, MenuAction action, int slot) {
     GameMenu *menu = &game->menu;
     if (game->transition_frames > 15 || slot < 0 || slot >= GAME_PLAYERS || menu->page == MENU_NONE) return;
+    if (menu->page == MENU_CONTROLLERS) {
+        if (action == MENU_BACK) {
+            game_menu_open(game,MENU_PAUSE);
+            menu->cursor = 3;
+        }
+        return;
+    }
     if (menu->page == MENU_FINISH) {
         if (action == MENU_BACK && menu->frame > 3200) game_transition(game, TRANSITION_MAIN, 0);
         return;
@@ -323,7 +334,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             else game_transition(game, TRANSITION_MAIN, 0);
             break;
         case MENU_PAUSE:
-            game_menu_open(game, row == 0 ? menu->pause_origin : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);
+            game_menu_open(game, row == 0 ? menu->pause_origin : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : row == 3 ? MENU_CONTROLLERS : MENU_QUIT);
             break;
         case MENU_RETRY: if (row == 0) game_menu_open(game, MENU_PAUSE); else game_transition(game, TRANSITION_RETRY, 0); break;
         case MENU_OVER:

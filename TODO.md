@@ -96,7 +96,7 @@ pauses/resumes or readies in the shop. Select/Share + Start leaves; removal drop
 out and last-player removal pauses/cancels a pending launch. Equipment, money and
 health are retained; reconnect cannot revive a ship. Both loadouts share one save.
 Absent players do not block menus/shop; either player can navigate shared menus.
-F2 toggles keyboard P2. Native Windows DS4 USB/BT report parsing follows Solcraft,
+F2 joins with the keyboard. Pause > Controllers assigns devices to either slot. Native Windows DS4 USB/BT report parsing follows Solcraft,
 using a bounded Raw Input transport; standard raylib gamepads remain available.
 No sibling dependency or new third-party package was introduced.
 

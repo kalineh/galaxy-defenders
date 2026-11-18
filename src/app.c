@@ -534,9 +534,9 @@ static int key_prompt(Font font, int x, int y, const char *key, const char *acti
     return width + 9 + (int)MeasureTextEx(font,action,23,0).x;
 }
 
-static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGlyph button, const char *action) {
-    static const char *keys[2][4] = {{"X","Z","C","Enter"},{"R Ctrl","Backspace","R Shift","F2"}};
-    if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[slot][button],action);
+static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button, const char *action) {
+    static const char *keys[] = {"X","Z","C","Enter"};
+    if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[button],action);
     static const char *letters[] = {"A","B","X"};
     const char *pad = device < 4 ? GetGamepadName(device) : NULL;
     bool ps = device >= 4 || (pad && (strstr(pad,"Wireless Controller") || strstr(pad,"PS4") ||
@@ -736,7 +736,7 @@ static void resource_meter(Font font, int x, int y, const char *label, float val
 
 static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
 
-static void draw_pilot_rail(const Assets *assets, const Player *p, const Player *preview, int slot, bool shopping) {
+static void draw_pilot_rail(const Assets *assets, const Player *p, const Player *preview, int slot, bool shopping, bool keyboard_free) {
     Font font = assets->ui_font;
     int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
@@ -746,8 +746,8 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
     text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
     if (!p->joined) {
         text_center(font, "Join flight", x + 240, 488, 36, WHITE);
-        button_prompt(font,x+105,543,0,slot,GLYPH_START,"Join");
-        key_prompt(font,x+245,543,slot ? "F2" : "Enter","Join");
+        button_prompt(font,x+105,543,0,GLYPH_START,"Join");
+        if (keyboard_free) key_prompt(font,x+245,543,"F2","Join");
         return;
     }
     DrawTextEx(font, pilot_names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
@@ -810,9 +810,9 @@ static void draw_loadout(const Assets *assets, const Player *p, int x, int focus
         draw_slot_row(assets,p,x,LOADOUT_TOP+c*LOADOUT_ROW,c,c == focus,color);
 }
 
-static void draw_flight_rail(const Game *game, const Assets *assets, int slot) {
+static void draw_flight_rail(const Game *game, const Assets *assets, int slot, bool keyboard_free) {
     const Player *p = &game->players[slot];
-    draw_pilot_rail(assets,p,p,slot,false);
+    draw_pilot_rail(assets,p,p,slot,false,keyboard_free);
     int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
     Font font = assets->ui_font;
     if (slot == 0) {
@@ -834,7 +834,7 @@ static void canvas_scissor(int x, int y, int w, int h) {
     BeginScissorMode(left,top,(int)roundf((x+w)*canvas_zoom)-left,(int)roundf((y+h)*canvas_zoom)-top);
 }
 
-static void draw_game(const Game *game, const Assets *assets) {
+static void draw_game(const Game *game, const Assets *assets, bool keyboard_free) {
     float view_x = ARENA_X - game->stage.camera_x;
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
@@ -888,7 +888,7 @@ static void draw_game(const Game *game, const Assets *assets) {
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
-    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i);
+    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,keyboard_free);
     if (game->stage.secret_countdown)
         DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
     if (game->secret_finish_frames || game->secret_fade_frames) {
@@ -1145,19 +1145,19 @@ static void draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     }
     draw_item_tip(game,assets,slot,anchor,cat,item,mark,offset);
     if (!menu->ready[slot] && !menu->shop_purchase[slot]) {
-        int step = show_select ? button_prompt(font,left,y+18,device,slot,GLYPH_CONFIRM,"Select")+22 : 0;
-        button_prompt(font,left+step,y+18,device,slot,GLYPH_BACK,"Cancel");
+        int step = show_select ? button_prompt(font,left,y+18,device,GLYPH_CONFIRM,"Select")+22 : 0;
+        button_prompt(font,left+step,y+18,device,GLYPH_BACK,"Cancel");
     }
 }
 
-static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset) {
+static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset, bool keyboard_free) {
     Font font = assets->ui_font;
     int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
     const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
-    draw_pilot_rail(assets,p,preview,slot,true);
+    draw_pilot_rail(assets,p,preview,slot,true,keyboard_free);
     if (!p->joined) return;
     int cat = menu->shop_category[slot];
     DrawLine(left, 298, left + width, 298, rule);
@@ -1167,10 +1167,10 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
         draw_loadout(assets,p,left+offset,menu->ready[slot] ? -1 : cat,highlight);
         int mark = game_shop_equipped_level(p,cat);
         draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark,offset);
-        if (!menu->ready[slot]) button_prompt(font,left+offset,LOADOUT_TOP+6*LOADOUT_ROW+18,device,slot,GLYPH_CONFIRM,"Select");
+        if (!menu->ready[slot]) button_prompt(font,left+offset,LOADOUT_TOP+6*LOADOUT_ROW+18,device,GLYPH_CONFIRM,"Select");
     }
     DrawLine(left,974,left+width,974,rule);
-    button_prompt(font,left,993,device,slot,GLYPH_READY,"Ready");
+    button_prompt(font,left,993,device,GLYPH_READY,"Ready");
     int check = left + width - 34;
     DrawRectangleLinesEx((Rectangle){check,997,31,31}, 2, menu->ready[slot] ? highlight : dim);
     if (menu->ready[slot]) {
@@ -1200,8 +1200,8 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     const char *price = cost < 0 ? TextFormat("Credit  +%d cr", -cost) : TextFormat("Cost  %d cr", cost);
     DrawTextEx(font, price, (Vector2){1248 - MeasureTextEx(font, price, 26, 0).x,y+110}, 26, 0, cost > p->money ? danger : WHITE);
     if (cost > p->money) DrawTextEx(font,"Insufficient credits",(Vector2){672,y+174},26,0,danger);
-    else button_prompt(font,672,y+174,device,slot,GLYPH_CONFIRM,"Select");
-    button_prompt(font,1030,y+174,device,slot,GLYPH_BACK,"Cancel");
+    else button_prompt(font,672,y+174,device,GLYPH_CONFIRM,"Select");
+    button_prompt(font,1030,y+174,device,GLYPH_BACK,"Cancel");
 }
 
 static int menu_slide_offset(int elapsed, int direction) {
@@ -1230,7 +1230,7 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
         }
         previous_depth[slot] = depth;
         int offset = menu_slide_offset(frame-changed_at[slot],direction[slot]);
-        draw_shop_panel(game, assets, slot, devices->device[slot], offset);
+        draw_shop_panel(game, assets, slot, devices->device[slot], offset,input_owner(devices,INPUT_KEYBOARD)<0);
     }
     bool both = game->players[0].joined && game->players[1].joined &&
         game->menu.shop_purchase[0] && game->menu.shop_purchase[1];
@@ -1316,8 +1316,8 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
         DrawRectangle(x,216,664,3,game->players[slot].joined ? color : rule);
         DrawTextEx(font,slot ? "P2" : "P1",(Vector2){x+32,242},28,0,color);
         if (!game->players[slot].joined) {
-            button_prompt(font,x+172,526,0,slot,GLYPH_START,"Join");
-            key_prompt(font,x+336,526,slot ? "F2":"Enter","Join");
+            button_prompt(font,x+172,526,0,GLYPH_START,"Join");
+            if (input_owner(devices,INPUT_KEYBOARD)<0) key_prompt(font,x+336,526,"F2","Join");
             continue;
         }
         sprite(whole_texture(assets->portraits[pilot]),x+332,437,312,0,WHITE);
@@ -1339,13 +1339,13 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
         for (int line=0; line<3; ++line)
             DrawTextEx(font,stories[pilot][line],(Vector2){x+32,710+line*29},24,0,WHITE);
         if (game->menu.ready[slot]) DrawTextEx(font,"Ready",(Vector2){x+32,821},26,0,color);
-        else button_prompt(font,x+32,819,devices->device[slot],slot,GLYPH_CONFIRM,"Select");
-        button_prompt(font,x+455,819,devices->device[slot],slot,GLYPH_BACK,"Cancel");
+        else button_prompt(font,x+32,819,devices->device[slot],GLYPH_CONFIRM,"Select");
+        button_prompt(font,x+455,819,devices->device[slot],GLYPH_BACK,"Cancel");
     }
 }
 
 static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices,int offset,float clearance) {
-    static const char *headings[MENU_DELETE+1] = {
+    static const char *headings[MENU_CONTROLLERS+1] = {
         [MENU_OPTIONS]="Options",
         [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
         [MENU_STAGE_SELECT]="Stage select"
@@ -1404,17 +1404,17 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
                 DrawRectangle(left,top+166,4,48,i ? danger : accent);
             }
             if (!i || selected)
-                button_prompt(font,left+16,top+173,device,owner,i ? GLYPH_CONFIRM : GLYPH_BACK,i ? verb : "Cancel");
+                button_prompt(font,left+16,top+173,device,i ? GLYPH_CONFIRM : GLYPH_BACK,i ? verb : "Cancel");
             else DrawTextEx(font,verb,(Vector2){left+16,top+174},25,0,dim);
         }
         return;
     }
     int footer = y+row_height*(title && count < 4 ? 4 : count)+30;
-    int advance = button_prompt(font,x,footer,device,owner,GLYPH_CONFIRM,"Select")+28;
-    if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Cancel")+28;
+    int advance = button_prompt(font,x,footer,device,GLYPH_CONFIRM,"Select")+28;
+    if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,GLYPH_BACK,"Cancel")+28;
     int row = game->menu.cursor;
     if (page == MENU_SLOTS && row < GAME_SAVE_SLOTS && (game->saves[row].valid || game->save_errors[row]))
-        button_prompt(font,x+advance,footer,device,owner,GLYPH_READY,"Delete");
+        button_prompt(font,x+advance,footer,device,GLYPH_READY,"Delete");
 }
 
 static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
@@ -1461,7 +1461,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         sprite(whole_texture(assets->portraits[pilot]),648,821,124,0,WHITE);
         DrawTextEx(assets->ui_font,pilot_names[pilot],(Vector2){735,774},24,0,accent);
         DrawTextEx(assets->ui_font,"Copy, Control. Launching.",(Vector2){735,812},34,0,WHITE);
-        button_prompt(assets->ui_font,1180,923,devices->device[lead],lead,GLYPH_CONFIRM,"Skip");
+        button_prompt(assets->ui_font,1180,923,devices->device[lead],GLYPH_CONFIRM,"Skip");
         return;
     }
     if (game->menu.page == MENU_FINISH) {
@@ -1547,7 +1547,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         }
         if (counter >= 360) {
             int owner = game->players[0].joined ? 0 : 1;
-            button_prompt(assets->ui_font,880,630,devices->device[owner],owner,GLYPH_CONFIRM,"Select");
+            button_prompt(assets->ui_font,880,630,devices->device[owner],GLYPH_CONFIRM,"Select");
         }
         return;
     }
@@ -1618,18 +1618,22 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
         int device = devices->device[slot];
         if (device >= 0 && device < INPUT_PADS && !pads[device].connected) input_drop(game, devices, device);
     }
-    if (!accept_input) return;
-    bool start = IsKeyPressed(KEY_ENTER);
-    bool keyboard = start || IsKeyPressed(KEY_X) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN);
-    if (keyboard && devices->device[0] == -1) {
-        input_claim(game, devices, INPUT_KEYBOARD);
-    } else if (start && devices->device[0] == INPUT_KEYBOARD) {
-        if (game->menu.page == MENU_NONE || game->menu.page == MENU_SHOP) game_menu_open(game, MENU_PAUSE);
-        else if (game->menu.page == MENU_PAUSE) menu_input(game, assets, MENU_BACK, 0);
+    for (int slot=0; slot<GAME_PLAYERS; ++slot) {
+        if (game->players[slot].joined) devices->choosing[slot] = false;
+        if (devices->choosing[slot] && (game_menu_is_title(game) || game->over))
+            input_drop(game,devices,devices->device[slot]);
     }
-    if (IsKeyPressed(KEY_F2)) {
-        if (devices->device[1] == INPUT_KEYBOARD_P2) input_drop(game, devices, INPUT_KEYBOARD_P2);
-        else input_claim(game, devices, INPUT_KEYBOARD_P2);
+    if (!accept_input || game->menu.page == MENU_CONTROLLERS) return;
+    bool start = IsKeyPressed(KEY_ENTER);
+    bool join = IsKeyPressed(KEY_F2);
+    int keyboard_slot = input_owner(devices,INPUT_KEYBOARD);
+    bool keyboard_input = game->players[0].joined && devices->device[0] < 0 &&
+        (IsKeyPressed(KEY_X) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN));
+    if (keyboard_slot < 0 && (start || join || keyboard_input)) {
+        input_claim(game,devices,INPUT_KEYBOARD);
+    } else if (keyboard_slot >= 0 && !devices->choosing[keyboard_slot]) {
+        if (start && (game->menu.page == MENU_NONE || game->menu.page == MENU_SHOP)) game_menu_open(game,MENU_PAUSE);
+        else if (start && game->menu.page == MENU_PAUSE) menu_input(game,assets,MENU_BACK,keyboard_slot);
     }
     /* Prefer native reports if the same DS4 is also exposed through an adapter. */
     const int order[] = {4,5,0,1,2,3};
@@ -1648,6 +1652,7 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
                 if (empty && game->menu.page == MENU_PAUSE) menu_input(game, assets, MENU_BACK, 0);
             }
         } else if (pad->buttons & PAD_SELECT) input_drop(game, devices, device);
+        else if (devices->choosing[slot]) continue;
         else if (!game->players[slot].joined) game_join(game, slot);
         else if (game->menu.page == MENU_NONE || game->menu.page == MENU_SHOP) game_menu_open(game, MENU_PAUSE);
         else if (game->menu.page == MENU_PAUSE) menu_input(game, assets, MENU_BACK, slot);
@@ -1656,43 +1661,103 @@ static void poll_joining(Game *game, Assets *assets, PlayerDevices *devices, Pad
     }
 }
 
-static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
+static uint32_t menu_buttons(int device, const PadInput pads[INPUT_PADS]) {
+    if (device >= 0 && device < INPUT_PADS) return pads[device].pressed;
+    if (device != INPUT_KEYBOARD) return 0;
+    uint32_t buttons = 0;
+    if (IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_ESCAPE)) buttons |= PAD_BACK;
+    if (IsKeyPressed(KEY_X)) buttons |= PAD_CONFIRM;
+    if (IsKeyPressed(KEY_C)) buttons |= PAD_READY;
+    if (IsKeyPressed(KEY_LEFT)) buttons |= PAD_LEFT;
+    if (IsKeyPressed(KEY_RIGHT)) buttons |= PAD_RIGHT;
+    if (IsKeyPressed(KEY_UP)) buttons |= PAD_UP;
+    if (IsKeyPressed(KEY_DOWN)) buttons |= PAD_DOWN;
+    return buttons;
+}
+
+static int device_rows(const PadInput pads[INPUT_PADS], int rows[INPUT_PADS+1]) {
+    rows[0] = INPUT_KEYBOARD;
+    int count = 1;
+    for (int i=0; i<INPUT_PADS; ++i) if (pads[i].connected) rows[count++] = i;
+    return count;
+}
+
+static void poll_assignments(Game *game, PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
+    int rows[INPUT_PADS+1], count = device_rows(pads,rows), row = 0;
+    uint32_t buttons = 0;
+    for (int i=0; i<count; ++i) {
+        buttons |= menu_buttons(rows[i],pads);
+        if (rows[i] == devices->selected_device) row = i;
+    }
+    if (buttons & PAD_BACK) {
+        game_menu_input(game,MENU_BACK,0);
+        return;
+    }
+    int device = rows[row], owner = input_owner(devices,device);
+    if ((buttons & PAD_UP) && row > 0) --row;
+    else if ((buttons & PAD_DOWN) && row+1 < count) ++row;
+    else if ((buttons & PAD_LEFT) && owner != 0) input_assign(game,devices,device,owner == 1 ? -1 : 0);
+    else if ((buttons & PAD_RIGHT) && owner != 1) input_assign(game,devices,device,owner == 0 ? -1 : 1);
+    devices->selected_device = rows[row];
+}
+
+static void draw_assignments(const Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS]) {
+    int rows[INPUT_PADS+1], count = device_rows(pads,rows);
+    Font font = assets->ui_font;
+    int x = 368, y = 220, width = 1184;
+    int bottom = y+200+count*60;
+    DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,.65f));
+    DrawRectangle(x,y,width,bottom-y+70,ink);
+    DrawRectangle(x,y,width,3,accent);
+    DrawTextEx(assets->heading_font,"Controllers",(Vector2){x+30,y+20},48,0,WHITE);
+    const char *columns[] = {"P1","Unassigned","P2"};
+    for (int i=0; i<3; ++i) text_center(font,columns[i],x+208+i*384,y+111,28,i==1 ? dim : player_colors[i/2]);
+    for (int i=0; i<count; ++i) {
+        int device = rows[i], owner = input_owner(devices,device);
+        int column = owner == 0 ? 0 : owner == 1 ? 2 : 1;
+        int left = x+24+column*384, top = y+160+i*60;
+        const char *name = device == INPUT_KEYBOARD ? "Keyboard" : device >= 4 ?
+            TextFormat("DualShock 4  #%d",device-3) : TextFormat("%s  #%d",GetGamepadName(device),device+1);
+        DrawLine(x+24,top+54,x+width-24,top+54,rule);
+        bool selected = device == devices->selected_device;
+        DrawRectangle(left,top,368,51,selected ? surface : ink);
+        if (selected) DrawRectangle(left,top,4,51,accent);
+        float size = fminf(25,25*310/fmaxf(1,MeasureTextEx(font,name,25,0).x));
+        text_center(font,name,left+184,top+10,size,selected ? WHITE : dim);
+        if (selected && column > 0) DrawTextEx(font,"<",(Vector2){left+8,top+10},23,0,accent);
+        if (selected && column < 2) DrawTextEx(font,">",(Vector2){left+344,top+10},23,0,accent);
+    }
+    DrawTextEx(font,"Up / down   Select device       Left / right   Assign",(Vector2){x+30,bottom},24,0,dim);
+    button_prompt(font,x+width-220,bottom,devices->selected_device,GLYPH_BACK,"Done");
+}
+
+static void draw_join_picker(const Assets *assets, const PlayerDevices *devices, int slot) {
+    int left = slot ? ARENA_X+GAME_WIDTH : 0, pilot = devices->pilot[slot];
+    Font font = assets->ui_font;
+    DrawRectangle(left,0,ARENA_X,GAME_HEIGHT,ink);
+    DrawRectangle(left+28,32,58,36,player_colors[slot]);
+    text_center(font,slot ? "P2" : "P1",left+57,33,27,ink);
+    DrawTextEx(font,pilot_names[pilot],(Vector2){left+98,26},38,0,WHITE);
+    DrawLine(left+28,88,left+ARENA_X-28,88,rule);
+    sprite(whole_texture(assets->portraits[pilot]),left+110,204,164,0,WHITE);
+    DrawTextEx(font,"<   Pilot   >",(Vector2){left+212,174},29,0,WHITE);
+    int device = devices->device[slot];
+    button_prompt(font,left+32,326,device,GLYPH_CONFIRM,"Join");
+    button_prompt(font,left+196,326,device,GLYPH_BACK,"Cancel");
+}
+
+static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, const PadInput pads[INPUT_PADS], const bool picking[GAME_PLAYERS]) {
     if (game->menu.page == MENU_PAUSE && IsKeyPressed(KEY_P)) {
         menu_input(game, assets, MENU_BACK, 0); return;
     }
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
-        bool pressed[7] = {false};
-        int device = devices->device[slot];
-        if (slot == 0 && (device == INPUT_KEYBOARD || device == -1)) {
-            pressed[MENU_UP] = IsKeyPressed(KEY_UP);
-            pressed[MENU_DOWN] = IsKeyPressed(KEY_DOWN);
-            pressed[MENU_LEFT] = IsKeyPressed(KEY_LEFT);
-            pressed[MENU_RIGHT] = IsKeyPressed(KEY_RIGHT);
-            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_X);
-            pressed[MENU_READY] = IsKeyPressed(KEY_C);
-            pressed[MENU_BACK] = IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_ESCAPE);
-        } else if (device == INPUT_KEYBOARD_P2) {
-            pressed[MENU_UP] = IsKeyPressed(KEY_I);
-            pressed[MENU_DOWN] = IsKeyPressed(KEY_K);
-            pressed[MENU_READY] = IsKeyPressed(KEY_RIGHT_SHIFT);
-            pressed[MENU_LEFT] = IsKeyPressed(KEY_J);
-            pressed[MENU_RIGHT] = IsKeyPressed(KEY_L);
-            pressed[MENU_CONFIRM] = IsKeyPressed(KEY_RIGHT_CONTROL);
-            pressed[MENU_BACK] = IsKeyPressed(KEY_BACKSPACE);
-        }
-        if (device >= 0 && device < INPUT_PADS && pads[device].connected) {
-            const uint32_t buttons[] = {PAD_UP, PAD_DOWN, PAD_LEFT, PAD_RIGHT, PAD_CONFIRM, PAD_BACK, PAD_READY};
-            for (int i = 0; i < 7; ++i) pressed[i] |= (pads[device].pressed & buttons[i]) != 0;
-        }
-        if (pressed[MENU_BACK]) {
+        if (picking[slot]) continue;
+        uint32_t buttons = menu_buttons(devices->device[slot],pads);
+        const unsigned bits[] = {PAD_BACK,PAD_UP,PAD_DOWN,PAD_LEFT,PAD_RIGHT,PAD_CONFIRM,PAD_READY};
+        const MenuAction actions[] = {MENU_BACK,MENU_UP,MENU_DOWN,MENU_LEFT,MENU_RIGHT,MENU_CONFIRM,MENU_READY};
+        for (int i=0; i<7; ++i) if (buttons & bits[i]) {
             MenuPage previous = game->menu.page;
-            menu_input(game, assets, MENU_BACK, slot);
-            if (game->menu.page != previous) return;
-            continue;
-        }
-        for (int i = 0; i < 7; ++i) if (pressed[i]) {
-            MenuPage previous = game->menu.page;
-            menu_input(game, assets, (MenuAction)i, slot);
+            menu_input(game,assets,actions[i],slot);
             if (game->menu.page != previous) return;
             break;
         }
@@ -1830,22 +1895,13 @@ static void draw_music_album(const Console *console, const Assets *assets) {
     DrawTextEx(assets->console_font, TextFormat("%.1f%%  |  C synth soundtrack - first drafts", progress*100), (Vector2){390,930}, 22, 0, WHITE);
 }
 
-static PlayerInput poll_keyboard(int slot) {
-    PlayerInput input = {0};
-    if (slot == 0) {
-        input.x = (float)(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT));
-        input.y = (float)(IsKeyDown(KEY_DOWN) - IsKeyDown(KEY_UP));
-        input.fire = IsKeyDown(KEY_X);
-        input.focus = IsKeyDown(KEY_C);
-        input.sidekick_left = input.sidekick_right = IsKeyDown(KEY_Z);
-    } else {
-        input.x = (float)(IsKeyDown(KEY_L) - IsKeyDown(KEY_J));
-        input.y = (float)(IsKeyDown(KEY_K) - IsKeyDown(KEY_I));
-        input.fire = IsKeyDown(KEY_RIGHT_CONTROL);
-        input.focus = IsKeyDown(KEY_U);
-        input.sidekick_left = input.sidekick_right = IsKeyDown(KEY_O);
-    }
-    return input;
+static PlayerInput poll_keyboard(void) {
+    return (PlayerInput){
+        .x = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT),
+        .y = IsKeyDown(KEY_DOWN) - IsKeyDown(KEY_UP),
+        .fire = IsKeyDown(KEY_X), .focus = IsKeyDown(KEY_C),
+        .sidekick_left = IsKeyDown(KEY_Z), .sidekick_right = IsKeyDown(KEY_Z)
+    };
 }
 
 static void draw_console(Console *console, Font font, bool failed, bool full_screen) {
@@ -2059,6 +2115,18 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             } else { console_open = !console_open; console_full = false; }
             while (GetCharPressed()) {} /* Don't insert the opening backtick. */
         }
+        int keyboard_owner = input_owner(&devices,INPUT_KEYBOARD);
+        bool keyboard_picking = keyboard_owner >= 0 && devices.choosing[keyboard_owner];
+        bool picking[GAME_PLAYERS] = {devices.choosing[0],devices.choosing[1]};
+        if (game->menu.page != MENU_CONTROLLERS && !console->music_album && !console_open && !toggled && IsWindowFocused()) {
+            for (int i=0; i<GAME_PLAYERS; ++i) if (picking[i]) {
+                uint32_t b = menu_buttons(devices.device[i],pads);
+                if (b & PAD_BACK) input_pick_pilot(game,&devices,i,MENU_BACK);
+                else if (b & PAD_LEFT) input_pick_pilot(game,&devices,i,MENU_LEFT);
+                else if (b & PAD_RIGHT) input_pick_pilot(game,&devices,i,MENU_RIGHT);
+                else if (b & PAD_CONFIRM) input_pick_pilot(game,&devices,i,MENU_CONFIRM);
+            }
+        }
         if (console->music_album) {
             console_open = false;
             music_album_input(console, game, &assets);
@@ -2088,9 +2156,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             console->scroll += (int)(GetMouseWheelMove() * 3);
             if (IsKeyPressed(KEY_ENTER)) command_failed = !console_submit(console, game);
         } else if (!toggled && was_menu) {
-            poll_menu(game, &assets, &devices, pads);
+            if (game->menu.page == MENU_CONTROLLERS) poll_assignments(game,&devices,pads);
+            else poll_menu(game, &assets, &devices, pads, picking);
         } else if (!toggled) {
-            if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE)) game_menu_open(game, MENU_PAUSE);
+            if (IsKeyPressed(KEY_P) || (IsKeyPressed(KEY_ESCAPE) && !keyboard_picking)) game_menu_open(game, MENU_PAUSE);
             bool restart = IsKeyPressed(KEY_R) || ((game->over || game->complete) && IsKeyPressed(KEY_D));
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 int device = devices.device[i];
@@ -2115,7 +2184,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) {
                 int device = devices.device[i];
                 game->players[i].input = device >= 0 && device < INPUT_PADS ? input_player(&pads[device]) :
-                    (device == INPUT_KEYBOARD || device == INPUT_KEYBOARD_P2) ? poll_keyboard(i) : (PlayerInput){0};
+                    device == INPUT_KEYBOARD ? poll_keyboard() : (PlayerInput){0};
             }
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
@@ -2217,9 +2286,13 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
-            draw_game(game, &assets);
+            draw_game(game, &assets, keyboard_owner < 0);
         int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);
-        draw_menu(game, &assets, animation_tick, &devices);
+        if (game->menu.page == MENU_CONTROLLERS) draw_assignments(&assets,&devices,pads);
+        else {
+            draw_menu(game, &assets, animation_tick, &devices);
+            for (int i=0; i<GAME_PLAYERS; ++i) if (devices.choosing[i]) draw_join_picker(&assets,&devices,i);
+        }
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
             text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
         if (game->transition_frames > 0) {

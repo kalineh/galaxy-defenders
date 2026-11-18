@@ -1898,6 +1898,11 @@ static void controller_joining(void) {
     CHECK(input_claim(&game, &devices, 4) == 0);
     CHECK(input_claim(&game, &devices, 1) == 1); /* Hardware index is not player number. */
     CHECK(input_claim(&game, &devices, 5) == -1);
+    CHECK(devices.choosing[1] && !game.players[1].joined);
+    input_pick_pilot(&game,&devices,1,MENU_RIGHT);
+    input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
+    CHECK(game.players[1].pilot == 2 && !devices.choosing[1]);
+    CHECK(game.players[1].chassis == 2 && game.players[1].secondary == WEAPON_MISSILE);
     CHECK(game.players[0].joined && game.players[1].joined);
     game.players[1].health = 7; game.players[1].money = 9876;
     game.players[1].input.fire = true;
@@ -1906,20 +1911,29 @@ static void controller_joining(void) {
     CHECK(!game.players[1].joined && !game.players[1].input.fire && !game.bullets[bullet].active);
     CHECK(game.players[0].joined && game.menu.page == MENU_NONE);
     CHECK(input_claim(&game, &devices, 5) == 1);
+    input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
     CHECK(game.players[1].health == 7 && game.players[1].money == 9876);
     game.players[1].lives = 0;
     CHECK(input_drop(&game, &devices, 5) && input_claim(&game, &devices, 5) == 1);
+    input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
     CHECK(game.players[1].lives == 0); /* Cannot revive by unplugging. */
     CHECK(input_drop(&game, &devices, 5) && input_drop(&game, &devices, 4));
     CHECK(game.menu.page == MENU_PAUSE && game.paused);
     CHECK(input_claim(&game, &devices, INPUT_KEYBOARD) == 0);
+    input_pick_pilot(&game,&devices,0,MENU_CONFIRM);
     game_checkpoint(&game, false);
     CHECK(game.saves[0].players == 2 && game.saves[0].player[1].money == 9876);
     CHECK(game_continue(&game, 0));
     CHECK(!game.players[1].joined && game.players[1].initialized && game.players[1].money == 9876);
-    CHECK(input_claim(&game, &devices, INPUT_KEYBOARD_P2) == 1);
+    CHECK(input_claim(&game,&devices,INPUT_KEYBOARD) == 0);
+    CHECK(input_assign(&game,&devices,4,0)); /* Change P1 hardware without dropping the ship. */
+    CHECK(input_claim(&game,&devices,INPUT_KEYBOARD) == 1);
+    input_pick_pilot(&game,&devices,1,MENU_BACK);
+    CHECK(input_owner(&devices,INPUT_KEYBOARD) < 0 && !game.players[1].joined);
+    CHECK(input_assign(&game,&devices,INPUT_KEYBOARD,1));
+    input_pick_pilot(&game,&devices,1,MENU_CONFIRM);
     CHECK(game.players[1].money == 9876);
-    CHECK(input_drop(&game, &devices, INPUT_KEYBOARD));
+    CHECK(input_drop(&game, &devices, 4));
     game_menu_open(&game, MENU_MAIN);
     game_menu_input(&game, MENU_CONFIRM, 1);
     CHECK(game.menu.page == MENU_SLOTS); /* P2 can operate shared menus alone. */
@@ -2013,7 +2027,7 @@ static void save_slots(void) {
     SavedGame checkpoint = game.saves[2];
     game.players[0].money = 9999;
     game_menu_open(&game, MENU_PAUSE);
-    game.menu.cursor = 3; game_menu_input(&game, MENU_CONFIRM, 0);
+    game.menu.cursor = 4; game_menu_input(&game, MENU_CONFIRM, 0);
     game.menu.cursor = 1; game_menu_input(&game, MENU_CONFIRM, 0);
     for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_MAIN && !game.saves_dirty);

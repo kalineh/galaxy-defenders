@@ -52,21 +52,26 @@ From the title or campaign setup it opens a temporary run.
 See [music audition instructions](music/README.md) and the
 [stage/music timing analysis](MUSIC_TIMING.md). The C synth album supplies all campaign and menu music.
 
-| Action | Player 1 | Player 2 |
-| --- | --- | --- |
-| Move | Arrows | IJKL |
-| Fire / confirm | X | Right Ctrl |
-| Focus fire | C | U |
-| Cancel | Z | Backspace |
-| Ready | C | Right Shift |
-| Sidekick | Z | O |
-| Join / pause / resume | Enter | F2 joins or leaves |
-| Triangle / end-of-stage retry | D | - |
+| Action | Keyboard |
+| --- | --- |
+| Move | Arrows |
+| Fire / confirm | X |
+| Focus fire / ready | C |
+| Cancel / sidekick | Z |
+| Join | F2 or Enter |
+| Pause / resume | Enter |
+| End-of-stage retry | D |
 
-Controllers claim the first available P1/P2 slot with Start/Options; hardware index
-does not determine player number. Start pauses/resumes after joining. Select/Share + Start/Options drops out. Unplugging also
-drops out, clears held input and pauses if nobody remains. Joining again retains
-the slot's equipment, money and health; it cannot revive a destroyed ship.
+The keyboard can control either player. Press Start/Options on an unassigned
+gamepad to join. During play or in the shop, use left/right to pick a pilot in
+your player panel and confirm to join. A returning slot keeps its equipment,
+money and health, including a destroyed ship.
+
+Open **Pause > Controllers** to see the keyboard and connected gamepads. Any
+device can select a row with up/down. Move it left or right between P1,
+Unassigned and P2. Assigning to an occupied player releases their previous device.
+Start pauses or resumes after joining. Select/Share + Start/Options drops out.
+Unplugging clears held input and pauses play if nobody remains.
 Both loadouts stay in the same campaign save even when one player is absent.
 Continuing restores the currently joined party, with the other loadout held for
 later joining. Either player can navigate shared menus; absent players do not
@@ -99,7 +104,7 @@ and Ctrl+V edit input. PgUp/PgDn or the mouse wheel scroll 256 output lines;
 F3 (or `perf on` / `perf off`) toggles the reference-style top-right frame graph.
 Gold is total frame time including pacing/present; cyan is CPU update/draw work
 before present, not a GPU timer. The scale is fixed at 0..33.33 ms with a 16.67 ms
-guide and 240 samples. F2 remains player-two join.
+guide and 240 samples. F2 joins with the keyboard.
 
 The content is playable, with remaining fidelity work tracked in CONTENT_PARITY.md:
 projectile effects/audio, salvage, menu transitions and

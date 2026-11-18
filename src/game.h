@@ -30,7 +30,7 @@ typedef struct {
 extern const Chassis game_chassis[GAME_CHASSIS];
 
 typedef enum { MENU_NONE, MENU_MAIN, MENU_INTRO, MENU_DIFFICULTY, MENU_PILOT,
-    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT, MENU_SLOTS, MENU_DELETE } MenuPage;
+    MENU_OPTIONS, MENU_QUIT, MENU_PAUSE, MENU_RETRY, MENU_OVER, MENU_CLEAR, MENU_SHOP, MENU_FINISH, MENU_STAGE_SELECT, MENU_SLOTS, MENU_DELETE, MENU_CONTROLLERS } MenuPage;
 typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSITION_RETRY,
     TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
 #define SHOP_VISIBLE_ROWS 6
@@ -214,6 +214,7 @@ bool game_continue(Game *game, int slot);
 bool game_save_read(SavedGame *save, const char *path);
 bool game_save_delete(const char *path);
 bool game_save_write(const SavedGame *save, const char *path);
+void game_starting_loadout(Game *game, int slot);
 bool game_join(Game *game, int slot);
 bool game_leave(Game *game, int slot);
 bool game_equip_chassis(Game *game, int slot, int chassis);
