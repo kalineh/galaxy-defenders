@@ -3,7 +3,8 @@
 
 void input_devices_init(PlayerDevices *devices) {
     *devices = (PlayerDevices){.selected_device = INPUT_KEYBOARD, .prompt_device = INPUT_KEYBOARD,
-        .player_prompt = {INPUT_KEYBOARD, INPUT_KEYBOARD}, .has_device = {true, false}};
+        .player_prompt = {INPUT_KEYBOARD, INPUT_KEYBOARD}, .flight_device = {INPUT_KEYBOARD, INPUT_KEYBOARD},
+        .has_device = {true, false}};
     for (int i = 0; i < INPUT_PADS; ++i) devices->owner[i] = -1;
     devices->owner[INPUT_KEYBOARD] = 0;
 }
@@ -36,6 +37,7 @@ static void sync_players(Game *game, PlayerDevices *devices) {
         devices->has_device[slot] = device >= 0;
         lost_last[slot] = previously_assigned && device < 0;
         if (device < 0) { devices->choosing[slot] = false; continue; }
+        if (input_owner(devices,devices->flight_device[slot]) != slot) devices->flight_device[slot] = device;
         int prompt = devices->player_prompt[slot];
         int owner = input_owner(devices,prompt);
         if ((prompt < INPUT_PADS && !devices->pad_number[prompt]) || (owner >= 0 && owner != slot))
@@ -134,7 +136,7 @@ PlayerInput input_player(const PadInput *pad) {
     result.y += !!(pad->buttons & PAD_DOWN) - !!(pad->buttons & PAD_UP);
     length = sqrtf(result.x * result.x + result.y * result.y);
     if (length > 1) { result.x /= length; result.y /= length; }
-    result.fire = (pad->buttons & PAD_CONFIRM) || pad->trigger > .2f;
+    result.fire = (pad->buttons & PAD_CONFIRM) || pad->trigger > INPUT_FIRE_THRESHOLD;
     result.focus = (pad->buttons & (PAD_FOCUS | PAD_BACK)) != 0;
     result.sidekick_left = result.sidekick_right = (pad->buttons & PAD_SIDEKICK) != 0;
     return result;
@@ -164,9 +166,12 @@ MenuButtons input_menu_buttons(PlayerDevices *devices, const PadInput inputs[INP
     for (int i = 0; i < INPUT_DEVICES; ++i) {
         if (!inputs[i].connected || !inputs[i].pressed) continue;
         int slot = input_owner(devices,i);
+        if (slot >= 0) devices->flight_device[slot] = i;
+        uint32_t menu_pressed = inputs[i].pressed & ~PAD_FIRE_TRIGGER;
+        if (!menu_pressed) continue;
         if (slot < 0) slot = lead;
-        buttons.shared |= inputs[i].pressed;
-        buttons.player[slot] |= inputs[i].pressed;
+        buttons.shared |= menu_pressed;
+        buttons.player[slot] |= menu_pressed;
         devices->prompt_device = devices->player_prompt[slot] = i;
     }
     return buttons;

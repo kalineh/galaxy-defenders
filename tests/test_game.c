@@ -1991,7 +1991,10 @@ static void controller_joining(void) {
     CHECK(input_slot_player(&devices,inputs,0).x == 1);
     MenuButtons menu = input_menu_buttons(&devices,inputs,0);
     CHECK(menu.shared == PAD_DOWN && menu.player[0] == PAD_DOWN && !menu.player[1]);
-    CHECK(devices.prompt_device == 5);
+    CHECK(devices.prompt_device == 5 && devices.flight_device[0] == INPUT_KEYBOARD);
+    inputs[4].pressed = PAD_FIRE_TRIGGER;
+    menu = input_menu_buttons(&devices,inputs,0);
+    CHECK(devices.flight_device[0] == 4 && devices.prompt_device == 5 && menu.shared == PAD_DOWN);
     inputs[1].pressed = PAD_RIGHT;
     inputs[4].pressed = PAD_DOWN;
     menu = input_menu_buttons(&devices,inputs,0);

@@ -1,5 +1,8 @@
 # Next gameplay work
 
+Check how much firing time the early waves allow on Normal and Hard. Compare a
+small Normal difficulty reduction with starting one weapon tier higher.
+
 Expand the first-run launch into a short, skippable story intro that leads
 directly into stage one.
 

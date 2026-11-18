@@ -60,7 +60,7 @@ See [music audition instructions](music/README.md) and the
 | Move | Arrows |
 | Fire | X |
 | Menu confirm | Enter or X |
-| Focus fire / ready | C |
+| Overcharge / ready | C |
 | Sidekick / back one shop level | Z |
 | Menu cancel / close dialog | Escape or Z |
 | Join with an unassigned keyboard | F2 |
@@ -89,8 +89,9 @@ purchase dialog first, then pauses the shop.
 
 Standard gamepads use raylib/GLFW. Windows additionally reads up to two native
 DS4 controllers (USB/Bluetooth), with report layouts based on Solcraft; no sibling
-repository or emulation driver is required. Move with stick/D-pad, fire with
-A/Cross or RT/R2, focus with B/Circle or LB/L1, sidekick with RB/R1. Menus accept stick/D-pad,
+repository or emulation driver is required. Move with the left stick or D-pad.
+A/Cross or RT/R2 fires the primary and equipped support weapon. Hold B/Circle
+or LB/L1 for Overcharge. RB/R1 fires the sidekick. Menus accept stick/D-pad,
 A/Cross and B/Circle. Analog movement uses a radial deadzone and normalized diagonal
 speed. DS4 report parsing, disconnect/claim behavior and retained loadouts are
 headless-tested; physical USB/Bluetooth hardware still needs human playtesting.

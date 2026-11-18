@@ -604,20 +604,25 @@ static void text_on_axis(Font font, const char *text, float x, float center_y, f
         DrawTextEx(font,text,(Vector2){x,roundf(center_y-(top+bottom)*.5f*size/font.baseSize)},size,0,color);
 }
 
-typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START, GLYPH_HORIZONTAL, GLYPH_VERTICAL } ButtonGlyph;
+typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START, GLYPH_HORIZONTAL, GLYPH_VERTICAL,
+    GLYPH_PRIMARY, GLYPH_OVERCHARGE, GLYPH_SIDEKICK } ButtonGlyph;
 
-static int key_prompt(Font font, int x, int y, const char *key, const char *action) {
+static int key_cap(Font font, int x, int y, const char *key) {
     int width = (int)fmaxf(30, MeasureTextEx(font,key,20,0).x + 14);
     Rectangle cap = {x,y,width,28};
     DrawRectangleRounded(cap,.28f,6,surface);
     DrawRectangleRoundedLinesEx(cap,.28f,6,1.5f,(Color){124,147,170,255});
     text_on_axis(font,key,x+(width-MeasureTextEx(font,key,20,0).x)/2,y+14,20,WHITE);
-    text_on_axis(font,action,x+width+9,y+14,23,(Color){201,213,226,255});
-    return width + 9 + (int)MeasureTextEx(font,action,23,0).x;
+    return width;
 }
 
-static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button, const char *action) {
-    action = ui_text(action);
+static int key_prompt(Font font, int x, int y, const char *key, const char *action) {
+    int offset = key_cap(font,x,y,key)+9;
+    text_on_axis(font,action,x+offset,y+14,23,(Color){201,213,226,255});
+    return offset + (int)MeasureTextEx(font,action,23,0).x;
+}
+
+static int button_icon(Font font, int x, int y, int device, ButtonGlyph button) {
     if (button == GLYPH_HORIZONTAL || button == GLYPH_VERTICAL) {
         bool horizontal = button == GLYPH_HORIZONTAL;
         bool pad = device >= 0 && device < INPUT_PADS;
@@ -632,15 +637,24 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
             DrawLineEx(a,tip,2,WHITE);
             DrawLineEx(b,tip,2,WHITE);
         }
-        text_on_axis(font,action,x+45,y+14,23,(Color){201,213,226,255});
-        return 45+(int)MeasureTextEx(font,action,23,0).x;
+        return 36;
     }
-    static const char *keys[] = {"Enter","Esc","C","F2"};
-    if (device < 0 || device >= INPUT_PADS) return key_prompt(font,x,y,keys[button],action);
+    static const char *keys[] = {[GLYPH_CONFIRM]="Enter", [GLYPH_BACK]="Esc", [GLYPH_READY]="C", [GLYPH_START]="F2",
+        [GLYPH_PRIMARY]="X", [GLYPH_OVERCHARGE]="C", [GLYPH_SIDEKICK]="Z"};
+    if (device < 0 || device >= INPUT_PADS) return key_cap(font,x,y,keys[button]);
+    if (button == GLYPH_PRIMARY) button = GLYPH_CONFIRM;
     static const char *letters[] = {"A","B","X"};
     const char *pad = device < 4 ? GetGamepadName(device) : NULL;
     bool ps = device >= 4 || (pad && (strstr(pad,"Wireless Controller") || strstr(pad,"PS4") ||
-        strstr(pad,"DualSense") || strstr(pad,"DualShock") || strstr(pad,"PS5")));
+        strstr(pad,"DualSense") || strstr(pad,"DualShock") || strstr(pad,"DUALSHOCK") || strstr(pad,"PS5")));
+    if (button == GLYPH_OVERCHARGE || button == GLYPH_SIDEKICK) {
+        const char *label = button == GLYPH_OVERCHARGE ? (ps ? "L1" : "LB") : (ps ? "R1" : "RB");
+        Rectangle cap = {x,y+2,37,24};
+        DrawRectangleRounded(cap,.50f,6,surface);
+        DrawRectangleRoundedLinesEx(cap,.50f,6,1.5f,(Color){124,147,170,255});
+        text_on_axis(font,label,x+(37-MeasureTextEx(font,label,18,0).x)/2,y+14,18,WHITE);
+        return 37;
+    }
     if (button == GLYPH_START) {
         DrawRectangleRounded((Rectangle){x,y+4,39,23},1,8,(Color){76,91,110,255});
         for (int i = 0; i < 3; ++i) DrawRectangle(x+12,y+9+i*5,15,2,WHITE);
@@ -655,7 +669,12 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
         } else if (button == GLYPH_BACK) DrawRing((Vector2){cx,cy},6,9,0,360,32,(Color){255,155,141,255});
         else DrawRectangleLinesEx((Rectangle){cx-7,cy-7,14,14},3,(Color){251,174,213,255});
     }
-    int offset = button == GLYPH_START ? 48 : 39;
+    return button == GLYPH_START ? 39 : 30;
+}
+
+static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button, const char *action) {
+    action = ui_text(action);
+    int offset = button_icon(font,x,y,device,button)+9;
     text_on_axis(font,action,x+offset,y+14,23,(Color){201,213,226,255});
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
@@ -980,6 +999,21 @@ static void draw_loadout(const Assets *assets, const Player *p, int x, int focus
         draw_slot_row(assets,p,x,LOADOUT_TOP+c*LOADOUT_ROW,c,c == focus,color);
 }
 
+static void draw_weapon_controls(Font font, const Player *pilot, int device) {
+    static const struct { ButtonGlyph button; const char *label; int width; } controls[] = {
+        {GLYPH_PRIMARY, "Primary", 132}, {GLYPH_OVERCHARGE, "Overcharge", 156}, {GLYPH_SIDEKICK, "Sidekick", 136}
+    };
+    int x = 28, y = LOADOUT_TOP + 6*LOADOUT_ROW + 18;
+    for (size_t i = 0; i < sizeof(controls)/sizeof(controls[0]); ++i) {
+        int offset = button_icon(font,x,y,device,controls[i].button)+8;
+        const char *label = ui_text(controls[i].label);
+        float size = fitted_size(font,label,23,controls[i].width-offset-6);
+        Color color = controls[i].button == GLYPH_SIDEKICK && pilot->sidekick < 0 ? dim : (Color){201,213,226,255};
+        text_on_axis(font,label,x+offset,y+14,size,color);
+        x += controls[i].width;
+    }
+}
+
 static void draw_flight_rail(const Game *game, const Assets *assets, int slot, bool keyboard_free) {
     const Player *p = &game->players[slot];
     draw_pilot_rail(assets,p,p,slot,false,keyboard_free);
@@ -1018,7 +1052,7 @@ static void draw_stage_prop(const Game *game, const Assets *assets, const StageE
     draw_centered_sprite(texture,center.x + event->x,y,width,event->rotation,assets->stage_tints[i],shadow);
 }
 
-static void draw_game(const Game *game, const Assets *assets, bool keyboard_free, bool shadows) {
+static void draw_game(const Game *game, const Assets *assets, const PlayerDevices *devices, bool shadows) {
     float view_x = ARENA_X - camera_x(game);
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
@@ -1077,7 +1111,11 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
+    bool keyboard_free = input_owner(devices,INPUT_KEYBOARD) < 0;
     for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,keyboard_free);
+    int lead = game->players[0].joined ? 0 : 1;
+    if (game->menu.page == MENU_NONE && game->players[lead].joined)
+        draw_weapon_controls(assets->ui_font,&game->players[lead],devices->flight_device[lead]);
     if (game->stage.secret_countdown)
         DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, fminf(1, game->stage.secret_countdown / 120.0f)));
     if (game->secret_finish_frames || game->secret_fade_frames) {
@@ -1810,7 +1848,7 @@ static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) 
 }
 
 static void poll_controllers(PadInput pads[INPUT_PADS]) {
-    static uint32_t navigation_before[INPUT_PADS];
+    static uint32_t previous_analog_buttons[INPUT_PADS];
     ds4_update(&pads[4]);
     int native_ds4 = (int)pads[4].connected + (int)pads[5].connected;
     const int ray_buttons[] = {GAMEPAD_BUTTON_LEFT_FACE_UP, GAMEPAD_BUTTON_LEFT_FACE_RIGHT,
@@ -1841,15 +1879,16 @@ static void poll_controllers(PadInput pads[INPUT_PADS]) {
             (GetGamepadAxisMovement(device, GAMEPAD_AXIS_RIGHT_TRIGGER) + 1) * .5f : 0;
     }
     for (int device = 0; device < INPUT_PADS; ++device) {
-        uint32_t navigation = 0;
+        uint32_t analog_buttons = 0;
         if (pads[device].connected) {
-            if (pads[device].x < -.55f) navigation |= PAD_LEFT;
-            if (pads[device].x > .55f) navigation |= PAD_RIGHT;
-            if (pads[device].y < -.55f) navigation |= PAD_UP;
-            if (pads[device].y > .55f) navigation |= PAD_DOWN;
+            if (pads[device].trigger > INPUT_FIRE_THRESHOLD) analog_buttons |= PAD_FIRE_TRIGGER;
+            if (pads[device].x < -.55f) analog_buttons |= PAD_LEFT;
+            if (pads[device].x > .55f) analog_buttons |= PAD_RIGHT;
+            if (pads[device].y < -.55f) analog_buttons |= PAD_UP;
+            if (pads[device].y > .55f) analog_buttons |= PAD_DOWN;
         }
-        pads[device].pressed |= navigation & ~navigation_before[device];
-        navigation_before[device] = navigation;
+        pads[device].pressed |= analog_buttons & ~previous_analog_buttons[device];
+        previous_analog_buttons[device] = analog_buttons;
     }
 }
 
@@ -2436,7 +2475,6 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             } else { console_open = !console_open; console_full = false; }
             while (GetCharPressed()) {} /* Don't insert the opening backtick. */
         }
-        int keyboard_owner = input_owner(&devices,INPUT_KEYBOARD);
         if (console->music_album) {
             console_open = false;
             music_album_input(console, game, &assets, buttons.shared);
@@ -2626,7 +2664,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         motion_weight = render_motion_weight(&previous_motion,scene,(float)((accumulator + offset)*GAME_HZ));
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
-            draw_game(game, &assets, keyboard_owner < 0, !console->shadows_off);
+            draw_game(game, &assets, &devices, !console->shadows_off);
         float animation_tick = frames ? menu_frame++ : (float)fmod((frame_start + offset)*GAME_HZ,16777216.0);
         if (game->menu.page == MENU_CONTROLLERS) draw_assignments(game,&assets,&devices);
         else {
