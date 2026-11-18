@@ -395,6 +395,8 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         }
     }
     assets->title_squad = LoadTextureFromImage(squad);
+    /* The bottom row cuts through the jackets. Keep it out of samples above the pilots. */
+    SetTextureWrap(assets->title_squad,TEXTURE_WRAP_CLAMP);
     SetTextureFilter(assets->title_squad,TEXTURE_FILTER_BILINEAR);
     UnloadImage(squad);
     bool valid = IsTextureValid(assets->pyramid_turret.texture) && IsTextureValid(assets->cutter_beam.texture) && IsTextureValid(assets->rotate_turret_base.texture) && IsTextureValid(assets->splitter_right.texture) && IsTextureValid(assets->shot.texture) && IsTextureValid(assets->hostile_shot.texture);
