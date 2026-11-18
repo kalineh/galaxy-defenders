@@ -157,23 +157,23 @@ typedef struct {
     Color base, horizon, wash, dust;
     Vector2 mote, streak;
     int fast_layer;
-    bool foreground_weather;
+    enum { WEATHER_NONE, WEATHER_RAIN, WEATHER_SNOW } weather;
 } StageBackdrop;
 
 static const StageBackdrop backdrops[STAGE_COUNT] = {
     /* Mask, upper and lower sky, drifting wash, particles, slow/fast sizes, fast particle layer. */
-    {"Tide",   {15,28,50,255}, {15,28,50,255}, {25,39,65,255}, {150,177,218,39}, {4,15}, {5,27}, 1,false},
-    {"Shoals", {14,35,49,255}, {14,35,49,255}, {27,53,62,255}, {136,185,183,36}, {5,7}, {5,14}, 3,false},
-    {"Halo",   {16,24,46,255}, {23,44,55,255}, {41,55,70,255}, {143,197,207,52}, {4,10}, {5,23}, 1,false},
-    {"Halo",   {9,12,25,255},  {18,24,41,255}, {29,34,51,255}, {181,197,226,68}, {4,4}, {5,9}, 1,false},
-    {"Strata", {19,17,39,255}, {30,25,53,255}, {49,39,66,255}, {173,157,204,42}, {7,9}, {9,16}, 1,false},
-    {"Strata", {16,21,27,255}, {35,37,42,255}, {49,48,54,255}, {171,179,188,44}, {3,18}, {4,37}, 2,false},
-    {"Vapor",  {18,33,38,255}, {30,49,49,255}, {48,66,64,255}, {186,215,208,76}, {8,11}, {15,21}, 1,true},
-    {"Vapor",  {26,28,48,255}, {28,30,52,255}, {40,41,65,255}, {176,174,209,43}, {6,9}, {7,18}, 2,false},
-    {"Strata", {24,23,32,255}, {42,34,39,255}, {57,45,50,255}, {197,173,164,51}, {4,22}, {5,43}, 2,false},
-    {"Shoals", {10,26,48,255}, {18,40,61,255}, {30,55,73,255}, {133,183,209,55}, {6,7}, {5,28}, 3,false},
-    {"Tide",   {26,32,52,255}, {39,49,70,255}, {58,66,84,255}, {207,217,235,81}, {10,12}, {17,20}, 1,true},
-    {"Halo",   {12,12,28,255}, {32,24,47,255}, {51,40,65,255}, {201,179,220,65}, {4,5}, {5,19}, 1,false},
+    {"Tide",   {15,28,50,255}, {15,28,50,255}, {25,39,65,255}, {150,177,218,39}, {4,15}, {5,27}, 1,WEATHER_NONE},
+    {"Shoals", {14,35,49,255}, {14,35,49,255}, {27,53,62,255}, {136,185,183,36}, {5,7}, {5,14}, 3,WEATHER_NONE},
+    {"Halo",   {16,24,46,255}, {23,44,55,255}, {41,55,70,255}, {143,197,207,52}, {4,10}, {7,35}, 1,WEATHER_RAIN},
+    {"Cluster",{5,8,15,255},  {10,15,25,255}, {107,123,151,255}, {181,197,226,68}, {4,4}, {5,9}, 1,WEATHER_NONE},
+    {"Strata", {19,17,39,255}, {30,25,53,255}, {49,39,66,255}, {173,157,204,42}, {7,9}, {9,16}, 1,WEATHER_NONE},
+    {"",       {1,1,2,255}, {1,1,2,255}, {0,0,0,0}, {146,155,171,40}, {3,18}, {4,37}, 2,WEATHER_NONE},
+    {"Storm",  {18,33,38,255}, {30,49,49,255}, {65,82,76,255}, {186,215,208,76}, {8,11}, {15,21}, 1,WEATHER_SNOW},
+    {"Vapor",  {26,28,48,255}, {28,30,52,255}, {40,41,65,255}, {176,174,209,43}, {6,9}, {7,18}, 2,WEATHER_NONE},
+    {"Rift",   {24,23,32,255}, {42,34,39,255}, {57,45,50,255}, {197,173,164,51}, {4,22}, {5,43}, 2,WEATHER_NONE},
+    {"Ripple", {10,26,48,255}, {18,40,61,255}, {46,77,87,255}, {133,183,209,55}, {6,7}, {8,50}, 3,WEATHER_RAIN},
+    {"Mist",   {26,32,52,255}, {39,49,70,255}, {58,66,84,255}, {207,217,235,81}, {10,12}, {17,20}, 1,WEATHER_SNOW},
+    {"Eclipse",{12,12,28,255}, {32,24,47,255}, {64,49,77,255}, {201,179,220,65}, {4,5}, {5,19}, 1,WEATHER_NONE},
 };
 
 static bool stage_assets_load(Assets *assets, int index) {
@@ -184,7 +184,37 @@ static bool stage_assets_load(Assets *assets, int index) {
         assets->scenery[i] = (Texture2D){0};
         char path[160];
         if (backdrops[index].name) {
-            if (i >= 2) continue;
+            if (i == 2) {
+                /* Bake the horizon at canvas resolution with a stationary sub-level dither. */
+                const StageBackdrop *sky = &backdrops[index];
+                Image gradient = GenImageColor(64,GAME_HEIGHT,sky->base);
+                if (!gradient.data) return false;
+                Color *pixels = gradient.data;
+                unsigned seed = 1;
+                for (int y = 0; y < gradient.height; ++y) {
+                    float t = (float)y / (gradient.height-1);
+                    for (int x = 0; x < gradient.width; ++x) {
+                        seed = seed*1664525u + 1013904223u;
+                        float d = (seed >> 8) / 16777216.0f;
+                        pixels[y*gradient.width+x] = (Color){
+                            (unsigned char)(sky->base.r + t*(sky->horizon.r-sky->base.r) + d),
+                            (unsigned char)(sky->base.g + t*(sky->horizon.g-sky->base.g) + d),
+                            (unsigned char)(sky->base.b + t*(sky->horizon.b-sky->base.b) + d),255};
+                    }
+                }
+                assets->scenery[i] = LoadTextureFromImage(gradient);
+                UnloadImage(gradient);
+                valid = valid && IsTextureValid(assets->scenery[i]);
+                continue;
+            }
+            if (i == 3) {
+                if (!backdrops[index].weather) continue;
+                assets->scenery[i] = texture_load(backdrops[index].weather == WEATHER_SNOW ?
+                    "textures/scenery/Snowflake.png" : "textures/scenery/Raindrop.png");
+                valid = valid && IsTextureValid(assets->scenery[i]);
+                continue;
+            }
+            if (!backdrops[index].name[0]) continue;
             snprintf(path, sizeof(path), "textures/scenery/%s%s.png", backdrops[index].name, i ? "Near" : "Far");
         } else {
             if (!scene->layers[i].texture) continue;
@@ -504,15 +534,25 @@ static void draw_flight_dust(const StageState *stage, Texture2D dust, bool foreg
     const StageBackdrop *backdrop = &backdrops[stage->index];
     Rectangle source = {0, 0, (float)dust.width, (float)dust.height};
     for (int pass = 0; pass < 2; ++pass) {
-        if (foreground != (pass == 1 && backdrop->foreground_weather)) continue;
+        if (foreground != (pass == 1 && backdrop->weather)) continue;
         int layer = pass ? backdrop->fast_layer : 0;
         Vector2 size = pass ? backdrop->streak : backdrop->mote;
         for (int i = 0; i < stage->scenery_count[layer]; ++i) {
             const SceneryParticle *p = &stage->scenery[layer][i];
             float width = size.x + i%3, height = size.y + i%5;
             float angle = -atan2f(p->vx,p->vy)*RAD2DEG;
+            Color tint = backdrop->dust;
+            if (foreground) {
+                if (backdrop->weather == WEATHER_SNOW) {
+                    width = height = 10 + (i*7 % 17);
+                    tint = (Color){237,245,255,168 + i%4*16};
+                } else {
+                    angle += 8;
+                    tint = (Color){182,215,236,156 + i%4*12};
+                }
+            }
             Rectangle dest = {ARENA_X + p->x - stage->camera_x, p->y, width, height};
-            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},angle,backdrop->dust);
+            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},angle,tint);
         }
     }
 }
@@ -522,10 +562,12 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     if (backdrops[index].name) {
         const StageBackdrop *backdrop = &backdrops[index];
         if (foreground) {
-            if (backdrop->foreground_weather) draw_flight_dust(&game->stage,assets->particle_dot,true);
+            if (backdrop->weather) draw_flight_dust(&game->stage,assets->scenery[3],true);
             return;
         }
-        DrawRectangleGradientV(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,backdrop->base,backdrop->horizon);
+        Texture2D sky = assets->scenery[2];
+        for (int x = 0; x < GAME_WIDTH; x += sky.width)
+            DrawTexture(sky,ARENA_X+x,0,WHITE);
         for (int i = 0; i < 2; ++i) {
             Texture2D texture = assets->scenery[i];
             if (!IsTextureValid(texture)) continue;
