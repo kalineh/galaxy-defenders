@@ -3,6 +3,7 @@
 #include "synth.h"
 #include "input.h"
 #include "raylib.h"
+#include "rlgl.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -819,11 +820,18 @@ static void draw_flight_rail(const Game *game, const Assets *assets, int slot) {
     draw_loadout(assets,p,x,-1,player_colors[slot]);
 }
 
+static float canvas_zoom = 1.0f;
+
+static void canvas_scissor(int x, int y, int w, int h) {
+    int left = (int)roundf(x*canvas_zoom), top = (int)roundf(y*canvas_zoom);
+    BeginScissorMode(left,top,(int)roundf((x+w)*canvas_zoom)-left,(int)roundf((y+h)*canvas_zoom)-top);
+}
+
 static void draw_game(const Game *game, const Assets *assets) {
     float view_x = ARENA_X - game->stage.camera_x;
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
-    BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     draw_scenery(game, assets, false);
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
@@ -1192,7 +1200,7 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
         float y = fmodf(i * 137.0f + frame * (layer ? 2.1f : 3.5f), GAME_HEIGHT);
         sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
     }
-    BeginScissorMode(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
+    canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
@@ -1263,7 +1271,14 @@ static void menu_row(Font font, const Game *game, int row, int x, int y, int wid
     if (selected) DrawRectangle(x,y,5,height-3,accent);
     const char *label = behind_dialog ? game_slot_label(game,row) : game_menu_label(game,row);
     DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,text);
-    if (game->menu.page == MENU_OPTIONS && row < 3) {
+    if (game->menu.page == MENU_OPTIONS && (row == OPTION_RENDER_SCALE || row == OPTION_AA)) {
+        const char *setting = row == OPTION_RENDER_SCALE ?
+            TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
+            (game->menu.options[row] ? "FXAA" : "Off");
+        float value_width = MeasureTextEx(font,setting,26,0).x;
+        DrawTextEx(font,setting,(Vector2){x+width-value_width-22,y+(height-26)/2},26,0,accent);
+    }
+    if (game->menu.page == MENU_OPTIONS && row < OPTION_RENDER_SCALE) {
         int value = game->menu.options[row];
         for (int i=0; i<10; ++i) DrawRectangle(x+width-199+17*i,y+height/2-5,13,10,i<value ? accent : rule);
     }
@@ -1332,7 +1347,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? 59 : 69;
     int y = title ? 606 : stages ? 180 : 437;
     int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
     if (title) {
@@ -1370,7 +1385,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         }
         return;
     }
-    int footer = y+row_height*(title ? 4 : count)+30;
+    int footer = y+row_height*(title && count < 4 ? 4 : count)+30;
     int advance = button_prompt(font,x,footer,device,owner,GLYPH_CONFIRM,"Select")+28;
     if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Cancel")+28;
     int row = game->menu.cursor;
@@ -1818,9 +1833,9 @@ static void draw_console(Console *console, Font font, bool failed, bool full_scr
     if (first < 0) first = 0;
 #ifdef GALAXY_MEMORY
     /* rlsw scissor coordinates are top-down; rcore applies an OpenGL Y flip. */
-    BeginScissorMode(0, CANVAS_HEIGHT - panel_height, CANVAS_WIDTH, panel_height);
+    canvas_scissor(0, CANVAS_HEIGHT - panel_height, CANVAS_WIDTH, panel_height);
 #else
-    BeginScissorMode(0, 0, CANVAS_WIDTH, panel_height);
+    canvas_scissor(0, 0, CANVAS_WIDTH, panel_height);
 #endif
     DrawRectangle(0, 0, CANVAS_WIDTH, panel_height, (Color){5, 8, 12, 242});
     int row = 0, drawn = 0;
@@ -1882,13 +1897,18 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     double save_retry_at = 0;
     double selection_retry_at = 0;
     char save_paths[GAME_SAVE_SLOTS][2048] = {{0}};
-    char selection_path[2048] = {0};
+    char selection_path[2048] = {0}, settings_path[2048] = {0};
+    int stored_options[OPTION_COUNT];
+    double settings_retry_at = 0;
     int remembered_slot = -1;
     if (!frames) {
         const char *root = getenv("LOCALAPPDATA");
         char directory[1800];
         int length = snprintf(directory, sizeof(directory), "%s/GalaxyDefenders", root ? root : ".");
         if (length > 0 && length < (int)sizeof(directory) && (DirectoryExists(directory) || MakeDirectory(directory) == 0)) {
+            snprintf(settings_path,sizeof(settings_path),"%s/settings.cfg",directory);
+            if (FileExists(settings_path) && !game_options_read(game->menu.options,settings_path))
+                console_log(console,"Settings file unreadable; using defaults.");
             for (int i = 0; i < GAME_SAVE_SLOTS; ++i) {
                 snprintf(save_paths[i], sizeof(save_paths[i]), "%s/slot%d.save", directory, i + 1);
                 char backup[2048]; snprintf(backup, sizeof(backup), "%s/slot%d.save.bak", directory, i + 1);
@@ -1913,7 +1933,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         } else console_log(console, "ERROR: could not create save directory");
     }
 #ifndef GALAXY_MEMORY
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT | (frames ? FLAG_WINDOW_HIDDEN : 0));
 #endif
 #ifdef GALAXY_MEMORY
     InitWindow(CANVAS_WIDTH, CANVAS_HEIGHT, "Galaxy Defenders - software check");
@@ -1929,17 +1949,25 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     SetTargetFPS(60);
 #endif
     RenderTexture2D canvas = {0};
-#ifndef GALAXY_MEMORY
-    canvas = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
-    if (!IsRenderTextureValid(canvas)) { CloseWindow(); return 1; }
-#endif
+    memcpy(stored_options, game->menu.options, sizeof(stored_options));
     if (!assets_load(&assets, console, mute, volume)) {
         assets_unload(&assets);
         if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
         CloseWindow();
         return 1;
     }
-    if (IsRenderTextureValid(canvas)) SetTextureFilter(canvas.texture, TEXTURE_FILTER_BILINEAR);
+#ifndef GALAXY_MEMORY
+    Shader edge_aa = LoadShader(NULL,asset_path("shaders/edge_aa.fs"));
+    int texel_location = GetShaderLocation(edge_aa,"texelSize");
+    if (texel_location < 0) {
+        console_log(console,"ERROR: could not load anti-aliasing shader");
+        UnloadShader(edge_aa);
+        assets_unload(&assets);
+        CloseWindow();
+        return 1;
+    }
+    int requested_width = 0;
+#endif
     bool console_open = show_console, console_full = false, command_failed = false, muted = mute;
     int rendered = 0, result = 0, menu_frame = 0;
     double accumulator = 0;
@@ -2063,6 +2091,14 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (SaveFileText(selection_path,value)) remembered_slot = game->active_slot;
             else { console_log(console,"ERROR: could not remember save slot"); selection_retry_at = GetTime()+5; }
         }
+        if (settings_path[0] && memcmp(stored_options,game->menu.options,sizeof(stored_options)) && GetTime() >= settings_retry_at) {
+            if (game_options_write(game->menu.options,settings_path))
+                memcpy(stored_options,game->menu.options,sizeof(stored_options));
+            else {
+                console_log(console,"Could not write settings; retrying");
+                settings_retry_at = GetTime()+5;
+            }
+        }
         if (!frames && game->saves_dirty && GetTime() >= save_retry_at) {
             for (int i = 0; i < GAME_SAVE_SLOTS; ++i) if (game->saves_dirty & (1u << i)) {
                 if (save_paths[i][0] && (game->saves[i].valid ? game_save_write(&game->saves[i], save_paths[i]) :
@@ -2079,7 +2115,26 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
+        float screen_fraction = 0.875f + game->menu.options[OPTION_SCREEN_SIZE]*0.0125f;
+        float units = fminf(GetRenderWidth()/16.0f,GetRenderHeight()/9.0f)*screen_fraction;
+        int blocks = (int)fmaxf(1,roundf(units*render_scale_percent[game->menu.options[OPTION_RENDER_SCALE]]/100.0f));
+        if (requested_width != blocks*16) {
+            requested_width = blocks*16;
+            RenderTexture2D replacement = LoadRenderTexture(requested_width,blocks*9);
+            if (IsRenderTextureValid(replacement)) {
+                if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
+                canvas = replacement;
+                SetTextureFilter(canvas.texture,TEXTURE_FILTER_BILINEAR);
+                Vector2 texel = {1.0f/canvas.texture.width,1.0f/canvas.texture.height};
+                SetShaderValue(edge_aa,texel_location,&texel,SHADER_UNIFORM_VEC2);
+                canvas_zoom = (float)canvas.texture.width/CANVAS_WIDTH;
+            } else {
+                console_log(console,"Could not allocate %d x %d render target",requested_width,blocks*9);
+                if (!IsRenderTextureValid(canvas)) { result = 1; break; }
+            }
+        }
         BeginTextureMode(canvas);
+        BeginMode2D((Camera2D){.zoom=canvas_zoom});
 #endif
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
@@ -2097,41 +2152,42 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         if (console_open) draw_console(console, assets.console_font, command_failed, console_full);
         if (console->perf) draw_frame_graph(&frame_graph, assets.console_font);
 #ifndef GALAXY_MEMORY
+        EndMode2D();
         EndTextureMode();
         BeginDrawing();
         ClearBackground(BLACK);
         float scale = fminf(GetScreenWidth() / (float)CANVAS_WIDTH, GetScreenHeight() / (float)CANVAS_HEIGHT);
-        scale *= 0.875f + game->menu.options[2] * 0.0125f;
+        scale *= screen_fraction;
         Rectangle destination = {(GetScreenWidth() - CANVAS_WIDTH * scale) / 2,
             (GetScreenHeight() - CANVAS_HEIGHT * scale) / 2, CANVAS_WIDTH * scale, CANVAS_HEIGHT * scale};
-        DrawTexturePro(canvas.texture, (Rectangle){0, 0, CANVAS_WIDTH, -CANVAS_HEIGHT}, destination, (Vector2){0}, 0, WHITE);
+        if (game->menu.options[OPTION_AA]) BeginShaderMode(edge_aa);
+        DrawTexturePro(canvas.texture,(Rectangle){0,0,canvas.texture.width,-canvas.texture.height},destination,(Vector2){0},0,WHITE);
+        if (game->menu.options[OPTION_AA]) EndShaderMode();
 #endif
+        if (frames && rendered+1 == frames && capture) {
+            rlDrawRenderBatchActive();
+            Image image = LoadImageFromScreen();
+#ifdef GALAXY_MEMORY
+            /* The software framebuffer is already top-down before raylib's OpenGL flip. */
+            ImageFlipVertical(&image);
+#endif
+            if (!IsImageValid(image) || !ExportImage(image,capture)) result = 1;
+            UnloadImage(image);
+        }
         double work_end = GetTime();
         EndDrawing();
         frame_graph.work_ms[frame_graph.cursor] = (float)((work_end - frame_start) * 1000);
         frame_graph.frame_ms[frame_graph.cursor] = (float)((GetTime() - frame_start) * 1000);
         frame_graph.cursor = (frame_graph.cursor + 1) % FRAME_SAMPLES;
         if (frame_graph.count < FRAME_SAMPLES) ++frame_graph.count;
-        if (frames && ++rendered >= frames) {
-            if (capture) {
-#ifdef GALAXY_MEMORY
-                /* raylib 6.0 rlsw stubs glGetTexImage; read its screen framebuffer. */
-                Image image = LoadImageFromScreen();
-                /* rlsw rows are top-down; undo rlReadScreenPixels' OpenGL flip. */
-                ImageFlipVertical(&image);
-#else
-                Image image = LoadImageFromTexture(canvas.texture);
-                ImageFlipVertical(&image);
-#endif
-                if (!ExportImage(image, capture)) result = 1;
-                UnloadImage(image);
-            }
-            break;
-        }
+        if (frames && ++rendered >= frames) break;
     }
     console_execute(console, game, "state");
     assets_unload(&assets);
     if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
+#ifndef GALAXY_MEMORY
+    UnloadShader(edge_aa);
+#endif
     if (!frames) ds4_shutdown();
     CloseWindow();
     return result;

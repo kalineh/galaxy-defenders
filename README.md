@@ -29,8 +29,15 @@ bounded render checks never read or write human saves.
 
 Menus use arrows, X to confirm and Z to cancel or gamepad D-pad/A/B. Player two uses J/L,
 right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
-generators and shields are connected; Rabbit starts with Lightning. Options adjust
-SFX/music volume and screen size for the session.
+generators and shields are connected; Rabbit starts with Lightning. The Options menu saves volume, screen size,
+render scale, and anti-aliasing alongside the save slots. Render Scale uses 75%,
+100%, 150%, or 200% of the displayed game dimensions. FXAA can be toggled
+independently. Graphics settings apply live in the Windows client. The windowless
+verification renderer uses its fixed reference resolution.
+
+Gameplay and equipment sprites are baked from `art/sprites/` into one flight atlas
+and one structures atlas. Run `python tools/bake_sprite_atlas.py` after editing the
+masters (offline dependencies: Pillow and resvg-py).
 
 `game.reset` is a debug reset (Rookie, level 2 Front Laser), not pilot new-game
 setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.

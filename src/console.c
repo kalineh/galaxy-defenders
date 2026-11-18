@@ -414,7 +414,10 @@ bool console_execute(Console *console, Game *game, const char *line) {
         return true;
     }
     if (!strcmp(command, "game.reset") && count == 2 && integer(words[1], &value, 0, 2147483647)) {
+        int options[OPTION_COUNT];
+        memcpy(options,game->menu.options,sizeof(options));
         game_reset(game, (uint32_t)value);
+        memcpy(game->menu.options,options,sizeof(options));
         return true;
     }
     if (!strcmp(command, "game.stage") && (count == 2 || count == 3)) {

@@ -53,6 +53,39 @@ static bool read_int(FILE *file, int *value) {
     return true;
 }
 
+bool game_options_read(int options[OPTION_COUNT], const char *path) {
+    FILE *file = fopen(path,"rb");
+    if (!file) return false;
+    int values[OPTION_COUNT];
+    bool ok = true;
+    for (int i = 0; i < OPTION_COUNT && ok; ++i)
+        ok = read_int(file,&values[i]) && values[i] >= 0 && values[i] <= game_option_max[i];
+    char extra;
+    ok = ok && fscanf(file," %c",&extra) == EOF && !ferror(file);
+    fclose(file);
+    if (ok) memcpy(options,values,sizeof(values));
+    return ok;
+}
+
+bool game_options_write(const int options[OPTION_COUNT], const char *path) {
+    char temporary[2048];
+    int length = snprintf(temporary,sizeof(temporary),"%s.tmp",path);
+    if (length < 0 || length >= (int)sizeof(temporary)) return false;
+    FILE *file = fopen(temporary,"wb");
+    if (!file) return false;
+    bool ok = true;
+    for (int i = 0; i < OPTION_COUNT; ++i)
+        if (fprintf(file,"%d\n",options[i]) < 0) ok = false;
+    if (fclose(file)) ok = false;
+#ifdef _WIN32
+    if (ok) ok = MoveFileExA(temporary,path,MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+#else
+    if (ok) ok = rename(temporary,path) == 0;
+#endif
+    if (!ok) remove(temporary);
+    return ok;
+}
+
 static bool read_save(SavedGame *save, const char *path) {
     FILE *file = fopen(path, "rb");
     if (!file) return false;
@@ -219,7 +252,7 @@ bool game_continue(Game *game, int slot) {
     bool joined[GAME_PLAYERS] = {game->players[0].joined, game->players[1].joined};
     if (!joined[0] && !joined[1]) joined[0] = true;
     game->active_slot = slot;
-    int options[3];
+    int options[OPTION_COUNT];
     memcpy(options, game->menu.options, sizeof(options));
     game_reset_session(game, save.seed);
     memcpy(game->menu.options, options, sizeof(options));

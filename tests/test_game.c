@@ -699,6 +699,15 @@ static void menu_flow(void) {
     CHECK(game.menu.options[0] == 9);
     for (int i = 0; i < 20; ++i) game_menu_input(&game, MENU_LEFT, 0);
     CHECK(game.menu.options[0] == 0);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input down;menu.input down;menu.input right;menu.input right"));
+    CHECK(game.menu.options[OPTION_RENDER_SCALE] == 3);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right;menu.input right"));
+    CHECK(game.menu.options[OPTION_AA] == 1);
+    const char *settings_path = "artifacts/native-port/test-graphics.cfg";
+    int restored[OPTION_COUNT] = {0};
+    CHECK(game_options_write(game.menu.options,settings_path));
+    CHECK(game_options_read(restored,settings_path));
+    CHECK(!memcmp(restored,game.menu.options,sizeof(restored)));
     CHECK(console_chain(&console, &game, "menu.input back;menu.input down;menu.input confirm"));
     CHECK(game.menu.page == MENU_RETRY);
     game_tick(&game);

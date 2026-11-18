@@ -4,12 +4,15 @@
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-static const char *labels[MENU_DELETE + 1][4] = {
+const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1};
+const int render_scale_percent[4] = {75, 100, 150, 200};
+
+static const char *labels[MENU_DELETE + 1][OPTION_COUNT+1] = {
     [MENU_MAIN] = {"Play", "Options", "Quit"},
     [MENU_SLOTS] = {"Slot 1", "Slot 2", "Slot 3", "Back"},
     [MENU_DELETE] = {"Cancel", "Delete slot"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
-    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Back"},
+    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "Anti-aliasing", "Back"},
     [MENU_QUIT] = {"Cancel", "Quit"},
     [MENU_PAUSE] = {"Resume", "Retry", "Options", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},
@@ -20,7 +23,7 @@ static const char *labels[MENU_DELETE + 1][4] = {
 int game_menu_count(const Game *game) {
     if (game->menu.page == MENU_STAGE_SELECT) return 13;
     int count = 0;
-    while (count < 4 && labels[game->menu.page][count]) ++count;
+    while (count < OPTION_COUNT+1 && labels[game->menu.page][count]) ++count;
     return count;
 }
 
@@ -237,10 +240,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     if (menu->page == MENU_DELETE && action == MENU_RIGHT) menu->cursor = 1;
     if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
     if (action == MENU_DOWN && menu->cursor + 1 < count) ++menu->cursor;
-    if (menu->page == MENU_OPTIONS && menu->cursor < 3) {
+    if (menu->page == MENU_OPTIONS && menu->cursor < OPTION_COUNT) {
         int *value = &menu->options[menu->cursor];
         if (action == MENU_LEFT && *value > 0) --*value;
-        if (action == MENU_RIGHT && *value < 10) ++*value;
+        if (action == MENU_RIGHT && *value < game_option_max[menu->cursor]) ++*value;
     }
     if (action == MENU_BACK) {
         switch (menu->page) {
@@ -297,7 +300,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
                 game_menu_open(game, MENU_PILOT);
             }
             break;
-        case MENU_OPTIONS: if (row == 3) game_menu_open(game, menu->parent); break;
+        case MENU_OPTIONS: if (row == OPTION_COUNT) game_menu_open(game, menu->parent); break;
         case MENU_QUIT:
             if (row == 0) game_menu_open(game, menu->parent);
             else if (menu->parent == MENU_MAIN) menu->quit = true;
