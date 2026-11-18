@@ -85,6 +85,41 @@ def bake(style, near):
     image.save(OUT / f"{style}{layer}.png")
 
 
+BONUS_PATTERNS = ("Fold", "Prism", "Tunnel", "Echo", "Circuit", "Curtain", "Orrery")
+
+
+def bake_bonus(style, near):
+    alpha = bytearray(WIDTH*HEIGHT)
+    for y in range(HEIGHT):
+        v = (y + 0.5) / HEIGHT
+        phase = 2*pi*v + near*1.4
+        for x in range(WIDTH):
+            u = (x + 0.5) / WIDTH
+            side = 2*u - 1
+            if style == "Fold":
+                field = sin(phase*2 + 7*abs(side) + sin(phase))
+            elif style == "Prism":
+                field = cos(10*side + 2*phase) * cos(10*side - 2*phase)
+            elif style == "Tunnel":
+                field = cos(22*max(abs(side), abs(sin(phase))))
+            elif style == "Echo":
+                field = cos(18*hypot(side+0.65, sin(phase))) * sin(phase+3*side)
+            elif style == "Circuit":
+                rail = abs(abs(side) - (0.56 if cos(phase*2)>0 else 0.84))
+                field = 1 - 18*min(rail, abs(sin(phase*2)) if 0.56 < abs(side) < 0.84 else 1)
+            elif style == "Curtain":
+                field = cos(13*side + 2*sin(phase + side*5) + near*1.2)
+            else:
+                field = cos(24*hypot(side-0.55*cos(phase), 1.5*sin(phase)))
+            # Luminous margins around a quiet lane for combat.
+            edge_light = 0.12 + 0.88*abs(side)**1.4
+            coverage = max(0, min(1, (field - 0.16)*1.25))
+            alpha[y*WIDTH+x] = round(175*edge_light*coverage)
+    image = Image.new("RGB", (WIDTH, HEIGHT), "white")
+    image.putalpha(Image.frombytes("L", (WIDTH, HEIGHT), bytes(alpha)))
+    image.save(OUT / (style + ("Near" if near else "Far") + ".png"))
+
+
 def bake_weather():
     for name in ("Snowflake", "Raindrop"):
         alpha = bytearray(64*64)
@@ -109,3 +144,6 @@ if __name__ == "__main__":
     for style in SEEDS:
         for near in (0, 1):
             bake(style, near)
+    for style in BONUS_PATTERNS:
+        for near in (0, 1):
+            bake_bonus(style, near)

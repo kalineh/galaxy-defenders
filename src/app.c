@@ -174,52 +174,53 @@ static const StageBackdrop backdrops[STAGE_COUNT] = {
     {"Ripple", {10,26,48,255}, {18,40,61,255}, {46,77,87,255}, {133,183,209,55}, {6,7}, {8,50}, 3,WEATHER_RAIN},
     {"Mist",   {26,32,52,255}, {39,49,70,255}, {58,66,84,255}, {207,217,235,81}, {10,12}, {17,20}, 1,WEATHER_SNOW},
     {"Eclipse",{12,12,28,255}, {32,24,47,255}, {64,49,77,255}, {201,179,220,65}, {4,5}, {5,19}, 1,WEATHER_NONE},
+    {"Fold",   {9,18,30,255}, {12,36,41,255}, {39,160,122,255}, {121,223,180,94}, {4,5}, {5,15}, 1,WEATHER_NONE},
+    {"Prism",  {21,13,35,255}, {36,22,51,255}, {142,73,164,255}, {191,153,203,83}, {4,5}, {5,10}, 1,WEATHER_NONE},
+    {"Tunnel", {10,20,38,255}, {12,32,57,255}, {45,123,192,255}, {121,192,225,80}, {3,12}, {4,23}, 1,WEATHER_NONE},
+    {"Echo",   {26,14,26,255}, {43,22,29,255}, {177,92,67,255}, {215,178,144,83}, {5,6}, {5,14}, 1,WEATHER_NONE},
+    {"Circuit",{11,24,27,255}, {23,39,37,255}, {115,157,75,255}, {172,209,151,83}, {4,7}, {5,18}, 1,WEATHER_NONE},
+    {"Curtain",{17,16,40,255}, {32,25,56,255}, {103,83,187,255}, {162,180,221,83}, {4,8}, {5,19}, 1,WEATHER_NONE},
+    {"Orrery", {18,14,37,255}, {40,25,50,255}, {167,102,148,255}, {209,177,198,88}, {4,5}, {5,14}, 1,WEATHER_NONE},
 };
 
 static bool stage_assets_load(Assets *assets, int index) {
-    const SceneryDefinition *scene = &stage_scenery[index < 13 ? index : 13];
     bool valid = true;
     for (int i = 0; i < 4; ++i) {
         if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
         assets->scenery[i] = (Texture2D){0};
         char path[160];
-        if (backdrops[index].name) {
-            if (i == 2) {
-                /* Bake the horizon at canvas resolution with a stationary sub-level dither. */
-                const StageBackdrop *sky = &backdrops[index];
-                Image gradient = GenImageColor(64,GAME_HEIGHT,sky->base);
-                if (!gradient.data) return false;
-                Color *pixels = gradient.data;
-                unsigned seed = 1;
-                for (int y = 0; y < gradient.height; ++y) {
-                    float t = (float)y / (gradient.height-1);
-                    for (int x = 0; x < gradient.width; ++x) {
-                        seed = seed*1664525u + 1013904223u;
-                        float d = (seed >> 8) / 16777216.0f;
-                        pixels[y*gradient.width+x] = (Color){
-                            (unsigned char)(sky->base.r + t*(sky->horizon.r-sky->base.r) + d),
-                            (unsigned char)(sky->base.g + t*(sky->horizon.g-sky->base.g) + d),
-                            (unsigned char)(sky->base.b + t*(sky->horizon.b-sky->base.b) + d),255};
-                    }
+        if (i == 2) {
+            /* Bake the horizon at canvas resolution with a stationary sub-level dither. */
+            const StageBackdrop *sky = &backdrops[index];
+            Image gradient = GenImageColor(64,GAME_HEIGHT,sky->base);
+            if (!gradient.data) return false;
+            Color *pixels = gradient.data;
+            unsigned seed = 1;
+            for (int y = 0; y < gradient.height; ++y) {
+                float t = (float)y / (gradient.height-1);
+                for (int x = 0; x < gradient.width; ++x) {
+                    seed = seed*1664525u + 1013904223u;
+                    float d = (seed >> 8) / 16777216.0f;
+                    pixels[y*gradient.width+x] = (Color){
+                        (unsigned char)(sky->base.r + t*(sky->horizon.r-sky->base.r) + d),
+                        (unsigned char)(sky->base.g + t*(sky->horizon.g-sky->base.g) + d),
+                        (unsigned char)(sky->base.b + t*(sky->horizon.b-sky->base.b) + d),255};
                 }
-                assets->scenery[i] = LoadTextureFromImage(gradient);
-                UnloadImage(gradient);
-                valid = valid && IsTextureValid(assets->scenery[i]);
-                continue;
             }
-            if (i == 3) {
-                if (!backdrops[index].weather) continue;
-                assets->scenery[i] = texture_load(backdrops[index].weather == WEATHER_SNOW ?
-                    "textures/scenery/Snowflake.png" : "textures/scenery/Raindrop.png");
-                valid = valid && IsTextureValid(assets->scenery[i]);
-                continue;
-            }
-            if (!backdrops[index].name[0]) continue;
-            snprintf(path, sizeof(path), "textures/scenery/%s%s.png", backdrops[index].name, i ? "Near" : "Far");
-        } else {
-            if (!scene->layers[i].texture) continue;
-            snprintf(path, sizeof(path), "textures/%s.png", scene->layers[i].texture);
+            assets->scenery[i] = LoadTextureFromImage(gradient);
+            UnloadImage(gradient);
+            valid = valid && IsTextureValid(assets->scenery[i]);
+            continue;
         }
+        if (i == 3) {
+            if (!backdrops[index].weather) continue;
+            assets->scenery[i] = texture_load(backdrops[index].weather == WEATHER_SNOW ?
+                "textures/scenery/Snowflake.png" : "textures/scenery/Raindrop.png");
+            valid = valid && IsTextureValid(assets->scenery[i]);
+            continue;
+        }
+        if (!backdrops[index].name[0]) continue;
+        snprintf(path, sizeof(path), "textures/scenery/%s%s.png", backdrops[index].name, i ? "Near" : "Far");
         assets->scenery[i] = texture_load(path);
         valid = valid && IsTextureValid(assets->scenery[i]);
     }
@@ -559,61 +560,36 @@ static void draw_flight_dust(const StageState *stage, Texture2D dust, bool foreg
 
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
     int index = game->stage.index;
-    if (backdrops[index].name) {
-        const StageBackdrop *backdrop = &backdrops[index];
-        if (foreground) {
-            if (backdrop->weather) draw_flight_dust(&game->stage,assets->scenery[3],true);
-            return;
-        }
-        Texture2D sky = assets->scenery[2];
-        for (int x = 0; x < GAME_WIDTH; x += sky.width)
-            DrawTexture(sky,ARENA_X+x,0,WHITE);
-        for (int i = 0; i < 2; ++i) {
-            Texture2D texture = assets->scenery[i];
-            if (!IsTextureValid(texture)) continue;
-            float depth = i ? 0.30f : 0.13f;
-            float width = GAME_WIDTH + 112;
-            float height = width * texture.height / texture.width;
-            float wind = game->tick * (i ? 0.19f : 0.08f);
-            float y = fmodf(wind - game->stage.camera_y * depth, height);
-            if (y > 0) y -= height;
-            float sway = 14*sinf(game->tick * (i ? 0.0020f : 0.0013f) + i);
-            float pan = fmaxf(-40,fminf(40,game->stage.camera_x*depth));
-            float x = ARENA_X - 56 + sway - pan;
-            Rectangle source = {0,0,(float)texture.width,(float)texture.height};
-            for (; y < GAME_HEIGHT; y += height)
-                DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,backdrop->wash);
-        }
-        draw_flight_dust(&game->stage,assets->particle_dot,false);
+    const StageBackdrop *backdrop = &backdrops[index];
+    if (foreground) {
+        if (backdrop->weather) draw_flight_dust(&game->stage,assets->scenery[3],true);
         return;
     }
-    const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
-    if (!foreground) {
-        Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
-        Color bottom = {scene->bottom[0], scene->bottom[1], scene->bottom[2], 255};
-        DrawRectangleGradientV(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, top, bottom);
-        if (index == 12) {
-            static const Color bonus[] = {{0,196,0,128},{0,64,0,64},{0,0,0,0},{0,64,0,64}};
-            int frame=game->tick>0?game->tick-1:0, cycle=frame/60%4;
-            float t=frame%60/60.0f; t=t*t*(3-2*t);
-            Color corners[4];
-            for(int i=0;i<4;++i) {
-                Color a=bonus[(i-cycle+4)%4];
-                Color b=bonus[(i-cycle+3)%4];
-                corners[i]=(Color){a.r+(b.r-a.r)*t,a.g+(b.g-a.g)*t,a.b+(b.b-a.b)*t,a.a+(b.a-a.a)*t};
-            }
-            DrawRectangleGradientEx((Rectangle){ARENA_X,0,GAME_WIDTH,GAME_HEIGHT},corners[0],corners[3],corners[2],corners[1]);
+    Texture2D sky = assets->scenery[2];
+    for (int x = 0; x < GAME_WIDTH; x += sky.width)
+        DrawTexture(sky,ARENA_X+x,0,WHITE);
+    for (int i = 0; i < 2; ++i) {
+        Texture2D texture = assets->scenery[i];
+        if (!IsTextureValid(texture)) continue;
+        float depth = i ? 0.30f : 0.13f;
+        float width = GAME_WIDTH + 112;
+        float height = width * texture.height / texture.width;
+        float wind = game->tick * (i ? 0.19f : 0.08f);
+        float y = fmodf(wind - game->stage.camera_y * depth, height);
+        if (y > 0) y -= height;
+        float sway = 14*sinf(game->tick * (i ? 0.0020f : 0.0013f) + i);
+        float pan = fmaxf(-40,fminf(40,game->stage.camera_x*depth));
+        float x = ARENA_X - 56 + sway - pan;
+        Rectangle source = {0,0,(float)texture.width,(float)texture.height};
+        Color tint = backdrop->wash;
+        if (index >= 12 && i == 0) {
+            /* A second ink moves beneath the bright near pattern. */
+            tint = (Color){tint.b, tint.r, tint.g, 160};
         }
+        for (; y < GAME_HEIGHT; y += height)
+            DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,tint);
     }
-    for (int layer = 0; layer < 4; ++layer) {
-        const SceneryLayer *definition = &scene->layers[layer];
-        if (definition->foreground != foreground) continue;
-        for (int i = 0; i < game->stage.scenery_count[layer]; ++i) {
-            const SceneryParticle *p = &game->stage.scenery[layer][i];
-            Texture2D texture = assets->scenery[layer];
-            sprite(texture, ARENA_X - game->stage.camera_x + p->x, p->y, texture.width * definition->scale, 0, WHITE);
-        }
-    }
+    draw_flight_dust(&game->stage,assets->particle_dot,false);
 }
 
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
