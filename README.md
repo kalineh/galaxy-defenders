@@ -111,6 +111,8 @@ In Options, **Frame rate cap** defaults to **Display** and **V-sync** defaults
 to **On**. Display follows the monitor containing the window. Choose a fixed
 cap from 30 to 360 FPS or Unlimited. V-sync can also limit presentation to
 the monitor refresh rate. Both settings apply immediately and are remembered.
+Ships, shots, pickups and the scrolling world interpolate between the 60 Hz
+simulation ticks. Stage events and music cues retain their authored timing.
 
 The content is playable, with remaining fidelity work tracked in CONTENT_PARITY.md:
 projectile effects/audio, salvage, menu transitions and

@@ -2,6 +2,7 @@
 #include "console.h"
 #include "synth.h"
 #include "input.h"
+#include "render_motion.h"
 #include "raylib.h"
 #include "rlgl.h"
 #ifndef GALAXY_MEMORY
@@ -649,7 +650,19 @@ static int title_links(Font font, Vector2 pointer) {
     return over_brand ? 1 : over_social ? 2 : 0;
 }
 
-static void draw_flight_dust(const StageState *stage, Sprite dust, bool foreground) {
+static RenderMotion previous_motion;
+static float motion_weight;
+
+static float camera_x(const Game *game) {
+    return game->stage.camera_x + (previous_motion.camera_x-game->stage.camera_x)*motion_weight;
+}
+
+static float camera_y(const Game *game) {
+    return game->stage.camera_y + (previous_motion.camera_y-game->stage.camera_y)*motion_weight;
+}
+
+static void draw_flight_dust(const Game *game, Sprite dust, bool foreground) {
+    const StageState *stage = &game->stage;
     const StageBackdrop *backdrop = &backdrops[stage->index];
     Rectangle source = {0, 0, (float)dust.width, (float)dust.height};
     for (int pass = 0; pass < 2; ++pass) {
@@ -670,7 +683,14 @@ static void draw_flight_dust(const StageState *stage, Sprite dust, bool foregrou
                     tint = (Color){182,215,236,156 + i%4*12};
                 }
             }
-            Rectangle dest = {ARENA_X + p->x - stage->camera_x, p->y, width, height};
+            const SceneryParticle *old = &previous_motion.dust[layer][i];
+            float x = p->x, y = p->y;
+            /* Weather wraps offscreen and reappears across the arena. */
+            if (i < previous_motion.dust_count[layer] && fabsf(old->y-y) < 64 && fabsf(old->x-x) < 64) {
+                x += (old->x-x)*motion_weight;
+                y += (old->y-y)*motion_weight;
+            }
+            Rectangle dest = {ARENA_X + x - camera_x(game), y, width, height};
             sprite_part(dust,source,dest,(Vector2){width/2,height/2},angle,tint);
         }
     }
@@ -680,7 +700,7 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     int index = game->stage.index;
     const StageBackdrop *backdrop = &backdrops[index];
     if (foreground) {
-        if (backdrop->weather) draw_flight_dust(&game->stage,whole_texture(assets->scenery[3]),true);
+        if (backdrop->weather) draw_flight_dust(game,whole_texture(assets->scenery[3]),true);
         return;
     }
     Texture2D sky = assets->scenery[2];
@@ -692,11 +712,12 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
         float depth = i ? 0.30f : 0.13f;
         float width = GAME_WIDTH + 112;
         float height = width * texture.height / texture.width;
-        float wind = game->tick * (i ? 0.19f : 0.08f);
-        float y = fmodf(wind - game->stage.camera_y * depth, height);
+        float tick = game->tick-motion_weight;
+        float wind = tick * (i ? 0.19f : 0.08f);
+        float y = fmodf(wind - camera_y(game) * depth, height);
         if (y > 0) y -= height;
-        float sway = 14*sinf(game->tick * (i ? 0.0020f : 0.0013f) + i);
-        float pan = fmaxf(-40,fminf(40,game->stage.camera_x*depth));
+        float sway = 14*sinf(tick * (i ? 0.0020f : 0.0013f) + i);
+        float pan = fmaxf(-40,fminf(40,camera_x(game)*depth));
         float x = ARENA_X - 56 + sway - pan;
         Rectangle source = {0,0,(float)texture.width,(float)texture.height};
         Color tint = backdrop->wash;
@@ -707,42 +728,47 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
         for (; y < GAME_HEIGHT; y += height)
             DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,tint);
     }
-    draw_flight_dust(&game->stage,assets->particle_dot,false);
+    draw_flight_dust(game,assets->particle_dot,false);
 }
 
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
-    float view_x = ARENA_X - game->stage.camera_x;
+    float view_x = ARENA_X - camera_x(game);
     if (layer == 0) for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
         const EnemyCorpse *corpse = &game->stage.corpses[i];
         if (!corpse->active) continue;
         Sprite texture = assets->enemy_corpses[corpse->kind];
-        float y = corpse->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+        float y = corpse->y - camera_y(game) + GAME_HEIGHT * 0.5f;
         sprite(texture, view_x + corpse->x, y, (float)texture.width, 0, WHITE);
     }
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
+        RenderPose prev = previous_motion.enemies[i];
+        RenderPose pose = render_pose(prev,enemy->age,enemy->x,enemy->y,enemy->rotation,motion_weight);
+        float weight = enemy->age > 1 && prev.age == enemy->age-1 ? motion_weight : 0;
+        float orbit = render_angle(previous_motion.enemy_orbit[i],enemy->orbit_angle,weight);
+        float aim = render_angle(previous_motion.enemy_aim[i],enemy->aim,weight);
         if (enemy->kind == ENEMY_CUTTER && layer == -1)
-            sprite(assets->cutter_beam, view_x + enemy->x, enemy->y, (float)assets->cutter_beam.width, enemy->orbit_angle * RAD2DEG, WHITE);
+            sprite(assets->cutter_beam, view_x + pose.x, pose.y, (float)assets->cutter_beam.width, orbit * RAD2DEG, WHITE);
         if (enemy->kind == ENEMY_PYRAMID && layer == 1)
-            sprite(assets->pyramid_turret, view_x + enemy->x, enemy->y, (float)assets->pyramid_turret.width, (enemy->aim - PI/2) * RAD2DEG, WHITE);
+            sprite(assets->pyramid_turret, view_x + pose.x, pose.y, (float)assets->pyramid_turret.width, (aim - PI/2) * RAD2DEG, WHITE);
         if (enemy->kind == ENEMY_ROTATE_TURRET && layer == 0)
-            sprite(assets->rotate_turret_base, view_x + enemy->x, enemy->y, (float)assets->rotate_turret_base.width, 0, WHITE);
+            sprite(assets->rotate_turret_base, view_x + pose.x, pose.y, (float)assets->rotate_turret_base.width, 0, WHITE);
         Sprite cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
             enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Sprite){0};
-        float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + enemy->orbit_angle * RAD2DEG :
-            enemy->kind == ENEMY_BOSS6 ? enemy->rotation * RAD2DEG : 0;
+        float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + orbit * RAD2DEG :
+            enemy->kind == ENEMY_BOSS6 ? pose.angle * RAD2DEG : 0;
         int cover_layer = enemy->kind == ENEMY_BOSS6 ? -1 : 2;
-        if (layer == cover_layer && IsTextureValid(cover.texture)) sprite(cover, view_x + enemy->x, enemy->y, (float)cover.width, cover_rotation, WHITE);
+        if (layer == cover_layer && IsTextureValid(cover.texture)) sprite(cover, view_x + pose.x, pose.y, (float)cover.width, cover_rotation, WHITE);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
         if (depth != layer) continue;
         Sprite texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
             assets->splitter_right : assets->enemies[enemy->kind];
-        float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : enemy->rotation;
+        float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : pose.angle;
         Rectangle source = {0, 0, (float)texture.width, (float)texture.height};
         if (enemy->kind == ENEMY_SPIKE) { source.width /= 2; source.x = (enemy->age / 20 % 2) * source.width; }
         if (enemy->kind == ENEMY_FENCE_BEAM) { source.height /= 4; source.y = (enemy->age / 4 % 4) * source.height; }
-        float scale = enemy->kind == ENEMY_GLOB ? 1 + sinf(game->tick * (enemy->attack ? 0.3f : 0.1f)) * (enemy->attack ? 0.08f : 0.04f) : 1;
+        float scale = enemy->kind == ENEMY_GLOB ? 1 + sinf((game->tick-motion_weight) * (enemy->attack ? 0.3f : 0.1f)) * (enemy->attack ? 0.08f : 0.04f) : 1;
         if (enemy->kind == ENEMY_BOSS10_BLOCK || enemy_is_asteroid(enemy->kind)) scale = enemy->orbit_radius;
         float width = enemy->kind == ENEMY_FENCE_BEAM ? enemy->box_width : source.width * scale;
         Vector2 origin = {width * 0.5f, source.height * 0.5f * scale};
@@ -750,9 +776,9 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         sprite_part(texture, source,
-            (Rectangle){view_x + enemy->x,enemy->y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
+            (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
         if (enemy_is_asteroid(enemy->kind))
-            sprite(assets->asteroid_cracks, view_x + enemy->x, enemy->y, 80 * scale, rotation * RAD2DEG,
+            sprite(assets->asteroid_cracks, view_x + pose.x, pose.y, 80 * scale, rotation * RAD2DEG,
                 Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));
 
     }
@@ -761,23 +787,25 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
 static Game shop_preview;
 
 static void draw_combat_sprites(const Game *game, const Assets *assets) {
-    float view_x = ARENA_X - game->stage.camera_x;
+    float view_x = ARENA_X - camera_x(game);
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
         if (!player->joined || player->lives <= 0) continue;
+        RenderPose ship = render_pose(previous_motion.players[i],player->age,player->x,player->y,0,motion_weight);
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ships[player->chassis], view_x + player->x, player->y, 80, -90, color);
+        sprite(assets->ships[player->chassis], view_x + ship.x, ship.y, 80, -90, color);
         if (player->sidekick >= 0) for (int side = -1; side <= 1; side += 2)
-            sprite(assets->sidekick, view_x + player->x + side * 40, player->y, assets->sidekick.width, 0, color);
+            sprite(assets->sidekick, view_x + ship.x + side * 40, ship.y, assets->sidekick.width, 0, color);
         if (player->shield_hit_frames > 0)
-            sprite(assets->shield_overlay, view_x + player->x, player->y, assets->shield_overlay.width * 1.25f,
+            sprite(assets->shield_overlay, view_x + ship.x, ship.y, assets->shield_overlay.width * 1.25f,
                 -90, Fade(player_colors[i], 128.0f / 255));
     }
     draw_enemies(game, assets, ENEMY_LAYER_PLAYER_OVERLAY);
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
         if (!bullet->active || bullet->splash) continue;
+        RenderPose shot = render_pose(previous_motion.bullets[i],bullet->age,bullet->x,bullet->y,bullet->rotation,motion_weight);
         Color color = bullet->owner < 0 ? WHITE : player_colors[bullet->owner];
         Sprite texture = bullet->owner < 0 ? assets->hostile_textures[bullet->hostile_kind] : assets->weapon_textures[bullet->weapon];
         if (bullet->owner >= 0) {
@@ -789,26 +817,31 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         }
         if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM) {
             sprite_part(texture, (Rectangle){0,0,(float)texture.width,(float)texture.height},
-                (Rectangle){view_x + bullet->x, bullet->y - 540, 1080, bullet->width * 2},
+                (Rectangle){view_x + shot.x, shot.y - 540, 1080, bullet->width * 2},
                 (Vector2){540, bullet->width}, -90, color);
         } else {
             float width = texture.width * (bullet->owner < 0 ? 1 : bullet->scale);
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BEAM_FOCUS) width = bullet->radius / 0.46f * 2;
-            float rotation = bullet->owner < 0 && bullet->hostile_kind != HOSTILE_PELLET ? atan2f(bullet->vy, bullet->vx) : bullet->rotation;
+            float rotation = bullet->owner < 0 && bullet->hostile_kind != HOSTILE_PELLET ? atan2f(bullet->vy, bullet->vx) : shot.angle;
             if (bullet->owner >= 0 && bullet->weapon == WEAPON_BLADE && bullet->offset_x < 0) {
                 float height = width * texture.height / texture.width;
                 sprite_part(texture, (Rectangle){0, 0, texture.width, -texture.height},
-                    (Rectangle){view_x + bullet->x, bullet->y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color);
-            } else sprite(texture, view_x + bullet->x, bullet->y, width, rotation * RAD2DEG, color);
+                    (Rectangle){view_x + shot.x, shot.y, width, height}, (Vector2){width * 0.5f, height * 0.5f}, rotation * RAD2DEG, color);
+            } else sprite(texture, view_x + shot.x, shot.y, width, rotation * RAD2DEG, color);
         }
     }
     draw_enemies(game, assets, ENEMY_LAYER_WEAPON_OVERLAY);
+    int new_effects = (game->effect_cursor-previous_motion.effect_cursor+GAME_EFFECTS)%GAME_EFFECTS;
     for (int i = 0; i < GAME_EFFECTS; ++i) {
         const Effect *effect = &game->effects[i];
         if (effect->life <= 0) continue;
         Sprite texture = effect->kind ? assets->particle_triangle : assets->particle_dot;
-        sprite(texture, view_x + effect->x, effect->y, texture.width * effect->scale,
-            effect->angle, (Color){effect->r, effect->g, effect->b, (unsigned char)(fminf(1, fmaxf(0, effect->alpha)) * 255)});
+        int spawn_offset = (i-previous_motion.effect_cursor+GAME_EFFECTS)%GAME_EFFECTS;
+        float rewind = spawn_offset < new_effects ? 0 : motion_weight;
+        float alpha = fminf(1,fmaxf(0,effect->alpha-effect->alpha_delta*rewind));
+        sprite(texture,view_x+effect->x-effect->vx*rewind,effect->y-effect->vy*rewind,
+            texture.width*(effect->scale-effect->scale_delta*rewind),effect->angle-effect->spin*rewind,
+            (Color){effect->r,effect->g,effect->b,(unsigned char)(alpha*255)});
     }
 }
 
@@ -934,7 +967,7 @@ static void canvas_scissor(int x, int y, int w, int h) {
 }
 
 static void draw_game(const Game *game, const Assets *assets, bool keyboard_free) {
-    float view_x = ARENA_X - game->stage.camera_x;
+    float view_x = ARENA_X - camera_x(game);
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -960,7 +993,7 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         const StageEvent *event = &stage->events[i];
         if (!game->stage.activated[i]) continue;
         if (event->kind != STAGE_DECORATION && event->kind != STAGE_BUILDING) continue;
-        float y = event->y - game->stage.camera_y + GAME_HEIGHT * 0.5f;
+        float y = event->y - camera_y(game) + GAME_HEIGHT * 0.5f;
         if (y < -event->height || y > GAME_HEIGHT + event->height) continue;
         Sprite texture = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0 ?
             assets->stage_destroyed[i] : assets->stage_textures[i];
@@ -976,7 +1009,8 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         const Pickup *p = &game->pickups[i];
         if (!p->active) continue;
         Sprite texture = assets->pickups[p->kind];
-        sprite(texture, view_x + p->x, p->y, (float)texture.width, p->age * 0.1f * RAD2DEG, WHITE);
+        RenderPose coin = render_pose(previous_motion.pickups[i],p->age,p->x,p->y,0,motion_weight);
+        sprite(texture, view_x + coin.x, coin.y, (float)texture.width, (p->age-motion_weight)*0.1f*RAD2DEG, WHITE);
     }
     draw_combat_sprites(game, assets);
     draw_scenery(game, assets, true);
@@ -1316,12 +1350,12 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     button_prompt(font,1030,y+174,device,GLYPH_BACK,"Cancel");
 }
 
-static int menu_slide_offset(int elapsed, int direction) {
+static int menu_slide_offset(float elapsed, int direction) {
     float remaining = fmaxf(0,1-elapsed/8.0f);
     return (int)roundf(direction*22*remaining*remaining);
 }
 
-static void draw_shop(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices, bool entering) {
+static void draw_shop(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices, bool entering) {
     ClearBackground(BLACK);
     for (int layer = 0; layer < 2; ++layer) for (int i = 0; i < 10; ++i) {
         float x = ARENA_X + (i * 193 + layer * 311) % GAME_WIDTH;
@@ -1332,7 +1366,8 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
     draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
-    static int previous_depth[GAME_PLAYERS], changed_at[GAME_PLAYERS], direction[GAME_PLAYERS];
+    static int previous_depth[GAME_PLAYERS], direction[GAME_PLAYERS];
+    static float changed_at[GAME_PLAYERS];
     for (int slot = 0; slot < GAME_PLAYERS; ++slot) {
         int depth = !game->menu.shop_catalog[slot] ? 0 : game->menu.shop_tiers[slot] ? 2 : 1;
         if (entering || !game->players[slot].joined) direction[slot] = 0;
@@ -1351,13 +1386,13 @@ static void draw_shop(const Game *game, const Assets *assets, int frame, const P
             draw_shop_purchase(game, assets->ui_font, slot, devices->device[slot], both ? 300 + slot * 250 : 426);
 }
 
-static void menu_sky(int frame) {
+static void menu_sky(float frame) {
     ClearBackground(ink);
     DrawRectangleGradientV(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,(Color){15,24,42,255},(Color){8,13,23,255});
     for (int i=0; i<95; ++i) {
         int x = (i*743+71)%CANVAS_WIDTH;
-        int y = (i*347+frame/(3+i%4))%CANVAS_HEIGHT;
-        DrawCircle(x,y,i%5==0 ? 2 : 1,(Color){106,129,158,255});
+        float y = fmodf(i*347+frame/(3+i%4),CANVAS_HEIGHT);
+        DrawCircleV((Vector2){x,y},i%5==0 ? 2 : 1,(Color){106,129,158,255});
     }
 }
 
@@ -1367,22 +1402,23 @@ static Vector2 title_ship_position(Vector2 center, float heading) {
     return (Vector2){center.x + 61*sinf(heading), center.y - 61*cosf(heading)};
 }
 
-static void draw_title_ship(const Assets *assets, int slot, int tick, float clearance) {
+static void draw_title_ship(const Assets *assets, int slot, float tick, float clearance) {
     Vector2 center = slot ? (Vector2){1430,530} : (Vector2){490,510};
     center.x += (slot ? 350 : -350)*clearance;
     Color color = player_colors[slot];
-    int phase = (tick + 91*slot) % 256;
+    float phase = fmodf(tick + 91*slot,256);
+    float fraction = phase-(int)phase;
     float turn = 2*PI/256;
     float heading = phase*turn;
     Vector2 ship = title_ship_position(center,heading);
     for (int age=27; age>=0; --age) {
-        int launched = (phase - age + 256) % 256;
+        int launched = ((int)phase - age + 256) % 256;
         /* Short bursts leave a beat of clear space between volleys. */
         int beat = launched % 64;
         if (beat != 0 && beat != 7 && beat != 28 && beat != 39) continue;
         float angle = launched*turn;
         Vector2 origin = title_ship_position(center,angle);
-        float distance = 24 + age*6;
+        float distance = 24 + (age+fraction)*6;
         sprite(assets->weapon_textures[WEAPON_FRONT_LASER],
             origin.x + distance*cosf(angle), origin.y + distance*sinf(angle),
             23,angle*RAD2DEG,Fade(color,fminf(1,(28-age)/8.0f)));
@@ -1482,7 +1518,7 @@ static int shared_prompt_device(const PlayerDevices *devices) {
     return devices->device[0] >= 0 ? devices->device[0] : devices->device[1];
 }
 
-static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices,int offset,float clearance) {
+static void draw_menu_list(const Game *game,const Assets *assets,float frame,const PlayerDevices *devices,int offset,float clearance) {
     static const char *headings[MENU_CONTROLLERS+1] = {
         [MENU_OPTIONS]="Options",
         [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
@@ -1558,14 +1594,15 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         button_prompt(font,x+advance,footer,device,GLYPH_READY,"Delete");
 }
 
-static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
+static void draw_menu(const Game *game, const Assets *assets, float frame, const PlayerDevices *devices) {
     /* The title backdrop runs on one clock. Only newly entered controls move. */
     static MenuPage previous_page;
-    static int changed_at, direction;
+    static int direction;
+    static float changed_at;
     static float clearance_from, clearance_to;
     MenuPage page = game->menu.page;
     bool entering_shop = page == MENU_SHOP && page != previous_page;
-    int elapsed = frame >= changed_at ? frame-changed_at : 18;
+    float elapsed = frame >= changed_at ? frame-changed_at : 18;
     float t = fminf(1,elapsed/18.0f);
     float clearance = clearance_from + (clearance_to-clearance_from)*t*t*(3-2*t);
     if (page != previous_page) {
@@ -2376,6 +2413,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             }
             accumulator += frames ? 1.0 / GAME_HZ : fmin(GetFrameTime(), 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
+                if (!frames)
+                    render_motion_capture(&previous_motion,game->menu.page == MENU_SHOP ? &shop_preview : game);
                 game_tick(game);
                 if (game->menu.page == MENU_SHOP && game->transition_frames <= 15) {
                     int shots[WEAPON_COUNT];
@@ -2389,7 +2428,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 /* Present the fully black switch frame even after a stalled window frame. */
                 if (game->transition_frames == 15) { accumulator = 0; break; }
             }
-        } else accumulator = 0;
+        } else {
+            accumulator = 0;
+            previous_motion.source = NULL;
+        }
         if (assets.audio) {
             if (game->pickups_collected > old_pickups) PlaySound(assets.bonus_get);
             for (int i = 0; i < WEAPON_COUNT; ++i) if (game->weapon_shots[i] > old_weapon_shots[i] && IsSoundValid(assets.weapon_fire[i])) PlaySound(assets.weapon_fire[i]);
@@ -2498,10 +2540,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         bool cjk = ui_uses_cjk[ui_language];
         assets.ui_font = cjk ? assets.cjk_font : assets.western_body;
         assets.heading_font = cjk ? assets.cjk_font : assets.western_heading;
+        const Game *scene = game->menu.page == MENU_SHOP ? &shop_preview : game;
+        motion_weight = render_motion_weight(&previous_motion,scene,(float)(accumulator*GAME_HZ));
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, keyboard_owner < 0);
-        int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);
+        float animation_tick = frames ? menu_frame++ : (float)fmod(GetTime()*GAME_HZ,16777216.0);
         if (game->menu.page == MENU_CONTROLLERS) draw_assignments(game,&assets,&devices,pads);
         else {
             draw_menu(game, &assets, animation_tick, &devices);

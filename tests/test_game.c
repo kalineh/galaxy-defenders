@@ -1,5 +1,6 @@
 #include "game.h"
 #include "input.h"
+#include "render_motion.h"
 #include "console.h"
 #include "synth.h"
 #include "stage.h"
@@ -34,6 +35,41 @@ static void movement(void) {
     game.paused = true;
     game_tick(&game);
     CHECK(game.tick == tick);
+}
+
+static void render_between_ticks(void) {
+    reset();
+    game.players[0].input.x = 1;
+    game_tick(&game);
+    game_tick(&game);
+    repeat = game;
+    RenderMotion history = {0};
+    int remainder = 0, moving_frames = 0;
+    float last_x = game.players[0].x;
+    /* Present one second at 144 Hz while running the same 60 authored ticks. */
+    for (int frame=0; frame<144; ++frame) {
+        remainder += GAME_HZ;
+        if (remainder >= 144) {
+            render_motion_capture(&history,&game);
+            game_tick(&game);
+            remainder -= 144;
+        }
+        const Player *p = &game.players[0];
+        float weight = render_motion_weight(&history,&game,remainder/144.0f);
+        RenderPose ship = render_pose(history.players[0],p->age,p->x,p->y,0,weight);
+        CHECK(ship.x >= last_x && ship.x <= p->x);
+        moving_frames += ship.x > last_x;
+        last_x = ship.x;
+    }
+    CHECK(moving_frames > 130);
+    for (int i=0; i<GAME_HZ; ++i) game_tick(&repeat);
+    CHECK(!memcmp(&game,&repeat,sizeof(game)));
+    CHECK(render_motion_weight(&history,&repeat,0.5f) == 0);
+    ++game.stage.revision;
+    CHECK(render_motion_weight(&history,&game,0.5f) == 0);
+    RenderPose retired = {100,100,0,80};
+    CHECK(render_pose(retired,1,400,600,0,0.75f).x == 400);
+    CHECK(fabsf(render_angle(6.20f,0.10f,0.5f)) < 0.02f);
 }
 
 static void collisions(void) {
@@ -2193,6 +2229,7 @@ static void music_override_commands(void) {
 }
 
 int main(int argc, char **argv) {
+    render_between_ticks();
     music_override_commands();
     boss5_and_turret_movement();
     enemy_camera_movement();

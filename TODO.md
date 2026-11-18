@@ -1,9 +1,7 @@
-# Next gameplay and video work
+# Next gameplay work
 
-1. Expand the first-run launch into a short, skippable story intro that leads
-   directly into stage one.
-2. Smooth visible motion between the fixed simulation ticks and check the
-   resulting frame pacing on a high-refresh display.
+Expand the first-run launch into a short, skippable story intro that leads
+directly into stage one.
 
 The current Noto faces stay in use across the localized UI. Playtest the
 equipment terminology and story text with speakers of each language.

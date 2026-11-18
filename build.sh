@@ -27,7 +27,7 @@ if [[ "$target" == headless ]]; then
     "$zig" cc "${flags[@]}" -DGALAXY_HEADLESS src/main.c "${core[@]}" -o build/headless/galaxy.exe
     echo 'Built build/headless/galaxy.exe'
 elif [[ "$target" == test ]]; then
-    "$zig" cc "${flags[@]}" tests/test_game.c "${core[@]}" -o build/headless/test_game.exe
+    "$zig" cc "${flags[@]}" tests/test_game.c src/render_motion.c "${core[@]}" -o build/headless/test_game.exe
     "$zig" cc "${flags[@]}" -O2 tests/test_synth.c "$synth_object" -o build/headless/test_synth.exe
     echo 'Built build/headless/test_game.exe'
 else
@@ -63,7 +63,7 @@ else
         fi
         objects+=("$object")
     done
-    "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c src/ds4_win32.c "${core[@]}" "${objects[@]}" \
+    "$zig" cc "${flags[@]}" -I"$ray" src/main.c src/app.c src/render_motion.c src/ds4_win32.c "${core[@]}" "${objects[@]}" \
         "${link_flags[@]}" -o "$output_dir/$executable"
     python tools/compile_music.py --check
     # Render the C score bank once; runtime never loads legacy music recordings.
