@@ -731,12 +731,8 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
     draw_flight_dust(game,assets->particle_dot,false);
 }
 
-enum { ENEMY_LAYER_SHADOW = -3 };
-
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     float view_x = ARENA_X - camera_x(game);
-    bool shadow = layer == ENEMY_LAYER_SHADOW;
-    Color tint = shadow ? (Color){4, 8, 16, 86} : WHITE;
     if (layer == 0) for (int i = 0; i < STAGE_MAX_EVENTS; ++i) {
         const EnemyCorpse *corpse = &game->stage.corpses[i];
         if (!corpse->active) continue;
@@ -747,27 +743,25 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
         if (!enemy->active || enemy->invisible || enemy->kind == ENEMY_BOSS8_COLLISION) continue;
-        if (shadow && (enemy->kind == ENEMY_FENCE_BEAM || enemy->kind == ENEMY_BLACK_HOLE)) continue;
         RenderPose prev = previous_motion.enemies[i];
         RenderPose pose = render_pose(prev,enemy->age,enemy->x,enemy->y,enemy->rotation,motion_weight);
-        if (shadow) { pose.x += 7; pose.y += 10; }
         float weight = enemy->age > 1 && prev.age == enemy->age-1 ? motion_weight : 0;
         float orbit = render_angle(previous_motion.enemy_orbit[i],enemy->orbit_angle,weight);
         float aim = render_angle(previous_motion.enemy_aim[i],enemy->aim,weight);
         if (enemy->kind == ENEMY_CUTTER && layer == -1)
             sprite(assets->cutter_beam, view_x + pose.x, pose.y, (float)assets->cutter_beam.width, orbit * RAD2DEG, WHITE);
-        if (enemy->kind == ENEMY_PYRAMID && (shadow || layer == 1))
-            sprite(assets->pyramid_turret, view_x + pose.x, pose.y, (float)assets->pyramid_turret.width, (aim - PI/2) * RAD2DEG, tint);
-        if (enemy->kind == ENEMY_ROTATE_TURRET && (shadow || layer == 0))
-            sprite(assets->rotate_turret_base, view_x + pose.x, pose.y, (float)assets->rotate_turret_base.width, 0, tint);
+        if (enemy->kind == ENEMY_PYRAMID && layer == 1)
+            sprite(assets->pyramid_turret, view_x + pose.x, pose.y, (float)assets->pyramid_turret.width, (aim - PI/2) * RAD2DEG, WHITE);
+        if (enemy->kind == ENEMY_ROTATE_TURRET && layer == 0)
+            sprite(assets->rotate_turret_base, view_x + pose.x, pose.y, (float)assets->rotate_turret_base.width, 0, WHITE);
         Sprite cover = enemy->kind == ENEMY_BOSS4 && enemy->health > enemy->health_max * 0.6f ? assets->boss4_cover :
             enemy->kind == ENEMY_BOSS5 ? assets->boss5_cover : enemy->kind == ENEMY_BOSS6 ? assets->boss6_center : (Sprite){0};
         float cover_rotation = enemy->kind == ENEMY_BOSS5 ? 90 + orbit * RAD2DEG :
             enemy->kind == ENEMY_BOSS6 ? pose.angle * RAD2DEG : 0;
         int cover_layer = enemy->kind == ENEMY_BOSS6 ? -1 : 2;
-        if ((shadow || layer == cover_layer) && IsTextureValid(cover.texture)) sprite(cover, view_x + pose.x, pose.y, (float)cover.width, cover_rotation, tint);
+        if (layer == cover_layer && IsTextureValid(cover.texture)) sprite(cover, view_x + pose.x, pose.y, (float)cover.width, cover_rotation, WHITE);
         int depth = enemy->kind == ENEMY_ROTATE_TURRET ? 1 : enemy_draw_layer(enemy->kind);
-        if (!shadow && depth != layer) continue;
+        if (depth != layer) continue;
         Sprite texture = enemy->kind == ENEMY_SPLITTER_FRAGMENT && enemy->aux_index ?
             assets->splitter_right : assets->enemies[enemy->kind];
         float rotation = enemy->kind == ENEMY_BOSS6 ? 0 : pose.angle;
@@ -782,8 +776,8 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_BOSS7_CANNON_BIG || enemy->kind == ENEMY_BOSS7_CANNON_SMALL) origin.y = 0;
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         sprite_part(texture, source,
-            (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, tint);
-        if (!shadow && enemy_is_asteroid(enemy->kind))
+            (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE);
+        if (enemy_is_asteroid(enemy->kind))
             sprite(assets->asteroid_cracks, view_x + pose.x, pose.y, 80 * scale, rotation * RAD2DEG,
                 Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));
 
@@ -972,14 +966,58 @@ static void canvas_scissor(int x, int y, int w, int h) {
     BeginScissorMode(left,top,(int)roundf((x+w)*canvas_zoom)-left,(int)roundf((y+h)*canvas_zoom)-top);
 }
 
+static bool is_deck_weapon(EnemyKind kind) {
+    switch (kind) {
+        case ENEMY_TURRET: case ENEMY_DOWN_TURRET: case ENEMY_DOUBLE_TURRET:
+        case ENEMY_RAID_TURRET: case ENEMY_ROTATE_TURRET: case ENEMY_CANNON:
+        case ENEMY_MISSILE_POD: case ENEMY_MISSILE_STORM: case ENEMY_MISSILE_TRIPLE:
+        case ENEMY_FENCE: return true;
+        default: return false;
+    }
+}
+
+/* Test the mount's foot against the rotated, trimmed deck art. Some fence
+   endpoints are fixed in space and others are bolted onto a carrier tile. */
+static bool deck_under_mount(const StageDefinition *stage, const Assets *assets, const int *order,
+        int count, float x, float y) {
+    for (int row = 0; row < count; ++row) {
+        int i = order[row];
+        const StageEvent *tile = &stage->events[i];
+        if (tile->kind != STAGE_DECORATION) continue;
+        float dx = x - tile->x, dy = y - tile->y;
+        float reach = (tile->width + tile->height)*0.5f;
+        if (fabsf(dx) > reach || fabsf(dy) > reach || !strcmp(tile->name,"SecretHint")) continue;
+        float angle = tile->rotation*DEG2RAD, c = cosf(angle), s = sinf(angle);
+        Vector2 uv = {0.5f + (c*dx + s*dy)/tile->width, 0.5f + (c*dy - s*dx)/tile->height};
+        if (CheckCollisionPointRec(uv,assets->stage_textures[i].bounds)) return true;
+    }
+    return false;
+}
+
+static void draw_mount_shadows(const Game *game, const Assets *assets, const int *order, int count) {
+    const StageDefinition *stage = &stage_definitions[game->stage.index];
+    float view_x = ARENA_X - camera_x(game);
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        const Enemy *e = &game->enemies[i];
+        if (!e->active || e->invisible || e->movement != MOVE_NONE || !is_deck_weapon(e->kind)) continue;
+        if (!deck_under_mount(stage,assets,order,count,e->x - GAME_WIDTH*0.5f,
+                e->y + game->stage.camera_y - GAME_HEIGHT*0.5f)) continue;
+        RenderPose pose = render_pose(previous_motion.enemies[i],e->age,e->x,e->y,e->rotation,motion_weight);
+        bool fixed_base = e->kind == ENEMY_ROTATE_TURRET;
+        Sprite foot = fixed_base ? assets->rotate_turret_base : assets->enemies[e->kind];
+        sprite(foot,view_x + pose.x + 2,pose.y - 3,foot.width,fixed_base ? 0 : pose.angle*RAD2DEG,
+            (Color){4,8,16,80});
+    }
+}
+
 static void draw_stage_prop(const Game *game, const Assets *assets, const StageEvent *event,
         int i, Vector2 center, bool shadow) {
     bool wreck = event->kind == STAGE_BUILDING && game->stage.building_health[i] < 0;
     float y = center.y + event->y;
     if (shadow) {
         if (wreck) return;
-        center.x += 4;
-        y += 6;
+        center.x += 3;
+        y -= 4;
     }
     if (y < -event->height || y > GAME_HEIGHT + event->height) return;
     Sprite texture = wreck ? assets->stage_destroyed[i] : assets->stage_textures[i];
@@ -987,7 +1025,7 @@ static void draw_stage_prop(const Game *game, const Assets *assets, const StageE
     float width = event->width;
     if (event->kind == STAGE_DECORATION && strcmp(event->name,"SecretHint") != 0) width += 2;
     sprite(texture,center.x + event->x,y,width,event->rotation,
-        shadow ? (Color){4, 8, 16, 112} : assets->stage_tints[i]);
+        shadow ? (Color){4, 8, 16, 100} : assets->stage_tints[i]);
 }
 
 static void draw_game(const Game *game, const Assets *assets, bool keyboard_free, bool shadows) {
@@ -1027,7 +1065,7 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         }
         draw_stage_prop(game,assets,event,i,center,false);
     }
-    if (shadows) draw_enemies(game, assets, ENEMY_LAYER_SHADOW);
+    if (shadows) draw_mount_shadows(game,assets,order,count);
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
     for (int i = 0; i < GAME_PICKUPS; ++i) {
