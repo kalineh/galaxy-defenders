@@ -1278,18 +1278,16 @@ static void draw_title_ship(const Assets *assets, int slot, int tick, float clea
     sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color);
 }
 
-static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
-    bool behind_dialog = game->menu.page == MENU_DELETE;
-    bool selected = row == (behind_dialog ? game->menu.delete_slot : game->menu.cursor);
-    Color text = behind_dialog || game_menu_enabled(game,row) ? WHITE : (Color){126,139,156,255};
+static void menu_row(Font font, const Game *game, MenuPage page, int row, bool selected, int x, int y, int width, int height) {
     DrawRectangle(x,y,width,height-3,selected ? surface : ink);
     DrawLine(x,y+height-3,x+width,y+height-3,rule);
     if (selected) DrawRectangle(x,y,5,height-3,accent);
-    const char *label = behind_dialog ? game_slot_label(game,row) : game_menu_label(game,row);
-    DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,text);
+    const char *label = game_menu_page_label(game,page,row);
+    DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,WHITE);
     if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
         const char *setting = row == OPTION_RENDER_SCALE ?
             TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
+            row == OPTION_WINDOW_MODE ? (game->menu.options[row] ? "Fullscreen" : "Windowed") :
             row == OPTION_MSAA ? (const char *[]){"Off","2x","4x"}[game->menu.options[row]] :
             (game->menu.options[row] ? "On" : "Off");
         float value_width = MeasureTextEx(font,setting,26,0).x;
@@ -1366,7 +1364,10 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : page == MENU_OPTIONS ? 51 : 69;
     int y = title ? 606 : stages ? 180 : 437;
-    int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
+    bool dialog = page == MENU_DELETE || page == MENU_QUIT;
+    MenuPage background = page == MENU_DELETE ? MENU_SLOTS : page == MENU_QUIT ? game->menu.parent : page;
+    int cursor = dialog ? game->menu.dialog_cursor : game->menu.cursor;
+    int count = game_menu_page_count(background);
     if (title) {
         float squad_height = width * (float)assets->title_squad.height / assets->title_squad.width;
         sprite(whole_texture(assets->title_squad),x+width/2,y-16-squad_height/2,width,0,WHITE);
@@ -1378,27 +1379,33 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawRectangle(x-32,y-114,width+64,3,accent);
     }
     x += offset;
-    const char *heading = headings[page];
-    if (page==MENU_QUIT && game->menu.parent==MENU_PAUSE) heading = "Return to title?";
+    const char *heading = headings[background];
     if (heading && title)
         DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2+offset,295},34,0,WHITE);
     else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
-    for (int row=0; row<count; ++row) menu_row(font,game,row,x,y+row*row_height,width,row_height);
+    for (int row=0; row<count; ++row) menu_row(font,game,background,row,row==cursor,x,y+row*row_height,width,row_height);
     int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
-    if (page == MENU_DELETE) {
+    if (dialog) {
+        bool deleting = page == MENU_DELETE;
+        bool exiting = !deleting && background == MENU_MAIN;
+        const char *verb = deleting ? "Delete" : exiting ? "Quit" : "Return to title";
         int top = (CANVAS_HEIGHT-228)/2;
         DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,0.58f));
         dialog_frame(top,danger);
-        DrawTextEx(font,TextFormat("Delete slot %d?",game->menu.delete_slot+1),(Vector2){672,top+24},38,0,WHITE);
-        DrawTextEx(font,"This permanently deletes its saved progress.",(Vector2){672,top+89},25,0,dim);
+        DrawTextEx(font,deleting ? TextFormat("Delete slot %d?",game->menu.delete_slot+1) :
+            exiting ? "Quit Galaxy Defenders?" : "Return to title?",(Vector2){672,top+24},38,0,WHITE);
+        DrawTextEx(font,deleting ? "This permanently deletes its saved progress." :
+            exiting ? "Close the game and return to the desktop." : "Leave this session and return to the title screen.",(Vector2){672,top+89},25,0,dim);
         for (int i=0; i<2; ++i) {
             bool selected = game->menu.cursor == i;
             int left = 672+i*294;
             if (selected) {
                 DrawRectangle(left,top+166,280,48,surface);
                 DrawRectangle(left,top+166,4,48,i ? danger : accent);
-                button_prompt(font,left+16,top+173,device,owner,GLYPH_CONFIRM,i ? "Delete" : "Cancel");
-            } else DrawTextEx(font,i ? "Delete" : "Cancel",(Vector2){left+16,top+174},25,0,dim);
+            }
+            if (!i || selected)
+                button_prompt(font,left+16,top+173,device,owner,i ? GLYPH_CONFIRM : GLYPH_BACK,i ? verb : "Cancel");
+            else DrawTextEx(font,verb,(Vector2){left+16,top+174},25,0,dim);
         }
         return;
     }
@@ -1424,7 +1431,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         bool from_title = previous_page == MENU_MAIN || previous_page == MENU_SLOTS ||
             previous_page == MENU_DIFFICULTY || previous_page == MENU_PILOT ||
             previous_page == MENU_OPTIONS || previous_page == MENU_QUIT;
-        bool slide = from_title && game_menu_is_title(game) && page != MENU_DELETE &&
+        bool slide = from_title && game_menu_is_title(game) && page != MENU_DELETE && page != MENU_QUIT && previous_page != MENU_QUIT &&
             page != MENU_INTRO && !game->transition_frames;
         bool back = page == MENU_MAIN || previous_page == MENU_PILOT ||
             (previous_page == MENU_DIFFICULTY && page == MENU_SLOTS);
@@ -1676,6 +1683,12 @@ static void poll_menu(Game *game, Assets *assets, const PlayerDevices *devices, 
         if (device >= 0 && device < INPUT_PADS && pads[device].connected) {
             const uint32_t buttons[] = {PAD_UP, PAD_DOWN, PAD_LEFT, PAD_RIGHT, PAD_CONFIRM, PAD_BACK, PAD_READY};
             for (int i = 0; i < 7; ++i) pressed[i] |= (pads[device].pressed & buttons[i]) != 0;
+        }
+        if (pressed[MENU_BACK]) {
+            MenuPage previous = game->menu.page;
+            menu_input(game, assets, MENU_BACK, slot);
+            if (game->menu.page != previous) return;
+            continue;
         }
         for (int i = 0; i < 7; ++i) if (pressed[i]) {
             MenuPage previous = game->menu.page;
@@ -2166,6 +2179,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #ifdef GALAXY_MEMORY
         BeginDrawing();
 #else
+        if (IsWindowState(FLAG_BORDERLESS_WINDOWED_MODE) != (game->menu.options[OPTION_WINDOW_MODE] != 0))
+            ToggleBorderlessWindowed();
         float screen_fraction = 0.875f + game->menu.options[OPTION_SCREEN_SIZE]*0.0125f;
         float units = fminf(GetRenderWidth()/16.0f,GetRenderHeight()/9.0f)*screen_fraction;
         int blocks = (int)fmaxf(1,roundf(units*render_scale_percent[game->menu.options[OPTION_RENDER_SCALE]]/100.0f));

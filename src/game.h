@@ -35,7 +35,7 @@ typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSI
     TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
 #define SHOP_VISIBLE_ROWS 6
 
-enum { OPTION_SFX, OPTION_MUSIC, OPTION_SCREEN_SIZE, OPTION_RENDER_SCALE, OPTION_AA, OPTION_MSAA, OPTION_COUNT };
+enum { OPTION_SFX, OPTION_MUSIC, OPTION_SCREEN_SIZE, OPTION_RENDER_SCALE, OPTION_AA, OPTION_MSAA, OPTION_WINDOW_MODE, OPTION_COUNT };
 extern const int game_option_max[OPTION_COUNT];
 extern const int render_scale_percent[4];
 bool game_options_read(int options[OPTION_COUNT], const char *path);
@@ -44,7 +44,7 @@ bool game_options_write(const int options[OPTION_COUNT], const char *path);
 typedef enum { MENU_UP, MENU_DOWN, MENU_LEFT, MENU_RIGHT, MENU_CONFIRM, MENU_BACK, MENU_READY } MenuAction;
 typedef struct {
     MenuPage page, parent, pause_origin;
-    int cursor, delete_slot, players, difficulty, pilot[2], options[OPTION_COUNT];
+    int cursor, dialog_cursor, delete_slot, players, difficulty, pilot[2], options[OPTION_COUNT];
     bool ready[2], quit;
     int shop_category[2], shop_item[2], shop_level[2];
     int shop_first_item[2], shop_first_tier[2];
@@ -221,6 +221,8 @@ bool game_menu_is_title(const Game *game);
 void game_menu_open(Game *game, MenuPage page);
 void game_menu_input(Game *game, MenuAction action, int slot);
 int game_menu_count(const Game *game);
+int game_menu_page_count(MenuPage page);
+const char *game_menu_page_label(const Game *game, MenuPage page, int row);
 const char *game_menu_label(const Game *game, int row);
 const char *game_slot_label(const Game *game, int row);
 bool game_menu_enabled(const Game *game, int row);

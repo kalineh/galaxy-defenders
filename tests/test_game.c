@@ -706,6 +706,8 @@ static void menu_flow(void) {
     CHECK(game.menu.options[OPTION_MSAA] == 1);
     CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
     CHECK(game.menu.options[OPTION_MSAA] == 2);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
+    CHECK(game.menu.options[OPTION_WINDOW_MODE] == 1);
     const char *settings_path = "artifacts/native-port/test-graphics.cfg";
     int restored[OPTION_COUNT] = {0};
     CHECK(game_options_write(game.menu.options,settings_path));
@@ -717,6 +719,7 @@ static void menu_flow(void) {
         fputs("7 8 9 3 1",legacy_options);
         fclose(legacy_options);
         CHECK(game_options_read(restored,settings_path));
+        CHECK(restored[OPTION_WINDOW_MODE] == 0);
         CHECK(restored[OPTION_SFX] == 7 && restored[OPTION_AA] == 1 && restored[OPTION_MSAA] == 1);
     }
     CHECK(console_chain(&console, &game, "menu.input back;menu.input down;menu.input confirm"));
@@ -729,6 +732,14 @@ static void menu_flow(void) {
     CHECK(game.players[1].joined && game.players[0].chassis == 2 && game.menu.options[0] == 0);
     CHECK(console_chain(&console, &game, "menu.open main;menu.input down;menu.input down;menu.input down;menu.input confirm;menu.input back"));
     CHECK(game.menu.page == MENU_MAIN && !game.menu.quit);
+    CHECK(game.menu.cursor == 2);
+    CHECK(console_chain(&console,&game,"menu.input confirm;menu.input right;menu.input back"));
+    CHECK(game.menu.page == MENU_MAIN && game.menu.cursor == 2 && !game.menu.quit);
+    game_menu_open(&game,MENU_OVER);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input confirm;menu.input right;menu.input back"));
+    CHECK(game.menu.page == MENU_OVER && game.menu.cursor == 1 && game.transition == TRANSITION_NONE);
+    CHECK(console_chain(&console,&game,"menu.input confirm;menu.input right;menu.input confirm"));
+    CHECK(game.transition == TRANSITION_MAIN && !game.menu.quit);
     CHECK(!console_execute(&console, &game, "menu.input confirm 3"));
     CHECK(!console_execute(&console, &game, "menu.input explode"));
 }

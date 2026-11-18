@@ -4,7 +4,7 @@
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2};
+const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2, 1};
 const int render_scale_percent[4] = {75, 100, 150, 200};
 
 static const char *labels[MENU_DELETE + 1][OPTION_COUNT+1] = {
@@ -12,7 +12,7 @@ static const char *labels[MENU_DELETE + 1][OPTION_COUNT+1] = {
     [MENU_SLOTS] = {"Slot 1", "Slot 2", "Slot 3", "Back"},
     [MENU_DELETE] = {"Cancel", "Delete slot"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
-    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Back"},
+    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Display mode", "Back"},
     [MENU_QUIT] = {"Cancel", "Quit"},
     [MENU_PAUSE] = {"Resume", "Retry", "Options", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},
@@ -20,11 +20,15 @@ static const char *labels[MENU_DELETE + 1][OPTION_COUNT+1] = {
     [MENU_CLEAR] = {"Continue"}
 };
 
-int game_menu_count(const Game *game) {
-    if (game->menu.page == MENU_STAGE_SELECT) return 13;
+int game_menu_page_count(MenuPage page) {
+    if (page == MENU_STAGE_SELECT) return 13;
     int count = 0;
-    while (count < OPTION_COUNT+1 && labels[game->menu.page][count]) ++count;
+    while (count < OPTION_COUNT+1 && labels[page][count]) ++count;
     return count;
+}
+
+int game_menu_count(const Game *game) {
+    return game_menu_page_count(game->menu.page);
 }
 
 const char *game_slot_label(const Game *game, int row) {
@@ -38,12 +42,16 @@ const char *game_slot_label(const Game *game, int row) {
     return "Back";
 }
 
-const char *game_menu_label(const Game *game, int row) {
-    if (game->menu.page == MENU_SLOTS) return game_slot_label(game,row);
+const char *game_menu_page_label(const Game *game, MenuPage page, int row) {
+    if (page == MENU_SLOTS) return game_slot_label(game,row);
     static const char *stages[] = {"Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6",
         "Stage 7", "Stage 8", "Stage 9", "Stage 10", "Stage 11", "Stage 12", "Back"};
-    if (game->menu.page == MENU_STAGE_SELECT) return row >= 0 && row < 13 ? stages[row] : "";
-    return row >= 0 && row < game_menu_count(game) ? labels[game->menu.page][row] : "";
+    if (page == MENU_STAGE_SELECT) return row >= 0 && row < 13 ? stages[row] : "";
+    return row >= 0 && row < game_menu_page_count(page) ? labels[page][row] : "";
+}
+
+const char *game_menu_label(const Game *game, int row) {
+    return game_menu_page_label(game,game->menu.page,row);
 }
 
 bool game_menu_enabled(const Game *game, int row) {
@@ -59,6 +67,7 @@ bool game_menu_is_title(const Game *game) {
 void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_DELETE) return;
     MenuPage previous = game->menu.page;
+    if (page == MENU_QUIT || page == MENU_DELETE) game->menu.dialog_cursor = game->menu.cursor;
     if (page == MENU_OPTIONS || page == MENU_QUIT) game->menu.parent = previous;
     if (page == MENU_PAUSE && (previous == MENU_NONE || previous == MENU_SHOP))
         game->menu.pause_origin = previous;
@@ -236,8 +245,8 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     }
     if (!game->players[slot].joined) return;
     int count = game_menu_count(game);
-    if (menu->page == MENU_DELETE && action == MENU_LEFT) menu->cursor = 0;
-    if (menu->page == MENU_DELETE && action == MENU_RIGHT) menu->cursor = 1;
+    if ((menu->page == MENU_DELETE || menu->page == MENU_QUIT) && action == MENU_LEFT) menu->cursor = 0;
+    if ((menu->page == MENU_DELETE || menu->page == MENU_QUIT) && action == MENU_RIGHT) menu->cursor = 1;
     if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
     if (action == MENU_DOWN && menu->cursor + 1 < count) ++menu->cursor;
     if (menu->page == MENU_OPTIONS && menu->cursor < OPTION_COUNT) {
@@ -254,7 +263,11 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
                 menu->cursor = menu->delete_slot;
                 break;
             case MENU_DIFFICULTY: game_menu_open(game, MENU_SLOTS); break;
-            case MENU_OPTIONS: case MENU_QUIT: game_menu_open(game, menu->parent); break;
+            case MENU_QUIT:
+                game_menu_open(game, menu->parent);
+                menu->cursor = menu->dialog_cursor;
+                break;
+            case MENU_OPTIONS: game_menu_open(game, menu->parent); break;
             case MENU_RETRY: game_menu_open(game, MENU_PAUSE); break;
             case MENU_PAUSE: game_menu_open(game, menu->pause_origin); break;
             default: break;
@@ -302,7 +315,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             break;
         case MENU_OPTIONS: if (row == OPTION_COUNT) game_menu_open(game, menu->parent); break;
         case MENU_QUIT:
-            if (row == 0) game_menu_open(game, menu->parent);
+            if (row == 0) {
+                game_menu_open(game, menu->parent);
+                menu->cursor = menu->dialog_cursor;
+            }
             else if (menu->parent == MENU_MAIN) menu->quit = true;
             else game_transition(game, TRANSITION_MAIN, 0);
             break;
@@ -310,7 +326,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
             game_menu_open(game, row == 0 ? menu->pause_origin : row == 1 ? MENU_RETRY : row == 2 ? MENU_OPTIONS : MENU_QUIT);
             break;
         case MENU_RETRY: if (row == 0) game_menu_open(game, MENU_PAUSE); else game_transition(game, TRANSITION_RETRY, 0); break;
-        case MENU_OVER: game_transition(game, row == 0 ? TRANSITION_RETRY : TRANSITION_MAIN, 0); break;
+        case MENU_OVER:
+            if (row == 0) game_transition(game, TRANSITION_RETRY, 0);
+            else game_menu_open(game, MENU_QUIT);
+            break;
         default: break;
     }
 }
