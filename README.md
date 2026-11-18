@@ -199,10 +199,14 @@ saves, compiler files, or another task's directory.
 ## Localization
 
 F8 cycles the UI language. Shift+F8 cycles backward. Options also offers a
-Language row, and normal play remembers the selection. The initial catalog
-covers navigation, settings and loadout vocabulary across English, German,
+Language row, and normal play remembers the selection. The catalog covers
+menus, equipment names, tooltips, controller setup, pilot biographies, stage
+names, results and campaign dialogue across English, German,
 Spanish, French, Italian, Japanese, Korean, Polish, Brazilian Portuguese,
 Russian, Simplified Chinese and Traditional Chinese.
+
+The UI uses the bundled Noto Sans faces for Latin and Cyrillic text and
+Noto Sans CJK for Japanese, Korean and both Chinese options.
 
 Edit `localization/ui.csv` in UTF-8. The English cell identifies the phrase.
 Empty translations use English. Preserve `%d` in numbered labels. The graphics

@@ -537,6 +537,42 @@ static void text_center(Font font, const char *text, int x, int y, int size, Col
     DrawTextEx(font, text, (Vector2){x - MeasureTextEx(font, text, (float)size, 0).x / 2, (float)y}, (float)size, 0, color);
 }
 
+static float fitted_size(Font font, const char *text, float size, float width) {
+    return size * fminf(1, width / fmaxf(1,MeasureTextEx(font,text,size,0).x));
+}
+
+/* Return the first line break in a tooltip, on a UTF-8 character boundary. */
+static const char *tooltip_break(Font font, const char *text, float width) {
+    const char *space = NULL;
+    float used = 0;
+    for (const char *p=text; *p;) {
+        int bytes;
+        int cp = GetCodepointNext(p,&bytes);
+        if (cp == ' ') space = p;
+        int i = GetGlyphIndex(font,cp);
+        used += (font.glyphs[i].advanceX ? font.glyphs[i].advanceX : font.recs[i].width)*20/font.baseSize;
+        if (used > width) return space ? space : p;
+        p += bytes;
+    }
+    return NULL;
+}
+
+/* Center the visible letterforms on the same axis as the adjacent icon. */
+static void text_on_axis(Font font, const char *text, float x, float center_y, float size, Color color) {
+    float top = INFINITY, bottom = -INFINITY;
+    for (const char *p=text; *p;) {
+        int bytes;
+        int cp = GetCodepointNext(p,&bytes);
+        p += bytes;
+        if (cp == ' ') continue;
+        int i = GetGlyphIndex(font,cp);
+        top = fminf(top,font.glyphs[i].offsetY);
+        bottom = fmaxf(bottom,font.glyphs[i].offsetY + font.recs[i].height);
+    }
+    if (bottom >= top)
+        DrawTextEx(font,text,(Vector2){x,roundf(center_y-(top+bottom)*.5f*size/font.baseSize)},size,0,color);
+}
+
 typedef enum { GLYPH_CONFIRM, GLYPH_BACK, GLYPH_READY, GLYPH_START, GLYPH_HORIZONTAL, GLYPH_VERTICAL } ButtonGlyph;
 
 static int key_prompt(Font font, int x, int y, const char *key, const char *action) {
@@ -544,8 +580,8 @@ static int key_prompt(Font font, int x, int y, const char *key, const char *acti
     Rectangle cap = {x,y,width,28};
     DrawRectangleRounded(cap,.28f,6,surface);
     DrawRectangleRoundedLinesEx(cap,.28f,6,1.5f,(Color){124,147,170,255});
-    text_center(font,key,x+width/2,y+2,20,WHITE);
-    DrawTextEx(font,action,(Vector2){x+width+9,y+1},23,0,(Color){201,213,226,255});
+    text_on_axis(font,key,x+(width-MeasureTextEx(font,key,20,0).x)/2,y+14,20,WHITE);
+    text_on_axis(font,action,x+width+9,y+14,23,(Color){201,213,226,255});
     return width + 9 + (int)MeasureTextEx(font,action,23,0).x;
 }
 
@@ -565,7 +601,7 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
             DrawLineEx(a,tip,2,WHITE);
             DrawLineEx(b,tip,2,WHITE);
         }
-        DrawTextEx(font,action,(Vector2){x+45,y+1},23,0,(Color){201,213,226,255});
+        text_on_axis(font,action,x+45,y+14,23,(Color){201,213,226,255});
         return 45+(int)MeasureTextEx(font,action,23,0).x;
     }
     static const char *keys[] = {"X","Z","C","Enter"};
@@ -581,7 +617,7 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
         int cx=x+15, cy=y+15;
         DrawCircle(cx,cy,15,surface);
         DrawRing((Vector2){cx,cy},14,15,0,360,32,(Color){124,147,170,255});
-        if (!ps) text_center(font,letters[button],cx,y+1,23,WHITE);
+        if (!ps) text_on_axis(font,letters[button],cx-MeasureTextEx(font,letters[button],23,0).x/2,cy,23,WHITE);
         else if (button == GLYPH_CONFIRM) {
             DrawLineEx((Vector2){cx-6,cy-6},(Vector2){cx+6,cy+6},3,SKYBLUE);
             DrawLineEx((Vector2){cx-6,cy+6},(Vector2){cx+6,cy-6},3,SKYBLUE);
@@ -589,7 +625,7 @@ static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button
         else DrawRectangleLinesEx((Rectangle){cx-7,cy-7,14,14},3,(Color){251,174,213,255});
     }
     int offset = button == GLYPH_START ? 48 : 39;
-    DrawTextEx(font,action,(Vector2){x+offset,y+1},23,0,(Color){201,213,226,255});
+    text_on_axis(font,action,x+offset,y+14,23,(Color){201,213,226,255});
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
 
@@ -604,8 +640,10 @@ static int title_links(Font font, Vector2 pointer) {
     bool over_social = CheckCollisionPointRec(pointer,social);
     DrawRectangleRounded(brand,1,16,over_brand ? (Color){32,53,80,255} : (Color){23,38,56,255});
     DrawRectangleRoundedLinesEx(brand,1,16,1.5f,over_brand ? dim : (Color){64,85,113,255});
-    text_center(font,"kalin.games",left+85,y+7,26,over_brand ? WHITE : (Color){195,215,244,255});
-    DrawTextEx(font,handle,(Vector2){right-handle_width,y+4},31,0,over_social ? accent : WHITE);
+    const char *publisher = "kalin.games";
+    text_on_axis(font,publisher,left+(brand.width-MeasureTextEx(font,publisher,26,0).x)/2,y+23,26,
+        over_brand ? WHITE : (Color){195,215,244,255});
+    text_on_axis(font,handle,right-handle_width,y+23,31,over_social ? accent : WHITE);
     if (over_social) DrawLine(right-handle_width,y+39,right,y+39,accent);
     return over_brand ? 1 : over_social ? 2 : 0;
 }
@@ -794,23 +832,24 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
     DrawRectangle(x, 0, ARENA_X, GAME_HEIGHT, ink);
     DrawRectangle(slot ? x : x + ARENA_X - 2, 0, 2, GAME_HEIGHT, rule);
     DrawRectangle(left, 32, 58, 36, p->joined ? highlight : rule);
-    text_center(font, slot ? "P2" : "P1", left + 29, 33, 27, ink);
+    const char *player_tag = slot ? "P2" : "P1";
+    text_on_axis(font,player_tag,left+(58-MeasureTextEx(font,player_tag,27,0).x)/2,50,27,ink);
     if (!p->joined && p->initialized) {
-        DrawTextEx(font,pilot_names[p->pilot],(Vector2){left+70,26},38,0,dim);
+        text_on_axis(font,ui_text(pilot_names[p->pilot]),left+70,50,38,dim);
         DrawLine(left,88,left+width,88,rule);
         sprite(whole_texture(assets->portraits[p->pilot]),left+82,204,164,0,dim);
-        DrawTextEx(font,"Disconnected",(Vector2){left+184,181},26,0,dim);
+        DrawTextEx(font,ui_text("Disconnected"),(Vector2){left+184,181},26,0,dim);
         return;
     }
     if (!p->joined) {
-        text_center(font, "Join flight", x + 240, 488, 36, WHITE);
+        text_center(font, ui_text("Join flight"), x + 240, 488, 36, WHITE);
         button_prompt(font,x+105,543,0,GLYPH_START,"Join");
-        if (keyboard_free) key_prompt(font,x+245,543,"F2","Join");
+        if (keyboard_free) key_prompt(font,x+245,543,"F2",ui_text("Join"));
         return;
     }
-    DrawTextEx(font, pilot_names[p->pilot], (Vector2){left + 70, 26}, 38, 0, WHITE);
-    const char *credits = shopping ? TextFormat("%d cr",p->money) : TextFormat("%d pts",p->score);
-    DrawTextEx(font, credits, (Vector2){left + width - MeasureTextEx(font, credits, 27, 0).x, 38}, 27, 0, highlight);
+    text_on_axis(font,ui_text(pilot_names[p->pilot]),left+70,50,38,WHITE);
+    const char *credits = shopping ? TextFormat(ui_text("%d cr"),p->money) : TextFormat(ui_text("%d pts"),p->score);
+    text_on_axis(font,credits,left+width-MeasureTextEx(font,credits,27,0).x,50,27,highlight);
     DrawLine(left, 88, left + width, 88, rule);
     sprite(whole_texture(assets->portraits[p->pilot]), left + 82, 204, 164, 0, WHITE);
     resource_meter(font, left + 184, 115, "Armor", preview->health, game_chassis[preview->chassis].armor, highlight);
@@ -822,10 +861,10 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
 static const char *shop_item_name(int category, int item) {
     if (item < 0) return ui_text("Empty");
     switch (category) {
-        case 0: return game_chassis[item].name;
-        case 1: return game_generators[item].name;
-        case 2: return game_shields[item].name;
-        default: return game_weapons[item].display_name;
+        case 0: return ui_text(game_chassis[item].name);
+        case 1: return ui_text(game_generators[item].name);
+        case 2: return ui_text(game_shields[item].name);
+        default: return ui_text(game_weapons[item].display_name);
     }
 }
 
@@ -853,15 +892,13 @@ static void draw_slot_row(const Assets *assets, const Player *p, int x, int y, i
     Sprite icon = id < 0 ? assets->shop[cat] : equipment_icon(assets,cat,id);
     sprite(icon,x+24,y+23,32,0,id < 0 ? dim : WHITE);
     const char *slot = ui_text(loadout_slots[cat]);
-    float label_size = fminf(24,24*104/fmaxf(1,MeasureTextEx(font,slot,24,0).x));
-    DrawTextEx(font,slot,(Vector2){x+49,y+(47-label_size)/2},label_size,0,dim);
+    text_on_axis(font,slot,x+49,y+23,fitted_size(font,slot,24,104),dim);
     const char *name = shop_item_name(cat,id);
     bool show_mark = id >= 0 && cat >= 3;
-    float size = fminf(31,31*(show_mark ? 205 : 258)/fmaxf(1,MeasureTextEx(font,name,31,0).x));
-    DrawTextEx(font,name,(Vector2){x+160,y+(47-size)/2},size,0,id < 0 ? dim : WHITE);
+    float size = fitted_size(font,name,31,show_mark ? 205 : 258);
+    text_on_axis(font,name,x+160,y+23,size,id < 0 ? dim : WHITE);
     if (show_mark)
-        DrawTextEx(font,TextFormat("Mk %d",1+game_shop_equipped_level(p,cat)),
-            (Vector2){x+371,y+12},21,0,color);
+        text_on_axis(font,TextFormat(ui_text("Mk %d"),1+game_shop_equipped_level(p,cat)),x+371,y+23,21,color);
     DrawLine(x,y+47,x+424,y+47,rule);
 }
 
@@ -877,10 +914,11 @@ static void draw_flight_rail(const Game *game, const Assets *assets, int slot, b
     Font font = assets->ui_font;
     if (slot == 0) {
         int index = game->stage.index;
-        const char *number = index < 12 ? TextFormat("Stage %d",index+1) : TextFormat("Bonus stage %d",index-11);
+        const char *number = index < 12 ? TextFormat(ui_text("Stage %d"),index+1) : TextFormat(ui_text("Bonus stage %d"),index-11);
         DrawLine(x,947,x+424,947,rule);
         DrawTextEx(font,number,(Vector2){x,961},24,0,dim);
-        DrawTextEx(font,stage_definitions[index].display_name,(Vector2){x,996},30,0,WHITE);
+        const char *stage_name = ui_text(stage_definitions[index].display_name);
+        DrawTextEx(font,stage_name,(Vector2){x,996},fitted_size(font,stage_name,30,424),0,WHITE);
     }
     if (!p->joined) return;
     DrawLine(x,298,x+424,298,rule);
@@ -1019,42 +1057,42 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     row_edge += offset;
     DrawLine(row_edge,anchor,slot ? x+width : x,anchor,color);
     DrawCircle(row_edge,anchor,3,color);
-    struct { const char *label; char value[40]; } stats[3] = {0};
+    struct { const char *label; char value[96]; } stats[3] = {0};
     int count = 0;
     if (item >= 0 && cat == 0) {
         const Chassis *c = &game_chassis[item];
         stats[0].label = "Armor";
-        snprintf(stats[0].value,40,"%d HP",combat_points(c->armor));
+        snprintf(stats[0].value,sizeof(stats[0].value),ui_text("%d HP"),combat_points(c->armor));
         stats[1].label = "Acceleration";
         float thrust = c->speed * (game->players[slot].pilot == 0 ? 1.2f : 1);
         /* The hangar scale rates the stock Rookie at 6 g. */
-        snprintf(stats[1].value,40,"%.1f g",6.0f*thrust/game_chassis[0].speed);
+        snprintf(stats[1].value,sizeof(stats[1].value),"%.1f g",6.0f*thrust/game_chassis[0].speed);
         stats[2].label = "Impact resistance";
-        snprintf(stats[2].value,40,"%.0f%%",100*c->collision_resistance);
+        snprintf(stats[2].value,sizeof(stats[2].value),"%.0f%%",100*c->collision_resistance);
         count = 3;
     } else if (item >= 0 && cat == 1) {
         const Generator *g = &game_generators[item];
         stats[0].label = "Energy capacity";
-        snprintf(stats[0].value,40,"%d EN",combat_points(g->capacity));
+        snprintf(stats[0].value,sizeof(stats[0].value),ui_text("%d EN"),combat_points(g->capacity));
         stats[1].label = "Energy recovery";
-        snprintf(stats[1].value,40,"%d EN/s",combat_points(g->regen*GAME_HZ));
+        snprintf(stats[1].value,sizeof(stats[1].value),ui_text("%d EN/s"),combat_points(g->regen*GAME_HZ));
         count = 2;
         if (g->on_coin || g->on_collision) {
             if (g->on_coin) {
                 stats[2].label = "Energy per coin";
-                snprintf(stats[2].value,40,"+%g EN",g->on_coin * 100.0);
+                snprintf(stats[2].value,sizeof(stats[2].value),"+%g %s",g->on_coin * 100.0,ui_text("EN"));
             } else {
                 stats[2].label = "Impact recovery";
-                snprintf(stats[2].value,40,"%d EN / 100 impact HP",combat_points(g->on_collision));
+                snprintf(stats[2].value,sizeof(stats[2].value),ui_text("%d EN / 100 impact HP"),combat_points(g->on_collision));
             }
             ++count;
         }
     } else if (item >= 0 && cat == 2) {
         const Shield *h = &game_shields[item];
         stats[0].label = "Shield capacity";
-        snprintf(stats[0].value,40,"%d HP",combat_points(h->capacity));
+        snprintf(stats[0].value,sizeof(stats[0].value),ui_text("%d HP"),combat_points(h->capacity));
         stats[1].label = "Recharge efficiency";
-        snprintf(stats[1].value,40,"%.0f%%",100*h->efficiency);
+        snprintf(stats[1].value,sizeof(stats[1].value),"%.0f%%",100*h->efficiency);
         count = 2;
     } else if (item >= 0) {
         const WeaponLevel *w = &game_weapons[item].levels[mark];
@@ -1069,59 +1107,65 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
         }
         stats[0].label = item == WEAPON_CHARGE_SHOT ? "Full-charge damage" : "Damage per hit";
         int low = combat_points(min_hit), high = combat_points(max_hit);
-        if (low == high) snprintf(stats[0].value,40,"%d HP",high);
-        else snprintf(stats[0].value,40,"%d - %d HP",low,high);
+        if (low == high) snprintf(stats[0].value,sizeof(stats[0].value),ui_text("%d HP"),high);
+        else snprintf(stats[0].value,sizeof(stats[0].value),ui_text("%d - %d HP"),low,high);
         count = 1;
         if (cat == 3) {
             stats[1].label = "Estimated DPS";
-            snprintf(stats[1].value,40,"%d HP/s",combat_points(dps));
+            snprintf(stats[1].value,sizeof(stats[1].value),ui_text("%d HP/s"),combat_points(dps));
             ++count;
         } else if (cat == 5) {
             const WeaponEmitter *e = w->emitters;
             if (item == WEAPON_BLADE) {
                 stats[1].label = "Sweep reach";
-                snprintf(stats[1].value,40,"%.0f arena units",38*e->scale_override);
+                snprintf(stats[1].value,sizeof(stats[1].value),ui_text("%d arena units"),(int)lroundf(38*e->scale_override));
                 stats[2].label = e->lifetime > 9 ? "Return hit" : "Recovery";
-                if (e->lifetime > 9) snprintf(stats[2].value,40,"%d HP",combat_points(max_hit*1.25f));
-                else snprintf(stats[2].value,40,"%d ms",(int)lroundf(e->reload*1000));
+                if (e->lifetime > 9) snprintf(stats[2].value,sizeof(stats[2].value),ui_text("%d HP"),combat_points(max_hit*1.25f));
+                else snprintf(stats[2].value,sizeof(stats[2].value),"%d ms",(int)lroundf(e->reload*1000));
                 count = 3;
             } else if (item == WEAPON_CHARGE_SHOT) {
                 stats[1].label = "Full charge";
-                snprintf(stats[1].value,40,"%d ms",(int)lroundf(e->charge_frames*1000.0f/GAME_HZ));
+                snprintf(stats[1].value,sizeof(stats[1].value),"%d ms",(int)lroundf(e->charge_frames*1000.0f/GAME_HZ));
                 count = 2;
             } else {
                 stats[1].label = "Shots per wing";
-                snprintf(stats[1].value,40,"%d",w->count);
+                snprintf(stats[1].value,sizeof(stats[1].value),"%d",w->count);
                 count = 2;
                 if (item == WEAPON_MISSILE_LAUNCHER && e->radius > 0) {
                     stats[2].label = "Blast radius";
-                    snprintf(stats[2].value,40,"%.0f arena units",e->radius);
+                    snprintf(stats[2].value,sizeof(stats[2].value),ui_text("%d arena units"),(int)lroundf(e->radius));
                     ++count;
                 }
             }
             if (e->bounces) {
                 stats[2].label = "Targets per shot";
-                snprintf(stats[2].value,40,"%d",1+e->bounces);
+                snprintf(stats[2].value,sizeof(stats[2].value),"%d",1+e->bounces);
                 count = 3;
             }
         }
     }
-    int height = count ? 101 + count*26 : 84;
+    const char *desc = ui_text(item_description(cat,item));
+    const char *split = tooltip_break(font,desc,width-32);
+    int extra = split ? 24 : 0;
+    int height = (count ? 101 + count*26 : 84) + extra;
     DrawRectangle(x,y,width,height,ink);
     DrawRectangleLinesEx((Rectangle){x,y,width,height},1,rule);
     DrawRectangle(slot ? x+width-3 : x,y,3,height,color);
     const char *name = shop_item_name(cat,item);
-    if (cat >= 3 && item >= 0 && game_weapons[item].level_count > 1) name = TextFormat("%s  Mk %d",name,mark+1);
-    DrawTextEx(font,name,(Vector2){x+16,y+10},25,0,WHITE);
-    const char *desc = item_description(cat,item);
-    float size = fminf(20,20*(width-32)/fmaxf(1,MeasureTextEx(font,desc,20,0).x));
-    DrawTextEx(font,desc,(Vector2){x+16,y+49},size,0,dim);
-    if (count) DrawLine(x+16,y+82,x+width-16,y+82,rule);
+    if (cat >= 3 && item >= 0 && game_weapons[item].level_count > 1) name = TextFormat("%s  %s",name,TextFormat(ui_text("Mk %d"),mark+1));
+    DrawTextEx(font,name,(Vector2){x+16,y+10},fitted_size(font,name,25,width-32),0,WHITE);
+    if (split) {
+        DrawTextEx(font,TextFormat("%.*s",(int)(split-desc),desc),(Vector2){x+16,y+49},20,0,dim);
+        desc = split + (*split == ' ');
+    }
+    DrawTextEx(font,desc,(Vector2){x+16,y+49+extra},fitted_size(font,desc,20,width-32),0,dim);
+    if (count) DrawLine(x+16,y+82+extra,x+width-16,y+82+extra,rule);
     for (int i=0; i<count; ++i) {
-        int top = y+92+i*26;
-        DrawTextEx(font,stats[i].label,(Vector2){x+16,top},19,0,dim);
+        int center = y+104+extra+i*26;
+        const char *label = ui_text(stats[i].label);
         float value_x = x+width-16-MeasureTextEx(font,stats[i].value,20,0).x;
-        DrawTextEx(font,stats[i].value,(Vector2){value_x,top-1},20,0,WHITE);
+        text_on_axis(font,label,x+16,center,fitted_size(font,label,19,value_x-x-26),dim);
+        text_on_axis(font,stats[i].value,value_x,center,20,WHITE);
     }
 }
 
@@ -1163,7 +1207,7 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         Color status_color = equipped ? highlight : purchased ? dim : WHITE;
         if (!expandable && !purchased) {
             int price = game_shop_price(p,cat,id,tiers ? i : 0);
-            status = TextFormat("%d cr",price);
+            status = TextFormat(ui_text("%d cr"),price);
             if (price > p->money) {
                 status_color = (Color){212,151,148,255};
                 if (focused) show_select = false;
@@ -1175,7 +1219,7 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         if (focused) DrawRectangle(left+indent,y,3,47,highlight);
         int name_x = left+indent+(tiers ? 16 : 44);
         const char *name;
-        if (tiers) name = TextFormat("Mk %d",i+1);
+        if (tiers) name = TextFormat(ui_text("Mk %d"),i+1);
         else {
             sprite(equipment_icon(assets,cat,id),left+indent+21,y+23,30,0,WHITE);
             name = shop_item_name(cat,id);
@@ -1191,9 +1235,8 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
             DrawLineEx((Vector2){cx-4,y+17},(Vector2){cx+2,y+23},2,highlight);
             DrawLineEx((Vector2){cx+2,y+23},(Vector2){cx-4,y+29},2,highlight);
         }
-        float size = fminf(25,25*(right-name_x-10)/fmaxf(1,MeasureTextEx(font,name,25,0).x));
-        DrawTextEx(font,name,(Vector2){name_x,y+(47-size)/2},size,0,WHITE);
-        DrawTextEx(font,status,(Vector2){right,y+(expandable ? 6 : 12)},21,0,status_color);
+        text_on_axis(font,name,name_x,y+23,fitted_size(font,name,25,right-name_x-10),WHITE);
+        text_on_axis(font,status,right,y+(expandable ? 17 : 23),21,status_color);
     }
     DrawRectangle(left+indent-8,list_top,2,y-list_top-2,rule);
     if (rows > SHOP_VISIBLE_ROWS) {
@@ -1229,15 +1272,17 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     DrawLine(left,974,left+width,974,rule);
     if (menu->shop_purchase[slot]) return;
     if (!menu->ready[slot]) {
-        if (can_select) button_prompt(font,left,993,device,GLYPH_CONFIRM,"Select");
-        if (menu->shop_catalog[slot]) button_prompt(font,left+130,993,device,GLYPH_BACK,"Back");
+        int next = left;
+        if (can_select) next += button_prompt(font,next,993,device,GLYPH_CONFIRM,"Select") + 16;
+        if (menu->shop_catalog[slot]) button_prompt(font,next,993,device,GLYPH_BACK,"Back");
     }
-    button_prompt(font,left+width-145,993,device,GLYPH_READY,"Ready");
-    int check = left + width - 34;
-    DrawRectangleLinesEx((Rectangle){check,997,31,31}, 2, menu->ready[slot] ? highlight : dim);
+    int check = left + width - 28, cy = 993+14;
+    int ready_width = 39 + (int)ceilf(MeasureTextEx(font,ui_text("Ready"),23,0).x);
+    button_prompt(font,check-10-ready_width,993,device,GLYPH_READY,"Ready");
+    DrawRectangleLinesEx((Rectangle){check,cy-14,28,28},2,menu->ready[slot] ? highlight : dim);
     if (menu->ready[slot]) {
-        DrawLineEx((Vector2){check+5,1012}, (Vector2){check+13,1020}, 4, highlight);
-        DrawLineEx((Vector2){check+13,1020}, (Vector2){check+26,1004}, 4, highlight);
+        DrawLineEx((Vector2){check+5,cy},(Vector2){check+12,cy+7},3,highlight);
+        DrawLineEx((Vector2){check+12,cy+7},(Vector2){check+23,cy-7},3,highlight);
     }
 }
 
@@ -1254,14 +1299,18 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     bool upgrade = game_shop_owned_marks(p,cat,item) > 0;
     Color accent = player_colors[slot];
     dialog_frame(y,accent);
-    DrawTextEx(font, TextFormat("P%d   /   %s", slot + 1, upgrade ? "CONFIRM UPGRADE" :
-        item < 0 ? "CONFIRM UNEQUIP" : "CONFIRM PURCHASE"), (Vector2){672,y+18}, 22, 1, accent);
+    DrawTextEx(font, TextFormat("P%d   /   %s", slot + 1, ui_text(upgrade ? "CONFIRM UPGRADE" :
+        item < 0 ? "CONFIRM UNEQUIP" : "CONFIRM PURCHASE")), (Vector2){672,y+18}, 22, 1, accent);
     const char *name = item < 0 ? shop_item_name(cat, game_shop_equipped(p, cat)) : shop_item_name(cat, item);
-    DrawTextEx(font, name, (Vector2){672,y+55}, 36, 0, WHITE);
-    if (cat >= 3 && item >= 0) DrawTextEx(font, TextFormat("Unlock through Mk %d", level+1), (Vector2){672,y+111}, 25, 0, dim);
-    const char *price = cost < 0 ? TextFormat("Credit  +%d cr", -cost) : TextFormat("Cost  %d cr", cost);
-    DrawTextEx(font, price, (Vector2){1248 - MeasureTextEx(font, price, 26, 0).x,y+110}, 26, 0, cost > p->money ? danger : WHITE);
-    if (cost > p->money) DrawTextEx(font,"Insufficient credits",(Vector2){672,y+174},26,0,danger);
+    DrawTextEx(font,name,(Vector2){672,y+55},fitted_size(font,name,36,576),0,WHITE);
+    const char *price = cost < 0 ? TextFormat(ui_text("Credit  +%d cr"), -cost) : TextFormat(ui_text("Cost  %d cr"), cost);
+    float price_x = 1248-MeasureTextEx(font,price,26,0).x;
+    if (cat >= 3 && item >= 0) {
+        const char *unlock = TextFormat(ui_text("Unlock through Mk %d"),level+1);
+        text_on_axis(font,unlock,672,y+126,fitted_size(font,unlock,25,price_x-684),dim);
+    }
+    text_on_axis(font,price,price_x,y+126,26,cost > p->money ? danger : WHITE);
+    if (cost > p->money) DrawTextEx(font,ui_text("Insufficient credits"),(Vector2){672,y+174},26,0,danger);
     else button_prompt(font,672,y+174,device,GLYPH_CONFIRM,cost > 0 ? "Buy" : "Confirm");
     button_prompt(font,1030,y+174,device,GLYPH_BACK,"Cancel");
 }
@@ -1351,8 +1400,7 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
         label = TextFormat("%s - %s",TextFormat(ui_text("Slot %d"),row+1),state);
     } else if (page == MENU_STAGE_SELECT && row < 12) label = TextFormat(ui_text("Stage %d"),row+1);
     int label_width = page == MENU_OPTIONS && row < OPTION_COUNT ? width-232 : width-44;
-    float label_size = fminf(28,28*label_width/fmaxf(1,MeasureTextEx(font,label,28,0).x));
-    DrawTextEx(font,label,(Vector2){x+22,y+(height-label_size)/2-2},label_size,0,WHITE);
+    text_on_axis(font,label,x+22,y+(height-3)/2,fitted_size(font,label,28,label_width),WHITE);
     if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
         const char *setting = row == OPTION_RENDER_SCALE ?
             TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
@@ -1362,7 +1410,7 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
             (game->menu.options[row] ? "On" : "Off");
         setting = ui_text(setting);
         float value_width = MeasureTextEx(font,setting,26,0).x;
-        DrawTextEx(font,setting,(Vector2){x+width-value_width-22,y+(height-26)/2},26,0,accent);
+        text_on_axis(font,setting,x+width-value_width-22,y+(height-3)/2,26,accent);
     }
     if (game->menu.page == MENU_OPTIONS && row < OPTION_RENDER_SCALE) {
         int value = game->menu.options[row];
@@ -1379,7 +1427,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
     };
     static const char *bonus[] = {"Speed +","Credits +","Damage +"};
     Font font = assets->ui_font;
-    DrawTextEx(assets->heading_font,"Pilot selection",(Vector2){272+offset,92},62,1,WHITE);
+    DrawTextEx(assets->heading_font,ui_text("Pilot selection"),(Vector2){272+offset,92},62,1,WHITE);
     for (int slot=0; slot<GAME_PLAYERS; ++slot) {
         int x = 272 + offset + slot*704, pilot = game->menu.pilot[slot];
         Color color = player_colors[slot];
@@ -1388,7 +1436,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
         DrawTextEx(font,slot ? "P2" : "P1",(Vector2){x+32,242},28,0,color);
         if (!game->players[slot].joined) {
             button_prompt(font,x+172,526,0,GLYPH_START,"Join");
-            if (input_owner(devices,INPUT_KEYBOARD)<0) key_prompt(font,x+336,526,"F2","Join");
+            if (input_owner(devices,INPUT_KEYBOARD)<0) key_prompt(font,x+336,526,"F2",ui_text("Join"));
             continue;
         }
         sprite(whole_texture(assets->portraits[pilot]),x+332,437,312,0,WHITE);
@@ -1404,12 +1452,15 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
             }
         }
         DrawLine(x+32,593,x+632,593,rule);
-        DrawTextEx(font,pilot_names[pilot],(Vector2){x+32,601},47,0,WHITE);
-        DrawTextEx(font,bonus[pilot],(Vector2){x+632-MeasureTextEx(font,bonus[pilot],24,0).x,622},24,0,color);
-        DrawTextEx(font,specialties[pilot],(Vector2){x+32,664},25,0,color);
+        DrawTextEx(font,ui_text(pilot_names[pilot]),(Vector2){x+32,601},47,0,WHITE);
+        DrawTextEx(font,ui_text(bonus[pilot]),(Vector2){x+632-MeasureTextEx(font,ui_text(bonus[pilot]),24,0).x,622},24,0,color);
+        DrawTextEx(font,ui_text(specialties[pilot]),(Vector2){x+32,664},25,0,color);
+        float story_size = 24;
         for (int line=0; line<3; ++line)
-            DrawTextEx(font,stories[pilot][line],(Vector2){x+32,710+line*29},24,0,WHITE);
-        if (game->menu.ready[slot]) DrawTextEx(font,"Ready",(Vector2){x+32,821},26,0,color);
+            story_size = fminf(story_size,fitted_size(font,ui_text(stories[pilot][line]),24,600));
+        for (int line=0; line<3; ++line)
+            DrawTextEx(font,ui_text(stories[pilot][line]),(Vector2){x+32,710+line*29},story_size,0,WHITE);
+        if (game->menu.ready[slot]) DrawTextEx(font,ui_text("Ready"),(Vector2){x+32,821},26,0,color);
         else button_prompt(font,x+32,819,devices->device[slot],GLYPH_CONFIRM,"Select");
         button_prompt(font,x+455,819,devices->device[slot],GLYPH_BACK,game->menu.ready[slot] ? "Cancel" : "Back");
     }
@@ -1423,7 +1474,7 @@ static int shared_prompt_device(const PlayerDevices *devices) {
 static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices,int offset,float clearance) {
     static const char *headings[MENU_CONTROLLERS+1] = {
         [MENU_OPTIONS]="Options",
-        [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
+        [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
         [MENU_STAGE_SELECT]="Stage select"
     };
     MenuPage page = game->menu.page;
@@ -1467,10 +1518,12 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         int top = (CANVAS_HEIGHT-228)/2;
         DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,0.58f));
         dialog_frame(top,danger);
-        DrawTextEx(font,deleting ? TextFormat("Delete slot %d?",game->menu.delete_slot+1) :
-            exiting ? "Quit Galaxy Defenders?" : "Return to title?",(Vector2){672,top+24},38,0,WHITE);
-        DrawTextEx(font,deleting ? "This permanently deletes its saved progress." :
-            exiting ? "Close the game and return to the desktop." : "Leave this session and return to the title screen.",(Vector2){672,top+89},25,0,dim);
+        const char *question = deleting ? TextFormat(ui_text("Delete slot %d?"),game->menu.delete_slot+1) :
+            ui_text(exiting ? "Quit Galaxy Defenders?" : "Return to title?");
+        const char *explanation = ui_text(deleting ? "This permanently deletes its saved progress." :
+            exiting ? "Close the game and return to the desktop." : "Leave this session and return to the title screen.");
+        DrawTextEx(font,question,(Vector2){672,top+24},fitted_size(font,question,38,576),0,WHITE);
+        DrawTextEx(font,explanation,(Vector2){672,top+89},fitted_size(font,explanation,25,576),0,dim);
         for (int i=0; i<2; ++i) {
             bool selected = game->menu.cursor == i;
             int left = 672+i*294;
@@ -1480,7 +1533,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
             }
             if (!i || selected)
                 button_prompt(font,left+16,top+173,device,i ? GLYPH_CONFIRM : GLYPH_BACK,i ? verb : "Cancel");
-            else DrawTextEx(font,verb,(Vector2){left+16,top+174},25,0,dim);
+            else DrawTextEx(font,ui_text(verb),(Vector2){left+16,top+174},25,0,dim);
         }
         return;
     }
@@ -1536,8 +1589,8 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         DrawRectangle(570,755,780,135,ink);
         DrawRectangle(570,755,780,2,rule);
         sprite(whole_texture(assets->portraits[pilot]),648,821,124,0,WHITE);
-        DrawTextEx(assets->ui_font,pilot_names[pilot],(Vector2){735,774},24,0,accent);
-        DrawTextEx(assets->ui_font,"Copy, Control. Launching.",(Vector2){735,812},34,0,WHITE);
+        DrawTextEx(assets->ui_font,ui_text(pilot_names[pilot]),(Vector2){735,774},24,0,accent);
+        DrawTextEx(assets->ui_font,ui_text("Copy, Control. Launching."),(Vector2){735,812},34,0,WHITE);
         button_prompt(assets->ui_font,1180,923,shared_prompt_device(devices),GLYPH_CONFIRM,"Skip");
         return;
     }
@@ -1586,7 +1639,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             sprite(assets->star, x, y, (float)assets->star.width, 0, WHITE);
         }
         for (unsigned int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i)
-            text_center(assets->ui_font, lines[i], 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
+            text_center(assets->ui_font, ui_text(lines[i]), 960, 1080 - game->menu.frame * 0.7f + i * 50, 32, WHITE);
         return;
     }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices, entering_shop); return; }
@@ -1598,7 +1651,7 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
             DrawRectangle(672,115,576,590,ink);
             DrawRectangle(672,115,576,3,accent);
             DrawLine(704,248,1216,248,rule);
-            text_center(assets->ui_font, "Stage Clear", 968, 180, 40, WHITE);
+            text_center(assets->ui_font, ui_text("Stage Clear"), 968, 180, 40, WHITE);
         }
         const StageStats *stats = &game->stage.stats;
         int percent[] = {game_stats_percent(stats->coins_collected, stats->coins_total),
@@ -1612,9 +1665,9 @@ static void draw_menu(const Game *game, const Assets *assets, int frame, const P
         for (int i = 0; i < 6; ++i) {
             if (counter < times[i] || (i == 5 && medal == 1)) continue;
             int y = i < 4 ? 280 + i * 30 : 460 + (i - 4) * 30;
-            DrawTextEx(assets->ui_font, labels[i], (Vector2){704, (float)y}, 26, 0, WHITE);
+            DrawTextEx(assets->ui_font, ui_text(labels[i]), (Vector2){704, (float)y}, 26, 0, WHITE);
             const char *value = i < 4 ? TextFormat("%d%%", percent[i]) :
-                TextFormat("+%d cr", i == 4 ? 10000 : bonus[medal]);
+                TextFormat("+%s", TextFormat(ui_text("%d cr"),i == 4 ? 10000 : bonus[medal]));
             DrawTextEx(assets->ui_font, value, (Vector2){1216-MeasureTextEx(assets->ui_font,value,26,0).x, (float)y}, 26, 0, i < 4 ? WHITE : accent);
         }
         if (counter >= 300) {
@@ -1796,22 +1849,22 @@ static void draw_assignments(const Game *game, const Assets *assets, const Playe
     DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,.65f));
     DrawRectangle(x,y,width,bottom-y+70,ink);
     DrawRectangle(x,y,width,3,accent);
-    DrawTextEx(assets->heading_font,"Controllers",(Vector2){x+30,y+20},48,0,WHITE);
-    text_center(font,"Unassigned",x+592,y+111,28,dim);
+    DrawTextEx(assets->heading_font,ui_text("Controllers"),(Vector2){x+30,y+20},48,0,WHITE);
+    text_center(font,ui_text("Unassigned"),x+592,y+111,28,dim);
     for (int slot=0; slot<GAME_PLAYERS; ++slot) {
         int left = x+40+slot*768;
         const Player *p = &game->players[slot];
         if (p->initialized) {
             sprite(whole_texture(assets->portraits[p->pilot]),left+38,y+114,78,0,p->joined ? WHITE : dim);
-            DrawTextEx(font,TextFormat("P%d   %s",slot+1,pilot_names[p->pilot]),(Vector2){left+90,y+84},26,0,p->joined ? player_colors[slot] : dim);
-            if (!p->joined) DrawTextEx(font,"Disconnected",(Vector2){left+90,y+119},21,0,dim);
+            DrawTextEx(font,TextFormat("P%d   %s",slot+1,ui_text(pilot_names[p->pilot])),(Vector2){left+90,y+84},26,0,p->joined ? player_colors[slot] : dim);
+            if (!p->joined) DrawTextEx(font,ui_text("Disconnected"),(Vector2){left+90,y+119},21,0,dim);
         } else text_center(font,TextFormat("P%d",slot+1),left+168,y+111,28,dim);
     }
     for (int i=0; i<count; ++i) {
         int device = rows[i], owner = input_owner(devices,device);
         int column = owner == 0 ? 0 : owner == 1 ? 2 : 1;
         int left = x+24+column*384, top = y+160+i*60;
-        const char *name = device == INPUT_KEYBOARD ? "Keyboard" : device >= 4 ?
+        const char *name = device == INPUT_KEYBOARD ? ui_text("Keyboard") : device >= 4 ?
             TextFormat("DualShock 4  #%d",device-3) : TextFormat("%s  #%d",GetGamepadName(device),device+1);
         DrawLine(x+24,top+54,x+width-24,top+54,rule);
         bool selected = device == devices->selected_device;
@@ -1826,14 +1879,19 @@ static void draw_assignments(const Game *game, const Assets *assets, const Playe
     button_prompt(font,next,bottom,devices->prompt_device,GLYPH_HORIZONTAL,"Assign");
     if (game->players[0].joined || game->players[1].joined)
         button_prompt(font,x+width-220,bottom,devices->prompt_device,GLYPH_BACK,"Done");
-    else DrawTextEx(font,"Assign a controller to continue",(Vector2){x+width-390,bottom},24,0,accent);
+    else {
+        const char *hint = ui_text("Assign a controller to continue");
+        float right = x+width-30;
+        float size = fitted_size(font,hint,24,right-next-180);
+        text_on_axis(font,hint,right-MeasureTextEx(font,hint,size,0).x,bottom+14,size,accent);
+    }
     for (int i=0; i<GAME_PLAYERS; ++i) if (devices->choosing[i]) {
         int top = (CANVAS_HEIGHT-228)/2, pilot = devices->pilot[i];
         DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,.55f));
         dialog_frame(top,player_colors[i]);
         sprite(whole_texture(assets->portraits[pilot]),742,top+80,132,0,WHITE);
-        DrawTextEx(font,TextFormat("P%d   Choose pilot",i+1),(Vector2){840,top+25},26,0,dim);
-        DrawTextEx(font,TextFormat("<   %s   >",pilot_names[pilot]),(Vector2){840,top+75},36,0,WHITE);
+        DrawTextEx(font,TextFormat(ui_text("P%d   Choose pilot"),i+1),(Vector2){840,top+25},26,0,dim);
+        DrawTextEx(font,TextFormat("<   %s   >",ui_text(pilot_names[pilot])),(Vector2){840,top+75},36,0,WHITE);
         button_prompt(font,672,top+174,devices->device[i],GLYPH_CONFIRM,"Join");
         button_prompt(font,1030,top+174,devices->device[i],GLYPH_BACK,"Cancel");
         break;
@@ -1845,11 +1903,12 @@ static void draw_join_picker(const Assets *assets, const PlayerDevices *devices,
     Font font = assets->ui_font;
     DrawRectangle(left,0,ARENA_X,GAME_HEIGHT,ink);
     DrawRectangle(left+28,32,58,36,player_colors[slot]);
-    text_center(font,slot ? "P2" : "P1",left+57,33,27,ink);
-    DrawTextEx(font,pilot_names[pilot],(Vector2){left+98,26},38,0,WHITE);
+    const char *player_tag = slot ? "P2" : "P1";
+    text_on_axis(font,player_tag,left+28+(58-MeasureTextEx(font,player_tag,27,0).x)/2,50,27,ink);
+    text_on_axis(font,ui_text(pilot_names[pilot]),left+98,50,38,WHITE);
     DrawLine(left+28,88,left+ARENA_X-28,88,rule);
     sprite(whole_texture(assets->portraits[pilot]),left+110,204,164,0,WHITE);
-    DrawTextEx(font,"<   Pilot   >",(Vector2){left+212,174},29,0,WHITE);
+    DrawTextEx(font,TextFormat("<   %s   >",ui_text("Pilot")),(Vector2){left+212,174},29,0,WHITE);
     int device = devices->device[slot];
     button_prompt(font,left+32,326,device,GLYPH_CONFIRM,"Join");
     button_prompt(font,left+196,326,device,GLYPH_BACK,"Cancel");
@@ -2437,7 +2496,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         if (link && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             OpenURL(link == 1 ? "https://kalin.games/" : "https://x.com/kalin_t");
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
-            text_center(assets.ui_font, "Save unavailable - progress has not been written", 960, 940, 24, RED);
+            text_center(assets.ui_font, ui_text("Save unavailable - progress has not been written"), 960, 940, 24, RED);
         if (game->transition_frames > 0 && game->menu.page != MENU_CONTROLLERS) {
             float alpha = game->transition_frames > 15 ? (30 - game->transition_frames) / 15.0f : game->transition_frames / 15.0f;
             if (game->transition_frames > 15) alpha += (1-alpha)*game->fade_start;
