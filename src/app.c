@@ -483,6 +483,23 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
     return offset + (int)MeasureTextEx(font,action,23,0).x;
 }
 
+static void draw_flight_dust(const StageState *stage, Texture2D dust) {
+    bool water = stage->index == 1;
+    Rectangle source = {0, 0, (float)dust.width, (float)dust.height};
+    for (int pass = 0; pass < 2; ++pass) {
+        /* Use the existing slow and fast particle layers for their camera-relative motion. */
+        int layer = pass && water ? 3 : pass;
+        for (int i = 0; i < stage->scenery_count[layer]; ++i) {
+            const SceneryParticle *p = &stage->scenery[layer][i];
+            float width = water ? 5 + i%3 : 4 + pass;
+            float height = water ? 7 + pass*7 + i%3 : 15 + pass*12 + i%5;
+            Color tint = water ? (Color){136,185,183,36} : (Color){150,177,218,39};
+            Rectangle dest = {ARENA_X + p->x - stage->camera_x, p->y, width, height};
+            DrawTexturePro(dust,source,dest,(Vector2){width/2,height/2},0,tint);
+        }
+    }
+}
+
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
     int index = game->stage.index;
     if (backdrops[index].name) {
@@ -504,6 +521,7 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
             for (; y < GAME_HEIGHT; y += height)
                 DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,WHITE);
         }
+        if (index == 0 || index == 1) draw_flight_dust(&game->stage, assets->particle_dot);
         return;
     }
     const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
