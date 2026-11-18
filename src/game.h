@@ -216,6 +216,7 @@ void game_menu_open(Game *game, MenuPage page);
 void game_menu_input(Game *game, MenuAction action, int slot);
 int game_menu_count(const Game *game);
 const char *game_menu_label(const Game *game, int row);
+const char *game_slot_label(const Game *game, int row);
 bool game_menu_enabled(const Game *game, int row);
 void game_retry(Game *game);
 bool game_upgrade_weapon(Game *game, int slot, int level);

@@ -24,14 +24,19 @@ int game_menu_count(const Game *game) {
     return count;
 }
 
-const char *game_menu_label(const Game *game, int row) {
+const char *game_slot_label(const Game *game, int row) {
     static char slots[GAME_SAVE_SLOTS][100];
-    if (game->menu.page == MENU_SLOTS && row >= 0 && row < GAME_SAVE_SLOTS) {
+    if (row >= 0 && row < GAME_SAVE_SLOTS) {
         const SavedGame *save = &game->saves[row];
         if (save->valid) snprintf(slots[row], sizeof(slots[row]), "Slot %d - Stage %d", row + 1, save->stage + 1);
         else snprintf(slots[row], sizeof(slots[row]), "Slot %d - %s", row + 1, game->save_errors[row] ? "Unreadable" : "Empty");
         return slots[row];
     }
+    return "Back";
+}
+
+const char *game_menu_label(const Game *game, int row) {
+    if (game->menu.page == MENU_SLOTS) return game_slot_label(game,row);
     static const char *stages[] = {"Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5", "Stage 6",
         "Stage 7", "Stage 8", "Stage 9", "Stage 10", "Stage 11", "Stage 12", "Back"};
     if (game->menu.page == MENU_STAGE_SELECT) return row >= 0 && row < 13 ? stages[row] : "";
@@ -228,6 +233,8 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
     }
     if (!game->players[slot].joined) return;
     int count = game_menu_count(game);
+    if (menu->page == MENU_DELETE && action == MENU_LEFT) menu->cursor = 0;
+    if (menu->page == MENU_DELETE && action == MENU_RIGHT) menu->cursor = 1;
     if (action == MENU_UP && menu->cursor > 0) --menu->cursor;
     if (action == MENU_DOWN && menu->cursor + 1 < count) ++menu->cursor;
     if (menu->page == MENU_OPTIONS && menu->cursor < 3) {

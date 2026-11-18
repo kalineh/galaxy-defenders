@@ -1036,14 +1036,19 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     }
 }
 
+static void dialog_frame(int y, Color border) {
+    DrawRectangle(644,y,632,228,(Color){18,27,40,255});
+    DrawRectangleLinesEx((Rectangle){644,y,632,228},2,border);
+    DrawLine(672,y+156,1248,y+156,rule);
+}
+
 static void draw_shop_purchase(const Game *game, Font font, int slot, int device, int y) {
     const Player *p = &game->players[slot];
     int cat = game->menu.shop_category[slot], item = game->menu.shop_item[slot];
     int level = game->menu.shop_level[slot], cost = game_shop_cost(game, slot);
     bool upgrade = game_shop_owned_marks(p,cat,item) > 0;
     Color accent = player_colors[slot];
-    DrawRectangle(644, y, 632, 228, (Color){18,27,40,255});
-    DrawRectangleLinesEx((Rectangle){644,y,632,228}, 2, accent);
+    dialog_frame(y,accent);
     DrawTextEx(font, TextFormat("P%d   /   %s", slot + 1, upgrade ? "CONFIRM UPGRADE" :
         item < 0 ? "CONFIRM UNEQUIP" : "CONFIRM PURCHASE"), (Vector2){672,y+18}, 22, 1, accent);
     const char *name = item < 0 ? shop_item_name(cat, game_shop_equipped(p, cat)) : shop_item_name(cat, item);
@@ -1051,7 +1056,6 @@ static void draw_shop_purchase(const Game *game, Font font, int slot, int device
     if (cat >= 3 && item >= 0) DrawTextEx(font, TextFormat("Unlock through Mk %d", level+1), (Vector2){672,y+111}, 25, 0, dim);
     const char *price = cost < 0 ? TextFormat("Credit  +%d cr", -cost) : TextFormat("Cost  %d cr", cost);
     DrawTextEx(font, price, (Vector2){1248 - MeasureTextEx(font, price, 26, 0).x,y+110}, 26, 0, cost > p->money ? danger : WHITE);
-    DrawLine(672, y+156, 1248, y+156, (Color){62,75,90,255});
     if (cost > p->money) DrawTextEx(font,"Insufficient credits",(Vector2){672,y+174},26,0,danger);
     else button_prompt(font,672,y+174,device,slot,GLYPH_CONFIRM,"Select");
     button_prompt(font,1030,y+174,device,slot,GLYPH_BACK,"Cancel");
@@ -1115,12 +1119,14 @@ static void draw_title_ship(const Assets *assets, int slot, int tick) {
 }
 
 static void menu_row(Font font, const Game *game, int row, int x, int y, int width, int height) {
-    bool selected = row == game->menu.cursor;
-    Color text = game_menu_enabled(game,row) ? WHITE : (Color){126,139,156,255};
+    bool behind_dialog = game->menu.page == MENU_DELETE;
+    bool selected = row == (behind_dialog ? game->menu.delete_slot : game->menu.cursor);
+    Color text = behind_dialog || game_menu_enabled(game,row) ? WHITE : (Color){126,139,156,255};
     DrawRectangle(x,y,width,height-3,selected ? surface : ink);
     DrawLine(x,y+height-3,x+width,y+height-3,rule);
     if (selected) DrawRectangle(x,y,5,height-3,accent);
-    DrawTextEx(font,game_menu_label(game,row),(Vector2){x+22,y+(height-30)/2-2},28,0,text);
+    const char *label = behind_dialog ? game_slot_label(game,row) : game_menu_label(game,row);
+    DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,text);
     if (game->menu.page == MENU_OPTIONS && row < 3) {
         int value = game->menu.options[row];
         for (int i=0; i<10; ++i) DrawRectangle(x+width-199+17*i,y+height/2-5,13,10,i<value ? accent : rule);
@@ -1169,7 +1175,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
 
 static void draw_menu_list(const Game *game,const Assets *assets,int frame,const PlayerDevices *devices) {
     static const char *headings[MENU_DELETE+1] = {
-        [MENU_SLOTS]="Save slots", [MENU_DIFFICULTY]="Difficulty", [MENU_OPTIONS]="Options",
+        [MENU_OPTIONS]="Options",
         [MENU_QUIT]="Quit?", [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
         [MENU_STAGE_SELECT]="Stage select"
     };
@@ -1183,7 +1189,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
     int row_height = stages ? 53 : 69;
     int y = title ? 606 : stages ? 180 : 437;
-    int count = game_menu_count(game);
+    int count = page == MENU_DELETE ? GAME_SAVE_SLOTS+1 : game_menu_count(game);
     if (title) {
         if (page == MENU_MAIN) {
             if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame);
@@ -1199,13 +1205,29 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawRectangle(x-32,y-114,width+64,3,accent);
     }
     const char *heading = headings[page];
-    if (page==MENU_DELETE) heading = TextFormat("Delete slot %d?",game->menu.delete_slot+1);
     if (page==MENU_QUIT && game->menu.parent==MENU_PAUSE) heading = "Return to title?";
     if (heading && title)
         DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2,295},34,0,WHITE);
     else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
     for (int row=0; row<count; ++row) menu_row(font,game,row,x,y+row*row_height,width,row_height);
     int owner = game->players[0].joined ? 0 : 1, device = devices->device[owner];
+    if (page == MENU_DELETE) {
+        int top = (CANVAS_HEIGHT-228)/2;
+        DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,0.58f));
+        dialog_frame(top,danger);
+        DrawTextEx(font,TextFormat("Delete slot %d?",game->menu.delete_slot+1),(Vector2){672,top+24},38,0,WHITE);
+        DrawTextEx(font,"This permanently deletes its saved progress.",(Vector2){672,top+89},25,0,dim);
+        for (int i=0; i<2; ++i) {
+            bool selected = game->menu.cursor == i;
+            int left = 672+i*294;
+            if (selected) {
+                DrawRectangle(left,top+166,280,48,surface);
+                DrawRectangle(left,top+166,4,48,i ? danger : accent);
+                button_prompt(font,left+16,top+173,device,owner,GLYPH_CONFIRM,i ? "Delete" : "Cancel");
+            } else DrawTextEx(font,i ? "Delete" : "Cancel",(Vector2){left+16,top+174},25,0,dim);
+        }
+        return;
+    }
     int footer = y+row_height*(title ? 4 : count)+30;
     int advance = button_prompt(font,x,footer,device,owner,GLYPH_CONFIRM,"Select")+28;
     if (page != MENU_MAIN) advance += button_prompt(font,x+advance,footer,device,owner,GLYPH_BACK,"Cancel")+28;
