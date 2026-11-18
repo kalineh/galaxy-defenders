@@ -46,7 +46,7 @@ Seeking preserves equipment/money, restores armor and synchronizes music.
 `debug.shop` jumps to the shop immediately. From a campaign it uses the normal shop checkpoint.
 From the title or campaign setup it opens a temporary run.
 
-`debug.shadows` toggles soft, centered shadows around buildings and enemy bodies. They start enabled
+`debug.shadows` toggles soft, centered shadows around player ships, sidekicks, enemies and buildings. They start enabled
 each launch. Use `debug.shadows on` or `debug.shadows off` for matching captures.
 
 `debug.music` opens the developer album (Up/Down selects; Left/Right seeks).

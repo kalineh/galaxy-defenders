@@ -536,7 +536,7 @@ static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 ori
         {0.55f,1.33f,12}, {1.33f,0.55f,12}, {1.39f,3.35f,6}, {3.35f,1.39f,6}
     };
     for (size_t i = 0; i < sizeof(taps)/sizeof(taps[0]); ++i) {
-        Color shade = {0,0,0,taps[i].alpha};
+        Color shade = {0,0,0,(unsigned char)((taps[i].alpha*tint.a + 127)/255)};
         for (int y = -1; y <= 1; y += 2) for (int x = -1; x <= 1; x += 2) {
             Rectangle sample = {dest.x + x*taps[i].x, dest.y + y*taps[i].y, dest.width, dest.height};
             DrawTexturePro(image.texture,region,sample,origin,angle,shade);
@@ -810,7 +810,7 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
 
 static Game shop_preview;
 
-static void draw_combat_sprites(const Game *game, const Assets *assets) {
+static void draw_players(const Game *game, const Assets *assets, bool shadow) {
     float view_x = ARENA_X - camera_x(game);
     for (int i = 0; i < GAME_PLAYERS; ++i) {
         const Player *player = &game->players[i];
@@ -818,13 +818,18 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         RenderPose ship = render_pose(previous_motion.players[i],player->age,player->x,player->y,0,motion_weight);
         Color color = player_colors[i];
         if (player->invulnerable && game->tick % 8 < 4) color = Fade(color, 0.4f);
-        sprite(assets->ships[player->chassis], view_x + ship.x, ship.y, 80, -90, color);
+        draw_centered_sprite(assets->ships[player->chassis], view_x + ship.x, ship.y, 80, -90, color,shadow);
         if (player->sidekick >= 0) for (int side = -1; side <= 1; side += 2)
-            sprite(assets->sidekick, view_x + ship.x + side * 40, ship.y, assets->sidekick.width, 0, color);
-        if (player->shield_hit_frames > 0)
+            draw_centered_sprite(assets->sidekick, view_x + ship.x + side * 40, ship.y, assets->sidekick.width, 0, color,shadow);
+        if (!shadow && player->shield_hit_frames > 0)
             sprite(assets->shield_overlay, view_x + ship.x, ship.y, assets->shield_overlay.width * 1.25f,
                 -90, Fade(player_colors[i], 128.0f / 255));
     }
+}
+
+static void draw_combat_sprites(const Game *game, const Assets *assets) {
+    float view_x = ARENA_X - camera_x(game);
+    draw_players(game,assets,false);
     draw_enemies(game, assets, ENEMY_LAYER_PLAYER_OVERLAY);
     for (int i = 0; i < GAME_BULLETS; ++i) {
         const Bullet *bullet = &game->bullets[i];
@@ -1040,7 +1045,10 @@ static void draw_game(const Game *game, const Assets *assets, bool keyboard_free
         }
         draw_stage_prop(game,assets,event,i,center,false);
     }
-    if (shadows) draw_enemies(game,assets,ENEMY_LAYER_SHADOW);
+    if (shadows) {
+        draw_enemies(game,assets,ENEMY_LAYER_SHADOW);
+        draw_players(game,assets,true);
+    }
     for (int layer = -2; layer <= 2; ++layer) draw_enemies(game, assets, layer);
     draw_enemies(game, assets, ENEMY_LAYER_ENTITY);
     for (int i = 0; i < GAME_PICKUPS; ++i) {
@@ -1401,7 +1409,10 @@ static void draw_shop(const Game *game, const Assets *assets, float frame, const
         sprite(assets->star, x, y, assets->star.width * (layer ? 0.6f : 0.4f), 0, WHITE);
     }
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    if (shadows) draw_enemies(&shop_preview, assets, ENEMY_LAYER_SHADOW);
+    if (shadows) {
+        draw_enemies(&shop_preview,assets,ENEMY_LAYER_SHADOW);
+        draw_players(&shop_preview,assets,true);
+    }
     draw_enemies(&shop_preview, assets, enemy_draw_layer(ENEMY_BALL));
     draw_combat_sprites(&shop_preview, assets);
     EndScissorMode();
@@ -1441,7 +1452,7 @@ static Vector2 title_ship_position(Vector2 center, float heading) {
     return (Vector2){center.x + 61*sinf(heading), center.y - 61*cosf(heading)};
 }
 
-static void draw_title_ship(const Assets *assets, int slot, float tick, float clearance) {
+static void draw_title_ship(const Assets *assets, int slot, float tick, float clearance, bool shadows) {
     Vector2 center = slot ? (Vector2){1430,530} : (Vector2){490,510};
     center.x += (slot ? 350 : -350)*clearance;
     Color color = player_colors[slot];
@@ -1450,6 +1461,7 @@ static void draw_title_ship(const Assets *assets, int slot, float tick, float cl
     float turn = 2*PI/256;
     float heading = phase*turn;
     Vector2 ship = title_ship_position(center,heading);
+    if (shadows) draw_centered_sprite(assets->ships[0],ship.x,ship.y,54,heading*RAD2DEG,color,true);
     for (int age=27; age>=0; --age) {
         int launched = ((int)phase - age + 256) % 256;
         /* Short bursts leave a beat of clear space between volleys. */
@@ -1557,7 +1569,7 @@ static int shared_prompt_device(const PlayerDevices *devices) {
     return devices->device[0] >= 0 ? devices->device[0] : devices->device[1];
 }
 
-static void draw_menu_list(const Game *game,const Assets *assets,float frame,const PlayerDevices *devices,int offset,float clearance) {
+static void draw_menu_list(const Game *game,const Assets *assets,float frame,const PlayerDevices *devices,int offset,float clearance,bool shadows) {
     static const char *headings[MENU_CONTROLLERS+1] = {
         [MENU_OPTIONS]="Options",
         [MENU_OVER]="Game over", [MENU_PAUSE]="Paused", [MENU_RETRY]="Retry stage?",
@@ -1570,8 +1582,8 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
     if (title || stages) menu_sky(frame);
     else DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,Fade(BLACK,.60f));
     if (title) {
-        if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame,clearance);
-        if (game->players[1].joined) draw_title_ship(assets,1,frame,clearance);
+        if (game->players[0].joined || !game->players[1].joined) draw_title_ship(assets,0,frame,clearance,shadows);
+        if (game->players[1].joined) draw_title_ship(assets,1,frame,clearance,shadows);
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
@@ -1767,7 +1779,7 @@ static void draw_menu(const Game *game, const Assets *assets, float frame, const
         }
         return;
     }
-    draw_menu_list(game,assets,frame,devices,offset,clearance);
+    draw_menu_list(game,assets,frame,devices,offset,clearance,shadows);
 }
 
 static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) {
