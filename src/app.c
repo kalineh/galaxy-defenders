@@ -722,9 +722,13 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
     }
 }
 
+static int combat_points(float value) {
+    return (int)lroundf(value * 100.0f);
+}
+
 static void resource_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
     DrawTextEx(font, label, (Vector2){x, y}, 21, 0, WHITE);
-    const char *amount = TextFormat("%.0f / %.0f", value, capacity);
+    const char *amount = TextFormat("%d / %d", combat_points(value), combat_points(capacity));
     DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 18, 0).x, y + 3}, 18, 0, dim);
     DrawRectangle(x, y + 26, 240, 16, (Color){45,55,69,255});
     if (capacity > 0) DrawRectangle(x, y + 26, (int)(240 * fminf(1, fmaxf(0, value / capacity))), 16, color);
@@ -960,7 +964,7 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     if (item >= 0 && cat == 0) {
         const Chassis *c = &game_chassis[item];
         stats[0].label = "Armor";
-        snprintf(stats[0].value,40,"%g HP",c->armor);
+        snprintf(stats[0].value,40,"%d HP",combat_points(c->armor));
         stats[1].label = "Acceleration";
         float thrust = c->speed * (game->players[slot].pilot == 0 ? 1.2f : 1);
         /* The hangar scale rates the stock Rookie at 6 g. */
@@ -971,19 +975,24 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     } else if (item >= 0 && cat == 1) {
         const Generator *g = &game_generators[item];
         stats[0].label = "Energy capacity";
-        snprintf(stats[0].value,40,"%g",g->capacity);
+        snprintf(stats[0].value,40,"%d EN",combat_points(g->capacity));
         stats[1].label = "Energy recovery";
-        snprintf(stats[1].value,40,"%g/s",g->regen*GAME_HZ);
+        snprintf(stats[1].value,40,"%d EN/s",combat_points(g->regen*GAME_HZ));
         count = 2;
         if (g->on_coin || g->on_collision) {
-            stats[2].label = g->on_coin ? "Energy per coin" : "Energy per impact HP";
-            snprintf(stats[2].value,40,"+%g",g->on_coin ? g->on_coin : g->on_collision);
+            if (g->on_coin) {
+                stats[2].label = "Energy per coin";
+                snprintf(stats[2].value,40,"+%g EN",g->on_coin * 100.0);
+            } else {
+                stats[2].label = "Impact recovery";
+                snprintf(stats[2].value,40,"%d EN / 100 impact HP",combat_points(g->on_collision));
+            }
             ++count;
         }
     } else if (item >= 0 && cat == 2) {
         const Shield *h = &game_shields[item];
         stats[0].label = "Shield capacity";
-        snprintf(stats[0].value,40,"%g HP",h->capacity);
+        snprintf(stats[0].value,40,"%d HP",combat_points(h->capacity));
         stats[1].label = "Recharge efficiency";
         snprintf(stats[1].value,40,"%.0f%%",100*h->efficiency);
         count = 2;
@@ -999,25 +1008,26 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
             dps += hit*GAME_HZ/(e->toggle ? 1 : ticks);
         }
         stats[0].label = item == WEAPON_CHARGE_SHOT ? "Full-charge damage" : "Damage per hit";
-        if (min_hit == max_hit) snprintf(stats[0].value,40,"%.3g HP",max_hit);
-        else snprintf(stats[0].value,40,"%.3g - %.3g HP",min_hit,max_hit);
+        int low = combat_points(min_hit), high = combat_points(max_hit);
+        if (low == high) snprintf(stats[0].value,40,"%d HP",high);
+        else snprintf(stats[0].value,40,"%d - %d HP",low,high);
         count = 1;
         if (cat == 3) {
             stats[1].label = "Estimated DPS";
-            snprintf(stats[1].value,40,"%.3g HP/s",dps);
+            snprintf(stats[1].value,40,"%d HP/s",combat_points(dps));
             ++count;
         } else if (cat == 5) {
             const WeaponEmitter *e = w->emitters;
             if (item == WEAPON_BLADE) {
                 stats[1].label = "Sweep reach";
-                snprintf(stats[1].value,40,"%.0f px",38*e->scale_override);
+                snprintf(stats[1].value,40,"%.0f arena units",38*e->scale_override);
                 stats[2].label = e->lifetime > 9 ? "Return hit" : "Recovery";
-                if (e->lifetime > 9) snprintf(stats[2].value,40,"%.3g HP",max_hit*1.25f);
-                else snprintf(stats[2].value,40,"%.2g s",e->reload);
+                if (e->lifetime > 9) snprintf(stats[2].value,40,"%d HP",combat_points(max_hit*1.25f));
+                else snprintf(stats[2].value,40,"%d ms",(int)lroundf(e->reload*1000));
                 count = 3;
             } else if (item == WEAPON_CHARGE_SHOT) {
                 stats[1].label = "Full charge";
-                snprintf(stats[1].value,40,"%.2g s",(float)e->charge_frames/GAME_HZ);
+                snprintf(stats[1].value,40,"%d ms",(int)lroundf(e->charge_frames*1000.0f/GAME_HZ));
                 count = 2;
             } else {
                 stats[1].label = "Shots per wing";
@@ -1025,7 +1035,7 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
                 count = 2;
                 if (item == WEAPON_MISSILE_LAUNCHER && e->radius > 0) {
                     stats[2].label = "Blast radius";
-                    snprintf(stats[2].value,40,"%.0f px",e->radius);
+                    snprintf(stats[2].value,40,"%.0f arena units",e->radius);
                     ++count;
                 }
             }
