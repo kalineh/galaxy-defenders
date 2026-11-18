@@ -1,0 +1,43 @@
+en,de,es,fr,it,ja,ko,pl,pt-BR,ru,zh-Hans,zh-Hant
+English,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文
+Play,Spielen,Jugar,Jouer,Gioca,プレイ,플레이,Graj,Jogar,Играть,开始游戏,開始遊戲
+Options,Optionen,Opciones,Options,Opzioni,オプション,설정,Opcje,Opções,Настройки,设置,設定
+Quit,Beenden,Salir,Quitter,Esci,終了,종료,Zakończ,Sair,Выйти,退出,離開
+Select,Wählen,Elegir,Choisir,Seleziona,決定,선택,Wybierz,Selecionar,Выбрать,选择,選擇
+Back,Zurück,Volver,Retour,Indietro,戻る,뒤로,Wstecz,Voltar,Назад,返回,返回
+Cancel,Abbrechen,Cancelar,Annuler,Annulla,キャンセル,취소,Anuluj,Cancelar,Отмена,取消,取消
+Adjust,Ändern,Ajustar,Régler,Regola,調整,조정,Zmień,Ajustar,Изменить,调整,調整
+Language,Sprache,Idioma,Langue,Lingua,言語,언어,Język,Idioma,Язык,语言,語言
+Resume,Fortsetzen,Reanudar,Reprendre,Riprendi,再開,계속,Wznów,Continuar,Продолжить,继续,繼續
+Retry,Neu starten,Reintentar,Réessayer,Riprova,リトライ,다시 시도,Ponów,Tentar de novo,Повторить,重试,重試
+Controllers,Controller,Mandos,Manettes,Controller,コントローラー,컨트롤러,Kontrolery,Controles,Контроллеры,控制器,控制器
+Paused,Pause,En pausa,En pause,In pausa,ポーズ,일시 정지,Pauza,Pausado,Пауза,已暂停,已暫停
+Normal,Normal,Normal,Normal,Normale,ノーマル,보통,Normalny,Normal,Обычно,普通,普通
+Hard,Schwer,Difícil,Difficile,Difficile,ハード,어려움,Trudny,Difícil,Сложно,困难,困難
+Really Hard,Sehr schwer,Muy difícil,Très difficile,Molto difficile,ベリーハード,매우 어려움,Bardzo trudny,Muito difícil,Очень сложно,极难,極難
+SFX Volume,Effektlautstärke,Volumen de efectos,Volume des effets,Volume effetti,効果音音量,효과음 음량,Głośność efektów,Volume dos efeitos,Громкость эффектов,音效音量,音效音量
+Music Volume,Musiklautstärke,Volumen de música,Volume musical,Volume musica,音楽音量,음악 음량,Głośność muzyki,Volume da música,Громкость музыки,音乐音量,音樂音量
+Screen Size,Bildgröße,Tamaño de pantalla,Taille de l’écran,Dimensione schermo,画面サイズ,화면 크기,Rozmiar ekranu,Tamanho da tela,Размер экрана,画面大小,畫面大小
+Render Scale,Renderskalierung,Escala de renderizado,Échelle de rendu,Scala di rendering,描画解像度,렌더링 배율,Skala renderowania,Escala de renderização,Масштаб рендера,渲染比例,算繪比例
+Display mode,Anzeigemodus,Modo de pantalla,Mode d’affichage,Modalità schermo,画面モード,화면 모드,Tryb ekranu,Modo de exibição,Режим экрана,显示模式,顯示模式
+Windowed,Fenster,Ventana,Fenêtré,Finestra,ウィンドウ,창 모드,Okno,Janela,В окне,窗口,視窗
+Fullscreen,Vollbild,Pantalla completa,Plein écran,Schermo intero,フルスクリーン,전체 화면,Pełny ekran,Tela cheia,Полный экран,全屏,全螢幕
+On,Ein,Sí,Activé,Sì,オン,켜짐,Wł.,Sim,Вкл.,开,開
+Off,Aus,No,Désactivé,No,オフ,꺼짐,Wył.,Não,Выкл.,关,關
+Chassis,Rumpf,Chasis,Châssis,Telaio,機体,기체,Kadłub,Chassi,Корпус,机体,機體
+Generator,Generator,Generador,Générateur,Generatore,発電機,발전기,Generator,Gerador,Генератор,发生器,發電機
+Shield,Schild,Escudo,Bouclier,Scudo,シールド,보호막,Osłona,Escudo,Щит,护盾,護盾
+Primary,Hauptwaffe,Principal,Principale,Primaria,主武装,주 무장,Główna,Principal,Основное,主武器,主武器
+Support,Unterstützung,Apoyo,Soutien,Supporto,副武装,보조 무장,Wsparcie,Apoio,Поддержка,副武器,副武器
+Sidekick,Begleiter,Escolta,Ailier,Gregario,僚機,편대기,Eskorta,Ala,Ведомый,僚机,僚機
+Armor,Panzerung,Blindaje,Blindage,Corazza,装甲,장갑,Pancerz,Blindagem,Броня,装甲,裝甲
+Energy,Energie,Energía,Énergie,Energia,エネルギー,에너지,Energia,Energia,Энергия,能量,能量
+Ready,Bereit,Listo,Prêt,Pronto,準備完了,준비,Gotów,Pronto,Готов,就绪,就緒
+Buy,Kaufen,Comprar,Acheter,Compra,購入,구매,Kup,Comprar,Купить,购买,購買
+Empty,Leer,Vacío,Vide,Vuoto,空き,비어 있음,Puste,Vazio,Пусто,空,空
+Owned,Im Besitz,En propiedad,Acquis,Posseduto,所持,보유,Posiadane,Adquirido,Куплено,已拥有,已擁有
+Equipped,Ausgerüstet,Equipado,Équipé,Equipaggiato,装備中,장착 중,Założone,Equipado,Установлено,已装备,已裝備
+Slot %d,Platz %d,Ranura %d,Emplacement %d,Slot %d,スロット %d,슬롯 %d,Slot %d,Espaço %d,Ячейка %d,存档 %d,存檔 %d
+Stage %d,Level %d,Fase %d,Niveau %d,Livello %d,ステージ %d,스테이지 %d,Etap %d,Fase %d,Этап %d,第 %d 关,第 %d 關
+Unreadable,Unlesbar,Ilegible,Illisible,Illeggibile,読み込み不可,읽기 오류,Błąd odczytu,Ilegível,Ошибка чтения,无法读取,無法讀取
+Delete,Löschen,Borrar,Supprimer,Elimina,削除,삭제,Usuń,Excluir,Удалить,删除,刪除

@@ -1,3 +1,13 @@
+# Typography and localization follow-up
+
+- Compare Noto Sans, Atkinson Hyperlegible, Barlow Semi Condensed and IBM Plex Sans
+  on the larger loadout rows before choosing the shipping face. Revisit repeated
+  category/equipment wording in the shop header and selected item.
+- The UTF-8 catalog in localization/ui.csv covers shared navigation, settings,
+  save-slot summaries and loadout labels. Still to translate: item names and
+  descriptions, stat blocks, dialogs, controller setup, pilot biographies,
+  stage names, results, intro and ending. Review translations in context.
+
 # Shop UI
 
 Implemented the widescreen shop from [the revised concept](design/shop-target.png).

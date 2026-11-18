@@ -12,6 +12,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ui_strings.inc"
+static int ui_language;
+
+static const char *ui_text(const char *english) {
+    if (ui_language && english) {
+        for (size_t i=0; i<sizeof(ui_strings)/sizeof(ui_strings[0]); ++i)
+            if (!strcmp(english,ui_strings[i][0])) return ui_strings[i][ui_language];
+    }
+    return english;
+}
+
 #define CANVAS_WIDTH 1920
 #define CANVAS_HEIGHT 1080
 #define ARENA_X 480
@@ -67,7 +78,7 @@ typedef struct {
     Sound weapon_fire[WEAPON_COUNT], impacts[4], enemy_fire[2], overheat;
     Sound menu_sounds[5];
     bool audio, stage_music_started;
-    Font console_font, ui_font, heading_font;
+    Font console_font, ui_font, heading_font, western_body, western_heading, cjk_font;
 } Assets;
 
 static const char *synth_path(const char *source);
@@ -129,8 +140,9 @@ static void assets_unload(Assets *assets) {
     if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
     for (int i = 0; i < 4; ++i) if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
     if (assets->console_font.texture.id && assets->console_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->console_font);
-    if (assets->heading_font.texture.id && assets->heading_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->heading_font);
-    if (assets->ui_font.texture.id && assets->ui_font.texture.id != GetFontDefault().texture.id) UnloadFont(assets->ui_font);
+    Font owned[] = {assets->western_body,assets->western_heading,assets->cjk_font};
+    for (int i=0; i<3; ++i)
+        if (owned[i].texture.id && owned[i].texture.id != GetFontDefault().texture.id) UnloadFont(owned[i]);
     for (int i = 0; i < 3; ++i)
         if (IsTextureValid(assets->portraits[i])) UnloadTexture(assets->portraits[i]);
     if (assets->audio) {
@@ -266,12 +278,12 @@ static bool stage_assets_load(Assets *assets, int index) {
 
 static bool assets_load(Assets *assets, Console *console, bool mute, float volume) {
     /* Solcraft's fixed-font preference: use the OS font, never copy Windows fonts. */
-    int ui_glyphs[97];
-    for (int i = 0; i < 95; ++i) ui_glyphs[i] = 32 + i;
-    ui_glyphs[95] = 0x00a5;
-    ui_glyphs[96] = 0x00b2;
-    assets->ui_font = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"), 64, ui_glyphs, 97);
-    assets->heading_font = LoadFontEx(asset_path("fonts/NotoSans-Bold.ttf"),64,ui_glyphs,97);
+    int count = sizeof(western_glyphs)/sizeof(western_glyphs[0]);
+    assets->western_body = LoadFontEx(asset_path("fonts/NotoSans-Regular.ttf"),64,western_glyphs,count);
+    assets->western_heading = LoadFontEx(asset_path("fonts/NotoSans-Bold.ttf"),64,western_glyphs,count);
+    assets->cjk_font = LoadFontEx(asset_path("fonts/NotoSansCJKsc-Regular.otf"),64,cjk_glyphs,sizeof(cjk_glyphs)/sizeof(cjk_glyphs[0]));
+    assets->ui_font = assets->western_body;
+    assets->heading_font = assets->western_heading;
     const char *windows = getenv("WINDIR");
     const char *font_names[] = {"consola.ttf", "cour.ttf"};
     for (int i = 0; windows && i < 2; ++i) {
@@ -290,12 +302,14 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         assets->console_font = LoadFontEx(asset_path("fonts/NotoSansMono-Regular.ttf"), 32, NULL, 95);
         console_log(console, "Console font: Noto Sans Mono");
     }
-    if (!IsFontValid(assets->heading_font) || assets->heading_font.texture.id == GetFontDefault().texture.id ||
+    if (!IsFontValid(assets->cjk_font) || assets->cjk_font.texture.id == GetFontDefault().texture.id ||
+        !IsFontValid(assets->heading_font) || assets->heading_font.texture.id == GetFontDefault().texture.id ||
         !IsFontValid(assets->ui_font) || assets->ui_font.texture.id == GetFontDefault().texture.id ||
         !IsFontValid(assets->console_font) || assets->console_font.texture.id == GetFontDefault().texture.id) {
         console_log(console, "ERROR: required UI/console font could not load; default raylib text is disabled.");
         return false;
     }
+    SetTextureFilter(assets->cjk_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->heading_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
@@ -536,6 +550,7 @@ static int key_prompt(Font font, int x, int y, const char *key, const char *acti
 }
 
 static int button_prompt(Font font, int x, int y, int device, ButtonGlyph button, const char *action) {
+    action = ui_text(action);
     if (button == GLYPH_HORIZONTAL || button == GLYPH_VERTICAL) {
         bool horizontal = button == GLYPH_HORIZONTAL;
         bool pad = device >= 0 && device < INPUT_PADS;
@@ -763,7 +778,7 @@ static int combat_points(float value) {
 }
 
 static void resource_meter(Font font, int x, int y, const char *label, float value, float capacity, Color color) {
-    DrawTextEx(font, label, (Vector2){x, y}, 21, 0, WHITE);
+    DrawTextEx(font, ui_text(label), (Vector2){x, y}, 21, 0, WHITE);
     const char *amount = TextFormat("%d / %d", combat_points(value), combat_points(capacity));
     DrawTextEx(font, amount, (Vector2){x + 240 - MeasureTextEx(font, amount, 18, 0).x, y + 3}, 18, 0, dim);
     DrawRectangle(x, y + 26, 240, 16, (Color){45,55,69,255});
@@ -805,7 +820,7 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
 }
 
 static const char *shop_item_name(int category, int item) {
-    if (item < 0) return "Empty";
+    if (item < 0) return ui_text("Empty");
     switch (category) {
         case 0: return game_chassis[item].name;
         case 1: return game_generators[item].name;
@@ -837,7 +852,7 @@ static void draw_slot_row(const Assets *assets, const Player *p, int x, int y, i
     }
     Sprite icon = id < 0 ? assets->shop[cat] : equipment_icon(assets,cat,id);
     sprite(icon,x+24,y+23,32,0,id < 0 ? dim : WHITE);
-    const char *slot = loadout_slots[cat];
+    const char *slot = ui_text(loadout_slots[cat]);
     float label_size = fminf(24,24*104/fmaxf(1,MeasureTextEx(font,slot,24,0).x));
     DrawTextEx(font,slot,(Vector2){x+49,y+(47-label_size)/2},label_size,0,dim);
     const char *name = shop_item_name(cat,id);
@@ -1144,7 +1159,7 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
         bool equipped = id == owned && (!tiers || i == equipped_level);
         bool purchased = tiers ? i < marks : marks > 0;
         bool expandable = !tiers && cat >= 3 && id >= 0 && game_weapons[id].level_count > 1;
-        const char *status = equipped ? "Equipped" : purchased ? "Owned" : "";
+        const char *status = ui_text(equipped ? "Equipped" : purchased ? "Owned" : "");
         Color status_color = equipped ? highlight : purchased ? dim : WHITE;
         if (!expandable && !purchased) {
             int price = game_shop_price(p,cat,id,tiers ? i : 0);
@@ -1329,14 +1344,23 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
     DrawRectangle(x,y,width,height-3,selected ? surface : ink);
     DrawLine(x,y+height-3,x+width,y+height-3,rule);
     if (selected) DrawRectangle(x,y,5,height-3,accent);
-    const char *label = game_menu_page_label(game,page,row);
-    DrawTextEx(font,label,(Vector2){x+22,y+(height-30)/2-2},28,0,WHITE);
+    const char *label = ui_text(game_menu_page_label(game,page,row));
+    if (page == MENU_SLOTS && row < GAME_SAVE_SLOTS) {
+        const char *state = game->saves[row].valid ? TextFormat(ui_text("Stage %d"),game->saves[row].stage+1) :
+            ui_text(game->save_errors[row] ? "Unreadable" : "Empty");
+        label = TextFormat("%s - %s",TextFormat(ui_text("Slot %d"),row+1),state);
+    } else if (page == MENU_STAGE_SELECT && row < 12) label = TextFormat(ui_text("Stage %d"),row+1);
+    int label_width = page == MENU_OPTIONS && row < OPTION_COUNT ? width-232 : width-44;
+    float label_size = fminf(28,28*label_width/fmaxf(1,MeasureTextEx(font,label,28,0).x));
+    DrawTextEx(font,label,(Vector2){x+22,y+(height-label_size)/2-2},label_size,0,WHITE);
     if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
         const char *setting = row == OPTION_RENDER_SCALE ?
             TextFormat("%d%%",render_scale_percent[game->menu.options[row]]) :
+            row == OPTION_LANGUAGE ? "English" :
             row == OPTION_WINDOW_MODE ? (game->menu.options[row] ? "Fullscreen" : "Windowed") :
             row == OPTION_MSAA ? (const char *[]){"Off","2x","4x"}[game->menu.options[row]] :
             (game->menu.options[row] ? "On" : "Off");
+        setting = ui_text(setting);
         float value_width = MeasureTextEx(font,setting,26,0).x;
         DrawTextEx(font,setting,(Vector2){x+width-value_width-22,y+(height-26)/2},26,0,accent);
     }
@@ -1414,7 +1438,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : page == MENU_OPTIONS ? 45 : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? 40 : 69;
     int y = title ? 606 : stages ? 180 : 437;
     bool dialog = page == MENU_DELETE || page == MENU_QUIT;
     MenuPage background = page == MENU_DELETE ? MENU_SLOTS : page == MENU_QUIT ? game->menu.parent : page;
@@ -1430,7 +1454,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
         DrawRectangle(x-32,y-114,width+64,3,accent);
     }
     x += offset;
-    const char *heading = headings[background];
+    const char *heading = ui_text(headings[background]);
     if (heading && title)
         DrawTextEx(font,heading,(Vector2){(CANVAS_WIDTH-MeasureTextEx(font,heading,34,0).x)/2+offset,295},34,0,WHITE);
     else if (heading) DrawTextEx(font,heading,(Vector2){x,y-78},44,0,WHITE);
@@ -2186,6 +2210,11 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
     bool link_cursor = false;
     while (!WindowShouldClose() && !console->quit && !game->menu.quit) {
         double frame_start = GetTime();
+        if (!console_open && !console->music_album && IsKeyPressed(KEY_F8)) {
+            int direction = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT) ? -1 : 1;
+            int *language = &game->menu.options[OPTION_LANGUAGE];
+            *language = (*language + direction + GAME_LANGUAGE_COUNT) % GAME_LANGUAGE_COUNT;
+        }
         if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
         update_audio(game, console, &assets);
         if (!frames) {
@@ -2377,6 +2406,10 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         BeginTextureMode(draw_target);
         BeginMode2D((Camera2D){.zoom=canvas_zoom});
 #endif
+        ui_language = game->menu.options[OPTION_LANGUAGE];
+        bool cjk = ui_uses_cjk[ui_language];
+        assets.ui_font = cjk ? assets.cjk_font : assets.western_body;
+        assets.heading_font = cjk ? assets.cjk_font : assets.western_heading;
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
             draw_game(game, &assets, keyboard_owner < 0);

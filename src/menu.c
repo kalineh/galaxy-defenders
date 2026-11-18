@@ -4,7 +4,7 @@
 
 /* Labels/order/spacing come from StateMainMenu.cs, World.cs and OptionsMenu.cs.
    Keep this state independent of raylib so console checks exercise real input. */
-const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2, 1};
+const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2, 1, GAME_LANGUAGE_COUNT-1};
 const int render_scale_percent[4] = {75, 100, 150, 200};
 
 static const char *labels[MENU_CONTROLLERS + 1][OPTION_COUNT+1] = {
@@ -12,7 +12,7 @@ static const char *labels[MENU_CONTROLLERS + 1][OPTION_COUNT+1] = {
     [MENU_SLOTS] = {"Slot 1", "Slot 2", "Slot 3", "Back"},
     [MENU_DELETE] = {"Cancel", "Delete slot"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
-    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Display mode", "Back"},
+    [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Display mode", "Language", "Back"},
     [MENU_QUIT] = {"Cancel", "Quit"},
     [MENU_PAUSE] = {"Resume", "Retry", "Options", "Controllers", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},

@@ -31,6 +31,8 @@ elif [[ "$target" == test ]]; then
     "$zig" cc "${flags[@]}" -O2 tests/test_synth.c "$synth_object" -o build/headless/test_synth.exe
     echo 'Built build/headless/test_game.exe'
 else
+    python tools/compile_ui_strings.py
+    flags+=(-Ibuild)
     ray=third_party/raylib/src
     object_dir=build/raylib
     output_dir=build/native

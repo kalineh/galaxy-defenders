@@ -10,3 +10,7 @@ Files: `hinted/ttf/NotoSans/NotoSans-Regular.ttf` and `hinted/ttf/NotoSans/NotoS
 
 Windows may use installed Consolas/Courier New for the console; those system
 fonts are not redistributed. No renderer falls back to raylib's built-in font.
+
+Noto Sans CJK SC Regular supplies the Japanese, Korean and Chinese menu glyphs.
+The OTF and its SIL Open Font License (NotoSansCJK-LICENSE.txt) are the same
+unmodified assets used by Dragon Wake, bundled locally for standalone builds.

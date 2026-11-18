@@ -194,3 +194,16 @@ task reuses `artifacts/native-port/` for logs/captures, never durable files.
 `scripts/clean_artifacts.ps1` previews only; `-Apply` opts into guarded cleanup
 of that exact marked folder. It refuses links/junctions and never targets source,
 saves, compiler files, or another task's directory.
+
+
+## Localization
+
+F8 cycles the UI language. Shift+F8 cycles backward. Options also offers a
+Language row, and normal play remembers the selection. The initial catalog
+covers navigation, settings and loadout vocabulary across English, German,
+Spanish, French, Italian, Japanese, Korean, Polish, Brazilian Portuguese,
+Russian, Simplified Chinese and Traditional Chinese.
+
+Edit `localization/ui.csv` in UTF-8. The English cell identifies the phrase.
+Empty translations use English. Preserve `%d` in numbered labels. The graphics
+build validates the CSV and compiles its strings and font glyph lists.

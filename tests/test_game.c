@@ -709,6 +709,8 @@ static void menu_flow(void) {
     CHECK(game.menu.options[OPTION_MSAA] == 2);
     CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
     CHECK(game.menu.options[OPTION_WINDOW_MODE] == 1);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right"));
+    CHECK(game.menu.options[OPTION_LANGUAGE] == 1);
     const char *settings_path = "artifacts/native-port/test-graphics.cfg";
     int restored[OPTION_COUNT] = {0};
     CHECK(game_options_write(game.menu.options,settings_path));
