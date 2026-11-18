@@ -152,15 +152,27 @@ static void assets_unload(Assets *assets) {
     }
 }
 
+/* These two-layer paintings replace the particle scenery on three stages. */
+static const struct { const char *name; Color base; } backdrops[STAGE_COUNT] = {
+    [0] = {"Tide",   {9, 29, 78, 255}},
+    [1] = {"Shoals", {7, 43, 67, 255}},
+    [7] = {"Vapor",  {28, 31, 67, 255}},
+};
+
 static bool stage_assets_load(Assets *assets, int index) {
     const SceneryDefinition *scene = &stage_scenery[index < 13 ? index : 13];
     bool valid = true;
     for (int i = 0; i < 4; ++i) {
         if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
         assets->scenery[i] = (Texture2D){0};
-        if (!scene->layers[i].texture) continue;
         char path[160];
-        snprintf(path, sizeof(path), "textures/%s.png", scene->layers[i].texture);
+        if (backdrops[index].name) {
+            if (i >= 2) continue;
+            snprintf(path, sizeof(path), "textures/scenery/%s%s.png", backdrops[index].name, i ? "Near" : "Far");
+        } else {
+            if (!scene->layers[i].texture) continue;
+            snprintf(path, sizeof(path), "textures/%s.png", scene->layers[i].texture);
+        }
         assets->scenery[i] = texture_load(path);
         valid = valid && IsTextureValid(assets->scenery[i]);
     }
@@ -472,6 +484,28 @@ static int button_prompt(Font font, int x, int y, int device, int slot, ButtonGl
 }
 
 static void draw_scenery(const Game *game, const Assets *assets, bool foreground) {
+    int index = game->stage.index;
+    if (backdrops[index].name) {
+        if (foreground) return;
+        DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, backdrops[index].base);
+        for (int i = 0; i < 2; ++i) {
+            Texture2D texture = assets->scenery[i];
+            if (!IsTextureValid(texture)) continue;
+            float depth = i ? 0.30f : 0.13f;
+            float width = GAME_WIDTH + 112;
+            float height = width * texture.height / texture.width;
+            float wind = game->tick * (i ? 0.19f : 0.08f);
+            float y = fmodf(wind - game->stage.camera_y * depth, height);
+            if (y > 0) y -= height;
+            float sway = 14*sinf(game->tick * (i ? 0.0020f : 0.0013f) + i);
+            float pan = fmaxf(-40,fminf(40,game->stage.camera_x*depth));
+            float x = ARENA_X - 56 + sway - pan;
+            Rectangle source = {0,0,(float)texture.width,(float)texture.height};
+            for (; y < GAME_HEIGHT; y += height)
+                DrawTexturePro(texture,source,(Rectangle){x,y,width,height},(Vector2){0},0,WHITE);
+        }
+        return;
+    }
     const SceneryDefinition *scene = &stage_scenery[game->stage.index < 13 ? game->stage.index : 13];
     if (!foreground) {
         Color top = {scene->top[0], scene->top[1], scene->top[2], 255};
