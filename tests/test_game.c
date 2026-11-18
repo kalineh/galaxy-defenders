@@ -668,6 +668,8 @@ static void debug_equipment(void) {
 static void menu_flow(void) {
     reset();
     CHECK(console_chain(&console, &game, "menu.open main;menu.input confirm"));
+    CHECK(game.menu.page == MENU_SLOTS && game.menu.cursor == 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.page == MENU_DIFFICULTY && game.active_slot == 0);
     CHECK(game_join(&game, 1));
     game.menu.players = 2;
@@ -682,10 +684,9 @@ static void menu_flow(void) {
     for (int i = 0; i < 14; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_PILOT);
     game_tick(&game);
-    CHECK(game.menu.page == MENU_SHOP && game.players[1].joined && game.saves[0].shop);
-    game_menu_input(&game, MENU_READY, 0);
-    game_menu_input(&game, MENU_READY, 1);
-    for (int i=0; i<60 && game.menu.page==MENU_SHOP; ++i) game_tick(&game);
+    CHECK(game.menu.page == MENU_INTRO && game.players[1].joined && !game.saves[0].valid);
+    game_menu_input(&game, MENU_CONFIRM, 1); /* Either pilot can skip the intro. */
+    for (int i=0; i<15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && !game.paused);
     CHECK(game.difficulty == 1 && game.players[0].pilot == 2 && game.players[0].chassis == 2);
     CHECK(game.players[0].money == 1500 && game.players[1].money == 1500);
@@ -892,14 +893,15 @@ static void starting_primary_patterns(void) {
         reset();
         game_menu_open(&game, MENU_MAIN);
         game_menu_input(&game, MENU_CONFIRM, 0); /* Play */
+        game_menu_input(&game, MENU_CONFIRM, 0); /* Empty slot */
         for (int i = 0; i < difficulty; ++i) game_menu_input(&game, MENU_DOWN, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
         for (int i = 0; i < pilot; ++i) game_menu_input(&game, MENU_RIGHT, 0);
         game_menu_input(&game, MENU_CONFIRM, 0);
         for (int i = 0; i < 15; ++i) game_tick(&game);
-        CHECK(game.menu.page == MENU_SHOP);
-        game_menu_input(&game, MENU_READY, 0);
-        for (int i=0; i<60 && game.menu.page==MENU_SHOP; ++i) game_tick(&game);
+        CHECK(game.menu.page == MENU_INTRO);
+        for (int i=0; i<240 && game.menu.page==MENU_INTRO; ++i) game_tick(&game);
+        CHECK(game.menu.page == MENU_NONE && game.stage.index == 0 && !game.saves_dirty);
         game.waves = false;
         game.players[0].input.fire = true;
         game_tick(&game);
@@ -1888,7 +1890,6 @@ static void controller_joining(void) {
     CHECK(game.players[1].money == 9876);
     CHECK(input_drop(&game, &devices, INPUT_KEYBOARD));
     game_menu_open(&game, MENU_MAIN);
-    game_menu_input(&game, MENU_DOWN, 1);
     game_menu_input(&game, MENU_CONFIRM, 1);
     CHECK(game.menu.page == MENU_SLOTS); /* P2 can operate shared menus alone. */
     game_shop_open(&game);
@@ -1986,7 +1987,6 @@ static void save_slots(void) {
     for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_MAIN && !game.saves_dirty);
     CHECK(!memcmp(&checkpoint, &game.saves[2], sizeof(checkpoint)));
-    game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.page == MENU_SLOTS && game.menu.cursor == 2);
     game_menu_input(&game, MENU_UP, 0);
@@ -1996,8 +1996,7 @@ static void save_slots(void) {
     CHECK(game.menu.page == MENU_SLOTS && game.menu.cursor == 1 && game.active_slot == 2);
     CHECK(game.saves[1].player[0].money == 1001);
     game_menu_input(&game, MENU_CONFIRM, 0);
-    CHECK(game.active_slot == 1 && game.menu.page == MENU_MAIN && game.menu.cursor == 0);
-    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.active_slot == 1 && game.transition == TRANSITION_CONTINUE);
     for (int i=0; i<15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.players[0].money == 1001);
     game_menu_open(&game, MENU_SLOTS);

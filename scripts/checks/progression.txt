@@ -1,5 +1,20 @@
 # Real authored bosses, stage clear, shop, and next-stage progression.
 game.reset 42
+menu.open main
+menu.input confirm
+assert menu eq 14
+menu.input down
+menu.input confirm
+assert menu eq 3
+menu.input confirm
+assert menu eq 4
+menu.input confirm
+game.step 15
+assert menu eq 2
+menu.input confirm
+game.step 15
+assert menu eq 0
+assert stage eq 1
 player.invincible 1 1
 player.upgrade 1 7
 game.stage 1 0.9
@@ -13,12 +28,20 @@ game.step 82
 assert menu eq 11
 assert p1.score eq 0
 assert p1.money gt 0
+# Resume this occupied slot through Play. Its checkpoint is the Stage 2 shop.
+menu.open main
+menu.input confirm
+assert menu eq 14
+menu.input confirm
+game.step 15
+assert menu eq 11
 menu.input ready
 game.step 49
 assert stage eq 2
 assert tick eq 0
 assert complete eq 0
 assert p1.weapon_level eq 7
+player.invincible 1 1
 game.stage 2 0.95
 player.input 1 0 0 1 1
 game.step 6000

@@ -1216,6 +1216,26 @@ static void draw_menu_list(const Game *game,const Assets *assets,int frame,const
 
 static void draw_menu(const Game *game, const Assets *assets, int frame, const PlayerDevices *devices) {
     if (game->menu.page == MENU_NONE) return;
+    if (game->menu.page == MENU_INTRO) {
+        int tick = game->menu.frame;
+        menu_sky(tick);
+        int lead = game->players[0].joined ? 0 : 1;
+        float lift = fmaxf(0,tick-112);
+        float y = 650 - 190*fminf(1,tick/70.0f) - lift*lift*0.065f;
+        for (int i=0; i<GAME_PLAYERS; ++i) {
+            const Player *p = &game->players[i];
+            if (p->joined) sprite(assets->ships[p->chassis],i == lead ? 960 : 1060,
+                y+(i == lead ? 0 : 68),86,-90,player_colors[i]);
+        }
+        int pilot = game->players[lead].pilot;
+        DrawRectangle(570,755,780,135,ink);
+        DrawRectangle(570,755,780,2,rule);
+        sprite(assets->portraits[pilot],648,821,124,0,WHITE);
+        DrawTextEx(assets->ui_font,pilot_names[pilot],(Vector2){735,774},24,0,accent);
+        DrawTextEx(assets->ui_font,"Copy, Control. Launching.",(Vector2){735,812},34,0,WHITE);
+        button_prompt(assets->ui_font,1180,923,devices->device[lead],lead,GLYPH_CONFIRM,"Skip");
+        return;
+    }
     if (game->menu.page == MENU_FINISH) {
         static const char *lines[] = {
             "",
@@ -1811,7 +1831,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_weapon_shots, game->weapon_shots, sizeof(old_weapon_shots));
         memcpy(old_impacts, game->impact_sounds, sizeof(old_impacts));
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
-        if (!console->music_album && !console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
+        if (!console->music_album && !console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_INTRO || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i) {
                 int device = devices.device[i];
                 game->players[i].input = device >= 0 && device < INPUT_PADS ? input_player(&pads[device]) :
