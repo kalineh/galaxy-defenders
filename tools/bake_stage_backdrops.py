@@ -3,7 +3,7 @@ from math import cos, pi, sin
 from pathlib import Path
 from random import Random
 
-from PIL import Image, ImageFilter
+from PIL import Image
 
 WIDTH, HEIGHT = 640, 1280
 OUT = Path(__file__).resolve().parents[1] / "assets/textures/scenery"
@@ -22,57 +22,30 @@ def noise(cols, rows, seed):
 
 def bake(style, near):
     seed = {"Tide": 30, "Shoals": 57, "Vapor": 92}[style] + near
-    coarse = noise(4, 9, seed)
-    fine = noise(13, 26, seed + 10)
-    details = noise(37, 85, seed + 20)
-    palettes = {
-        "Tide": [(23, 37, 62), (27, 42, 69)],
-        "Shoals": [(20, 43, 56), (24, 49, 60), (29, 56, 65), (35, 63, 69)],
-        "Vapor": [(34, 35, 57), (38, 39, 63), (44, 44, 70)],
-    }
-    colors = palettes[style]
-    pixels = bytearray(WIDTH * HEIGHT * 4)
+    coarse = noise(3, 5, seed)
+    tint = {"Tide": (25, 39, 65), "Shoals": (27, 53, 62), "Vapor": (40, 41, 65)}[style]
+    alpha = bytearray(WIDTH * HEIGHT)
     for y in range(HEIGHT):
         phase = 2 * pi * y / HEIGHT
+        swell = 0.17 * sin(phase + near * 2) + 0.06 * cos(2 * phase)
         for x in range(WIDTH):
             i = y * WIDTH + x
             u = x / WIDTH
+            edge = 1 - u if near else u
             n = coarse[i] / 255 - 0.5
-            f = fine[i] / 255 - 0.5
-            h = details[i] / 255 - 0.5
             if style == "Tide":
-                edge = (1-u if near else u)
-                field = 0.16 + 0.19*sin(phase*2 + near*2) + 0.09*cos(phase*3) + 0.11*n - edge
-                band = near
+                density = (0.30 + swell - edge + 0.06*n) / 0.30
             elif style == "Shoals":
-                edge = (1-u if near else u)
-                field = (0.14 if near else 0.27) + 0.16*sin(phase*2 + near*3) + 0.36*n + 0.12*f + 0.04*h - edge
-                band = (1 if field > 0.088 else 0) + (2 if field > 0.155 else 0)
+                density = (0.36 + swell - edge + 0.40*n) / 0.23
             else:
-                # Long diagonal streaks, broken into banks by the slower density field.
-                ridge = cos(phase*5 + 6.3*u + 1.7*n + 0.58*f)
-                field = 0.22*ridge + 0.31*n + 0.10*f + 0.034*h - (0.215 if near else 0.16)
-                band = 2 if near else int(field > 0.09)
-            if style == "Tide":
-                # Feather across the contour, with a wider falloff on the distant layer.
-                fade = max(0, min(1, 0.5 + field / (0.055 if near else 0.095)))
-                opacity = fade * fade * (3 - 2 * fade)
-            else:
-                opacity = min(1, field * WIDTH)
-            if opacity > 0:
-                pixels[i*4:i*4+4] = bytes((*colors[band], int(255 * opacity)))
+                ridge = cos(2*phase + 3.7*u + near*2 + 0.70*n)
+                density = (ridge + 0.65*n - 0.14) / 1.05
+            fade = max(0, min(1, density))
+            alpha[i] = round((130 if near else 100) * fade*fade*(3 - 2*fade))
+
     layer = "Near" if near else "Far"
-    image = Image.frombytes("RGBA", (WIDTH, HEIGHT), bytes(pixels))
-    if style != "Tide":
-        radius = (2 if near else 4) if style == "Shoals" else (6 if near else 10)
-        # Wrap the blur vertically so scrolling across the tile boundary stays seamless.
-        pad = radius * 4
-        wrapped = Image.new("RGBA", (WIDTH, HEIGHT + 2 * pad))
-        wrapped.paste(image.crop((0, HEIGHT-pad, WIDTH, HEIGHT)), (0, 0))
-        wrapped.paste(image, (0, pad))
-        wrapped.paste(image.crop((0, 0, WIDTH, pad)), (0, HEIGHT+pad))
-        blurred = wrapped.convert("RGBa").filter(ImageFilter.GaussianBlur(radius))
-        image = blurred.crop((0, pad, WIDTH, HEIGHT+pad)).convert("RGBA")
+    image = Image.new("RGB", (WIDTH, HEIGHT), tint)
+    image.putalpha(Image.frombytes("L", (WIDTH, HEIGHT), bytes(alpha)))
     image.save(OUT / f"{style}{layer}.png")
 
 
