@@ -690,21 +690,24 @@ static void draw_loadout(const Assets *assets, const Player *p, int x, int focus
         draw_slot_row(assets,p,x,LOADOUT_TOP+c*LOADOUT_ROW,c,c == focus,color);
 }
 
-static void draw_flight_rail(const Game *game, const Assets *assets, int slot, int device) {
+static void draw_flight_rail(const Game *game, const Assets *assets, int slot) {
     const Player *p = &game->players[slot];
     draw_pilot_rail(assets,p,p,slot,false);
-    if (!p->joined) return;
     int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
     Font font = assets->ui_font;
+    if (slot == 0) {
+        int index = game->stage.index;
+        const char *number = index < 12 ? TextFormat("Stage %d",index+1) : TextFormat("Bonus stage %d",index-11);
+        DrawLine(x,947,x+424,947,rule);
+        DrawTextEx(font,number,(Vector2){x,961},24,0,dim);
+        DrawTextEx(font,stage_definitions[index].display_name,(Vector2){x,996},30,0,WHITE);
+    }
+    if (!p->joined) return;
     DrawLine(x,298,x+424,298,rule);
     draw_loadout(assets,p,x,-1,player_colors[slot]);
-    DrawTextEx(font,stage_definitions[game->stage.index].display_name,(Vector2){x,941},24,0,dim);
-    DrawLine(x,974,x+424,974,rule);
-    if (device != INPUT_KEYBOARD_P2 && !(slot && device < 0))
-        button_prompt(font,x,993,device,slot,GLYPH_START,"Pause");
 }
 
-static void draw_game(const Game *game, const Assets *assets, const PlayerDevices *devices) {
+static void draw_game(const Game *game, const Assets *assets) {
     float view_x = ARENA_X - game->stage.camera_x;
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
@@ -762,7 +765,7 @@ static void draw_game(const Game *game, const Assets *assets, const PlayerDevice
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
-    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,devices->device[i]);
+    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i);
 }
 
 static const char *item_description(int category, int id) {
@@ -1134,9 +1137,13 @@ static void menu_row(Font font, const Game *game, int row, int x, int y, int wid
 }
 
 static void draw_pilot_select(const Game *game,const Assets *assets, const PlayerDevices *devices) {
-    static const char *specialties[] = {"Japan  /  Ace Pilot","Russia  /  Wpn Research","Norway  /  Demolitions"};
-    static const char *blood[] = {"B","A","O"};
-    static const char *bonus[] = {"Speed+","Money+","Damage+"};
+    static const char *specialties[] = {"Ace pilot, Japan","Weapons researcher, Russia","Demolitions specialist, Norway"};
+    static const char *stories[][3] = {
+        {"Kazuki flew mail between Japan's island airstrips.", "His first carrier landing was in a typhoon, with", "the deck lights out and a sack of letters aboard."},
+        {"Rabbit built the targeting rig in her fighter.", "When the lab refused her another test flight,", "she signed the whole prototype up for duty."},
+        {"Gunthor used to clear rockslides above the fjords.", "He still carries his old survey notebook. The last", "few pages are sketches of enemy hulls."}
+    };
+    static const char *bonus[] = {"Speed +","Credits +","Damage +"};
     Font font = assets->ui_font;
     DrawTextEx(font,"Select pilots",(Vector2){272,92},65,0,WHITE);
     for (int slot=0; slot<GAME_PLAYERS; ++slot) {
@@ -1150,7 +1157,7 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
             key_prompt(font,x+336,526,slot ? "F2":"Enter","Join");
             continue;
         }
-        sprite(assets->portraits[pilot],x+332,465,348,0,WHITE);
+        sprite(assets->portraits[pilot],x+332,437,312,0,WHITE);
         if (!game->menu.ready[slot]) {
             int other = game->players[1-slot].joined ? game->menu.pilot[1-slot] : -1;
             for (int dir=-1;dir<=1;dir+=2) {
@@ -1162,11 +1169,12 @@ static void draw_pilot_select(const Game *game,const Assets *assets, const Playe
                 DrawLineEx((Vector2){xx,460},(Vector2){xx-dir*10,471},3,color);
             }
         }
-        DrawLine(x+32,640,x+632,640,rule);
-        DrawTextEx(font,pilot_names[pilot],(Vector2){x+32,657},48,0,WHITE);
-        DrawTextEx(font,bonus[pilot],(Vector2){x+480,678},26,0,color);
-        DrawTextEx(font,specialties[pilot],(Vector2){x+32,728},25,0,dim);
-        DrawTextEx(font,TextFormat("Blood type %s",blood[pilot]),(Vector2){x+32,765},22,0,dim);
+        DrawLine(x+32,593,x+632,593,rule);
+        DrawTextEx(font,pilot_names[pilot],(Vector2){x+32,601},47,0,WHITE);
+        DrawTextEx(font,bonus[pilot],(Vector2){x+632-MeasureTextEx(font,bonus[pilot],24,0).x,622},24,0,color);
+        DrawTextEx(font,specialties[pilot],(Vector2){x+32,664},25,0,color);
+        for (int line=0; line<3; ++line)
+            DrawTextEx(font,stories[pilot][line],(Vector2){x+32,710+line*29},24,0,WHITE);
         if (game->menu.ready[slot]) DrawTextEx(font,"Ready",(Vector2){x+32,821},26,0,color);
         else button_prompt(font,x+32,819,devices->device[slot],slot,GLYPH_CONFIRM,"Select");
         button_prompt(font,x+455,819,devices->device[slot],slot,GLYPH_BACK,"Cancel");
@@ -1917,7 +1925,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
         if (!game_menu_is_title(game) && game->menu.page != MENU_SHOP && game->menu.page != MENU_FINISH &&
             game->menu.page != MENU_STAGE_SELECT)
-            draw_game(game, &assets, &devices);
+            draw_game(game, &assets);
         int animation_tick = frames ? menu_frame++ : (int)fmod(GetTime()*GAME_HZ, 16777216.0);
         draw_menu(game, &assets, animation_tick, &devices);
         if (game->active_slot >= 0 && game->active_slot < GAME_SAVE_SLOTS && game->save_errors[game->active_slot])
