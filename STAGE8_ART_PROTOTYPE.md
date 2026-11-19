@@ -45,9 +45,12 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   short contact shadow and a rounded lip baked from the shape of the part.
 - A wrapping material field controls broad gloss on wet panels. It stays fixed
   in world coordinates across strip joins. Falling snow is a foreground effect.
-- Modern flight and structure atlases add relief to enemy bodies, boss parts,
-  roofs and wrecks. Hull panels get inset seams and sparse fasteners. Organic
-  surfaces use a softer rim. Each player chassis has a tinted canopy and spars.
+- Modern enemies and buildings use the Cast Iron concept. The ball family,
+  airship, missile launchers and two roofs have dedicated drawings in
+  `art/materials/cast-iron.svg`. The other mechanical sprites use their
+  existing armor and roof shapes to define raised faces, ledges and recesses.
+  Wrecks have shallower steps. Organic surfaces use a softer rim.
+  Each player chassis has a tinted canopy and spars.
   Run `python tools/bake_sprite_atlas.py` to bake both resolutions and styles.
 - Stage 8 at `game.stage 8 0.80` shows the long paired waist below the missile
   launcher. At `game.stage 8 0.25` the horizontal span has a strong two-sided cut.

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Components are drawn inside the existing silhouette. Each named group
+       is one overhead casting in the coordinate system of its visible bounds. -->
+  <defs>
+    <linearGradient id="paint" x2=".35" y2="1"><stop stop-color="#fc683e"/><stop offset="1" stop-color="#df4f2d"/></linearGradient>
+    <linearGradient id="iron" x2=".25" y2="1"><stop stop-color="#514e4c"/><stop offset="1" stop-color="#343538"/></linearGradient>
+    <linearGradient id="roof" x2=".45" y2="1"><stop stop-color="#b9b6b5"/><stop offset="1" stop-color="#a4a2a3"/></linearGradient>
+    <symbol id="slab" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect x="1" y="7" width="98" height="92" rx="2" fill="#38383b"/>
+      <path d="M0 4 3 0h95l2 3v87l-2 4H2l-2-4Z" fill="#777577"/>
+      <path d="M1 4 3 1h94l2 3v79l-3 3H4l-3-3Z" fill="url(#roof)"/>
+      <path d="m2 4 2-3h92l2 3Z" fill="#d1cdcb"/>
+    </symbol>
+    <symbol id="lug" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect x="1" y="7" width="98" height="92" rx="4" fill="#4a302b"/>
+      <rect width="100" height="90" rx="4" fill="#ab412a"/>
+      <rect x="1" y="1" width="98" height="80" rx="3" fill="url(#paint)"/>
+      <path d="M4 2h92v4H4Z" fill="#ff7950"/>
+    </symbol>
+    <symbol id="well" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <rect width="100" height="100" rx="5" fill="#ff8058"/>
+      <rect width="100" height="94" rx="4" fill="#26272a"/>
+      <rect x="4" y="10" width="92" height="83" rx="3" fill="url(#iron)"/>
+    </symbol>
+    <g id="Ball">
+      <rect width="100" height="100" fill="url(#iron)"/>
+      <path d="M-4 39Q5-6 51-5q43 0 53 48H48Q29 22 6 40l-10 6Z" fill="#753728"/>
+      <path d="M-4 36Q6-8 52-6q44 1 52 46H48Q29 19 5 37l-9 6Z" fill="url(#paint)"/>
+      <path d="M-2 33C17-7 77-8 100 34 75 0 29-1-2 37Z" fill="#ff784c"/>
+      <path d="M-5 57q27 21 50 2h60q-7 47-55 48Q4 105-5 57Z" fill="#ac4029"/>
+      <path d="M-3 57q24 18 48 0h59q-16 36-53 37Q14 95-3 57Z" fill="url(#paint)"/>
+      <rect x="13" y="41" width="22" height="18" rx="1.5" fill="#2e2e30"/>
+      <rect x="13" y="40" width="22" height="16" rx="1" fill="#686465"/>
+      <path d="M14 41h20" stroke="#817b79" stroke-width="1"/>
+    </g>
+    <g id="BigBall"><use xlink:href="#Ball"/></g>
+    <g id="ShootBall">
+      <use xlink:href="#Ball"/><circle cx="50" cy="49" r="16" fill="#7d4537"/>
+      <circle cx="50" cy="48" r="13.5" fill="#2c2d30"/><circle cx="50" cy="50" r="9" fill="#49484b"/>
+    </g>
+    <g id="Airship">
+      <rect width="100" height="100" fill="url(#iron)"/>
+      <ellipse cx="50" cy="50" rx="36" ry="51" fill="#9a3c29"/>
+      <ellipse cx="50" cy="46" rx="35" ry="47" fill="url(#paint)"/>
+      <path d="M17 68q33 13 66 0l-1 5q-32 13-64 0Z" fill="#393638"/>
+      <use xlink:href="#well" x="34" y="22" width="6" height="38"/>
+      <use xlink:href="#well" x="47" y="21" width="6" height="40"/>
+      <use xlink:href="#well" x="60" y="22" width="6" height="38"/>
+      <rect x="39" y="76" width="22" height="11" rx="4" fill="#423b3b"/>
+      <use xlink:href="#lug" y="43" width="9" height="27"/><use xlink:href="#lug" x="91" y="43" width="9" height="27"/>
+    </g>
+    <g id="MissileStorm">
+      <rect width="100" height="100" fill="#3c3534"/>
+      <rect x="2" y="2" width="96" height="94" fill="#af4229"/>
+      <rect x="3" y="2" width="94" height="89" fill="url(#paint)"/>
+      <use xlink:href="#well" x="12" y="11" width="27" height="26"/>
+      <use xlink:href="#well" x="61" y="11" width="27" height="26"/>
+      <use xlink:href="#well" x="12" y="64" width="27" height="26"/>
+      <use xlink:href="#well" x="61" y="64" width="27" height="26"/>
+      <use xlink:href="#lug" x="39" y="42" width="23" height="18"/>
+      <use xlink:href="#lug" width="16" height="18"/><use xlink:href="#lug" x="84" width="16" height="18"/>
+      <use xlink:href="#lug" y="83" width="16" height="17"/><use xlink:href="#lug" x="84" y="83" width="16" height="17"/>
+    </g>
+    <g id="MissilePod">
+      <rect width="100" height="100" fill="#9d412d"/><rect x="2" y="2" width="96" height="89" fill="url(#paint)"/>
+      <use xlink:href="#well" x="10" y="18" width="24" height="65"/><use xlink:href="#well" x="66" y="18" width="24" height="65"/>
+      <use xlink:href="#lug" x="39" y="33" width="22" height="33"/>
+    </g>
+    <g id="MissileTriple">
+      <rect width="100" height="100" fill="#a63e29"/><rect x="2" y="2" width="96" height="89" fill="url(#paint)"/>
+      <use xlink:href="#well" x="10" y="13" width="21" height="36"/><use xlink:href="#well" x="40" y="49" width="21" height="36"/>
+      <use xlink:href="#well" x="70" y="13" width="21" height="36"/>
+    </g>
+    <g id="base"><rect width="100" height="100" fill="url(#iron)"/><rect x="2" y="2" width="96" height="93" fill="#777578"/></g>
+    <g id="Building2">
+      <use xlink:href="#base"/><use xlink:href="#slab" x="2" y="1" width="23" height="97"/>
+      <use xlink:href="#slab" x="35" y="9" width="57" height="25"/><path d="M26 41h74" stroke="#48474a" stroke-width="2"/>
+      <use xlink:href="#slab" x="35" y="48" width="57" height="42"/>
+    </g>
+    <g id="SmallBuilding1">
+      <rect width="100" height="100" fill="url(#iron)"/>
+      <path fill="#939194" fill-rule="evenodd" d="M2 2h96v92H2Z M8 9v76h84V9Z"/>
+      <use xlink:href="#slab" x="29" y="27" width="42" height="43"/>
+      <use xlink:href="#slab" x="40" width="20" height="15"/><use xlink:href="#slab" x="40" y="85" width="20" height="15"/>
+      <use xlink:href="#slab" y="39" width="14" height="21"/><use xlink:href="#slab" x="86" y="39" width="14" height="21"/>
+    </g>
+  </defs>
+</svg>

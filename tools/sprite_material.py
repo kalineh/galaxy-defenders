@@ -1,5 +1,10 @@
-"""Bake shallow relief on the original sprite layers at their gameplay scale."""
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+"""Bake gameplay materials in the coordinate system of the original sprites."""
+from functools import cache
+from io import BytesIO
+from pathlib import Path
+
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
+from resvg_py import svg_to_bytes
 
 
 def inset(mask, pixels):
@@ -30,6 +35,80 @@ def hull_details(rgb, face, scale, seed, building):
                     draw.ellipse((x+dx-scale,y-scale,x+dx+scale,y+scale),fill=dark)
                     draw.point((x+dx,y),fill=lip)
     return rgb
+
+
+@cache
+def cast_library():
+    return (Path(__file__).resolve().parents[1]/"art/materials/cast-iron.svg").read_text(encoding="utf-8")
+
+
+def drawn_casting(name, alpha):
+    # The drawing supplies material only. The existing alpha owns the silhouette,
+    # pivot and animation frame boundaries in both resolutions of the atlas.
+    box = alpha.point(lambda a: 255 if a >= 128 else 0).getbbox()
+    w, h = box[2]-box[0], box[3]-box[1]
+    svg = cast_library().replace("</svg>", f'<use xlink:href="#{name}"/></svg>')
+    samples = 4*max(w,h)
+    data = svg_to_bytes(svg_string=svg, width=samples, height=samples)
+    paint = Image.open(BytesIO(data)).convert("RGB").resize((w,h),Image.Resampling.LANCZOS)
+    rgb = Image.new("RGB",alpha.size,(58,55,55))
+    rgb.paste(paint,box)
+    return rgb
+
+
+def shifted(mask, dx, dy):
+    result = Image.new("L",mask.size)
+    result.paste(mask,(dx,dy))
+    return result
+
+
+def cast_plate(base, mask, paint, thickness):
+    # A broad face, a short vertical step and the contact shadow at its foot.
+    shade = shifted(mask,0,thickness+1).filter(ImageFilter.GaussianBlur(thickness*0.28))
+    base.paste((37,36,38),mask=shade.point(lambda v: v*0.75))
+    base.paste(paint.point(lambda v: v*0.69),mask=shifted(mask,0,thickness))
+    base.paste(paint,mask=mask)
+    top = ImageChops.subtract(mask,shifted(mask,0,max(1,thickness//2)))
+    return ImageChops.add(base,top.point(lambda v: v*0.065).convert("RGB"))
+
+
+def cast_material(sprite, path, scale, building):
+    alpha = sprite.getchannel("A")
+    name = path.stem
+    casting = name.removesuffix("Dead")
+    wreck = casting != name or "Destroyed" in path.parts
+    red = sprite.getchannel("R")
+    if casting in {
+        "Ball", "BigBall", "ShootBall", "Airship", "MissilePod",
+        "MissileTriple", "MissileStorm", "Building2", "SmallBuilding1",
+    }:
+        body = drawn_casting(casting,alpha)
+        if wreck:
+            # The original wreck marks exposed metal in dark gray. Carry those
+            # chips through the replacement paint and darken the surviving faces.
+            body = body.point(lambda v: v*0.77)
+            body.paste((54,51,53),mask=red.point(lambda r: (130-r)*8))
+        return body
+    rgb = sprite.convert("RGB")
+    # The source's graphite joints, armor and pale roof pieces already describe
+    # separate parts. Cast those shapes at different heights at the original size.
+    iron = ImageOps.colorize(rgb.convert("L"),"#222428","#646265")
+    face = ImageChops.multiply(alpha,red.point(lambda r: (r-124)*7))
+    if building:
+        body = ImageOps.colorize(red,"#504f52","#a19e9e")
+        base = cast_plate(iron,face,body,2*scale)
+        roof = ImageChops.multiply(alpha,red.point(lambda r: (r-185)*9))
+        paint = ImageOps.colorize(red,"#77767a","#c3c0bf")
+        step = 2 if "Destroyed" in path.parts else 4
+        return cast_plate(base,roof,paint,step*scale)
+    # Retain the original magenta of the bonus ship and warm orange enemy paint.
+    paint = rgb.point([int(v*0.94) for v in range(256)] +
+                      [max(0,int(v*0.89)-10) for v in range(256)] +
+                      [max(0,int(v*0.93)-10) for v in range(256)])
+    wide = inset(face,3*scale)
+    side = ImageChops.subtract(face,wide)
+    paint = ImageChops.subtract(paint,side.point(lambda v: v*0.045).convert("RGB"))
+    return cast_plate(iron,face,paint,(2 if name.endswith("Dead") else 3)*scale)
 
 
 def ship_details(rgb, alpha, scale, name):
@@ -63,6 +142,11 @@ def finish_sprite(sprite, path, scale, ships):
             return sprite
 
     alpha = sprite.getchannel("A")
+    organic = name in {"Glob","BlackHole","Asteroid","Cracks","FenceBeam","CutterBeam"}
+    if not organic and not ship and path.as_posix() != "player/Sidekick.svg":
+        cast = cast_material(sprite,path,scale,building)
+        cast.putalpha(alpha)
+        return cast
     rgb = sprite.convert("RGB")
     # Separate raised painted faces from darker chassis, recesses and outlines.
     face = ImageChops.multiply(alpha, rgb.getchannel("R").point(lambda v: (v-137)*12))
@@ -72,7 +156,6 @@ def finish_sprite(sprite, path, scale, ships):
     recess = ImageChops.subtract(soft,height)
     # Leave room on near-white and saturated orange for the bevel highlight.
     rgb = rgb.point(lambda v: v*0.955)
-    organic = name in {"Glob","BlackHole","Asteroid","Cracks","FenceBeam","CutterBeam"}
     if ship:
         rgb = ship_details(rgb,alpha,scale,name)
     elif not organic:
