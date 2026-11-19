@@ -428,28 +428,6 @@ static void boss12(Game *g, Enemy *e) {
     }
 }
 
-/* Bank the remaining charge through neighboring blocks. A straight return
-   favors a lane through the barricade; at its edge the ball can bank sideways. */
-static void boss10_bank_shot(Game *g, Enemy *ball, const Enemy *broken, float incoming_x, float incoming_y) {
-    const Enemy *next = NULL;
-    float best = 0;
-    for (int i = 0; i < GAME_ENEMIES; ++i) {
-        const Enemy *block = &g->enemies[i];
-        if (!block->active || block->intangible || block->kind != ENEMY_BOSS10_BLOCK || block->parent != broken->parent) continue;
-        float dx = block->x-broken->x, dy = block->y-broken->y;
-        float distance = hypotf(dx,dy);
-        if (distance < 1 || distance > 120) continue;
-        float alignment = (dx*incoming_x + dy*incoming_y)/distance;
-        if (!next || alignment > best) { next = block; best = alignment; }
-    }
-    if (next) {
-        float dx = next->x+next->collision_x-ball->x, dy = next->y+next->collision_y-ball->y;
-        float scale = 10/fmaxf(1,hypotf(dx,dy));
-        ball->vx = dx*scale;
-        ball->vy = dy*scale;
-    }
-}
-
 static void boss10_ball_update(Game *g, Enemy *ball) {
     float radius = ball->radius;
     float left = g->stage.camera_x + radius, right = g->stage.camera_x + GAME_WIDTH - radius;
@@ -463,35 +441,48 @@ static void boss10_ball_update(Game *g, Enemy *ball) {
     if (ball->rebound_charges > 0)
         game_particle(g,PARTICLE_BOSS10_BALL_TRAIL,ball->x,ball->y,3,1,0,0);
 
+    Enemy *hit = NULL;
+    float normal_x = 0, normal_y = 0, depth = -1;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         Enemy *block = &g->enemies[i];
         if (!block->active || block->kind != ENEMY_BOSS10_BLOCK || block->intangible) continue;
         float dx = ball->x - block->x - block->collision_x;
         float dy = ball->y - block->y - block->collision_y;
         float edge_x = fabsf(dx) - block->box_width/2, edge_y = fabsf(dy) - block->box_height/2;
-        float near_x = fmaxf(edge_x,0), near_y = fmaxf(edge_y,0);
-        if (near_x*near_x + near_y*near_y > radius*radius) continue;
-        bool horizontal = edge_x > edge_y;
-        if ((horizontal ? dx*ball->vx : dy*ball->vy) >= 0) continue;
-        float incoming_x = ball->vx, incoming_y = ball->vy;
-        if (horizontal) ball->vx = -ball->vx;
-        else ball->vy = -ball->vy;
+        float nx = copysignf(fmaxf(edge_x,0),dx), ny = copysignf(fmaxf(edge_y,0),dy);
+        float distance = hypotf(nx,ny);
+        if (distance > radius) continue;
+        float overlap = radius - distance;
+        if (distance > 0) {
+            nx /= distance;
+            ny /= distance;
+        } else {
+            /* A block can regrow around a ball. Use its nearest face. */
+            nx = edge_x > edge_y ? copysignf(1,dx) : 0;
+            ny = edge_x > edge_y ? 0 : copysignf(1,dy);
+            overlap -= fmaxf(edge_x,edge_y);
+        }
+        if (ball->vx*nx + ball->vy*ny >= 0 || overlap <= depth) continue;
+        hit = block;
+        depth = overlap;
+        normal_x = nx;
+        normal_y = ny;
+    }
+    if (hit) {
+        ball->x += normal_x*depth;
+        ball->y += normal_y*depth;
+        float approach = ball->vx*normal_x + ball->vy*normal_y;
+        ball->vx -= 2*approach*normal_x;
+        ball->vy -= 2*approach*normal_y;
         if (ball->rebound_charges > 0) {
             --ball->rebound_charges;
-            block->timer = -BOSS10_BLOCK_RESPAWN_TICKS;
-            block->intangible = true;
+            hit->timer = -BOSS10_BLOCK_RESPAWN_TICKS;
+            hit->intangible = true;
         }
         float speed = ball->rebound_charges > 0 ? 8 : 6;
         float scale = speed/hypotf(ball->vx,ball->vy);
         ball->vx *= scale;
         ball->vy *= scale;
-        if (ball->rebound_charges > 0) boss10_bank_shot(g,ball,block,incoming_x,incoming_y);
-        else if (fabsf(ball->vy) < 2) {
-            /* Send a grazing rebound back into play instead of orbiting sideways. */
-            ball->vy = 2;
-            ball->vx = copysignf(sqrtf(speed*speed-4),ball->vx);
-        }
-        break;
     }
 
     if (g->seeking || ball->timer > 0) return;

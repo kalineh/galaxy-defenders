@@ -1762,7 +1762,7 @@ static void boss_visual_collision_parity(void) {
     CHECK(block->intangible && block->orbit_radius > 0.95f);
     boss_update_all(&game,block);
     CHECK(!block->intangible && block->orbit_radius == 1);
-    /* A single return into a three-deep lane can open all three rows. */
+    /* The first row sends the ball back. Charges do not drill through the next rows. */
     Enemy *lane[3];
     for (int i = 0; i < 3; ++i) {
         int id = game_spawn_enemy(&game,ENEMY_BOSS10_BLOCK,200,400-92*i);
@@ -1771,9 +1771,17 @@ static void boss_visual_collision_parity(void) {
     }
     game.players[0].x = ball->x = 200; game.players[0].y = ball->y = 550;
     ball->timer = 0; ball->vx = 0; ball->vy = 6;
-    for (int i = 0; i < 36; ++i) boss_update_all(&game,ball);
-    CHECK(lane[0]->intangible && lane[1]->intangible && lane[2]->intangible);
-    CHECK(ball->rebound_charges == 0 && ball->vy > 0);
+    boss_update_all(&game,ball);
+    game.players[0].x = 500;
+    for (int i = 1; i < 20; ++i) boss_update_all(&game,ball);
+    CHECK(lane[0]->intangible && !lane[1]->intangible && !lane[2]->intangible);
+    CHECK(ball->rebound_charges == 2 && ball->vy > 0 && ball->y > lane[0]->y+75);
+    /* A vertical shot clipping the lower-right corner deflects to the right. */
+    ball->x = lane[1]->x+lane[1]->collision_x+lane[1]->box_width/2+22;
+    ball->y = lane[1]->y+lane[1]->collision_y+lane[1]->box_height/2+29;
+    ball->vx = 0; ball->vy = -8;
+    boss_update_all(&game,ball);
+    CHECK(lane[1]->intangible && ball->rebound_charges == 1 && ball->vx > 7);
     reset();
     n = game_spawn_enemy(&game, ENEMY_BOSS12, 480, 300);
     game_tick(&game);

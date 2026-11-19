@@ -86,9 +86,9 @@ Hard (3/4), and 1/6 on Really Hard (0/6). Human playtesting on Hard is still
 worthwhile. The two purchase policies are identical at this point.
 
 In Stage 10 a pilot can aim the rebound by bumping the ball off-center.
-Three amber segments track the remaining block breaks, and blocks return after
-30 seconds. Across the same 36 invincible runs, all cleared Stage 10 and the
-median boss time fell from 45.6 to 30.7 seconds.
+Each bump refills three amber segments. Each charged block impact breaks one
+block and reflects the ball off its face or corner. Wall bounces preserve
+charges. Empty balls still rebound, and broken blocks return after 30 seconds.
 
 ### Shop budget before Stage 12
 
