@@ -84,7 +84,8 @@ static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *
         UnloadImage(image);
         art->deck[art->count++]=texture;
         if (!IsTextureValid(texture)) { valid=false; break; }
-        /* Point sampling prevents bleed at chunk borders; native MSAA handles geometry. */
+        /* Edge samples must not wrap to the opposite end of this 512-row strip. */
+        SetTextureWrap(texture,TEXTURE_WRAP_CLAMP);
         SetTextureFilter(texture,TEXTURE_FILTER_POINT);
     }
     free(mask); UnloadImageColors(grain_pixels); UnloadImage(grain);
