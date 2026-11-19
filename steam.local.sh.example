@@ -1,4 +1,2 @@
-# Optional overrides. Copy to steam.local.sh to use a specific installation
-# or another Steamworks builder account.
-# STEAMCMD='/c/tools/steamcmd/steamcmd.exe'
+# Copy to steam.local.sh to use another Steamworks builder account.
 # STEAM_USERNAME='mrcrops'

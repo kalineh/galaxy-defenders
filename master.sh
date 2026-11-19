@@ -25,16 +25,10 @@ version=$(./build/steam/content/galaxy.exe --version | tr -d '\r')
 echo "Windows depot: $version"
 if [[ "$mode" == --stage-only ]]; then exit 0; fi
 
-if [[ -n ${STEAMCMD:-} ]]; then
-    steamcmd="$STEAMCMD"
-else
-    steamcmd_dir="$(cygpath -u "${LOCALAPPDATA:?LOCALAPPDATA is required to locate SteamCMD}")/SteamCMD"
-    steamcmd="$steamcmd_dir/steamcmd.exe"
-    if [[ ! -f "$steamcmd" ]]; then
-        mkdir -p "$steamcmd_dir"
-        curl --fail --location --retry 2 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip' -o build/steam/steamcmd.zip
-        python -m zipfile -e build/steam/steamcmd.zip "$steamcmd_dir"
-    fi
+steamcmd=build/steam/builder/steamcmd.exe
+if [[ ! -f "$steamcmd" ]]; then
+    mkdir -p build/steam/builder
+    cp tools/steamcmd/steamcmd.exe "$steamcmd"
 fi
 preview=0
 if [[ "$mode" == --preview ]]; then preview=1; fi
