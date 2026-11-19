@@ -2,7 +2,7 @@
    Rasterize the UNION once in stage coordinates, so grain and exposed bevels never
    restart at authored tile joins or swim as the camera scrolls. No frame allocations. */
 #define DECK_CHUNK_HEIGHT 512
-#define DECK_MAX_CHUNKS 40
+#define DECK_MAX_CHUNKS 64
 #define DECK_HAZE_STEP 12
 
 enum DeckFamily { DECK_NONE, DECK_NAVAL, DECK_STATION, DECK_SERVICE };
@@ -10,36 +10,64 @@ typedef struct {
     Texture2D deck[DECK_MAX_CHUNKS], sea, distant;
     int left, top, width, height, count;
     enum DeckFamily family;
+    int tint_r, tint_g, tint_b;
     bool attempted, ready;
 } DeckArt;
 
 static enum DeckFamily deck_family(int stage) {
-    switch (stage) {
-        case 3: case 6: return DECK_STATION;
-        case 7: case 10: return DECK_NAVAL;
-        case 9: return DECK_SERVICE;
-        default: return DECK_NONE;
-    }
+    static const enum DeckFamily families[STAGE_COUNT]={
+        DECK_NAVAL, DECK_SERVICE, DECK_SERVICE, DECK_STATION,
+        DECK_NAVAL, DECK_STATION, DECK_STATION, DECK_NAVAL,
+        DECK_STATION, DECK_SERVICE, DECK_NAVAL, DECK_STATION,
+        DECK_SERVICE, DECK_NONE, DECK_NONE, DECK_NAVAL, DECK_SERVICE, DECK_NONE, DECK_NONE
+    };
+    return families[stage];
 }
 
 static bool deck_event(const StageEvent *e) {
-    return e->kind == STAGE_DECORATION && (!strcmp(e->name,"DarkBlue1") || !strcmp(e->name,"Block1") ||
-        !strcmp(e->name,"DarkBlue3") || !strncmp(e->name,"Grass",5));
+    return e->kind==STAGE_DECORATION && strcmp(e->name,"SecretHint");
 }
 
-/* Match the sprite's two-pixel apron, rotated about its center. DarkBlue3
-   has one opaque rail at source rows 58..89 in a 147-square sprite. */
+typedef struct { const char *name; int x,y,w,h; bool solid; } DeckMask;
+#include "deck_masks.inc"
+
+static const DeckMask *deck_mask(const char *name) {
+    for (size_t i=0; i<sizeof(deck_masks)/sizeof(deck_masks[0]); ++i)
+        if (!strcmp(name,deck_masks[i].name)) return &deck_masks[i];
+    return NULL;
+}
+
+/* Canvas bounds include the same two-pixel apron and rotation as the sprite. */
 static Rectangle deck_bounds(const StageEvent *e) {
     float w=e->width+2, h=w*e->height/e->width;
     float x=e->x, y=e->y;
-    if (!strcmp(e->name,"DarkBlue3")) {
-        h=32*w/147;
-        if (e->rotation==90) x-=0.5f*w/147;
-        else y+=0.5f*w/147;
+    if (e->rotation==90 || e->rotation==270) { float temp=w; w=h; h=temp; }
+    else if ((int)e->rotation%90) {
+        float c=fabsf(cosf(e->rotation*DEG2RAD)), s=fabsf(sinf(e->rotation*DEG2RAD));
+        float bw=c*w+s*h; h=s*w+c*h; w=bw;
     }
-    if (e->rotation==90) { float temp=w; w=h; h=temp; }
     int left=(int)ceilf(x-w/2-0.5f), top=(int)ceilf(y-h/2-0.5f);
     return (Rectangle){left,top,ceilf(x+w/2-0.5f)-left,ceilf(y+h/2-0.5f)-top};
+}
+
+static void deck_fill_mask(unsigned char *mask, const DeckArt *art, const StageEvent *e,
+        const DeckMask *shape, const Image *sheet) {
+    Rectangle r=deck_bounds(e);
+    float angle=e->rotation*DEG2RAD, cs=cosf(angle), sn=sinf(angle);
+    if ((int)e->rotation%90==0) { cs=roundf(cs); sn=roundf(sn); }
+    float scale=shape->w/(e->width+2.0f);
+    const Color *pixels=sheet->data;
+    for (int y=r.y; y<r.y+r.height; ++y) {
+        unsigned char *row=mask+(y-art->top)*art->width+(int)r.x-art->left;
+        if (shape->solid && (int)e->rotation%90==0) { memset(row,255,(size_t)r.width); continue; }
+        for (int x=0; x<(int)r.width; ++x) {
+            float dx=r.x+x+0.5f-e->x, dy=y+0.5f-e->y;
+            int u=(int)floorf((cs*dx+sn*dy)*scale+shape->w*0.5f);
+            int v=(int)floorf((cs*dy-sn*dx)*scale+shape->h*0.5f);
+            if (u>=0 && v>=0 && u<shape->w && v<shape->h &&
+                pixels[(shape->y+v)*sheet->width+shape->x+u].r>=128) row[x]=255;
+        }
+    }
 }
 
 static void deck_art_unload(DeckArt *art) {
@@ -94,7 +122,7 @@ static bool deck_tile_occupied(const StageDefinition *stage, Rectangle tile) {
 /* Carve a waist in an exposed straight edge. Its shoulders and the
    open space immediately outside it must clear every other authored deck/rail. */
 static bool deck_cut_edge(unsigned char *mask, const DeckArt *art, const StageDefinition *stage,
-        int index, Rectangle tile, int side, unsigned seed) {
+        int index, Rectangle tile, int side, unsigned seed, bool occupied) {
     bool vertical=side<2;
     int length=vertical ? tile.height : tile.width, across=vertical ? tile.width : tile.height;
     if (length<110 || across<70) return false;
@@ -103,6 +131,7 @@ static bool deck_cut_edge(unsigned char *mask, const DeckArt *art, const StageDe
     };
     int shape=(seed>>8)%(sizeof(cuts)/sizeof(cuts[0]));
     int depth=cuts[shape].depth, ramp=cuts[shape].ramp;
+    if (occupied) { depth=5+(seed%4); ramp=depth+4; }
     if (depth>across/4) depth=across/4;
     int half=cuts[shape].flat/2+ramp;
     if (2*half+12>length) return false;
@@ -113,6 +142,7 @@ static bool deck_cut_edge(unsigned char *mask, const DeckArt *art, const StageDe
     int low=edge-(sign>0 ? 24 : depth);
     Rectangle clear=vertical ? (Rectangle){low,along-half-5,depth+25,2*half+11} :
                                (Rectangle){along-half-5,low,2*half+11,depth+25};
+    if (occupied && deck_tile_occupied(stage,clear)) return false;
     for (int i=0; i<stage->event_count; ++i) {
         const StageEvent *e=&stage->events[i];
         if (i!=index && e->kind==STAGE_DECORATION && CheckCollisionRecs(clear,deck_bounds(e))) return false;
@@ -135,11 +165,13 @@ static void deck_shape_empty_tiles(unsigned char *mask, const DeckArt *art, cons
         if (!deck_event(e)) continue;
         unsigned seed=deck_cell_hash((int)e->x,(int)e->y);
         Rectangle tile=deck_bounds(e);
-        if (seed%4==0 || deck_tile_occupied(stage,tile)) continue;
+        const DeckMask *shape=deck_mask(e->name);
+        if (seed%4==0 || !shape || !shape->solid || (int)e->rotation%90!=0) continue;
+        bool occupied=deck_tile_occupied(stage,tile);
         for (int attempt=0; attempt<4; ++attempt) {
             int side=((seed>>12)+attempt)&3;
-            if (!deck_cut_edge(mask,art,stage,i,tile,side,seed)) continue;
-            if (seed&4) deck_cut_edge(mask,art,stage,i,tile,side^1,seed);
+            if (!deck_cut_edge(mask,art,stage,i,tile,side,seed,occupied)) continue;
+            if (seed&4) deck_cut_edge(mask,art,stage,i,tile,side^1,seed,occupied);
             break;
         }
     }
@@ -232,7 +264,7 @@ static void deck_paint_cell(Color *out, int start, int rows, const DeckArt *art,
             int sheen=art->family==DECK_SERVICE ? 20 : art->family==DECK_NAVAL ? 6 : 1;
             variation+=sheen*field.g*(c.r+20)/(255*85);
             if (depth>32 && depth<54) variation-=(54-depth)/3;
-            out[(y-start)*w+x]=(Color){c.r+variation,c.g+variation,c.b+variation,255};
+            out[(y-start)*w+x]=(Color){c.r+variation+art->tint_r,c.g+variation+art->tint_g,c.b+variation+art->tint_b,255};
         }
     }
 }
@@ -327,13 +359,15 @@ static void deck_corner_caps(Color *out, int start, int rows, const DeckArt *art
     }
 }
 
-static bool deck_art_load(DeckArt *art, int index, const char *grain_path, const char *sea_path, const char *sheet_path) {
+static bool deck_art_load(DeckArt *art, int index, Color palette, const char *grain_path, const char *sea_path, const char *sheet_path) {
     art->attempted = true;
     art->family=deck_family(index);
+    /* Bias the neutral plate finish toward the stage's established palette. */
+    art->tint_r=((int)palette.r-57)/2; art->tint_g=((int)palette.g-62)/2; art->tint_b=((int)palette.b-74)/2;
     Image grain = LoadImage(grain_path);
     if (!IsImageValid(grain)) return false;
     Image sheet=LoadImage(sheet_path);
-    if (!IsImageValid(sheet) || sheet.width!=1024 || sheet.height!=1088) {
+    if (!IsImageValid(sheet) || sheet.width!=1024 || sheet.height!=DECK_SHEET_HEIGHT) {
         TraceLog(LOG_ERROR,"Invalid deck plating sheet");
         UnloadImage(sheet); UnloadImage(grain); return false;
     }
@@ -358,14 +392,17 @@ static bool deck_art_load(DeckArt *art, int index, const char *grain_path, const
     }
     unsigned char *mask = calloc((size_t)w*h,1);
     if (!mask) { UnloadImage(sheet); UnloadImage(grain); return false; }
+    art->left=left; art->top=top; art->width=w; art->height=h;
     for (int i=0; i<stage->event_count; ++i) {
         const StageEvent *e=&stage->events[i];
         if (!deck_event(e)) continue;
-        Rectangle r=deck_bounds(e);
-        int x0=r.x-left, x1=x0+r.width, y0=r.y-top, y1=y0+r.height;
-        for (int y=y0; y<y1; ++y) memset(mask+y*w+x0,255,(size_t)(x1-x0));
+        const DeckMask *shape=deck_mask(e->name);
+        if (!shape) {
+            TraceLog(LOG_ERROR,"Missing deck silhouette: %s",e->name);
+            free(mask); UnloadImage(sheet); UnloadImage(grain); return false;
+        }
+        deck_fill_mask(mask,art,e,shape,&sheet);
     }
-    art->left=left; art->top=top; art->width=w; art->height=h;
     deck_shape_empty_tiles(mask,art,stage);
     deck_edge_distances(mask,w,h);
     bool valid=true;

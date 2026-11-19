@@ -4,13 +4,15 @@ This branch adds a reversible presentation experiment, not a gameplay change.
 Classic remains the default. Options > Stage art selects Classic or Modern.
 Press F9 to switch the same setting at any time during play or in menus.
 The console accepts `render.style classic` and `render.style modern`.
-| Stage | Deck family | Finish |
+
+| Plate family | Campaign stages | Bonus stages |
 | --- | --- | --- |
-| 4 | Station panels | Dry, matte metal |
-| 7 | Station panels | Dry, matte metal |
-| 8 | Naval plating | Brushed metal over a hazy sea |
-| 10 | Service channels | Wet sheen in rain |
-| 11 | Naval plating | Brushed metal |
+| Naval | 1, 5, 8, 11 | 4 |
+| Station | 4, 6, 7, 9, 12 | |
+| Service | 2, 3, 10 | 1, 5 |
+
+Each stage supplies its palette. Bonus stages 2, 3, 6 and 7 take place in open space.
+The deck bake includes the original rotated rail, diamond and cutout silhouettes.
 
 ## What changes
 
@@ -34,9 +36,10 @@ The console accepts `render.style classic` and `render.style modern`.
 - Stage 8 uses one blurred silhouette mask for its two distant layers. The far
   silhouette is 4.8% of foreground size with 3% camera motion. The middle
   silhouette is 16% of foreground size with 8.5% camera motion.
-- Some unoccupied platforms narrow briefly along one or both edges. The cut is
-  made before the rim and fitting clearance are calculated. Nearby structures,
-  enemy placements, secret entrances and adjoining deck pieces constrain it.
+- Straight spans can taper on one or both sides, lengthwise or crosswise. Empty
+  pieces accept short and long waists up to 34 units deep per side. Occupied
+  pieces can take a 5?8 unit cut where the roof or enemy footprint clears it.
+  Trim and fitting clearance are computed from the finished silhouette.
 - Short square lugs, ledges, stepped brackets and occasional cable loops extend from exposed rails.
   Some inside corners have a diagonal tie beneath them. Shared hardware has a
   short contact shadow and a rounded lip baked from the shape of the part.

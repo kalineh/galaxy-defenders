@@ -1069,7 +1069,7 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
         snprintf(grain,sizeof(grain),"%s",asset_path("textures/stage8-brushed-metal.png"));
         snprintf(sea,sizeof(sea),"%s",asset_path("textures/stage8-sea.png"));
         snprintf(sheet,sizeof(sheet),"%s",asset_path("textures/stage8-plating.png"));
-        deck_art_load(&assets->deck_art,game->stage.index,grain,sea,sheet);
+        deck_art_load(&assets->deck_art,game->stage.index,deck_tint(game->stage.index,""),grain,sea,sheet);
     }
     modern = modern && assets->deck_art.ready;
     bool sea_background=modern && game->stage.index==7;
@@ -1093,16 +1093,7 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
         order[at]=i; ++count;
     }
     Vector2 center = {view_x + GAME_WIDTH*0.5f, GAME_HEIGHT*0.5f - camera_y(game)};
-    if (modern) {
-        /* Rails and other authored underlays sit beneath the solid plate. */
-        for (int row=0; row<count; ++row) {
-            int i=order[row];
-            const StageEvent *e=&stage->events[i];
-            if (e->kind==STAGE_DECORATION && e->depth<0 && !deck_event(e))
-                draw_stage_prop(game,assets,e,i,center,false);
-        }
-        deck_draw(&assets->deck_art,camera_x(game),camera_y(game));
-    }
+    if (modern) deck_draw(&assets->deck_art,camera_x(game),camera_y(game));
     int shadow_end = 0;
     for (int row = 0; row < count; ++row) {
         int i=order[row];
@@ -1115,7 +1106,7 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
                 draw_stage_prop(game,assets,&stage->events[building],building,center,true);
             }
         }
-        if (!modern || (!deck_event(event) && !(event->kind==STAGE_DECORATION && event->depth<0)))
+        if (!modern || !deck_event(event))
             draw_stage_prop(game,assets,event,i,center,false);
     }
     if (shadows) {
