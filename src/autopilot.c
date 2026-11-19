@@ -157,10 +157,14 @@ void ai_fly(Game *g, int slot) {
     if (g->stage.index == 9 && g->boss_spawned) return_ball(g,p,&tx,&ty);
     bool aligned = fabsf(tx-p->x)<48;
     if (g->ai.mode[slot]==AI_DODGE) evade(g,p,&tx,&ty);
+    bool hold_sidekick = game_auto_hold_sidekick(p);
+    const WeaponLevel *salvo = &game_weapons[equipment_focus_weapon(p->primary)].levels[p->weapon_level];
+    float focus_cost = 0;
+    for (int i = 0; i < salvo->count; ++i) focus_cost += salvo->emitters[i].energy + salvo->emitters[i].drain;
     p->input=(PlayerInput){.x=limit((tx-p->x-4*p->vx)/50,-1,1),
         .y=limit((ty-p->y-4*p->vy)/50,-1,1),.fire=true,
-        .focus=aligned && fabsf(ty-p->y)<90 && p->energy>0.55f*game_generators[p->generator].capacity,
-        .sidekick_left=true,.sidekick_right=true};
+        .focus=aligned && fabsf(ty-p->y)<90 && p->energy>=focus_cost && p->energy>0.55f*game_generators[p->generator].capacity,
+        .sidekick_left=hold_sidekick,.sidekick_right=hold_sidekick};
 }
 
 static void purchase(Game *g,int slot,int category,int item,int level) {

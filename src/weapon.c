@@ -186,6 +186,11 @@ static void fire_group(Game *game, int slot, int group, int kind, int level, boo
     }
 }
 
+bool game_auto_hold_sidekick(const Player *p) {
+    return p->sidekick != WEAPON_CHARGE_SHOT ||
+        p->weapons[3][0].charge < game_weapons[WEAPON_CHARGE_SHOT].levels[p->sidekick_level].emitters[0].charge_frames;
+}
+
 void game_update_weapons(Game *game, int slot) {
     Player *p = &game->players[slot];
     fire_group(game, slot, 0, p->primary, p->weapon_level, p->input.fire && !p->input.focus);

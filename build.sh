@@ -3,8 +3,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 target="${1:-native}"
-if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|render|test)$ ]]; then
-    echo 'Usage: ./build.sh [native|headless|render|test]' >&2
+if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|render|test|weapon-trials)$ ]]; then
+    echo 'Usage: ./build.sh [native|headless|render|test|weapon-trials]' >&2
     exit 2
 fi
 zig=./external/zig/zig.exe
@@ -26,6 +26,9 @@ core+=("$synth_object")
 if [[ "$target" == headless ]]; then
     "$zig" cc "${flags[@]}" -O2 -DGALAXY_HEADLESS src/main.c "${core[@]}" -o build/headless/galaxy.exe
     echo 'Built build/headless/galaxy.exe'
+elif [[ "$target" == weapon-trials ]]; then
+    "$zig" cc "${flags[@]}" -O2 tools/weapon_trials.c "${core[@]}" -o build/headless/weapon-trials.exe
+    echo 'Built build/headless/weapon-trials.exe'
 elif [[ "$target" == test ]]; then
     "$zig" cc "${flags[@]}" tests/test_game.c src/render_motion.c "${core[@]}" -o build/headless/test_game.exe
     "$zig" cc "${flags[@]}" -O2 tests/test_synth.c "$synth_object" -o build/headless/test_synth.exe

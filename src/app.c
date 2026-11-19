@@ -2453,10 +2453,11 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 if (index >= 0 && index < GAME_SAVE_SLOTS) remembered_slot = index;
                 fclose(selection);
             }
-            if (game->ai.campaign) game->active_slot = -1;
-            else if (remembered_slot >= 0) game->active_slot = remembered_slot;
-            else for (int i=0; i<GAME_SAVE_SLOTS; ++i) {
-                if (game->saves[i].valid) { game->active_slot = i; break; }
+            if (game->active_slot >= 0) {
+                if (remembered_slot >= 0) game->active_slot = remembered_slot;
+                else for (int i=0; i<GAME_SAVE_SLOTS; ++i) {
+                    if (game->saves[i].valid) { game->active_slot = i; break; }
+                }
             }
         } else console_log(console, "ERROR: could not create save directory");
     }

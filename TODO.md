@@ -127,6 +127,32 @@ plan reached Mk VII on Normal and Hard, and Mk VIII on Really Hard on all
 three seeds, even on the main route. With both detours, those Normal and Hard
 builds still needed about 70,000 and 28,600 credits respectively for Mk VIII.
 
+### Weapon price and damage checks
+
+All 306 solo Normal practice builds cleared their test stage with the
+invincible aiming pilot. The sample covers every purchasable weapon on
+Stages 2–12 with seed 42 and repeats Stages 4, 8 and 12 with seeds 73 and
+101. Each trial starts at that stage's estimated budget. Stage results
+include the rest of the kit. Range DPS isolates the named mount, includes
+both sidekicks where applicable, and uses shop damage units.
+
+- **Mini Shot** is the first price to revisit. On Stage 8, Mk IV cost
+  50,700 and delivered 137 sustained DPS straight ahead. Missile Volley Mk V
+  cost 23,100 for 144 DPS at that distance. Median boss times were 19.4 and
+  15.5 seconds respectively. Try a lower Mini Shot price before changing
+  its firing pattern.
+- **Plasma** is the primary to playtest. On Stage 4 its loadout took 46.1
+  seconds to kill the boss versus 31.0 for Front Laser. Mk IV overcharge
+  needs 825 energy for one shot; the practice kit's Booster holds 600.
+  The aiming pilot now uses regular fire when it cannot fund the salvo.
+- **Charge Shot Mk V** costs 162,500 over Mk IV. Sustained single-target
+  damage with the Fusion Generator increased from 748 to 805 DPS. The mark
+  also gains a bounce, so judge that increment on groups as well. Its early
+  marks performed well.
+- **Blade** depends heavily on spacing. Mk IV delivered 720 DPS beside the
+  ship and zero on the distant target. An AI that normally stands 265 units
+  back understates the value of a melee build.
+
 ## Other release polish
 
 Expand the first-run launch into a short, skippable story intro that leads

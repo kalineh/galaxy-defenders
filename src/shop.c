@@ -126,6 +126,74 @@ bool game_shop_buy(Game *game, int slot) {
     return true;
 }
 
+/* Median pre-stage purchasing power, rounded to 100 credits. Main-route aim
+   runs, seeds 42/73/101, starter and Beam. Co-op values are per pilot. */
+static const int stage_wallet[3][2][12] = {
+    {{0,15700,32900,50000,70500,90400,108600,129900,153400,175200,193700,220400},
+     {0,8300,17300,25900,36500,47700,57300,68300,81200,92400,101800,117300}},
+    {{1500,18600,37900,57800,81400,104000,125400,150300,178900,206000,226800,257900},
+     {1500,10400,20400,30200,42400,55600,66600,79800,95600,109600,120300,138600}},
+    {{2500,20800,43200,66200,94600,122700,148600,179900,217100,253100,277700,317900},
+     {2500,12300,23900,35500,50100,66400,79800,96500,116700,135400,148400,171100}}
+};
+
+static void preset_buy(Game *g, int slot, int category, int item, int level) {
+    g->menu.shop_category[slot] = category;
+    g->menu.shop_item[slot] = item;
+    g->menu.shop_level[slot] = level;
+    game_shop_buy(g,slot);
+}
+
+static void preset_weapon(Game *g, int slot, int weapon, int allowance) {
+    int cat = equipment_weapon_category(weapon);
+    for (int level = game_weapons[weapon].level_count-1; level >= 0; --level) {
+        int price = game_shop_price(&g->players[slot],cat,weapon,level);
+        if (price <= allowance && price <= g->players[slot].money) {
+            preset_buy(g,slot,cat,weapon,level);
+            return;
+        }
+    }
+}
+
+int game_debug_loadout(Game *g, int stage, int weapon, bool cash_only) {
+    if (stage < 1 || stage > 12 || (weapon != -1 && equipment_weapon_category(weapon) < 3)) return -1;
+    bool joined[] = {g->players[0].joined,g->players[1].joined};
+    if (!joined[0] && !joined[1]) joined[0] = true;
+    int pilots[] = {g->players[0].pilot,g->players[1].pilot};
+    int budget = stage_wallet[g->difficulty][joined[0] && joined[1]][stage-1];
+    g->active_slot = -1;
+    g->cleared_game = false;
+    g->ai = (PilotAI){0};
+    game_stage(g,stage-1,0);
+    memset(g->players,0,sizeof(g->players));
+    for (int i = 0; i < GAME_PLAYERS; ++i) if (joined[i]) {
+        game_join(g,i);
+        g->menu.pilot[i] = g->players[i].pilot = pilots[i];
+        game_starting_loadout(g,i);
+        g->players[i].money = budget;
+    }
+    game_shop_open(g);
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        Player *p = &g->players[i];
+        if (!p->joined || cash_only || (stage == 1 && weapon < 0)) continue;
+        int featured = weapon < 0 ? p->primary : weapon;
+        int cat = equipment_weapon_category(featured);
+        if (!game_shop_owned_marks(p,cat,featured) && game_shop_price(p,cat,featured,0) <= p->money)
+            preset_buy(g,i,cat,featured,0);
+        for (int id = GENERATOR_COUNT-1; id > p->generator; --id)
+            if (game_generators[id].price <= budget*18/100) { preset_buy(g,i,1,id,0); break; }
+        for (int id = SHIELD_COUNT-1; id > p->shield; --id)
+            if (game_shields[id].price <= budget*8/100) { preset_buy(g,i,2,id,0); break; }
+        if (cat != 3) preset_weapon(g,i,p->primary,budget*35/100);
+        if (cat != 4) preset_weapon(g,i,p->secondary,budget*12/100);
+        if (cat != 5) preset_weapon(g,i,WEAPON_MISSILE_VOLLEY,budget*12/100);
+        preset_weapon(g,i,featured,p->money);
+        g->menu.shop_category[i] = 0;
+    }
+    game_stats_init(g);
+    return budget;
+}
+
 static void shop_select(Game *game, int slot, int item) {
     GameMenu *menu = &game->menu;
     const Player *p = &game->players[slot];

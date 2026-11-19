@@ -1019,6 +1019,38 @@ static void ai_pilots(void) {
     CHECK(!game.players[0].lives);
     game_stage(&game,1,0);
     CHECK(game.ai.mode[0] == AI_DODGE && game.ai.mode[1] == AI_AIM && !game.saves_dirty);
+    game.active_slot = 1;
+    game.saves[1].stage = 7;
+    CHECK(console_execute(&console,&game,"debug.loadout 8 cash"));
+    CHECK(game.menu.page == MENU_SHOP && game.menu.next_stage == 7 && game.active_slot == -1);
+    CHECK(game.players[0].money == 96500 && game.players[1].money == 96500);
+    CHECK(!game.ai.campaign && !ai_team(&game) && game.players[1].pilot == 1);
+    CHECK(!console_execute(&console,&game,"debug.loadout 13"));
+    CHECK(!console_execute(&console,&game,"debug.loadout 8 BeamFocus"));
+    CHECK(game.players[0].money == 96500 && game.menu.next_stage == 7);
+    CHECK(console_execute(&console,&game,"debug.loadout 8 ChargeShot"));
+    int left = game.players[0].money;
+    CHECK(left >= 0 && left < 96500 && game.players[0].sidekick == WEAPON_CHARGE_SHOT);
+    CHECK(console_execute(&console,&game,"debug.loadout 8 ChargeShot") && game.players[0].money == left);
+    launch_from_shop(0);
+    for (int t = 0; t < 120 && game.menu.page != MENU_NONE; ++t) game_tick(&game);
+    while (game.transition_frames) game_tick(&game);
+    CHECK(game.menu.page == MENU_NONE && game.stage.index == 7 && game.players[0].sidekick == WEAPON_CHARGE_SHOT);
+    CHECK(game.saves[1].stage == 7 && !game.saves_dirty);
+    CHECK(ai_set(&game,0,AI_AIM));
+    for (int i = 0; i < 180; ++i) game_tick(&game);
+    CHECK(game.weapon_shots[WEAPON_CHARGE_SHOT] > 0);
+    reset();
+    Player *pilot = &game.players[0];
+    pilot->x = GAME_WIDTH/2; pilot->y = 800;
+    pilot->primary = WEAPON_PLASMA; pilot->weapon_level = 3;
+    pilot->generator = 0; pilot->energy = game_generators[0].capacity;
+    ai_fly(&game,0);
+    CHECK(pilot->input.fire && !pilot->input.focus);
+    pilot->generator = GENERATOR_COUNT-1;
+    pilot->energy = game_generators[pilot->generator].capacity;
+    ai_fly(&game,0);
+    CHECK(pilot->input.focus);
 }
 
 static void coop_rewards_and_health(void) {

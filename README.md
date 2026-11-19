@@ -59,6 +59,23 @@ Seeking preserves equipment/money, restores armor and synchronizes music.
 - `debug.watch 3` fast-forwards that campaign to Stage 3 using earned gear.
   It stops if the pilots die or time out on the way. Run the same seed and
   policy again to watch the same route.
+- `debug.loadout 8` opens a temporary practice shop before Stage 8 with an
+  estimated build and the credits left over. Choose **Next Stage** to play.
+  `debug.loadout 8 Plasma` prioritizes a named primary, support, or sidekick.
+  Tab completes weapon names. `debug.loadout 8 cash` gives each pilot their
+  starting gear and the entire budget to spend. Estimates use main-route
+  earnings at the current difficulty and party size. Practice uses a separate
+  in-memory run.
+- `./build.sh weapon-trials` builds the windowless comparison tool.
+  `./build/headless/weapon-trials.exe 8 42 0` runs all 18 weapons on Stage 8
+  with seed 42 on Normal and prints CSV. Each row shows its affordable mark,
+  weapon spending after starting gear, isolated sustained damage per second,
+  full-loadout stage completion counts, and boss time in 60 Hz ticks.
+  The range test uses a stationary 96-unit-wide target, first beside the ship
+  (40 units right and ahead), then 265 units directly ahead. The last DPS
+  column tests primary overcharge. The stage run uses an invincible aiming AI.
+  Use `weapon-trials.exe marks 42` for the range results and total shop price
+  of every mark, holding the generator fixed at Fusion.
 - After `./build.sh headless`, run
   `./build/headless/galaxy.exe --playthrough --command "debug.run 2 1 aim beam 42"`
   for a per-stage CSV without rendering, audio, or frame pacing. A stage times

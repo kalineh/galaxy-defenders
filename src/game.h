@@ -297,6 +297,7 @@ void game_scenery_init(Game *game);
 void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
+int game_debug_loadout(Game *game, int stage, int weapon, bool cash_only);
 bool game_shop_departing(const Game *game);
 void game_shop_update(Game *game);
 void game_transition(Game *game, Transition transition, int stage);
@@ -314,6 +315,7 @@ int game_shop_equipped_level(const Player *p, int category);
 int game_shop_equipped(const Player *player, int category);
 bool game_shop_item_available(int category, int item);
 void game_update_weapons(Game *game, int slot);
+bool game_auto_hold_sidekick(const Player *player);
 void game_update_projectile(Game *game, Bullet *bullet);
 void game_projectile_hit(Game *game, Bullet *bullet, int enemy);
 

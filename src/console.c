@@ -19,6 +19,7 @@ static const CommandHelp commands[] = {
     {"debug.shadows", "debug.shadows [on|off]", "Toggle soft shadows around ships, enemies and buildings.", {"on off"}},
     {"debug.ai", "debug.ai SLOT off|aim|dodge", "Assign a debug pilot. Aim is invincible; dodge uses normal damage.", {"1 2","off aim dodge"}},
     {"debug.watch", "debug.watch STAGE", "Fast-forward the current AI campaign to a main stage with its earned loadout.", {NULL}},
+    {"debug.loadout", "debug.loadout STAGE [WEAPON|cash]", "Open a temporary pre-stage shop with estimated funds. Name a weapon to prioritize it, or use cash to shop from starting gear.", {"1 2 3 4 5 6 7 8 9 10 11 12"}},
     {"debug.run", "debug.run DIFFICULTY PLAYERS aim|dodge starter|beam SEED", "Start a temporary main campaign with AI pilots. Difficulty 0..2. Beam switches after stage four.", {"0 1 2","1 2","aim dodge","starter beam"}},
     {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
@@ -148,6 +149,10 @@ int console_complete(Console *console) {
     if (!argument || (!strcmp(command, "help") && argument == 1)) {
         for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); ++i) add_match(matches, &count, commands[i].name, prefix);
         if (argument) add_match(matches, &count, "fields", prefix);
+    } else if (!strcmp(command, "debug.loadout") && argument == 2) {
+        add_match(matches,&count,"cash",prefix);
+        for (int i = 0; i < WEAPON_COUNT; ++i)
+            if (equipment_weapon_category(i) >= 3) add_match(matches,&count,game_weapons[i].name,prefix);
     } else if (!strcmp(command, "player.chassis") && argument == 2) {
         for (int i = 0; i < GAME_CHASSIS; ++i) add_match(matches, &count, game_chassis[i].name, prefix);
     } else if (!strcmp(command, "assert") && argument == 1) {
@@ -337,6 +342,27 @@ bool console_execute(Console *console, Game *game, const char *line) {
     if (!strcmp(command, "debug.ai") && count == 3 && integer(words[1], &slot, 1, 2)) {
         int mode = lookup(words[2], (const char *[]){"off","aim","dodge"}, 3);
         return mode >= 0 && ai_set(game,slot-1,mode);
+    }
+    if (!strcmp(command, "debug.loadout") && (count == 2 || count == 3) && integer(words[1],&value,1,12)) {
+        bool cash = count == 3 && !strcmp(words[2],"cash");
+        int weapon = count == 3 && !cash ? equipment_find_weapon(words[2]) : -1;
+        if (count == 3 && !cash && equipment_weapon_category(weapon) < 3) return false;
+        console->music_album = false;
+        int budget = game_debug_loadout(game,value,weapon,cash);
+        console_log(console,"Stage %d practice shop. Estimated budget per pilot: %d credits.",value,budget);
+        for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined) {
+            const Player *p = &game->players[i];
+            console_log(console,"P%d: %s Mk %d, %d spent, %d available.",i+1,game_weapons[p->primary].display_name,
+                p->weapon_level+1,budget-p->money,p->money);
+            if (weapon >= 0) {
+                int cat = equipment_weapon_category(weapon);
+                if (game_shop_equipped(p,cat) != weapon)
+                    console_log(console,"%s Mk I exceeds this pilot's budget.",game_weapons[weapon].display_name);
+                else if (cat != 3)
+                    console_log(console,"Equipped %s Mk %d.",game_weapons[weapon].display_name,game_shop_equipped_level(p,cat)+1);
+            }
+        }
+        return true;
     }
     if (!strcmp(command, "debug.watch") && count == 2 && integer(words[1],&value,1,12)) {
         if (!game->ai.campaign || !ai_team(game) || game->stage.index >= value ||
