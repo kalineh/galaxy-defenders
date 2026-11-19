@@ -91,16 +91,22 @@ static bool deck_tile_occupied(const StageDefinition *stage, Rectangle tile) {
     return false;
 }
 
-/* Carve a shallow waist in an exposed straight edge. Its shoulders and the
+/* Carve a waist in an exposed straight edge. Its shoulders and the
    open space immediately outside it must clear every other authored deck/rail. */
 static bool deck_cut_edge(unsigned char *mask, const DeckArt *art, const StageDefinition *stage,
         int index, Rectangle tile, int side, unsigned seed) {
     bool vertical=side<2;
     int length=vertical ? tile.height : tile.width, across=vertical ? tile.width : tile.height;
     if (length<110 || across<70) return false;
-    int depth=10+((seed>>4)%6), ramp=depth+((seed&64) ? 7 : 0);
-    int half=12+(seed>>8)%9+ramp;
-    int mid=length/2+(int)((seed>>16)%17)-8;
+    static const struct { int depth,ramp,flat; } cuts[]={
+        {9,12,18}, {12,17,64}, {18,18,28}, {19,24,60}, {29,26,22}, {34,30,60}
+    };
+    int shape=(seed>>8)%(sizeof(cuts)/sizeof(cuts[0]));
+    int depth=cuts[shape].depth, ramp=cuts[shape].ramp;
+    if (depth>across/4) depth=across/4;
+    int half=cuts[shape].flat/2+ramp;
+    if (2*half+12>length) return false;
+    int mid=length/2;
     int sign=(side&1) ? -1 : 1;
     int edge=(vertical ? tile.x : tile.y)+(sign<0 ? across-1 : 0);
     int along=(vertical ? tile.y : tile.x)+mid;
@@ -129,11 +135,11 @@ static void deck_shape_empty_tiles(unsigned char *mask, const DeckArt *art, cons
         if (!deck_event(e)) continue;
         unsigned seed=deck_cell_hash((int)e->x,(int)e->y);
         Rectangle tile=deck_bounds(e);
-        if (seed%3!=0 || deck_tile_occupied(stage,tile)) continue;
+        if (seed%4==0 || deck_tile_occupied(stage,tile)) continue;
         for (int attempt=0; attempt<4; ++attempt) {
             int side=((seed>>12)+attempt)&3;
             if (!deck_cut_edge(mask,art,stage,i,tile,side,seed)) continue;
-            if (seed&128) deck_cut_edge(mask,art,stage,i,tile,side^1,seed);
+            if (seed&4) deck_cut_edge(mask,art,stage,i,tile,side^1,seed);
             break;
         }
     }
@@ -299,6 +305,12 @@ static void deck_corner_caps(Color *out, int start, int rows, const DeckArt *art
         /* Tiny steps between nearly aligned platforms are too short for a cap. */
         if (deck_on_deck(mask,w,h,x+24,y-25)!=ne || deck_on_deck(mask,w,h,x-25,y-25)!=nw ||
             deck_on_deck(mask,w,h,x+24,y+24)!=se || deck_on_deck(mask,w,h,x-25,y+24)!=sw) continue;
+        /* A stair step on a diagonal can pass the four distant corner probes.
+           A miter needs two actual straight arms at the vertex. */
+        if ((!!mask[i-25*w]!=ne) || (!!mask[i-25*w-1]!=nw) ||
+            (!!mask[i+24*w]!=se) || (!!mask[i+24*w-1]!=sw) ||
+            (!!mask[i-w+24]!=ne) || (!!mask[i-w-25]!=nw) ||
+            (!!mask[i+24]!=se) || (!!mask[i-25]!=sw)) continue;
         if (!convex && deck_cell_hash(x+art->left,y+art->top)%5==0)
             deck_underpart(out,start,rows,w,mask,sheet,11,x,y,sx,0,0,sy);
         for (int v=-25; v<=25; ++v) {
