@@ -908,9 +908,14 @@ static void draw_combat_sprites(const Game *game, const Assets *assets) {
         int spawn_offset = (i-previous_motion.effect_cursor+GAME_EFFECTS)%GAME_EFFECTS;
         float rewind = spawn_offset < new_effects ? 0 : motion_weight;
         float alpha = fminf(1,fmaxf(0,effect->alpha-effect->alpha_delta*rewind));
+        Color tint = {effect->r,effect->g,effect->b,(unsigned char)(alpha*255)};
+        /* Shared particle masks also serve both pilots. Only legacy enemy orange
+           needs to follow the selected shell paint in trails, impacts and debris. */
+        if (modern_sprites && tint.r == 252 && tint.g == 124 && tint.b == 85)
+            tint = (Color){252,104,62,tint.a};
         sprite(texture,view_x+effect->x-effect->vx*rewind,effect->y-effect->vy*rewind,
             texture.width*(effect->scale-effect->scale_delta*rewind),effect->angle-effect->spin*rewind,
-            (Color){effect->r,effect->g,effect->b,(unsigned char)(alpha*255)});
+            tint);
     }
 }
 

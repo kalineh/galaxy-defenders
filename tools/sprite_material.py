@@ -12,12 +12,12 @@ def inset(mask, pixels):
     return mask.filter(ImageFilter.BoxBlur(pixels)).point(lambda v: max(0, (v-243)*22))
 
 
-def hull_details(rgb, face, scale, seed, building):
+def hull_details(rgb, face, scale, seed):
     safe = inset(face, 4*scale)
     groove = ImageChops.subtract(safe, inset(face, 5*scale))
     rgb = ImageChops.subtract(rgb, groove.point(lambda v: v*0.075).convert("RGB"))
     draw = ImageDraw.Draw(rgb)
-    pitch = (41 if building else 53)*scale
+    pitch = 53*scale
     for y in range((13+seed%13)*scale, rgb.height-6*scale, pitch):
         for x in range((9+(seed//13+y//pitch*9)%18)*scale, rgb.width-9*scale, pitch):
             # The complete recess must be on one raised face clear of its seam.
@@ -40,6 +40,25 @@ def hull_details(rgb, face, scale, seed, building):
 @cache
 def cast_library():
     return (Path(__file__).resolve().parents[1]/"art/materials/cast-iron.svg").read_text(encoding="utf-8")
+
+
+@cache
+def material_swatch(material):
+    # Sample the actual SVG paint so kit parts and procedurally shaded faces
+    # cannot acquire different orange or graphite ramps.
+    rect = f'<rect width="100" height="100" fill="url(#{material})"/>'
+    svg = cast_library().replace("</svg>", rect + "</svg>")
+    data = svg_to_bytes(svg_string=svg, width=100, height=100)
+    return Image.open(BytesIO(data)).convert("RGB")
+
+
+def material_face(material, alpha):
+    bounds = alpha.getbbox()
+    width, height = bounds[2]-bounds[0], bounds[3]-bounds[1]
+    swatch = material_swatch(material)
+    face = Image.new("RGB", alpha.size, swatch.getpixel((50,50)))
+    face.paste(swatch.resize((width,height),Image.Resampling.BILINEAR), bounds)
+    return face
 
 
 def drawn_casting(name, alpha):
@@ -72,12 +91,68 @@ def cast_plate(base, mask, paint, thickness):
     return ImageChops.add(base,top.point(lambda v: v*0.065).convert("RGB"))
 
 
+def armor_face(sprite, scale, name):
+    alpha = sprite.getchannel("A")
+    red, green, _ = sprite.convert("RGB").split()
+    # Gray is the lower casting. Intermediate colors in the vector source
+    # are antialiasing between that casting and the painted shell.
+    coverage = ImageChops.subtract(red, green).filter(ImageFilter.GaussianBlur(scale*0.45))
+    coverage = coverage.point(lambda v: (v-18)*255/95)
+    shell = ImageChops.multiply(alpha,coverage)
+    bounds = alpha.getbbox()
+    span = min(bounds[2]-bounds[0],bounds[3]-bounds[1])
+    step = max(scale, min(6*scale, round(span*0.045)))
+    iron = material_face("iron", alpha)
+    if name == "BlackHole":
+        iron = ImageOps.grayscale(sprite).point(lambda v: min(v,22)).convert("RGB")
+    else:
+        # Free-standing graphite parts (boss covers and weights) have a narrow
+        # outside lip. Interior gray areas only receive the shell's contact shadow.
+        rim = ImageChops.subtract(alpha,shifted(alpha,0,max(1,step//2)))
+        iron = ImageChops.add(iron,rim.point(lambda v: v*0.08).convert("RGB"))
+    paint = material_face("paint", alpha)
+    if name == "BonusShip":
+        paint = ImageOps.colorize(paint.getchannel("R"), "#492044", "#e46cd7")
+    # A contact shadow inside every well reads even when the enemy rotates.
+    contact = shell.filter(ImageFilter.GaussianBlur(step))
+    iron.paste((36,36,38),mask=contact)
+    lower = ImageChops.subtract(shell,shifted(shell,0,-step))
+    paint.paste((172,64,41) if name != "BonusShip" else (152,68,145),mask=lower)
+    upper = ImageChops.subtract(shell,shifted(shell,0,max(1,step//3)))
+    paint = ImageChops.add(paint,upper.point(lambda v: v*0.055).convert("RGB"))
+    return Image.composite(paint,iron,shell)
+
+
+def projectile_material(sprite, name, scale):
+    alpha = sprite.getchannel("A")
+    if name in {"EnemyMissile", "EnemyShot"}:
+        return armor_face(sprite,scale,name)
+    # Energy has a luminous core. Physical player ordnance has a dipped
+    # trailing bevel. Neutral values take the owning pilot's tint at draw time.
+    if name in {"Blade","Boomerang","Bomblet","Missile","DrunkMissile","SeekBomb","Vulcan"}:
+        bounds = alpha.getbbox()
+        span = min(bounds[2]-bounds[0],bounds[3]-bounds[1])
+        step = max(scale,min(3*scale,round(span*0.075)))
+        lip = ImageChops.subtract(alpha,shifted(alpha,0,-step))
+        return ImageOps.colorize(lip, "#f8f8f8", "#909090")
+    core = alpha.filter(ImageFilter.BoxBlur(2*scale)).point(lambda v: (v-80)*255/175)
+    if name.startswith("Enemy") or name in {"CutterBeam","FenceBeam"}:
+        return ImageOps.colorize(core, "#ef5935", "#ff8b54")
+    return ImageOps.colorize(core, "#b4b4b4", "#ffffff")
+
+
 def cast_material(sprite, path, scale, building):
     alpha = sprite.getchannel("A")
     name = path.stem
     casting = name.removesuffix("Dead")
     wreck = casting != name or "Destroyed" in path.parts
     red = sprite.getchannel("R")
+    if name == "Asteroid":
+        stone = material_face("roof",alpha)
+        edge = ImageChops.subtract(alpha,alpha.filter(ImageFilter.GaussianBlur(3*scale)))
+        return ImageChops.subtract(stone,edge.point(lambda v: v*0.36).convert("RGB"))
+    if name == "Cracks":
+        return material_face("iron",alpha)
     if casting in {
         "Ball", "BigBall", "ShootBall", "Airship", "MissilePod",
         "MissileTriple", "MissileStorm", "Building2", "SmallBuilding1",
@@ -89,26 +164,25 @@ def cast_material(sprite, path, scale, building):
             body = body.point(lambda v: v*0.77)
             body.paste((54,51,53),mask=red.point(lambda r: (130-r)*8))
         return body
-    rgb = sprite.convert("RGB")
-    # The source's graphite joints, armor and pale roof pieces already describe
-    # separate parts. Cast those shapes at different heights at the original size.
-    iron = ImageOps.colorize(rgb.convert("L"),"#222428","#646265")
-    face = ImageChops.multiply(alpha,red.point(lambda r: (r-124)*7))
     if building:
-        body = ImageOps.colorize(red,"#504f52","#a19e9e")
+        iron = material_face("iron",alpha)
+        face = ImageChops.multiply(alpha,red.point(lambda r: (r-124)*7))
+        body = ImageOps.colorize(red,"#514e50","#89878a")
         base = cast_plate(iron,face,body,2*scale)
         roof = ImageChops.multiply(alpha,red.point(lambda r: (r-185)*9))
-        paint = ImageOps.colorize(red,"#77767a","#c3c0bf")
+        paint = material_face("roof",alpha)
         step = 2 if "Destroyed" in path.parts else 4
         return cast_plate(base,roof,paint,step*scale)
-    # Retain the original magenta of the bonus ship and warm orange enemy paint.
-    paint = rgb.point([int(v*0.94) for v in range(256)] +
-                      [max(0,int(v*0.89)-10) for v in range(256)] +
-                      [max(0,int(v*0.93)-10) for v in range(256)])
-    wide = inset(face,3*scale)
-    side = ImageChops.subtract(face,wide)
-    paint = ImageChops.subtract(paint,side.point(lambda v: v*0.045).convert("RGB"))
-    return cast_plate(iron,face,paint,(2 if name.endswith("Dead") else 3)*scale)
+    if name == "Spike":
+        # Both animation frames need the complete face gradient.
+        half = sprite.width//2
+        body = Image.new("RGB",sprite.size)
+        for x in (0,half):
+            frame = sprite.crop((x,0,x+half,sprite.height))
+            body.paste(armor_face(frame,scale,name),(x,0))
+        return body
+    body = armor_face(sprite,scale,name)
+    return body.point(lambda v: v*0.77) if wreck else body
 
 
 def ship_details(rgb, alpha, scale, name):
@@ -133,17 +207,20 @@ def ship_details(rgb, alpha, scale, name):
 
 def finish_sprite(sprite, path, scale, ships):
     name = path.stem
+    if path.parts[0] == "weapons" or name in {"EnemyShot","Laser","FenceBeam","CutterBeam"}:
+        material = projectile_material(sprite,name,scale)
+        material.putalpha(sprite.getchannel("A"))
+        return material
     building = path.parts[:2] == ("stage","Static")
     ship = len(path.parts)==1 and name in ships
     if not building and not ship and path.as_posix() != "player/Sidekick.svg":
         if len(path.parts)!=1 or path.suffix!=".svg" or name.startswith("Medal") or name in {
-            "BigBonus","Bonus","Powerup","TriangleParticle","EnemyShot","Laser"
+            "BigBonus","Bonus","Powerup","TriangleParticle"
         }:
             return sprite
 
     alpha = sprite.getchannel("A")
-    organic = name in {"Glob","BlackHole","Asteroid","Cracks","FenceBeam","CutterBeam"}
-    if not organic and not ship and path.as_posix() != "player/Sidekick.svg":
+    if not ship and path.as_posix() != "player/Sidekick.svg":
         cast = cast_material(sprite,path,scale,building)
         cast.putalpha(alpha)
         return cast
@@ -158,13 +235,9 @@ def finish_sprite(sprite, path, scale, ships):
     rgb = rgb.point(lambda v: v*0.955)
     if ship:
         rgb = ship_details(rgb,alpha,scale,name)
-    elif not organic:
-        rgb = hull_details(rgb,face,scale,sum(name.encode()),building)
+    else:
+        rgb = hull_details(rgb,face,scale,sum(name.encode()))
     rgb = ImageChops.subtract(rgb, recess.point(lambda v: v*0.50).convert("RGB"))
     rgb = ImageChops.add(rgb, crest.point(lambda v: v*0.39).convert("RGB"))
-    if organic:
-        broad = height.filter(ImageFilter.GaussianBlur(5*scale))
-        rim = ImageChops.subtract(height,broad)
-        rgb = ImageChops.add(rgb,rim.point(lambda v: v*0.12).convert("RGB"))
     rgb.putalpha(alpha)
     return rgb

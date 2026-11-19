@@ -29,9 +29,9 @@
       <path d="M-2 33C17-7 77-8 100 34 75 0 29-1-2 37Z" fill="#ff784c"/>
       <path d="M-5 57q27 21 50 2h60q-7 47-55 48Q4 105-5 57Z" fill="#ac4029"/>
       <path d="M-3 57q24 18 48 0h59q-16 36-53 37Q14 95-3 57Z" fill="url(#paint)"/>
-      <rect x="13" y="41" width="22" height="18" rx="1.5" fill="#2e2e30"/>
-      <rect x="13" y="40" width="22" height="16" rx="1" fill="#686465"/>
-      <path d="M14 41h20" stroke="#817b79" stroke-width="1"/>
+      <rect x="13" y="40" width="22" height="18" rx="1.5" fill="#696465"/>
+      <rect x="13" y="40" width="22" height="16.5" rx="1.5" fill="#26272a"/>
+      <rect x="14" y="43" width="20" height="13" rx="1" fill="url(#iron)"/>
     </g>
     <g id="BigBall"><use xlink:href="#Ball"/></g>
     <g id="ShootBall">
@@ -46,7 +46,7 @@
       <use xlink:href="#well" x="34" y="22" width="6" height="38"/>
       <use xlink:href="#well" x="47" y="21" width="6" height="40"/>
       <use xlink:href="#well" x="60" y="22" width="6" height="38"/>
-      <rect x="39" y="76" width="22" height="11" rx="4" fill="#423b3b"/>
+      <use xlink:href="#well" x="39" y="76" width="22" height="11"/>
       <use xlink:href="#lug" y="43" width="9" height="27"/><use xlink:href="#lug" x="91" y="43" width="9" height="27"/>
     </g>
     <g id="MissileStorm">

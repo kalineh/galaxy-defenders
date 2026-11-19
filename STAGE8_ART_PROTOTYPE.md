@@ -49,7 +49,12 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   airship, missile launchers and two roofs have dedicated drawings in
   `art/materials/cast-iron.svg`. The other mechanical sprites use their
   existing armor and roof shapes to define raised faces, ledges and recesses.
-  Wrecks have shallower steps. Organic surfaces use a softer rim.
+  Their paint and graphite ramps come from the same SVG as the dedicated parts.
+  Orange armor sits above dark wells, pale roof slabs sit above gray foundations,
+  and the bonus ship keeps its magenta paint. Wrecks carry darkened faces.
+  Hostile rounds use orange casings or brighter energy cores. Player rounds
+  use neutral material masks multiplied by each pilot's color. Enemy trails
+  and impact particles pick up the shell orange in Modern mode.
   Each player chassis has a tinted canopy and spars.
   Run `python tools/bake_sprite_atlas.py` to bake both resolutions and styles.
 - Stage 8 at `game.stage 8 0.80` shows the long paired waist below the missile
