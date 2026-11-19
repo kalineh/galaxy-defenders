@@ -1,10 +1,54 @@
 # Next gameplay work
 
-Check how much firing time the early waves allow on Normal and Hard. Compare a
-small Normal difficulty reduction with starting one weapon tier higher.
+## Stage clear and balance
+
+- [ ] **Stage clear.** Give the boss defeat a short beat, fly the surviving
+  ships off automatically, then fade the playfield and both HUD rails to black
+  together. Show the stage name, Stage Clear, three star outlines, the category
+  percentages, and the full team credit award. Fill the earned stars in sequence.
+  Confirm reveals the full tally immediately, then advances to the shop. Keep
+  the final stage connected to the ending. Award and checkpoint the result
+  exactly once, including when the player skips the animation.
+- [ ] **Stars.** Award one for clearing, two for over 75% combined completion,
+  and three for a perfect run. Use the average of the applicable enemy,
+  building, and coin percentages for the second star. Compare raw counts for
+  the third so a rounded 100% cannot hide a missed target. Show empty stars
+  and carry the result through stage selection and saved bests.
+- [ ] **Co-op.** Give each pilot half of credits earned together, including the
+  clear award and skill bonus. Show the full award once. A 10,000-credit clear
+  gives each pilot 5,000 in co-op and gives the solo pilot 10,000. Preserve
+  individual wallets, account for odd credits, and test joining or leaving mid-stage.
+  Start with 1.25× enemy and boss health for two active pilots, applied once
+  alongside the difficulty multiplier. Check joins and disconnects during bosses.
+- [ ] **One AI pilot usable in both the game and the headless runner.** Allow
+  either slot to be AI-controlled, including a drop-in AI wingmate and two AI
+  pilots for a watchable run. Drive ordinary player inputs. Track reachable
+  targets, move below them, and fire. In co-op, give the pilots opposite
+  preferred halves and let them cross over when useful. Provide an invincible
+  targeting run to probe firing windows and a vulnerable run that dodges.
+- [ ] **Fast campaign simulations.** Run fixed-seed simulations without
+  rendering, audio, or frame pacing. Use real stage progression and purchases
+  within the pilots' budgets. Record per-stage stars and category counts,
+  escaped targets, deaths, boss kill time, loadouts, and credits earned and
+  spent. Compare solo and co-op on Normal, Hard, and Really Hard. Replay an
+  interesting stage and build in the native game to see why a wave was missed.
+- [ ] **Tuning after the baseline.** Compare a pilot investing in one starter
+  weapon with one switching to a premium weapon mid-campaign. If catching up
+  costs too much, ease the first few marks while preserving relative weapon
+  prices and late-tier investment. Keep permanent ownership, coin drops, and
+  the current purchase-only shop. Use the run results and human playtests to
+  decide whether particular weapons, waves, or difficulty settings need a
+  small adjustment. A perfect run can be build-dependent.
+
+## Other release polish
 
 Expand the first-run launch into a short, skippable story intro that leads
 directly into stage one.
+
+Polish the ending and give secret-stage entry a distinctive transition.
+Revisit short story beats between stages after the clear sequence is settled.
+Check a full launch, controller, suspend/resume, and save/continue cycle on
+Steam Deck hardware.
 
 The current Noto faces stay in use across the localized UI. Playtest the
 equipment terminology and story text with speakers of each language.
