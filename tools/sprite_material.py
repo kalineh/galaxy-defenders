@@ -158,6 +158,13 @@ def armor_face(sprite, scale, name):
     # A contact shadow inside every well reads even when the enemy rotates.
     contact = shell.filter(ImageFilter.GaussianBlur(step))
     iron.paste((36,36,38),mask=contact)
+    # Narrow articulated parts keep a broad area of shell color as they rotate.
+    # Use the same shallow, centered bevel on the triangular and annular panels.
+    if name in {"Boss7CannonBig","Boss7CannonSmall","Boss12Arm","Pyramid","PyramidTurret","Teleporter"}:
+        inner = shell.filter(ImageFilter.MinFilter(2*scale+1))
+        bevel = ImageChops.subtract(shell,inner).point(lambda v: v*0.17)
+        paint.paste((172,64,41),mask=bevel)
+        return Image.composite(paint,iron,shell)
     lower = ImageChops.subtract(shell,shifted(shell,0,-step))
     paint.paste((172,64,41) if name != "BonusShip" else (152,68,145),mask=lower)
     upper = ImageChops.subtract(shell,shifted(shell,0,max(1,step//3)))
