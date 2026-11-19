@@ -536,6 +536,24 @@ static void enemy_camera_movement(void) {
 }
 
 static void boss_timing_rules(void) {
+    for (int phase = 0; phase < 3; ++phase) {
+        reset();
+        int index = game_spawn_enemy(&game,ENEMY_BOSS3,480,200);
+        Enemy *boss = &game.enemies[index];
+        boss->health *= (1.0f - phase*0.3f);
+        boss->cooldown = 1;
+        boss->aux_index = phase;
+        boss->attack = 1;
+        boss->shot_index = (int[]){5,3,15}[phase];
+        boss_update_all(&game,boss);
+        CHECK(boss->shot_index == 0 && boss->cooldown == 6+phase+60-phase*10+4+phase*4);
+        Enemy *arm = &game.enemies[boss->children[0]];
+        arm->cooldown = 1;
+        int bullets = game_bullet_count(&game);
+        boss_update_all(&game,arm);
+        CHECK(game_bullet_count(&game) == bullets+(phase ? 4 : 0));
+        if (phase) CHECK(arm->cooldown == (phase == 1 ? 98 : 72));
+    }
     reset();
     int n=game_spawn_enemy(&game,ENEMY_BOSS5,480,200);
     enemy_take_damage(&game,&game.enemies[n],70,0);
@@ -1716,11 +1734,46 @@ static void boss_visual_collision_parity(void) {
     CHECK(block->intangible && fabsf(block->orbit_radius - 0.5f) < 0.0001f);
     for (int i = 0; i < 30; ++i) boss_update_all(&game, block);
     CHECK(!block->intangible && block->orbit_radius == 1);
-    block->timer = -3600; block->intangible = true;
+    int ball_id = game_spawn_enemy(&game,ENEMY_BOSS10_BALL,game.players[0].x,game.players[0].y);
+    Enemy *ball = &game.enemies[ball_id];
+    ball->parent = parent;
+    ball->vx = ball->vy = 1;
+    boss_update_all(&game,ball);
+    CHECK(ball->rebound_charges == 3 && ball->vy < 0);
+    ball->x = game.stage.camera_x+32; ball->y = 400; ball->vx = -8; ball->vy = 0;
+    boss_update_all(&game,ball);
+    CHECK(ball->rebound_charges == 3 && ball->vx > 0);
+    for (int hit = 0; hit < 4; ++hit) {
+        Enemy *target = block;
+        if (hit) {
+            int id = game_spawn_enemy(&game,ENEMY_BOSS10_BLOCK,480+hit*10,300);
+            target = &game.enemies[id];
+            target->parent = parent; target->timer = 0; target->intangible = false;
+        }
+        ball->x = target->x; ball->y = target->y+79; ball->vx = 0; ball->vy = -8;
+        boss_update_all(&game,ball);
+        CHECK(ball->vy > 0 && ball->rebound_charges == (hit < 3 ? 2-hit : 0));
+        CHECK(target->intangible == (hit < 3));
+        CHECK(target->timer == (hit < 3 ? -BOSS10_BLOCK_RESPAWN_TICKS : 0));
+    }
     for (int i = 0; i < 61; ++i) boss_update_all(&game, block);
     CHECK(block->intangible && block->orbit_radius == 0);
-    for (int i = 61; i < 3600; ++i) boss_update_all(&game, block);
+    for (int i = 61; i < BOSS10_BLOCK_RESPAWN_TICKS-1; ++i) boss_update_all(&game, block);
+    CHECK(block->intangible && block->orbit_radius > 0.95f);
+    boss_update_all(&game,block);
     CHECK(!block->intangible && block->orbit_radius == 1);
+    /* A single return into a three-deep lane can open all three rows. */
+    Enemy *lane[3];
+    for (int i = 0; i < 3; ++i) {
+        int id = game_spawn_enemy(&game,ENEMY_BOSS10_BLOCK,200,400-92*i);
+        lane[i] = &game.enemies[id];
+        lane[i]->parent = parent; lane[i]->timer = 0; lane[i]->intangible = false;
+    }
+    game.players[0].x = ball->x = 200; game.players[0].y = ball->y = 550;
+    ball->timer = 0; ball->vx = 0; ball->vy = 6;
+    for (int i = 0; i < 36; ++i) boss_update_all(&game,ball);
+    CHECK(lane[0]->intangible && lane[1]->intangible && lane[2]->intangible);
+    CHECK(ball->rebound_charges == 0 && ball->vy > 0);
     reset();
     n = game_spawn_enemy(&game, ENEMY_BOSS12, 480, 300);
     game_tick(&game);

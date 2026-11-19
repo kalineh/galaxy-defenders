@@ -76,6 +76,44 @@ cleared 581. The README has commands for repeating and watching a run.
    stages 1, 2, 4, 5 and 9. The tested solo builds earned no perfect Really
    Hard clears. Other routes and loadouts remain to be tested.
 
+### Boss playtest follow-up
+
+Stage 3 now has 4, 8 and 12 extra recovery ticks between volleys across
+its three phases. The core also spaces individual shots by one extra tick in
+phase two and two in phase three. Across the same three seeds, distinct dodge
+runs that reached Stage 3 cleared it 6/6 on Normal (previously 3/6), 1/4 on
+Hard (3/4), and 1/6 on Really Hard (0/6). Human playtesting on Hard is still
+worthwhile. The two purchase policies are identical at this point.
+
+In Stage 10 a pilot can aim the rebound by bumping the ball off-center.
+Three amber segments track the remaining block breaks, and blocks return after
+30 seconds. Across the same 36 invincible runs, all cleared Stage 10 and the
+median boss time fell from 45.6 to 30.7 seconds.
+
+### Shop budget before Stage 12
+
+The last campaign shopping opportunity is after Stage 11. Compare cumulative
+purchasing power (starting wallet plus stage earnings) with the prices below.
+Intermediate gear purchases use part of that budget. Bonus routes and replays
+can change it. The ending separately sets each joined pilot's wallet to
+999,999,999 credits.
+
+| Median budget on the main route | Solo | Co-op per pilot |
+| --- | ---: | ---: |
+| Normal | 220,403 | 117,293 |
+| Hard | 257,900 | 138,560 |
+| Really Hard | 317,940 | 171,068 |
+
+Each cell covers three invincible seeds on both the starter and Beam policies.
+
+| Kazuki on Normal | Credits |
+| --- | ---: |
+| Max Front Laser from the starting Mk II | 71,500 |
+| Max Beam from scratch | 282,200 |
+| Ace, Fusion Generator, Ultimate Shield, max Front Laser, Vulcan and Missile Volley | 227,200 |
+| Same equipment with max Beam in place of Front Laser | 437,900 |
+| Every shop item and mark after starting gear | 2,468,100 |
+
 ## Other release polish
 
 Expand the first-run launch into a short, skippable story intro that leads

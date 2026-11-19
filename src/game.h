@@ -11,6 +11,8 @@
 #define GAME_WIDTH 960
 #define GAME_HEIGHT 1080
 #define GAME_HZ 60
+#define BOSS10_BALL_CHARGES 3
+#define BOSS10_BLOCK_RESPAWN_TICKS (30 * GAME_HZ)
 #define GAME_PLAYERS 2
 #define GAME_SAVE_SLOTS 3
 #define GAME_ENEMIES 256
@@ -132,7 +134,7 @@ typedef struct {
     int age, cooldown;
     float health_max, rotation, base_y, move_from, move_to, aim;
     int parent, children[8], attack, shot_index, move_wait, move_frame, move_phase, move_duration;
-    int target, timer, invisible, hit_count;
+    int target, timer, invisible, hit_count, rebound_charges;
     float spin, center_spin;
     float anchor_x, anchor_y, offset_x, offset_y, damage_taken;
     float orbit_angle, orbit_radius, collision_x, collision_y;

@@ -785,6 +785,20 @@ static void draw_scenery(const Game *game, const Assets *assets, bool foreground
 
 enum { ENEMY_LAYER_SHADOW = -3 };
 
+static void draw_rebound_charge_dial(Vector2 center, int charges) {
+    DrawCircleV(center,26,(Color){39,46,51,255});
+    for (int i = 0; i < BOSS10_BALL_CHARGES; ++i) {
+        float start = -90 + i*120 + 6;
+        bool lit = i < charges;
+        DrawRing(center,17,24,start,start+108,16,lit ? (Color){247,173,74,255} : (Color){96,108,113,255});
+        if (lit) DrawRing(center,22,24,start,start+108,16,(Color){255,225,159,255});
+    }
+    DrawCircleV(center,13,(Color){151,163,167,255});
+    /* An upward chevron marks the return direction even when the dial is empty. */
+    DrawLineEx((Vector2){center.x-6,center.y+3},(Vector2){center.x,center.y-3},3,(Color){50,58,63,255});
+    DrawLineEx((Vector2){center.x,center.y-3},(Vector2){center.x+6,center.y+3},3,(Color){50,58,63,255});
+}
+
 static void draw_enemies(const Game *game, const Assets *assets, int layer) {
     float view_x = ARENA_X - camera_x(game);
     bool shadow = layer == ENEMY_LAYER_SHADOW;
@@ -834,6 +848,8 @@ static void draw_enemies(const Game *game, const Assets *assets, int layer) {
         if (enemy->kind == ENEMY_BOSS12_EYE) origin.x = (float)texture.width;
         sprite_part(texture, source,
             (Rectangle){view_x + pose.x,pose.y,width,source.height * scale}, origin, rotation * RAD2DEG, WHITE,shadow);
+        if (!shadow && enemy->kind == ENEMY_BOSS10_BALL)
+            draw_rebound_charge_dial((Vector2){view_x+pose.x,pose.y},enemy->rebound_charges);
         if (!shadow && enemy_is_asteroid(enemy->kind))
             sprite(assets->asteroid_cracks, view_x + pose.x, pose.y, 80 * scale, rotation * RAD2DEG,
                 Fade(WHITE, fminf(1, fmaxf(0, 1 - enemy->health / enemy->health_max))));

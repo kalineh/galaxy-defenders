@@ -90,6 +90,10 @@ static void horizontal_patrol(Game *g, Enemy *e) {
     }
 }
 
+static int boss3_volley_recovery(int phase) {
+    return 4 + 4 * phase;
+}
+
 static void boss3(Game *g,Enemy *e) {
     if(e->age==1) for(int i=0;i<2;++i) make_child(g,e,i,ENEMY_BOSS3_CHUNK,i?80:-80,0);
     e->phase=e->health<e->health_max*0.45f?2:e->health<e->health_max*0.75f?1:0;
@@ -107,7 +111,7 @@ static void boss3(Game *g,Enemy *e) {
     if (e->aux_cooldown) {
         e->aux_cooldown=0;
         if (e->aux_index<e->phase && e->aux_index<2) {
-            ++e->aux_index; e->cooldown=60+(60-e->aux_index*10); return;
+            ++e->aux_index; e->cooldown=60+(60-e->aux_index*10)+boss3_volley_recovery(e->phase); return;
         }
     }
     int phase=e->aux_index;
@@ -122,11 +126,11 @@ static void boss3(Game *g,Enemy *e) {
         for(int i=phase==1?-1:0;i<=(phase==1?1:0);++i) enemy_shot(g,e,HOSTILE_PELLET,0,0,angle+i*0.3f,5,2);
         count=phase==2?16:phase==1?4:6; delay=6;
     }
-    e->cooldown=delay;
+    e->cooldown=delay+e->phase;
     if(++e->shot_index==count) {
         e->shot_index=0;
         if (phase<e->phase) { e->aux_cooldown=1; if(phase==1 && !e->attack)e->cooldown+=4; }
-        else e->cooldown+=60-phase*10+(phase==1 && !e->attack?4:0);
+        else e->cooldown+=60-phase*10+(phase==1 && !e->attack?4:0)+boss3_volley_recovery(e->phase);
     }
 }
 
@@ -304,7 +308,7 @@ static void boss9(Game *g,Enemy *e) {
 
 static void boss10(Game *g,Enemy *e) {
     if(e->age==1)for(int row=0;row<3;++row)for(int col=0;col<7;++col)make_child(g,e,-1,ENEMY_BOSS10_BLOCK,120+col*112-e->x,110+row*92);
-    if(e->age==60)for(int i=0;i<2;++i){Enemy *c=make_child(g,e,i,ENEMY_BOSS10_BALL,480-e->x,400);if(c){c->vx=i?0.7071f:-0.7071f;c->vy=0.7071f;}}
+    if(e->age==60)for(int i=0;i<2;++i){Enemy *c=make_child(g,e,i,ENEMY_BOSS10_BALL,480-e->x,400);if(c){c->vx=i?1.4f:-1.4f;c->vy=1.4f;}}
     if(--e->move_wait<=0){float x=sinf(e->age*0.01f)*200;e->move_to=e->anchor_x-fmodf(e->anchor_x-480,112)+x-fmodf(x,112)-22;e->move_wait=90+game_random_range(g, 30);e->move_frame=60;}
     if(e->move_frame>0){--e->move_frame;e->x+=(e->move_to-e->x)*0.15f;}
     if(--e->cooldown<=0){
@@ -424,6 +428,90 @@ static void boss12(Game *g, Enemy *e) {
     }
 }
 
+/* Bank the remaining charge through neighboring blocks. A straight return
+   favors a lane through the barricade; at its edge the ball can bank sideways. */
+static void boss10_bank_shot(Game *g, Enemy *ball, const Enemy *broken, float incoming_x, float incoming_y) {
+    const Enemy *next = NULL;
+    float best = 0;
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        const Enemy *block = &g->enemies[i];
+        if (!block->active || block->intangible || block->kind != ENEMY_BOSS10_BLOCK || block->parent != broken->parent) continue;
+        float dx = block->x-broken->x, dy = block->y-broken->y;
+        float distance = hypotf(dx,dy);
+        if (distance < 1 || distance > 120) continue;
+        float alignment = (dx*incoming_x + dy*incoming_y)/distance;
+        if (!next || alignment > best) { next = block; best = alignment; }
+    }
+    if (next) {
+        float dx = next->x+next->collision_x-ball->x, dy = next->y+next->collision_y-ball->y;
+        float scale = 10/fmaxf(1,hypotf(dx,dy));
+        ball->vx = dx*scale;
+        ball->vy = dy*scale;
+    }
+}
+
+static void boss10_ball_update(Game *g, Enemy *ball) {
+    float radius = ball->radius;
+    float left = g->stage.camera_x + radius, right = g->stage.camera_x + GAME_WIDTH - radius;
+    ball->x += ball->vx;
+    ball->y += ball->vy;
+    if (ball->timer > 0) --ball->timer;
+    if (ball->x < left) { ball->x = left; ball->vx = fabsf(ball->vx); }
+    if (ball->x > right) { ball->x = right; ball->vx = -fabsf(ball->vx); }
+    if (ball->y < radius) { ball->y = radius; ball->vy = fabsf(ball->vy); }
+    if (ball->y > GAME_HEIGHT-radius) { ball->y = GAME_HEIGHT-radius; ball->vy = -fabsf(ball->vy); }
+    if (ball->rebound_charges > 0)
+        game_particle(g,PARTICLE_BOSS10_BALL_TRAIL,ball->x,ball->y,3,1,0,0);
+
+    for (int i = 0; i < GAME_ENEMIES; ++i) {
+        Enemy *block = &g->enemies[i];
+        if (!block->active || block->kind != ENEMY_BOSS10_BLOCK || block->intangible) continue;
+        float dx = ball->x - block->x - block->collision_x;
+        float dy = ball->y - block->y - block->collision_y;
+        float edge_x = fabsf(dx) - block->box_width/2, edge_y = fabsf(dy) - block->box_height/2;
+        float near_x = fmaxf(edge_x,0), near_y = fmaxf(edge_y,0);
+        if (near_x*near_x + near_y*near_y > radius*radius) continue;
+        bool horizontal = edge_x > edge_y;
+        if ((horizontal ? dx*ball->vx : dy*ball->vy) >= 0) continue;
+        float incoming_x = ball->vx, incoming_y = ball->vy;
+        if (horizontal) ball->vx = -ball->vx;
+        else ball->vy = -ball->vy;
+        if (ball->rebound_charges > 0) {
+            --ball->rebound_charges;
+            block->timer = -BOSS10_BLOCK_RESPAWN_TICKS;
+            block->intangible = true;
+        }
+        float speed = ball->rebound_charges > 0 ? 8 : 6;
+        float scale = speed/hypotf(ball->vx,ball->vy);
+        ball->vx *= scale;
+        ball->vy *= scale;
+        if (ball->rebound_charges > 0) boss10_bank_shot(g,ball,block,incoming_x,incoming_y);
+        else if (fabsf(ball->vy) < 2) {
+            /* Send a grazing rebound back into play instead of orbiting sideways. */
+            ball->vy = 2;
+            ball->vx = copysignf(sqrtf(speed*speed-4),ball->vx);
+        }
+        break;
+    }
+
+    if (g->seeking || ball->timer > 0) return;
+    for (int i = 0; i < GAME_PLAYERS; ++i) {
+        Player *p = &g->players[i];
+        if (!p->joined || p->lives <= 0) continue;
+        float dx = ball->x-p->x, dy = ball->y-p->y;
+        float reach = radius + (p->shield_health > 0 ? 24 : PLAYER_ARMOR_RADIUS);
+        if (dx*dx + dy*dy >= reach*reach) continue;
+        /* Center hits drive straight up; an off-center bump aims the next lane. */
+        ball->vx = 6*dx/reach;
+        ball->vy = -sqrtf(64-ball->vx*ball->vx);
+        ball->rebound_charges = BOSS10_BALL_CHARGES;
+        ball->timer = GAME_HZ/4;
+        p->vx -= dx*0.5f;
+        p->vy -= dy*0.5f;
+        break;
+    }
+}
+
 static void part_update(Game *g,Enemy *e) {
     Enemy *boss=e->parent>=0?&g->enemies[e->parent]:NULL;
     if(boss && !boss->active){e->active=false;return;}
@@ -434,7 +522,10 @@ static void part_update(Game *g,Enemy *e) {
     if(e->authored && e->age>1 && (e->kind==ENEMY_BOSS10_BLOCK || e->kind==ENEMY_BOSS10_BALL))
         e->y+=g->scroll_speed;
     if(e->kind==ENEMY_BOSS3_CHUNK){
-        if(boss->phase && --e->cooldown<=0){for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)shot(g,e,x*34,y*44,PI*0.5f);e->cooldown=boss->phase==2?60:90;}
+        if(boss->phase && --e->cooldown<=0){
+            for(int x=-1;x<=1;x+=2)for(int y=-1;y<=1;y+=2)shot(g,e,x*34,y*44,PI*0.5f);
+            e->cooldown=(boss->phase==2?60:90)+boss3_volley_recovery(boss->phase);
+        }
     } else if(e->kind==ENEMY_BOSS4_CHUNK){
         if(e->timer>0){--e->timer;return;}
         if(e->phase==0){e->orbit_radius+=((e->move_phase==0?-100:-140)-e->orbit_radius)*0.05f;if(++e->move_frame>=60){e->phase=1;e->move_frame=0;}}
@@ -521,23 +612,7 @@ static void part_update(Game *g,Enemy *e) {
         }
         if (!e->timer) { e->orbit_radius = 1; e->intangible = false; }
     }
-    else if(e->kind==ENEMY_BOSS10_BALL){
-        e->x+=e->vx;e->y+=e->vy;if(e->timer>0)--e->timer;
-        if(e->x<=g->stage.camera_x+31 || e->x>=g->stage.camera_x+GAME_WIDTH-31){e->x=fmaxf(g->stage.camera_x+31,fminf(g->stage.camera_x+GAME_WIDTH-31,e->x));e->vx=-e->vx;e->x+=e->vx;e->y+=e->vy;}
-        if(e->y<=31 || e->y>=GAME_HEIGHT-31){e->y=fmaxf(31,fminf(GAME_HEIGHT-31,e->y));e->vy=-e->vy;e->x+=e->vx;e->y+=e->vy;}
-        if(e->timer>0)game_particle(g,PARTICLE_BOSS10_BALL_TRAIL,e->x,e->y,3,1,0,0);
-        for(int i=0;i<GAME_ENEMIES;++i){Enemy *block=&g->enemies[i];if(!block->active || block->kind!=ENEMY_BOSS10_BLOCK || block->intangible)continue;float dx=e->x-block->x-block->collision_x,dy=e->y-block->y-block->collision_y;
-            float near_x=fmaxf(fabsf(dx)-55,0),near_y=fmaxf(fabsf(dy)-44.5f,0);
-            if(near_x*near_x+near_y*near_y>31*31)continue;bool horizontal=fabsf(dx)>fabsf(dy);if((horizontal?dx*e->vx:dy*e->vy)>0)continue;if(horizontal)e->vx=-e->vx;else e->vy=-e->vy;e->x+=e->vx;e->y+=e->vy;float d=hypotf(e->vx,e->vy);if(d>0){e->vx=e->vx/d*6;e->vy=e->vy/d*6;}if(e->timer){block->timer=-3600;block->intangible=true;e->timer=0;}}
-        for(int i=0;i<GAME_PLAYERS;++i) {
-            Player *p=&g->players[i];
-            float dx=e->x-p->x,dy=e->y-p->y,radius=p->shield_health>0?24:PLAYER_ARMOR_RADIUS;
-            if(g->seeking || e->timer>5940 || !p->joined || p->lives<=0 || dx*dx+dy*dy>=31*31+radius*radius)continue;
-            e->vx=(dx<0?-1:1)*fabsf(e->vx);e->vy=-fabsf(e->vy);
-            float d=hypotf(e->vx,e->vy);if(d>0){e->vx=e->vx/d*8;e->vy=e->vy/d*8;}
-            e->x+=e->vx;e->y+=e->vy;e->timer=6000;p->vx-=dx*0.5f;p->vy-=dy*0.5f;
-        }
-    }
+    else if(e->kind==ENEMY_BOSS10_BALL) boss10_ball_update(g,e);
 }
 
 void boss_update_all(Game *g,Enemy *e) {

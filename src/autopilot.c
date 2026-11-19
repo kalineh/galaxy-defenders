@@ -113,13 +113,17 @@ static void return_ball(const Game *g, const Player *p, float *tx, float *ty) {
         float distance = fabsf(e->x-p->x) + fabsf(e->y-p->y);
         if (distance < nearest) { nearest = distance; ball = e; }
     }
-    if (!boss || !ball) return;
+    if (!boss) return;
+    /* Stay below the lowest row, including while an open lane regenerates. */
+    float safe_y = boss->y+400;
+    *ty = fmaxf(*ty,safe_y);
+    if (!ball) return;
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *e = &g->enemies[i];
         if (!e->active || e->intangible || e->kind != ENEMY_BOSS10_BLOCK ||
             fabsf(e->x-boss->x)>e->box_width/2 || e->y<boss->y) continue;
         *tx = ball->x + ball->vx*5 + (boss->x > ball->x ? -10 : 10);
-        *ty = limit(ball->y + 18,310,GAME_HEIGHT-36);
+        *ty = limit(ball->y + 18,safe_y,GAME_HEIGHT-36);
         break;
     }
 }
