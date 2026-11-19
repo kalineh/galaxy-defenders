@@ -7,10 +7,10 @@ The console accepts `render.style classic` and `render.style modern`.
 | Stage | Deck family | Finish |
 | --- | --- | --- |
 | 4 | Station panels | Dry, matte metal |
-| 7 | Station panels | Windblown snow |
+| 7 | Station panels | Dry, matte metal |
 | 8 | Naval plating | Brushed metal over a hazy sea |
 | 10 | Service channels | Wet sheen in rain |
-| 11 | Naval plating | Windblown snow |
+| 11 | Naval plating | Brushed metal |
 
 ## What changes
 
@@ -34,12 +34,14 @@ The console accepts `render.style classic` and `render.style modern`.
 - Stage 8 uses one blurred silhouette mask for its two distant layers. The far
   silhouette is 4.8% of foreground size with 3% camera motion. The middle
   silhouette is 16% of foreground size with 8.5% camera motion.
-- Cable loops and clipped metal tabs occasionally extend from exposed rails.
+- Some unoccupied platforms narrow briefly along one or both edges. The cut is
+  made before the rim and fitting clearance are calculated. Nearby structures,
+  enemy placements, secret entrances and adjoining deck pieces constrain it.
+- Short square lugs, ledges, stepped brackets and occasional cable loops extend from exposed rails.
   Some inside corners have a diagonal tie beneath them. Shared hardware has a
   short contact shadow and a rounded lip baked from the shape of the part.
-- A wrapping material field controls broad gloss on wet panels and patchy frost
-  on snow decks. It stays fixed in world coordinates across strip joins. The
-  snowy stages keep their falling snow in the foreground.
+- A wrapping material field controls broad gloss on wet panels. It stays fixed
+  in world coordinates across strip joins. Falling snow is a foreground effect.
 - Buildings, SecretHint, HUD, player/enemy sprites, shots, effects, simulation,
   and original stage data are unchanged. Foreground dust is suppressed only in
   Modern Stage 8 to keep the new distant water/deck separation quiet.

@@ -16,26 +16,26 @@
   <g id="plate0" clip-path="url(#tile)">
     <rect width="256" height="256" fill="currentColor"/>
     <path d="M0 112H72l19-19h37l16-16V0H0Z M144 256v-74l18-18h20v-30l22-22h52v144Z"/>
-    <use xlink:href="#a" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#a" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#a" transform="translate(.5 1.5)" fill="none" stroke="#666872" stroke-width="1.3"/><use xlink:href="#a" fill="none" stroke="#1f212b" stroke-width="1.8"/>
     <use xlink:href="#pair" x="102" y="86"/><use xlink:href="#pin" x="175" y="157"/>
     <use xlink:href="#wear" x="212" y="86"/>
   </g>
   <g id="plate1" clip-path="url(#tile)">
     <rect width="256" height="256"/>
     <path d="M0 112h34l18 18h61l31 31v95H0Z M144 0v49l15 15h37l24 24v15l9 9h27V0Z" fill="currentColor"/>
-    <use xlink:href="#b" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#b" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#b" transform="translate(.5 1.5)" fill="none" stroke="#666872" stroke-width="1.3"/><use xlink:href="#b" fill="none" stroke="#1f212b" stroke-width="1.8"/>
     <use xlink:href="#pin" x="137" y="175"/><use xlink:href="#pair" x="168" y="57"/><use xlink:href="#wear" x="91" y="219"/>
   </g>
   <g id="plate2" clip-path="url(#tile)">
     <rect width="256" height="256" fill="currentColor"/>
     <path d="M0 112h57l14-14V66l20-20h38l15-15V0H0Z M144 256v-38l-16-16v-29l21-21h40l40-40h27v144Z"/>
-    <use xlink:href="#c" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#c" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#c" transform="translate(.5 1.5)" fill="none" stroke="#666872" stroke-width="1.3"/><use xlink:href="#c" fill="none" stroke="#1f212b" stroke-width="1.8"/>
     <use xlink:href="#pair" x="98" y="39"/><use xlink:href="#pin" x="137" y="179"/><use xlink:href="#wear" x="39" y="130"/>
   </g>
   <g id="plate3" clip-path="url(#tile)">
     <rect width="256" height="256"/>
     <path d="M0 112h71l16 16v41l19 19h19l19 19v49H0Z M144 0v47l22 22v20l23 23h67V0Z" fill="currentColor"/>
-    <use xlink:href="#d" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#d" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#d" transform="translate(.5 1.5)" fill="none" stroke="#666872" stroke-width="1.3"/><use xlink:href="#d" fill="none" stroke="#1f212b" stroke-width="1.8"/>
     <use xlink:href="#pin" x="152" y="37"/><use xlink:href="#pair" x="195" y="104"/><use xlink:href="#wear" x="104" y="68"/>
   </g>
   </defs>
@@ -99,7 +99,7 @@
   <g transform="translate(672 544)" fill="none">
     <path id="cable" d="M-22-4C-23 17-16 21-4 21S19 18 20-4"/>
     <use xlink:href="#cable" stroke="#222733" stroke-width="6"/>
-    <use xlink:href="#cable" stroke="#555864" stroke-width="2"/>
+    <use xlink:href="#cable" stroke="#454954" stroke-width="2"/>
     <path d="M-11 19l-1 4m21-5 2 4" stroke="#414552" stroke-width="4"/>
   </g>
   <!-- Diagonal tie across the empty northeast quadrant of an inside corner. -->
@@ -107,18 +107,34 @@
     <path d="m-4-28 32 32-5 5-32-32Z" fill="#363b46" stroke="#242730" stroke-width="2"/>
     <path d="M-3-24 23 2" stroke="#555b66" stroke-width="1.5"/>
   </g>
+  <!-- Low-profile edge fittings in four different footprints. -->
+  <g transform="translate(800 544)">
+    <rect x="-8" y="-5" width="16" height="18" rx="1" fill="#393d47" stroke="#272b34" stroke-width="2"/>
+    <path d="M-5 9h10" stroke="#484c56"/>
+  </g>
+  <g transform="translate(864 544)">
+    <path d="M-28-3h56v10h-56Z" fill="#383c46" stroke="#262a33" stroke-width="2"/>
+    <path d="M-23 4h29m4 0h12" stroke="#4c4f59"/>
+  </g>
+  <g transform="translate(928 544)">
+    <path d="M-18-4h35v8H4v11h-22Z" stroke="#252a33" fill="#3d414a" stroke-width="2"/>
+    <path d="M-15 10h16" stroke="#4c505a"/>
+  </g>
+  <g transform="translate(992 544)">
+    <path d="M-13-3v9q0 3 3 3H7q3 0 3-3v-9" fill="none" stroke="#40454e" stroke-width="3.5"/>
+  </g>
   <!-- Paired broad station panels, then paired narrow service channels.
        Edge slots are identical within each family in both axes. -->
   <defs>
     <g id="station" fill="none">
       <rect width="256" height="256" fill="#383c46"/>
       <path d="M0 30h256m-256 189h256M32 0v30m0 189v37" stroke="#20252e" stroke-width="3"/>
-      <path d="M0 33h256m-256 189h256" stroke="#494e58"/>
+      <path d="M0 33h256m-256 189h256" stroke="#4d525d"/>
     </g>
     <g id="service">
       <rect width="256" height="256" fill="#344553"/>
       <path d="M68 0v256m121-256v256" stroke="#24333e" stroke-width="5"/>
-      <path d="M71 0v256m121-256v256" stroke="#526572" stroke-width="1.6"/>
+      <path d="M71 0v256m121-256v256" stroke="#566975" stroke-width="1.6"/>
       <path d="M0 130h68m122 0h66" stroke="#22323d" stroke-width="2"/>
     </g>
   </defs>

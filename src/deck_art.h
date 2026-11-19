@@ -3,13 +3,13 @@
    restart at authored tile joins or swim as the camera scrolls. No frame allocations. */
 #define DECK_CHUNK_HEIGHT 512
 #define DECK_MAX_CHUNKS 40
+#define DECK_HAZE_STEP 12
 
 enum DeckFamily { DECK_NONE, DECK_NAVAL, DECK_STATION, DECK_SERVICE };
 typedef struct {
     Texture2D deck[DECK_MAX_CHUNKS], sea, distant;
     int left, top, width, height, count;
     enum DeckFamily family;
-    bool frost;
     bool attempted, ready;
 } DeckArt;
 
@@ -72,6 +72,71 @@ static unsigned deck_cell_hash(int x, int y) {
     unsigned n=(unsigned)x*0x9e3779b1u ^ (unsigned)y*0x85ebca77u;
     n ^= n>>16; n *= 0x7feb352du;
     return n^(n>>15);
+}
+
+/* Check the whole authored platform, including overhanging roofs on its neighbors. */
+static bool deck_tile_occupied(const StageDefinition *stage, Rectangle tile) {
+    for (int i=0; i<stage->event_count; ++i) {
+        const StageEvent *e=&stage->events[i];
+        Rectangle footprint;
+        if (e->kind==STAGE_BUILDING)
+            footprint=(Rectangle){e->x-e->width/2.0f,e->y-e->height/2.0f,e->width,e->height};
+        else if (e->kind==STAGE_ENEMY)
+            footprint=(Rectangle){e->spawn_x-64,e->spawn_y-64,128,128};
+        else if (e->kind==STAGE_SECRET || (e->kind==STAGE_DECORATION && !strcmp(e->name,"SecretHint")))
+            footprint=(Rectangle){e->x-80,e->y-80,160,160};
+        else continue;
+        if (CheckCollisionRecs(tile,footprint)) return true;
+    }
+    return false;
+}
+
+/* Carve a shallow waist in an exposed straight edge. Its shoulders and the
+   open space immediately outside it must clear every other authored deck/rail. */
+static bool deck_cut_edge(unsigned char *mask, const DeckArt *art, const StageDefinition *stage,
+        int index, Rectangle tile, int side, unsigned seed) {
+    bool vertical=side<2;
+    int length=vertical ? tile.height : tile.width, across=vertical ? tile.width : tile.height;
+    if (length<110 || across<70) return false;
+    int depth=10+((seed>>4)%6), ramp=depth+((seed&64) ? 7 : 0);
+    int half=12+(seed>>8)%9+ramp;
+    int mid=length/2+(int)((seed>>16)%17)-8;
+    int sign=(side&1) ? -1 : 1;
+    int edge=(vertical ? tile.x : tile.y)+(sign<0 ? across-1 : 0);
+    int along=(vertical ? tile.y : tile.x)+mid;
+    int low=edge-(sign>0 ? 24 : depth);
+    Rectangle clear=vertical ? (Rectangle){low,along-half-5,depth+25,2*half+11} :
+                               (Rectangle){along-half-5,low,2*half+11,depth+25};
+    for (int i=0; i<stage->event_count; ++i) {
+        const StageEvent *e=&stage->events[i];
+        if (i!=index && e->kind==STAGE_DECORATION && CheckCollisionRecs(clear,deck_bounds(e))) return false;
+    }
+    int x=(vertical ? edge : along)-art->left;
+    int y=(vertical ? along : edge)-art->top;
+    int tangent=vertical ? art->width : 1, inward=sign*(vertical ? 1 : art->width);
+    for (int t=1-half; t<half; ++t) {
+        int cut=(half-abs(t))*depth/ramp;
+        if (cut>depth) cut=depth;
+        unsigned char *p=mask+y*art->width+x+t*tangent;
+        for (int n=0; n<cut; ++n) p[n*inward]=0;
+    }
+    return true;
+}
+
+static void deck_shape_empty_tiles(unsigned char *mask, const DeckArt *art, const StageDefinition *stage) {
+    for (int i=0; i<stage->event_count; ++i) {
+        const StageEvent *e=&stage->events[i];
+        if (!deck_event(e)) continue;
+        unsigned seed=deck_cell_hash((int)e->x,(int)e->y);
+        Rectangle tile=deck_bounds(e);
+        if (seed%3!=0 || deck_tile_occupied(stage,tile)) continue;
+        for (int attempt=0; attempt<4; ++attempt) {
+            int side=((seed>>12)+attempt)&3;
+            if (!deck_cut_edge(mask,art,stage,i,tile,side,seed)) continue;
+            if (seed&128) deck_cut_edge(mask,art,stage,i,tile,side^1,seed);
+            break;
+        }
+    }
 }
 
 /* Atlas column and half extents of each fitting, including a little bare metal. */
@@ -147,7 +212,7 @@ static void deck_paint_cell(Color *out, int start, int rows, const DeckArt *art,
             if (depth<=32) {
                 int dx=distance[idx+1]-distance[idx-1], dy=distance[idx+w]-distance[idx-w];
                 int light=(dx+dy)/2;
-                int tone=depth<=3 ? 38 : depth<=8 ? 77 : depth<=18 ? 72 : depth<=23 ? 67 : depth<=26 ? 84 : 41;
+                int tone=depth<=3 ? 36 : depth<=8 ? 81 : depth<=18 ? 73 : depth<=23 ? 67 : depth<=26 ? 88 : 38;
                 /* Expansion joints cross the rail only on a straight run. */
                 if (((dx==0 && (gx&127)<2) || (dy==0 && (gy&127)<2)) && depth>4 && depth<25) tone=38;
                 c=(Color){tone+light,tone+light+2,tone+light+11,255};
@@ -158,22 +223,10 @@ static void deck_paint_cell(Color *out, int start, int rows, const DeckArt *art,
                The station has a dry finish. The rain deck has a wider gloss. */
             int field_x=((gx+gy/2)&511)+((gy&256) ? 512 : 0);
             Color field=plates[(832+(gy&255))*sheet->width+field_x];
-            int sheen=art->family==DECK_SERVICE ? 20 : art->family==DECK_NAVAL && !art->frost ? 6 : 1;
+            int sheen=art->family==DECK_SERVICE ? 20 : art->family==DECK_NAVAL ? 6 : 1;
             variation+=sheen*field.g*(c.r+20)/(255*85);
-            if (depth>32 && depth<51) variation-=(51-depth)/3;
-            c=(Color){c.r+variation,c.g+variation,c.b+variation,255};
-            if (art->frost) {
-                /* The same world-space deposit crosses plate and strip boundaries.
-                   Grooves and the inner foot of the rail collect a little more. */
-                int cover=(int)field.r-127;
-                if ((depth>25 && depth<52) || c.r<46) cover+=15;
-                if (cover>0) {
-                    int mix=cover*4;
-                    if (mix>194) mix=194;
-                    c=ColorAlphaBlend(c,(Color){169,180,191,mix},WHITE);
-                }
-            }
-            out[(y-start)*w+x]=c;
+            if (depth>32 && depth<54) variation-=(54-depth)/3;
+            out[(y-start)*w+x]=(Color){c.r+variation,c.g+variation,c.b+variation,255};
         }
     }
 }
@@ -208,7 +261,7 @@ static void deck_edge_parts(Color *out, int start, int rows, const DeckArt *art,
             for (int x=x0; x<w; x+=tx ? 128 : 1) {
                 if (mask[y*w+x]!=3) continue;
                 unsigned hash=deck_cell_hash(art->left+x,art->top+y);
-                if (hash%4!=0) continue;
+                if (hash%7!=0) continue;
                 int side=deck_on_deck(mask,w,h,x+ty,y+tx) ? -1 : 1;
                 int nx=ty*side, ny=tx*side;
                 bool clear=true;
@@ -217,7 +270,12 @@ static void deck_edge_parts(Color *out, int start, int rows, const DeckArt *art,
                     clear=deck_on_deck(mask,w,h,ax,ay) && !deck_on_deck(mask,w,h,ax+nx,ay+ny)
                         && !deck_on_deck(mask,w,h,ax+22*nx,ay+22*ny);
                 }
-                if (clear) deck_underpart(out,start,rows,w,mask,sheet,9+((hash>>8)&1),x,y,tx,ty,nx,ny);
+                if (clear) {
+                    static const int columns[]={9,10,12,12,13,13,14,14,15};
+                    int col=columns[(hash>>8)%(sizeof(columns)/sizeof(columns[0]))];
+                    int flip=(hash&0x100000) ? -1 : 1;
+                    deck_underpart(out,start,rows,w,mask,sheet,col,x,y,flip*tx,flip*ty,nx,ny);
+                }
             }
     }
 }
@@ -260,7 +318,6 @@ static void deck_corner_caps(Color *out, int start, int rows, const DeckArt *art
 static bool deck_art_load(DeckArt *art, int index, const char *grain_path, const char *sea_path, const char *sheet_path) {
     art->attempted = true;
     art->family=deck_family(index);
-    art->frost=index==6 || index==10;
     Image grain = LoadImage(grain_path);
     if (!IsImageValid(grain)) return false;
     Image sheet=LoadImage(sheet_path);
@@ -297,6 +354,7 @@ static bool deck_art_load(DeckArt *art, int index, const char *grain_path, const
         for (int y=y0; y<y1; ++y) memset(mask+y*w+x0,255,(size_t)(x1-x0));
     }
     art->left=left; art->top=top; art->width=w; art->height=h;
+    deck_shape_empty_tiles(mask,art,stage);
     deck_edge_distances(mask,w,h);
     bool valid=true;
     for (int start=0; start<h; start+=DECK_CHUNK_HEIGHT) {
@@ -324,16 +382,17 @@ static bool deck_art_load(DeckArt *art, int index, const char *grain_path, const
     if (index==7) {
         art->sea=LoadTexture(sea_path);
         if (IsTextureValid(art->sea)) SetTextureFilter(art->sea,TEXTURE_FILTER_BILINEAR);
-        /* Blur the union once at 1/16 scale, so overlapping rectangles become
+        /* Blur the union once at reduced scale, so overlapping rectangles become
            one hazy shape. The same small mask serves both parallax distances. */
-        Image haze=GenImageColor((w+15)/16+8,(h+15)/16+8,BLANK);
+        Image haze=GenImageColor((w+DECK_HAZE_STEP-1)/DECK_HAZE_STEP+8,(h+DECK_HAZE_STEP-1)/DECK_HAZE_STEP+8,BLANK);
         if (haze.data) {
             for (int i=0; i<stage->event_count; ++i) {
                 const StageEvent *e=&stage->events[i];
                 if (!deck_event(e)) continue;
-                int size=(e->width+17)/16;
-                ImageDrawRectangle(&haze,4+(int)((e->x-e->width/2-left)/16),
-                    4+(int)((e->y-e->width/2-top)/16),size,size,WHITE);
+                Rectangle r=deck_bounds(e);
+                int size=(r.width+DECK_HAZE_STEP-1)/DECK_HAZE_STEP;
+                ImageDrawRectangle(&haze,4+(int)(r.x-left)/DECK_HAZE_STEP,
+                    4+(int)(r.y-top)/DECK_HAZE_STEP,size,size,WHITE);
             }
             ImageBlurGaussian(&haze,2);
             art->distant=LoadTextureFromImage(haze);
@@ -353,14 +412,14 @@ static void stage8_draw_distant(const DeckArt *art, float cam_x, float cam_y, fl
         float parallax, int offset, Color tint) {
     Texture2D tex=art->distant;
     if (!IsTextureValid(tex)) return;
-    float period=19000*scale, height=tex.height*16*scale;
-    float x=ARENA_X+GAME_WIDTH*0.5f+offset+(art->left-64)*scale-cam_x*parallax;
-    float y=fmodf((art->top-64)*scale-cam_y*parallax,period);
+    float period=19000*scale, height=tex.height*DECK_HAZE_STEP*scale;
+    float x=ARENA_X+GAME_WIDTH*0.5f+offset+(art->left-4*DECK_HAZE_STEP)*scale-cam_x*parallax;
+    float y=fmodf((art->top-4*DECK_HAZE_STEP)*scale-cam_y*parallax,period);
     if (y>0) y-=period;
     for (; y<GAME_HEIGHT; y+=period) {
         if (y+height<=0) continue;
         DrawTexturePro(tex,(Rectangle){0,0,tex.width,tex.height},
-            (Rectangle){x,y,tex.width*16*scale,height},(Vector2){0},0,tint);
+            (Rectangle){x,y,tex.width*DECK_HAZE_STEP*scale,height},(Vector2){0},0,tint);
     }
 }
 
@@ -373,7 +432,7 @@ static void stage8_draw_background(const DeckArt *art, float cam_x, float cam_y)
                 (Rectangle){ARENA_X,y,size,size},(Vector2){0},0,(Color){135,155,165,255});
         DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,(Color){17,32,43,95});
     }
-    Color far={93,111,119,14}, middle={95,115,121,26};
+    Color far={93,111,119,21}, middle={95,115,121,36};
     stage8_draw_distant(art,cam_x,cam_y,0.048f,0.030f,-265,far);
     stage8_draw_distant(art,cam_x,cam_y,0.048f,0.030f,285,far);
     stage8_draw_distant(art,cam_x,cam_y,0.16f,0.085f,80,middle);

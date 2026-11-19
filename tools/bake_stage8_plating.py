@@ -47,9 +47,9 @@ for column in (0, 1, 3, 6, 7, 8):
     part = sheet.crop(box)
     mask = part.getchannel("A")
     shadow = Image.new("RGBA", part.size, (15, 19, 26))
-    shadow.putalpha(mask.filter(ImageFilter.GaussianBlur(2)).point(lambda a: a*0.78))
+    shadow.putalpha(mask.filter(ImageFilter.GaussianBlur(2)).point(lambda a: a*0.82))
     lip = Image.new("RGBA", part.size, (156, 164, 176))
-    lip.putalpha(ImageChops.subtract(mask, mask.filter(ImageFilter.MinFilter(3))).point(lambda a: a*0.27))
+    lip.putalpha(ImageChops.subtract(mask, mask.filter(ImageFilter.MinFilter(3))).point(lambda a: a*0.30))
     finished = Image.alpha_composite(shadow, Image.alpha_composite(part, lip))
     sheet.paste(finished, box)
 
@@ -62,15 +62,11 @@ def periodic_noise(size, rng):
     return repeated.resize((512, 512), Image.Resampling.BICUBIC, box=(size, size, size*2, size*2))
 
 
-# Shared surface field, separate from painted details. Red is snow coverage,
-# green is a softer reflection. Pack the wrapping 512px field beside itself.
+# Pack the wrapping gloss field beside itself beneath the plate patterns.
 rng = random.Random(77)
 broad = periodic_noise(4, rng)
-patch = Image.blend(broad, periodic_noise(17, rng), 0.42)
-patch = Image.blend(patch, periodic_noise(78, rng), 0.22)
-patch = Image.blend(patch, periodic_noise(512, rng), 0.12)
 gloss = Image.blend(broad, periodic_noise(8, rng), 0.28).point(lambda v: max(0, v-116)*2)
-field = Image.merge("RGB", (patch, gloss, Image.new("L", patch.size)))
+field = gloss.convert("RGB")
 atlas = Image.new("RGBA", (1024, 1088))
 atlas.paste(sheet)
 atlas.paste(field.crop((0, 0, 512, 256)), (0, 832))
