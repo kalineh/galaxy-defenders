@@ -15,7 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
-    {"render.style", "render.style classic|modern", "Choose Classic or Modern stage art. Only Stage 8 has Modern art.", {"classic modern"}},
+    {"render.style", "render.style classic|modern", "Choose Classic or Modern stage art. Modern decks appear on stages 4, 7, 8, 10 and 11.", {"classic modern"}},
     {"debug.shadows", "debug.shadows [on|off]", "Toggle soft shadows around ships, enemies and buildings.", {"on off"}},
     {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},

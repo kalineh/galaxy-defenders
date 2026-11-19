@@ -30,7 +30,7 @@ static const char *ui_text(const char *english) {
 #define ARENA_X 480
 #define FRAME_SAMPLES 240
 
-#include "stage8_art.h"
+#include "deck_art.h"
 
 typedef struct {
     float frame_ms[FRAME_SAMPLES], update_ms[FRAME_SAMPLES], gpu_ms[FRAME_SAMPLES];
@@ -65,7 +65,7 @@ typedef struct {
     Sprite generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Sprite stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
-    Stage8Art modern_stage8;
+    DeckArt deck_art;
     Sprite boss4_cover, boss5_cover, boss6_center;
     Sprite rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Sprite enemy_corpses[ENEMY_KIND_COUNT];
@@ -139,7 +139,7 @@ static Sprite whole_texture(Texture2D texture) {
 }
 
 static void assets_unload(Assets *assets) {
-    stage8_art_unload(&assets->modern_stage8);
+    deck_art_unload(&assets->deck_art);
     for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
         if (IsTextureValid(assets->pages[i])) UnloadTexture(assets->pages[i]);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
@@ -224,6 +224,7 @@ static Color deck_tint(int stage, const char *name) {
 
 static bool stage_assets_load(Assets *assets, int index) {
     bool valid = true;
+    deck_art_unload(&assets->deck_art);
     for (int i = 0; i < 4; ++i) {
         if (IsTextureValid(assets->scenery[i])) UnloadTexture(assets->scenery[i]);
         assets->scenery[i] = (Texture2D){0};
@@ -1062,19 +1063,19 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    bool modern = game->stage.index == 7 && game->menu.options[OPTION_RENDER_STYLE];
-    if (modern && !assets->modern_stage8.attempted) {
+    bool modern = deck_family(game->stage.index)!=DECK_NONE && game->menu.options[OPTION_RENDER_STYLE];
+    if (modern && !assets->deck_art.attempted) {
         char grain[2048], sea[2048], sheet[2048];
         snprintf(grain,sizeof(grain),"%s",asset_path("textures/stage8-brushed-metal.png"));
         snprintf(sea,sizeof(sea),"%s",asset_path("textures/stage8-sea.png"));
         snprintf(sheet,sizeof(sheet),"%s",asset_path("textures/stage8-plating.png"));
-        stage8_art_load(&assets->modern_stage8,grain,sea,sheet);
+        deck_art_load(&assets->deck_art,game->stage.index,grain,sea,sheet);
     }
-    modern = modern && assets->modern_stage8.ready;
-    if (modern) {
-        stage8_draw_background(&assets->modern_stage8,camera_x(game),camera_y(game));
-        stage8_draw_deck(&assets->modern_stage8,camera_x(game),camera_y(game));
-    } else draw_scenery(game, assets, false);
+    modern = modern && assets->deck_art.ready;
+    bool sea_background=modern && game->stage.index==7;
+    if (sea_background)
+        stage8_draw_background(&assets->deck_art,camera_x(game),camera_y(game));
+    else draw_scenery(game, assets, false);
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
     int order[STAGE_MAX_EVENTS], count=0;
@@ -1092,6 +1093,16 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
         order[at]=i; ++count;
     }
     Vector2 center = {view_x + GAME_WIDTH*0.5f, GAME_HEIGHT*0.5f - camera_y(game)};
+    if (modern) {
+        /* Rails and other authored underlays sit beneath the solid plate. */
+        for (int row=0; row<count; ++row) {
+            int i=order[row];
+            const StageEvent *e=&stage->events[i];
+            if (e->kind==STAGE_DECORATION && e->depth<0 && !deck_event(e))
+                draw_stage_prop(game,assets,e,i,center,false);
+        }
+        deck_draw(&assets->deck_art,camera_x(game),camera_y(game));
+    }
     int shadow_end = 0;
     for (int row = 0; row < count; ++row) {
         int i=order[row];
@@ -1104,7 +1115,8 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
                 draw_stage_prop(game,assets,&stage->events[building],building,center,true);
             }
         }
-        if (!modern || !stage8_deck_event(event)) draw_stage_prop(game,assets,event,i,center,false);
+        if (!modern || (!deck_event(event) && !(event->kind==STAGE_DECORATION && event->depth<0)))
+            draw_stage_prop(game,assets,event,i,center,false);
     }
     if (shadows) {
         draw_enemies(game,assets,ENEMY_LAYER_SHADOW);
@@ -1120,7 +1132,7 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
         sprite(texture, view_x + coin.x, coin.y, (float)texture.width, (p->age-motion_weight)*0.1f*RAD2DEG, WHITE);
     }
     draw_combat_sprites(game, assets);
-    if (!modern) draw_scenery(game, assets, true);
+    if (!sea_background) draw_scenery(game, assets, true);
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];

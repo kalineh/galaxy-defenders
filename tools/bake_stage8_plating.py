@@ -1,8 +1,9 @@
 """Bake the Stage 8 deck parts. Uses the same Pillow/resvg-py tools as the sprite atlas."""
 from io import BytesIO
 from pathlib import Path
+import random
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageFilter
 from resvg_py import svg_to_bytes
 
 
@@ -11,8 +12,8 @@ source = root / "art/platforms/stage8-plating.svg"
 target = root / "assets/textures/stage8-plating.png"
 png = svg_to_bytes(svg_path=str(source))
 sheet = Image.open(BytesIO(png)).convert("RGBA")
-if sheet.size != (1024, 576):
-    raise ValueError("Expected two banks of four 256px panels above the hardware strip")
+if sheet.size != (1024, 832):
+    raise ValueError("Expected naval panels, hardware strip and two additional deck families")
 
 banks = []
 for offset in (0, 512):
@@ -25,13 +26,54 @@ for offset in (0, 512):
             tiles.append(tile)
     banks.append(tiles)
 
-for bank in (0, 1):
-    for a in banks[bank]:
-        for b in banks[1-bank]:
+def verify_edges(left, right):
+    for a in left:
+        for b in right:
             if a.crop((255, 0, 256, 256)).tobytes() != b.crop((0, 0, 1, 256)).tobytes():
                 raise ValueError("Horizontal plate edges do not match")
             if a.crop((0, 255, 256, 256)).tobytes() != b.crop((0, 0, 256, 1)).tobytes():
                 raise ValueError("Vertical plate edges do not match")
 
-target.write_bytes(png)
-print("Baked Stage 8 plating. All horizontal and vertical neighbors match.")
+verify_edges(banks[0], banks[1])
+verify_edges(banks[1], banks[0])
+for bank_x in (0, 512):
+    family = [sheet.crop((x, 576, x+256, 832)) for x in (bank_x, bank_x+256)]
+    verify_edges(family, family)
+
+# Alpha describes the physical outline of each fitting. Bake a contact shadow
+# around its foot and a narrow rounded lip. Stenciled paint stays flush.
+for column in (0, 1, 3, 6, 7, 8):
+    box = (64*column, 512, 64*(column+1), 576)
+    part = sheet.crop(box)
+    mask = part.getchannel("A")
+    shadow = Image.new("RGBA", part.size, (15, 19, 26))
+    shadow.putalpha(mask.filter(ImageFilter.GaussianBlur(2)).point(lambda a: a*0.78))
+    lip = Image.new("RGBA", part.size, (156, 164, 176))
+    lip.putalpha(ImageChops.subtract(mask, mask.filter(ImageFilter.MinFilter(3))).point(lambda a: a*0.27))
+    finished = Image.alpha_composite(shadow, Image.alpha_composite(part, lip))
+    sheet.paste(finished, box)
+
+def periodic_noise(size, rng):
+    tile = Image.frombytes("L", (size, size), rng.randbytes(size*size))
+    repeated = Image.new("L", (size*3, size*3))
+    for y in range(3):
+        for x in range(3):
+            repeated.paste(tile, (x*size, y*size))
+    return repeated.resize((512, 512), Image.Resampling.BICUBIC, box=(size, size, size*2, size*2))
+
+
+# Shared surface field, separate from painted details. Red is snow coverage,
+# green is a softer reflection. Pack the wrapping 512px field beside itself.
+rng = random.Random(77)
+broad = periodic_noise(4, rng)
+patch = Image.blend(broad, periodic_noise(17, rng), 0.42)
+patch = Image.blend(patch, periodic_noise(78, rng), 0.22)
+patch = Image.blend(patch, periodic_noise(512, rng), 0.12)
+gloss = Image.blend(broad, periodic_noise(8, rng), 0.28).point(lambda v: max(0, v-116)*2)
+field = Image.merge("RGB", (patch, gloss, Image.new("L", patch.size)))
+atlas = Image.new("RGBA", (1024, 1088))
+atlas.paste(sheet)
+atlas.paste(field.crop((0, 0, 512, 256)), (0, 832))
+atlas.paste(field.crop((0, 256, 512, 512)), (512, 832))
+atlas.save(target)
+print("Baked three deck families and shared fittings. All neighboring edges match.")

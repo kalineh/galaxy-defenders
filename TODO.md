@@ -134,4 +134,4 @@ Review the reusable plate kit and inside-corner trim against the
 The junction at `game.stage 8 0.4` shows both long rails and recessed fittings.
 Before merge: human Windows playtest of scrolling/MSAA/FXAA, art-direction review,
 and migration decision for settings compatibility with older executables.
-Keep Classic default; do not expand the experiment to other stages without direction.
+Review the matte, wet and snow finishes on stages 4, 7, 10 and 11 alongside the Stage 8 naval deck.

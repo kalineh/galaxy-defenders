@@ -1,13 +1,19 @@
-# Stage 8 Classic / Modern art prototype
+# Classic and Modern deck art
 
 This branch adds a reversible presentation experiment, not a gameplay change.
 Classic remains the default. Options > Stage art selects Classic or Modern.
 The console accepts `render.style classic` and `render.style modern`.
-Only Stage 8 changes in Modern; all other stages keep their existing art.
+| Stage | Deck family | Finish |
+| --- | --- | --- |
+| 4 | Station panels | Dry, matte metal |
+| 7 | Station panels | Windblown snow |
+| 8 | Naval plating | Brushed metal over a hazy sea |
+| 10 | Service channels | Wet sheen in rain |
+| 11 | Naval plating | Windblown snow |
 
 ## What changes
 
-- The exact existing DarkBlue1 deck rectangles (including the existing 2 px
+- The authored deck footprints (including the existing 2 px
   anti-gap apron) are rasterized as a single stage-space union at initial use.
 - One continuous brush-grain material spans the union. Only exposed edges get
   directional bevels, including concave corners. Internal authored tile joins
@@ -24,17 +30,21 @@ Only Stage 8 changes in Modern; all other stages keep their existing art.
   includes one neighboring row at shared ends so the sampling stays continuous.
 - Run `python tools/bake_stage8_plating.py` after editing the sheet (Pillow and
   resvg-py). It verifies all neighboring edges before writing the runtime PNG.
-- A quiet sea sits behind two unadorned platform-silhouette layers. Their sizes
-  are 5% and 28% of the authored foreground; camera parallax is 4.5% and 18%.
-  They are decorative only, with no bolts, fine seams, collision or enemies.
+- Stage 8 uses one blurred silhouette mask for its two distant layers. The far
+  silhouette is 4.8% of foreground size with 3% camera motion. The middle
+  silhouette is 16% of foreground size with 8.5% camera motion.
+- Cable loops and clipped metal tabs occasionally extend from exposed rails.
+  Some inside corners have a diagonal tie beneath them. Shared hardware has a
+  short contact shadow and a rounded lip baked from the shape of the part.
+- A wrapping material field controls broad gloss on wet panels and patchy frost
+  on snow decks. It stays fixed in world coordinates across strip joins. The
+  snowy stages keep their falling snow in the foreground.
 - Buildings, SecretHint, HUD, player/enemy sprites, shots, effects, simulation,
   and original stage data are unchanged. Foreground dust is suppressed only in
   Modern Stage 8 to keep the new distant water/deck separation quiet.
 
 The supplied AI-generated neutral brush-grain and quiet sea tiles are stored in
-`assets/textures/stage8-brushed-metal.png` and `stage8-sea.png`. No textures are
-synthesized or downloaded at runtime. Modern is lazy-loaded; missing material
-falls back to Classic with an error log. Assets are freed on shutdown.
+`assets/textures/stage8-brushed-metal.png` and `stage8-sea.png`. Deck strips are assembled on first use and released on a stage change or shutdown.
 
 ## Play and compare
 
@@ -83,4 +93,3 @@ human saves or initialize audio. Invincibility is capture setup only.
   assertion: backups are created under `_WIN32`, but the test runs unconditionally.
 - Windows cross-compilation and human GPU/controller playtesting are reported
   separately with the delivery. Software images are not proof of GPU performance.
-- No upstream push is part of this prototype.

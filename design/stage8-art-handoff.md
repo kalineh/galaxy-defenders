@@ -20,7 +20,7 @@ These are AI concept paint-overs of in-game captures, not production textures an
 
 ## Suggested next pass
 
-1. Start with **one Stage 8 inside corner** and the adjacent straight run. Use `DarkBlue1` placements in `src/stage_data.inc`; do not reauthor the stage. `src/stage8_art.h` already builds a connected deck mask and samples grain in stage space. `src/app.c` chooses Modern vs. Classic and draws the scenery.
+1. Start with **one Stage 8 inside corner** and the adjacent straight run. Use `DarkBlue1` placements in `src/stage_data.inc`; do not reauthor the stage. `src/deck_art.h` already builds a connected deck mask and samples grain in stage space. `src/app.c` chooses Modern vs. Classic and draws the scenery.
 2. Keep the grain and intentional long seams anchored to stage coordinates, not the individual sprite or the screen. Put edge strips on the **exposed boundary of each connected deck**, with explicit inside/outside corner caps. Place the hatches, grilles, inset plates and occasional bolts as deliberate visual features. Do not bevel every placement or stamp a full decorated texture over each piece. Grain should be the last detail noticed, not the only one.
 3. Capture a matched Classic/Modern frame, then check two more scroll positions and a short motion sample. Look for stable seams, no lines at the joins or chunk boundaries, a clean turn at the corner, and a background that reads as distant water rather than another factory floor. Compare at play scale, not only zoomed in. Finish this one corner before converting the rest of the stage.
 
