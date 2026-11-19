@@ -180,6 +180,12 @@ void game_shop_open(Game *game) {
     if (entering) game_checkpoint(game, true);
 }
 
+bool game_shop_departing(const Game *game) {
+    MenuPage page = game->menu.page;
+    return game->menu.shop_launch_frame && (page == MENU_SHOP ||
+        (game->transition_frames && (page == MENU_NONE || page == MENU_STAGE_SELECT)));
+}
+
 void game_shop_update(Game *game) {
     GameMenu *menu = &game->menu;
     if (!menu->shop_launch_frame) return;

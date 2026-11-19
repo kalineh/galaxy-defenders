@@ -80,6 +80,7 @@ bool game_menu_is_title(const Game *game) {
 
 void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_CONTROLLERS) return;
+    if (page == MENU_PAUSE && game_shop_departing(game)) return;
     MenuPage previous = game->menu.page;
     if (page == MENU_CONTROLLERS && previous != MENU_CONTROLLERS) {
         game->menu.controllers_origin = previous;
@@ -185,6 +186,8 @@ void game_transition(Game *game, Transition transition, int stage) {
 bool game_transition_update(Game *game) {
     if (game->transition_frames <= 0) return false;
     if (--game->transition_frames > 15) return true;
+    if (!game->transition_frames && (game->menu.page == MENU_NONE || game->menu.page == MENU_STAGE_SELECT))
+        game->menu.shop_launch_frame = 0;
     if (game->transition_frames != 15) return false;
     Transition transition = game->transition;
     int stage = game->transition_stage;
@@ -235,7 +238,7 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         }
         return;
     }
-    if (game->transition_frames > 15) return;
+    if (game->transition_frames > 15 || game_shop_departing(game)) return;
     if (menu->page == MENU_FINISH) {
         if (action == MENU_BACK && menu->frame > 3200) game_transition(game, TRANSITION_MAIN, 0);
         return;

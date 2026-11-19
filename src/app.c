@@ -1427,9 +1427,14 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
         can_select = draw_shop_catalog(game,assets,slot,left,offset);
     } else {
         int xrow = left+offset, y = LOADOUT_TOP+SHOP_NEXT_STAGE_ROW*LOADOUT_ROW+18;
-        bool focused = cat == SHOP_NEXT_STAGE_ROW && !menu->shop_launch_frame;
+        bool focused = cat == SHOP_NEXT_STAGE_ROW;
+        Color fill = focused ? surface : ink;
+        if (focused && menu->shop_launch_frame) {
+            float pulse = fmaxf(0, 1 - (menu->shop_launch_frame-1)/10.0f);
+            fill = ColorLerp(surface,highlight,0.12f + 0.32f*pulse*pulse);
+        }
         draw_loadout(assets,p,xrow,menu->shop_launch_frame ? -1 : cat,highlight);
-        DrawRectangle(xrow,y,width,47,focused ? surface : ink);
+        DrawRectangle(xrow,y,width,47,fill);
         DrawRectangleLinesEx((Rectangle){xrow,y,width,47},1,focused ? highlight : rule);
         if (focused) DrawRectangle(xrow,y,3,47,highlight);
         const char *label = ui_text(game->cleared_game ? "Stage select" : "Next stage");
@@ -2092,6 +2097,7 @@ static void handle_game_input(Game *game, Assets *assets, PlayerDevices *devices
         for (int slot = 0; slot < GAME_PLAYERS && game->menu.page == page; ++slot) {
             if (devices->choosing[slot] || page != MENU_NONE)
                 dispatch_menu_action(game,assets,devices,buttons.player[slot],slot,devices->choosing[slot]);
+            if (game_shop_departing(game)) break;
         }
     } else dispatch_menu_action(game,assets,devices,buttons.shared,lead,false);
 }
@@ -2505,7 +2511,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         MenuButtons buttons = {0};
         if (IsWindowFocused()) buttons = input_menu_buttons(&devices,pads,lead);
         bool was_menu = game->menu.page != MENU_NONE;
-        bool toggled = IsKeyPressed(KEY_GRAVE);
+        bool departing = game_shop_departing(game);
+        bool toggled = !departing && IsKeyPressed(KEY_GRAVE);
         if (toggled) {
             if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
                 console_full = !console_open || !console_full;
@@ -2541,7 +2548,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             if (IsKeyPressed(KEY_PAGE_DOWN) || IsKeyPressedRepeat(KEY_PAGE_DOWN)) console->scroll -= console_full ? 28 : 9;
             console->scroll += (int)(GetMouseWheelMove() * 3);
             if (enter_pressed) command_failed = !console_submit(console, game);
-        } else if (!toggled && IsWindowFocused()) {
+        } else if (!toggled && !departing && IsWindowFocused()) {
             handle_game_input(game,&assets,&devices,pads,buttons,lead,IsKeyPressed(KEY_ESCAPE),IsKeyPressed(KEY_F2));
             if (!was_menu && game->menu.page == MENU_NONE) {
                 bool retry = (game->over || game->complete) && (IsKeyPressed(KEY_D) || (buttons.shared & PAD_RETRY));
@@ -2563,7 +2570,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         memcpy(old_enemy_shots, game->enemy_shots, sizeof(old_enemy_shots));
         if (!console->music_album && !console_open && !toggled && ((!was_menu && !game->paused) || game->menu.page == MENU_OVER || game->menu.page == MENU_CLEAR || game->menu.page == MENU_FINISH || game->menu.page == MENU_INTRO || game->menu.page == MENU_SHOP || game->transition_frames > 0) && (IsWindowFocused() || frames)) {
             if (!frames) for (int i = 0; i < GAME_PLAYERS; ++i)
-                game->players[i].input = input_slot_player(&devices,pads,i);
+                game->players[i].input = departing ? (PlayerInput){0} : input_slot_player(&devices,pads,i);
             accumulator += frames ? 1.0 / GAME_HZ : fmin(elapsed, 0.1);
             while (accumulator >= 1.0 / GAME_HZ) {
                 if (!frames)

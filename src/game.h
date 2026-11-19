@@ -274,6 +274,7 @@ void game_scenery_init(Game *game);
 void game_scenery_update(Game *game);
 const char *game_music(const Game *game);
 void game_shop_open(Game *game);
+bool game_shop_departing(const Game *game);
 void game_shop_update(Game *game);
 void game_transition(Game *game, Transition transition, int stage);
 bool game_transition_update(Game *game);

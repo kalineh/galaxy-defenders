@@ -1004,13 +1004,28 @@ static void stage_clear_exit(void) {
     CHECK(game.menu.shop_catalog[0]);
     launch_from_shop(1);
     CHECK(!game.menu.shop_catalog[0]);
-    for (int fly = 0; fly < 33; ++fly) game_tick(&game);
-    CHECK(game.menu.page == MENU_SHOP);
+    for (int fly = 0; fly < 33; ++fly) {
+        CHECK(game_shop_departing(&game));
+        game_menu_open(&game, MENU_PAUSE);
+        game_menu_input(&game, MENU_UP, 1);
+        game_menu_input(&game, MENU_BACK, 0);
+        game_tick(&game);
+    }
+    CHECK(game.menu.page == MENU_SHOP && game.menu.shop_category[1] == SHOP_NEXT_STAGE_ROW);
     game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.transition_frames == 30);
     for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.stage.index == 1 && game.players[0].money == 8000);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
+    for (int i = 0; i < 15; ++i) {
+        CHECK(game_shop_departing(&game));
+        game_menu_open(&game, MENU_PAUSE);
+        CHECK(game.menu.page == MENU_NONE);
+        game_tick(&game);
+    }
+    CHECK(!game_shop_departing(&game));
+    game_menu_open(&game, MENU_PAUSE);
+    CHECK(game.menu.page == MENU_PAUSE);
 }
 
 static void starting_primary_patterns(void) {
@@ -2256,6 +2271,9 @@ static void saved_continue(void) {
     launch_from_shop(0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    CHECK(game.transition == TRANSITION_NONE);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
     for (int i = 0; i < 8; ++i) game_menu_input(&game, MENU_DOWN, 0);
     game_menu_input(&game, MENU_CONFIRM, 0);
     for (int i = 0; i < 15; ++i) game_tick(&game);
