@@ -12,6 +12,15 @@ Only Stage 8 changes in Modern; all other stages keep their existing art.
 - One continuous brush-grain material spans the union. Only exposed edges get
   directional bevels, including concave corners. Internal authored tile joins
   do not create seams. Chunk borders have no bevels and share world coordinates.
+- Modern decks now use one reusable parts sheet, authored in
+  `art/platforms/stage8-plating.svg`. Four 256-unit panel patterns share seam
+  endpoints. Alternating the two face-color banks keeps both sides of every joint
+  the same tone across UV cuts. A stage-coordinate hash selects the pattern.
+  The inset rail follows distance to the exposed deck edge. Two mirrored miter
+  fittings finish inside and outside turns. Separate sockets seat louvers, access covers, stripes or fastener strips
+  where the whole fitting clears the rail and the surrounding plate seams.
+- Run `python tools/bake_stage8_plating.py` after editing the sheet (Pillow and
+  resvg-py). It verifies all neighboring edges before writing the runtime PNG.
 - A quiet sea sits behind two unadorned platform-silhouette layers. Their sizes
   are 5% and 28% of the authored foreground; camera parallax is 4.5% and 18%.
   They are decorative only, with no bolts, fine seams, collision or enemies.

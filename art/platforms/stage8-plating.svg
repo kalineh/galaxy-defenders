@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="576" viewBox="0 0 1024 576">
+  <!-- Four 256-unit plates. Every variant crosses E/W at 112 and N/S at 144.
+       The northwest and southeast faces are lighter on every shared edge. -->
+  <defs>
+    <g id="pin"><circle r="2.5" fill="#252631"/><circle cy="-.3" r="1.6" fill="#777378"/><path d="m-1 .7 2-1.4" stroke="#353440" stroke-width=".85"/></g>
+    <g id="pair"><use xlink:href="#pin"/><use xlink:href="#pin" x="10"/></g>
+    <g id="wear" fill="none" stroke="#82808b" opacity=".35" stroke-width=".8">
+      <path d="m0 12 15-12m-9 11 7-5m-3-1 6-5m3-4 4-3m-24 25 4-3"/>
+    </g>
+    <path id="a" d="M-2 112H72l19-19h37l16-16V-2 M144 258v-76l18-18h20v-30l22-22h54"/>
+    <path id="b" d="M-2 112h36l18 18h61l31 31v97 M144-2v51l15 15h37l24 24v15l9 9h29"/>
+    <path id="c" d="M-2 112h59l14-14V66l20-20h38l15-15V-2 M144 258v-40l-16-16v-29l21-21h40l40-40h29"/>
+    <path id="d" d="M-2 112h73l16 16v41l19 19h19l19 19v51 M144-2v49l22 22v20l23 23h69"/>
+    <clipPath id="tile"><rect width="256" height="256"/></clipPath>
+
+  <g id="plate0" clip-path="url(#tile)">
+    <rect width="256" height="256" fill="currentColor"/>
+    <path d="M0 112H72l19-19h37l16-16V0H0Z M144 256v-74l18-18h20v-30l22-22h52v144Z"/>
+    <use xlink:href="#a" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#a" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#pair" x="102" y="86"/><use xlink:href="#pin" x="175" y="157"/>
+    <use xlink:href="#wear" x="212" y="86"/>
+  </g>
+  <g id="plate1" clip-path="url(#tile)">
+    <rect width="256" height="256"/>
+    <path d="M0 112h34l18 18h61l31 31v95H0Z M144 0v49l15 15h37l24 24v15l9 9h27V0Z" fill="currentColor"/>
+    <use xlink:href="#b" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#b" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#pin" x="137" y="175"/><use xlink:href="#pair" x="168" y="57"/><use xlink:href="#wear" x="91" y="219"/>
+  </g>
+  <g id="plate2" clip-path="url(#tile)">
+    <rect width="256" height="256" fill="currentColor"/>
+    <path d="M0 112h57l14-14V66l20-20h38l15-15V0H0Z M144 256v-38l-16-16v-29l21-21h40l40-40h27v144Z"/>
+    <use xlink:href="#c" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#c" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#pair" x="98" y="39"/><use xlink:href="#pin" x="137" y="179"/><use xlink:href="#wear" x="39" y="130"/>
+  </g>
+  <g id="plate3" clip-path="url(#tile)">
+    <rect width="256" height="256"/>
+    <path d="M0 112h71l16 16v41l19 19h19l19 19v49H0Z M144 0v47l22 22v20l23 23h67V0Z" fill="currentColor"/>
+    <use xlink:href="#d" transform="translate(.5 1.5)" fill="none" stroke="#61626b" stroke-width="1.3"/><use xlink:href="#d" fill="none" stroke="#21232d" stroke-width="1.8"/>
+    <use xlink:href="#pin" x="152" y="37"/><use xlink:href="#pair" x="195" y="104"/><use xlink:href="#wear" x="104" y="68"/>
+  </g>
+  </defs>
+  <!-- Alternating face tones continue across patch boundaries in either bank. -->
+  <use xlink:href="#plate0" x="0" y="0" color="#373945" fill="#41434e"/>
+  <use xlink:href="#plate1" x="256" y="0" color="#373945" fill="#41434e"/>
+  <use xlink:href="#plate2" x="0" y="256" color="#373945" fill="#41434e"/>
+  <use xlink:href="#plate3" x="256" y="256" color="#373945" fill="#41434e"/>
+  <use xlink:href="#plate0" x="512" y="0" color="#41434e" fill="#373945"/>
+  <use xlink:href="#plate1" x="768" y="0" color="#41434e" fill="#373945"/>
+  <use xlink:href="#plate2" x="512" y="256" color="#41434e" fill="#373945"/>
+  <use xlink:href="#plate3" x="768" y="256" color="#41434e" fill="#373945"/>
+  <!-- Optional hardware in independent 64-unit sockets on the last row. -->
+  <g transform="translate(0 512)">
+    <path d="M12 14l5-6h36v47l-4 3H12Z" fill="#555864" stroke="#22232e" stroke-width="2"/>
+    <rect x="16" y="12" width="33" height="42" fill="#23252e"/>
+    <path d="M19 16h27m-27 5h27m-27 5h27m-27 5h27m-27 5h27m-27 5h27m-27 5h27m-27 5h27" stroke="#585b68" stroke-width="2"/>
+    <path d="M34 14v37" stroke="#30323d" stroke-width="2"/>
+  </g>
+  <g transform="translate(64 512)">
+    <path d="M6 20l12-12h40v39l-8 9H6Z" fill="#272a35" stroke="#525563" stroke-width="1.4"/>
+    <path d="M10 22l10-10h34v34l-7 7H10Z" fill="#414450" stroke="#252631"/>
+    <use xlink:href="#pin" x="23" y="18"/><use xlink:href="#pin" x="46" y="46"/>
+    <path d="M16 38h17v5H16Z" fill="#242733"/><path d="M18 41h11" stroke="#70727a"/>
+  </g>
+  <g transform="translate(128 512)" fill="#867044"><path d="m5 44 13-20h6L11 44zm12 0 13-20h6L23 44zm12 0 13-20h6L35 44zm12 0 13-20h6L47 44z"/></g>
+  <g transform="translate(192 512)"><path d="M6 28h36l9 8H15Z" stroke="#252630" fill="#4c4c56"/><use xlink:href="#pin" x="19" y="32"/><use xlink:href="#pin" x="39" y="32"/></g>
+  <!-- Miter fittings centered on a deck vertex. The reference quadrant is NE:
+       empty for the inside turn, solid for the outside turn. -->
+  <g transform="translate(288 544)">
+    <path d="M-15-25h6v21L4 9h21v6H1L-15-1Z" fill="#4e505e" stroke="#252731" stroke-width="1.3"/>
+    <path d="M-13-23v21L2 13h21" fill="none" stroke="#747481" stroke-width=".95"/>
+    <use xlink:href="#pin" x="-13" y="-19"/><use xlink:href="#pin" x="19" y="12"/>
+  </g>
+  <g transform="translate(352 544)">
+    <path d="M2-25h7v12l4 4h12v7H10L2-10Z" fill="#51535e" stroke="#232530" stroke-width="1.4"/>
+    <path d="M4-23v12l7 7h12" fill="none" stroke="#757582" stroke-width=".9"/>
+    <use xlink:href="#pin" x="6" y="-19"/>
+  </g>
+</svg>

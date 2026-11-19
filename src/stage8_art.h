@@ -20,16 +20,143 @@ static void stage8_art_unload(Stage8Art *art) {
     *art = (Stage8Art){0};
 }
 
-static bool stage8_occupied(const unsigned char *mask, int w, int h, int x, int y) {
-    return x >= 0 && x < w && y >= 0 && y < h && mask[y*w+x];
+/* Distance to the exposed hull in thirds of a pixel. The mask has an empty
+   one-pixel border. Diagonal steps carry the inset trim around reentrant corners. */
+static void stage8_edge_distances(unsigned char *mask, int w, int h) {
+    for (int step=1; step>=-1; step-=2) {
+        int first=step>0 ? 1 : h-2, end=step>0 ? h-1 : 0;
+        for (int y=first; y!=end; y+=step) {
+            for (int x=step>0 ? 1 : w-2; x!=(step>0 ? w-1 : 0); x+=step) {
+                unsigned char *p=mask+y*w+x;
+                if (!*p) continue;
+                const unsigned char *row=p-step*w;
+                int a=p[-step]+3, b=row[0]+3, c=row[-1]+4, d=row[1]+4;
+                int straight=a<b ? a : b, diagonal=c<d ? c : d;
+                int nearest=straight<diagonal ? straight : diagonal;
+                if (nearest<*p) *p=(unsigned char)nearest;
+            }
+        }
+    }
 }
 
-static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *sea_path) {
+static unsigned stage8_cell_hash(int x, int y) {
+    unsigned n=(unsigned)x*0x9e3779b1u ^ (unsigned)y*0x85ebca77u;
+    n ^= n>>16; n *= 0x7feb352du;
+    return n^(n>>15);
+}
+
+/* A grille or painted stencil belongs to one sheet of armor. Check the
+   perimeter of its socket against the plate faces before stamping it. */
+static bool stage8_clear_socket(const Image *sheet, int x, int y) {
+    const Color *p=(const Color *)sheet->data+y*sheet->width+x;
+    int face=p->r;
+    for (int t=-27; t<=27; t+=6)
+        if (p[-27*sheet->width+t].r!=face || p[27*sheet->width+t].r!=face ||
+            p[t*sheet->width-27].r!=face || p[t*sheet->width+27].r!=face) return false;
+    return true;
+}
+
+/* Visit one quadrant of a world-aligned 256px plate. The four atlas variants
+   share their edge sockets. A cell can also seat one whole hardware fitting. */
+static void stage8_paint_cell(Color *out, int start, int rows, const Stage8Art *art,
+        const unsigned char *distance, const Image *sheet, const Image *grain, int ox, int oy) {
+    int w=art->width, wx=art->left+ox, wy=art->top+oy;
+    int tile_x=(wx+32768)/256, tile_y=(wy+32768)/256;
+    unsigned tile=stage8_cell_hash(tile_x,tile_y)%4;
+    const Color *plates=sheet->data, *brush=grain->data;
+    int bank=(tile_x^tile_y)&1;
+    int u0=bank*512+(tile%2)*256+(wx&255), v0=(tile/2)*256+(wy&255);
+    unsigned socket=stage8_cell_hash(wx/128,wy/128);
+    int cx=ox+64, cy=oy+64;
+    int clearance=0;
+    if (socket%5<2) {
+        /* Slide the fitting within its bay until it clears the rim of a narrow spar. */
+        for (int dy=-26; dy<=26; dy+=26) for (int dx=-26; dx<=26; dx+=26) {
+            int x=ox+64+dx, y=oy+64+dy;
+            if (x<0 || x>=w || y<0 || y>=art->height) continue;
+            int score=distance[y*w+x]-abs(dx)/3-abs(dy)/3;
+            if (score>=150 && score>clearance && stage8_clear_socket(sheet,u0+64+dx,v0+64+dy)) {
+                clearance=score; cx=x; cy=y;
+            }
+        }
+    }
+    int detail=(socket>>8)%4;
+    int bottom=oy+128<start+rows ? oy+128 : start+rows;
+    int right=ox+128<w ? ox+128 : w;
+    for (int y=oy>start ? oy : start; y<bottom; ++y) {
+        int py=y-oy, gy=y+art->top;
+        int v=(gy%grain->height+grain->height)%grain->height;
+        for (int x=ox>0 ? ox : 0; x<right; ++x) {
+            int idx=y*w+x, depth=distance[idx];
+            if (!depth) continue;
+            int px=x-ox, gx=x+art->left;
+            Color c=plates[(v0+py)*sheet->width+u0+px];
+            if (clearance>=150 && x>=cx-32 && x<cx+32 && y>=cy-32 && y<cy+32) {
+                Color f=plates[(512+y-cy+32)*sheet->width+detail*64+x-cx+32];
+                c=ColorAlphaBlend(c,f,WHITE);
+            }
+            if (depth<=32) {
+                int dx=distance[idx+1]-distance[idx-1], dy=distance[idx+w]-distance[idx-w];
+                int light=(dx+dy)/2;
+                int tone=depth<=4 ? 36 : depth<=8 ? 78 : depth<=22 ? 65 : depth<=25 ? 85 : 34;
+                /* Expansion joints cross the rail only on a straight run. */
+                if (((dx==0 && (gx&127)<2) || (dy==0 && (gy&127)<2)) && depth>4 && depth<25) tone=38;
+                c=(Color){tone+light,tone+light+2,tone+light+11,255};
+            }
+            int u=((gx+gy/2)%grain->width+grain->width)%grain->width;
+            int variation=((int)brush[v*grain->width+u].r-128)/8;
+            out[(y-start)*w+x]=(Color){c.r+variation,c.g+variation,c.b+variation,255};
+        }
+    }
+}
+
+static bool stage8_on_deck(const unsigned char *mask, int w, int h, int x, int y) {
+    return x>=0 && x<w && y>=0 && y<h && mask[y*w+x];
+}
+
+/* One of the four quadrants differs at a true corner. Mirror the matching
+   fitting onto that vertex, including its overhang into the next render strip. */
+static void stage8_corner_caps(Color *out, int start, int rows, int w, int h,
+        const unsigned char *mask, const Image *sheet) {
+    const Color *pixels=sheet->data;
+    int top=start>32 ? start-32 : 1;
+    for (int y=top; y<h && y<start+rows+32; ++y) for (int x=1; x<w; ++x) {
+        int i=y*w+x;
+        if (!!mask[i]==!!mask[i-1] && !!mask[i-w]==!!mask[i-w-1]) continue;
+        bool ne=mask[i-w]!=0, nw=mask[i-w-1]!=0, se=mask[i]!=0, sw=mask[i-1]!=0;
+        int count=ne+nw+se+sw;
+        if (count!=1 && count!=3) continue;
+        bool convex=count==1;
+        int sx=(ne==convex || se==convex) ? 1 : -1;
+        int sy=(ne==convex || nw==convex) ? 1 : -1;
+        /* Tiny steps between nearly aligned platforms are too short for a cap. */
+        if (stage8_on_deck(mask,w,h,x+24,y-25)!=ne || stage8_on_deck(mask,w,h,x-25,y-25)!=nw ||
+            stage8_on_deck(mask,w,h,x+24,y+24)!=se || stage8_on_deck(mask,w,h,x-25,y+24)!=sw) continue;
+        for (int v=-25; v<=25; ++v) {
+            int dy=y+(sy>0 ? v : -v-1);
+            if (dy<start || dy>=start+rows) continue;
+            for (int u=-25; u<=25; ++u) {
+                int dx=x+(sx>0 ? u : -u-1);
+                if (dx<0 || dx>=w) continue;
+                Color cap=pixels[(544+v)*sheet->width+(convex ? 352 : 288)+u];
+                Color *dest=out+(dy-start)*w+dx;
+                if (cap.a && dest->a) *dest=ColorAlphaBlend(*dest,cap,WHITE);
+            }
+        }
+    }
+}
+
+static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *sea_path, const char *sheet_path) {
     art->attempted = true;
     Image grain = LoadImage(grain_path);
     if (!IsImageValid(grain)) return false;
-    Color *grain_pixels = LoadImageColors(grain);
-    if (!grain_pixels) { UnloadImage(grain); return false; }
+    Image sheet=LoadImage(sheet_path);
+    if (!IsImageValid(sheet) || sheet.width!=1024 || sheet.height!=576) {
+        TraceLog(LOG_ERROR,"Invalid Stage 8 plating sheet");
+        UnloadImage(sheet); UnloadImage(grain); return false;
+    }
+    ImageFormat(&grain,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    ImageFormat(&sheet,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     const StageDefinition *stage = &stage_definitions[7];
     int left=0, right=0, top=0, bottom=0;
     for (int i=0; i<stage->event_count; ++i) {
@@ -44,42 +171,33 @@ static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *
         if (y0<top) top=y0;
         if (y1>bottom) bottom=y1;
     }
+    --left; --top; ++right; ++bottom;
     int w=right-left, h=bottom-top;
-    if (w<=0 || h<=0 || (h+DECK_CHUNK_HEIGHT-1)/DECK_CHUNK_HEIGHT>DECK_MAX_CHUNKS) {
-        UnloadImageColors(grain_pixels); UnloadImage(grain); return false;
+    if (w<=2 || h<=2 || (h+DECK_CHUNK_HEIGHT-1)/DECK_CHUNK_HEIGHT>DECK_MAX_CHUNKS) {
+        UnloadImage(sheet); UnloadImage(grain); return false;
     }
     unsigned char *mask = calloc((size_t)w*h,1);
-    if (!mask) { UnloadImageColors(grain_pixels); UnloadImage(grain); return false; }
+    if (!mask) { UnloadImage(sheet); UnloadImage(grain); return false; }
     for (int i=0; i<stage->event_count; ++i) {
         const StageEvent *e=&stage->events[i];
         if (!stage8_deck_event(e)) continue;
         float half=(e->width+2)*0.5f;
         int x0=(int)ceilf(e->x-half-0.5f)-left, x1=(int)ceilf(e->x+half-0.5f)-left;
         int y0=(int)ceilf(e->y-half-0.5f)-top, y1=(int)ceilf(e->y+half-0.5f)-top;
-        for (int y=y0; y<y1; ++y) memset(mask+y*w+x0,1,(size_t)(x1-x0));
+        for (int y=y0; y<y1; ++y) memset(mask+y*w+x0,255,(size_t)(x1-x0));
     }
     art->left=left; art->top=top; art->width=w; art->height=h;
+    stage8_edge_distances(mask,w,h);
     bool valid=true;
     for (int start=0; start<h; start+=DECK_CHUNK_HEIGHT) {
         int rows=h-start<DECK_CHUNK_HEIGHT ? h-start : DECK_CHUNK_HEIGHT;
         Image image=GenImageColor(w,rows,BLANK);
         if (!image.data) { valid=false; break; }
-        Color *pixels=image.data;
-        for (int y=0; y<rows; ++y) for (int x=0; x<w; ++x) {
-            int gy=start+y;
-            if (!mask[gy*w+x]) continue;
-            int u=((x+left)%grain.width+grain.width)%grain.width;
-            int v=((gy+top)%grain.height+grain.height)%grain.height;
-            Color g=grain_pixels[v*grain.width+u];
-            float variation=((g.r+g.g+g.b)/3.0f-128)*0.12f;
-            float shade=0;
-            /* Only exposed UNION edges receive bevels, including concave corners. */
-            if (!stage8_occupied(mask,w,h,x,gy-1) || !stage8_occupied(mask,w,h,x-1,gy)) shade=33;
-            else if (!stage8_occupied(mask,w,h,x,gy+1) || !stage8_occupied(mask,w,h,x+1,gy)) shade=-22;
-            else if (!stage8_occupied(mask,w,h,x,gy-4) || !stage8_occupied(mask,w,h,x-4,gy)) shade=17;
-            else if (!stage8_occupied(mask,w,h,x,gy+4) || !stage8_occupied(mask,w,h,x+4,gy)) shade=-13;
-            pixels[y*w+x]=(Color){(unsigned char)(52+variation+shade),(unsigned char)(66+variation+shade),(unsigned char)(73+variation+shade),255};
-        }
+        int first_x=-(int)((unsigned)left&127u), first_y=start-(int)((unsigned)(start+top)&127u);
+        for (int oy=first_y; oy<start+rows; oy+=128)
+            for (int ox=first_x; ox<w; ox+=128)
+                stage8_paint_cell(image.data,start,rows,art,mask,&sheet,&grain,ox,oy);
+        stage8_corner_caps(image.data,start,rows,w,h,mask,&sheet);
         Texture2D texture=LoadTextureFromImage(image);
         UnloadImage(image);
         art->deck[art->count++]=texture;
@@ -88,7 +206,7 @@ static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *
         SetTextureWrap(texture,TEXTURE_WRAP_CLAMP);
         SetTextureFilter(texture,TEXTURE_FILTER_POINT);
     }
-    free(mask); UnloadImageColors(grain_pixels); UnloadImage(grain);
+    free(mask); UnloadImage(sheet); UnloadImage(grain);
     art->sea=LoadTexture(sea_path);
     if (IsTextureValid(art->sea)) SetTextureFilter(art->sea,TEXTURE_FILTER_BILINEAR);
     art->ready=valid;

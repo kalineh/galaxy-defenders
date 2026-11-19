@@ -129,8 +129,9 @@ No key-binding UI added. Music remains ready for human listening feedback.
 # Stage 8 art prototype (isolated experiment branch)
 
 Classic/Modern Stage art option implemented; see STAGE8_ART_PROTOTYPE.md.
-Next art pass: [Stage 8 art handoff and concept JPEGs](design/stage8-art-handoff.md).
-The first texture-only look is not the visual target.
+Review the reusable plate kit and inside-corner trim against the
+[Stage 8 art handoff and concept JPEGs](design/stage8-art-handoff.md).
+The junction at `game.stage 8 0.4` shows both long rails and recessed fittings.
 Before merge: human Windows playtest of scrolling/MSAA/FXAA, art-direction review,
 and migration decision for settings compatibility with older executables.
 Keep Classic default; do not expand the experiment to other stages without direction.

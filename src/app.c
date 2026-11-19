@@ -1064,10 +1064,11 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     bool modern = game->stage.index == 7 && game->menu.options[OPTION_RENDER_STYLE];
     if (modern && !assets->modern_stage8.attempted) {
-        char grain[2048], sea[2048];
+        char grain[2048], sea[2048], sheet[2048];
         snprintf(grain,sizeof(grain),"%s",asset_path("textures/stage8-brushed-metal.png"));
         snprintf(sea,sizeof(sea),"%s",asset_path("textures/stage8-sea.png"));
-        stage8_art_load(&assets->modern_stage8,grain,sea);
+        snprintf(sheet,sizeof(sheet),"%s",asset_path("textures/stage8-plating.png"));
+        stage8_art_load(&assets->modern_stage8,grain,sea,sheet);
     }
     modern = modern && assets->modern_stage8.ready;
     if (modern) {
