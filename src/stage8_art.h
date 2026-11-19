@@ -45,14 +45,18 @@ static unsigned stage8_cell_hash(int x, int y) {
     return n^(n>>15);
 }
 
-/* A grille or painted stencil belongs to one sheet of armor. Check the
-   perimeter of its socket against the plate faces before stamping it. */
-static bool stage8_clear_socket(const Image *sheet, int x, int y) {
+/* Atlas column and half extents of each fitting, including a little bare metal. */
+typedef struct { int column, half_w, half_h; } Stage8Fitting;
+static const Stage8Fitting stage8_fittings[] = {
+    {0,24,29}, {1,29,27}, {2,29,15}, {3,28,8},
+    {6,20,10}, {7,21,20}, {8,25,12}
+};
+
+static bool stage8_clear_socket(const Image *sheet, int x, int y, int hw, int hh) {
     const Color *p=(const Color *)sheet->data+y*sheet->width+x;
-    int face=p->r;
-    for (int t=-27; t<=27; t+=6)
-        if (p[-27*sheet->width+t].r!=face || p[27*sheet->width+t].r!=face ||
-            p[t*sheet->width-27].r!=face || p[t*sheet->width+27].r!=face) return false;
+    for (int dy=-hh; dy<=hh; ++dy)
+        for (int dx=-hw; dx<=hw; ++dx)
+            if (p[dy*sheet->width+dx].r!=p->r) return false;
     return true;
 }
 
@@ -67,20 +71,29 @@ static void stage8_paint_cell(Color *out, int start, int rows, const Stage8Art *
     int bank=(tile_x^tile_y)&1;
     int u0=bank*512+(tile%2)*256+(wx&255), v0=(tile/2)*256+(wy&255);
     unsigned socket=stage8_cell_hash(wx/128,wy/128);
-    int cx=ox+64, cy=oy+64;
-    int clearance=0;
-    if (socket%5<2) {
-        /* Slide the fitting within its bay until it clears the rim of a narrow spar. */
-        for (int dy=-26; dy<=26; dy+=26) for (int dx=-26; dx<=26; dx+=26) {
-            int x=ox+64+dx, y=oy+64+dy;
+    /* More fasteners than hazard paint, with the occasional wide access cover. */
+    static const int picks[]={0,1,2,3,4,4,5,6,6};
+    Stage8Fitting fitting=stage8_fittings[picks[(socket>>8)%9]];
+    int turn=(socket>>18)&3;
+    int hw=(turn&1) ? fitting.half_h : fitting.half_w;
+    int hh=(turn&1) ? fitting.half_w : fitting.half_h;
+    int cx=0, cy=0;
+    bool placed=false;
+    if (socket%4!=0) {
+        /* The distance field uses 3 for an axial step and 4 for a diagonal.
+           Leave sixteen pixels to the rim, whatever the fitting's orientation. */
+        int clearance=48+3*(hw>hh ? hw : hh)+(hw<hh ? hw : hh);
+        for (int attempt=0; attempt<12; ++attempt) {
+            unsigned offset=stage8_cell_hash((int)(socket>>1),attempt);
+            int dx=32+(offset&63), dy=32+((offset>>8)&63);
+            int x=ox+dx, y=oy+dy;
             if (x<0 || x>=w || y<0 || y>=art->height) continue;
-            int score=distance[y*w+x]-abs(dx)/3-abs(dy)/3;
-            if (score>=150 && score>clearance && stage8_clear_socket(sheet,u0+64+dx,v0+64+dy)) {
-                clearance=score; cx=x; cy=y;
+            if (distance[y*w+x]>=clearance && stage8_clear_socket(sheet,u0+dx,v0+dy,hw,hh)) {
+                cx=x; cy=y; placed=true;
+                break;
             }
         }
     }
-    int detail=(socket>>8)%4;
     int bottom=oy+128<start+rows ? oy+128 : start+rows;
     int right=ox+128<w ? ox+128 : w;
     for (int y=oy>start ? oy : start; y<bottom; ++y) {
@@ -91,8 +104,11 @@ static void stage8_paint_cell(Color *out, int start, int rows, const Stage8Art *
             if (!depth) continue;
             int px=x-ox, gx=x+art->left;
             Color c=plates[(v0+py)*sheet->width+u0+px];
-            if (clearance>=150 && x>=cx-32 && x<cx+32 && y>=cy-32 && y<cy+32) {
-                Color f=plates[(512+y-cy+32)*sheet->width+detail*64+x-cx+32];
+            if (placed && abs(x-cx)<=hw && abs(y-cy)<=hh) {
+                int u=x-cx+32, v=y-cy+32;
+                if (turn&1) { int tmp=u; u=v; v=63-tmp; }
+                if (turn&2) { u=63-u; v=63-v; }
+                Color f=plates[(512+v)*sheet->width+fitting.column*64+u];
                 c=ColorAlphaBlend(c,f,WHITE);
             }
             if (depth<=32) {

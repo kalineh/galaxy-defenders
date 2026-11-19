@@ -75,4 +75,19 @@
     <path d="M4-23v12l7 7h12" fill="none" stroke="#757582" stroke-width=".9"/>
     <use xlink:href="#pin" x="6" y="-19"/>
   </g>
+  <g transform="translate(416 544)">
+    <rect x="-17" y="-7" width="34" height="14" rx="4" fill="#2b2d37" stroke="#555863"/>
+    <use xlink:href="#pin" x="-11"/><use xlink:href="#pin" x="11"/>
+    <path d="M-4 0h8" stroke="#646570"/>
+  </g>
+  <g transform="translate(480 544)">
+    <path d="M-17-16h28l7 7v19l-7 7h-28Z" fill="#363843" stroke="#242630" stroke-width="2"/>
+    <circle r="11" fill="#454753" stroke="#62646f"/>
+    <path d="M-6-1h12v3H-6Z" fill="#292b35"/>
+    <use xlink:href="#pin" x="-12" y="-11"/><use xlink:href="#pin" x="11" y="11"/>
+  </g>
+  <g transform="translate(544 544)">
+    <rect x="-22" y="-9" width="44" height="18" rx="3" fill="#30323b" stroke="#5b5d67"/>
+    <path d="M-17-5v10m5-10v10m5-10v10m5-10v10m5-10v10m5-10v10m5-10v10m5-10v10" stroke="#1f212a" stroke-width="2.5"/>
+  </g>
 </svg>
