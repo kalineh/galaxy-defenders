@@ -81,14 +81,56 @@ def shifted(mask, dx, dy):
     return result
 
 
-def cast_plate(base, mask, paint, thickness):
-    # A broad face, a short vertical step and the contact shadow at its foot.
-    shade = shifted(mask,0,thickness+1).filter(ImageFilter.GaussianBlur(thickness*0.28))
-    base.paste((37,36,38),mask=shade.point(lambda v: v*0.75))
-    base.paste(paint.point(lambda v: v*0.69),mask=shifted(mask,0,thickness))
-    base.paste(paint,mask=mask)
-    top = ImageChops.subtract(mask,shifted(mask,0,max(1,thickness//2)))
-    return ImageChops.add(base,top.point(lambda v: v*0.065).convert("RGB"))
+def roof_plate(base, mask, tone, scale, radius):
+    # A higher plate occludes the surface beneath it equally around its foot.
+    # Draw its entire top last, so lower ledges cannot shine through overlaps.
+    contact = mask.filter(ImageFilter.GaussianBlur(radius))
+    base.paste((51,51,54), mask=contact.point(lambda v: v*0.56))
+    wall = mask.filter(ImageFilter.MaxFilter(2*scale+1))
+    base.paste(base.point(lambda v: v*0.78),mask=wall)
+    bevel = ImageChops.subtract(mask,mask.filter(ImageFilter.MinFilter(2*scale+1)))
+    bevel = bevel.point(lambda v: v*0.044)
+    face = ImageChops.subtract(Image.new("RGB",mask.size,tone),bevel.convert("RGB"))
+    base.paste(face,mask=mask)
+
+
+def building_material(sprite, path, scale):
+    alpha = sprite.getchannel("A")
+    source = sprite.getchannel("R")
+    name = path.stem
+    wreck = "Destroyed" in path.parts
+    drawn = name in {"Building2","Building4","SmallBuilding1"}
+    height = drawn_casting(name,alpha).getchannel("R") if drawn else source
+    if drawn and wreck:
+        chips = source.point(lambda v: max(102,102+(v-110)*5))
+        height = ImageChops.darker(height,chips)
+
+    body = height.point(lambda v: (v-116)*255/56)
+    roof = height.point(lambda v: (v-182)*255/43)
+    cap = Image.new("L",alpha.size)
+    if drawn:
+        cap = height.point(lambda v: (v-232)*255/20)
+    else:
+        # The traced sprites reuse one gray for crossing slabs. Identify the
+        # upper pieces in original sprite coordinates, retaining their damage.
+        caps = {
+            "Building1": [(69,39,88,68)],
+            "Building8": [(62,26,101,46),(59,101,104,130)],
+            "Building9": [(39,39,127,51),(37,59,68,92),(40,100,126,114)],
+            "SmallBuilding4": [(29,28,52,52)],
+            "SmallBuilding5": [(28,18,54,26),(28,34,54,43),(28,53,54,61)],
+        }
+        for rect in caps.get(name,()):
+            box = tuple(coord*scale for coord in rect)
+            surface = body if name == "SmallBuilding4" else roof
+            cap.paste(surface.crop(box),box)
+
+    base = Image.new("RGB",alpha.size,(83,82,85))
+    radius = scale*(0.9 if wreck else 1.5)
+    for mask,tone in ((body,(126,124,127)), (roof,(167,165,166)), (cap,(183,181,181))):
+        if mask.getbbox():
+            roof_plate(base,ImageChops.multiply(mask,alpha),tone,scale,radius)
+    return base
 
 
 def armor_face(sprite, scale, name):
@@ -150,6 +192,8 @@ def projectile_material(sprite, name, scale):
 
 
 def cast_material(sprite, path, scale, building):
+    if building:
+        return building_material(sprite,path,scale)
     alpha = sprite.getchannel("A")
     name = path.stem
     casting = name.removesuffix("Dead")
@@ -163,7 +207,7 @@ def cast_material(sprite, path, scale, building):
         return material_face("iron",alpha)
     if casting in {
         "Ball", "BigBall", "ShootBall", "Airship", "MissilePod",
-        "MissileTriple", "MissileStorm", "Building2", "SmallBuilding1",
+        "MissileTriple", "MissileStorm",
     }:
         body = drawn_casting(casting,alpha)
         if wreck:
@@ -172,15 +216,6 @@ def cast_material(sprite, path, scale, building):
             body = body.point(lambda v: v*0.77)
             body.paste((54,51,53),mask=red.point(lambda r: (130-r)*8))
         return body
-    if building:
-        iron = material_face("iron",alpha)
-        face = ImageChops.multiply(alpha,red.point(lambda r: (r-124)*7))
-        body = ImageOps.colorize(red,"#514e50","#89878a")
-        base = cast_plate(iron,face,body,2*scale)
-        roof = ImageChops.multiply(alpha,red.point(lambda r: (r-185)*9))
-        paint = material_face("roof",alpha)
-        step = 2 if "Destroyed" in path.parts else 4
-        return cast_plate(base,roof,paint,step*scale)
     if name == "Spike":
         # Both animation frames need the complete face gradient.
         half = sprite.width//2

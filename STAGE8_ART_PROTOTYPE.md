@@ -48,10 +48,12 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
 - A wrapping material field controls broad gloss on wet panels. It stays fixed
   in world coordinates across strip joins. Falling snow is a foreground effect.
 - Modern enemies and buildings use the Cast Iron concept. The ball family,
-  airship, missile launchers and two roofs have dedicated drawings in
+  airship, missile launchers and three roofs have dedicated drawings in
   `art/materials/cast-iron.svg`. The other mechanical sprites use their
   existing armor and roof shapes to define raised faces, ledges and recesses.
-  Their paint and graphite ramps come from the same SVG as the dedicated parts.
+  Enemy paint and graphite ramps come from the same SVG as the dedicated parts.
+  Building roofs use overhead light with narrow, even bevels. Caps cast contact
+  shadows onto their supports, including where the central bridge crosses two slabs.
   Orange armor sits above dark wells, pale roof slabs sit above gray foundations,
   and the bonus ship keeps its magenta paint. Wrecks carry darkened faces.
   Hostile rounds and beams use the airship's orange shell gradient. Player rounds
