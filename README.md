@@ -12,9 +12,10 @@ The pause menu, `galaxy.exe --version`, and Steam build description use the same
 version. The final component records the Git commit count and hash. Local edits
 add a `.dirty` suffix. The major and minor version are in `src/version.h`.
 
-For uploads, copy `steam.local.sh.example` to `steam.local.sh` and enter this
-game's Steam App ID, Windows Depot ID and builder username. Run
-`./master.sh --preview` for a SteamPipe preview or `./master.sh` to upload.
+Run `./master.sh --preview` for a SteamPipe preview or `./master.sh` to upload
+Windows depot `5664311` for app `5664310` using builder account `mrcrops`.
+To reuse a signed-in SteamCMD installation, set `STEAMCMD` in `steam.local.sh`
+as shown in `steam.local.sh.example`.
 The script uses SteamCMD on your PATH or downloads Valve's Windows client
 into `external/steamcmd/`. SteamCMD handles sign-in and Steam Guard. Choose
 the live branch separately in Steamworks after testing the uploaded build.

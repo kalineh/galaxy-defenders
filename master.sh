@@ -17,12 +17,7 @@ case "$mode" in
 esac
 
 if [[ -f steam.local.sh ]]; then source ./steam.local.sh; fi
-if [[ "$mode" != --stage-only ]]; then
-    if [[ ! ${GALAXY_STEAM_APP_ID:-} =~ ^[1-9][0-9]*$ || ! ${GALAXY_STEAM_DEPOT_ID:-} =~ ^[1-9][0-9]*$ || -z ${STEAM_USERNAME:-} ]]; then
-        echo 'Set GALAXY_STEAM_APP_ID, GALAXY_STEAM_DEPOT_ID and STEAM_USERNAME in steam.local.sh or the environment.' >&2
-        exit 2
-    fi
-fi
+steam_username=${STEAM_USERNAME:-mrcrops}
 
 bash ./build.sh steam
 version=$(./build/steam/content/galaxy.exe --version | tr -d '\r')
@@ -46,18 +41,18 @@ mkdir -p build/steam/output
 cat > build/steam/app_build.vdf <<EOF
 "AppBuild"
 {
-    "AppID" "$GALAXY_STEAM_APP_ID"
+    "AppID" "5664310"
     "Desc" "Super Galaxy Defenders $version (Windows x64)"
     "ContentRoot" "$build_dir/content"
     "BuildOutput" "$build_dir/output"
     "Preview" "$preview"
     "Depots"
     {
-        "$GALAXY_STEAM_DEPOT_ID"
+        "5664311"
         {
             "FileMapping" { "LocalPath" "*" "DepotPath" "." "Recursive" "1" }
         }
     }
 }
 EOF
-"$steamcmd" +login "$STEAM_USERNAME" +run_app_build "$build_dir/app_build.vdf" +quit
+"$steamcmd" +login "$steam_username" +run_app_build "$build_dir/app_build.vdf" +quit
