@@ -127,8 +127,18 @@ def projectile_material(sprite, name, scale):
     alpha = sprite.getchannel("A")
     if name in {"EnemyMissile", "EnemyShot"}:
         return armor_face(sprite,scale,name)
-    # Energy has a luminous core. Physical player ordnance has a dipped
-    # trailing bevel. Neutral values take the owning pilot's tint at draw time.
+    if name == "FenceBeam":
+        # Its four stacked animation frames share the same paint range.
+        height = alpha.height//4
+        beam = Image.new("RGB", alpha.size)
+        for y in range(0,alpha.height,height):
+            frame = alpha.crop((0,y,alpha.width,y+height))
+            beam.paste(material_face("paint",frame),(0,y))
+        return beam
+    if name.startswith("Enemy") or name == "CutterBeam":
+        return material_face("paint",alpha)
+    # Player energy has a luminous core. Physical player ordnance has a dipped
+    # trailing bevel. Both take the owning pilot's tint at draw time.
     if name in {"Blade","Boomerang","Bomblet","Missile","DrunkMissile","SeekBomb","Vulcan"}:
         bounds = alpha.getbbox()
         span = min(bounds[2]-bounds[0],bounds[3]-bounds[1])
@@ -136,8 +146,6 @@ def projectile_material(sprite, name, scale):
         lip = ImageChops.subtract(alpha,shifted(alpha,0,-step))
         return ImageOps.colorize(lip, "#f8f8f8", "#909090")
     core = alpha.filter(ImageFilter.BoxBlur(2*scale)).point(lambda v: (v-80)*255/175)
-    if name.startswith("Enemy") or name in {"CutterBeam","FenceBeam"}:
-        return ImageOps.colorize(core, "#ef5935", "#ff8b54")
     return ImageOps.colorize(core, "#b4b4b4", "#ffffff")
 
 

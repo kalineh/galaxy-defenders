@@ -54,7 +54,7 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   Their paint and graphite ramps come from the same SVG as the dedicated parts.
   Orange armor sits above dark wells, pale roof slabs sit above gray foundations,
   and the bonus ship keeps its magenta paint. Wrecks carry darkened faces.
-  Hostile rounds use orange casings or brighter energy cores. Player rounds
+  Hostile rounds and beams use the airship's orange shell gradient. Player rounds
   use neutral material masks multiplied by each pilot's color. Enemy trails
   and impact particles pick up the shell orange in Modern mode.
   Each player chassis has a tinted canopy and spars.
