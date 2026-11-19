@@ -16,8 +16,11 @@ Run `./master.sh --preview` for a SteamPipe preview or `./master.sh` to upload
 Windows depot `5664311` for app `5664310` using builder account `mrcrops`.
 To reuse a signed-in SteamCMD installation, set `STEAMCMD` in `steam.local.sh`
 as shown in `steam.local.sh.example`.
-The script uses SteamCMD on your PATH or downloads Valve's Windows client
-into `external/steamcmd/`. SteamCMD handles sign-in and Steam Guard. Choose
+By default the script uses `%LOCALAPPDATA%\SteamCMD\steamcmd.exe`, downloading
+Valve's client there on first use. This keeps the cached login outside all
+project and build folders. To sign in manually from PowerShell, run
+`& "$env:LOCALAPPDATA\SteamCMD\steamcmd.exe" +login mrcrops +quit`.
+SteamCMD handles sign-in and Steam Guard. Choose
 the live branch separately in Steamworks after testing the uploaded build.
 Store art, gameplay screenshots and patch-note CSVs are in [storefront/](storefront/README.md).
 
