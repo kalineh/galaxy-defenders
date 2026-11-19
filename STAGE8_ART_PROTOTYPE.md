@@ -33,9 +33,11 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   includes one neighboring row at shared ends so the sampling stays continuous.
 - Run `python tools/bake_stage8_plating.py` after editing the sheet (Pillow and
   resvg-py). It verifies all neighboring edges before writing the runtime PNG.
-- Stage 8 uses one blurred silhouette mask for its two distant layers. The far
-  silhouette is 4.8% of foreground size with 3% camera motion. The middle
-  silhouette is 16% of foreground size with 8.5% camera motion.
+- Stage 8's lower platforms use two separately arranged harbor layouts in
+  `art/platforms/stage8-lower-decks.svg`. Each combines slipways, basins,
+  bridges and open water. The far docks are smaller and softer, with 3% camera
+  motion. The middle docks move at 8.5%. The plating baker packs both into
+  one texture.
 - Straight spans can taper on one or both sides, lengthwise or crosswise. Empty
   pieces accept short and long waists up to 34 units deep per side. Occupied
   pieces can take a cut 5 to 8 units deep where the roof or enemy footprint clears it.

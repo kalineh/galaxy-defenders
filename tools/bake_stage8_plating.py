@@ -93,3 +93,18 @@ for name, mask, x, y in masks:
 (root / "src/deck_masks.inc").write_bytes(("\n".join(lines) + "\n};\n").encode())
 atlas.save(target)
 print("Baked three deck families and shared fittings. All neighboring edges match.")
+
+# Bake the haze into the two parallax masks. White RGB in the transparent
+# margins keeps bilinear filtering from producing a dark fringe.
+plans = svg_to_bytes(svg_path=str(root / "art/platforms/stage8-lower-decks.svg"))
+coverage = Image.open(BytesIO(plans)).convert("RGBA").getchannel("A")
+half = coverage.width//2
+tile_size = (half//2, coverage.height//2)
+docks = Image.new("RGBA", (2*tile_size[0],tile_size[1]))
+for layer, blur in enumerate((1.6, 1.0)):
+    box = (layer*half,0,(layer+1)*half,coverage.height)
+    mask = coverage.crop(box).filter(ImageFilter.GaussianBlur(blur))
+    tile = Image.new("RGBA", tile_size, "white")
+    tile.putalpha(mask.resize(tile_size, Image.Resampling.LANCZOS))
+    docks.paste(tile, (layer*tile.width,0))
+docks.save(root / "assets/textures/stage8-lower-decks.png")

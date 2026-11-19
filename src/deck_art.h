@@ -3,7 +3,6 @@
    restart at authored tile joins or swim as the camera scrolls. No frame allocations. */
 #define DECK_CHUNK_HEIGHT 512
 #define DECK_MAX_CHUNKS 64
-#define DECK_HAZE_STEP 12
 
 enum DeckFamily { DECK_NONE, DECK_NAVAL, DECK_STATION, DECK_SERVICE };
 typedef struct {
@@ -361,7 +360,7 @@ static void deck_corner_caps(Color *out, int start, int rows, const DeckArt *art
     }
 }
 
-static bool deck_art_load(DeckArt *art, int index, Color palette, const char *grain_path, const char *sea_path, const char *sheet_path) {
+static bool deck_art_load(DeckArt *art, int index, Color palette, const char *grain_path, const char *sheet_path) {
     art->attempted = true;
     art->family=deck_family(index);
     /* Bias the neutral plate finish toward the stage's established palette. */
@@ -430,48 +429,21 @@ static bool deck_art_load(DeckArt *art, int index, Color palette, const char *gr
         SetTextureFilter(texture,TEXTURE_FILTER_BILINEAR);
     }
     free(mask); UnloadImage(sheet); UnloadImage(grain);
-    if (index==7) {
-        art->sea=LoadTexture(sea_path);
-        if (IsTextureValid(art->sea)) SetTextureFilter(art->sea,TEXTURE_FILTER_BILINEAR);
-        /* Blur the union once at reduced scale, so overlapping rectangles become
-           one hazy shape. The same small mask serves both parallax distances. */
-        Image haze=GenImageColor((w+DECK_HAZE_STEP-1)/DECK_HAZE_STEP+8,(h+DECK_HAZE_STEP-1)/DECK_HAZE_STEP+8,BLANK);
-        if (haze.data) {
-            for (int i=0; i<stage->event_count; ++i) {
-                const StageEvent *e=&stage->events[i];
-                if (!deck_event(e)) continue;
-                Rectangle r=deck_bounds(e);
-                int size=(r.width+DECK_HAZE_STEP-1)/DECK_HAZE_STEP;
-                ImageDrawRectangle(&haze,4+(int)(r.x-left)/DECK_HAZE_STEP,
-                    4+(int)(r.y-top)/DECK_HAZE_STEP,size,size,WHITE);
-            }
-            ImageBlurGaussian(&haze,2);
-            art->distant=LoadTextureFromImage(haze);
-            UnloadImage(haze);
-            if (IsTextureValid(art->distant)) {
-                SetTextureWrap(art->distant,TEXTURE_WRAP_CLAMP);
-                SetTextureFilter(art->distant,TEXTURE_FILTER_BILINEAR);
-            }
-        }
-    }
     art->ready=valid;
     if (!valid) TraceLog(LOG_ERROR,"Stage %d modern deck unavailable; using Classic art",index+1);
     return valid;
 }
 
-static void stage8_draw_distant(const DeckArt *art, float cam_x, float cam_y, float scale,
-        float parallax, int offset, Color tint) {
-    Texture2D tex=art->distant;
+static void stage8_draw_distant(Texture2D tex, int layer, float cam_x, float cam_y,
+        float parallax, Color tint) {
     if (!IsTextureValid(tex)) return;
-    float period=19000*scale, height=tex.height*DECK_HAZE_STEP*scale;
-    float x=ARENA_X+GAME_WIDTH*0.5f+offset+(art->left-4*DECK_HAZE_STEP)*scale-cam_x*parallax;
-    float y=fmodf((art->top-4*DECK_HAZE_STEP)*scale-cam_y*parallax,period);
-    if (y>0) y-=period;
-    for (; y<GAME_HEIGHT; y+=period) {
-        if (y+height<=0) continue;
-        DrawTexturePro(tex,(Rectangle){0,0,tex.width,tex.height},
-            (Rectangle){x,y,tex.width*DECK_HAZE_STEP*scale,height},(Vector2){0},0,tint);
-    }
+    Rectangle source={layer*(tex.width/2),0,tex.width/2,tex.height};
+    float width=GAME_WIDTH+64, height=width*source.height/source.width;
+    float x=ARENA_X+(GAME_WIDTH-width)*0.5f-cam_x*parallax;
+    float y=fmodf(-cam_y*parallax,height);
+    if (y>0) y-=height;
+    for (; y<GAME_HEIGHT; y+=height)
+        DrawTexturePro(tex,source,(Rectangle){x,y,width,height},(Vector2){0},0,tint);
 }
 
 static void stage8_draw_background(const DeckArt *art, float cam_x, float cam_y) {
@@ -483,10 +455,8 @@ static void stage8_draw_background(const DeckArt *art, float cam_x, float cam_y)
                 (Rectangle){ARENA_X,y,size,size},(Vector2){0},0,(Color){135,155,165,255});
         DrawRectangle(ARENA_X,0,GAME_WIDTH,GAME_HEIGHT,(Color){17,32,43,95});
     }
-    Color far={93,111,119,21}, middle={95,115,121,36};
-    stage8_draw_distant(art,cam_x,cam_y,0.048f,0.030f,-265,far);
-    stage8_draw_distant(art,cam_x,cam_y,0.048f,0.030f,285,far);
-    stage8_draw_distant(art,cam_x,cam_y,0.16f,0.085f,80,middle);
+    stage8_draw_distant(art->distant,0,cam_x,cam_y,0.030f,(Color){93,111,119,20});
+    stage8_draw_distant(art->distant,1,cam_x,cam_y,0.085f,(Color){95,115,121,33});
 }
 
 static void deck_draw(const DeckArt *art, float cam_x, float cam_y) {

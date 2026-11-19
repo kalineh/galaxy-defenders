@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1024" height="1344" viewBox="0 0 1024 1344" fill="white">
+  <!-- Two independent half-width plans. Leave water around the vertical wrap.
+       Each group is one dock, with solid aprons and lighter connecting walks. -->
+  <defs>
+    <g id="slip">
+      <path d="M0 8 8 0h74l7 7v17H61v46H49V24H23v63H8V26H0Z"/>
+      <path opacity=".48" d="M23 51h26v4H23zM61 16h39v5H61z"/>
+    </g>
+    <g id="basin">
+      <path fill-rule="evenodd" d="M0 18 18 0h60l18 17v49L80 80H24L0 58Z M19 25v25l14 13h39l9-8V25l-9-9H30Z"/>
+      <path d="M81 34h23v15H81zM13 63h8v26h-8z"/>
+    </g>
+    <g id="elbow">
+      <path d="M0 2h42v12H24v18l30 30h45v12H47L10 37V19H0Z"/>
+      <path d="M80 52h29l9 9v27H91L80 77Z"/>
+      <path opacity=".55" d="M17 30h22l19 21h21v6H56L37 37H17Z"/>
+    </g>
+    <g id="hammerhead">
+      <path d="M0 10 9 0h55l12 12v12H47v40h17v13H30V24H0Z"/>
+      <path opacity=".5" d="M14 24h5v19h11v5H14Z"/>
+    </g>
+    <g id="yard">
+      <path d="M0 12 11 0h47v27H38v31H13L0 46Z M66 13h27l9 9v19H66Z"/>
+      <path opacity=".54" d="M38 32h28v6H38zM20 56h7v17h25v5H20Z"/>
+    </g>
+  </defs>
+  <!-- Far installations: smaller linked groups, seen through more haze. -->
+  <svg width="512" height="1344" viewBox="0 0 512 1344">
+    <g transform="translate(136 56) scale(.48)">
+      <use xlink:href="#elbow"/><use xlink:href="#yard" transform="translate(117 77) scale(.72)"/>
+    </g>
+    <use xlink:href="#basin" transform="translate(444 131) rotate(90) scale(.54)"/>
+    <g transform="translate(24 264) scale(.56)">
+      <use xlink:href="#slip"/><use xlink:href="#hammerhead" transform="translate(94 16) scale(.60)"/>
+    </g>
+    <use xlink:href="#yard" transform="translate(313 349) rotate(180) scale(.44)"/>
+    <use xlink:href="#elbow" transform="translate(513 423) rotate(90) scale(.66)"/>
+    <use xlink:href="#basin" transform="translate(161 520) scale(.50)"/>
+    <use xlink:href="#slip" transform="translate(345 626) rotate(-90) scale(.45)"/>
+    <g transform="translate(17 766) scale(.57)">
+      <use xlink:href="#yard"/><use xlink:href="#elbow" transform="translate(102 24) scale(.78)"/>
+    </g>
+    <use xlink:href="#hammerhead" transform="translate(478 833) rotate(90) scale(.53)"/>
+    <use xlink:href="#elbow" transform="translate(219 948) rotate(-90) scale(.48)"/>
+    <use xlink:href="#basin" transform="translate(47 1148) scale(.40)"/>
+    <g transform="translate(306 1220) scale(.51)">
+      <use xlink:href="#slip"/><use xlink:href="#yard" transform="translate(102 16) scale(.65)"/>
+    </g>
+  </svg>
+  <!-- Middle installations: longer spans and larger enclosed water shapes. -->
+  <svg x="512" width="512" height="1344" viewBox="0 0 512 1344">
+    <use xlink:href="#elbow" transform="translate(28 43) scale(1.08 .89)"/>
+    <g transform="translate(403 150)">
+      <use xlink:href="#slip"/><path opacity=".58" d="M88 11h40v7H88z"/>
+    </g>
+    <use xlink:href="#hammerhead" transform="translate(227 321) rotate(-90) scale(.84)"/>
+    <use xlink:href="#yard" transform="translate(-21 417) scale(1.16)"/>
+    <g transform="translate(369 477)">
+      <use xlink:href="#basin" transform="scale(.83)"/>
+      <path opacity=".55" d="M83 30h26l19-18h31v6h-28l-19 19H83Z"/>
+    </g>
+    <g transform="translate(121 689) rotate(90)">
+      <use xlink:href="#slip" transform="scale(1.12 .94)"/>
+      <use xlink:href="#yard" transform="translate(109 14) scale(.69)"/>
+    </g>
+    <use xlink:href="#elbow" transform="translate(475 840) rotate(90) scale(.97)"/>
+    <g transform="translate(-18 980)">
+      <path d="M0 0h45l17 14h43v12H57L39 13H0Z"/>
+      <use xlink:href="#hammerhead" transform="translate(97 3) scale(.78)"/>
+    </g>
+    <use xlink:href="#basin" transform="translate(291 1084) rotate(90) scale(.96 .75)"/>
+    <use xlink:href="#yard" transform="translate(443 1234) scale(1.15 .86)"/>
+  </svg>
+</svg>

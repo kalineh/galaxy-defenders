@@ -1075,11 +1075,13 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
     bool modern = deck_family(game->stage.index)!=DECK_NONE && game->menu.options[OPTION_RENDER_STYLE];
     if (modern && !assets->deck_art.attempted) {
-        char grain[2048], sea[2048], sheet[2048];
+        char grain[2048], sheet[2048];
         snprintf(grain,sizeof(grain),"%s",asset_path("textures/stage8-brushed-metal.png"));
-        snprintf(sea,sizeof(sea),"%s",asset_path("textures/stage8-sea.png"));
         snprintf(sheet,sizeof(sheet),"%s",asset_path("textures/stage8-plating.png"));
-        deck_art_load(&assets->deck_art,game->stage.index,deck_tint(game->stage.index,""),grain,sea,sheet);
+        if (deck_art_load(&assets->deck_art,game->stage.index,deck_tint(game->stage.index,""),grain,sheet) && game->stage.index==7) {
+            assets->deck_art.sea=texture_load("textures/stage8-sea.png");
+            assets->deck_art.distant=texture_load("textures/stage8-lower-decks.png");
+        }
     }
     modern = modern && assets->deck_art.ready;
     bool sea_background=modern && game->stage.index==7;
