@@ -36,7 +36,12 @@ static void sync_players(Game *game, PlayerDevices *devices) {
         bool previously_assigned = devices->has_device[slot];
         devices->has_device[slot] = device >= 0;
         lost_last[slot] = previously_assigned && device < 0;
-        if (device < 0) { devices->choosing[slot] = false; continue; }
+        if (device < 0) {
+            devices->choosing[slot] = false;
+            if (lost_last[slot] && game->ai.mode[slot]) game->ai.joined[slot] = true;
+            continue;
+        }
+        if (game->ai.mode[slot]) game->ai.joined[slot] = false;
         if (input_owner(devices,devices->flight_device[slot]) != slot) devices->flight_device[slot] = device;
         int prompt = devices->player_prompt[slot];
         int owner = input_owner(devices,prompt);
@@ -54,7 +59,7 @@ static void sync_players(Game *game, PlayerDevices *devices) {
     }
     /* Join destinations first so moving the last device doesn't briefly empty the party. */
     for (int slot = 0; slot < GAME_PLAYERS; ++slot)
-        if (lost_last[slot]) game_leave(game, slot);
+        if (lost_last[slot] && !game->ai.mode[slot]) game_leave(game, slot);
 }
 
 void input_update_devices(Game *game, PlayerDevices *devices, const PadInput inputs[INPUT_DEVICES]) {

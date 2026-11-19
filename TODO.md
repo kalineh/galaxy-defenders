@@ -2,31 +2,31 @@
 
 ## Stage clear and balance
 
-- [ ] **Stage clear.** Give the boss defeat a short beat, fly the surviving
+- [x] **Stage clear.** Give the boss defeat a short beat, fly the surviving
   ships off automatically, then fade the playfield and both HUD rails to black
   together. Show the stage name, Stage Clear, three star outlines, the category
   percentages, and the full team credit award. Fill the earned stars in sequence.
   Confirm reveals the full tally immediately, then advances to the shop. Keep
   the final stage connected to the ending. Award and checkpoint the result
   exactly once, including when the player skips the animation.
-- [ ] **Stars.** Award one for clearing, two for over 75% combined completion,
+- [x] **Stars.** Award one for clearing, two for over 75% combined completion,
   and three for a perfect run. Use the average of the applicable enemy,
   building, and coin percentages for the second star. Compare raw counts for
   the third so a rounded 100% cannot hide a missed target. Show empty stars
   and carry the result through stage selection and saved bests.
-- [ ] **Co-op.** Give each pilot half of credits earned together, including the
+- [x] **Co-op.** Give each pilot half of credits earned together, including the
   clear award and skill bonus. Show the full award once. A 10,000-credit clear
   gives each pilot 5,000 in co-op and gives the solo pilot 10,000. Preserve
   individual wallets, account for odd credits, and test joining or leaving mid-stage.
   Start with 1.25× enemy and boss health for two active pilots, applied once
   alongside the difficulty multiplier. Check joins and disconnects during bosses.
-- [ ] **One AI pilot usable in both the game and the headless runner.** Allow
+- [x] **One AI pilot usable in both the game and the headless runner.** Allow
   either slot to be AI-controlled, including a drop-in AI wingmate and two AI
   pilots for a watchable run. Drive ordinary player inputs. Track reachable
   targets, move below them, and fire. In co-op, give the pilots opposite
   preferred halves and let them cross over when useful. Provide an invincible
   targeting run to probe firing windows and a vulnerable run that dodges.
-- [ ] **Fast campaign simulations.** Run fixed-seed simulations without
+- [x] **Fast campaign simulations.** Run fixed-seed simulations without
   rendering, audio, or frame pacing. Use real stage progression and purchases
   within the pilots' budgets. Record per-stage stars and category counts,
   escaped targets, deaths, boss kill time, loadouts, and credits earned and
@@ -39,6 +39,42 @@
   the current purchase-only shop. Use the run results and human playtests to
   decide whether particular weapons, waves, or difficulty settings need a
   small adjustment. A perfect run can be build-dependent.
+
+### First playthrough results
+
+The 72 campaigns used seeds 42, 73 and 101, all three difficulties, one or
+two pilots, two AI modes, and two build policies. Solo used Kazuki and co-op
+added Rabbit. Both policies bought generators through ID 2 and a shield
+through ID 1. One kept the starting primary and the other switched to Beam
+after Stage 4. They followed the main route, attempted 616 stages and
+cleared 581. The README has commands for repeating and watching a run.
+
+| Campaign finishes | Solo aim | Co-op aim | Solo dodge | Co-op dodge |
+| --- | ---: | ---: | ---: | ---: |
+| Normal | 6/6 | 6/6 | 0/6 | 0/6 |
+| Hard | 6/6 | 6/6 | 0/6 | 1/6 |
+| Really Hard | 6/6 | 6/6 | 0/6 | 0/6 |
+
+1. **Playtest the Stage 3 boss first.** All six distinct vulnerable Really Hard
+   trajectories reached it and died with 15–45% of its HP left. The build policies
+   are identical this early. A candidate experiment is six extra recovery ticks
+   between final-phase volleys on Really Hard. Compare the same seeds and a
+   human run before adopting it.
+2. **Keep the opening economy for now.** Every solo aim pilot investing in Front
+   Laser reached Mk VIII by Stage 6. Switching after Stage 4 bought Beam Mk III
+   or IV solo and Mk III for both co-op pilots. Co-op stayed at Beam Mk III in
+   Stage 6. If the pause feels too long, trial a Mk IV increment of 18,500
+   instead of 19,300 credits. At the Stage 6 shop both Really Hard pilots had
+   18,881–19,185 credits across the three seeds. The proposed price would let
+   both buy that mark one shop earlier on each seed. The sampled Normal and
+   Hard co-op wallets would still fall short.
+3. **Teach the Stage 10 rebound visually.** With the basic targeting AI, 12 of
+   18 invincible starter runs timed out there. Teaching the pilot to return
+   the ball into the barricade brought those same builds to 18/18 finishes.
+   Consider a matching flash on the charged ball and the block it opens.
+4. **Check perfect-run routing.** Really Hard co-op earned three stars on
+   stages 1, 2, 4, 5 and 9. The tested solo builds earned no perfect Really
+   Hard clears. Other routes and loadouts remain to be tested.
 
 ## Other release polish
 

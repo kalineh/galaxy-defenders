@@ -156,6 +156,10 @@ static void shop_select_category(Game *game, int slot, int category) {
     shop_select(game, slot, count ? stock[row] : owned);
 }
 
+int game_banked_credits(const Player *p) {
+    return p->score > GAME_CREDIT_CAP-p->money ? GAME_CREDIT_CAP : p->money+p->score;
+}
+
 void game_shop_open(Game *game) {
     bool entering = game->menu.page != MENU_SHOP;
     if (entering) {
@@ -170,11 +174,12 @@ void game_shop_open(Game *game) {
         game->menu.shop_category[i] = 0;
         game->menu.shop_purchase[i] = false;
         if (!entering || !p->initialized) continue;
-        p->money += p->score;
+        p->money = game_banked_credits(p);
         p->score = 0;
         p->lives = 1;
         p->health = game_chassis[p->chassis].armor;
     }
+    game->ai.shop_ticks = 0;
     game->menu.shop_launch_frame = 0;
     game_menu_open(game, MENU_SHOP);
     if (entering) game_checkpoint(game, true);

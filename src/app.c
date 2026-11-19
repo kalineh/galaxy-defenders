@@ -1597,7 +1597,7 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
         label = TextFormat("%s - %s",TextFormat(ui_text("Slot %d"),row+1),state);
     } else if (page == MENU_STAGE_SELECT && row < 12) label = TextFormat(ui_text("Stage %d"),row+1);
     if (page == MENU_STAGE_SELECT && row < 12 && game->active_slot >= 0) {
-        int best = game->saves[game->active_slot].stage_medals[row];
+        int best = game->saves[game->active_slot].stage_stars[row];
         for (int i = 0; i < 3; ++i)
             result_star(x+width-96+i*30,y+height/2,11,i<best,i<best ? accent : dim);
     }
@@ -1865,7 +1865,7 @@ static void draw_menu(const Game *game, const Assets *assets, float frame, const
                 text_center(font,ui_text(labels[i]),x,567,24,dim);
                 int pct = game_stats_percent(got[i],possible[i]);
                 if (pct == 100 && got[i] < possible[i]) pct = 99;
-                text_center(font,possible[i] ? TextFormat("%d%%",pct) : "?",x,603,38,WHITE);
+                text_center(font,possible[i] ? TextFormat("%d%%",pct) : "-",x,603,38,WHITE);
             }
         }
         if (t >= CLEAR_TALLY_FRAME) {
@@ -2437,7 +2437,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 if (index >= 0 && index < GAME_SAVE_SLOTS) remembered_slot = index;
                 fclose(selection);
             }
-            if (remembered_slot >= 0) game->active_slot = remembered_slot;
+            if (game->ai.campaign) game->active_slot = -1;
+            else if (remembered_slot >= 0) game->active_slot = remembered_slot;
             else for (int i=0; i<GAME_SAVE_SLOTS; ++i) {
                 if (game->saves[i].valid) { game->active_slot = i; break; }
             }

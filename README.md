@@ -2,14 +2,17 @@
 
 A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).
-Work is on `native`; see [the port plan](PORT_PLAN.md) and [current work](TODO.md).
+Work is on `master`; see [the port plan](PORT_PLAN.md) and [current work](TODO.md).
 
 ## Play
 
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
 volume. Choose Play, a save slot, New Game, difficulty and pilots. All
 12 main stages and seven bonus stages use their authored event data and synth
-music. Stage Clear opens the shop. Up/down selects one of six loadout slots. Confirm opens its stock, up/down
+music. Stage Clear rates enemies, buildings and coins. Earn one star for a clear,
+two for over 75% across applicable categories and three for every target and coin.
+Confirm reveals the result or continues to the shop. Two pilots split earned credits
+equally and enemies take 25% more damage to defeat in co-op. Up/down selects one of six loadout slots. Confirm opens its stock, up/down
 previews equipment, and Back returns to the selected slot. Each pilot keeps purchased gear across stages and can equip it freely.
 All twelve generators are available in each shop. Open a weapon to browse its marks.
 Primary DPS estimates direct normal-fire damage with all emitters on target and enough energy to fire. A purchase includes every mark up to the
@@ -42,6 +45,27 @@ masters (offline dependencies: Pillow and resvg-py).
 `game.reset` is a debug reset (Rookie, level 2 Front Laser), not pilot new-game
 setup. `game.stage 1..12 [0..1]` seeks a main stage; `13..19` selects bonus stages.
 Seeking preserves equipment/money, restores armor and synchronizes music.
+
+### AI playtesting
+
+- `debug.ai 2 dodge` gives a wingmate normal controls and vulnerability. Use
+  `debug.ai 1 aim` for an invincible targeting pilot. Either slot accepts
+  `off` to return control. Ordinary campaign saves keep manual shopping.
+- `debug.run 2 2 dodge starter 42` starts a temporary, watchable two-player
+  Really Hard campaign with seed 42. Difficulty is 0/1/2, players 1/2, mode
+  `aim` or `dodge`, and build `starter` or `beam`. Both policies buy affordable
+  generator, shield and primary upgrades. The Beam policy switches after Stage 4.
+  These runs follow the main route and use no human save slot.
+- `debug.watch 3` fast-forwards that campaign to Stage 3 using earned gear.
+  It stops if the pilots die or time out on the way. Run the same seed and
+  policy again to watch the same route.
+- After `./build.sh headless`, run
+  `./build/headless/galaxy.exe --playthrough --command "debug.run 2 1 aim beam 42"`
+  for a per-stage CSV without rendering, audio, or frame pacing. A stage times
+  out after 24,000 gameplay ticks (400 simulated seconds). Use
+  `python tools/compare_playthroughs.py --seeds 42 73 101` for the complete matrix.
+
+### Other debug commands
 
 `debug.shop` jumps to the shop immediately. From a campaign it uses the normal shop checkpoint.
 From the title or campaign setup it opens a temporary run.

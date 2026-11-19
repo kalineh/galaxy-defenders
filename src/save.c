@@ -15,7 +15,7 @@ static bool valid_save(const SavedGame *save) {
         save->players < 1 || save->players > 2) return false;
     for (int i = 0; i < 12; ++i)
         if (save->stage_scores[i] < -2000000000 || save->stage_scores[i] > 2000000000 ||
-            save->stage_medals[i] < 0 || save->stage_medals[i] > 3) return false;
+            save->stage_stars[i] < 0 || save->stage_stars[i] > 3) return false;
     for (int i = 0; i < save->players; ++i) {
         const SavedPlayer *p = &save->player[i];
         const int counts[] = {GAME_CHASSIS, GENERATOR_COUNT, SHIELD_COUNT};
@@ -26,7 +26,7 @@ static bool valid_save(const SavedGame *save) {
                 (p->inventory.weapon_marks[w] && equipment_weapon_category(w) < 0)) return false;
         if (p->pilot < 0 || p->pilot > 2 || p->chassis < 0 || p->chassis >= GAME_CHASSIS ||
             p->generator < 0 || p->generator >= GENERATOR_COUNT || p->shield < -1 || p->shield >= SHIELD_COUNT ||
-            p->money < 0 || p->money > 1000000000 || equipment_weapon_category(p->primary) != 3 ||
+            p->money < 0 || p->money > GAME_CREDIT_CAP || equipment_weapon_category(p->primary) != 3 ||
             p->level < 0 || p->level >= game_weapons[p->primary].level_count ||
             (p->secondary != -1 && equipment_weapon_category(p->secondary) != 4) ||
             p->secondary_level < 0 || (p->secondary >= 0 && p->secondary_level >= game_weapons[p->secondary].level_count) ||
@@ -119,13 +119,13 @@ static bool read_save(SavedGame *save, const char *path) {
         if (ok) candidate.seed = (uint32_t)seed;
     }
     for (int i = 0; ok && version >= 3 && i < 12; ++i)
-        ok = read_int(file, &candidate.stage_scores[i]) && read_int(file, &candidate.stage_medals[i]);
+        ok = read_int(file, &candidate.stage_scores[i]) && read_int(file, &candidate.stage_stars[i]);
     if (version < 6) {
         /* The old file only recorded a medal, not raw completion counts. */
         for (int i = 0; ok && i < 12; ++i) {
-            int medal = candidate.stage_medals[i];
+            int medal = candidate.stage_stars[i];
             ok = medal >= 0 && medal <= 5;
-            candidate.stage_medals[i] = medal >= 4 ? 2 : medal > 0;
+            candidate.stage_stars[i] = medal >= 4 ? 2 : medal > 0;
         }
     }
     for (int i = 0; ok && version >= 4 && i < candidate.players; ++i) {
@@ -188,7 +188,7 @@ bool game_save_write(const SavedGame *save, const char *path) {
     }
     ok = fprintf(file, "%u\n", save->seed) > 0 && ok;
     for (int i = 0; i < 12; ++i)
-        ok = fprintf(file, "%d %d\n", save->stage_scores[i], save->stage_medals[i]) > 0 && ok;
+        ok = fprintf(file, "%d %d\n", save->stage_scores[i], save->stage_stars[i]) > 0 && ok;
     for (int i = 0; i < save->players; ++i) {
         const Inventory *inv = &save->player[i].inventory;
         for (int c = 0; c < 3; ++c) ok = fprintf(file, "%d ", inv->gear_mask[c]) > 0 && ok;
@@ -224,7 +224,9 @@ void game_reset_session(Game *game, uint32_t seed) {
     int active_slot = game->active_slot;
     bool errors[GAME_SAVE_SLOTS];
     memcpy(errors, game->save_errors, sizeof(errors));
+    PilotAI ai = game->ai;
     game_reset(game, seed);
+    game->ai = ai;
     memcpy(game->saves, saves, sizeof(saves));
     game->saves_dirty = dirty;
     game->active_slot = active_slot;
@@ -240,7 +242,7 @@ void game_record_stage(Game *game) {
         if (game->players[i].initialized) earned += game->players[i].money + game->players[i].score;
     int stage = game->stage.index, stars = game_stage_stars(game);
     if (earned > save->stage_scores[stage]) save->stage_scores[stage] = earned;
-    if (stars > save->stage_medals[stage]) save->stage_medals[stage] = stars;
+    if (stars > save->stage_stars[stage]) save->stage_stars[stage] = stars;
     game->stage.stats.recorded = true;
 }
 
@@ -253,9 +255,12 @@ void game_checkpoint(Game *game, bool shop) {
     save->difficulty = game->difficulty; save->players = players; save->seed = game->seed;
     for (int i = 0; i < players; ++i) {
         const Player *p = &game->players[i];
+        int wallet = shop && game->menu.page == MENU_CLEAR ? game_banked_credits(p) : p->money;
+        if (game->menu.page == MENU_CLEAR && game->stage.index == 11 && !game->cleared_game && p->joined)
+            wallet = GAME_ENDING_CREDITS;
         save->player[i] = (SavedPlayer){p->pilot, p->chassis, p->primary, p->weapon_level, p->secondary,
             p->secondary_level, p->sidekick, p->sidekick_level, p->generator, p->shield,
-            p->money + (shop && game->menu.page == MENU_CLEAR ? p->score : 0), p->inventory};
+            wallet, p->inventory};
     }
     game->saves_dirty |= 1u << game->active_slot;
 }

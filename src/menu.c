@@ -82,6 +82,11 @@ void game_menu_open(Game *game, MenuPage page) {
     if (page < MENU_NONE || page > MENU_CONTROLLERS) return;
     if (page == MENU_PAUSE && game_shop_departing(game)) return;
     MenuPage previous = game->menu.page;
+    if (page == MENU_MAIN) {
+        for (int i = 0; i < GAME_PLAYERS; ++i)
+            if (game->ai.joined[i]) game_leave(game,i);
+        game->ai = (PilotAI){0};
+    }
     if (page == MENU_CONTROLLERS && previous != MENU_CONTROLLERS) {
         game->menu.controllers_origin = previous;
         game->menu.controllers_cursor = game->menu.cursor;
@@ -201,7 +206,10 @@ bool game_transition_update(Game *game) {
         case TRANSITION_FINISH:
             game_record_stage(game);
             for (int i = 0; i < GAME_PLAYERS; ++i)
-                if (game->players[i].joined) game->players[i].money = 999999999;
+                if (game->players[i].joined) {
+                    game->players[i].money = GAME_ENDING_CREDITS;
+                    game->players[i].score = 0;
+                }
             game_menu_open(game, MENU_FINISH);
             game->cleared_game = true;
             game->menu.next_stage = 0;

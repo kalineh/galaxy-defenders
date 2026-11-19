@@ -17,6 +17,9 @@ typedef struct {
 static const CommandHelp commands[] = {
     {"render.style", "render.style classic|modern", "Choose Classic or Modern art. F9 toggles during play.", {"classic modern"}},
     {"debug.shadows", "debug.shadows [on|off]", "Toggle soft shadows around ships, enemies and buildings.", {"on off"}},
+    {"debug.ai", "debug.ai SLOT off|aim|dodge", "Assign a debug pilot. Aim is invincible; dodge uses normal damage.", {"1 2","off aim dodge"}},
+    {"debug.watch", "debug.watch STAGE", "Fast-forward the current AI campaign to a main stage with its earned loadout.", {NULL}},
+    {"debug.run", "debug.run DIFFICULTY PLAYERS aim|dodge starter|beam SEED", "Start a temporary main campaign with AI pilots. Difficulty 0..2. Beam switches after stage four.", {"0 1 2","1 2","aim dodge","starter beam"}},
     {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
     {"game.stage", "game.stage STAGE [PROGRESS]", "Seek main 1..12, bonus 13..19, or a stage name; PROGRESS 0..1 is nominal stage time. Preserves loadout and money, restores armor, synchronizes music.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19", "0 0.25 0.5 0.75 0.9 1"}},
@@ -221,6 +224,11 @@ static bool number(const char *text, float *value, float low, float high) {
     return !errno && end != text && *end == '\0' && isfinite(*value) && *value >= low && *value <= high;
 }
 
+static int lookup(const char *text, const char *const names[], int count) {
+    for (int i = 0; i < count; ++i) if (!strcmp(text,names[i])) return i;
+    return -1;
+}
+
 static bool integer(const char *text, int *value, int low, int high) {
     char *end = NULL;
     errno = 0;
@@ -326,6 +334,29 @@ bool console_execute(Console *console, Game *game, const char *line) {
     }
     int value, slot, fire, focus;
     float x, y, expected;
+    if (!strcmp(command, "debug.ai") && count == 3 && integer(words[1], &slot, 1, 2)) {
+        int mode = lookup(words[2], (const char *[]){"off","aim","dodge"}, 3);
+        return mode >= 0 && ai_set(game,slot-1,mode);
+    }
+    if (!strcmp(command, "debug.watch") && count == 2 && integer(words[1],&value,1,12)) {
+        if (!game->ai.campaign || !ai_team(game) || game->stage.index >= value ||
+            (game->menu.page != MENU_NONE && game->menu.page != MENU_CLEAR && game->menu.page != MENU_SHOP)) return false;
+        for (int ticks=0; game->stage.index < value-1 && !game->over && ticks<12*24600; ++ticks) {
+            if (game->tick >= 24000) break;
+            game_tick(game);
+        }
+        if (game->stage.index != value-1) console_log(console,"Run stopped on stage %d.",game->stage.index+1);
+        return game->stage.index == value-1;
+    }
+    if (!strcmp(command, "debug.run") && count == 6) {
+        int difficulty, players, seed;
+        int mode = lookup(words[3], (const char *[]){"aim","dodge"}, 2);
+        int policy = lookup(words[4], (const char *[]){"starter","beam"}, 2);
+        if (mode < 0 || policy < 0 || !integer(words[1],&difficulty,0,2) ||
+            !integer(words[2],&players,1,2) || !integer(words[5],&seed,0,2147483647)) return false;
+        ai_campaign(game,difficulty,players,mode+1,policy==1,(unsigned)seed);
+        return true;
+    }
     if (!strcmp(command, "help") && count <= 2) return print_help(console, count == 2 ? words[1] : NULL);
     if (!strcmp(command, "clear") && count == 1) { console->count = console->scroll = 0; return true; }
     if (!strcmp(command, "debug.shadows") && (count == 1 || (count == 2 && (!strcmp(words[1], "on") || !strcmp(words[1], "off"))))) {

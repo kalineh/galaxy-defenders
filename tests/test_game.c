@@ -979,6 +979,30 @@ static void console_editor(void) {
     CHECK(console.count == 0 && console.command_count == history);
 }
 
+static void ai_pilots(void) {
+    reset();
+    CHECK(console_execute(&console,&game,"debug.ai 2 dodge"));
+    CHECK(game.players[1].joined && !ai_team(&game));
+    CHECK(console_execute(&console,&game,"debug.ai 2 off") && !game.players[1].joined);
+    CHECK(console_execute(&console,&game,"debug.run 2 2 aim beam 42"));
+    CHECK(ai_team(&game) && game.active_slot == -1 && game.difficulty==2 && game.ai.beam);
+    CHECK(game.players[0].money == 2500 && game.players[1].money == 2500);
+    float hp = game.players[0].health;
+    game_damage_player(&game,0,100);
+    CHECK(game.players[0].health==hp);
+    game_spawn_enemy(&game,ENEMY_BALL,260,300);
+    game_spawn_enemy(&game,ENEMY_BALL,700,300);
+    ai_fly(&game,0);
+    ai_fly(&game,1);
+    CHECK(game.players[0].input.x<0 && game.players[1].input.x>0);
+    CHECK(game.players[0].input.fire && game.players[1].input.fire);
+    CHECK(console_execute(&console,&game,"debug.ai 1 dodge"));
+    game_damage_player(&game,0,100);
+    CHECK(!game.players[0].lives);
+    game_stage(&game,1,0);
+    CHECK(game.ai.mode[0] == AI_DODGE && game.ai.mode[1] == AI_AIM && !game.saves_dirty);
+}
+
 static void coop_rewards_and_health(void) {
     reset();
     game_join(&game, 1);
@@ -1998,7 +2022,14 @@ static void stage_awards(void) {
     CHECK(game_stage_stars(&game) == 3);
     game.stage.stats.coins_total = 1000; game.stage.stats.coins_collected = 999;
     CHECK(game_stage_stars(&game) == 2);
-    game.stage.stats.coins_total = game.stage.stats.coins_collected = 20;
+    game.stage.stats = (StageStats){.enemy_total=4,.enemy_kills=3};
+    CHECK(game_stage_stars(&game) == 1);
+    game.stage.stats = (StageStats){.enemy_total=5,.enemy_kills=4};
+    CHECK(game_stage_stars(&game) == 2);
+    game.stage.stats = (StageStats){.enemy_total=10,.enemy_kills=10,.building_total=5,.building_kills=5};
+    game_drop_pickups(&game,400,400,20,true,true);
+    CHECK(game.stage.stats.coins_total == 20);
+    game.stage.stats.coins_collected = 20;
     CHECK(game_stats_percent(1, 8) == 12 && game_stats_percent(3, 8) == 38);
     CHECK(game_stats_percent(10, 1) == 100 && game_stats_percent(1, 0) == 0);
     game.complete = true;
@@ -2008,10 +2039,18 @@ static void stage_awards(void) {
     for (int i = 0; i < 200; ++i) game_tick(&game);
     CHECK(game.players[0].score == 11500);
     game_shop_open(&game);
-    CHECK(game.saves[0].stage_scores[0] == 11500 && game.saves[0].stage_medals[0] == 3);
+    CHECK(game.saves[0].stage_scores[0] == 11500 && game.saves[0].stage_stars[0] == 3);
     game.players[0].money -= 1000;
     game_checkpoint(&game, true);
     CHECK(game.saves[0].stage_scores[0] == 11500);
+    game_stage(&game,11,0);
+    game.complete = true;
+    game_begin_clear(&game);
+    CHECK(game.saves[0].cleared && game.saves[0].player[0].money == GAME_ENDING_CREDITS);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    game_menu_input(&game, MENU_CONFIRM, 0);
+    for (int t=0;t<15;++t) game_tick(&game);
+    CHECK(game.menu.page == MENU_FINISH && game.players[0].money == GAME_ENDING_CREDITS);
 }
 
 static void controller_joining(void) {
@@ -2254,7 +2293,7 @@ static void saved_continue(void) {
     SavedGame save = {0};
     CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
     CHECK(save.seed == 987654321u);
-    CHECK(save.stage_scores[4] == 12345 && save.stage_medals[4] == 3);
+    CHECK(save.stage_scores[4] == 12345 && save.stage_stars[4] == 3);
     int stock[WEAPON_COUNT+1], restored[WEAPON_COUNT+1];
     int stock_count = game_shop_stock(&game, 0, 3, stock);
     save.player[0].inventory.gear_mask[1] |= 1 << 2;
@@ -2268,7 +2307,7 @@ static void saved_continue(void) {
     CHECK(game.players[0].sidekick_level == 1 && game_shop_owned_marks(&game.players[0],5,WEAPON_MISSILE_VOLLEY) == 4);
     CHECK(game.seed == 987654321u);
     CHECK(game_shop_price(&game.players[0],1,2,0) == 0);
-    CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 3);
+    CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_stars[4] == 3);
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     launch_from_shop(0);
@@ -2385,6 +2424,7 @@ int main(int argc, char **argv) {
     menu_flow();
     weapon_upgrades();
     console_editor();
+    ai_pilots();
     coop_rewards_and_health();
     stage_clear_exit();
     starting_primary_patterns();

@@ -222,7 +222,7 @@ void game_stage_update(Game *game) {
         for (int i = 0; i < GAME_ENEMIES; ++i)
             if (game->enemies[i].active && game->enemies[i].kind != ENEMY_FENCE && !enemy_is_asteroid(game->enemies[i].kind)) enemies = true;
         if (state->index < 12 && enemies) game->scroll_speed *= 0.95f;
-        else if (++state->end_countdown >= 14) {
+        else if (++state->end_countdown >= (state->index < 12 ? 14 : 220)) {
             memset(game->bullets, 0, sizeof(game->bullets));
             game->complete = true;
         }

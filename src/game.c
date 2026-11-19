@@ -316,7 +316,7 @@ int game_spawn_bullet(Game *game, int owner, float x, float y, float vx, float v
 void game_damage_player(Game *game, int slot, float damage) {
     if (game->seeking || slot < 0 || slot >= GAME_PLAYERS || damage <= 0 || !isfinite(damage)) return;
     Player *player = &game->players[slot];
-    if (!player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible) return;
+    if (!player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible || game->ai.mode[slot] == AI_AIM) return;
     float shield_damage = fminf(player->shield_health, damage);
     player->shield_health -= shield_damage;
     player->health -= damage - shield_damage;
@@ -332,7 +332,7 @@ void game_damage_player(Game *game, int slot, float damage) {
 /* Ship.TakeDamage: ordinary impacts apply chassis resistance; direct damage does not. */
 static void player_impact(Game *game, int slot, float damage, float x, float y, float vx, float vy) {
     Player *player = &game->players[slot];
-    if (game->seeking || !player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible) return;
+    if (game->seeking || !player->joined || player->lives <= 0 || player->invulnerable > 0 || player->invincible || game->ai.mode[slot] == AI_AIM) return;
     float adjusted = damage * (1 - game_chassis[player->chassis].collision_resistance * 0.25f);
     float effect_x = player->x + (x - player->x) * 0.35f;
     float effect_y = player->y + (y - player->y) * 0.35f;
@@ -534,7 +534,10 @@ static void update_enemies(Game *game) {
             }
         }
         if (enemy_is_asteroid(enemy->kind)) continue;
-        if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) enemy->active = false;
+        if (enemy->y > GAME_HEIGHT + 200 || enemy->y < -240 || enemy->x < game->stage.camera_x - 150 || enemy->x > game->stage.camera_x + GAME_WIDTH + 150) {
+            if (enemy->active && enemy->rank_target) ++game->escaped[enemy->kind];
+            enemy->active = false;
+        }
     }
 }
 
@@ -742,7 +745,11 @@ void game_tick(Game *game) {
             game_transition(game, TRANSITION_STAGE, 0);
         return;
     }
-    if (game->menu.page == MENU_SHOP) { game_shop_update(game); return; }
+    if (game->menu.page == MENU_SHOP) {
+        if (game->ai.mode[0] || game->ai.mode[1]) ai_shop(game);
+        game_shop_update(game);
+        return;
+    }
     if (game->menu.page == MENU_FINISH) { ++game->menu.frame; return; }
     if (game->paused && !game->over && !game->complete) return;
     if (game->secret_fade_frames > 0) --game->secret_fade_frames;
@@ -757,7 +764,9 @@ void game_tick(Game *game) {
             return;
         }
         if (game->menu.page == MENU_CLEAR) {
-            if (game->menu.frame < CLEAR_TALLY_FRAME) ++game->menu.frame;
+            if (game->menu.frame < CLEAR_TALLY_FRAME+60) ++game->menu.frame;
+            if (game->menu.frame == CLEAR_TALLY_FRAME+60 && ai_team(game))
+                game_menu_input(game,MENU_CONFIRM,game->players[0].joined ? 0 : 1);
             if (game->menu.frame < 12 || game->menu.frame >= 72) return;
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];
@@ -774,7 +783,11 @@ void game_tick(Game *game) {
     if (game->waves) game_stage_update(game);
     else game->scroll_speed = 0;
     game_scenery_update(game);
-    if (!game->seeking) update_players(game);
+    if (!game->seeking) {
+        for (int i = 0; i < GAME_PLAYERS; ++i)
+            if (game->ai.mode[i] && game->players[i].joined && game->players[i].lives > 0) ai_fly(game,i);
+        update_players(game);
+    }
     else for (int p = 0; p < GAME_PLAYERS; ++p)
         if (game->players[p].joined && game->players[p].lives > 0)
             game->stage.camera_x = (game->players[p].x - GAME_WIDTH * 0.5f) / (GAME_WIDTH * 0.5f) * 50;
@@ -813,6 +826,7 @@ bool game_stage(Game *game, int index, float progress) {
     game->menu = menu;
     memcpy(game->players, players, sizeof(players));
     game->stage.index = index;
+    game->stage.ignore_secrets = game->ai.campaign;
     game_random_init(&game->random, game->seed);
     game_stats_init(game);
     game_scenery_init(game);

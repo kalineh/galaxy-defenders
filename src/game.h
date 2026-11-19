@@ -18,6 +18,8 @@
 #define GAME_EFFECTS 8192
 #define GAME_PICKUPS 512
 #define GAME_CHASSIS 9
+#define GAME_CREDIT_CAP 1000000000
+#define GAME_ENDING_CREDITS 999999999
 #define PLAYER_ARMOR_RADIUS 16.0f
 #define ENEMY_SHOT_RADIUS 2.0f
 
@@ -95,7 +97,7 @@ typedef struct {
     bool valid, shop, cleared;
     int stage, difficulty, players;
     uint32_t seed;
-    int stage_scores[12], stage_medals[12];
+    int stage_scores[12], stage_stars[12];
     SavedPlayer player[GAME_PLAYERS];
 } SavedGame;
 
@@ -186,7 +188,15 @@ typedef struct {
     float scroll_speed;
 } SecretReturn;
 
+typedef enum { AI_OFF, AI_AIM, AI_DODGE } PilotMode;
 typedef struct {
+    int mode[GAME_PLAYERS], shop_ticks;
+    bool joined[GAME_PLAYERS], campaign, beam;
+} PilotAI;
+
+typedef struct {
+    PilotAI ai;
+    int escaped[ENEMY_KIND_COUNT];
     Player players[GAME_PLAYERS];
     Enemy enemies[GAME_ENEMIES];
     Bullet bullets[GAME_BULLETS];
@@ -214,6 +224,11 @@ typedef struct {
     bool save_errors[GAME_SAVE_SLOTS], cleared_game;
 } Game;
 
+bool ai_set(Game *game, int slot, int mode);
+bool ai_team(const Game *game);
+void ai_campaign(Game *game, int difficulty, int players, int mode, bool beam, unsigned seed);
+void ai_fly(Game *game, int slot);
+void ai_shop(Game *game);
 void game_reset(Game *game, uint32_t seed);
 void game_reset_session(Game *game, uint32_t seed);
 void game_checkpoint(Game *game, bool shop);
@@ -223,6 +238,7 @@ enum { CLEAR_STAR_FRAME = 82, CLEAR_STAR_INTERVAL = 12, CLEAR_TALLY_FRAME = 128,
 int game_stage_stars(const Game *game);
 int game_skill_bonus(const Game *game);
 void game_begin_clear(Game *game);
+int game_banked_credits(const Player *player);
 void game_award_credits(Game *game, int amount);
 void game_record_stage(Game *game);
 bool game_continue(Game *game, int slot);
