@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 
 usage() {
     echo 'Usage: ./master.sh [--stage-only|--preview]'
-    echo 'Default: build and upload the Windows depot. --preview runs a SteamPipe preview.'
+    echo 'Uploads go live on the build beta branch. --preview runs a SteamPipe preview.'
     echo '--stage-only builds build/steam/content locally. See steam.local.sh.example for upload settings.'
 }
 
@@ -42,6 +42,7 @@ cat > build/steam/app_build.vdf <<EOF
     "ContentRoot" "$build_dir/content"
     "BuildOutput" "$build_dir/output"
     "Preview" "$preview"
+    "SetLive" "build"
     "Depots"
     {
         "5664311"

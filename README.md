@@ -14,13 +14,13 @@ add a `.dirty` suffix. The major and minor version are in `src/version.h`.
 
 Run `./master.sh --preview` for a SteamPipe preview or `./master.sh` to upload
 Windows depot `5664311` for app `5664310` using builder account `mrcrops`.
+Each upload goes live on the password-protected `build` beta branch.
+After playtesting, promote the chosen Build ID to `default` manually in Steamworks.
 The repo includes Valve's SteamCMD bootstrap at `tools/steamcmd/steamcmd.exe`.
 On the first preview or upload, the script copies it into `build/steam/builder/`.
 SteamCMD downloads its client files there and prompts for login when needed.
 Deleting the build folder resets that local installation. To sign in manually
 after setup, run `./build/steam/builder/steamcmd.exe +login mrcrops +quit`.
-Choose
-the live branch separately in Steamworks after testing the uploaded build.
 Store art, gameplay screenshots and patch-note CSVs are in [storefront/](storefront/README.md).
 
 ## Play
