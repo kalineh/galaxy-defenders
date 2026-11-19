@@ -1,0 +1,74 @@
+# Stage 8 Classic / Modern art prototype
+
+This branch adds a reversible presentation experiment, not a gameplay change.
+Classic remains the default. Options > Stage art selects Classic or Modern.
+The console accepts `render.style classic` and `render.style modern`.
+Only Stage 8 changes in Modern; all other stages keep their existing art.
+
+## What changes
+
+- The exact existing DarkBlue1 deck rectangles (including the existing 2 px
+  anti-gap apron) are rasterized as a single stage-space union at initial use.
+- One continuous brush-grain material spans the union. Only exposed edges get
+  directional bevels, including concave corners. Internal authored tile joins
+  do not create seams. Chunk borders have no bevels and share world coordinates.
+- A quiet sea sits behind two unadorned platform-silhouette layers. Their sizes
+  are 5% and 28% of the authored foreground; camera parallax is 4.5% and 18%.
+  They are decorative only, with no bolts, fine seams, collision or enemies.
+- Buildings, SecretHint, HUD, player/enemy sprites, shots, effects, simulation,
+  and original stage data are unchanged. Foreground dust is suppressed only in
+  Modern Stage 8 to keep the new distant water/deck separation quiet.
+
+The supplied AI-generated neutral brush-grain and quiet sea tiles are stored in
+`assets/textures/stage8-brushed-metal.png` and `stage8-sea.png`. No textures are
+synthesized or downloaded at runtime. Modern is lazy-loaded; missing material
+falls back to Classic with an error log. Assets are freed on shutdown.
+
+## Play and compare
+
+Build normally on Windows: `./build.sh native` (Git Bash, setup.ps1 first).
+Run from the native output directory:
+
+```
+./galaxy.exe --command 'game.reset 42;player.join 2;game.stage 8 0.4;render.style modern'
+```
+
+Backtick opens the console. Enter `render.style classic` / `render.style modern`
+without advancing/resetting the stage to compare the identical position.
+Options > Stage art also works and persists in the normal settings file.
+An explicit launch command wins over an existing saved style.
+
+**Use the provided isolated-profile launcher for this experimental build.**
+The added trailing settings field is accepted by this build (old files default
+Classic), but older executables reject settings with the extra field. Do not
+share this prototype's settings directory with the shipping executable.
+
+## Reproducible captures
+
+Windows memory build: `./build.sh render`; executable is
+`build/headless/galaxy-render.exe`. Optional Linux cloud verification uses
+`bash scripts/build_memory_linux.sh` (GCC + Python, no additional packages).
+
+```
+mkdir -p artifacts/native-port
+./build/headless/galaxy-render --command 'game.reset 42;player.join 2;player.invincible 1 1;player.invincible 2 1;game.stage 8 0.4;player.input 1 0 0 1 0;player.input 2 0 0 1 0;game.step 90;render.style modern' --frames 1 --capture artifacts/native-port/stage8-modern.png
+```
+
+Replace modern with classic for the matched baseline. Repeat at progress .25
+and .6 for different deck layouts. These bounded commands never load/write
+human saves or initialize audio. Invincibility is capture setup only.
+
+## Validation
+
+- Linux memory build uses `-Wall -Wextra -Werror` with the pre-existing compressed
+  boss.c misleading-indentation warning disabled. New app.c/art code also passes
+  strict warnings without that suppression.
+- Stage 8 Classic PNG is byte-identical to the original app.c renderer at the
+  matched .4/90-tick co-op frame (same simulation source and seed).
+- New headless tests cover default Classic, Options toggle, command/assertion,
+  setting persistence, old settings-file compatibility and CLI override flag.
+- Existing Linux test suite has one pre-existing platform-specific backup-save
+  assertion: backups are created under `_WIN32`, but the test runs unconditionally.
+- Windows cross-compilation and human GPU/controller playtesting are reported
+  separately with the delivery. Software images are not proof of GPU performance.
+- No upstream push is part of this prototype.

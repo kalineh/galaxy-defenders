@@ -15,6 +15,7 @@ typedef struct {
 
 /* One catalog supplies help, usage errors and positional Tab completion. */
 static const CommandHelp commands[] = {
+    {"render.style", "render.style classic|modern", "Choose Classic or Modern stage art. Only Stage 8 has Modern art.", {"classic modern"}},
     {"debug.shadows", "debug.shadows [on|off]", "Toggle soft shadows around ships, enemies and buildings.", {"on off"}},
     {"debug.shop", "debug.shop", "Jump to the shop now. Uses the campaign checkpoint in play, or a temporary run from the title.", {NULL}},
     {"debug.music", "debug.music [TRACK [PROGRESS]|off]", "Audition synth independently of stage/menu; TRACK 1..19, PROGRESS 0..1. Off restores normal music. No arguments opens the developer album.", {"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 off", "0 0.25 0.5 0.75 1"}},
@@ -47,7 +48,7 @@ static const CommandHelp commands[] = {
     {"assert", "assert FIELD OP VALUE", "Check a numeric state field; failure stops a script. Use help fields for all fields.", {NULL, "eq ne lt le gt ge"}}
 };
 static const char *global_fields[] = {"tick", "enemies", "bullets", "kills", "shots", "hits", "dropped",
-    "over", "complete", "menu", "menu.cursor", "difficulty", "volume.sfx", "volume.music", "stage", "stage.camera", "stage.stopped", "stage.music_time"};
+    "over", "complete", "menu", "menu.cursor", "difficulty", "volume.sfx", "volume.music", "render.style", "stage", "stage.camera", "stage.stopped", "stage.music_time"};
 static const char *player_fields[] = {"x", "y", "health", "lives", "score", "joined", "money", "chassis",
     "armor", "invincible", "pilot", "weapon_level", "energy"};
 
@@ -248,6 +249,7 @@ static bool field_get(const Game *game, const char *name, float *value) {
     else if (!strcmp(name, "difficulty")) *value = (float)game->difficulty;
     else if (!strcmp(name, "volume.sfx")) *value = (float)game->menu.options[0];
     else if (!strcmp(name, "volume.music")) *value = (float)game->menu.options[1];
+    else if (!strcmp(name, "render.style")) *value = (float)game->menu.options[OPTION_RENDER_STYLE];
     else if (!strncmp(name, "p1.", 3) || !strncmp(name, "p2.", 3)) {
         const Player *player = &game->players[name[1] - '1'];
         name += 3;
@@ -419,11 +421,21 @@ bool console_execute(Console *console, Game *game, const char *line) {
         else { p->shield = value; p->shield_health = game_shields[value].capacity; }
         return true;
     }
+    if (!strcmp(command, "render.style") && count == 2) {
+        bool modern = !strcmp(words[1], "modern");
+        if (!modern && strcmp(words[1], "classic")) return false;
+        game->menu.options[OPTION_RENDER_STYLE] = modern;
+        game->menu.render_style_override = true;
+        console_log(console, "Stage art: %s", modern ? "Modern" : "Classic");
+        return true;
+    }
     if (!strcmp(command, "game.reset") && count == 2 && integer(words[1], &value, 0, 2147483647)) {
         int options[OPTION_COUNT];
+        bool render_style_override = game->menu.render_style_override;
         memcpy(options,game->menu.options,sizeof(options));
         game_reset(game, (uint32_t)value);
         memcpy(game->menu.options,options,sizeof(options));
+        game->menu.render_style_override = render_style_override;
         return true;
     }
     if (!strcmp(command, "game.stage") && (count == 2 || count == 3)) {

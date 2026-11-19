@@ -38,7 +38,7 @@ typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSI
 #define GAME_LANGUAGE_COUNT 12
 /* Append options to retain the positional settings file format. */
 enum { OPTION_SFX, OPTION_MUSIC, OPTION_SCREEN_SIZE, OPTION_RENDER_SCALE, OPTION_AA, OPTION_MSAA,
-    OPTION_WINDOW_MODE, OPTION_LANGUAGE, OPTION_FRAME_CAP, OPTION_VSYNC, OPTION_COUNT };
+    OPTION_WINDOW_MODE, OPTION_LANGUAGE, OPTION_FRAME_CAP, OPTION_VSYNC, OPTION_RENDER_STYLE, OPTION_COUNT };
 extern const int game_option_max[OPTION_COUNT];
 extern const int game_option_defaults[OPTION_COUNT];
 extern const int render_scale_percent[4];
@@ -53,6 +53,7 @@ typedef struct {
     int controllers_cursor, controllers_frame;
     int cursor, dialog_cursor, delete_slot, players, difficulty, pilot[2], options[OPTION_COUNT];
     bool ready[2], quit;
+    bool render_style_override; /* Debug command was used before settings are loaded. */
     int shop_category[2], shop_item[2], shop_level[2];
     int shop_first_item[2], shop_first_tier[2];
     bool shop_catalog[2], shop_purchase[2], shop_tiers[2];

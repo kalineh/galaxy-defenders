@@ -784,6 +784,11 @@ static void menu_flow(void) {
     CHECK(frame_cap_fps[cap] == 0 && game_frame_limit(cap,false,144) == 0);
     CHECK(console_chain(&console,&game,"menu.input down;menu.input left"));
     CHECK(game.menu.options[OPTION_VSYNC] == 0);
+    CHECK(game.menu.options[OPTION_RENDER_STYLE] == 0 && !game.menu.render_style_override);
+    CHECK(console_chain(&console,&game,"menu.input down;menu.input right;assert render.style eq 1"));
+    CHECK(!game.menu.render_style_override);
+    CHECK(console_chain(&console,&game,"render.style classic;assert render.style eq 0;render.style modern;assert render.style eq 1"));
+    CHECK(game.menu.render_style_override);
     const char *settings_path = "artifacts/native-port/test-graphics.cfg";
     int restored[OPTION_COUNT] = {0};
     CHECK(game_options_write(game.menu.options,settings_path));
@@ -796,6 +801,7 @@ static void menu_flow(void) {
         fclose(legacy_options);
         CHECK(game_options_read(restored,settings_path));
         CHECK(restored[OPTION_WINDOW_MODE] == 0);
+        CHECK(restored[OPTION_RENDER_STYLE] == 0);
         CHECK(restored[OPTION_FRAME_CAP] == 0 && restored[OPTION_VSYNC] == 1);
         CHECK(restored[OPTION_SFX] == 7 && restored[OPTION_AA] == 1 && restored[OPTION_MSAA] == 1);
     }

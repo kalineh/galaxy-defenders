@@ -7,7 +7,7 @@
 /* -1 follows the display, 0 removes the software cap. */
 const int frame_cap_fps[] = {-1, 30, 60, 90, 120, 144, 165, 240, 360, 0};
 const int game_option_max[OPTION_COUNT] = {10, 10, 10, 3, 1, 2, 1, GAME_LANGUAGE_COUNT-1,
-    sizeof(frame_cap_fps)/sizeof(frame_cap_fps[0])-1, 1};
+    sizeof(frame_cap_fps)/sizeof(frame_cap_fps[0])-1, 1, 1};
 const int game_option_defaults[OPTION_COUNT] = {[OPTION_SFX]=10, [OPTION_MUSIC]=10, [OPTION_SCREEN_SIZE]=10,
     [OPTION_RENDER_SCALE]=1, [OPTION_MSAA]=1, [OPTION_VSYNC]=1};
 const int render_scale_percent[4] = {75, 100, 150, 200};
@@ -26,7 +26,7 @@ static const char *labels[MENU_CONTROLLERS + 1][OPTION_COUNT+1] = {
     [MENU_DELETE] = {"Cancel", "Delete slot"},
     [MENU_DIFFICULTY] = {"Normal", "Hard", "Really Hard", "Back"},
     [MENU_OPTIONS] = {"SFX Volume", "Music Volume", "Screen Size", "Render Scale", "FXAA", "MSAA", "Display mode", "Language",
-        "Frame rate cap", "V-sync", "Back"},
+        "Frame rate cap", "V-sync", "Stage art", "Back"},
     [MENU_QUIT] = {"Cancel", "Quit"},
     [MENU_PAUSE] = {"Resume", "Retry", "Options", "Controllers", "Quit"},
     [MENU_RETRY] = {"Cancel", "Retry"},

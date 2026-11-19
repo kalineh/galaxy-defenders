@@ -125,3 +125,10 @@ no desktop automation or human save access was used in automated checks.
 
 Deferred as requested: mouse-follow mode, MGUI integration, options redesign.
 No key-binding UI added. Music remains ready for human listening feedback.
+
+# Stage 8 art prototype (isolated experiment branch)
+
+Classic/Modern Stage art option implemented; see STAGE8_ART_PROTOTYPE.md.
+Before merge: human Windows playtest of scrolling/MSAA/FXAA, art-direction review,
+and migration decision for settings compatibility with older executables.
+Keep Classic default; do not expand the experiment to other stages without direction.

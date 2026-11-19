@@ -267,3 +267,6 @@ V-sync,V-Sync,Sincronización vertical,Synchro verticale,Sincronia verticale,垂
 Display rate,Bildschirmfrequenz,Frecuencia de pantalla,Fréquence de l’écran,Frequenza schermo,画面の更新頻度,화면 주사율,Odświeżanie ekranu,Taxa da tela,Частота экрана,显示器刷新率,螢幕更新率
 Display (%d Hz),Monitor (%d Hz),Pantalla (%d Hz),Écran (%d Hz),Schermo (%d Hz),画面 (%d Hz),화면 (%d Hz),Ekran (%d Hz),Tela (%d Hz),Экран (%d Гц),显示器（%d Hz）,螢幕（%d Hz）
 Unlimited,Unbegrenzt,Sin límite,Illimitée,Illimitato,無制限,무제한,Bez limitu,Sem limite,Без лимита,不限,無上限
+Stage art,Stufengrafik,Arte del nivel,Graphismes du niveau,Grafica del livello,ステージの描画,스테이지 그래픽,Grafika etapu,Arte da fase,Графика уровня,关卡画风,關卡畫風
+Classic,Klassisch,Clásico,Classique,Classico,クラシック,클래식,Klasyczna,Clássico,Классика,经典,經典
+Modern,Modern,Moderno,Moderne,Moderno,モダン,모던,Nowoczesna,Moderno,Современная,现代,現代

@@ -30,6 +30,8 @@ static const char *ui_text(const char *english) {
 #define ARENA_X 480
 #define FRAME_SAMPLES 240
 
+#include "stage8_art.h"
+
 typedef struct {
     float frame_ms[FRAME_SAMPLES], update_ms[FRAME_SAMPLES], gpu_ms[FRAME_SAMPLES];
     uint64_t total;
@@ -63,6 +65,7 @@ typedef struct {
     Sprite generator_icons[GENERATOR_COUNT], shield_icons[SHIELD_COUNT], item_none, sidekick;
     Sprite stage_textures[STAGE_MAX_EVENTS], stage_destroyed[STAGE_MAX_EVENTS];
     Texture2D scenery[4];
+    Stage8Art modern_stage8;
     Sprite boss4_cover, boss5_cover, boss6_center;
     Sprite rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Sprite enemy_corpses[ENEMY_KIND_COUNT];
@@ -136,6 +139,7 @@ static Sprite whole_texture(Texture2D texture) {
 }
 
 static void assets_unload(Assets *assets) {
+    stage8_art_unload(&assets->modern_stage8);
     for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
         if (IsTextureValid(assets->pages[i])) UnloadTexture(assets->pages[i]);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
@@ -1053,12 +1057,23 @@ static void draw_stage_prop(const Game *game, const Assets *assets, const StageE
     draw_centered_sprite(texture,center.x + event->x,y,width,event->rotation,assets->stage_tints[i],shadow);
 }
 
-static void draw_game(const Game *game, const Assets *assets, const PlayerDevices *devices, bool shadows) {
+static void draw_game(const Game *game, Assets *assets, const PlayerDevices *devices, bool shadows) {
     float view_x = ARENA_X - camera_x(game);
     ClearBackground(background);
     DrawRectangle(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT, background);
     canvas_scissor(ARENA_X, 0, GAME_WIDTH, GAME_HEIGHT);
-    draw_scenery(game, assets, false);
+    bool modern = game->stage.index == 7 && game->menu.options[OPTION_RENDER_STYLE];
+    if (modern && !assets->modern_stage8.attempted) {
+        char grain[2048], sea[2048];
+        snprintf(grain,sizeof(grain),"%s",asset_path("textures/stage8-brushed-metal.png"));
+        snprintf(sea,sizeof(sea),"%s",asset_path("textures/stage8-sea.png"));
+        stage8_art_load(&assets->modern_stage8,grain,sea);
+    }
+    modern = modern && assets->modern_stage8.ready;
+    if (modern) {
+        stage8_draw_background(&assets->modern_stage8,camera_x(game),camera_y(game));
+        stage8_draw_deck(&assets->modern_stage8,camera_x(game),camera_y(game));
+    } else draw_scenery(game, assets, false);
     /* Legacy decoration depth offsets precede the main carrier tiles. */
     const StageDefinition *stage = &stage_definitions[game->stage.index];
     int order[STAGE_MAX_EVENTS], count=0;
@@ -1088,7 +1103,7 @@ static void draw_game(const Game *game, const Assets *assets, const PlayerDevice
                 draw_stage_prop(game,assets,&stage->events[building],building,center,true);
             }
         }
-        draw_stage_prop(game,assets,event,i,center,false);
+        if (!modern || !stage8_deck_event(event)) draw_stage_prop(game,assets,event,i,center,false);
     }
     if (shadows) {
         draw_enemies(game,assets,ENEMY_LAYER_SHADOW);
@@ -1104,7 +1119,7 @@ static void draw_game(const Game *game, const Assets *assets, const PlayerDevice
         sprite(texture, view_x + coin.x, coin.y, (float)texture.width, (p->age-motion_weight)*0.1f*RAD2DEG, WHITE);
     }
     draw_combat_sprites(game, assets);
-    draw_scenery(game, assets, true);
+    if (!modern) draw_scenery(game, assets, true);
     EndScissorMode();
     for (int i = 0; i < GAME_ENEMIES; ++i) {
         const Enemy *enemy = &game->enemies[i];
@@ -1532,6 +1547,7 @@ static void draw_title_ship(const Assets *assets, int slot, float tick, float cl
 static const char *option_value(const GameMenu *menu, int row) {
     int value = menu->options[row];
     switch (row) {
+    case OPTION_RENDER_STYLE: return ui_text(value ? "Modern" : "Classic");
         case OPTION_FRAME_CAP: {
             int cap = frame_cap_fps[value];
             if (cap < 0) return display_refresh_hz > 0 ? TextFormat(ui_text("Display (%d Hz)"),display_refresh_hz) : ui_text("Display rate");
@@ -1634,7 +1650,7 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
     }
     if (page == MENU_PILOT) { draw_pilot_select(game,assets,devices,offset); return; }
     int width = title ? 488 : 620, x = (CANVAS_WIDTH-width)/2;
-    int row_height = stages ? 53 : page == MENU_OPTIONS ? (title ? 33 : 40) : 69;
+    int row_height = stages ? 53 : page == MENU_OPTIONS ? (title ? 30 : 40) : 69;
     int y = title ? 606 : stages ? 180 : 437;
     bool dialog = page == MENU_DELETE || page == MENU_QUIT;
     MenuPage background = page == MENU_DELETE ? MENU_SLOTS : page == MENU_QUIT ? game->menu.parent : page;
@@ -2353,6 +2369,7 @@ static bool create_msaa(MultisampleTarget *target, int width, int height, int sa
 
 int app_run(Game *game, Console *console, int frames, const char *capture, bool mute, float volume, bool show_console) {
     Assets assets = {0};
+    int requested_style = game->menu.options[OPTION_RENDER_STYLE];
     double save_retry_at = 0;
     double selection_retry_at = 0;
     char save_paths[GAME_SAVE_SLOTS][2048] = {{0}};
@@ -2411,6 +2428,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
 #endif
     RenderTexture2D canvas = {0};
     memcpy(stored_options, game->menu.options, sizeof(stored_options));
+    /* Explicit CLI style wins over this profile's saved preference. */
+    if (game->menu.render_style_override) game->menu.options[OPTION_RENDER_STYLE] = requested_style;
     if (!assets_load(&assets, console, mute, volume)) {
         assets_unload(&assets);
         if (IsRenderTextureValid(canvas)) UnloadRenderTexture(canvas);
