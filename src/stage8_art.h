@@ -191,20 +191,23 @@ static bool stage8_art_load(Stage8Art *art, const char *grain_path, const char *
     bool valid=true;
     for (int start=0; start<h; start+=DECK_CHUNK_HEIGHT) {
         int rows=h-start<DECK_CHUNK_HEIGHT ? h-start : DECK_CHUNK_HEIGHT;
-        Image image=GenImageColor(w,rows,BLANK);
+        /* Filtering across a strip boundary needs the actual adjacent deck rows. */
+        int first=start-(start>0);
+        int end=start+rows+(start+rows<h);
+        Image image=GenImageColor(w,end-first,BLANK);
         if (!image.data) { valid=false; break; }
-        int first_x=-(int)((unsigned)left&127u), first_y=start-(int)((unsigned)(start+top)&127u);
-        for (int oy=first_y; oy<start+rows; oy+=128)
+        int first_x=-(int)((unsigned)left&127u), first_y=first-(int)((unsigned)(first+top)&127u);
+        for (int oy=first_y; oy<end; oy+=128)
             for (int ox=first_x; ox<w; ox+=128)
-                stage8_paint_cell(image.data,start,rows,art,mask,&sheet,&grain,ox,oy);
-        stage8_corner_caps(image.data,start,rows,w,h,mask,&sheet);
+                stage8_paint_cell(image.data,first,end-first,art,mask,&sheet,&grain,ox,oy);
+        stage8_corner_caps(image.data,first,end-first,w,h,mask,&sheet);
         Texture2D texture=LoadTextureFromImage(image);
         UnloadImage(image);
         art->deck[art->count++]=texture;
         if (!IsTextureValid(texture)) { valid=false; break; }
         /* Edge samples must not wrap to the opposite end of this 512-row strip. */
         SetTextureWrap(texture,TEXTURE_WRAP_CLAMP);
-        SetTextureFilter(texture,TEXTURE_FILTER_POINT);
+        SetTextureFilter(texture,TEXTURE_FILTER_BILINEAR);
     }
     free(mask); UnloadImage(sheet); UnloadImage(grain);
     art->sea=LoadTexture(sea_path);
@@ -251,11 +254,16 @@ static void stage8_draw_background(const Stage8Art *art, float cam_x, float cam_
 
 static void stage8_draw_deck(const Stage8Art *art, float cam_x, float cam_y) {
     float x=ARENA_X+GAME_WIDTH*0.5f+art->left-cam_x;
+    /* Opaque paint on transparent black is already premultiplied. Preserve that
+       coverage at the silhouette when a camera step is smaller than a texel. */
+    BeginBlendMode(BLEND_ALPHA_PREMULTIPLY);
     for (int i=0; i<art->count; ++i) {
         float y=GAME_HEIGHT*0.5f+art->top+i*DECK_CHUNK_HEIGHT-cam_y;
         Texture2D texture=art->deck[i];
-        if (y+texture.height<0 || y>GAME_HEIGHT) continue;
-        DrawTexturePro(texture,(Rectangle){0,0,texture.width,texture.height},
-            (Rectangle){x,y,texture.width,texture.height},(Vector2){0},0,WHITE);
+        int rows=texture.height-(i>0)-(i+1<art->count);
+        if (y+rows<0 || y>GAME_HEIGHT) continue;
+        DrawTexturePro(texture,(Rectangle){0,i>0,texture.width,rows},
+            (Rectangle){x,y,texture.width,rows},(Vector2){0},0,WHITE);
     }
+    EndBlendMode();
 }
