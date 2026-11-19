@@ -114,6 +114,19 @@ Each cell covers three invincible seeds on both the starter and Beam policies.
 | Same equipment with max Beam in place of Front Laser | 437,900 |
 | Every shop item and mark after starting gear | 2,468,100 |
 
+Three solo invincible runs (seeds 42, 73, 101) took the authored secret exits
+on Stages 2 and 3, returned to the main stage, and bought equipment normally.
+On Normal, Kazuki's Stage 2 detour earned 1,010–1,050 credits. Taking both
+earned 2,345–2,385 inside the bonus stages. For scale, Missile Volley costs
+800 credits for Mk I or 2,200 total for Mk II. With the Stage 4 Beam-switch
+policy, the median total budget at the last shop was 221,720 on the main
+route, 222,640 with the first detour, and 223,835 with both.
+
+Buying Beam at the first shop while following the same generator and shield
+plan reached Mk VII on Normal and Hard, and Mk VIII on Really Hard on all
+three seeds, even on the main route. With both detours, those Normal and Hard
+builds still needed about 70,000 and 28,600 credits respectively for Mk VIII.
+
 ## Other release polish
 
 Expand the first-run launch into a short, skippable story intro that leads
