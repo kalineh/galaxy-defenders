@@ -3,8 +3,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 target="${1:-native}"
-if [[ $# -gt 1 || ! "$target" =~ ^(native|headless|render|test|weapon-trials)$ ]]; then
-    echo 'Usage: ./build.sh [native|headless|render|test|weapon-trials]' >&2
+if [[ $# -gt 1 || ! "$target" =~ ^(native|steam|headless|render|test|weapon-trials)$ ]]; then
+    echo 'Usage: ./build.sh [native|steam|headless|render|test|weapon-trials]' >&2
     exit 2
 fi
 zig=./external/zig/zig.exe
@@ -16,10 +16,20 @@ export ZIG_LOCAL_CACHE_DIR="$PWD/build/zig-cache"
 export ZIG_GLOBAL_CACHE_DIR="$PWD/external/zig-cache"
 mkdir -p build/native build/headless
 flags=(-std=c11 -target x86_64-windows-gnu -mcpu=x86_64 -O0 -g -Wall -Wextra -Werror -Isrc)
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+    stamp="$(git rev-list --count HEAD)+$(git rev-parse --short=8 HEAD)"
+    if [[ -n "$(git status --porcelain)" ]]; then stamp+=".dirty"; fi
+    flags+=("-DGALAXY_BUILD=\"$stamp\"")
+fi
 core=(src/autopilot.c src/game.c src/input.c src/menu.c src/save.c src/console.c src/stage.c src/scenery.c src/movement.c src/enemy.c src/enemy_extra.c src/boss.c src/shop.c src/equipment.c src/weapon.c)
 # DSP stays optimized even in debug gameplay builds; no callback allocation.
 synth_object=build/headless/synth.o
 if [[ "$target" == native ]]; then synth_object=build/native/synth.o; fi
+if [[ "$target" == steam ]]; then
+    mkdir -p build/steam/bin
+    synth_object=build/steam/bin/synth.o
+    flags+=(-O2 -g0)
+fi
 "$zig" cc "${flags[@]}" -O2 -c src/synth.c -o "$synth_object"
 core+=("$synth_object")
 
@@ -42,6 +52,10 @@ else
     executable=galaxy.exe
     platform_flags=(-DPLATFORM_DESKTOP_GLFW -DGRAPHICS_API_OPENGL_33)
     link_flags=(-lopengl32 -lgdi32 -lwinmm)
+    if [[ "$target" == steam ]]; then
+        output_dir=build/steam/bin
+        link_flags+=(-Wl,--subsystem,windows -s)
+    fi
     units=(rcore rshapes rtextures rtext rmodels raudio rglfw)
     if [[ "$target" == render ]]; then
         object_dir=build/raylib-memory
@@ -71,15 +85,18 @@ else
     python tools/compile_music.py --check
     # Render the C score bank once; runtime never loads legacy music recordings.
     "$zig" cc "${flags[@]}" -O2 tools/render_music.c "$synth_object" -o build/headless/render-music.exe
-    mkdir -p build/music "$output_dir/assets/synth"
+    mkdir -p build/music
+    if [[ "$target" != steam ]]; then mkdir -p "$output_dir/assets/synth"; fi
     for track in {1..19}; do
         wav="build/music/$track.wav"
         if [[ ! -f "$wav" || src/synth.c -nt "$wav" || src/synth_score.inc -nt "$wav" || src/synth.h -nt "$wav" || tools/render_music.c -nt "$wav" ]]; then
             ./build/headless/render-music.exe "$wav" "$track"
         fi
-        cp -u "$wav" "$output_dir/assets/synth/$track.wav"
+        if [[ "$target" != steam ]]; then cp -u "$wav" "$output_dir/assets/synth/$track.wav"; fi
     done
-    if [[ -d assets ]]; then
+    if [[ "$target" == steam ]]; then
+        python tools/stage_steam.py
+    elif [[ -d assets ]]; then
         mkdir -p "$output_dir/assets"
         cp -ru assets/. "$output_dir/assets/"
     fi

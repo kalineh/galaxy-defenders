@@ -1,5 +1,6 @@
 #include "game.h"
 #include "console.h"
+#include "version.h"
 #include <errno.h>
 #include <math.h>
 #include <stdio.h>
@@ -99,8 +100,12 @@ int main(int argc, char **argv) {
     headless = true;
 #endif
     for (int i = 1; i < argc; ++i) {
-        if (!strcmp(argv[i], "--help")) {
+        if (!strcmp(argv[i], "--version")) {
+            puts(GALAXY_VERSION);
+            return 0;
+        } else if (!strcmp(argv[i], "--help")) {
             puts("Super Galaxy Defenders native port\n"
+                 "  --version            print the build version and exit\n"
                  "  --headless           no window/audio; exits after commands\n"
                  "  --playthrough        uncapped AI campaign; print one CSV row per stage\n"
                  "  --script PATH        bounded command file\n"

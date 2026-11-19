@@ -2,4 +2,5 @@
 /artifacts/
 /external/
 /save/
+/steam.local.sh
 __pycache__/

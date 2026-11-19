@@ -3,6 +3,7 @@
 #include "synth.h"
 #include "input.h"
 #include "render_motion.h"
+#include "version.h"
 #include "raylib.h"
 #include "rlgl.h"
 #ifndef GALAXY_MEMORY
@@ -1750,6 +1751,10 @@ static void draw_menu_list(const Game *game,const Assets *assets,float frame,con
     bool adjust = page == MENU_OPTIONS && game->menu.cursor < OPTION_COUNT;
     int advance = button_prompt(font,x,footer,device,adjust ? GLYPH_HORIZONTAL : GLYPH_CONFIRM,adjust ? "Adjust" : "Select")+28;
     if (page != MENU_MAIN && page != MENU_OVER) advance += button_prompt(font,x+advance,footer,device,GLYPH_BACK,"Back")+28;
+    if (page == MENU_PAUSE) {
+        float version_width = MeasureTextEx(font,GALAXY_VERSION,19,0).x;
+        DrawTextEx(font,GALAXY_VERSION,(Vector2){x+width-version_width,footer+5},19,0,dim);
+    }
     int row = game->menu.cursor;
     if (page == MENU_SLOTS && row < GAME_SAVE_SLOTS && (game->saves[row].valid || game->save_errors[row]))
         button_prompt(font,x+advance,footer,device,GLYPH_READY,"Delete");

@@ -1,0 +1,6 @@
+# Copy to steam.local.sh and fill in the IDs from Steamworks.
+GALAXY_STEAM_APP_ID=
+GALAXY_STEAM_DEPOT_ID=
+STEAM_USERNAME=
+# Optional existing SteamCMD installation, in Git Bash path format.
+# STEAMCMD='/c/tools/steamcmd/steamcmd.exe'

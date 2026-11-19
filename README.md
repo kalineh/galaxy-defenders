@@ -4,6 +4,21 @@ A plain C/raylib port of the original XNA two-player arcade shooter.
 The original source, content, and credits are preserved in [`legacy/`](legacy/README.md).
 Work is on `master`; see [the port plan](PORT_PLAN.md) and [current work](TODO.md).
 
+## Windows Steam build
+
+Run `./master.sh --stage-only` in Git Bash to build the Windows x64 release in
+`build/steam/content/`. Steam's Windows launch executable is `galaxy.exe`.
+The pause menu, `galaxy.exe --version`, and Steam build description use the same
+version. The final component records the Git commit count and hash. Local edits
+add a `.dirty` suffix. The major and minor version are in `src/version.h`.
+
+For uploads, copy `steam.local.sh.example` to `steam.local.sh` and enter this
+game's Steam App ID, Windows Depot ID and builder username. Run
+`./master.sh --preview` for a SteamPipe preview or `./master.sh` to upload.
+The script uses SteamCMD on your PATH or downloads Valve's Windows client
+into `external/steamcmd/`. SteamCMD handles sign-in and Steam Guard. Choose
+the live branch separately in Steamworks after testing the uploaded build.
+
 ## Play
 
 Run `./play.sh` in Git Bash after building. Normal play starts at 30% master
