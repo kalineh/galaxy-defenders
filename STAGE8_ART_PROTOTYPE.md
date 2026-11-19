@@ -2,6 +2,7 @@
 
 This branch adds a reversible presentation experiment, not a gameplay change.
 Classic remains the default. Options > Stage art selects Classic or Modern.
+Press F9 to switch the same setting at any time during play or in menus.
 The console accepts `render.style classic` and `render.style modern`.
 | Stage | Deck family | Finish |
 | --- | --- | --- |

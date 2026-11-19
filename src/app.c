@@ -2490,6 +2490,8 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             *language = (*language + direction + GAME_LANGUAGE_COUNT) % GAME_LANGUAGE_COUNT;
         }
         if (IsKeyPressed(KEY_F3)) console->perf = !console->perf;
+        if (IsWindowFocused() && IsKeyPressed(KEY_F9))
+            game->menu.options[OPTION_RENDER_STYLE] = !game->menu.options[OPTION_RENDER_STYLE];
         update_audio(game, console, &assets);
         if (!frames) {
             poll_controllers(pads);
