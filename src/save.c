@@ -15,7 +15,7 @@ static bool valid_save(const SavedGame *save) {
         save->players < 1 || save->players > 2) return false;
     for (int i = 0; i < 12; ++i)
         if (save->stage_scores[i] < -2000000000 || save->stage_scores[i] > 2000000000 ||
-            save->stage_medals[i] < 0 || save->stage_medals[i] > 5) return false;
+            save->stage_medals[i] < 0 || save->stage_medals[i] > 3) return false;
     for (int i = 0; i < save->players; ++i) {
         const SavedPlayer *p = &save->player[i];
         const int counts[] = {GAME_CHASSIS, GENERATOR_COUNT, SHIELD_COUNT};
@@ -101,7 +101,7 @@ static bool read_save(SavedGame *save, const char *path) {
     bool ok = fscanf(file, "%31s", magic) == 1 && !strcmp(magic, "GALAXY_SAVE") &&
         read_int(file, &version) && read_int(file, &candidate.stage) && read_int(file, &candidate.difficulty) &&
         read_int(file, &candidate.players) && read_int(file, &shop) && read_int(file, &cleared) &&
-        version >= 1 && version <= 5 && (shop == 0 || shop == 1) && (cleared == 0 || cleared == 1) &&
+        version >= 1 && version <= 6 && (shop == 0 || shop == 1) && (cleared == 0 || cleared == 1) &&
         candidate.players >= 1 && candidate.players <= 2;
     candidate.valid = true;
     candidate.shop = shop != 0; candidate.cleared = cleared != 0;
@@ -120,6 +120,14 @@ static bool read_save(SavedGame *save, const char *path) {
     }
     for (int i = 0; ok && version >= 3 && i < 12; ++i)
         ok = read_int(file, &candidate.stage_scores[i]) && read_int(file, &candidate.stage_medals[i]);
+    if (version < 6) {
+        /* The old file only recorded a medal, not raw completion counts. */
+        for (int i = 0; ok && i < 12; ++i) {
+            int medal = candidate.stage_medals[i];
+            ok = medal >= 0 && medal <= 5;
+            candidate.stage_medals[i] = medal >= 4 ? 2 : medal > 0;
+        }
+    }
     for (int i = 0; ok && version >= 4 && i < candidate.players; ++i) {
         Inventory *inv = &candidate.player[i].inventory;
         for (int c = 0; ok && c < 3; ++c) ok = read_int(file, &inv->gear_mask[c]);
@@ -171,7 +179,7 @@ bool game_save_write(const SavedGame *save, const char *path) {
     if (length < 0 || length >= (int)sizeof(temporary)) return false;
     FILE *file = fopen(temporary, "wb");
     if (!file) return false;
-    bool ok = fprintf(file, "GALAXY_SAVE 5 %d %d %d %d %d\n", save->stage, save->difficulty,
+    bool ok = fprintf(file, "GALAXY_SAVE 6 %d %d %d %d %d\n", save->stage, save->difficulty,
         save->players, save->shop, save->cleared) > 0;
     for (int i = 0; i < save->players; ++i) {
         const SavedPlayer *p = &save->player[i];
@@ -225,13 +233,14 @@ void game_reset_session(Game *game, uint32_t seed) {
 }
 
 void game_record_stage(Game *game) {
-    if (game->active_slot < 0 || game->active_slot >= GAME_SAVE_SLOTS || game->stage.index >= 12 || game->stage.stats.recorded) return;
+    if (game->active_slot < 0 || game->active_slot >= GAME_SAVE_SLOTS || game->stage.index >= 12 || !game->complete || game->stage.stats.recorded) return;
     SavedGame *save = &game->saves[game->active_slot];
     int earned = -game->stage.stats.starting_money;
     for (int i = 0; i < GAME_PLAYERS; ++i)
         if (game->players[i].initialized) earned += game->players[i].money + game->players[i].score;
-    save->stage_scores[game->stage.index] = earned;
-    save->stage_medals[game->stage.index] = game_stage_medal(game);
+    int stage = game->stage.index, stars = game_stage_stars(game);
+    if (earned > save->stage_scores[stage]) save->stage_scores[stage] = earned;
+    if (stars > save->stage_medals[stage]) save->stage_medals[stage] = stars;
     game->stage.stats.recorded = true;
 }
 
@@ -239,7 +248,7 @@ void game_checkpoint(Game *game, bool shop) {
     if (game->active_slot < 0 || game->active_slot >= GAME_SAVE_SLOTS || game->stage.index >= 12) return;
     int players = game->players[1].initialized ? 2 : 1;
     SavedGame *save = &game->saves[game->active_slot];
-    save->valid = true; save->shop = shop; save->cleared = game->cleared_game;
+    save->valid = true; save->shop = shop; save->cleared = game->cleared_game || (game->menu.page == MENU_CLEAR && game->stage.index == 11);
     save->stage = shop ? game->menu.next_stage : game->stage.index;
     save->difficulty = game->difficulty; save->players = players; save->seed = game->seed;
     for (int i = 0; i < players; ++i) {

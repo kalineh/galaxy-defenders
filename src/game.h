@@ -138,7 +138,7 @@ typedef struct {
     bool intangible;
     float box_width, box_height;
     int coins;
-    bool powerup, authored;
+    bool powerup, authored, rank_target;
     MovementKind movement;
     float move_speed, move_transition;
 } Enemy;
@@ -211,7 +211,7 @@ typedef struct {
     unsigned saves_dirty;
     int active_slot;
     int next_split_credit;
-    bool save_errors[GAME_SAVE_SLOTS], cleared_game, clear_exit;
+    bool save_errors[GAME_SAVE_SLOTS], cleared_game;
 } Game;
 
 void game_reset(Game *game, uint32_t seed);
@@ -219,7 +219,10 @@ void game_reset_session(Game *game, uint32_t seed);
 void game_checkpoint(Game *game, bool shop);
 void game_stats_init(Game *game);
 int game_stats_percent(int count, int total);
-int game_stage_medal(const Game *game);
+enum { CLEAR_STAR_FRAME = 82, CLEAR_STAR_INTERVAL = 12, CLEAR_TALLY_FRAME = 128, CLEAR_CREDITS = 10000 };
+int game_stage_stars(const Game *game);
+int game_skill_bonus(const Game *game);
+void game_begin_clear(Game *game);
 void game_award_credits(Game *game, int amount);
 void game_record_stage(Game *game);
 bool game_continue(Game *game, int slot);

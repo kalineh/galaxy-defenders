@@ -391,7 +391,7 @@ void game_drop_pickups(Game *game, float x, float y, int coins, bool powerup, bo
         *p = (Pickup){0};
         p->active = true;
         p->kind = n < big ? 1 : n < big + small ? 0 : 2;
-        ++game->stage.stats.coins_total;
+        game->stage.stats.coins_total += p->kind == 1 ? 10 : p->kind == 0 ? 1 : 0;
         p->x = x; p->y = y;
         float angle = random_unit(game) * 6.2831853f;
         p->vx = cosf(angle) * 3; p->vy = sinf(angle) * 3;
@@ -725,6 +725,15 @@ void game_preview_tick(Game *preview) {
     update_bullets(preview);
 }
 
+void game_begin_clear(Game *game) {
+    if (game->menu.page == MENU_CLEAR) return;
+    game_menu_open(game, MENU_CLEAR);
+    game_award_credits(game, CLEAR_CREDITS + game_skill_bonus(game));
+    game_record_stage(game);
+    game->menu.next_stage = (game->stage.index + 1) % 12;
+    game_checkpoint(game, true);
+}
+
 void game_tick(Game *game) {
     if (game->menu.page == MENU_CONTROLLERS) return;
     if (game_transition_update(game)) return;
@@ -748,18 +757,8 @@ void game_tick(Game *game) {
             return;
         }
         if (game->menu.page == MENU_CLEAR) {
-            if (game->clear_exit && game->menu.frame >= 426) { game_transition(game, TRANSITION_SHOP, 0); return; }
-            if (game->clear_exit || game->menu.frame <= 440) ++game->menu.frame;
-            if (!game->clear_exit && (game->menu.frame == 240 || game->menu.frame == 260)) {
-                static const int skill_bonus[] = {0, 0, 250, 500, 1000, 1500};
-                int bonus = game->menu.frame == 240 ? 10000 : skill_bonus[game_stage_medal(game)];
-                game_award_credits(game, bonus);
-                if (game->menu.frame == 260) {
-                    game_record_stage(game);
-                    game->menu.next_stage = game->stage.index < 11 ? game->stage.index + 1 : 0;
-                    game_checkpoint(game, true);
-                }
-            }
+            if (game->menu.frame < CLEAR_TALLY_FRAME) ++game->menu.frame;
+            if (game->menu.frame < 12 || game->menu.frame >= 72) return;
             for (int i = 0; i < GAME_PLAYERS; ++i) {
                 Player *p = &game->players[i];
                 if (!p->joined || p->lives <= 0) continue;
@@ -787,9 +786,7 @@ void game_tick(Game *game) {
     if (!alive && !game->seeking) game->over = true;
     if (game->complete && game->secret_return.active) game->secret_finish_frames = 1;
     else if (game->complete && !game->over) {
-        if (game->stage.index == 11 && !game->cleared_game) {
-            game_transition(game, TRANSITION_FINISH, 0);
-        } else game_menu_open(game, MENU_CLEAR);
+        game_begin_clear(game);
     }
 }
 

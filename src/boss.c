@@ -578,6 +578,6 @@ bool boss_damage(Game *g,Enemy *e,float damage,int owner) {
         e->cooldown=30; e->shot_index=0;
     }
     e->health -= damage;
-    if(e->health<=0) { ++g->stage.stats.enemy_kills; enemy_die(g,e,owner); }
+    if(e->health<=0) { if (e->rank_target) ++g->stage.stats.enemy_kills; enemy_die(g,e,owner); }
     return true;
 }

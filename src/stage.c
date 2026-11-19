@@ -24,11 +24,28 @@ int game_stats_percent(int count, int total) {
     return total ? (int)fminf(100, nearbyintf(count * 100.0f / total)) : 0;
 }
 
-int game_stage_medal(const Game *game) {
+int game_skill_bonus(const Game *game) {
     const StageStats *s = &game->stage.stats;
     int total = game_stats_percent(s->coins_collected, s->coins_total) +
         game_stats_percent(s->enemy_kills, s->enemy_total) + game_stats_percent(s->building_kills, s->building_total);
-    return total >= 300 ? 5 : total >= 250 ? 4 : total >= 200 ? 3 : total >= 150 ? 2 : 1;
+    return total >= 300 ? 1500 : total >= 250 ? 1000 : total >= 200 ? 500 : total >= 150 ? 250 : 0;
+}
+
+int game_stage_stars(const Game *game) {
+    const StageStats *s = &game->stage.stats;
+    int earned[] = {s->enemy_kills, s->building_kills, s->coins_collected};
+    int possible[] = {s->enemy_total, s->building_total, s->coins_total};
+    int categories = 0;
+    bool perfect = true;
+    double sum = 0;
+    for (int i = 0; i < 3; ++i) {
+        if (!possible[i]) continue;
+        ++categories;
+        perfect &= earned[i] == possible[i];
+        sum += fmin(1.0, (double)earned[i] / possible[i]);
+    }
+    if (categories && perfect) return 3;
+    return sum > categories * 0.75 + 1e-12 ? 2 : 1;
 }
 
 void game_secret_enter(Game *game, int index) {
@@ -156,6 +173,7 @@ void game_stage_update(Game *game) {
             if (index >= 0) {
                 Enemy *enemy = &game->enemies[index];
                 enemy->authored = true;
+                enemy->rank_target = kind != ENEMY_FENCE && kind != ENEMY_BLACK_HOLE;
                 enemy->movement = (MovementKind)movement_find(event->mover);
                 enemy->move_speed = event->speed;
                 enemy->move_transition = event->transition;
@@ -204,7 +222,7 @@ void game_stage_update(Game *game) {
         for (int i = 0; i < GAME_ENEMIES; ++i)
             if (game->enemies[i].active && game->enemies[i].kind != ENEMY_FENCE && !enemy_is_asteroid(game->enemies[i].kind)) enemies = true;
         if (state->index < 12 && enemies) game->scroll_speed *= 0.95f;
-        else if (++state->end_countdown >= 220) {
+        else if (++state->end_countdown >= 14) {
             memset(game->bullets, 0, sizeof(game->bullets));
             game->complete = true;
         }

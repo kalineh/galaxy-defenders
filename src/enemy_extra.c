@@ -350,7 +350,7 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     if (e->kind == ENEMY_RAID_TURRET) e->cooldown = 16;
     if (e->kind == ENEMY_TELEPORTER && ++e->hit_count > 6 && e->attack < 0) { e->hit_count = 0; e->attack = 0; }
     if (e->health <= 0) {
-        if (e->kind != ENEMY_FENCE) ++g->stage.stats.enemy_kills;
+        if (e->rank_target) ++g->stage.stats.enemy_kills;
         enemy_die(g, e, owner);
     }
 }
@@ -425,6 +425,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
             fragment->vx = e->vx + side + cosf(angle) * 0.5f;
             fragment->vy = e->vy + sinf(angle) * 0.5f;
             fragment->spin = -side * 0.1f;
+            fragment->rank_target = e->rank_target;
             fragment->aux_index = side > 0; /* Original right-hand shell sprite. */
         }
     }
@@ -436,6 +437,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
             if (n < 0) continue;
             Enemy *part = &g->enemies[n];
             float speed = random_float(g) * 0.5f, angle = random_float(g) * 2 * PI;
+            part->rank_target = e->rank_target;
             part->vx = vx[i] + cosf(angle) * speed; part->vy = vy[i] + sinf(angle) * speed;
             part->spin = i == 2 ? -0.025f : 0.025f;
             static const float scale[] = {1,1.25f,1.55f};
@@ -464,6 +466,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
             child->spin=spin*(i?-3:3);
             child->parent=-1; child->authored=false; child->coins=0;
         } else if(e->kind==ENEMY_SWIRL) {
+            child->rank_target = e->rank_target;
             float angle=g->tick*0.1f+i*2*PI/3+PI*0.5f+0.1f;
             child->vx=cosf(angle)*2.5f; child->vy=sinf(angle)*2.5f; child->parent=-1; child->authored=false;
         } else enemy_die(g, child, -1);

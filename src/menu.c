@@ -259,9 +259,10 @@ void game_menu_input(Game *game, MenuAction action, int slot) {
         return;
     }
     if (menu->page == MENU_CLEAR) {
-        if ((action == MENU_CONFIRM || action == MENU_BACK) && menu->frame > 380 && !game->clear_exit) {
-            game->clear_exit = true;
-            menu->frame = 360;
+        if (action == MENU_CONFIRM && game->players[slot].joined) {
+            if (menu->frame < CLEAR_TALLY_FRAME) menu->frame = CLEAR_TALLY_FRAME;
+            else game_transition(game, game->stage.index == 11 && !game->cleared_game ?
+                TRANSITION_FINISH : TRANSITION_SHOP, 0);
         }
         return;
     }

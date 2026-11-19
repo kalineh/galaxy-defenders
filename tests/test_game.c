@@ -298,7 +298,7 @@ static void stage2_runtime(void) {
     CHECK(!enemy->active && !game.complete && game_bullet_count(&game) == 0);
     for (int i = 0; i < 220; ++i) game_tick(&game);
     CHECK(game.complete && game.menu.page == MENU_CLEAR);
-    while (game.menu.frame <= 380) game_tick(&game);
+    while (game.menu.frame < CLEAR_TALLY_FRAME) game_tick(&game);
     game_menu_input(&game, MENU_CONFIRM, 0);
     for (int i = 0; i < 82; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
@@ -657,7 +657,7 @@ static void pools_and_completion(void) {
     game_spawn_enemy(&game, ENEMY_BOSS, 480, 200);
     game_spawn_bullet(&game, 0, 480, 400, 0, -200, 60);
     game_tick(&game);
-    CHECK(game.complete && game.players[0].score == 500);
+    CHECK(game.complete && game.players[0].score == CLEAR_CREDITS + 500);
 }
 
 static void determinism(void) {
@@ -1008,13 +1008,9 @@ static void stage_clear_exit(void) {
     CHECK(game.tick == tick);
     CHECK(game.players[0].y < 0 && game.players[1].y < 0);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
-    CHECK(game.menu.page == MENU_CLEAR && !game.clear_exit);
-    while (game.menu.frame <= 380) game_tick(&game);
+    CHECK(game.menu.page == MENU_CLEAR && game.menu.frame == CLEAR_TALLY_FRAME);
     CHECK(console_execute(&console, &game, "menu.input confirm 2"));
-    CHECK(game.menu.page == MENU_CLEAR && game.clear_exit && game.menu.frame == 360);
-    for (int i = 0; i < 81; ++i) game_tick(&game);
-    CHECK(game.menu.page == MENU_CLEAR);
-    game_tick(&game);
+    for (int i = 0; i < 15; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
     CHECK(game.players[0].score == 0 && game.players[0].money == 5250 && game.players[1].joined);
     CHECK(console_execute(&console, &game, "menu.input confirm 1"));
@@ -1168,7 +1164,7 @@ static void authored_stage_runtime(void) {
         game_spawn_bullet(&game, 0, b->x, b->y + 200, 0, -200, 100);
         game_tick(&game);
         CHECK(!game.complete && game_enemy_count(&game) == 0 && game_bullet_count(&game) == 0);
-        for (int i = 0; i < 219; ++i) game_tick(&game);
+        for (int i = 0; i < 13; ++i) game_tick(&game);
         CHECK(!game.complete);
         game_tick(&game);
         CHECK(game.complete && game.menu.page == MENU_CLEAR);
@@ -1737,7 +1733,7 @@ static void campaign_stages(void) {
         CHECK(game.complete && (stage >= 12 || boss_seen));
         CHECK(game.dropped_spawns == 0);
         if (stage < 11) {
-            while (game.menu.frame <= 380) game_tick(&game);
+            while (game.menu.frame < CLEAR_TALLY_FRAME) game_tick(&game);
             game_menu_input(&game, MENU_CONFIRM, 0);
             for (int i = 0; i < 82; ++i) game_tick(&game);
             launch_from_shop(0);
@@ -1999,22 +1995,20 @@ static void stage_awards(void) {
     reset();
     game.stage.stats = (StageStats){.coins_total=20, .coins_collected=20,
         .enemy_total=10, .enemy_kills=10, .building_total=5, .building_kills=5};
-    CHECK(game_stage_medal(&game) == 5);
+    CHECK(game_stage_stars(&game) == 3);
+    game.stage.stats.coins_total = 1000; game.stage.stats.coins_collected = 999;
+    CHECK(game_stage_stars(&game) == 2);
+    game.stage.stats.coins_total = game.stage.stats.coins_collected = 20;
     CHECK(game_stats_percent(1, 8) == 12 && game_stats_percent(3, 8) == 38);
     CHECK(game_stats_percent(10, 1) == 100 && game_stats_percent(1, 0) == 0);
     game.complete = true;
-    game_menu_open(&game, MENU_CLEAR);
-    for (int i = 0; i < 239; ++i) game_tick(&game);
-    CHECK(game.players[0].score == 0);
-    game_tick(&game);
-    CHECK(game.players[0].score == 10000);
-    for (int i = 0; i < 20; ++i) game_tick(&game);
+    game_begin_clear(&game);
     CHECK(game.players[0].score == 11500);
     CHECK(game.saves[0].shop && game.saves[0].stage == 1 && game.saves[0].player[0].money == 11500);
     for (int i = 0; i < 200; ++i) game_tick(&game);
     CHECK(game.players[0].score == 11500);
     game_shop_open(&game);
-    CHECK(game.saves[0].stage_scores[0] == 11500 && game.saves[0].stage_medals[0] == 5);
+    CHECK(game.saves[0].stage_scores[0] == 11500 && game.saves[0].stage_medals[0] == 3);
     game.players[0].money -= 1000;
     game_checkpoint(&game, true);
     CHECK(game.saves[0].stage_scores[0] == 11500);
@@ -2260,7 +2254,7 @@ static void saved_continue(void) {
     SavedGame save = {0};
     CHECK(game_save_read(&save, path) && save.player[0].money == 12345);
     CHECK(save.seed == 987654321u);
-    CHECK(save.stage_scores[4] == 12345 && save.stage_medals[4] == 5);
+    CHECK(save.stage_scores[4] == 12345 && save.stage_medals[4] == 3);
     int stock[WEAPON_COUNT+1], restored[WEAPON_COUNT+1];
     int stock_count = game_shop_stock(&game, 0, 3, stock);
     save.player[0].inventory.gear_mask[1] |= 1 << 2;
@@ -2274,7 +2268,7 @@ static void saved_continue(void) {
     CHECK(game.players[0].sidekick_level == 1 && game_shop_owned_marks(&game.players[0],5,WEAPON_MISSILE_VOLLEY) == 4);
     CHECK(game.seed == 987654321u);
     CHECK(game_shop_price(&game.players[0],1,2,0) == 0);
-    CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 5);
+    CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 3);
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
     launch_from_shop(0);

@@ -71,7 +71,7 @@ typedef struct {
     Sprite boss4_cover, boss5_cover, boss6_center;
     Sprite rotate_turret_base, splitter_right, pyramid_turret, cutter_beam;
     Sprite enemy_corpses[ENEMY_KIND_COUNT];
-    Sprite pickups[3], medals[5];
+    Sprite pickups[3];
     int stage_index;
     Color stage_tints[STAGE_MAX_EVENTS];
     Music music, title_music, pause_music;
@@ -351,13 +351,6 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
         char path[128];
         snprintf(path, sizeof(path), "textures/%s.png", name);
         assets->enemy_corpses[i] = atlas_sprite(assets,path);
-    }
-    static const char *medals[] = {"Clear", "Bronze", "Silver", "Gold", "Platinum"};
-    for (int i = 0; i < 5; ++i) {
-        char path[128];
-        snprintf(path, sizeof(path), "textures/Medal%s.png", medals[i]);
-        assets->medals[i] = atlas_sprite(assets,path);
-        if (!IsTextureValid(assets->medals[i].texture)) return false;
     }
     assets->asteroid_cracks = atlas_sprite(assets,"textures/Cracks.png");
     if (!IsTextureValid(assets->asteroid_cracks.texture)) return false;
@@ -1579,6 +1572,20 @@ static const char *option_value(const GameMenu *menu, int row) {
     }
 }
 
+static void result_star(float x, float y, float radius, bool earned, Color color) {
+    Vector2 points[10];
+    for (int i = 0; i < 10; ++i) {
+        float angle = (-90 + 36*i)*DEG2RAD;
+        float r = i % 2 ? radius*0.48f : radius;
+        points[i] = (Vector2){x+r*cosf(angle),y+r*sinf(angle)};
+    }
+    for (int i = 0; i < 10; ++i) {
+        Vector2 a = points[i], b = points[(i+1)%10];
+        if (earned) DrawTriangle((Vector2){x,y},b,a,color);
+        DrawLineEx(a,b,radius < 20 ? 1.5f : 3,color);
+    }
+}
+
 static void menu_row(Font font, const Game *game, MenuPage page, int row, bool selected, int x, int y, int width, int height) {
     DrawRectangle(x,y,width,height-3,selected ? surface : ink);
     DrawLine(x,y+height-3,x+width,y+height-3,rule);
@@ -1589,6 +1596,11 @@ static void menu_row(Font font, const Game *game, MenuPage page, int row, bool s
             ui_text(game->save_errors[row] ? "Unreadable" : "Empty");
         label = TextFormat("%s - %s",TextFormat(ui_text("Slot %d"),row+1),state);
     } else if (page == MENU_STAGE_SELECT && row < 12) label = TextFormat(ui_text("Stage %d"),row+1);
+    if (page == MENU_STAGE_SELECT && row < 12 && game->active_slot >= 0) {
+        int best = game->saves[game->active_slot].stage_medals[row];
+        for (int i = 0; i < 3; ++i)
+            result_star(x+width-96+i*30,y+height/2,11,i<best,i<best ? accent : dim);
+    }
     int label_width = page == MENU_OPTIONS && row < OPTION_COUNT ? width-232 : width-44;
     text_on_axis(font,label,x+22,y+(height-3)/2,fitted_size(font,label,28,label_width),WHITE);
     if (game->menu.page == MENU_OPTIONS && (row >= OPTION_RENDER_SCALE && row < OPTION_COUNT)) {
@@ -1825,39 +1837,40 @@ static void draw_menu(const Game *game, const Assets *assets, float frame, const
     }
     if (game->menu.page == MENU_SHOP) { draw_shop(game, assets, frame, devices, entering_shop, shadows); return; }
     if (game->menu.page == MENU_CLEAR) {
-        float alpha = fminf(0.5f, game->menu.frame / 60.0f);
-        DrawRectangle(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, Fade(BLACK, alpha));
-        int counter = game->clear_exit ? 440 : game->menu.frame;
-        if (counter >= 60) {
-            DrawRectangle(672,115,576,590,ink);
-            DrawRectangle(672,115,576,3,accent);
-            DrawLine(704,248,1216,248,rule);
-            text_center(assets->ui_font, ui_text("Stage Clear"), 968, 180, 40, WHITE);
+        int t = game->menu.frame;
+        float fade = fmaxf(0,fminf(1,(t-32)/38.0f));
+        DrawRectangle(0,0,CANVAS_WIDTH,CANVAS_HEIGHT,Fade(BLACK,fade));
+        if (t < 55) return;
+        Font font = assets->ui_font;
+        float reveal = fminf(1,(t-55)/18.0f);
+        int rise = (int)(16*(1-reveal));
+        const char *name = ui_text(stage_definitions[game->stage.index].display_name);
+        text_center(font,name,960,230+rise,30,Fade(accent,reveal));
+        text_center(font,ui_text("Stage Clear"),960,278+rise,82,Fade(WHITE,reveal));
+        int stars = game_stage_stars(game);
+        for (int i = 0; i < 3; ++i) {
+            int age = t-CLEAR_STAR_FRAME-i*CLEAR_STAR_INTERVAL;
+            bool lit = age >= 0 && i < stars;
+            float pop = lit ? fmaxf(0,1-age/9.0f) : 0;
+            result_star(960+(i-1)*114,459,43+8*pop,lit,Fade(lit ? accent : dim,reveal));
         }
-        const StageStats *stats = &game->stage.stats;
-        int percent[] = {game_stats_percent(stats->coins_collected, stats->coins_total),
-            game_stats_percent(stats->enemy_kills, stats->enemy_total),
-            game_stats_percent(stats->building_kills, stats->building_total), 0};
-        percent[3] = percent[0] + percent[1] + percent[2];
-        static const char *labels[] = {"Coins", "Enemies", "Buildings", "Total", "Stage Clear", "Skill Bonus"};
-        static const int times[] = {100,120,140,180,240,260};
-        static const int bonus[] = {0,0,250,500,1000,1500};
-        int medal = game_stage_medal(game);
-        for (int i = 0; i < 6; ++i) {
-            if (counter < times[i] || (i == 5 && medal == 1)) continue;
-            int y = i < 4 ? 280 + i * 30 : 460 + (i - 4) * 30;
-            DrawTextEx(assets->ui_font, ui_text(labels[i]), (Vector2){704, (float)y}, 26, 0, WHITE);
-            const char *value = i < 4 ? TextFormat("%d%%", percent[i]) :
-                TextFormat("+%s", TextFormat(ui_text("%d cr"),i == 4 ? 10000 : bonus[medal]));
-            DrawTextEx(assets->ui_font, value, (Vector2){1216-MeasureTextEx(assets->ui_font,value,26,0).x, (float)y}, 26, 0, i < 4 ? WHITE : accent);
+        const StageStats *s = &game->stage.stats;
+        int got[] = {s->enemy_kills,s->building_kills,s->coins_collected};
+        int possible[] = {s->enemy_total,s->building_total,s->coins_total};
+        const char *labels[] = {"Enemies","Buildings","Coins"};
+        if (t >= CLEAR_STAR_FRAME) {
+            DrawLine(648,541,1272,541,rule);
+            for (int i = 0; i < 3; ++i) {
+                int x = 960 + (i-1)*210;
+                text_center(font,ui_text(labels[i]),x,567,24,dim);
+                int pct = game_stats_percent(got[i],possible[i]);
+                if (pct == 100 && got[i] < possible[i]) pct = 99;
+                text_center(font,possible[i] ? TextFormat("%d%%",pct) : "?",x,603,38,WHITE);
+            }
         }
-        if (counter >= 300) {
-            Sprite texture = assets->medals[medal - 1];
-            float scale = fmaxf(1, 2 - (counter - 299) * 0.125f);
-            sprite(texture, 968, 540, texture.width * scale, 0, WHITE);
-        }
-        if (counter >= 360) {
-            button_prompt(assets->ui_font,880,630,devices->prompt_device,GLYPH_CONFIRM,"Select");
+        if (t >= CLEAR_TALLY_FRAME) {
+            text_center(font,TextFormat(ui_text("%d cr"),CLEAR_CREDITS+game_skill_bonus(game)),960,712,45,accent);
+            button_prompt(font,892,844,devices->prompt_device,GLYPH_CONFIRM,"Continue");
         }
         return;
     }
@@ -2559,6 +2572,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
                 if (IsKeyPressed(KEY_M) && assets.audio) { muted = !muted; SetMasterVolume(muted ? 0 : volume); }
             }
         }
+        int previous_clear_frame = game->menu.page == MENU_CLEAR ? game->menu.frame : -1;
         int old_buildings = game->building_kills;
         int old_pickups = game->pickups_collected;
         int old_hits = game->armor_hits, old_shield_hits = game->shield_hits, old_deaths = game->deaths;
@@ -2593,6 +2607,12 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
             previous_motion.source = NULL;
         }
         if (assets.audio) {
+            if (game->menu.page == MENU_CLEAR && previous_clear_frame >= 0) {
+                for (int i = 0; i < game_stage_stars(game); ++i) {
+                    int at = CLEAR_STAR_FRAME + i*CLEAR_STAR_INTERVAL;
+                    if (previous_clear_frame < at && game->menu.frame >= at) PlaySound(assets.menu_sounds[3]);
+                }
+            }
             if (game->pickups_collected > old_pickups) PlaySound(assets.bonus_get);
             for (int i = 0; i < WEAPON_COUNT; ++i) if (game->weapon_shots[i] > old_weapon_shots[i] && IsSoundValid(assets.weapon_fire[i])) PlaySound(assets.weapon_fire[i]);
             for (int i = 0; i < 4; ++i) if (game->impact_sounds[i] > old_impacts[i]) PlaySound(assets.impacts[i]);
