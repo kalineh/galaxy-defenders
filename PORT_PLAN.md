@@ -2,7 +2,7 @@
 
 ## Direction
 
-Port the XNA game to plain C and raylib on branch `native`. Ship small playable
+Port the XNA game to plain C and raylib on branch `master`. Ship small playable
 increments for human feedback. Preserve two-player local co-op and gamepad support;
 network multiplayer is deferred. Use the original music now; replacement music and
 synthesis are later work. PC, web, and phones are the eventual targets; Windows is

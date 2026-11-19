@@ -60,4 +60,4 @@ cleanup by default; `-Apply` explicitly deletes only owned task scratch contents
 
 ## Agent, Commit & Review Workflow
 
-Work on `native`. Keep unfinished multi-step work in `TODO.md`. Commit and push each verified, focused piece before starting another; preserve unrelated edits. History uses short imperative subjects, such as `Fix bug in update logic.` Follow that convention. Review descriptions should explain behavior, validation, linked issues when applicable, and screenshots for visual changes. Never commit builds, caches, or logs. For documentation-only changes, inspect the diff.
+Work on `master`. Keep unfinished multi-step work in `TODO.md`. Commit and push each verified, focused piece before starting another; preserve unrelated edits. History uses short imperative subjects, such as `Fix bug in update logic.` Follow that convention. Review descriptions should explain behavior, validation, linked issues when applicable, and screenshots for visual changes. Never commit builds, caches, or logs. For documentation-only changes, inspect the diff.
