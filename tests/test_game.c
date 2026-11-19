@@ -546,7 +546,9 @@ static void boss_timing_rules(void) {
     n=game_spawn_enemy(&game,ENEMY_BOSS8,480,200);
     game.enemies[n].health=100;
     enemy_take_damage(&game,&game.enemies[n],12,0);
-    CHECK(game.enemies[n].phase==1 && game.enemies[n].health==91);
+    CHECK(game.enemies[n].phase==0 && fabsf(game.enemies[n].health-90.4f)<0.001f);
+    enemy_take_damage(&game,&game.enemies[n],1,0);
+    CHECK(game.enemies[n].phase==1);
     reset();
     int parent=game_spawn_enemy(&game,ENEMY_BOSS7,480,200);
     n=game_spawn_enemy(&game,ENEMY_BOSS7_CANNON_SMALL,480,200);
@@ -623,7 +625,7 @@ static void contact_rules(void) {
     game_join(&game, 1);
     n = game_spawn_enemy(&game, ENEMY_BALL, 400, 880);
     game_tick(&game);
-    CHECK(game.enemies[n].active && game.enemies[n].health == 0.125f);
+    CHECK(game.enemies[n].active && fabsf(game.enemies[n].health - 0.1f) < 0.001f);
     reset();
     game.players[0].invincible = true;
     n = game_spawn_enemy(&game, ENEMY_BIG_BALL, 400, 880);
@@ -977,6 +979,21 @@ static void console_editor(void) {
     CHECK(console.count == 0 && console.command_count == history);
 }
 
+static void coop_rewards_and_health(void) {
+    reset();
+    game_join(&game, 1);
+    game_award_credits(&game, 15);
+    game_award_credits(&game, 15);
+    CHECK(game.players[0].score == 15 && game.players[1].score == 15);
+    Enemy *boss = &game.enemies[game_spawn_enemy(&game, ENEMY_BOSS, 480, 200)];
+    enemy_take_damage(&game, boss, 5, 0);
+    CHECK(boss->health == boss->health_max - 4);
+    game_leave(&game, 1);
+    enemy_take_damage(&game, boss, 5, 0);
+    game_award_credits(&game, 15);
+    CHECK(boss->health == boss->health_max - 9 && game.players[0].score == 30);
+}
+
 static void stage_clear_exit(void) {
     reset();
     CHECK(game_join(&game, 1));
@@ -999,7 +1016,7 @@ static void stage_clear_exit(void) {
     CHECK(game.menu.page == MENU_CLEAR);
     game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
-    CHECK(game.players[0].score == 0 && game.players[0].money == 8000 && game.players[1].joined);
+    CHECK(game.players[0].score == 0 && game.players[0].money == 5250 && game.players[1].joined);
     CHECK(console_execute(&console, &game, "menu.input confirm 1"));
     CHECK(game.menu.shop_catalog[0]);
     launch_from_shop(1);
@@ -1015,7 +1032,7 @@ static void stage_clear_exit(void) {
     game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.transition_frames == 30);
     for (int i = 0; i < 15; ++i) game_tick(&game);
-    CHECK(game.stage.index == 1 && game.players[0].money == 8000);
+    CHECK(game.stage.index == 1 && game.players[0].money == 5250);
     CHECK(game.menu.page == MENU_NONE && !game.complete && !game.over && game.tick == 0);
     for (int i = 0; i < 15; ++i) {
         CHECK(game_shop_departing(&game));
@@ -2374,6 +2391,7 @@ int main(int argc, char **argv) {
     menu_flow();
     weapon_upgrades();
     console_editor();
+    coop_rewards_and_health();
     stage_clear_exit();
     starting_primary_patterns();
     authored_stage_data();

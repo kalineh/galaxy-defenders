@@ -210,6 +210,7 @@ typedef struct {
     SavedGame saves[GAME_SAVE_SLOTS];
     unsigned saves_dirty;
     int active_slot;
+    int next_split_credit;
     bool save_errors[GAME_SAVE_SLOTS], cleared_game, clear_exit;
 } Game;
 
@@ -219,6 +220,7 @@ void game_checkpoint(Game *game, bool shop);
 void game_stats_init(Game *game);
 int game_stats_percent(int count, int total);
 int game_stage_medal(const Game *game);
+void game_award_credits(Game *game, int amount);
 void game_record_stage(Game *game);
 bool game_continue(Game *game, int slot);
 bool game_save_read(SavedGame *save, const char *path);

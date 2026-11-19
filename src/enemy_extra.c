@@ -335,7 +335,7 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     if (e->active && enemy_is_asteroid(e->kind)) {
         e->health -= damage;
         if (e->health < 0) {
-            if (owner >= 0) g->players[owner].score += 100;
+            if (owner >= 0) game_award_credits(g, 100);
             e->active = false;
         }
         return;
@@ -343,8 +343,9 @@ void enemy_take_damage(Game *g, Enemy *e, float damage, int owner) {
     if (!e->active || e->intangible || e->invisible || e->kind == ENEMY_CUTTER_BALL || e->kind == ENEMY_FENCE_BEAM) return;
     if (e->kind == ENEMY_SWIRL_BALL && e->parent >= 0 && g->enemies[e->parent].active)
         e = &g->enemies[e->parent];
+    /* Scale effective HP per hit so drop-in preserves the boss's health fraction and bounty. */
+    if (g->players[0].joined && g->players[1].joined) damage /= 1.25f;
     if (boss_damage(g, e, damage, owner)) return;
-    damage *= g->players[0].joined && g->players[1].joined ? 0.75f : 1;
     e->health -= damage;
     if (e->kind == ENEMY_RAID_TURRET) e->cooldown = 16;
     if (e->kind == ENEMY_TELEPORTER && ++e->hit_count > 6 && e->attack < 0) { e->hit_count = 0; e->attack = 0; }
@@ -378,7 +379,7 @@ void enemy_die(Game *g, Enemy *e, int owner) {
             break;
         }
     }
-    if (owner>=0) g->players[owner].score += game_health_score(g, e->health_max, 20);
+    if (owner>=0) game_award_credits(g, game_health_score(g, e->health_max, 20));
     if (enemy_is_boss(e->kind)) {
         Enemy body = *e;
         e->active = false;

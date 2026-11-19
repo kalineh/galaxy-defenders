@@ -359,6 +359,20 @@ bool game_upgrade_weapon(Game *game, int slot, int level) {
     return true;
 }
 
+void game_award_credits(Game *game, int amount) {
+    if (game->players[0].joined && game->players[1].joined) {
+        game->players[0].score += amount / 2;
+        game->players[1].score += amount / 2;
+        if (amount % 2) {
+            ++game->players[game->next_split_credit].score;
+            game->next_split_credit ^= 1;
+        }
+    } else {
+        for (int i = 0; i < GAME_PLAYERS; ++i)
+            if (game->players[i].joined) game->players[i].score += amount;
+    }
+}
+
 int game_health_score(const Game *game, float health, float multiplier) {
     static const float scale[] = {1, 1.1f, 1.25f};
     int score = (int)(health * multiplier * scale[game->difficulty]);
@@ -427,7 +441,7 @@ static void update_pickups(Game *game) {
                     }
                 } else {
                     game->stage.stats.coins_collected += pickup->kind == 1 ? 10 : 1;
-                    p->score += pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0);
+                    game_award_credits(game, pickup->kind == 1 ? 250 : 15 + (p->pilot == 1 ? 3 : 0));
                     if (pickup->kind == 1) p->energy = fminf(game_generators[p->generator].capacity,
                         p->energy + game_generators[p->generator].on_coin);
                 }
@@ -636,8 +650,8 @@ static void update_bullets(Game *game) {
                         static const float small_health[] = {1,1.5f,1.5f,2,2.5f,5,6};
                         bool small = !strncmp(event->name, "Small", 5);
                         int number = event->name[strlen(event->name) - 1] - '1';
-                        game->players[bullet->owner].score += game_health_score(game,
-                            small ? small_health[number] : big_health[number], 15);
+                        game_award_credits(game, game_health_score(game,
+                            small ? small_health[number] : big_health[number], 15));
                         game_drop_pickups(game, x, y, event->coins, event->powerup, false);
                         float angle = random_unit(game) * 6.2831853f;
                         game_effect(game, !strncmp(event->name, "Small", 5) ? EFFECT_BUILDING_SMALL : EFFECT_BUILDING_BIG,
@@ -739,8 +753,7 @@ void game_tick(Game *game) {
             if (!game->clear_exit && (game->menu.frame == 240 || game->menu.frame == 260)) {
                 static const int skill_bonus[] = {0, 0, 250, 500, 1000, 1500};
                 int bonus = game->menu.frame == 240 ? 10000 : skill_bonus[game_stage_medal(game)];
-                if (game->players[0].joined && game->players[1].joined) bonus = bonus * 3 / 4;
-                for (int i = 0; i < GAME_PLAYERS; ++i) if (game->players[i].joined) game->players[i].score += bonus;
+                game_award_credits(game, bonus);
                 if (game->menu.frame == 260) {
                     game_record_stage(game);
                     game->menu.next_stage = game->stage.index < 11 ? game->stage.index + 1 : 0;
