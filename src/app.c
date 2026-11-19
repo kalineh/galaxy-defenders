@@ -15,6 +15,7 @@
 
 #include "ui_strings.inc"
 static int ui_language;
+static bool modern_sprites;
 static int display_refresh_hz;
 
 static const char *ui_text(const char *english) {
@@ -51,10 +52,11 @@ typedef struct {
     Texture2D texture;
     Rectangle region, bounds;
     int width, height;
+    Texture2D modern;
 } Sprite;
 
 typedef struct {
-    Texture2D pages[sizeof(atlas_files)/sizeof(atlas_files[0])];
+    Texture2D pages[2][sizeof(atlas_files)/sizeof(atlas_files[0])];
     Sprite ships[GAME_CHASSIS], enemies[ENEMY_KIND_COUNT], shot, hostile_shot;
     Texture2D portraits[3], title_logo, title_super, title_squad;
     Sprite particle_dot, particle_triangle;
@@ -126,7 +128,8 @@ static Sprite atlas_sprite(const Assets *assets, const char *name) {
         int mid = lo + (hi-lo)/2;
         const AtlasEntry *entry = &atlas_entries[mid];
         int cmp = strcmp(name,entry->name);
-        if (!cmp) return (Sprite){assets->pages[entry->page],entry->region,entry->bounds,entry->width,entry->height};
+        if (!cmp) return (Sprite){assets->pages[0][entry->page],entry->region,entry->bounds,entry->width,entry->height,
+            assets->pages[1][entry->page]};
         if (cmp < 0) hi = mid;
         else lo = mid+1;
     }
@@ -135,13 +138,14 @@ static Sprite atlas_sprite(const Assets *assets, const char *name) {
 }
 
 static Sprite whole_texture(Texture2D texture) {
-    return (Sprite){texture,{0,0,texture.width,texture.height},{0,0,1,1},texture.width,texture.height};
+    return (Sprite){texture,{0,0,texture.width,texture.height},{0,0,1,1},texture.width,texture.height,{0}};
 }
 
 static void assets_unload(Assets *assets) {
     deck_art_unload(&assets->deck_art);
-    for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
-        if (IsTextureValid(assets->pages[i])) UnloadTexture(assets->pages[i]);
+    for (int style=0; style<2; ++style)
+        for (unsigned i=0; i<sizeof(atlas_files)/sizeof(atlas_files[0]); ++i)
+            if (IsTextureValid(assets->pages[style][i])) UnloadTexture(assets->pages[style][i]);
     if (IsTextureValid(assets->title_logo)) UnloadTexture(assets->title_logo);
     if (IsTextureValid(assets->title_super)) UnloadTexture(assets->title_super);
     if (IsTextureValid(assets->title_squad)) UnloadTexture(assets->title_squad);
@@ -321,12 +325,13 @@ static bool assets_load(Assets *assets, Console *console, bool mute, float volum
     SetTextureFilter(assets->heading_font.texture,TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->ui_font.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(assets->console_font.texture, TEXTURE_FILTER_BILINEAR);
-    for (unsigned i = 0; i < sizeof(atlas_files)/sizeof(atlas_files[0]); ++i) {
-        assets->pages[i] = texture_load(atlas_files[i]);
-        if (!IsTextureValid(assets->pages[i])) return false;
+    for (int style=0; style<2; ++style) for (unsigned i=0; i<sizeof(atlas_files)/sizeof(atlas_files[0]); ++i) {
+        Texture2D *page=&assets->pages[style][i];
+        *page=texture_load(style ? modern_atlas_files[i] : atlas_files[i]);
+        if (!IsTextureValid(*page)) return false;
 #ifndef GALAXY_MEMORY
-        GenTextureMipmaps(&assets->pages[i]);
-        SetTextureFilter(assets->pages[i],TEXTURE_FILTER_TRILINEAR);
+        GenTextureMipmaps(page);
+        SetTextureFilter(*page,TEXTURE_FILTER_TRILINEAR);
 #endif
     }
     for (int i = 0; i < GAME_CHASSIS; ++i) {
@@ -542,7 +547,7 @@ static void sprite_part(Sprite image, Rectangle src, Rectangle dest, Vector2 ori
     region.width *= src.width/image.width;
     region.height *= src.height/image.height;
     if (!shadow) {
-        DrawTexturePro(image.texture,region,dest,origin,angle,tint);
+        DrawTexturePro(modern_sprites && image.modern.id ? image.modern : image.texture,region,dest,origin,angle,tint);
         return;
     }
     /* Two rings sampled symmetrically in screen space. The outer ring fades
@@ -2682,6 +2687,7 @@ int app_run(Game *game, Console *console, int frames, const char *capture, bool 
         BeginMode2D((Camera2D){.zoom=canvas_zoom});
 #endif
         ui_language = game->menu.options[OPTION_LANGUAGE];
+        modern_sprites = game->menu.options[OPTION_RENDER_STYLE]!=0;
         bool cjk = ui_uses_cjk[ui_language];
         assets.ui_font = cjk ? assets.cjk_font : assets.western_body;
         assets.heading_font = cjk ? assets.cjk_font : assets.western_heading;

@@ -38,16 +38,19 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   silhouette is 16% of foreground size with 8.5% camera motion.
 - Straight spans can taper on one or both sides, lengthwise or crosswise. Empty
   pieces accept short and long waists up to 34 units deep per side. Occupied
-  pieces can take a 5?8 unit cut where the roof or enemy footprint clears it.
+  pieces can take a cut 5 to 8 units deep where the roof or enemy footprint clears it.
   Trim and fitting clearance are computed from the finished silhouette.
 - Short square lugs, ledges, stepped brackets and occasional cable loops extend from exposed rails.
   Some inside corners have a diagonal tie beneath them. Shared hardware has a
   short contact shadow and a rounded lip baked from the shape of the part.
 - A wrapping material field controls broad gloss on wet panels. It stays fixed
   in world coordinates across strip joins. Falling snow is a foreground effect.
-- Buildings, SecretHint, HUD, player/enemy sprites, shots, effects, simulation,
-  and original stage data are unchanged. Foreground dust is suppressed only in
-  Modern Stage 8 to keep the new distant water/deck separation quiet.
+- Modern flight and structure atlases add relief to enemy bodies, boss parts,
+  roofs and wrecks. Hull panels get inset seams and sparse fasteners. Organic
+  surfaces use a softer rim. Each player chassis has a tinted canopy and spars.
+  Run `python tools/bake_sprite_atlas.py` to bake both resolutions and styles.
+- Stage 8 at `game.stage 8 0.80` shows the long paired waist below the missile
+  launcher. At `game.stage 8 0.25` the horizontal span has a strong two-sided cut.
 
 The supplied AI-generated neutral brush-grain and quiet sea tiles are stored in
 `assets/textures/stage8-brushed-metal.png` and `stage8-sea.png`. Deck strips are assembled on first use and released on a stage change or shutdown.

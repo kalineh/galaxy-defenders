@@ -303,7 +303,9 @@ static void deck_edge_parts(Color *out, int start, int rows, const DeckArt *art,
                 int side=deck_on_deck(mask,w,h,x+ty,y+tx) ? -1 : 1;
                 int nx=ty*side, ny=tx*side;
                 bool clear=true;
-                for (int along=-28; along<=28 && clear; along+=4) {
+                /* Require a longer straight run than any recessed waist, so a
+                   bracket cannot occupy the opening the silhouette just made. */
+                for (int along=-36; along<=36 && clear; along+=4) {
                     int ax=x+along*tx, ay=y+along*ty;
                     clear=deck_on_deck(mask,w,h,ax,ay) && !deck_on_deck(mask,w,h,ax+nx,ay+ny)
                         && !deck_on_deck(mask,w,h,ax+22*nx,ay+22*ny);

@@ -134,4 +134,5 @@ Review the reusable plate kit and inside-corner trim against the
 The junction at `game.stage 8 0.4` shows both long rails and recessed fittings.
 Before merge: human Windows playtest of scrolling/MSAA/FXAA, art-direction review,
 and migration decision for settings compatibility with older executables.
-Review the matte and wet finishes and the empty platform silhouettes on stages 4, 7, 8, 10 and 11.
+Playtest the shared plate families across the campaign and bonus routes.
+Compare the Modern enemy, structure and ship finishes with F9 at gameplay scale.

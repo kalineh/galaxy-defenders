@@ -247,6 +247,10 @@ static const AtlasEntry atlas_entries[] = {
     {"textures/weapons/SmallPlasma.png", 0, {1015,1400,24,24}, 40,40, {0.22500000f,0.20000000f,0.60000000f,0.60000000f}},
     {"textures/weapons/Vulcan.png", 0, {1879,1400,10,11}, 20,20, {0.25000000f,0.25000000f,0.50000000f,0.55000000f}},
 };
+static const char *const modern_atlas_files[] = {
+    "textures/atlas/Flight0ModernPreview.png",
+    "textures/atlas/Structures1ModernPreview.png",
+};
 #else
 static const char *const atlas_files[] = {
     "textures/atlas/Flight0.png",
@@ -494,5 +498,9 @@ static const AtlasEntry atlas_entries[] = {
     {"textures/weapons/SeekBomb.png", 0, {2032,2487,76,75}, 40,40, {0.03750000f,0.03750000f,0.95000000f,0.93750000f}},
     {"textures/weapons/SmallPlasma.png", 0, {3848,2487,43,41}, 40,40, {0.25000000f,0.23750000f,0.53750000f,0.51250000f}},
     {"textures/weapons/Vulcan.png", 0, {376,2595,30,31}, 20,20, {0.12500000f,0.12500000f,0.75000000f,0.77500000f}},
+};
+static const char *const modern_atlas_files[] = {
+    "textures/atlas/Flight0Modern.png",
+    "textures/atlas/Structures1Modern.png",
 };
 #endif
