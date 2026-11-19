@@ -18,6 +18,7 @@ game's Steam App ID, Windows Depot ID and builder username. Run
 The script uses SteamCMD on your PATH or downloads Valve's Windows client
 into `external/steamcmd/`. SteamCMD handles sign-in and Steam Guard. Choose
 the live branch separately in Steamworks after testing the uploaded build.
+Store art, gameplay screenshots and patch-note CSVs are in [storefront/](storefront/README.md).
 
 ## Play
 
