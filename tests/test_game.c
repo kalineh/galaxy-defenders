@@ -20,6 +20,14 @@ static void reset(void) {
     memset(&console, 0, sizeof(console));
 }
 
+static void launch_from_shop(int slot) {
+    CHECK(game.menu.page == MENU_SHOP && !game.menu.shop_catalog[slot]);
+    for (int i = 0; i < SHOP_NEXT_STAGE_ROW; ++i) game_menu_input(&game, MENU_DOWN, slot);
+    CHECK(game.menu.shop_category[slot] == SHOP_NEXT_STAGE_ROW);
+    game_menu_input(&game, MENU_CONFIRM, slot);
+    CHECK(game.menu.shop_launch_frame == 1);
+}
+
 static void movement(void) {
     reset();
     game.players[0].input.x = 1;
@@ -196,8 +204,8 @@ static void shop_progression(void) {
     game_transition(&game, TRANSITION_MAIN, 0);
     CHECK(console_execute(&console,&game,"debug.shop"));
     CHECK(game.menu.page == MENU_SHOP && !game.transition_frames && game.active_slot == -1 && !game.saves_dirty);
-    game_menu_input(&game,MENU_READY,0);
-    CHECK(console_execute(&console,&game,"debug.shop") && !game.menu.ready[0]);
+    launch_from_shop(0);
+    CHECK(console_execute(&console,&game,"debug.shop") && !game.menu.shop_launch_frame);
     reset();
     game.complete = true;
     game.players[0].score = 5000;
@@ -252,11 +260,14 @@ static void shop_progression(void) {
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.players[0].weapon_level == 3 && game.players[0].money == 5000);
     game_menu_input(&game, MENU_READY, 0);
-    game_menu_input(&game, MENU_LEFT, 0);
-    CHECK(game.menu.ready[0] && game.menu.shop_category[0] == 3);
-    game_menu_input(&game, MENU_READY, 0);
-    CHECK(!game.menu.ready[0]);
-    game_menu_input(&game, MENU_READY, 0);
+    CHECK(!game.menu.shop_launch_frame && game.menu.shop_tiers[0]);
+    game_menu_input(&game, MENU_BACK, 0);
+    game_menu_input(&game, MENU_BACK, 0);
+    for (int i = 0; i < 3; ++i) game_menu_input(&game, MENU_DOWN, 0);
+    CHECK(game.menu.shop_category[0] == SHOP_NEXT_STAGE_ROW);
+    game_menu_input(&game, MENU_UP, 0);
+    CHECK(game.menu.shop_category[0] == 5);
+    launch_from_shop(0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 1 && game.menu.page == MENU_NONE && !game.complete);
     CHECK(game.players[0].chassis == 3 && game.players[0].money == 5000 && game.players[0].weapon_level == 3);
@@ -291,7 +302,7 @@ static void stage2_runtime(void) {
     game_menu_input(&game, MENU_CONFIRM, 0);
     for (int i = 0; i < 82; ++i) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && game.stage.index == 1);
-    game_menu_input(&game, MENU_READY, 0);
+    launch_from_shop(0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_NONE && game.stage.index == 2);
     reset();
@@ -989,9 +1000,10 @@ static void stage_clear_exit(void) {
     game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP && !game.menu.quit);
     CHECK(game.players[0].score == 0 && game.players[0].money == 8000 && game.players[1].joined);
-    CHECK(console_execute(&console, &game, "menu.input ready 1"));
-    CHECK(game.menu.page == MENU_SHOP && game.menu.ready[0] && !game.menu.ready[1]);
-    CHECK(console_execute(&console, &game, "menu.input ready 2"));
+    CHECK(console_execute(&console, &game, "menu.input confirm 1"));
+    CHECK(game.menu.shop_catalog[0]);
+    launch_from_shop(1);
+    CHECK(!game.menu.shop_catalog[0]);
     for (int fly = 0; fly < 33; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_SHOP);
     game_tick(&game);
@@ -1696,8 +1708,8 @@ static void campaign_stages(void) {
             while (game.menu.frame <= 380) game_tick(&game);
             game_menu_input(&game, MENU_CONFIRM, 0);
             for (int i = 0; i < 82; ++i) game_tick(&game);
-            game_menu_input(&game, MENU_READY, 0);
-    for (int fly = 0; fly < 49; ++fly) game_tick(&game);
+            launch_from_shop(0);
+            for (int fly = 0; fly < 49; ++fly) game_tick(&game);
             CHECK(game.stage.index == stage + 1 && game.menu.page == MENU_NONE);
         }
     }
@@ -1913,13 +1925,16 @@ static void shop_previews(void) {
     for (int i = 0; i < GAME_BULLETS; ++i)
         CHECK(!repeat.bullets[i].active || repeat.bullets[i].weapon != WEAPON_BEAM);
     CHECK(game.players[0].money == 0 && game.players[0].primary == WEAPON_FRONT_LASER);
-    game_menu_input(&game, MENU_READY, 0);
+    game_menu_input(&game, MENU_BACK, 0);
+    launch_from_shop(0);
     for (int i = 0; i < 10; ++i) game_tick(&game);
     game_shop_preview_update(&repeat, &game);
     CHECK(game.menu.page == MENU_SHOP && repeat.players[0].y == 707.5f);
     game_menu_input(&game, MENU_BACK, 0);
+    CHECK(game.menu.shop_launch_frame == 11);
+    game_shop_open(&game);
     game_shop_preview_update(&repeat, &game);
-    CHECK(!game.menu.ready[0] && repeat.players[0].y == 790);
+    CHECK(repeat.players[0].y == 790);
     game.menu.shop_catalog[0] = true;
     game.menu.shop_category[0] = 4;
     game.menu.shop_item[0] = WEAPON_VULCAN;
@@ -2067,7 +2082,7 @@ static void controller_joining(void) {
     game_menu_input(&game, MENU_CONFIRM, 1);
     CHECK(game.menu.page == MENU_SLOTS); /* P2 can operate shared menus alone. */
     game_shop_open(&game);
-    game_menu_input(&game, MENU_READY, 1);
+    launch_from_shop(1);
     for (int i = 0; i < 34; ++i) game_tick(&game);
     CHECK(game.transition_frames == 30); /* Absent P1 cannot hold up the shop. */
 
@@ -2110,11 +2125,13 @@ static void controller_joining(void) {
     game_menu_input(&game, MENU_CONFIRM, 0);
     CHECK(game.menu.page == MENU_SHOP && game.menu.shop_purchase[1]);
     game_menu_input(&game, MENU_READY, 0);
-    CHECK(game.menu.ready[0] && !game.menu.shop_purchase[0] && game.menu.shop_purchase[1]);
-    for (int i = 0; i < 40; ++i) game_tick(&game);
-    CHECK(game.menu.page == MENU_SHOP && game.transition_frames == 0);
-    game_menu_input(&game, MENU_BACK, 1);
-    CHECK(!game.menu.shop_purchase[1] && game.menu.ready[0]);
+    CHECK(game.menu.shop_purchase[0] && game.menu.shop_purchase[1]);
+    game_menu_input(&game, MENU_BACK, 0); /* Cancel purchase. */
+    game_menu_input(&game, MENU_BACK, 0); /* Leave marks. */
+    game_menu_input(&game, MENU_BACK, 0); /* Leave catalog. */
+    launch_from_shop(0);
+    game_menu_input(&game, MENU_CONFIRM, 1);
+    CHECK(!game.menu.shop_purchase[1] && !game_shop_buy(&game, 1) && game.players[1].money == 5000);
 
     PadInput pad = {0};
     unsigned char usb[64] = {1,128,128,128,128,0x21,0x23,0,0,255};
@@ -2228,7 +2245,7 @@ static void saved_continue(void) {
     CHECK(game.saves[0].stage_scores[4] == 12345 && game.saves[0].stage_medals[4] == 5);
     CHECK(game_shop_stock(&game, 0, 3, restored) == stock_count);
     CHECK(!memcmp(stock, restored, stock_count * sizeof(int)));
-    game_menu_input(&game, MENU_READY, 0);
+    launch_from_shop(0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.stage.index == 5 && game.menu.page == MENU_NONE);
     game_shop_open(&game); /* Quit mid-stage must not skip it. */
@@ -2236,7 +2253,7 @@ static void saved_continue(void) {
     game.cleared_game = true;
     game_checkpoint(&game, true);
     CHECK(game_continue(&game, 0));
-    game_menu_input(&game, MENU_READY, 0);
+    launch_from_shop(0);
     for (int fly = 0; fly < 49; ++fly) game_tick(&game);
     CHECK(game.menu.page == MENU_STAGE_SELECT && game_menu_count(&game) == 13);
     for (int i = 0; i < 8; ++i) game_menu_input(&game, MENU_DOWN, 0);

@@ -649,7 +649,7 @@ static int button_icon(Font font, int x, int y, int device, ButtonGlyph button) 
         }
         return 36;
     }
-    static const char *keys[] = {[GLYPH_CONFIRM]="Enter", [GLYPH_BACK]="Esc", [GLYPH_READY]="C", [GLYPH_START]="F2",
+    static const char *keys[] = {[GLYPH_CONFIRM]="Z", [GLYPH_BACK]="C", [GLYPH_READY]="X", [GLYPH_START]="F2",
         [GLYPH_PRIMARY]="X", [GLYPH_OVERCHARGE]="C", [GLYPH_SIDEKICK]="Z"};
     if (device < 0 || device >= INPUT_PADS) return key_cap(font,x,y,keys[button]);
     if (button == GLYPH_PRIMARY) button = GLYPH_CONFIRM;
@@ -1209,7 +1209,7 @@ static const char *item_description(int category, int id) {
 
 static void draw_item_tip(const Game *game, const Assets *assets, int slot, int anchor, int cat, int item, int mark, int offset) {
     const GameMenu *menu = &game->menu;
-    if (menu->ready[slot] || menu->shop_purchase[0] || menu->shop_purchase[1]) return;
+    if (menu->shop_launch_frame || menu->shop_purchase[0] || menu->shop_purchase[1]) return;
     Font font = assets->ui_font;
     Color color = player_colors[slot];
     const int width = 374, x = slot ? 1440-40-width : ARENA_X+40;
@@ -1359,7 +1359,7 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     int anchor = y+(focus-first)*LOADOUT_ROW+23;
     for (int i=first; i<rows && i<first+SHOP_VISIBLE_ROWS; ++i, y+=LOADOUT_ROW) {
         int id = tiers ? item : stock[i];
-        bool focused = i == focus && !menu->ready[slot];
+        bool focused = i == focus;
         int marks = game_shop_owned_marks(p,cat,id);
         bool equipped = id == owned && (!tiers || i == equipped_level);
         bool purchased = tiers ? i < marks : marks > 0;
@@ -1426,28 +1426,25 @@ static void draw_shop_panel(const Game *game, const Assets *assets, int slot, in
     if (menu->shop_catalog[slot]) {
         can_select = draw_shop_catalog(game,assets,slot,left,offset);
     } else {
-        draw_loadout(assets,p,left+offset,menu->ready[slot] ? -1 : cat,highlight);
-        int mark = game_shop_equipped_level(p,cat);
-        draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),mark,offset);
+        int xrow = left+offset, y = LOADOUT_TOP+SHOP_NEXT_STAGE_ROW*LOADOUT_ROW+18;
+        bool focused = cat == SHOP_NEXT_STAGE_ROW && !menu->shop_launch_frame;
+        draw_loadout(assets,p,xrow,menu->shop_launch_frame ? -1 : cat,highlight);
+        DrawRectangle(xrow,y,width,47,focused ? surface : ink);
+        DrawRectangleLinesEx((Rectangle){xrow,y,width,47},1,focused ? highlight : rule);
+        if (focused) DrawRectangle(xrow,y,3,47,highlight);
+        const char *label = ui_text(game->cleared_game ? "Stage select" : "Next stage");
+        text_on_axis(font,label,xrow+16,y+23,fitted_size(font,label,27,width-64),focused ? highlight : WHITE);
+        int arrow = xrow+width-22;
+        DrawLineEx((Vector2){arrow-4,y+17},(Vector2){arrow+2,y+23},2,focused ? highlight : dim);
+        DrawLineEx((Vector2){arrow+2,y+23},(Vector2){arrow-4,y+29},2,focused ? highlight : dim);
+        if (cat < SHOP_NEXT_STAGE_ROW)
+            draw_item_tip(game,assets,slot,LOADOUT_TOP+cat*LOADOUT_ROW+23,cat,game_shop_equipped(p,cat),game_shop_equipped_level(p,cat),offset);
     }
     DrawLine(left,974,left+width,974,rule);
-    if (menu->shop_purchase[slot]) return;
-    if (!menu->ready[slot]) {
-        int next = left;
-        if (can_select) next += button_prompt(font,next,993,device,GLYPH_CONFIRM,"Select") + 16;
-        if (menu->shop_catalog[slot]) {
-            if (device == INPUT_KEYBOARD) key_prompt(font,next,993,"Z",ui_text("Back"));
-            else button_prompt(font,next,993,device,GLYPH_BACK,"Back");
-        }
-    }
-    int check = left + width - 28, cy = 993+14;
-    int ready_width = 39 + (int)ceilf(MeasureTextEx(font,ui_text("Ready"),23,0).x);
-    button_prompt(font,check-10-ready_width,993,device,GLYPH_READY,"Ready");
-    DrawRectangleLinesEx((Rectangle){check,cy-14,28,28},2,menu->ready[slot] ? highlight : dim);
-    if (menu->ready[slot]) {
-        DrawLineEx((Vector2){check+5,cy},(Vector2){check+12,cy+7},3,highlight);
-        DrawLineEx((Vector2){check+12,cy+7},(Vector2){check+23,cy-7},3,highlight);
-    }
+    if (menu->shop_purchase[slot] || menu->shop_launch_frame) return;
+    int next = left;
+    if (can_select) next += button_prompt(font,next,993,device,GLYPH_CONFIRM,"Select") + 16;
+    if (menu->shop_catalog[slot]) button_prompt(font,next,993,device,GLYPH_BACK,"Back");
 }
 
 static void dialog_frame(int y, Color border) {
@@ -1872,7 +1869,6 @@ static void menu_input(Game *game, Assets *assets, MenuAction action, int slot) 
     int sound = -1;
     if (action == MENU_BACK) sound = 2;
     else if (action == MENU_CONFIRM) sound = valid ? 1 : 2;
-    else if (before.page == MENU_SHOP && action == MENU_READY) sound = game->menu.ready[slot] ? 1 : 0;
     else if (before.page == MENU_SHOP && (before.shop_category[slot] != game->menu.shop_category[slot] ||
         before.shop_item[slot] != game->menu.shop_item[slot])) sound = 0;
     else if (before.cursor != game->menu.cursor || before.pilot[slot] != game->menu.pilot[slot]) sound = 0;
@@ -1935,9 +1931,9 @@ static PadInput poll_keyboard(bool enter_pressed) {
     if (IsKeyDown(KEY_C)) input.buttons |= PAD_FOCUS;
     if (IsKeyDown(KEY_Z)) input.buttons |= PAD_SIDEKICK;
 
-    if (enter_pressed || IsKeyPressed(KEY_X)) input.pressed |= PAD_CONFIRM;
-    if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_Z)) input.pressed |= PAD_BACK;
-    if (IsKeyPressed(KEY_C)) input.pressed |= PAD_READY;
+    if (enter_pressed || IsKeyPressed(KEY_Z)) input.pressed |= PAD_CONFIRM;
+    if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_C)) input.pressed |= PAD_BACK;
+    if (IsKeyPressed(KEY_X)) input.pressed |= PAD_READY;
     if (IsKeyPressed(KEY_P)) input.pressed |= PAD_START;
     if (IsKeyPressed(KEY_LEFT)) input.pressed |= PAD_LEFT;
     if (IsKeyPressed(KEY_RIGHT)) input.pressed |= PAD_RIGHT;
@@ -2083,6 +2079,10 @@ static void handle_game_input(Game *game, Assets *assets, PlayerDevices *devices
                 int slot = (keyboard_slot+n)%GAME_PLAYERS;
                 if (devices->choosing[slot]) { input_pick_pilot(game,devices,slot,MENU_BACK); return; }
                 if (page == MENU_SHOP && game->menu.shop_purchase[slot]) { menu_input(game,assets,MENU_BACK,slot); return; }
+            }
+            if (page == MENU_SHOP && game->menu.shop_catalog[keyboard_slot]) {
+                menu_input(game,assets,MENU_BACK,keyboard_slot);
+                return;
             }
         }
         if (escape || (buttons.shared & PAD_START)) { game_menu_open(game,MENU_PAUSE); return; }

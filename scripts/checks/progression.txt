@@ -35,7 +35,13 @@ assert menu eq 14
 menu.input confirm
 game.step 15
 assert menu eq 11
-menu.input ready
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input confirm
 game.step 49
 assert stage eq 2
 assert tick eq 0
@@ -52,7 +58,13 @@ game.step 82
 assert menu eq 11
 assert stage eq 2
 # The second shop continues into the authored third stage.
-menu.input ready
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input down
+menu.input confirm
 game.step 49
 assert menu eq 0
 assert stage eq 3

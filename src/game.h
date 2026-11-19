@@ -34,6 +34,7 @@ typedef enum { MENU_NONE, MENU_MAIN, MENU_INTRO, MENU_DIFFICULTY, MENU_PILOT,
 typedef enum { TRANSITION_NONE, TRANSITION_NEW_GAME, TRANSITION_CONTINUE, TRANSITION_RETRY,
     TRANSITION_SHOP, TRANSITION_STAGE, TRANSITION_STAGE_SELECT, TRANSITION_MAIN, TRANSITION_FINISH } Transition;
 #define SHOP_VISIBLE_ROWS 6
+#define SHOP_NEXT_STAGE_ROW 6
 
 #define GAME_LANGUAGE_COUNT 12
 /* Append options to retain the positional settings file format. */
@@ -58,7 +59,7 @@ typedef struct {
     int shop_first_item[2], shop_first_tier[2];
     bool shop_catalog[2], shop_purchase[2], shop_tiers[2];
     int frame;
-    int next_stage, shop_fly_frames[GAME_PLAYERS];
+    int next_stage, shop_launch_frame;
 } GameMenu;
 
 typedef struct {

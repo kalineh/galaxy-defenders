@@ -14,7 +14,7 @@ equipment terminology and story text with speakers of each language.
 Implemented the widescreen shop from [the revised concept](design/shop-target.png).
 Runtime uses the firing simulation, independent pilot rails, preview resource
 meters, stock and purchase prices. The HUD lists all six slots. In the shop, select a slot to browse its stock. Each pilot
-confirms purchases in a centered dialog and toggles Ready with Square. The three anime portraits also
+confirms purchases in a centered dialog. Either pilot can confirm Next stage below the loadout to launch. The three anime portraits also
 appear in pilot selection and the gameplay HUD.
 
 The title, campaign setup, pilot selection, pause/options, results, and flight

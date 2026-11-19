@@ -14,8 +14,8 @@ previews equipment, and Back returns to the selected slot. Each pilot keeps purc
 All twelve generators are available in each shop. Open a weapon to browse its marks.
 Primary DPS estimates direct normal-fire damage with all emitters on target and enough energy to fire. A purchase includes every mark up to the
 selection and charges only for marks that pilot still needs. Confirm a paid
-purchase in the center dialog. Older saves start with their equipped loadouts. Square (C on keyboard) toggles Ready.
-The next stage starts when every joined player is ready.
+purchase in the center dialog. Older saves start with their equipped loadouts.
+Either pilot can select **Next stage** below the loadout and confirm to launch the team.
 The last main stage opens the original ending and unlocks stage selection.
 Play selects one of three campaign slots in `%LOCALAPPDATA%/GalaxyDefenders/slot1.save`
 through `slot3.save`. New Game confirms before replacing a populated/unreadable slot.
@@ -27,8 +27,8 @@ retry every five seconds and show an error. Existing `solo.save` / `coop.save`
 import into empty slots 1 / 2 without deleting the original files. Headless and
 bounded render checks never read or write human saves.
 
-Menus use arrows, X to confirm and Z to cancel or gamepad D-pad/A/B. Player two uses J/L,
-right Ctrl and Backspace in pilot selection. Original difficulty/pilot loadouts,
+Menus use arrows, Z or Enter to confirm, and C or Escape to cancel. Gamepads use the D-pad and A/B or Cross/Circle.
+Original difficulty/pilot loadouts,
 generators and shields are connected; Rabbit starts with Lightning. The Options menu saves volume, screen size,
 render scale, and anti-aliasing alongside the save slots. Render Scale uses 75%,
 100%, 150%, or 200% of the displayed game dimensions. MSAA defaults to 2x and supports Off, 2x, and 4x. FXAA can be toggled
@@ -59,10 +59,11 @@ See [music audition instructions](music/README.md) and the
 | --- | --- |
 | Move | Arrows |
 | Fire | X |
-| Menu confirm | Enter or X |
-| Overcharge / ready | C |
-| Sidekick / back one shop level | Z |
-| Menu cancel / close dialog | Escape or Z |
+| Menu confirm | Z or Enter |
+| Overcharge | C |
+| Sidekick | Z |
+| Menu cancel / close dialog | C or Escape |
+| Delete selected save slot | X |
 | Join with an unassigned keyboard | F2 |
 | Pause / resume flight or shop | Escape or P |
 | End-of-stage retry | D |
