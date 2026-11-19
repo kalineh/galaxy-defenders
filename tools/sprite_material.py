@@ -241,7 +241,7 @@ def ship_details(rgb, alpha, scale, name):
     left,top,right,bottom = alpha.getbbox()
     w, h = right-left, bottom-top
     center = (top+bottom)/2
-    long_canopy = name in {"Rookie","Interceptor","Lightning","Ace"}
+    long_canopy = name in {"Rookie","Interceptor","Lightning"}
     layer = rgb.copy()
     pen = ImageDraw.Draw(layer)
     def hull(points, tone):
@@ -284,7 +284,9 @@ def finish_sprite(sprite, path, scale, ships):
     # Leave room on near-white and saturated orange for the bevel highlight.
     rgb = rgb.point(lambda v: v*0.955)
     if ship:
-        rgb = ship_details(rgb,alpha,scale,name)
+        # Demon's nose slot and Ace's three ports already detail these hulls.
+        if name not in {"Demon","Ace"}:
+            rgb = ship_details(rgb,alpha,scale,name)
     else:
         rgb = hull_details(rgb,face,scale,sum(name.encode()))
     rgb = ImageChops.subtract(rgb, recess.point(lambda v: v*0.50).convert("RGB"))
