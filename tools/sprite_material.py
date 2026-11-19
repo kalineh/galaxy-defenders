@@ -1,6 +1,7 @@
 """Bake gameplay materials in the coordinate system of the original sprites."""
 from functools import cache
 from io import BytesIO
+from math import cos, sin, tau
 from pathlib import Path
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps
@@ -235,24 +236,29 @@ def cast_material(sprite, path, scale, building):
     return body.point(lambda v: v*0.77) if wreck else body
 
 
-def ship_details(rgb, alpha, scale, name):
-    # Ships face right in the source. Place the canopy and rear spar within
-    # the existing hull so every chassis keeps its own cutouts and silhouette.
-    left,top,right,bottom = alpha.getbbox()
-    w, h = right-left, bottom-top
+def player_hull(alpha, scale):
+    # Work at four samples per gameplay pixel for the 1.5 px circular inset.
+    size = (alpha.width*4//scale, alpha.height*4//scale)
+    solid = alpha.resize(size,Image.Resampling.BILINEAR).point(lambda a: 255 if a>=128 else 0)
+    ImageDraw.floodfill(solid,(0,0),128)
+    solid = solid.point(lambda a: 0 if a==128 else 255)
+    inner = solid
+    for i in range(16):
+        angle = i*tau/16
+        inner = ImageChops.darker(inner,shifted(solid,round(6*cos(angle)),round(6*sin(angle))))
+
+    # The source hull points right. All three values take the pilot tint at draw time.
+    left,top,right,bottom = solid.getbbox()
     center = (top+bottom)/2
-    long_canopy = name in {"Rookie","Interceptor","Lightning"}
-    layer = rgb.copy()
-    pen = ImageDraw.Draw(layer)
-    def hull(points, tone):
-        pen.polygon([(left+x*w,center+y*h) for x,y in points], fill=(tone,)*3)
-    for sign in (1,-1):
-        hull([(0.08,0.38*sign),(.46,.19*sign),(.68,.075*sign),(.43,.15*sign)], 190)
-        hull([(.11,.34*sign),(.35,.23*sign),(.13,.29*sign)], 243)
-    nose = .78 if long_canopy else .66
-    hull([(.30,0),(.42,-.10),(nose,0),(.42,.10)], 151)
-    hull([(.37,0),(.44,-.065),(nose-.07,0),(.44,.054)], 209)
-    return Image.composite(layer,rgb,inset(alpha,2*scale))
+    span = (bottom-top)*0.28
+    face = Image.new("L",size,230)
+    ImageDraw.Draw(face).polygon([(right,center),(left,center-span),(left,center+span)],fill=255)
+    tones = Image.new("L",size,123)
+    tones.paste(face,mask=inner)
+    hull = tones.resize(alpha.size,Image.Resampling.LANCZOS).convert("RGB")
+    # Keep the original apertures. Only the outer silhouette carries the rim.
+    hull.putalpha(alpha)
+    return hull
 
 
 def finish_sprite(sprite, path, scale, ships):
@@ -262,15 +268,16 @@ def finish_sprite(sprite, path, scale, ships):
         material.putalpha(sprite.getchannel("A"))
         return material
     building = path.parts[:2] == ("stage","Static")
-    ship = len(path.parts)==1 and name in ships
-    if not building and not ship and path.as_posix() != "player/Sidekick.svg":
+    if len(path.parts)==1 and name in ships:
+        return player_hull(sprite.getchannel("A"),scale)
+    if not building and path.as_posix() != "player/Sidekick.svg":
         if len(path.parts)!=1 or path.suffix!=".svg" or name.startswith("Medal") or name in {
             "BigBonus","Bonus","Powerup","TriangleParticle"
         }:
             return sprite
 
     alpha = sprite.getchannel("A")
-    if not ship and path.as_posix() != "player/Sidekick.svg":
+    if path.as_posix() != "player/Sidekick.svg":
         cast = cast_material(sprite,path,scale,building)
         cast.putalpha(alpha)
         return cast
@@ -283,12 +290,7 @@ def finish_sprite(sprite, path, scale, ships):
     recess = ImageChops.subtract(soft,height)
     # Leave room on near-white and saturated orange for the bevel highlight.
     rgb = rgb.point(lambda v: v*0.955)
-    if ship:
-        # Demon's nose slot and Ace's three ports already detail these hulls.
-        if name not in {"Demon","Ace"}:
-            rgb = ship_details(rgb,alpha,scale,name)
-    else:
-        rgb = hull_details(rgb,face,scale,sum(name.encode()))
+    rgb = hull_details(rgb,face,scale,sum(name.encode()))
     rgb = ImageChops.subtract(rgb, recess.point(lambda v: v*0.50).convert("RGB"))
     rgb = ImageChops.add(rgb, crest.point(lambda v: v*0.39).convert("RGB"))
     rgb.putalpha(alpha)

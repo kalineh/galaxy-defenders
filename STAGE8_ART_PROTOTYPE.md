@@ -59,8 +59,9 @@ The deck bake includes the original rotated rail, diamond and cutout silhouettes
   Hostile rounds and beams use the airship's orange shell gradient. Player rounds
   use neutral material masks multiplied by each pilot's color. Enemy trails
   and impact particles pick up the shell orange in Modern mode.
-  Player chassis use the pilot tint. Ace and Demon show their original hull
-  openings, while the other chassis carry a canopy and spars.
+  All nine player chassis have a full-color face, subtly shaded wings
+  and a darker 1.5-pixel inset rim, all tinted with the pilot color.
+  Hull openings retain their original shapes.
   Run `python tools/bake_sprite_atlas.py` to bake both resolutions and styles.
 - Stage 8 at `game.stage 8 0.80` shows the long paired waist below the missile
   launcher. At `game.stage 8 0.25` the horizontal span has a strong two-sided cut.
