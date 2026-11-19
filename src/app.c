@@ -577,7 +577,7 @@ static float fitted_size(Font font, const char *text, float size, float width) {
 }
 
 /* Return the first line break in a tooltip, on a UTF-8 character boundary. */
-static const char *tooltip_break(Font font, const char *text, float width) {
+static const char *tooltip_break(Font font, const char *text, float size, float width) {
     const char *space = NULL;
     float used = 0;
     for (const char *p=text; *p;) {
@@ -585,7 +585,7 @@ static const char *tooltip_break(Font font, const char *text, float width) {
         int cp = GetCodepointNext(p,&bytes);
         if (cp == ' ') space = p;
         int i = GetGlyphIndex(font,cp);
-        used += (font.glyphs[i].advanceX ? font.glyphs[i].advanceX : font.recs[i].width)*20/font.baseSize;
+        used += (font.glyphs[i].advanceX ? font.glyphs[i].advanceX : font.recs[i].width)*size/font.baseSize;
         if (used > width) return space ? space : p;
         p += bytes;
     }
@@ -1222,8 +1222,8 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
     if (menu->shop_launch_frame || menu->shop_purchase[0] || menu->shop_purchase[1]) return;
     Font font = assets->ui_font;
     Color color = player_colors[slot];
-    const int width = 374, x = slot ? 1440-40-width : ARENA_X+40;
-    int y = anchor-42;
+    const int width = 418, x = slot ? ARENA_X+GAME_WIDTH-40-width : ARENA_X+40;
+    const int body_size = 23, row_height = 30;
     int row_edge = slot ? ARENA_X+GAME_WIDTH+28+(menu->shop_catalog[slot] ? (menu->shop_tiers[slot] ? 30 : 14) : 0) : ARENA_X-28;
     row_edge += offset;
     DrawLine(row_edge,anchor,slot ? x+width : x,anchor,color);
@@ -1316,27 +1316,28 @@ static void draw_item_tip(const Game *game, const Assets *assets, int slot, int 
         }
     }
     const char *desc = ui_text(item_description(cat,item));
-    const char *split = tooltip_break(font,desc,width-32);
-    int extra = split ? 24 : 0;
-    int height = (count ? 101 + count*26 : 84) + extra;
+    const char *split = tooltip_break(font,desc,body_size,width-32);
+    int extra = split ? 28 : 0;
+    int height = (count ? 108 + count*row_height : 90) + extra;
+    int y = (int)fminf(anchor-42,CANVAS_HEIGHT-height-12);
     DrawRectangle(x,y,width,height,ink);
     DrawRectangleLinesEx((Rectangle){x,y,width,height},1,rule);
     DrawRectangle(slot ? x+width-3 : x,y,3,height,color);
     const char *name = shop_item_name(cat,item);
     if (cat >= 3 && item >= 0 && game_weapons[item].level_count > 1) name = TextFormat("%s  %s",name,TextFormat(ui_text("Mk %d"),mark+1));
-    DrawTextEx(font,name,(Vector2){x+16,y+10},fitted_size(font,name,25,width-32),0,WHITE);
+    DrawTextEx(font,name,(Vector2){x+16,y+10},fitted_size(font,name,28,width-32),0,WHITE);
     if (split) {
-        DrawTextEx(font,TextFormat("%.*s",(int)(split-desc),desc),(Vector2){x+16,y+49},20,0,dim);
+        DrawTextEx(font,TextFormat("%.*s",(int)(split-desc),desc),(Vector2){x+16,y+52},body_size,0,dim);
         desc = split + (*split == ' ');
     }
-    DrawTextEx(font,desc,(Vector2){x+16,y+49+extra},fitted_size(font,desc,20,width-32),0,dim);
-    if (count) DrawLine(x+16,y+82+extra,x+width-16,y+82+extra,rule);
+    DrawTextEx(font,desc,(Vector2){x+16,y+52+extra},fitted_size(font,desc,body_size,width-32),0,dim);
+    if (count) DrawLine(x+16,y+88+extra,x+width-16,y+88+extra,rule);
     for (int i=0; i<count; ++i) {
-        int center = y+104+extra+i*26;
+        int center = y+112+extra+i*row_height;
         const char *label = ui_text(stats[i].label);
-        float value_x = x+width-16-MeasureTextEx(font,stats[i].value,20,0).x;
-        text_on_axis(font,label,x+16,center,fitted_size(font,label,19,value_x-x-26),dim);
-        text_on_axis(font,stats[i].value,value_x,center,20,WHITE);
+        float value_x = x+width-16-MeasureTextEx(font,stats[i].value,body_size,0).x;
+        text_on_axis(font,label,x+16,center,fitted_size(font,label,22,value_x-x-26),dim);
+        text_on_axis(font,stats[i].value,value_x,center,body_size,WHITE);
     }
 }
 
