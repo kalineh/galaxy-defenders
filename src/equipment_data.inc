@@ -187,69 +187,69 @@ static const WeaponEmitter emit_SpreadLaserFocus_7[] = {
     {.reload=0.02, .speed=15, .damage=0.1875, .rotation=1.3962635, .energy=0.2025, .random_rotation=0.08726647, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_Plasma_0[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_Plasma_1[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.017453292, .energy=0.175, .offset_x=0, .offset_y=-10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.017453292, .energy=0.175, .offset_x=0, .offset_y=10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.017453292, .energy=0.175, .offset_x=0, .offset_y=-10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.017453292, .energy=0.175, .offset_x=0, .offset_y=10},
 };
 static const WeaponEmitter emit_Plasma_2[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.034906585, .energy=0.175, .offset_x=-1, .offset_y=-10},
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=0, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.034906585, .energy=0.175, .offset_x=1, .offset_y=10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.034906585, .energy=0.175, .offset_x=-1, .offset_y=-10},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.034906585, .energy=0.175, .offset_x=1, .offset_y=10},
 };
 static const WeaponEmitter emit_Plasma_3[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.034906585, .energy=0.175, .offset_x=-2, .offset_y=-13},
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=-5, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=-5, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.034906585, .energy=0.175, .offset_x=-2, .offset_y=13},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.034906585, .energy=0.175, .offset_x=-2, .offset_y=-13},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=-5, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=-5, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.034906585, .energy=0.175, .offset_x=-2, .offset_y=13},
 };
 static const WeaponEmitter emit_Plasma_4[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.06981317, .energy=0.175, .offset_x=-5, .offset_y=-19},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.034906585, .energy=0.175, .offset_x=-3, .offset_y=-10},
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=0, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.034906585, .energy=0.175, .offset_x=-3, .offset_y=10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.06981317, .energy=0.175, .offset_x=-5, .offset_y=19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.06981317, .energy=0.175, .offset_x=-5, .offset_y=-19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.034906585, .energy=0.175, .offset_x=-3, .offset_y=-10},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.034906585, .energy=0.175, .offset_x=-3, .offset_y=10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.06981317, .energy=0.175, .offset_x=-5, .offset_y=19},
 };
 static const WeaponEmitter emit_Plasma_5[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.061086528, .energy=0.175, .offset_x=-8, .offset_y=-19},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.034906585, .energy=0.175, .offset_x=-5, .offset_y=-10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.017453292, .energy=0.175, .offset_x=3, .offset_y=-5},
-    {.reload=0.25, .speed=12, .damage=0.15, .energy=0.175, .offset_x=0, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.017453292, .energy=0.175, .offset_x=3, .offset_y=5},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.034906585, .energy=0.175, .offset_x=-5, .offset_y=10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.061086528, .energy=0.175, .offset_x=-8, .offset_y=19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.061086528, .energy=0.175, .offset_x=-8, .offset_y=-19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.034906585, .energy=0.175, .offset_x=-5, .offset_y=-10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.017453292, .energy=0.175, .offset_x=3, .offset_y=-5},
+    {.reload=0.25, .speed=12, .damage=0.17, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.017453292, .energy=0.175, .offset_x=3, .offset_y=5},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.034906585, .energy=0.175, .offset_x=-5, .offset_y=10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.061086528, .energy=0.175, .offset_x=-8, .offset_y=19},
 };
 static const WeaponEmitter emit_Plasma_6[] = {
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.061086528, .energy=0.175, .offset_x=-8, .offset_y=-19},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.043633234, .energy=0.175, .offset_x=-5, .offset_y=-10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.02617994, .energy=0.175, .offset_x=3, .offset_y=-5},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=-0.008726646, .energy=0.175, .offset_x=0, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.008726646, .energy=0.175, .offset_x=0, .offset_y=0},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.017453292, .energy=0.175, .offset_x=3, .offset_y=5},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.05235988, .energy=0.175, .offset_x=-5, .offset_y=10},
-    {.reload=0.25, .speed=12, .damage=0.15, .rotation=0.08726647, .energy=0.175, .offset_x=-8, .offset_y=19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.061086528, .energy=0.175, .offset_x=-8, .offset_y=-19},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.043633234, .energy=0.175, .offset_x=-5, .offset_y=-10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.02617994, .energy=0.175, .offset_x=3, .offset_y=-5},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=-0.008726646, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.008726646, .energy=0.175, .offset_x=0, .offset_y=0},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.017453292, .energy=0.175, .offset_x=3, .offset_y=5},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.05235988, .energy=0.175, .offset_x=-5, .offset_y=10},
+    {.reload=0.25, .speed=12, .damage=0.17, .rotation=0.08726647, .energy=0.175, .offset_x=-8, .offset_y=19},
 };
 static const WeaponEmitter emit_PlasmaFocus_0[] = {
-    {.reload=1.5, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=1.5, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_1[] = {
-    {.reload=1.3, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=1.3, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_2[] = {
-    {.reload=1, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=1, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_3[] = {
-    {.reload=0.8, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=0.8, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_4[] = {
-    {.reload=0.7, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=0.7, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_5[] = {
-    {.reload=0.6, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=0.6, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_PlasmaFocus_6[] = {
-    {.reload=0.5, .speed=9, .damage=1.875, .energy=8.25, .offset_x=0, .offset_y=0},
+    {.reload=0.5, .speed=9, .damage=1.875, .energy=5.75, .offset_x=0, .offset_y=0},
 };
 static const WeaponEmitter emit_Flame_0[] = {
     {.reload=0.12, .speed=15, .damage=0.35, .energy=0.15, .random_reload=0.1, .offset_x=0, .offset_y=-2, .lifetime=20, .friction=0.99, .spray_angle=0.1, .start_rotation=-1.5707964, .fire_rotation_speed=0, .anti_camera_speed=0, .scale_override=0},
@@ -654,7 +654,7 @@ static const WeaponEmitter emit_ChargeShot_3[] = {
     {.reload=0.15, .speed=15, .damage=3.25, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=42, .bounces=0},
 };
 static const WeaponEmitter emit_ChargeShot_4[] = {
-    {.reload=0.15, .speed=15, .damage=3.5, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=42, .bounces=1},
+    {.reload=0.15, .speed=15, .damage=3.4, .energy=0.015, .charge_speed=0.05, .offset_x=0, .offset_y=0, .charge_frames=42, .bounces=1},
 };
 static const WeaponEmitter emit_Blade_0[] = {
     {.reload=0.4, .damage=0.25, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=0.72, .lifetime=9},
@@ -672,42 +672,42 @@ static const WeaponEmitter emit_Blade_4[] = {
     {.reload=0.32, .damage=0.55, .energy=4, .charge_speed=1, .auto_discharge=1, .offset_x=0, .offset_y=0, .scale_override=1.45, .lifetime=18},
 };
 static const WeaponEmitter emit_MissileVolley_0[] = {
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
 };
 static const WeaponEmitter emit_MissileVolley_1[] = {
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
 };
 static const WeaponEmitter emit_MissileVolley_2[] = {
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
 };
 static const WeaponEmitter emit_MissileVolley_3[] = {
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
-    {.reload=1, .speed=10, .damage=0.2, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8},
+    {.reload=1, .speed=10, .damage=0.22, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12},
 };
 static const WeaponEmitter emit_MissileVolley_4[] = {
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8, .scale_override=1.25},
-    {.reload=1, .speed=10, .damage=0.28, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=-12, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=-8, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=-4, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=-1, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=12, .offset_y=1, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=8, .offset_y=4, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=0, .offset_y=8, .scale_override=1.25},
+    {.reload=1, .speed=10, .damage=0.31, .kickback=0.5, .rotation=3.1415927, .energy=0.1, .charge_speed=0.033333335, .auto_discharge=1, .offset_x=-4, .offset_y=12, .scale_override=1.25},
 };
 static const WeaponEmitter emit_MissileLauncher_0[] = {
     {.reload=0.5, .speed=17, .damage=0.2, .rotation=3.1415927, .energy=0.2, .charge_speed=1, .auto_discharge=1, .offset_x=-8, .offset_y=0, .radius=0},
@@ -762,10 +762,10 @@ const WeaponDefinition game_weapons[WEAPON_COUNT] = {
     [WEAPON_SEEK_BOMB] = {"SeekBomb", "Seek Bomb", "WeaponShootSeekBomb", 750, 6, {{1, emit_SeekBomb_0}, {2, emit_SeekBomb_1}, {3, emit_SeekBomb_2}, {4, emit_SeekBomb_3}, {5, emit_SeekBomb_4}, {6, emit_SeekBomb_5}}},
     [WEAPON_BOOMERANG] = {"Boomerang", "Boomerang", "WeaponShootSeekBomb", 800, 6, {{1, emit_Boomerang_0}, {1, emit_Boomerang_1}, {2, emit_Boomerang_2}, {2, emit_Boomerang_3}, {3, emit_Boomerang_4}, {4, emit_Boomerang_5}}},
     [WEAPON_DRUNK_MISSILE] = {"DrunkMissile", "Drunk Missile", "WeaponShootMissile", 900, 6, {{1, emit_DrunkMissile_0}, {1, emit_DrunkMissile_1}, {1, emit_DrunkMissile_2}, {2, emit_DrunkMissile_3}, {2, emit_DrunkMissile_4}, {3, emit_DrunkMissile_5}}},
-    [WEAPON_MINI_SHOT] = {"MiniShot", "Mini Shot", "WeaponShootMiniShot", 3500, 5, {{1, emit_MiniShot_0}, {1, emit_MiniShot_1}, {2, emit_MiniShot_2}, {2, emit_MiniShot_3}, {3, emit_MiniShot_4}}},
+    [WEAPON_MINI_SHOT] = {"MiniShot", "Mini Shot", "WeaponShootMiniShot", 2800, 5, {{1, emit_MiniShot_0}, {1, emit_MiniShot_1}, {2, emit_MiniShot_2}, {2, emit_MiniShot_3}, {3, emit_MiniShot_4}}},
     [WEAPON_CHARGE_SHOT] = {"ChargeShot", "Charge Shot", "WeaponShootLaser", 12500, 5, {{1, emit_ChargeShot_0}, {1, emit_ChargeShot_1}, {1, emit_ChargeShot_2}, {1, emit_ChargeShot_3}, {1, emit_ChargeShot_4}}},
     [WEAPON_BLADE] = {"Blade", "Blade", "WeaponShootMiniShot", 3600, 5, {{1, emit_Blade_0}, {1, emit_Blade_1}, {1, emit_Blade_2}, {1, emit_Blade_3}, {1, emit_Blade_4}}},
-    [WEAPON_MISSILE_VOLLEY] = {"MissileVolley", "Missile Volley", "WeaponShootMissile", 850, 5, {{2, emit_MissileVolley_0}, {4, emit_MissileVolley_1}, {6, emit_MissileVolley_2}, {8, emit_MissileVolley_3}, {8, emit_MissileVolley_4}}},
+    [WEAPON_MISSILE_VOLLEY] = {"MissileVolley", "Missile Volley", "WeaponShootMissile", 1100, 5, {{2, emit_MissileVolley_0}, {4, emit_MissileVolley_1}, {6, emit_MissileVolley_2}, {8, emit_MissileVolley_3}, {8, emit_MissileVolley_4}}},
     [WEAPON_MISSILE_LAUNCHER] = {"MissileLauncher", "Missile Launcher", "WeaponShootMissile", 7500, 5, {{1, emit_MissileLauncher_0}, {1, emit_MissileLauncher_1}, {1, emit_MissileLauncher_2}, {1, emit_MissileLauncher_3}, {2, emit_MissileLauncher_4}}},
     [WEAPON_LASER_SHOT] = {"LaserShot", "Laser Shot", "WeaponShootLaser", 9000, 5, {{1, emit_LaserShot_0}, {1, emit_LaserShot_1}, {2, emit_LaserShot_2}, {2, emit_LaserShot_3}, {2, emit_LaserShot_4}}},
 };

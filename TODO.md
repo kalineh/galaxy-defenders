@@ -110,15 +110,15 @@ Each cell covers three invincible seeds on both the starter and Beam policies.
 | --- | ---: |
 | Max Front Laser from the starting Mk II | 71,500 |
 | Max Beam from scratch | 282,200 |
-| Ace, Fusion Generator, Ultimate Shield, max Front Laser, Vulcan and Missile Volley | 227,200 |
-| Same equipment with max Beam in place of Front Laser | 437,900 |
-| Every shop item and mark after starting gear | 2,468,100 |
+| Ace, Fusion Generator, Ultimate Shield, max Front Laser, Vulcan and Missile Volley | 234,300 |
+| Same equipment with max Beam in place of Front Laser | 445,000 |
+| Every shop item and mark after starting gear | 2,456,000 |
 
 Three solo invincible runs (seeds 42, 73, 101) took the authored secret exits
 on Stages 2 and 3, returned to the main stage, and bought equipment normally.
 On Normal, Kazuki's Stage 2 detour earned 1,010–1,050 credits. Taking both
 earned 2,345–2,385 inside the bonus stages. For scale, Missile Volley costs
-800 credits for Mk I or 2,200 total for Mk II. With the Stage 4 Beam-switch
+1,100 credits for Mk I or 3,000 total for Mk II. With the Stage 4 Beam-switch
 policy, the median total budget at the last shop was 221,720 on the main
 route, 222,640 with the first detour, and 223,835 with both.
 
@@ -136,19 +136,18 @@ Stages 2–12 with seed 42 and repeats Stages 4, 8 and 12 with seeds 73 and
 include the rest of the kit. Range DPS isolates the named mount, includes
 both sidekicks where applicable, and uses shop damage units.
 
-- **Mini Shot** is the first price to revisit. On Stage 8, Mk IV cost
-  50,700 and delivered 137 sustained DPS straight ahead. Missile Volley Mk V
-  cost 23,100 for 144 DPS at that distance. Median boss times were 19.4 and
-  15.5 seconds respectively. Try a lower Mini Shot price before changing
-  its firing pattern.
-- **Plasma** is the primary to playtest. On Stage 4 its loadout took 46.1
-  seconds to kill the boss versus 31.0 for Front Laser. Mk IV overcharge
-  needs 825 energy for one shot; the practice kit's Booster holds 600.
-  The aiming pilot now uses regular fire when it cannot fund the salvo.
-- **Charge Shot Mk V** costs 162,500 over Mk IV. Sustained single-target
-  damage with the Fusion Generator increased from 748 to 805 DPS. The mark
-  also gains a bounce, so judge that increment on groups as well. Its early
-  marks performed well.
+- **Mini Shot and Missile Volley.** Mini Shot Mk IV now costs 40,600 credits,
+  down from 50,700. Missile Volley Mk V costs 30,200, up from 23,100.
+  Each missile deals 22 damage at Mk I–IV and 31 at Mk V.
+- **Plasma.** Regular shots deal 17 damage per bolt, up from 15. An
+  overcharged shot now costs 575 energy, within the Stage 4 Booster's
+  600 capacity. The previous cost was 825. The Stage 4 practice build's
+  median boss time across the three seeds fell from 46.1 to 32.7 seconds.
+- **Charge Shot Mk V** still costs 162,500 over Mk IV. At full charge it
+  deals 340 damage per wing, down from 350. In a Fusion Generator range
+  test with two enemies lined up, Mk IV dealt 748 DPS to the front enemy.
+  Mk V dealt 782 to each enemy. The second hit requires another target in
+  the projectile's path.
 - **Blade** depends heavily on spacing. Mk IV delivered 720 DPS beside the
   ship and zero on the distant target. An AI that normally stands 265 units
   back understates the value of a melee build.

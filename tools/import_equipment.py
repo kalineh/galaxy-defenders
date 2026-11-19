@@ -117,16 +117,17 @@ def expand_sidekicks(weapons):
             if name == 'MissileVolley':
                 pairs = (1, 2, 3, 4, 4)[mark]
                 level = [e.copy() for e in original[4-pairs:4+pairs]]
-                if mark == 4:
-                    for rocket in level:
-                        rocket.update(Damage=0.28, CustomData={'ScaleOverride': 1.25})
+                for rocket in level:
+                    rocket['Damage'] = 0.31 if mark == 4 else 0.22
+                    if mark == 4:
+                        rocket['CustomData'] = {'ScaleOverride': 1.25}
             elif name == 'Blade':
                 gun.update(Damage=(0.25, 0.4, 0.45, 0.48, 0.55)[mark],
                            ReloadTime=(0.4, 0.4, 0.4, 0.32, 0.32)[mark],
                            CustomData={'ScaleOverride': (0.72, 1, 1.35, 1.35, 1.45)[mark],
                                        'Lifetime': 18 if mark == 4 else 9})
             elif name == 'ChargeShot':
-                gun.update(Damage=(2, 2.5, 3, 3.25, 3.5)[mark],
+                gun.update(Damage=(2, 2.5, 3, 3.25, 3.4)[mark],
                            CustomData={'ChargeFrames': (60, 60, 54, 42, 42)[mark],
                                        'Bounces': int(mark == 4)})
             elif name == 'LaserShot':
@@ -148,7 +149,8 @@ def expand_sidekicks(weapons):
             levels.append(level)
         weapon['Data'] = levels
     weapons['Blade']['BasePrice'] = 3600
-    weapons['MissileVolley']['BasePrice'] = 850
+    weapons['MiniShot']['BasePrice'] = 2800
+    weapons['MissileVolley']['BasePrice'] = 1100
     for name in ('MissileVolley', 'MissileLauncher', 'LaserShot'):
         weapons[name]['DisplayName'] = re.sub(r'([a-z])([A-Z])', r'\1 \2', name)
 
@@ -187,6 +189,11 @@ def generate(data):
                     e['Damage'] *= 1.25
                     for key in ('Energy', 'ToggleEnergyDrain'):
                         e[key] *= 1.5
+                    if name == 'PlasmaFocus':
+                        # Leave a little headroom for one shot on the Stage 4 Booster.
+                        e['Energy'] = 5.75
+                elif name == 'Plasma':
+                    e = dict(e, Damage=0.17)
                 values = [f'.{field}={number(e[key])}' for key, field in fields.items() if e[key]]
                 values += [f'.offset_x={number(e["Offset"]["X"])}', f'.offset_y={number(e["Offset"]["Y"])}']
                 for key, value in (e['CustomData'] or {}).items():
