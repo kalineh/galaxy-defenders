@@ -943,7 +943,7 @@ static void resource_meter(Font font, int x, int y, const char *label, float val
 
 static const char *pilot_names[] = {"Kazuki", "Rabbit", "Gunthor"};
 
-static void draw_pilot_rail(const Assets *assets, const Player *p, const Player *preview, int slot, bool shopping, bool keyboard_free) {
+static void draw_pilot_rail(const Assets *assets, const Player *p, const Player *preview, int slot, bool shopping) {
     Font font = assets->ui_font;
     int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
@@ -960,9 +960,10 @@ static void draw_pilot_rail(const Assets *assets, const Player *p, const Player 
         return;
     }
     if (!p->joined) {
-        text_center(font, ui_text("Join flight"), x + 240, 488, 36, WHITE);
-        button_prompt(font,x+105,543,0,GLYPH_START,"Join");
-        if (keyboard_free) key_prompt(font,x+245,543,"F2",ui_text("Join"));
+        const char *prompt = ui_text("Press Start to join");
+        float size = fitted_size(font,prompt,32,width);
+        text_on_axis(font,prompt,x+(ARENA_X-MeasureTextEx(font,prompt,size,0).x)/2,
+                     GAME_HEIGHT/2,size,WHITE);
         return;
     }
     text_on_axis(font,ui_text(pilot_names[p->pilot]),left+70,50,38,WHITE);
@@ -1040,9 +1041,9 @@ static void draw_weapon_controls(Font font, const Player *pilot, int device) {
     }
 }
 
-static void draw_flight_rail(const Game *game, const Assets *assets, int slot, bool keyboard_free) {
+static void draw_flight_rail(const Game *game, const Assets *assets, int slot) {
     const Player *p = &game->players[slot];
-    draw_pilot_rail(assets,p,p,slot,false,keyboard_free);
+    draw_pilot_rail(assets,p,p,slot,false);
     int x = (slot ? ARENA_X + GAME_WIDTH : 0) + 28;
     Font font = assets->ui_font;
     if (slot == 0) {
@@ -1153,8 +1154,7 @@ static void draw_game(const Game *game, Assets *assets, const PlayerDevices *dev
         DrawRectangle(ARENA_X + 170, 118, 620, 12, (Color){68, 45, 45, 255});
         DrawRectangle(ARENA_X + 170, 118, (int)(620 * enemy->health / enemy->health_max), 12, danger);
     }
-    bool keyboard_free = input_owner(devices,INPUT_KEYBOARD) < 0;
-    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i,keyboard_free);
+    for (int i=0; i<GAME_PLAYERS; ++i) draw_flight_rail(game,assets,i);
     int lead = game->players[0].joined ? 0 : 1;
     if (game->menu.page == MENU_NONE && game->players[lead].joined)
         draw_weapon_controls(assets->ui_font,&game->players[lead],devices->flight_device[lead]);
@@ -1422,14 +1422,14 @@ static bool draw_shop_catalog(const Game *game, const Assets *assets, int slot, 
     return show_select;
 }
 
-static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset, bool keyboard_free) {
+static void draw_shop_panel(const Game *game, const Assets *assets, int slot, int device, int offset) {
     Font font = assets->ui_font;
     int x = slot ? ARENA_X + GAME_WIDTH : 0, left = x + 28, width = ARENA_X - 56;
     Color highlight = player_colors[slot];
     const Player *p = &game->players[slot];
     const GameMenu *menu = &game->menu;
     const Player *preview = shop_preview.players[slot].joined ? &shop_preview.players[slot] : p;
-    draw_pilot_rail(assets,p,preview,slot,true,keyboard_free);
+    draw_pilot_rail(assets,p,preview,slot,true);
     if (!p->joined) return;
     int cat = menu->shop_category[slot];
     DrawLine(left, 298, left + width, 298, rule);
@@ -1523,7 +1523,7 @@ static void draw_shop(const Game *game, const Assets *assets, float frame, const
         }
         previous_depth[slot] = depth;
         int offset = menu_slide_offset(frame-changed_at[slot],direction[slot]);
-        draw_shop_panel(game, assets, slot, devices->player_prompt[slot], offset,input_owner(devices,INPUT_KEYBOARD)<0);
+        draw_shop_panel(game, assets, slot, devices->player_prompt[slot], offset);
     }
     bool both = game->players[0].joined && game->players[1].joined &&
         game->menu.shop_purchase[0] && game->menu.shop_purchase[1];
