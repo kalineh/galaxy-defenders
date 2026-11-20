@@ -1,5 +1,9 @@
 # Steam storefront
 
+The [30-second gameplay trailer](steam/Super_Galaxy_Defenders_Gameplay_Trailer_1080p.mp4)
+is a 1920×1080, 60 fps MP4 with stereo audio. It features solo and local co-op
+footage with “Skyward Assault” and “Overdrive” from the game soundtrack.
+
 Open [the contact sheet](preview.jpg) to review the capsule layouts. The source
 painting is [main.png](main.png). The transparent [logo.png](logo.png) combines
 the two title-screen textures using the game's placement and rotation.
