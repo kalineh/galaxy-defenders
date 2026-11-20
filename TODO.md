@@ -4,7 +4,7 @@
 
 - [x] Apply the approved squad cover to the Steam artwork and use the illustrated
   fighter for the community and shortcut icons.
-- [ ] Bring the approved pilot art into the trailer ending.
+- [x] Bring the approved pilot art into the trailer ending.
 - [ ] Work out the intro, between-stage story scenes, and ending.
 - [ ] Review keyboard rebinding and how confirm relates to primary fire, retry, and quit.
 - [ ] Revisit the three-life flow so losing the last life leads to Game Over.
