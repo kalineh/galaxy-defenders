@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1536" height="1024" viewBox="0 0 1536 1024">
+  <defs>
+    <!-- Local +x follows the centerline of each silver barrel. -->
+    <path id="pulse" d="M -2,-3 Q 0,-5 9,-4.4 Q 86,-3.1 260,0 Q 88,2.9 9,4.4 Q 0,5 -2,3 Z"/>
+    <filter id="bloom" x="-40%" y="-600%" width="180%" height="1300%">
+      <feGaussianBlur stdDeviation="3.3"/>
+    </filter>
+    <g id="beam">
+      <use xlink:href="#pulse" fill="#38cfff" opacity=".65" filter="url(#bloom)"/>
+      <use xlink:href="#pulse" fill="#63e6ff"/>
+      <path d="M -1,-2.3 Q 2,-3.2 12,-2.8 L 224,0 12,2.8 Q 2,3.2 -1,2.3 Z" fill="#edffff"/>
+    </g>
+  </defs>
+  <use xlink:href="#beam" transform="translate(649 595) rotate(138) scale(.66 1)"/>
+  <use xlink:href="#beam" transform="translate(1044 638) rotate(136) scale(.57 1)"/>
+</svg>
