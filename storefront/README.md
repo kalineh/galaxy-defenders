@@ -26,6 +26,12 @@ The five screenshots are full 1920×1080 gameplay frames captured by the
 windowless renderer. Their stage, loadout and timing are recorded in the capture
 script. Only the screenshots go in Steam's gameplay screenshot slots.
 
+The store page text for every language lives in
+[storepage_1456718_all.json](storepage_1456718_all.json), the all-languages
+export for store item 1456718. Edit it there, then import it in one shot with
+Upload Localization on the Steamworks store page's Localization tab. To refresh
+the schema, re-export all languages as JSON from that tab and merge the text back in.
+
 Keep one Steam event localization CSV per announcement in
 [patchnotes/](patchnotes/). Copy the template for the next update and enter
 the title, body, subtitle and summary for each language. The remaster file is an
