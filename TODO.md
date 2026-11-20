@@ -2,9 +2,9 @@
 
 ## Cover art and remaining release work
 
-- [ ] Review the revised yellow fighter and the three title-screen pilots together.
-  Once approved, use the master for the Steam crops, try a centered fighter
-  close-up for the community icon, and bring the pilot art into the trailer ending.
+- [x] Apply the approved squad cover to the Steam artwork and use the illustrated
+  fighter for the community and shortcut icons.
+- [ ] Bring the approved pilot art into the trailer ending.
 - [ ] Work out the intro, between-stage story scenes, and ending.
 - [ ] Review keyboard rebinding and how confirm relates to primary fire, retry, and quit.
 - [ ] Revisit the three-life flow so losing the last life leads to Game Over.
